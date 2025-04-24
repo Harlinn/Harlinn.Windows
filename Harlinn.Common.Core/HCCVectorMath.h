@@ -14719,9 +14719,10 @@ namespace Harlinn::Common::Core::Math
 
         SquareMatrix( const value_type (&mat)[ Size ][ Size ] )
             : data_(*reinterpret_cast< const MatrixData* >( &mat[ 0 ][ 0 ] ))
-        {
-            //memcpy( data_[ 0 ].data( ), &mat[ 0 ][ 0 ], Size * Size * sizeof( value_type ) );
-        }
+        { }
+        SquareMatrix( const value_type( &mat )[ Size * Size ] )
+            : data_( *reinterpret_cast< const MatrixData* >( &mat[ 0 ] ) )
+        { }
 
         template<SimpleSpanLike T>
             requires std::is_same_v<typename T::value_type, value_type>

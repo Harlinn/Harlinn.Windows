@@ -91,7 +91,7 @@ namespace pbrto
             return GetCurrentThreadId( );
 #elif defined(PBRT_IS_OSX)
             uint64_t tid;
-            CHECK_EQ( pthread_threadid_np( pthread_self( ), &tid ), 0 );
+            NCHECK_EQ( pthread_threadid_np( pthread_self( ), &tid ), 0 );
             return tid;
 #else
 #error "Need to define GetThreadIndex() for system"
@@ -182,7 +182,7 @@ namespace pbrto
                 Usage usage;
 #ifdef PBRT_IS_LINUX
                 std::ifstream stat( "/proc/stat" );
-                CHECK( ( bool )stat );
+                NCHECK( ( bool )stat );
 
                 std::string line;
                 while ( std::getline( stat, line ) )
@@ -193,7 +193,7 @@ namespace pbrto
                     std::string_view tail( line.c_str( ) + 5 );
                     std::vector<int64_t> values = SplitStringToInt64s( tail, ' ' );
 
-                    CHECK_GE( values.size( ), 4 );
+                    NCHECK_GE( values.size( ), 4 );
                     usage.user = values[ 0 ];
                     usage.nice = values[ 1 ];
                     usage.system = values[ 2 ];
@@ -203,17 +203,17 @@ namespace pbrto
                 }
 
                 std::ifstream io( "/proc/self/io" );
-                CHECK( ( bool )io );
+                NCHECK( ( bool )io );
                 while ( std::getline( io, line ) )
                 {
                     if ( line.compare( 0, 7, "rchar: " ) == 0 )
-                        CHECK( Atoi( line.data( ) + 7, &usage.readRequest ) );
+                        NCHECK( Atoi( line.data( ) + 7, &usage.readRequest ) );
                     if ( line.compare( 0, 7, "wchar: " ) == 0 )
-                        CHECK( Atoi( line.data( ) + 7, &usage.writeRequest ) );
+                        NCHECK( Atoi( line.data( ) + 7, &usage.writeRequest ) );
                     if ( line.compare( 0, 12, "read_bytes: " ) == 0 )
-                        CHECK( Atoi( line.data( ) + 12, &usage.readActual ) );
+                        NCHECK( Atoi( line.data( ) + 12, &usage.readActual ) );
                     if ( line.compare( 0, 13, "write_bytes: " ) == 0 )
-                        CHECK( Atoi( line.data( ) + 13, &usage.writeActual ) );
+                        NCHECK( Atoi( line.data( ) + 13, &usage.writeActual ) );
                 }
 #elif defined(PBRT_IS_OSX)
                 // possibly useful:

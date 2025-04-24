@@ -168,10 +168,10 @@ namespace pbrto
             }
 
             // Compute film image bounds
-            pixelBounds = Bounds2i( Point2i( Math::Ceil( fullResolution.x * crop.pMin.x ),
-                Math::Ceil( fullResolution.y * crop.pMin.y ) ),
-                Point2i( Math::Ceil( fullResolution.x * crop.pMax.x ),
-                    Math::Ceil( fullResolution.y * crop.pMax.y ) ) );
+            pixelBounds = Bounds2i( Point2i( pstdo::ceil( fullResolution.x * crop.pMin.x ),
+                pstdo::ceil( fullResolution.y * crop.pMin.y ) ),
+                Point2i( pstdo::ceil( fullResolution.x * crop.pMax.x ),
+                    pstdo::ceil( fullResolution.y * crop.pMax.y ) ) );
 
             if ( !cr.empty( ) )
                 Warning( loc, "Crop window supplied on command line will override "
@@ -199,10 +199,10 @@ namespace pbrto
                 crop.pMax.y = Clamp( std::max( cr[ 2 ], cr[ 3 ] ), 0.f, 1.f );
 
                 // Compute film image bounds
-                pixelBounds = Bounds2i( Point2i( Math::Ceil( fullResolution.x * crop.pMin.x ),
-                    Math::Ceil( fullResolution.y * crop.pMin.y ) ),
-                    Point2i( Math::Ceil( fullResolution.x * crop.pMax.x ),
-                        Math::Ceil( fullResolution.y * crop.pMax.y ) ) );
+                pixelBounds = Bounds2i( Point2i( pstdo::ceil( fullResolution.x * crop.pMin.x ),
+                    pstdo::ceil( fullResolution.y * crop.pMin.y ) ),
+                    Point2i( pstdo::ceil( fullResolution.x * crop.pMax.x ),
+                        pstdo::ceil( fullResolution.y * crop.pMax.y ) ) );
             }
             else
                 Error( loc, "%d values supplied for \"cropwindow\". Expected 4.",
@@ -219,8 +219,8 @@ namespace pbrto
     PBRT_CPU_GPU Bounds2f FilmBase::SampleBounds( ) const
     {
         Vector2f radius = filter.Radius( );
-        return Bounds2f( ToPoint2f( ToPoint2f( pixelBounds.pMin ) - radius + Vector2f( 0.5f, 0.5f ) ),
-            ToPoint2f( pixelBounds.pMax ) + radius - Vector2f( 0.5f, 0.5f ) );
+        return Bounds2f( static_cast<Vector2f>(pixelBounds.pMin) - radius + Vector2f( 0.5f, 0.5f ),
+                    static_cast< Vector2f >( pixelBounds.pMax ) + radius - Vector2f( 0.5f, 0.5f ) );
     }
 
     std::string FilmBase::BaseToString( ) const
@@ -561,14 +561,14 @@ namespace pbrto
         // Compute bounds of affected pixels for splat, _splatBounds_
         Point2f pDiscrete = p + Vector2f( 0.5, 0.5 );
         Vector2f radius = filter.Radius( );
-        Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - radius ) ),
-            ToPoint2i( Floor( pDiscrete + radius ) ) + Vector2i( 1, 1 ) );
+        Bounds2i splatBounds( static_cast< Point2i >( Point2f(Floor( pDiscrete - radius )) ),
+            static_cast< Point2i >( Point2f( Floor( pDiscrete + radius ) ) ) + Vector2i( 1, 1 ) );
         splatBounds = Intersect( splatBounds, pixelBounds );
 
         for ( Point2i pi : splatBounds )
         {
             // Evaluate filter at _pi_ and add splat contribution
-            Float wt = filter.Evaluate( Point2f( p - ToPoint2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
+            Float wt = filter.Evaluate( Point2f( p - static_cast<Point2f>(pi) - Vector2f( 0.5, 0.5 ) ) );
             if ( wt != 0 )
             {
                 Pixel& pixel = pixels[ pi ];
@@ -732,12 +732,12 @@ namespace pbrto
             rgb *= maxComponentValue / m;
 
         Point2f pDiscrete = p + Vector2f( 0.5, 0.5 );
-        Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - filter.Radius( ) ) ),
-            ToPoint2i( Floor( pDiscrete + filter.Radius( ) ) ) + Vector2i( 1, 1 ) );
+        Bounds2i splatBounds( Point2i( Point2f( Floor( pDiscrete - filter.Radius( ) ) ) ),
+            Point2i( Point2f( Floor( pDiscrete + filter.Radius( ) ) ) ) + Vector2i( 1, 1 ) );
         splatBounds = Intersect( splatBounds, pixelBounds );
         for ( Point2i pi : splatBounds )
         {
-            Float wt = filter.Evaluate( Point2f( p - ToPoint2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
+            Float wt = filter.Evaluate( Point2f( p - Point2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
             if ( wt != 0 )
             {
                 Pixel& pixel = pixels[ pi ];
@@ -847,9 +847,9 @@ namespace pbrto
                 { albedoRgb[ 0 ], albedoRgb[ 1 ], albedoRgb[ 2 ] } );
 
             Normal3f n =
-                ScalarLengthSquared( pixel.nSum ) > 0 ? Normal3f(Normalize( pixel.nSum )) : Normal3f( 0, 0, 0 );
+                ScalarLengthSquared( pixel.nSum ) > 0 ? Normalize( pixel.nSum ) : Normal3f::Simd( 0, 0, 0 );
             Normal3f ns =
-                ScalarLengthSquared( pixel.nsSum ) > 0 ? Normal3f(Normalize( pixel.nsSum )) : Normal3f( 0, 0, 0 );
+                ScalarLengthSquared( pixel.nsSum ) > 0 ? Normalize( pixel.nsSum ) : Normal3f::Simd( 0, 0, 0 );
             image.SetChannels( pOffset, pDesc, { pt.x, pt.y, pt.z } );
             image.SetChannels( pOffset, dzDesc, { std::abs( dzdx ), std::abs( dzdy ) } );
             image.SetChannels( pOffset, nDesc, { n.x, n.y, n.z } );
@@ -1011,15 +1011,15 @@ namespace pbrto
         // Compute bounds of affected pixels for splat, _splatBounds_
         Point2f pDiscrete = p + Vector2f( 0.5, 0.5 );
         Vector2f radius = filter.Radius( );
-        Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - radius ) ),
-            ToPoint2i( Floor( pDiscrete + radius ) ) + Vector2i( 1, 1 ) );
+        Bounds2i splatBounds( Point2i( Point2f( Floor( pDiscrete - radius ) ) ),
+            Point2i( Point2f( Floor( pDiscrete + radius ) ) ) + Vector2i( 1, 1 ) );
         splatBounds = Intersect( splatBounds, pixelBounds );
 
         // Splat both RGB and spectral bucket contributions.
         for ( Point2i pi : splatBounds )
         {
             // Evaluate filter at _pi_ and add splat contribution
-            Float wt = filter.Evaluate( Point2f( p - ToVector2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
+            Float wt = filter.Evaluate( Point2f( p - Point2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
             if ( wt != 0 )
             {
                 Pixel& pixel = pixels[ pi ];

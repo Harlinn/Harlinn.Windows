@@ -129,7 +129,7 @@ namespace pbrto
             SampledWavelengths lambda = SampledWavelengths::SampleUniform( 0.5f );
 
             CameraSample cs;
-            cs.pFilm = Point2f( *Options->pixelMaterial ) + Vector2f( 0.5f, 0.5f );
+            cs.pFilm = static_cast<Point2f>(*Options->pixelMaterial) + Vector2f( 0.5f, 0.5f );
             cs.time = 0.5f;
             cs.pLens = Point2f( 0.5f, 0.5f );
             cs.filterWeight = 1;

@@ -50,7 +50,7 @@
 namespace pbrto
 {
 
-    PBRTO_EXPORT std::string ToString( LightType type );
+    std::string ToString( LightType type );
 
     // Light Inline Functions
     PBRT_CPU_GPU inline bool IsDeltaLight( LightType type )
@@ -61,143 +61,111 @@ namespace pbrto
     // LightLiSample Definition
     struct LightLiSample
     {
-        Vector3f::Simd wi;
-        SampledSpectrum::Simd L;
-        Float pdf;
-        Interaction pLight;
-
         // LightLiSample Public Methods
         LightLiSample( ) = default;
-        LightLiSample( const SampledSpectrum& l, Vector3f wi, Float pdf, const Interaction& pLight )
-            : L( l ), wi( wi ), pdf( pdf ), pLight( pLight )
-        { }
+        PBRT_CPU_GPU
+            LightLiSample( const SampledSpectrum& L, Vector3f wi, Float pdf,
+                const Interaction& pLight )
+            : L( L ), wi( wi ), pdf( pdf ), pLight( pLight )
+        {
+        }
+        std::string ToString( ) const;
 
-        LightLiSample( const SampledSpectrum::Simd& l, Vector3f::Simd wi, Float pdf, const Interaction& pLight )
-            : L( l ), wi( wi ), pdf( pdf ), pLight( pLight )
-        { }
-
-        PBRTO_EXPORT std::string ToString( ) const;
-
-        
+        SampledSpectrum L;
+        Vector3f wi;
+        Float pdf;
+        Interaction pLight;
     };
 
     // LightLeSample Definition
     struct LightLeSample
     {
-        // LightLeSample Public Members
-        Ray ray;
-        SampledSpectrum::Simd L;
-        pstdo::optional<Interaction> intr;
-        Float pdfPos = 0, pdfDir = 0;
-
         // LightLeSample Public Methods
         LightLeSample( ) = default;
-        LightLeSample( SampledSpectrum l, const Ray& ray, Float pdfPos, Float pdfDir )
-            : L( l ), ray( ray ), pdfPos( pdfPos ), pdfDir( pdfDir )
-        { }
-        LightLeSample( SampledSpectrum::Simd l, const Ray& ray, Float pdfPos, Float pdfDir )
-            : L( l ), ray( ray ), pdfPos( pdfPos ), pdfDir( pdfDir )
-        { }
-        LightLeSample( SampledSpectrum l, const Ray& ray, const Interaction& intr, Float pdfPos, Float pdfDir )
-            : L( l ), ray( ray ), intr( intr ), pdfPos( pdfPos ), pdfDir( pdfDir )
+        PBRT_CPU_GPU
+            LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
+            : L( L ), ray( ray ), pdfPos( pdfPos ), pdfDir( pdfDir )
+        {
+        }
+        PBRT_CPU_GPU
+            LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr,
+                Float pdfPos, Float pdfDir )
+            : L( L ), ray( ray ), intr( intr ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
             NCHECK( this->intr->n != Normal3f( 0, 0, 0 ) );
         }
-        LightLeSample( const SampledSpectrum::Simd l, const Ray& ray, const Interaction& intr, Float pdfPos, Float pdfDir )
-            : L( l ), ray( ray ), intr( intr ), pdfPos( pdfPos ), pdfDir( pdfDir )
-        {
-            NCHECK( this->intr->n != Normal3f( 0, 0, 0 ) );
-        }
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        Float AbsCosTheta( Vector3f w ) const 
-        { 
-            return intr ? ScalarAbsDot( w, intr->n ) : 1.f; 
-        }
-        Float AbsCosTheta( Vector3f::Simd w ) const
-        {
-            return intr ? ScalarAbsDot( w, intr->n ) : 1.f;
-        }
+        PBRT_CPU_GPU
+            Float AbsCosTheta( Vector3f w ) const { return intr ? ScalarAbsDot( w, intr->n ) : 1; }
 
-        
+        // LightLeSample Public Members
+        SampledSpectrum L;
+        Ray ray;
+        pstdo::optional<Interaction> intr;
+        Float pdfPos = 0, pdfDir = 0;
     };
 
     // LightSampleContext Definition
     class LightSampleContext
     {
     public:
-        // LightSampleContext Public Members
-        Point3fi pi;
-        Normal3f::Simd n; 
-        Normal3f::Simd ns;
-
         // LightSampleContext Public Methods
         LightSampleContext( ) = default;
-        LightSampleContext( const SurfaceInteraction& si )
+        PBRT_CPU_GPU
+            LightSampleContext( const SurfaceInteraction& si )
             : pi( si.pi ), n( si.n ), ns( si.shading.n )
         {
         }
-        LightSampleContext( const Interaction& intr ) 
-            : pi( intr.pi ) 
-        { }
-        LightSampleContext( Point3fi pi, Normal3f n, Normal3f ns ) 
-            : pi( pi ), n( n ), ns( ns ) 
-        { }
+        PBRT_CPU_GPU
+            LightSampleContext( const Interaction& intr ) : pi( intr.pi ) {}
+        PBRT_CPU_GPU
+            LightSampleContext( Point3fi pi, Normal3f n, Normal3f ns ) : pi( pi ), n( n ), ns( ns ) {}
 
-        LightSampleContext( Point3fi pi, Normal3f::Simd n, Normal3f::Simd ns )
-            : pi( pi ), n( n ), ns( ns )
-        { }
+        PBRT_CPU_GPU
+            Point3f p( ) const { return Point3f( pi ); }
 
-        Point3f p( ) const 
-        { 
-            return Point3f( pi ); 
-        }
-
-        
+        // LightSampleContext Public Members
+        Point3fi pi;
+        Normal3f n, ns;
     };
 
     // LightBounds Definition
     class LightBounds
     {
     public:
-        // LightBounds Public Members
-        Vector3f::Simd w;
-        Bounds3f bounds;
-        Float phi = 0;
-        Float cosTheta_o, cosTheta_e;
-        bool twoSided;
-
         // LightBounds Public Methods
         LightBounds( ) = default;
-        LightBounds( const Bounds3f& b, Vector3f w, Float phi, Float cosTheta_o, Float cosTheta_e, bool twoSided )
-            : bounds( b ),
-              w( Normalize( w ) ),
-              phi( phi ),
-              cosTheta_o( cosTheta_o ),
-              cosTheta_e( cosTheta_e ),
-              twoSided( twoSided )
-        { }
-        LightBounds( const Bounds3f& b, Vector3f::Simd w, Float phi, Float cosTheta_o, Float cosTheta_e, bool twoSided )
-            : bounds( b ),
-              w( Normalize( w ) ),
-              phi( phi ),
-              cosTheta_o( cosTheta_o ),
-              cosTheta_e( cosTheta_e ),
-              twoSided( twoSided )
-        { }
+        LightBounds( const Bounds3f& b, Vector3f w, Float phi, Float cosTheta_o,
+            Float cosTheta_e, bool twoSided );
 
-        Point3f Centroid( ) const 
-        { 
-            return ( bounds.pMin + bounds.pMax ) / 2.f; 
-        }
+        PBRT_CPU_GPU
+            Point3f Centroid( ) const { return ( bounds.pMin + bounds.pMax ) / 2; }
 
-        PBRTO_EXPORT Float Importance( Point3f p, Normal3f n ) const;
+        PBRT_CPU_GPU
+            Float Importance( Point3f p, Normal3f n ) const;
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        
+        // LightBounds Public Members
+        Bounds3f bounds;
+        Float phi = 0;
+        Vector3f w;
+        Float cosTheta_o, cosTheta_e;
+        bool twoSided;
     };
 
+    // LightBounds Inline Methods
+    inline LightBounds::LightBounds( const Bounds3f& b, Vector3f w, Float phi,
+        Float cosTheta_o, Float cosTheta_e, bool twoSided )
+        : bounds( b ),
+        w( Normalize( w ) ),
+        phi( phi ),
+        cosTheta_o( cosTheta_o ),
+        cosTheta_e( cosTheta_e ),
+        twoSided( twoSided )
+    {
+    }
 
     inline LightBounds Union( const LightBounds& a, const LightBounds& b )
     {
@@ -208,12 +176,14 @@ namespace pbrto
             return a;
 
         // Find average direction and updated angles for _LightBounds_
-        DirectionCone cone = Union( DirectionCone( a.w, a.cosTheta_o ), DirectionCone( b.w, b.cosTheta_o ) );
+        DirectionCone cone =
+            Union( DirectionCone( a.w, a.cosTheta_o ), DirectionCone( b.w, b.cosTheta_o ) );
         Float cosTheta_o = cone.cosTheta;
         Float cosTheta_e = std::min( a.cosTheta_e, b.cosTheta_e );
 
         // Return final _LightBounds_ union
-        return LightBounds( Union( a.bounds, b.bounds ), cone.w, a.phi + b.phi, cosTheta_o, cosTheta_e, a.twoSided | b.twoSided );
+        return LightBounds( Union( a.bounds, b.bounds ), cone.w, a.phi + b.phi, cosTheta_o,
+            cosTheta_e, a.twoSided | b.twoSided );
     }
 
     // LightBase Definition
@@ -234,260 +204,289 @@ namespace pbrto
             return type; 
         }
 
-        SampledSpectrum::Simd L( Point3f::Simd p, Normal3f::Simd n, Point2f uv, Vector3f::Simd w, const SampledWavelengths& lambda ) const
+        SampledSpectrum L( Point3f p, Normal3f n, Point2f uv, Vector3f w, const SampledWavelengths& lambda ) const
         {
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         }
 
-        SampledSpectrum::Simd Le( const Ray&, const SampledWavelengths& ) const
+        SampledSpectrum Le( const Ray&, const SampledWavelengths& ) const
         {
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         }
-
     protected:
         // LightBase Protected Methods
         PBRTO_EXPORT static const DenselySampledSpectrum* LookupSpectrum( Spectrum s );
-
-        PBRTO_EXPORT std::string BaseToString( ) const;
-        
+        std::string BaseToString( ) const;
     };
 
     // PointLight Definition
     class PointLight : public LightBase
     {
-    private:
         // PointLight Private Members
         const DenselySampledSpectrum* I;
         Float scale;
     public:
         // PointLight Public Methods
-        PointLight( Transform renderFromLight, MediumInterface mediumInterface, Spectrum I,
-            Float scale )
-            : LightBase( LightType::DeltaPosition, renderFromLight, mediumInterface ),
-             I( LookupSpectrum( I ) ),
-             scale( scale )
+        PointLight( Transform renderFromLight, MediumInterface mediumInterface, Spectrum I, Float scale )
+            : LightBase( LightType::DeltaPosition, renderFromLight, mediumInterface ), I( LookupSpectrum( I ) ), scale( scale )
         { }
 
         PBRTO_EXPORT static PointLight* Create( const Transform& renderFromLight, Medium medium, const ParameterDictionary& parameters, const RGBColorSpace* colorSpace, const FileLoc* loc, Allocator alloc );
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( SampledWavelengths lambda ) const
+        {
+            return 4.f * Pi * scale * I->Sample( lambda );
+        }
         void Preprocess( const Bounds3f& sceneBounds ) 
         { }
 
-        PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+        pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
+        void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
 
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
+        void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
-        PBRTO_EXPORT pstdo::optional<LightBounds> Bounds( ) const;
+        pstdo::optional<LightBounds> Bounds( ) const
+        {
+            Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+            Float phi = 4 * Pi * scale * I->MaxValue( );
+            return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, std::cos( Pi ), std::cos( Pi / 2 ), false );
+        }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
         pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const
         {
-            Point3f::Simd p = renderFromLight( Point3f( 0, 0, 0 ) );
-            Point3f::Simd ctxP = ctx.p( );
-            Vector3f::Simd wi = Normalize( p - ctxP );
-            SampledSpectrum::Simd Li = scale * I->Sample( lambda ) / ScalarDistanceSquared( p, ctxP );
+            Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+            Vector3f wi = Normalize( p - ctx.p( ) );
+            SampledSpectrum Li = scale * I->Sample( lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
             return LightLiSample( Li, wi, 1, Interaction( p, &mediumInterface ) );
         }
 
-        Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const
+        Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const
         {
             return 0;
         }
 
-    
+    private:
+        
     };
 
     // DistantLight Definition
     class DistantLight : public LightBase
     {
-        // DistantLight Private Members
-        const DenselySampledSpectrum* Lemit;
-        Float scale;
-        Point3f sceneCenter;
-        Float sceneRadius;
     public:
         // DistantLight Public Methods
         DistantLight( const Transform& renderFromLight, Spectrum Lemit, Float scale )
             : LightBase( LightType::DeltaDirection, renderFromLight, {} ),
-              Lemit( LookupSpectrum( Lemit ) ),
-              scale( scale )
+            Lemit( LookupSpectrum( Lemit ) ),
+            scale( scale )
         {
         }
 
-        PBRTO_EXPORT static DistantLight* Create( const Transform& renderFromLight, const ParameterDictionary& parameters, const RGBColorSpace* colorSpace, const FileLoc* loc, Allocator alloc );
+        static DistantLight* Create( const Transform& renderFromLight,
+            const ParameterDictionary& parameters,
+            const RGBColorSpace* colorSpace, const FileLoc* loc,
+            Allocator alloc );
 
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
 
-        Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const
         {
             return 0;
         }
 
-        PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2,
+                SampledWavelengths& lambda, Float time ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
 
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
-        pstdo::optional<LightBounds> Bounds( ) const 
-        { 
-            return {}; 
-        }
+        pstdo::optional<LightBounds> Bounds( ) const { return {}; }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
         void Preprocess( const Bounds3f& sceneBounds )
         {
             sceneBounds.BoundingSphere( &sceneCenter, &sceneRadius );
         }
 
-        pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const
+        PBRT_CPU_GPU
+            pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u,
+                SampledWavelengths lambda,
+                bool allowIncompletePDF ) const
         {
-            Vector3f::Simd wi = Normalize( renderFromLight( Vector3f::Simd( 0, 0, 1 ) ) );
-            Point3f::Simd pOutside = ctx.p( ) + wi * ( 2 * sceneRadius );
-            return LightLiSample( scale * Lemit->Sample( lambda ), wi, 1, Interaction( pOutside, nullptr ) );
+            Vector3f wi = Normalize( renderFromLight( Vector3f( 0, 0, 1 ) ) );
+            Point3f pOutside = ctx.p( ) + wi * ( 2 * sceneRadius );
+            return LightLiSample( scale * Lemit->Sample( lambda ), wi, 1,
+                Interaction( pOutside, nullptr ) );
         }
 
     private:
-        
+        // DistantLight Private Members
+        const DenselySampledSpectrum* Lemit;
+        Float scale;
+        Point3f sceneCenter;
+        Float sceneRadius;
     };
 
     // ProjectionLight Definition
     class ProjectionLight : public LightBase
     {
+    public:
+        // ProjectionLight Public Methods
+        ProjectionLight( Transform renderFromLight, MediumInterface medium, Image image,
+            const RGBColorSpace* colorSpace, Float scale, Float fov,
+            Allocator alloc );
+
+        static ProjectionLight* Create( const Transform& renderFromLight, Medium medium,
+            const ParameterDictionary& parameters,
+            const FileLoc* loc, Allocator alloc );
+
+        void Preprocess( const Bounds3f& sceneBounds ) {}
+
+        PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const;
+
+        SampledSpectrum I( Vector3f w, const SampledWavelengths& lambda ) const;
+
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
+
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const;
+
+        PBRT_CPU_GPU
+            pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2,
+                SampledWavelengths& lambda, Float time ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
+        {
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
+        }
+
+        pstdo::optional<LightBounds> Bounds( ) const;
+
+        std::string ToString( ) const;
+
+    private:
         // ProjectionLight Private Members
         Image image;
         const RGBColorSpace* imageColorSpace;
         Float scale;
         Bounds2f screenBounds;
         Float hither = 1e-3f;
-        Transform screenFromLight; 
-        Transform lightFromScreen;
+        Transform screenFromLight, lightFromScreen;
         Float A;
         PiecewiseConstant2D distrib;
-    public:
-        // ProjectionLight Public Methods
-        PBRTO_EXPORT ProjectionLight( Transform renderFromLight, MediumInterface medium, Image image, const RGBColorSpace* colorSpace, Float scale, Float fov, Allocator alloc );
-
-        static ProjectionLight* Create( const Transform& renderFromLight, Medium medium, const ParameterDictionary& parameters, const FileLoc* loc, Allocator alloc );
-
-        void Preprocess( const Bounds3f& sceneBounds ) {}
-
-        PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const;
-        PBRTO_EXPORT SampledSpectrum::Simd I( Vector3f::Simd w, const SampledWavelengths& lambda ) const;
-
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
-
-        Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const
-        {
-            return 0.f;
-        }
-
-        pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
-
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
-        {
-            NLOG_FATAL( "Shouldn't be called for non-area lights" );
-        }
-
-        PBRTO_EXPORT pstdo::optional<LightBounds> Bounds( ) const;
-
-        PBRTO_EXPORT std::string ToString( ) const;
     };
 
     // GoniometricLight Definition
     class GoniometricLight : public LightBase
     {
-        // GoniometricLight Private Members
-        const DenselySampledSpectrum* Iemit;
-        Float scale;
-        Image image;
-        PiecewiseConstant2D distrib;
     public:
         // GoniometricLight Public Methods
-        PBRTO_EXPORT GoniometricLight( const Transform& renderFromLight, const MediumInterface& mediumInterface, Spectrum I, Float scale, Image image, Allocator alloc );
+        GoniometricLight( const Transform& renderFromLight,
+            const MediumInterface& mediumInterface, Spectrum I, Float scale,
+            Image image, Allocator alloc );
 
-        PBRTO_EXPORT static GoniometricLight* Create( const Transform& renderFromLight, Medium medium, const ParameterDictionary& parameters, const RGBColorSpace* colorSpace, const FileLoc* loc, Allocator alloc );
+        static GoniometricLight* Create( const Transform& renderFromLight, Medium medium,
+            const ParameterDictionary& parameters,
+            const RGBColorSpace* colorSpace, const FileLoc* loc,
+            Allocator alloc );
 
         void Preprocess( const Bounds3f& sceneBounds ) {}
 
         PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const;
 
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
 
-        Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const
-        {
-            return 0.f;
-        }
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const;
 
-        PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2,
+                SampledWavelengths& lambda, Float time ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
 
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
-        PBRTO_EXPORT pstdo::optional<LightBounds> Bounds( ) const;
+        pstdo::optional<LightBounds> Bounds( ) const;
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        SampledSpectrum I( Vector3f::Simd w, const SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            SampledSpectrum I( Vector3f w, const SampledWavelengths& lambda ) const
         {
             Point2f uv = EqualAreaSphereToSquare( w );
             return scale * Iemit->Sample( lambda ) * image.LookupNearestChannel( uv, 0 );
         }
+
+    private:
+        // GoniometricLight Private Members
+        const DenselySampledSpectrum* Iemit;
+        Float scale;
+        Image image;
+        PiecewiseConstant2D distrib;
     };
 
     // DiffuseAreaLight Definition
     class DiffuseAreaLight : public LightBase
     {
-        // DiffuseAreaLight Private Members
-        Shape shape;
-        FloatTexture alpha;
-        Float area;
-        bool twoSided;
-        const DenselySampledSpectrum* Lemit;
-        Float scale;
-        Image image;
-        const RGBColorSpace* imageColorSpace;
     public:
         // DiffuseAreaLight Public Methods
-        PBRTO_EXPORT DiffuseAreaLight( const Transform& renderFromLight, const MediumInterface& mediumInterface, Spectrum Le, Float scale, const Shape shape, FloatTexture alpha, Image image, const RGBColorSpace* imageColorSpace, bool twoSided );
+        DiffuseAreaLight( const Transform& renderFromLight,
+            const MediumInterface& mediumInterface, Spectrum Le, Float scale,
+            const Shape shape, FloatTexture alpha, Image image,
+            const RGBColorSpace* imageColorSpace, bool twoSided );
 
-        PBRTO_EXPORT static DiffuseAreaLight* Create( const Transform& renderFromLight, Medium medium, const ParameterDictionary& parameters, const RGBColorSpace* colorSpace, const FileLoc* loc, Allocator alloc, const Shape shape, FloatTexture alpha );
+        static DiffuseAreaLight* Create( const Transform& renderFromLight, Medium medium,
+            const ParameterDictionary& parameters,
+            const RGBColorSpace* colorSpace, const FileLoc* loc,
+            Allocator alloc, const Shape shape,
+            FloatTexture alpha );
 
         void Preprocess( const Bounds3f& sceneBounds ) {}
 
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
 
         PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const;
 
-        PBRTO_EXPORT pstdo::optional<LightBounds> Bounds( ) const;
+        pstdo::optional<LightBounds> Bounds( ) const;
 
-        void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "Shouldn't be called for area lights" );
         }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        SampledSpectrum::Simd L( Point3f::Simd p, Normal3f::Simd n, Point2f uv, Vector3f::Simd w, const SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            SampledSpectrum L( Point3f p, Normal3f n, Point2f uv, Vector3f w,
+                const SampledWavelengths& lambda ) const
         {
             // Check for zero emitted radiance from point on area light
             if ( !twoSided && ScalarDot( n, w ) < 0 )
-                return SampledSpectrum::Simd( 0.f );
+                return SampledSpectrum( 0.f );
             if ( AlphaMasked( Interaction( p, uv ) ) )
-                return SampledSpectrum::Simd( 0.f );
+                return SampledSpectrum( 0.f );
 
             if ( image )
             {
@@ -506,13 +505,23 @@ namespace pbrto
 
         PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const;
 
-        PBRTO_EXPORT Float PDF_Li( LightSampleContext ctx, Vector3f::Simd wi, bool allowIncompletePDF ) const;
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext ctx, Vector3f wi, bool allowIncompletePDF ) const;
 
     private:
-        
+        // DiffuseAreaLight Private Members
+        Shape shape;
+        FloatTexture alpha;
+        Float area;
+        bool twoSided;
+        const DenselySampledSpectrum* Lemit;
+        Float scale;
+        Image image;
+        const RGBColorSpace* imageColorSpace;
 
         // DiffuseAreaLight Private Methods
-        bool AlphaMasked( const Interaction& intr ) const
+        PBRT_CPU_GPU
+            bool AlphaMasked( const Interaction& intr ) const
         {
             if ( !alpha )
                 return false;
@@ -532,84 +541,94 @@ namespace pbrto
     // UniformInfiniteLight Definition
     class UniformInfiniteLight : public LightBase
     {
+    public:
+        // UniformInfiniteLight Public Methods
+        UniformInfiniteLight( const Transform& renderFromLight, Spectrum Lemit, Float scale );
+
+        void Preprocess( const Bounds3f& sceneBounds )
+        {
+            sceneBounds.BoundingSphere( &sceneCenter, &sceneRadius );
+        }
+
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
+
+        PBRT_CPU_GPU
+            SampledSpectrum Le( const Ray& ray, const SampledWavelengths& lambda ) const;
+        PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u,
+                SampledWavelengths lambda,
+                bool allowIncompletePDF ) const;
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const;
+
+        PBRT_CPU_GPU
+            pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2,
+                SampledWavelengths& lambda, Float time ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
+        {
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
+        }
+
+        pstdo::optional<LightBounds> Bounds( ) const { return {}; }
+
+        std::string ToString( ) const;
+
+    private:
         // UniformInfiniteLight Private Members
         const DenselySampledSpectrum* Lemit;
         Float scale;
         Point3f sceneCenter;
         Float sceneRadius;
-    public:
-        // UniformInfiniteLight Public Methods
-        PBRTO_EXPORT UniformInfiniteLight( const Transform& renderFromLight, Spectrum Lemit, Float scale );
-
-        void Preprocess( const Bounds3f& sceneBounds )
-        {
-            sceneBounds.BoundingSphere( &sceneCenter, &sceneRadius );
-        }
-
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
-
-        PBRTO_EXPORT SampledSpectrum::Simd Le( const Ray& ray, const SampledWavelengths& lambda ) const;
-        PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const;
-        PBRTO_EXPORT Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const;
-
-        PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
-
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
-        {
-            NLOG_FATAL( "Shouldn't be called for non-area lights" );
-        }
-
-        pstdo::optional<LightBounds> Bounds( ) const 
-        { 
-            return {}; 
-        }
-
-        PBRTO_EXPORT std::string ToString( ) const;
     };
 
     // ImageInfiniteLight Definition
     class ImageInfiniteLight : public LightBase
     {
-        // ImageInfiniteLight Private Members
-        Image image;
-        const RGBColorSpace* imageColorSpace;
-        Float scale;
-        Point3f sceneCenter;
-        Float sceneRadius;
-        PiecewiseConstant2D distribution;
-        PiecewiseConstant2D compensatedDistribution;
     public:
         // ImageInfiniteLight Public Methods
-        PBRTO_EXPORT ImageInfiniteLight( Transform renderFromLight, Image image, const RGBColorSpace* imageColorSpace, Float scale, std::string filename, Allocator alloc );
+        ImageInfiniteLight( Transform renderFromLight, Image image,
+            const RGBColorSpace* imageColorSpace, Float scale,
+            std::string filename, Allocator alloc );
 
         void Preprocess( const Bounds3f& sceneBounds )
         {
             sceneBounds.BoundingSphere( &sceneCenter, &sceneRadius );
         }
 
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
 
-        PBRTO_EXPORT Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const;
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const;
 
-        PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2,
+                SampledWavelengths& lambda, Float time ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
 
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        SampledSpectrum::Simd Le( const Ray& ray, const SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            SampledSpectrum Le( const Ray& ray, const SampledWavelengths& lambda ) const
         {
-            Vector3f::Simd wLight = Normalize( renderFromLight.ApplyInverse( ray.d ) );
+            Vector3f wLight = Normalize( renderFromLight.ApplyInverse( ray.d ) );
             Point2f uv = EqualAreaSphereToSquare( wLight );
             return ImageLe( uv, lambda );
         }
 
-        pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const
+        PBRT_CPU_GPU
+            pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u,
+                SampledWavelengths lambda,
+                bool allowIncompletePDF ) const
         {
             // Find $(u,v)$ sample coordinates in infinite light texture
             Float mapPDF = 0;
@@ -622,8 +641,8 @@ namespace pbrto
                 return {};
 
             // Convert infinite light sample point to direction
-            Vector3f::Simd wLight = EqualAreaSquareToSphere( uv );
-            Vector3f::Simd wi = renderFromLight( wLight );
+            Vector3f wLight = EqualAreaSquareToSphere( uv );
+            Vector3f wi = renderFromLight( wLight );
 
             // Compute PDF for sampled infinite light direction
             Float pdf = mapPDF / ( 4 * Pi );
@@ -634,14 +653,12 @@ namespace pbrto
                 Interaction( ctx.p( ) + wi * ( 2 * sceneRadius ), &mediumInterface ) );
         }
 
-        pstdo::optional<LightBounds> Bounds( ) const 
-        { 
-            return {}; 
-        }
+        pstdo::optional<LightBounds> Bounds( ) const { return {}; }
 
     private:
         // ImageInfiniteLight Private Methods
-        SampledSpectrum::Simd ImageLe( Point2f uv, const SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            SampledSpectrum ImageLe( Point2f uv, const SampledWavelengths& lambda ) const
         {
             RGB rgb;
             for ( int c = 0; c < 3; ++c )
@@ -650,60 +667,65 @@ namespace pbrto
             return scale * spec.Sample( lambda );
         }
 
-        
+        // ImageInfiniteLight Private Members
+        Image image;
+        const RGBColorSpace* imageColorSpace;
+        Float scale;
+        Point3f sceneCenter;
+        Float sceneRadius;
+        PiecewiseConstant2D distribution;
+        PiecewiseConstant2D compensatedDistribution;
     };
 
     // PortalImageInfiniteLight Definition
     class PortalImageInfiniteLight : public LightBase
     {
-        // PortalImageInfiniteLight Private Members
-        pstdo::array<Point3f::Simd, 4> portal;
-        Point3f::Simd sceneCenter;
-        Frame portalFrame;
-        Image image;
-        WindowedPiecewiseConstant2D distribution;
-        const RGBColorSpace* imageColorSpace;
-        Float scale;
-        Float sceneRadius;
-        std::string filename;
-        
     public:
         // PortalImageInfiniteLight Public Methods
-        PBRTO_EXPORT PortalImageInfiniteLight( const Transform& renderFromLight, Image image, const RGBColorSpace* imageColorSpace, Float scale, const std::string& filename, std::vector<Point3f> portal, Allocator alloc );
+        PortalImageInfiniteLight( const Transform& renderFromLight, Image image,
+            const RGBColorSpace* imageColorSpace, Float scale,
+            const std::string& filename, std::vector<Point3f> portal,
+            Allocator alloc );
 
         void Preprocess( const Bounds3f& sceneBounds )
         {
             sceneBounds.BoundingSphere( &sceneCenter, &sceneRadius );
         }
 
-        PBRTO_EXPORT SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
 
-        PBRTO_EXPORT SampledSpectrum::Simd Le( const Ray& ray, const SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            SampledSpectrum Le( const Ray& ray, const SampledWavelengths& lambda ) const;
 
         PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const;
 
-        PBRTO_EXPORT Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const;
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const;
 
-        PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2,
+                SampledWavelengths& lambda, Float time ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
 
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
-        pstdo::optional<LightBounds> Bounds( ) const 
-        { 
-            return {}; 
-        }
+        pstdo::optional<LightBounds> Bounds( ) const { return {}; }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
     private:
         // PortalImageInfiniteLight Private Methods
-        PBRTO_EXPORT SampledSpectrum::Simd ImageLookup( Point2f uv, const SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            SampledSpectrum ImageLookup( Point2f uv, const SampledWavelengths& lambda ) const;
 
-        pstdo::optional<Point2f> ImageFromRender( Vector3f wRender, Float* duv_dw = nullptr ) const
+        PBRT_CPU_GPU
+            pstdo::optional<Point2f> ImageFromRender( Vector3f wRender,
+                Float* duv_dw = nullptr ) const
         {
             Vector3f w = portalFrame.ToLocal( wRender );
             if ( w.z <= 0 )
@@ -713,16 +735,17 @@ namespace pbrto
             if ( duv_dw )
                 *duv_dw = Sqr( Pi ) * ( 1 - Sqr( w.x ) ) * ( 1 - Sqr( w.y ) ) / w.z;
 
-            Float alpha = Math::ATan2( w.x, w.z ), beta = Math::ATan2( w.y, w.z );
+            Float alpha = std::atan2( w.x, w.z ), beta = std::atan2( w.y, w.z );
             NDCHECK( !IsNaN( alpha + beta ) );
             return Point2f( Clamp( ( alpha + Pi / 2 ) / Pi, 0, 1 ),
                 Clamp( ( beta + Pi / 2 ) / Pi, 0, 1 ) );
         }
 
-        Vector3f RenderFromImage( Point2f uv, Float* duv_dw = nullptr ) const
+        PBRT_CPU_GPU
+            Vector3f RenderFromImage( Point2f uv, Float* duv_dw = nullptr ) const
         {
             Float alpha = -Pi / 2 + uv[ 0 ] * Pi, beta = -Pi / 2 + uv[ 1 ] * Pi;
-            Float x = Math::Tan( alpha ), y = Math::Tan( beta );
+            Float x = std::tan( alpha ), y = std::tan( beta );
             NDCHECK( !IsInf( x ) && !IsInf( y ) );
             Vector3f w = Normalize( Vector3f( x, y, 1 ) );
             // Compute Jacobian determinant of mapping $\roman{d}(u,v)/\roman{d}\omega$ if
@@ -733,7 +756,8 @@ namespace pbrto
             return portalFrame.FromLocal( w );
         }
 
-        pstdo::optional<Bounds2f> ImageBounds( Point3f p ) const
+        PBRT_CPU_GPU
+            pstdo::optional<Bounds2f> ImageBounds( Point3f p ) const
         {
             pstdo::optional<Point2f> p0 = ImageFromRender( Normalize( portal[ 0 ] - p ) );
             pstdo::optional<Point2f> p1 = ImageFromRender( Normalize( portal[ 2 ] - p ) );
@@ -742,107 +766,116 @@ namespace pbrto
             return Bounds2f( *p0, *p1 );
         }
 
-        Float Area( ) const
+        PBRT_CPU_GPU
+            Float Area( ) const
         {
             return ScalarLength( portal[ 1 ] - portal[ 0 ] ) * ScalarLength( portal[ 3 ] - portal[ 0 ] );
         }
 
-        
+        // PortalImageInfiniteLight Private Members
+        pstdo::array<Point3f, 4> portal;
+        Frame portalFrame;
+        Image image;
+        WindowedPiecewiseConstant2D distribution;
+        const RGBColorSpace* imageColorSpace;
+        Float scale;
+        Float sceneRadius;
+        std::string filename;
+        Point3f sceneCenter;
     };
 
     // SpotLight Definition
     class SpotLight : public LightBase
     {
-        // SpotLight Private Members
-        const DenselySampledSpectrum* Iemit;
-        Float scale, cosFalloffStart, cosFalloffEnd;
     public:
         // SpotLight Public Methods
         PBRTO_EXPORT SpotLight( const Transform& renderFromLight, const MediumInterface& m, Spectrum I, Float scale, Float totalWidth, Float falloffStart );
 
-        PBRTO_EXPORT static SpotLight* Create( const Transform& renderFromLight, Medium medium, const ParameterDictionary& parameters, const RGBColorSpace* colorSpace, const FileLoc* loc, Allocator alloc );
+        static SpotLight* Create( const Transform& renderFromLight, Medium medium,
+            const ParameterDictionary& parameters,
+            const RGBColorSpace* colorSpace, const FileLoc* loc,
+            Allocator alloc );
 
-        void Preprocess( const Bounds3f& sceneBounds ) 
-        {
-        }
+        void Preprocess( const Bounds3f& sceneBounds ) {}
 
-        SampledSpectrum::Simd I( Vector3f::Simd w, SampledWavelengths lambda ) const
-        {
-            return SmoothStep( CosTheta( w ), cosFalloffEnd, cosFalloffStart ) * scale * Iemit->Sample( lambda );
-        }
+        PBRTO_EXPORT SampledSpectrum I( Vector3f w, SampledWavelengths ) const;
 
-        SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const
-        {
-            return scale * Iemit->Sample( lambda ) * 2 * Pi * ( ( 1 - cosFalloffStart ) + ( cosFalloffStart - cosFalloffEnd ) / 2 );
-        }
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
 
-        Float PDF_Li( LightSampleContext, Vector3f::Simd, bool allowIncompletePDF ) const
-        {
-            return 0.f;
-        }
+        PBRT_CPU_GPU
+            Float PDF_Li( LightSampleContext, Vector3f, bool allowIncompletePDF ) const;
 
-        PBRTO_EXPORT pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
-        PBRTO_EXPORT void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2,
+                SampledWavelengths& lambda, Float time ) const;
+        PBRT_CPU_GPU
+            void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const;
 
-        void PDF_Le( const Interaction&, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
-        PBRTO_EXPORT pstdo::optional<LightBounds> Bounds( ) const;
+        pstdo::optional<LightBounds> Bounds( ) const;
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const
+        PBRT_CPU_GPU
+            pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u,
+                SampledWavelengths lambda,
+                bool allowIncompletePDF ) const
         {
-            Point3f::Simd p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
-            Point3f::Simd ctxP = ctx.p( );
-            Vector3f::Simd wi = Normalize( p - ctxP );
+            Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+            Vector3f wi = Normalize( p - ctx.p( ) );
             // Compute incident radiance _Li_ for _SpotLight_
-            Vector3f::Simd wLight = Normalize( renderFromLight.ApplyInverse( -wi ) );
-            SampledSpectrum::Simd Li = I( wLight, lambda ) / ScalarDistanceSquared( p, ctxP );
+            Vector3f wLight = Normalize( renderFromLight.ApplyInverse( -wi ) );
+            SampledSpectrum Li = I( wLight, lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
 
             if ( !Li )
                 return {};
             return LightLiSample( Li, wi, 1, Interaction( p, &mediumInterface ) );
         }
+
+    private:
+        // SpotLight Private Members
+        const DenselySampledSpectrum* Iemit;
+        Float scale, cosFalloffStart, cosFalloffEnd;
     };
 
-    inline pstdo::optional<LightLiSample> Light::SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF ) const
+    PBRT_CPU_GPU inline pstdo::optional<LightLiSample> Light::SampleLi( LightSampleContext ctx, Point2f u,
+        SampledWavelengths lambda,
+        bool allowIncompletePDF ) const
     {
-        auto sample = [ & ]( auto ptr ) 
-            {
-                return ptr->SampleLi( ctx, u, lambda, allowIncompletePDF );
+        auto sample = [ & ]( auto ptr ) {
+            return ptr->SampleLi( ctx, u, lambda, allowIncompletePDF );
             };
         return Dispatch( sample );
     }
 
-    inline Float Light::PDF_Li( LightSampleContext ctx, Vector3f::Simd wi, bool allowIncompletePDF ) const
+    PBRT_CPU_GPU inline Float Light::PDF_Li( LightSampleContext ctx, Vector3f wi,
+        bool allowIncompletePDF ) const
     {
-        auto pdf = [ & ]( auto ptr ) 
-            { 
-                return ptr->PDF_Li( ctx, wi, allowIncompletePDF ); 
-            };
+        auto pdf = [ & ]( auto ptr ) { return ptr->PDF_Li( ctx, wi, allowIncompletePDF ); };
         return Dispatch( pdf );
     }
 
-    inline SampledSpectrum::Simd Light::L( Point3f::Simd p, Normal3f::Simd n, Point2f uv, Vector3f::Simd w, const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU inline SampledSpectrum Light::L( Point3f p, Normal3f n, Point2f uv, Vector3f w,
+        const SampledWavelengths& lambda ) const
     {
         NCHECK( Type( ) == LightType::Area );
-        auto l = [ & ]( auto ptr ) 
-            { 
-                return ptr->L( p, n, uv, w, lambda ); 
-            };
+        auto l = [ & ]( auto ptr ) { return ptr->L( p, n, uv, w, lambda ); };
         return Dispatch( l );
     }
 
-    inline SampledSpectrum::Simd Light::Le( const Ray& ray, const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU inline SampledSpectrum Light::Le( const Ray& ray,
+        const SampledWavelengths& lambda ) const
     {
         auto le = [ & ]( auto ptr ) { return ptr->Le( ray, lambda ); };
         return Dispatch( le );
     }
 
-    inline LightType Light::Type( ) const
+    PBRT_CPU_GPU inline LightType Light::Type( ) const
     {
         auto t = [ & ]( auto ptr ) { return ptr->Type( ); };
         return Dispatch( t );

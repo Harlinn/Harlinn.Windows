@@ -43,10 +43,9 @@ namespace pbrto
     // BSSRDFSample Definition
     struct BSSRDFSample
     {
-        SampledSpectrum::Simd Sp; 
-        SampledSpectrum::Simd pdf;
-        Vector3f::Simd wo;
+        SampledSpectrum Sp, pdf;
         BSDF Sw;
+        Vector3f wo;
     };
 
     // SubsurfaceInteraction Definition
@@ -54,7 +53,8 @@ namespace pbrto
     {
         // SubsurfaceInteraction Public Methods
         SubsurfaceInteraction( ) = default;
-        SubsurfaceInteraction( const SurfaceInteraction& si )
+        PBRT_CPU_GPU
+            SubsurfaceInteraction( const SurfaceInteraction& si )
             : pi( si.pi ),
             n( si.n ),
             dpdu( si.dpdu ),
@@ -147,12 +147,11 @@ namespace pbrto
             rho = SafeDiv( sigma_s, sigma_t );
         }
 
-        SampledSpectrum::Simd Sp( Point3f pi ) const
-        { 
-            return Sr( ScalarDistance( po, pi ) ); 
-        }
+        PBRT_CPU_GPU
+            SampledSpectrum Sp( Point3f pi ) const { return Sr( ScalarDistance( po, pi ) ); }
 
-        SampledSpectrum::Simd Sr( Float r ) const
+        PBRT_CPU_GPU
+            SampledSpectrum Sr( Float r ) const
         {
             SampledSpectrum Sr( 0.f );
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -190,7 +189,8 @@ namespace pbrto
             return ClampZero( Sr );
         }
 
-        pstdo::optional<Float> SampleSr( Float u ) const
+        PBRT_CPU_GPU
+            pstdo::optional<Float> SampleSr( Float u ) const
         {
             if ( sigma_t[ 0 ] == 0 )
                 return {};
@@ -199,7 +199,8 @@ namespace pbrto
                 sigma_t[ 0 ];
         }
 
-        SampledSpectrum::Simd PDF_Sr( Float r ) const
+        PBRT_CPU_GPU
+            SampledSpectrum PDF_Sr( Float r ) const
         {
             SampledSpectrum pdf( 0.f );
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -258,19 +259,17 @@ namespace pbrto
             pstdo::optional<Float> r_max = SampleSr( 0.999f );
             if ( !r_max || *r >= *r_max )
                 return {};
-            Float l = 2 * Math::Sqrt( Sqr( *r_max ) - Sqr( *r ) );
+            Float l = 2 * std::sqrt( Sqr( *r_max ) - Sqr( *r ) );
 
             // Return BSSRDF sampling ray segment
-            Float sinPhi;
-            Float cosPhi;
-            SinCos( phi, &sinPhi, &cosPhi );
-
-            Point3f pStart = po + *r * ( f.x * cosPhi + f.y * sinPhi ) - l * f.z / 2;
+            Point3f pStart =
+                po + *r * ( f.x * std::cos( phi ) + f.y * std::sin( phi ) ) - l * f.z / 2;
             Point3f pTarget = pStart + l * f.z;
             return BSSRDFProbeSegment{ pStart, pTarget };
         }
 
-        SampledSpectrum::Simd PDF_Sp( Point3f pi, Normal3f ni ) const
+        PBRT_CPU_GPU
+            SampledSpectrum PDF_Sp( Point3f pi, Normal3f ni ) const
         {
             // Express $\pti-\pto$ and $\N{}_\roman{i}$ with respect to local coordinates at
             // $\pto$
@@ -280,15 +279,12 @@ namespace pbrto
             Normal3f nLocal = f.ToLocal( ni );
 
             // Compute BSSRDF profile radius under projection along each axis
-            Float rProj[ 3 ] = 
-            { 
-                Math::Sqrt( Sqr( dLocal.y ) + Sqr( dLocal.z ) ),
-                Math::Sqrt( Sqr( dLocal.z ) + Sqr( dLocal.x ) ),
-                Math::Sqrt( Sqr( dLocal.x ) + Sqr( dLocal.y ) ) 
-            };
+            Float rProj[ 3 ] = { std::sqrt( Sqr( dLocal.y ) + Sqr( dLocal.z ) ),
+                              std::sqrt( Sqr( dLocal.z ) + Sqr( dLocal.x ) ),
+                              std::sqrt( Sqr( dLocal.x ) + Sqr( dLocal.y ) ) };
 
             // Return combined probability from all BSSRDF sampling strategies
-            SampledSpectrum::Simd pdf( 0.f );
+            SampledSpectrum pdf( 0.f );
             Float axisProb[ 3 ] = { .25f, .25f, .5f };
             for ( int axis = 0; axis < 3; ++axis )
                 pdf += PDF_Sr( rProj[ axis ] ) * std::abs( nLocal[ axis ] ) * axisProb[ axis ];
@@ -302,7 +298,7 @@ namespace pbrto
             *bxdf = NormalizedFresnelBxDF( eta );
             Vector3f wo = Vector3f( si.ns );
             BSDF bsdf( si.ns, si.dpdus, bxdf );
-            return BSSRDFSample{ Sp( si.p( ) ), PDF_Sp( si.p( ), si.n ), wo, bsdf };
+            return BSSRDFSample{ Sp( si.p( ) ), PDF_Sp( si.p( ), si.n ), bsdf, wo };
         }
 
         std::string ToString( ) const;

@@ -56,86 +56,6 @@ namespace pbrto
 
     static constexpr Float CIE_Y_integral = 106.856895;
 
-    // SampledSpectrum Definition
-    class SampledSpectrum : public Math::Tuple4<SampledSpectrum, Float>
-    {
-    public:
-        using Base = Math::Tuple4<SampledSpectrum, Float>;
-    private:
-        friend struct SOA<SampledSpectrum>;
-    public:
-        // SampledSpectrum Public Methods
-
-        using Traits = Base::Traits;
-        using value_type = Base::value_type;
-
-        SampledSpectrum( ) noexcept = default;
-        explicit SampledSpectrum( float v ) noexcept
-            : Base( v, v, v, v )
-        {
-        }
-        SampledSpectrum( float v1, float v2, float v3, float v4 ) noexcept
-            : Base( v1, v2, v3, v4 )
-        {
-        }
-
-        SampledSpectrum( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        SampledSpectrum( const float( &v )[ NSpectrumSamples ] )
-            : Base( v[ 0 ], v[ 1 ], v[ 2 ], v[ 3 ] )
-        {
-        }
-
-        template<Math::Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        SampledSpectrum( const T& other ) noexcept
-            : Base( other.x, other.y, other.z, other.w )
-        {
-        }
-
-        template<Math::Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        SampledSpectrum( const T& other ) noexcept
-            : SampledSpectrum( Traits::ToArray( other.simd ) )
-        {
-        }
-
-
-        PBRTO_EXPORT std::string ToString( ) const;
-
-        bool HasNaNs( ) const
-        {
-            return Base::HasNaN( );
-        }
-
-        PBRTO_EXPORT XYZ ToXYZ( const SampledWavelengths& lambda ) const;
-        PBRTO_EXPORT RGB ToRGB( const SampledWavelengths& lambda, const RGBColorSpace& cs ) const;
-        PBRTO_EXPORT Float Y( const SampledWavelengths& lambda ) const;
-
-        explicit operator bool( ) const
-        {
-            return Base::x != 0.f || Base::y != 0.f || Base::z != 0.f || Base::w != 0.f;
-        }
-
-
-
-        Float MinComponentValue( ) const
-        {
-            return Math::MinComponentValue( *this );
-        }
-        Float MaxComponentValue( ) const
-        {
-            return Math::MaxComponentValue( *this );
-        }
-        Float Average( ) const
-        {
-            return ScalarAvg( *this );
-        }
-    };
-
     // Spectrum Definition
     class BlackbodySpectrum;
     class ConstantSpectrum;
@@ -153,17 +73,20 @@ namespace pbrto
     public:
         // Spectrum Interface
         using TaggedPointer::TaggedPointer;
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        Float operator()( Float lambda ) const;
+        PBRT_CPU_GPU
+            Float operator()( Float lambda ) const;
 
-        Float MaxValue( ) const;
+        PBRT_CPU_GPU
+            Float MaxValue( ) const;
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            SampledSpectrum Sample( const SampledWavelengths& lambda ) const;
     };
 
     // Spectrum Function Declarations
-    inline Float Blackbody( Float lambda, Float T )
+    PBRT_CPU_GPU inline Float Blackbody( Float lambda, Float T )
     {
         if ( T <= 0 )
             return 0;
@@ -186,18 +109,209 @@ namespace pbrto
 
     PBRTO_EXPORT XYZ SpectrumToXYZ( Spectrum s );
 
-    
+    // SampledSpectrum Definition
+    class SampledSpectrum
+    {
+        friend struct SOA<SampledSpectrum>;
+        pstdo::array<Float, NSpectrumSamples> values;
+    public:
+        SampledSpectrum( ) = default;
+
+        explicit SampledSpectrum( Float c )
+        {
+            values.fill( c );
+        }
+
+        SampledSpectrum( pstdo::span<const Float> v )
+        {
+            NDCHECK_EQ( NSpectrumSamples, v.size( ) );
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] = v[ i ];
+        }
+
+        Float operator[]( int i ) const
+        {
+            NDCHECK( i >= 0 && i < NSpectrumSamples );
+            return values[ i ];
+        }
+        Float& operator[]( int i )
+        {
+            NDCHECK( i >= 0 && i < NSpectrumSamples );
+            return values[ i ];
+        }
+
+        explicit operator bool( ) const
+        {
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                if ( values[ i ] != 0 )
+                    return true;
+            return false;
+        }
+
+        // SampledSpectrum Public Methods
+        SampledSpectrum operator+( const SampledSpectrum& s ) const
+        {
+            SampledSpectrum ret = *this;
+            return ret += s;
+        }
+
+        SampledSpectrum& operator-=( const SampledSpectrum& s )
+        {
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] -= s.values[ i ];
+            return *this;
+        }
+        SampledSpectrum operator-( const SampledSpectrum& s ) const
+        {
+            SampledSpectrum ret = *this;
+            return ret -= s;
+        }
+        friend SampledSpectrum operator-( Float a, const SampledSpectrum& s )
+        {
+            NDCHECK( !IsNaN( a ) );
+            SampledSpectrum ret;
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                ret.values[ i ] = a - s.values[ i ];
+            return ret;
+        }
+
+        SampledSpectrum& operator*=( const SampledSpectrum& s )
+        {
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] *= s.values[ i ];
+            return *this;
+        }
+        SampledSpectrum operator*( const SampledSpectrum& s ) const
+        {
+            SampledSpectrum ret = *this;
+            return ret *= s;
+        }
+        SampledSpectrum operator*( Float a ) const
+        {
+            NDCHECK( !IsNaN( a ) );
+            SampledSpectrum ret = *this;
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                ret.values[ i ] *= a;
+            return ret;
+        }
+        SampledSpectrum& operator*=( Float a )
+        {
+            NDCHECK( !IsNaN( a ) );
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] *= a;
+            return *this;
+        }
+        friend SampledSpectrum operator*( Float a, const SampledSpectrum& s ) 
+        { 
+            return s * a; 
+        }
+
+        SampledSpectrum& operator/=( const SampledSpectrum& s )
+        {
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+            {
+                NDCHECK_NE( 0, s.values[ i ] );
+                values[ i ] /= s.values[ i ];
+            }
+            return *this;
+        }
+        SampledSpectrum operator/( const SampledSpectrum& s ) const
+        {
+            SampledSpectrum ret = *this;
+            return ret /= s;
+        }
+        SampledSpectrum& operator/=( Float a )
+        {
+            NDCHECK_NE( a, 0 );
+            NDCHECK( !IsNaN( a ) );
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] /= a;
+            return *this;
+        }
+        SampledSpectrum operator/( Float a ) const
+        {
+            SampledSpectrum ret = *this;
+            return ret /= a;
+        }
+
+        SampledSpectrum operator-( ) const
+        {
+            SampledSpectrum ret;
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                ret.values[ i ] = -values[ i ];
+            return ret;
+        }
+        bool operator==( const SampledSpectrum& s ) const 
+        { 
+            return values == s.values; 
+        }
+        bool operator!=( const SampledSpectrum& s ) const 
+        { 
+            return values != s.values; 
+        }
+
+        PBRTO_EXPORT std::string ToString( ) const;
+
+        bool HasNaNs( ) const
+        {
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                if ( IsNaN( values[ i ] ) )
+                    return true;
+            return false;
+        }
+
+        PBRTO_EXPORT XYZ ToXYZ( const SampledWavelengths& lambda ) const;
+        PBRTO_EXPORT RGB ToRGB( const SampledWavelengths& lambda, const RGBColorSpace& cs ) const;
+        PBRTO_EXPORT Float y( const SampledWavelengths& lambda ) const;
+
+        
+
+        SampledSpectrum& operator+=( const SampledSpectrum& s )
+        {
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] += s.values[ i ];
+            return *this;
+        }
+
+        Float MinComponentValue( ) const
+        {
+            Float m = values[ 0 ];
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                m = std::min( m, values[ i ] );
+            return m;
+        }
+        Float MaxComponentValue( ) const
+        {
+            Float m = values[ 0 ];
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                m = std::max( m, values[ i ] );
+            return m;
+        }
+        Float Average( ) const
+        {
+            Float sum = values[ 0 ];
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                sum += values[ i ];
+            return sum / NSpectrumSamples;
+        }
+
+    private:
+        
+    };
+
+    inline SampledSpectrum Sqr( const SampledSpectrum& sampledSpectrum )
+    {
+        return sampledSpectrum * sampledSpectrum;
+    }
+
 
     // SampledWavelengths Definitions
     class SampledWavelengths
     {
-    public:
-        using VectorType = Math::Vector<Float, NSpectrumSamples>;
-    private:
         // SampledWavelengths Private Members
         friend struct SOA<SampledWavelengths>;
-        VectorType lambda; 
-        VectorType pdf;
+        pstdo::array<Float, NSpectrumSamples> lambda;
+        pstdo::array<Float, NSpectrumSamples> pdf;
     public:
         // SampledWavelengths Public Methods
         bool operator==( const SampledWavelengths& swl ) const
@@ -215,23 +329,20 @@ namespace pbrto
         {
             SampledWavelengths swl;
             // Sample first wavelength using _u_
-            auto first = Lerp2( u, lambda_min, lambda_max );
-            swl.lambda.x = first;
+            swl.lambda[ 0 ] = Lerp2( u, lambda_min, lambda_max );
 
             // Initialize _lambda_ for remaining wavelengths
             Float delta = ( lambda_max - lambda_min ) / NSpectrumSamples;
-
             for ( int i = 1; i < NSpectrumSamples; ++i )
             {
                 swl.lambda[ i ] = swl.lambda[ i - 1 ] + delta;
                 if ( swl.lambda[ i ] > lambda_max )
-                {
                     swl.lambda[ i ] = lambda_min + ( swl.lambda[ i ] - lambda_max );
-                }
             }
-            
+
             // Compute PDF for sampled wavelengths
-            swl.pdf = VectorType( 1.f / ( lambda_max - lambda_min ) );
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                swl.pdf[ i ] = 1 / ( lambda_max - lambda_min );
 
             return swl;
         }
@@ -241,7 +352,7 @@ namespace pbrto
             return lambda[ i ]; 
         }
         Float& operator[]( int i ) 
-        { 
+        {
             return lambda[ i ]; 
         }
         SampledSpectrum PDF( ) const 
@@ -252,19 +363,19 @@ namespace pbrto
         void TerminateSecondary( )
         {
             if ( SecondaryTerminated( ) )
-            {
                 return;
-            }
             // Update wavelength probabilities for termination
-            pdf.x /= NSpectrumSamples;
-            pdf.y = 0.f;
-            pdf.z = 0.f;
-            pdf.w = 0.f;
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                pdf[ i ] = 0;
+            pdf[ 0 ] /= NSpectrumSamples;
         }
 
         bool SecondaryTerminated( ) const
         {
-            return pdf.y != 0 || pdf.z != 0 || pdf.w != 0;
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                if ( pdf[ i ] != 0 )
+                    return false;
+            return true;
         }
 
         static SampledWavelengths SampleVisible( Float u )
@@ -282,6 +393,9 @@ namespace pbrto
             }
             return swl;
         }
+
+    private:
+        
     };
 
     // Spectrum Definitions
@@ -292,16 +406,12 @@ namespace pbrto
         ConstantSpectrum( Float c ) 
             : c( c ) 
         { }
-
         Float operator()( Float lambda ) const 
         { 
             return c; 
         }
         // ConstantSpectrum Public Methods
-        SampledSpectrum::Simd Sample( const SampledWavelengths& ) const
-        {
-            return SampledSpectrum::Simd( c );
-        }
+        PBRTO_EXPORT SampledSpectrum Sample( const SampledWavelengths& ) const;
 
         Float MaxValue( ) const 
         { 
@@ -309,22 +419,18 @@ namespace pbrto
         }
 
         PBRTO_EXPORT std::string ToString( ) const;
+        
     };
 
     class DenselySampledSpectrum
     {
-    private:
-        friend struct std::hash<pbrto::DenselySampledSpectrum>;
-        // DenselySampledSpectrum Private Members
-        int lambda_min, lambda_max;
-        pstdo::vector<Float> values;
     public:
         // DenselySampledSpectrum Public Methods
         DenselySampledSpectrum( int lambda_min = Lambda_min, int lambda_max = Lambda_max,
             Allocator alloc = {} )
             : lambda_min( lambda_min ),
-              lambda_max( lambda_max ),
-              values( lambda_max - lambda_min + 1, alloc )
+            lambda_max( lambda_max ),
+            values( lambda_max - lambda_min + 1, alloc )
         {
         }
         DenselySampledSpectrum( Spectrum s, Allocator alloc )
@@ -333,23 +439,12 @@ namespace pbrto
         }
         DenselySampledSpectrum( const DenselySampledSpectrum& s, Allocator alloc )
             : lambda_min( s.lambda_min ),
-              lambda_max( s.lambda_max ),
-              values( s.values.begin( ), s.values.end( ), alloc )
+            lambda_max( s.lambda_max ),
+            values( s.values.begin( ), s.values.end( ), alloc )
         {
         }
 
-        DenselySampledSpectrum( Spectrum spec, int lambda_min = Lambda_min,
-            int lambda_max = Lambda_max, Allocator alloc = {} )
-            : lambda_min( lambda_min ),
-              lambda_max( lambda_max ),
-              values( lambda_max - lambda_min + 1, alloc )
-        {
-            NCHECK_GE( lambda_max, lambda_min );
-            if ( spec )
-                for ( int lambda = lambda_min; lambda <= lambda_max; ++lambda )
-                    values[ lambda - lambda_min ] = spec( lambda );
-        }
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -360,7 +455,7 @@ namespace pbrto
                 else
                     s[ i ] = values[ offset ];
             }
-            return SampledSpectrum::Simd(s);
+            return s;
         }
 
         void Scale( Float s )
@@ -374,9 +469,19 @@ namespace pbrto
             return *std::max_element( values.begin( ), values.end( ) ); 
         }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
-        
+        DenselySampledSpectrum( Spectrum spec, int lambda_min = Lambda_min,
+            int lambda_max = Lambda_max, Allocator alloc = {} )
+            : lambda_min( lambda_min ),
+            lambda_max( lambda_max ),
+            values( lambda_max - lambda_min + 1, alloc )
+        {
+            NCHECK_GE( lambda_max, lambda_min );
+            if ( spec )
+                for ( int lambda = lambda_min; lambda <= lambda_max; ++lambda )
+                    values[ lambda - lambda_min ] = spec( lambda );
+        }
 
         template <typename F>
         static DenselySampledSpectrum SampleFunction( F func, int lambda_min = Lambda_min,
@@ -409,16 +514,20 @@ namespace pbrto
             return true;
         }
 
-    
+    private:
+        friend struct std::hash<pbrto::DenselySampledSpectrum>;
+        // DenselySampledSpectrum Private Members
+        int lambda_min, lambda_max;
+        pstdo::vector<Float> values;
     };
 
     class PiecewiseLinearSpectrum
     {
+        // PiecewiseLinearSpectrum Private Members
+        pstdo::vector<Float> lambdas, values;
     public:
         // PiecewiseLinearSpectrum Public Methods
         PiecewiseLinearSpectrum( ) = default;
-
-        PBRTO_EXPORT PiecewiseLinearSpectrum( pstdo::span<const Float> lambdas, pstdo::span<const Float> values, Allocator alloc = {} );
 
         void Scale( Float s )
         {
@@ -426,28 +535,43 @@ namespace pbrto
                 v *= s;
         }
 
-        PBRTO_EXPORT Float MaxValue( ) const;
+        Float MaxValue( ) const
+        {
+            if ( values.empty( ) )
+                return 0;
+            return *std::max_element( values.begin( ), values.end( ) );
+        }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 s[ i ] = ( *this )( lambda[ i ] );
-            return SampledSpectrum::Simd(s);
+            return s;
         }
-        PBRTO_EXPORT Float operator()( Float lambda ) const;
+        Float operator()( Float lambda ) const
+        {
+            // Handle _PiecewiseLinearSpectrum_ corner cases
+            if ( lambdas.empty( ) || lambda < lambdas.front( ) || lambda > lambdas.back( ) )
+                return 0;
+
+            // Find offset to largest _lambdas_ below _lambda_ and interpolate
+            int o = FindInterval( lambdas.size( ), [ & ]( int i ) { return lambdas[ i ] <= lambda; } );
+            NDCHECK( lambda >= lambdas[ o ] && lambda <= lambdas[ o + 1 ] );
+            Float t = ( lambda - lambdas[ o ] ) / ( lambdas[ o + 1 ] - lambdas[ o ] );
+            return Lerp2( t, values[ o ], values[ o + 1 ] );
+        }
 
         PBRTO_EXPORT std::string ToString( ) const;
 
-        
+        PBRTO_EXPORT PiecewiseLinearSpectrum( pstdo::span<const Float> lambdas, pstdo::span<const Float> values, Allocator alloc = {} );
 
         PBRTO_EXPORT static pstdo::optional<Spectrum> Read( const std::string& filename, Allocator alloc );
 
         PBRTO_EXPORT static PiecewiseLinearSpectrum* FromInterleaved( pstdo::span<const Float> samples, bool normalize, Allocator alloc );
 
     private:
-        // PiecewiseLinearSpectrum Private Members
-        pstdo::vector<Float> lambdas, values;
+        
     };
 
     class BlackbodySpectrum
@@ -469,23 +593,17 @@ namespace pbrto
             return Blackbody( lambda, T ) * normalizationFactor;
         }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 s[ i ] = Blackbody( lambda[ i ], T ) * normalizationFactor;
-            return SampledSpectrum::Simd( s );
+            return s;
         }
 
-        Float MaxValue( ) const 
-        { 
-            return 1.f; 
-        }
+        Float MaxValue( ) const { return 1.f; }
 
         PBRTO_EXPORT std::string ToString( ) const;
-
-    private:
-        
     };
 
     class RGBAlbedoSpectrum
@@ -494,25 +612,27 @@ namespace pbrto
         RGBSigmoidPolynomial rsp;
     public:
         // RGBAlbedoSpectrum Public Methods
+        Float operator()( Float lambda ) const 
+        { 
+            return rsp( lambda ); 
+        }
+        Float MaxValue( ) const 
+        { 
+            return rsp.MaxValue( ); 
+        }
+
         PBRTO_EXPORT RGBAlbedoSpectrum( const RGBColorSpace& cs, RGB rgb );
 
-        Float operator()( Float lambda ) const { return rsp( lambda ); }
-        Float MaxValue( ) const { return rsp.MaxValue( ); }
-
-        
-
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 s[ i ] = rsp( lambda[ i ] );
-            return SampledSpectrum::Simd( s );
+            return s;
         }
 
         PBRTO_EXPORT std::string ToString( ) const;
 
-    private:
-        
     };
 
     class RGBUnboundedSpectrum
@@ -521,30 +641,31 @@ namespace pbrto
         Float scale = 1;
         RGBSigmoidPolynomial rsp;
     public:
+        // RGBUnboundedSpectrum Public Methods
+        Float operator()( Float lambda ) const 
+        { 
+            return scale * rsp( lambda ); 
+        }
+        Float MaxValue( ) const 
+        { 
+            return scale * rsp.MaxValue( ); 
+        }
+
         PBRTO_EXPORT RGBUnboundedSpectrum( const RGBColorSpace& cs, RGB rgb );
 
         RGBUnboundedSpectrum( ) 
             : rsp( 0, 0, 0 ), scale( 0 ) 
         { }
 
-        // RGBUnboundedSpectrum Public Methods
-        Float operator()( Float lambda ) const { return scale * rsp( lambda ); }
-        Float MaxValue( ) const { return scale * rsp.MaxValue( ); }
-
-        
-
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 s[ i ] = scale * rsp( lambda[ i ] );
-            return SampledSpectrum::Simd( s );
+            return s;
         }
 
         PBRTO_EXPORT std::string ToString( ) const;
-
-    private:
-        
     };
 
     class RGBIlluminantSpectrum
@@ -577,10 +698,10 @@ namespace pbrto
             return illuminant; 
         }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             if ( !illuminant )
-                return SampledSpectrum::Simd( 0 );
+                return SampledSpectrum( 0 );
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 s[ i ] = scale * rsp( lambda[ i ] );
@@ -588,30 +709,89 @@ namespace pbrto
         }
 
         PBRTO_EXPORT std::string ToString( ) const;
-
-    private:
-        
     };
 
     // SampledSpectrum Inline Functions
-    inline SampledSpectrum SafeDiv( SampledSpectrum a, SampledSpectrum b )
+    PBRT_CPU_GPU inline SampledSpectrum SafeDiv( SampledSpectrum a, SampledSpectrum b )
     {
-        using Traits = SampledSpectrum::Traits;
-        auto result = a / b;
-        auto nans = Traits::IsNaN( result.simd );
-        auto zeros = Traits::Zero( );
-        result.simd = Traits::Select( result.simd, zeros, nans );
-        return SampledSpectrum( result );
+        SampledSpectrum r;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            r[ i ] = ( b[ i ] != 0 ) ? a[ i ] / b[ i ] : 0.;
+        return r;
     }
 
+    template <typename U, typename V>
+    inline SampledSpectrum Clamp( const SampledSpectrum& s, U low, V high )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = pbrto::Clamp( s[ i ], low, high );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+    }
+
+    inline SampledSpectrum ClampZero( const SampledSpectrum& s )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = std::max<Float>( 0, s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+    }
+
+    inline SampledSpectrum Sqrt( const SampledSpectrum& s )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = std::sqrt( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+    }
+
+    inline SampledSpectrum SafeSqrt( const SampledSpectrum& s )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = SafeSqrt( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+    }
+
+    inline SampledSpectrum Pow( const SampledSpectrum& s, Float e )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = std::pow( s[ i ], e );
+        return ret;
+    }
+
+    inline SampledSpectrum Exp( const SampledSpectrum& s )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = std::exp( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+    }
+
+    inline SampledSpectrum FastExp( const SampledSpectrum& s )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = FastExp( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+    }
 
     inline SampledSpectrum Bilerp( pstdo::array<Float, 2> p, pstdo::span<const SampledSpectrum> v )
     {
-        return ( 
-            ( 1 - p[ 0 ] ) * 
-            ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * 
-            ( 1 - p[ 1 ] ) * v[ 1 ] +
+        return ( ( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * ( 1 - p[ 1 ] ) * v[ 1 ] +
             ( 1 - p[ 0 ] ) * p[ 1 ] * v[ 2 ] + p[ 0 ] * p[ 1 ] * v[ 3 ] );
+    }
+
+    inline SampledSpectrum Lerp2( Float t, const SampledSpectrum& s1, const SampledSpectrum& s2 )
+    {
+        return ( 1 - t ) * s1 + t * s2;
     }
 
     // Spectral Data Declarations
@@ -662,13 +842,13 @@ namespace pbrto
 
     namespace Spectra
     {
-        inline const DenselySampledSpectrum& X( );
-        inline const DenselySampledSpectrum& Y( );
-        inline const DenselySampledSpectrum& Z( );
+        PBRT_CPU_GPU inline const DenselySampledSpectrum& X( );
+        PBRT_CPU_GPU inline const DenselySampledSpectrum& Y( );
+        PBRT_CPU_GPU inline const DenselySampledSpectrum& Z( );
     }  // namespace Spectra
 
     // Spectrum Inline Functions
-    inline Float InnerProduct( Spectrum f, Spectrum g )
+    PBRT_CPU_GPU inline Float InnerProduct( Spectrum f, Spectrum g )
     {
         Float integral = 0;
         for ( Float lambda = Lambda_min; lambda <= Lambda_max; ++lambda )
@@ -683,7 +863,7 @@ namespace pbrto
         return Dispatch( op );
     }
 
-    inline SampledSpectrum::Simd Spectrum::Sample( const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU inline SampledSpectrum Spectrum::Sample( const SampledWavelengths& lambda ) const
     {
         auto samp = [ & ]( auto ptr ) { return ptr->Sample( lambda ); };
         return Dispatch( samp );
@@ -695,7 +875,7 @@ namespace pbrto
         return Dispatch( max );
     }
 
-}  // namespace pbrt
+} 
 
 namespace std
 {
@@ -709,7 +889,7 @@ namespace std
         }
     };
 
-}
+} 
 
 
 #endif

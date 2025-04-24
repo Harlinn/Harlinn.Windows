@@ -922,8 +922,9 @@ namespace pbrto
         {
             // Compute voxel coordinates and offsets for _p_
             Point3f pSamples( p.x * nx - .5f, p.y * ny - .5f, p.z * nz - .5f );
-            Point3i pi = ToPoint3i( Floor( pSamples ) );
-            Vector3f d = pSamples - ToPoint3f( pi );
+            Point3f pSamplesFloor = Floor( pSamples );
+            Point3i pi( pSamplesFloor.x, pSamplesFloor.y, pSamplesFloor.z );
+            Vector3f d = pSamples - ( Point3f )pi;
 
             // Return trilinearly interpolated voxel values
             auto d00 =
@@ -942,8 +943,9 @@ namespace pbrto
         {
             // Compute voxel coordinates and offsets for _p_
             Point3f pSamples( p.x * nx - .5f, p.y * ny - .5f, p.z * nz - .5f );
-            Point3i pi = ToPoint3i( Floor( pSamples ) );
-            Vector3f d = pSamples - ToPoint3f( pi );
+            Point3f pSamplesFloor = Floor( pSamples );
+            Point3i pi = ( Point3i )pSamplesFloor;
+            Vector3f d = pSamples - ( Point3f )pi;
 
             // Return trilinearly interpolated voxel values
             auto d00 = Lerp2( d.x, Lookup( pi ), Lookup( pi + Vector3i( 1, 0, 0 ) ) );
@@ -981,8 +983,8 @@ namespace pbrto
                                      bounds.pMin.z * nz - .5f ),
                              Point3f( bounds.pMax.x * nx - .5f, bounds.pMax.y * ny - .5f,
                                      bounds.pMax.z * nz - .5f ) };
-            Point3i pi[ 2 ] = { Max( ToPoint3i( Floor( ps[ 0 ] ) ), Point3i( 0, 0, 0 ) ),
-                             Min( ToPoint3i( Floor( ps[ 1 ] ) ) + Vector3i( 1, 1, 1 ),
+            Point3i pi[ 2 ] = { Max( Point3i( Point3f( Floor( ps[ 0 ] ) ) ), Point3i( 0, 0, 0 ) ),
+                             Min( Point3i( Point3f( Floor( ps[ 1 ] ) ) ) + Vector3i( 1, 1, 1 ),
                                  Point3i( nx - 1, ny - 1, nz - 1 ) ) };
 
             Float maxValue = Lookup( Point3i( pi[ 0 ] ), convert );

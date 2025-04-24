@@ -110,7 +110,7 @@ namespace pbrto
             {
                 while ( num-- > 0 )
                 {
-                    CHECK_EQ( cudaEventRecord( gpuEvents[ gpuEventsLaunchedOffset ] ),
+                    NCHECK_EQ( cudaEventRecord( gpuEvents[ gpuEventsLaunchedOffset ] ),
                         cudaSuccess );
                     ++gpuEventsLaunchedOffset;
                 }

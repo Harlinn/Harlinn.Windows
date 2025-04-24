@@ -121,7 +121,7 @@ namespace pbrto
         memcpy( buf, &v, sizeof( T ) );
         hashRecursiveCopy( buf + sizeof( T ), args... );
     }
-    
+
     template <typename... Args>
     PBRT_CPU_GPU inline uint64_t Hash( Args... args )
     {
@@ -132,9 +132,6 @@ namespace pbrto
         hashRecursiveCopy( ( char* )buf, args... );
         return MurmurHash64A( ( const unsigned char* )buf, sz, 0 );
     }
-    
-
-
 
     template <typename... Args>
     PBRT_CPU_GPU inline Float HashFloat( Args... args )

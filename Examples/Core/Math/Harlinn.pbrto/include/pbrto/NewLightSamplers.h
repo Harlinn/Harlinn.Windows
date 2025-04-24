@@ -146,9 +146,9 @@ namespace pbrto
             for ( int c = 0; c < 3; ++c )
             {
                 qb[ 0 ][ c ] =
-                    Math::Floor( QuantizeBounds( lb.bounds[ 0 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
+                    pstdo::floor( QuantizeBounds( lb.bounds[ 0 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
                 qb[ 1 ][ c ] =
-                    Math::Ceil( QuantizeBounds( lb.bounds[ 1 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
+                    pstdo::ceil( QuantizeBounds( lb.bounds[ 1 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
             }
         }
 
@@ -241,7 +241,7 @@ namespace pbrto
             static unsigned int QuantizeCos( Float c )
         {
             NCHECK( c >= -1 && c <= 1 );
-            return Math::Floor( 32767.f * ( ( c + 1 ) / 2 ) );
+            return pstdo::floor( 32767.f * ( ( c + 1 ) / 2 ) );
         }
 
         PBRT_CPU_GPU
@@ -306,17 +306,12 @@ namespace pbrto
     // BVHLightSampler Definition
     class BVHLightSampler
     {
-        // BVHLightSampler Private Members
-        pstdo::vector<Light> lights;
-        pstdo::vector<Light> infiniteLights;
-        Bounds3f allLightBounds;
-        pstdo::vector<LightBVHNode> nodes;
-        HashMap<Light, uint32_t> lightToBitTrail;
     public:
         // BVHLightSampler Public Methods
         PBRTO_EXPORT BVHLightSampler( pstdo::span<const Light> lights, Allocator alloc );
 
-        pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
+        PBRT_CPU_GPU
+            pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
         {
             // Compute infinite light sampling probability _pInfinite_
             Float pInfinite = Float( infiniteLights.size( ) ) /
@@ -380,7 +375,8 @@ namespace pbrto
             }
         }
 
-        Float PMF( const LightSampleContext& ctx, Light light ) const
+        PBRT_CPU_GPU
+            Float PMF( const LightSampleContext& ctx, Light light ) const
         {
             // Handle infinite _light_ PMF computation
             if ( !lightToBitTrail.HasKey( light ) )
@@ -420,7 +416,8 @@ namespace pbrto
             }
         }
 
-        pstdo::optional<SampledLight> Sample( Float u ) const
+        PBRT_CPU_GPU
+            pstdo::optional<SampledLight> Sample( Float u ) const
         {
             if ( lights.empty( ) )
                 return {};
@@ -428,14 +425,15 @@ namespace pbrto
             return SampledLight{ lights[ lightIndex ], 1.f / lights.size( ) };
         }
 
-        Float PMF( Light light ) const
+        PBRT_CPU_GPU
+            Float PMF( Light light ) const
         {
             if ( lights.empty( ) )
                 return 0;
             return 1.f / lights.size( );
         }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
     private:
         // BVHLightSampler Private Methods
@@ -446,12 +444,12 @@ namespace pbrto
         Float EvaluateCost( const LightBounds& b, const Bounds3f& bounds, int dim ) const
         {
             // Evaluate direction bounds measure for _LightBounds_
-            Float theta_o = Math::ACos( b.cosTheta_o ), theta_e = Math::ACos( b.cosTheta_e );
+            Float theta_o = std::acos( b.cosTheta_o ), theta_e = std::acos( b.cosTheta_e );
             Float theta_w = std::min( theta_o + theta_e, Pi );
             Float sinTheta_o = SafeSqrt( 1 - Sqr( b.cosTheta_o ) );
             Float M_omega = 2 * Pi * ( 1 - b.cosTheta_o ) +
                 Pi / 2 *
-                ( 2 * theta_w * sinTheta_o - Math::Cos( theta_o - 2 * theta_w ) -
+                ( 2 * theta_w * sinTheta_o - std::cos( theta_o - 2 * theta_w ) -
                     2 * theta_o * sinTheta_o + b.cosTheta_o );
 
             // Return complete cost estimate for _LightBounds_
@@ -459,7 +457,12 @@ namespace pbrto
             return b.phi * M_omega * Kr * b.bounds.SurfaceArea( );
         }
 
-        
+        // BVHLightSampler Private Members
+        pstdo::vector<Light> lights;
+        pstdo::vector<Light> infiniteLights;
+        Bounds3f allLightBounds;
+        pstdo::vector<LightBVHNode> nodes;
+        HashMap<Light, uint32_t> lightToBitTrail;
     };
 
     // ExhaustiveLightSampler Definition

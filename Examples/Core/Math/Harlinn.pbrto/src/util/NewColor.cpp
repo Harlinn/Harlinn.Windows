@@ -58,7 +58,7 @@ namespace pbrto
         // Handle uniform _rgb_ values
         if ( rgb[ 0 ] == rgb[ 1 ] && rgb[ 1 ] == rgb[ 2 ] )
             return RGBSigmoidPolynomial( 0, 0,
-                ( rgb[ 0 ] - .5f ) / Math::Sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
+                ( rgb[ 0 ] - .5f ) / std::sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
 
         // Find maximum component and compute remapped component values
         int maxc =
@@ -95,25 +95,25 @@ namespace pbrto
     extern const float sRGBToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray sRGBToSpectrumTable_Data;
 
-    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::sRGB;
+    const RGBToSpectrumTable* RGBToSpectrumTable::sRGB;
 
     extern const int DCI_P3ToSpectrumTable_Res;
     extern const float DCI_P3ToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray DCI_P3ToSpectrumTable_Data;
 
-    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::DCI_P3;
+    const RGBToSpectrumTable* RGBToSpectrumTable::DCI_P3;
 
     extern const int REC2020ToSpectrumTable_Res;
     extern const float REC2020ToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray REC2020ToSpectrumTable_Data;
 
-    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::Rec2020;
+    const RGBToSpectrumTable* RGBToSpectrumTable::Rec2020;
 
     extern const int ACES2065_1ToSpectrumTable_Res;
     extern const float ACES2065_1ToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray ACES2065_1ToSpectrumTable_Data;
 
-    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::ACES2065_1;
+    const RGBToSpectrumTable* RGBToSpectrumTable::ACES2065_1;
 
     void RGBToSpectrumTable::Init( Allocator alloc )
     {
@@ -284,12 +284,12 @@ namespace pbrto
         for ( int i = 0; i < 256; ++i )
         {
             Float v = Float( i ) / 255.f;
-            applyLUT[ i ] = Math::Pow( v, gamma );
+            applyLUT[ i ] = std::pow( v, gamma );
         }
         for ( int i = 0; i < int( inverseLUT.size( ) ); ++i )
         {
             Float v = Float( i ) / Float( inverseLUT.size( ) - 1 );
-            inverseLUT[ i ] = Clamp( 255.f * Math::Pow( v, 1.f / gamma ) + .5f, 0, 255 );
+            inverseLUT[ i ] = Clamp( 255.f * std::pow( v, 1.f / gamma ) + .5f, 0, 255 );
         }
     }
 
@@ -303,7 +303,7 @@ namespace pbrto
 
     PBRT_CPU_GPU Float GammaColorEncoding::ToFloatLinear( Float v ) const
     {
-        return Math::Pow( v, gamma );
+        return std::pow( v, gamma );
     }
 
     PBRT_CPU_GPU void GammaColorEncoding::FromLinear( pstdo::span<const Float> vin,
@@ -366,3 +366,4 @@ namespace pbrto
         0.9734454751, 0.9822505713, 0.9911022186, 1.0000000000 };
 
 }
+

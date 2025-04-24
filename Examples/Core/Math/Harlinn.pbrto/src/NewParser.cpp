@@ -61,7 +61,7 @@ namespace pbrto
 {
 
     ///////////////////////////////////////////////////////////////////////////
-    // ParsedParameter
+// ParsedParameter
 
     void ParsedParameter::AddFloat( Float v )
     {
@@ -826,7 +826,7 @@ namespace pbrto
                     {
                         if ( nextToken( TokenRequired )->token != "[" )
                             syntaxError( *tok );
-                        Float m[ 16 ];
+                        std::array<Float, 16> m;
                         for ( int i = 0; i < 16; ++i )
                             m[ i ] = parseFloat( *nextToken( TokenRequired ) );
                         if ( nextToken( TokenRequired )->token != "]" )
@@ -1085,7 +1085,7 @@ namespace pbrto
                     {
                         if ( nextToken( TokenRequired )->token != "[" )
                             syntaxError( *tok );
-                        Float m[ 16 ];
+                        std::array<Float, 16> m;
                         for ( int i = 0; i < 16; ++i )
                             m[ i ] = parseFloat( *nextToken( TokenRequired ) );
                         if ( nextToken( TokenRequired )->token != "]" )
@@ -1145,7 +1145,7 @@ namespace pbrto
 
         for ( auto& import : imports )
         {
-            import.first->Wait();
+import.first->Wait();
 
             BasicSceneBuilder* builder = dynamic_cast< BasicSceneBuilder* >( target );
             NCHECK( builder );
@@ -1242,7 +1242,7 @@ namespace pbrto
             indent( ), lx, ly, lz, indent( ), ux, uy, uz );
     }
 
-    void FormattingParserTarget::ConcatTransform( Float transform[ 16 ], FileLoc loc )
+    void FormattingParserTarget::ConcatTransform( const std::array<Float, 16>& transform, FileLoc loc )
     {
         Printf( "%sConcatTransform [ ", indent( ) );
         for ( int i = 0; i < 16; ++i )
@@ -1250,7 +1250,7 @@ namespace pbrto
         Printf( " ]\n" );
     }
 
-    void FormattingParserTarget::Transform( Float transform[ 16 ], FileLoc loc )
+    void FormattingParserTarget::Transform( const std::array<Float, 16>& transform, FileLoc loc )
     {
         Printf( "%sTransform [ ", indent( ) );
         for ( int i = 0; i < 16; ++i )
@@ -1321,7 +1321,7 @@ namespace pbrto
                 {
                     dict.RemoveFloat( "alpha" );
                     extra += StringPrintf( "%s\"float sigma\" [ %f ]\n", indent( 1 ),
-                        1 / Math::Sqrt( 2 * alpha[ 0 ] ) );
+                        1 / std::sqrt( 2 * alpha[ 0 ] ) );
                 }
             }
         }

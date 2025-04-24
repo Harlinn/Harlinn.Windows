@@ -265,14 +265,14 @@ namespace pbrto
             Float level = nLevels - 1 + Log2( std::max<Float>( width, 1e-8 ) );
             if ( level >= Levels( ) - 1 )
                 return Texel<T>( Levels( ) - 1, Point2i( 0, 0 ) );
-            int iLevel = std::max( 0, int( Math::Floor( level ) ) );
+            int iLevel = std::max( 0, int( pstdo::floor( level ) ) );
 
             if ( options.filter == FilterFunction::Point )
             {
                 // Return point-sampled value at selected MIP level
                 Point2i resolution = LevelResolution( iLevel );
-                Point2i sti( Math::Round( st[ 0 ] * resolution[ 0 ] - 0.5f ),
-                    Math::Round( st[ 1 ] * resolution[ 1 ] - 0.5f ) );
+                Point2i sti( pstdo::round( st[ 0 ] * resolution[ 0 ] - 0.5f ),
+                    pstdo::round( st[ 1 ] * resolution[ 1 ] - 0.5f ) );
                 return Texel<T>( iLevel, sti );
 
             }
@@ -314,7 +314,7 @@ namespace pbrto
 
         // Choose level of detail for EWA lookup and perform EWA filtering
         Float lod = std::max<Float>( 0, Levels( ) - 1 + Log2( shorterVecLength ) );
-        int ilod = Math::Floor( lod );
+        int ilod = pstdo::floor( lod );
         return Lerp2( lod - ilod, EWA<T>( ilod, st, dst0, dst1 ),
             EWA<T>( ilod + 1, st, dst0, dst1 ) );
     }
@@ -362,10 +362,10 @@ namespace pbrto
         Float det = -Sqr( B ) + 4 * A * C;
         Float invDet = 1 / det;
         Float uSqrt = SafeSqrt( det * C ), vSqrt = SafeSqrt( A * det );
-        int s0 = Math::Ceil( st[ 0 ] - 2 * invDet * uSqrt );
-        int s1 = Math::Floor( st[ 0 ] + 2 * invDet * uSqrt );
-        int t0 = Math::Ceil( st[ 1 ] - 2 * invDet * vSqrt );
-        int t1 = Math::Floor( st[ 1 ] + 2 * invDet * vSqrt );
+        int s0 = pstdo::ceil( st[ 0 ] - 2 * invDet * uSqrt );
+        int s1 = pstdo::floor( st[ 0 ] + 2 * invDet * uSqrt );
+        int t0 = pstdo::ceil( st[ 1 ] - 2 * invDet * vSqrt );
+        int t1 = pstdo::floor( st[ 1 ] + 2 * invDet * vSqrt );
 
         // Scan over ellipse bound and evaluate quadratic equation to filter image
         T sum{};

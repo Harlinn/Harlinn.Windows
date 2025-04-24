@@ -81,25 +81,6 @@ namespace pbrto
     }
 
     // Spectrum Method Definitions
-    PBRT_CPU_GPU Float PiecewiseLinearSpectrum::operator()( Float lambda ) const
-    {
-        // Handle _PiecewiseLinearSpectrum_ corner cases
-        if ( lambdas.empty( ) || lambda < lambdas.front( ) || lambda > lambdas.back( ) )
-            return 0;
-
-        // Find offset to largest _lambdas_ below _lambda_ and interpolate
-        int o = FindInterval( lambdas.size( ), [ & ]( int i ) { return lambdas[ i ] <= lambda; } );
-        NDCHECK( lambda >= lambdas[ o ] && lambda <= lambdas[ o + 1 ] );
-        Float t = ( lambda - lambdas[ o ] ) / ( lambdas[ o + 1 ] - lambdas[ o ] );
-        return Lerp2( t, values[ o ], values[ o + 1 ] );
-    }
-
-    PBRT_CPU_GPU Float PiecewiseLinearSpectrum::MaxValue( ) const
-    {
-        if ( values.empty( ) )
-            return 0;
-        return *std::max_element( values.begin( ), values.end( ) );
-    }
 
     PiecewiseLinearSpectrum::PiecewiseLinearSpectrum( pstdo::span<const Float> l,
         pstdo::span<const Float> v,
@@ -198,6 +179,11 @@ namespace pbrto
         return StringPrintf( "[ BlackbodySpectrum T: %f ]", T );
     }
 
+    PBRT_CPU_GPU SampledSpectrum ConstantSpectrum::Sample( const SampledWavelengths& ) const
+    {
+        return SampledSpectrum( c );
+    }
+
     std::string ConstantSpectrum::ToString( ) const
     {
         return StringPrintf( "[ ConstantSpectrum c: %f ]", c );
@@ -253,7 +239,7 @@ namespace pbrto
             CIE_Y_integral;
     }
 
-    PBRT_CPU_GPU Float SampledSpectrum::Y( const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU Float SampledSpectrum::y( const SampledWavelengths& lambda ) const
     {
         SampledSpectrum Ys = Spectra::Y( ).Sample( lambda );
         SampledSpectrum pdf = lambda.PDF( );

@@ -34,7 +34,6 @@
 
 namespace pbrto
 {
-
     // Camera Declarations
     struct CameraRay;
     struct CameraRayDifferential;
@@ -65,7 +64,9 @@ namespace pbrto
         PBRT_CPU_GPU inline pstdo::optional<CameraRay> GenerateRay(
             CameraSample sample, SampledWavelengths& lambda ) const;
 
-        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
+                CameraSample sample, SampledWavelengths& lambda ) const;
 
         PBRT_CPU_GPU inline Film GetFilm( ) const;
 

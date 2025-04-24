@@ -886,14 +886,14 @@ namespace pbrto
         FilterSample fs = filter.Sample( sampler.GetPixel2D( ) );
         CameraSample cs;
         // Initialize _CameraSample_ member variables
-        cs.pFilm = Point2f( pPixel ) + fs.p + Vector2f( 0.5f, 0.5f );
+        cs.pFilm = pPixel + fs.p + Vector2f( 0.5f, 0.5f );
         cs.time = sampler.Get1D( );
         cs.pLens = sampler.Get2D( );
         cs.filterWeight = fs.weight;
 
         if ( GetOptions( ).disablePixelJitter )
         {
-            cs.pFilm = Point2f( pPixel ) + Vector2f( 0.5f, 0.5f );
+            cs.pFilm = static_cast<Point2f>(pPixel) + Vector2f( 0.5f, 0.5f );
             cs.time = 0.5f;
             cs.pLens = Point2f( 0.5f, 0.5f );
             cs.filterWeight = 1;

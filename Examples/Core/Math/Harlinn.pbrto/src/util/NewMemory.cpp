@@ -48,14 +48,14 @@ namespace pbrto
 {
 
     /*
-     * Author:  David Robert Nadeau
-     * Site:    http://NadeauSoftware.com/
-     * License: Creative Commons Attribution 3.0 Unported License
-     *          http://creativecommons.org/licenses/by/3.0/deed.en_US
-     *
-     * Returns the current resident set size (physical memory use) measured
-     * in bytes, or zero if the value cannot be determined on this OS.
-     */
+ * Author:  David Robert Nadeau
+ * Site:    http://NadeauSoftware.com/
+ * License: Creative Commons Attribution 3.0 Unported License
+ *          http://creativecommons.org/licenses/by/3.0/deed.en_US
+ *
+ * Returns the current resident set size (physical memory use) measured
+ * in bytes, or zero if the value cannot be determined on this OS.
+ */
     PBRTO_EXPORT
         size_t GetCurrentRSS( )
     {
@@ -92,7 +92,7 @@ namespace pbrto
 #error "TODO: implement GetCurrentRSS() for this target"
         return 0;
         /*    struct rusage rusage;
-        CHECK(getrusage(RUSAGE_SELF, &rusage) == 0);
+        NCHECK(getrusage(RUSAGE_SELF, &rusage) == 0);
         return rusage.ru_idrss;
         */
 #endif

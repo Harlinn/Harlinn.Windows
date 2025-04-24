@@ -87,7 +87,7 @@ namespace pbrto
     }
 
     // Camera Method Definitions
-    PBRT_CPU_GPU std::optional<CameraRayDifferential> Camera::GenerateRayDifferential(
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> Camera::GenerateRayDifferential(
         CameraSample sample, SampledWavelengths& lambda ) const
     {
         auto gen = [ & ]( auto ptr ) { return ptr->GenerateRayDifferential( sample, lambda ); };
@@ -145,7 +145,7 @@ namespace pbrto
                 "the system may crash as a result of this." );
     }
 
-    std::optional<CameraRayDifferential> CameraBase::GenerateRayDifferential(
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> CameraBase::GenerateRayDifferential(
         Camera camera, CameraSample sample, SampledWavelengths& lambda )
     {
         // Generate regular camera ray _cr_ for ray differential
@@ -204,16 +204,16 @@ namespace pbrto
             sample.pFilm.x = Float( i ) / ( n - 1 ) * film.FullResolution( ).x;
             sample.pFilm.y = Float( i ) / ( n - 1 ) * film.FullResolution( ).y;
 
-            std::optional<CameraRayDifferential> crd =
+            pstdo::optional<CameraRayDifferential> crd =
                 camera.GenerateRayDifferential( sample, lambda );
             if ( !crd )
                 continue;
 
             RayDifferential& ray = crd->ray;
-            Vector3f dox = CameraFromRender( Vector3f( ray.rxOrigin - ray.o ), ray.time );
+            Vector3f dox = CameraFromRender( ray.rxOrigin - ray.o, ray.time );
             if ( ScalarLength( dox ) < ScalarLength( minPosDifferentialX ) )
                 minPosDifferentialX = dox;
-            Vector3f doy = CameraFromRender( Vector3f( ray.ryOrigin - ray.o ), ray.time );
+            Vector3f doy = CameraFromRender( ray.ryOrigin - ray.o, ray.time );
             if ( ScalarLength( doy ) < ScalarLength( minPosDifferentialY ) )
                 minPosDifferentialY = doy;
 
@@ -328,7 +328,8 @@ namespace pbrto
     }
 
     // OrthographicCamera Method Definitions
-    pstdo::optional<CameraRay> OrthographicCamera::GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU pstdo::optional<CameraRay> OrthographicCamera::GenerateRay(
+        CameraSample sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
         Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
@@ -342,7 +343,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z();
+            Float ft = focalDistance / ray.d.z;
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -353,7 +354,7 @@ namespace pbrto
         return CameraRay{ RenderFromCamera( ray ) };
     }
 
-    PBRT_CPU_GPU std::optional<CameraRayDifferential> OrthographicCamera::GenerateRayDifferential(
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> OrthographicCamera::GenerateRayDifferential(
         CameraSample sample, SampledWavelengths& lambda ) const
     {
         // Compute main orthographic viewing ray
@@ -369,7 +370,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z();
+            Float ft = focalDistance / ray.d.z;
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -384,7 +385,7 @@ namespace pbrto
             // Sample point on lens
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
-            Float ft = focalDistance / ray.d.z();
+            Float ft = focalDistance / ray.d.z;
             Point3f pFocus = pCamera + dxCamera + ( ft * Vector3f( 0, 0, 1 ) );
             ray.rxOrigin = Point3f( pLens.x, pLens.y, 0 );
             ray.rxDirection = Normalize( pFocus - ray.rxOrigin );
@@ -473,7 +474,7 @@ namespace pbrto
         Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
         Point3f pCamera = cameraFromRaster( pFilm );
 
-        Ray ray( Point3f::Simd( 0, 0, 0 ), Normalize( Vector3f( pCamera ) ), SampleTime( sample.time ),
+        Ray ray( Point3f( 0, 0, 0 ), Normalize( Vector3f( pCamera ) ), SampleTime( sample.time ),
             medium );
         // Modify ray for depth of field
         if ( lensRadius > 0 )
@@ -482,7 +483,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z();
+            Float ft = focalDistance / ray.d.z;
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -493,7 +494,7 @@ namespace pbrto
         return CameraRay{ RenderFromCamera( ray ) };
     }
 
-    PBRT_CPU_GPU std::optional<CameraRayDifferential> PerspectiveCamera::GenerateRayDifferential(
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> PerspectiveCamera::GenerateRayDifferential(
         CameraSample sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
@@ -508,7 +509,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z();
+            Float ft = focalDistance / ray.d.z;
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -706,12 +707,8 @@ namespace pbrto
         if ( mapping == EquiRectangular )
         {
             // Compute ray direction using equirectangular mapping
-            Float phi = 2 * Pi * uv.x;
-            Float theta = Pi * uv.y;
-            Float sinTheta;
-            Float cosTheta;
-            SinCos( theta, &sinTheta, &cosTheta );
-            dir = SphericalDirection( sinTheta, cosTheta, phi );
+            Float theta = Pi * uv[ 1 ], phi = 2 * Pi * uv[ 0 ];
+            dir = SphericalDirection( std::sin( theta ), std::cos( theta ), phi );
 
         }
         else
@@ -813,7 +810,7 @@ namespace pbrto
         // Compute film's physical extent
         Float aspect = ( Float )film.FullResolution( ).y / ( Float )film.FullResolution( ).x;
         Float diagonal = film.Diagonal( );
-        Float x = Math::Sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
+        Float x = std::sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
         Float y = aspect * x;
         physicalExtent = Bounds2f( Point2f( -x / 2, -y / 2 ), Point2f( x / 2, y / 2 ) );
 
@@ -862,8 +859,8 @@ namespace pbrto
     {
         Float elementZ = 0, weight = 1;
         // Transform _rCamera_ from camera to lens system space
-        Ray rLens( Point3f( rCamera.o.x(), rCamera.o.y( ), -rCamera.o.z( ) ),
-            Vector3f( rCamera.d.x( ), rCamera.d.y( ), -rCamera.d.z( ) ), rCamera.time );
+        Ray rLens( Point3f( rCamera.o.x, rCamera.o.y, -rCamera.o.z ),
+            Vector3f( rCamera.d.x, rCamera.d.y, -rCamera.d.z ), rCamera.time );
 
         for ( int i = elementInterfaces.size( ) - 1; i >= 0; --i )
         {
@@ -872,12 +869,12 @@ namespace pbrto
             elementZ -= element.thickness;
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f::Simd n;
+            Normal3f n;
             bool isStop = ( element.curvatureRadius == 0 );
             if ( isStop )
             {
                 // Compute _t_ at plane of aperture stop
-                t = ( elementZ - rLens.o.z( ) ) / rLens.d.z( );
+                t = ( elementZ - rLens.o.z ) / rLens.d.z;
                 if ( t < 0 )
                     return 0;
 
@@ -927,18 +924,18 @@ namespace pbrto
         }
         // Transform lens system space ray back to camera space
         if ( rOut )
-            *rOut = Ray( Point3f( rLens.o.x( ), rLens.o.y( ), -rLens.o.z( ) ),
-                Vector3f( rLens.d.x( ), rLens.d.y( ), -rLens.d.z( ) ), rLens.time );
+            *rOut = Ray( Point3f( rLens.o.x, rLens.o.y, -rLens.o.z ),
+                Vector3f( rLens.d.x, rLens.d.y, -rLens.d.z ), rLens.time );
 
         return weight;
     }
 
     void RealisticCamera::ComputeCardinalPoints( Ray rIn, Ray rOut, Float* pz, Float* fz )
     {
-        Float tf = -rOut.o.x( ) / rOut.d.x( );
-        *fz = -rOut( tf ).z( );
-        Float tp = ( rIn.o.x( ) - rOut.o.x( ) ) / rOut.d.x( );
-        *pz = -rOut( tp ).z( );
+        Float tf = -rOut.o.x / rOut.d.x;
+        *fz = -rOut( tf ).z;
+        Float tp = ( rIn.o.x - rOut.o.x ) / rOut.d.x;
+        *pz = -rOut( tp ).z;
     }
 
     void RealisticCamera::ComputeThickLensApproximation( Float pz[ 2 ], Float fz[ 2 ] ) const
@@ -977,7 +974,7 @@ namespace pbrto
             ErrorExit( "Coefficient must be positive. It looks focusDistance %f "
                 " is too short for a given lenses configuration",
                 focusDistance );
-        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - Math::Sqrt( c ) ) / 2;
+        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - std::sqrt( c ) ) / 2;
 
         return elementInterfaces.back( ).thickness + delta;
     }
@@ -1016,7 +1013,7 @@ namespace pbrto
 
         // Expand bounds to account for sample spacing
         pupilBounds =
-            Expand( pupilBounds, 2 * ScalarLength( projRearBounds.Diagonal( ) ) / Math::Sqrt( static_cast<float>(nSamples) ) );
+            Expand( pupilBounds, 2 * ScalarLength( projRearBounds.Diagonal( ) ) / std::sqrt( nSamples ) );
 
         return pupilBounds;
     }
@@ -1025,7 +1022,7 @@ namespace pbrto
         Point2f uLens ) const
     {
         // Find exit pupil bound for sample distance from film center
-        Float rFilm = Math::Sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
+        Float rFilm = std::sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
         int rIndex = rFilm / ( film.Diagonal( ) / 2 ) * exitPupilBounds.size( );
         rIndex = std::min<int>( exitPupilBounds.size( ) - 1, rIndex );
         Bounds2f pupilBounds = exitPupilBounds[ rIndex ];
@@ -1048,8 +1045,7 @@ namespace pbrto
         SampledWavelengths& lambda ) const
     {
         // Find point on film, _pFilm_, corresponding to _sample.pFilm_
-        Point2f s( 
-            sample.pFilm.x / film.FullResolution( ).x,
+        Point2f s( sample.pFilm.x / film.FullResolution( ).x,
             sample.pFilm.y / film.FullResolution( ).y );
         Point2f pFilm2 = physicalExtent.Lerp2( s );
         Point3f pFilm( -pFilm2.x, pFilm2.y, 0 );
@@ -1072,7 +1068,7 @@ namespace pbrto
         ray.d = Normalize( ray.d );
 
         // Compute weighting for _RealisticCamera_ ray
-        Float cosTheta = Normalize( rFilm.d ).z();
+        Float cosTheta = Normalize( rFilm.d ).z( );
         weight *= FastPow<4>( cosTheta ) / ( eps->pdf * Sqr( LensRearZ( ) ) );
 
         return CameraRay{ ray, SampledSpectrum( weight ) };
@@ -1098,11 +1094,11 @@ namespace pbrto
             const LensElementInterface& element = elementInterfaces[ i ];
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f::Simd n;
+            Normal3f n;
             bool isStop = ( element.curvatureRadius == 0 );
             if ( isStop )
             {
-                t = ( elementZ - rLens.o.z( ) ) / rLens.d.z( );
+                t = ( elementZ - rLens.o.z ) / rLens.d.z;
                 if ( t < 0 )
                     return 0;
             }
@@ -1138,8 +1134,8 @@ namespace pbrto
         }
         // Transform _rLens_ from lens system space back to camera space
         if ( rOut )
-            *rOut = Ray( Point3f( rLens.o.x( ), rLens.o.y( ), -rLens.o.z( ) ),
-                Vector3f( rLens.d.x( ), rLens.d.y( ), -rLens.d.z( ) ), rLens.time );
+            *rOut = Ray( Point3f( rLens.o.x, rLens.o.y, -rLens.o.z ),
+                Vector3f( rLens.d.x, rLens.d.y, -rLens.d.z ), rLens.time );
         return 1;
     }
 
@@ -1188,12 +1184,12 @@ namespace pbrto
                     if ( r > 0 )
                     {
                         zp0 = z + element.curvatureRadius -
-                            element.apertureRadius / Math::Tan( theta );
+                            element.apertureRadius / std::tan( theta );
                     }
                     else
                     {
                         zp0 = z + element.curvatureRadius +
-                            element.apertureRadius / Math::Tan( theta );
+                            element.apertureRadius / std::tan( theta );
                     }
 
                     Float nextCurvatureRadius = elementInterfaces[ i + 1 ].curvatureRadius;
@@ -1202,12 +1198,12 @@ namespace pbrto
                     if ( nextCurvatureRadius > 0 )
                     {
                         zp1 = z + element.thickness + nextCurvatureRadius -
-                            nextApertureRadius / Math::Tan( nextTheta );
+                            nextApertureRadius / std::tan( nextTheta );
                     }
                     else
                     {
                         zp1 = z + element.thickness + nextCurvatureRadius +
-                            nextApertureRadius / Math::Tan( nextTheta );
+                            nextApertureRadius / std::tan( nextTheta );
                     }
 
                     // Connect tops
@@ -1258,9 +1254,9 @@ namespace pbrto
             bool isStop = ( element.curvatureRadius == 0 );
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f::Simd n;
+            Normal3f n;
             if ( isStop )
-                t = -( ray.o.z( ) - elementZ ) / ray.d.z( );
+                t = -( ray.o.z - elementZ ) / ray.d.z;
             else
             {
                 Float radius = element.curvatureRadius;
@@ -1270,7 +1266,7 @@ namespace pbrto
             }
             NCHECK_GE( t, 0 );
 
-            printf( ", Line[{{%f, %f}, {%f, %f}}]", ray.o.z( ), ray.o.x( ), ray( t ).z( ), ray( t ).x( ) );
+            printf( ", Line[{{%f, %f}, {%f, %f}}]", ray.o.z, ray.o.x, ray( t ).z, ray( t ).x );
 
             // Test intersection point against element aperture
             Point3f pHit = ray( t );
@@ -1299,15 +1295,15 @@ namespace pbrto
             Float ta = std::abs( elementZ / 4 );
             if ( toOpticalIntercept )
             {
-                ta = -ray.o.x( ) / ray.d.x( );
-                printf( ", Point[{%f, %f}]", ray( ta ).z( ), ray( ta ).x( ) );
+                ta = -ray.o.x / ray.d.x;
+                printf( ", Point[{%f, %f}]", ray( ta ).z, ray( ta ).x );
             }
-            printf( ", %s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", ray.o.z( ), ray.o.x( ),
-                ray( ta ).z( ), ray( ta ).x( ) );
+            printf( ", %s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", ray.o.z, ray.o.x,
+                ray( ta ).z, ray( ta ).x );
 
             // overdraw the optical axis if needed...
             if ( toOpticalIntercept )
-                printf( ", Line[{{%f, 0}, {%f, 0}}]", ray.o.z( ), ray( ta ).z( ) * 1.05f );
+                printf( ", Line[{{%f, 0}, {%f, 0}}]", ray.o.z, ray( ta ).z * 1.05f );
         }
 
     done:
@@ -1328,9 +1324,9 @@ namespace pbrto
             bool isStop = ( element.curvatureRadius == 0 );
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f::Simd n;
+            Normal3f n;
             if ( isStop )
-                t = -( ray.o.z( ) - elementZ ) / ray.d.z( );
+                t = -( ray.o.z - elementZ ) / ray.d.z;
             else
             {
                 Float radius = element.curvatureRadius;
@@ -1340,7 +1336,7 @@ namespace pbrto
             }
             NCHECK_GE( t, 0.f );
 
-            printf( "Line[{{%f, %f}, {%f, %f}}],", ray.o.z( ), ray.o.x( ), ray( t ).z( ), ray( t ).x( ) );
+            printf( "Line[{{%f, %f}, {%f, %f}}],", ray.o.z, ray.o.x, ray( t ).z, ray( t ).x );
 
             // Test intersection point against element aperture
             Point3f pHit = ray( t );
@@ -1368,14 +1364,14 @@ namespace pbrto
 
         // go to the film plane by default
         {
-            Float ta = -ray.o.z( ) / ray.d.z( );
+            Float ta = -ray.o.z / ray.d.z;
             if ( toOpticalIntercept )
             {
-                ta = -ray.o.x( ) / ray.d.x( );
-                printf( "Point[{%f, %f}], ", ray( ta ).z( ), ray( ta ).x( ) );
+                ta = -ray.o.x / ray.d.x;
+                printf( "Point[{%f, %f}], ", ray( ta ).z, ray( ta ).x );
             }
-            printf( "%s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", ray.o.z( ), ray.o.x( ),
-                ray( ta ).z( ), ray( ta ).x( ) );
+            printf( "%s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", ray.o.z, ray.o.x,
+                ray( ta ).z, ray( ta ).x );
         }
     }
 
@@ -1420,7 +1416,7 @@ namespace pbrto
 
         Float r = pFilm.x / ( filmDiagonal / 2 );
         int pupilIndex = std::min<int>( exitPupilBounds.size( ) - 1,
-            Math::Floor( r * ( exitPupilBounds.size( ) - 1 ) ) );
+            pstdo::floor( r * ( exitPupilBounds.size( ) - 1 ) ) );
         Bounds2f pupilBounds = exitPupilBounds[ pupilIndex ];
         if ( pupilIndex + 1 < ( int )exitPupilBounds.size( ) )
             pupilBounds = Union( pupilBounds, exitPupilBounds[ pupilIndex + 1 ] );
@@ -1547,7 +1543,7 @@ namespace pbrto
                         Float r2 = Sqr( uv.x ) + Sqr( uv.y );
                         Float sigma2 = 1;
                         Float v = std::max<Float>(
-                            0, Math::Exp( -r2 / sigma2 ) - Math::Exp( -1 / sigma2 ) );
+                            0, std::exp( -r2 / sigma2 ) - std::exp( -1 / sigma2 ) );
                         apertureImage.SetChannel( { x, y }, 0, v );
                     }
             }
@@ -1562,10 +1558,10 @@ namespace pbrto
             else if ( apertureName == "pentagon" )
             {
                 // https://mathworld.wolfram.com/RegularPentagon.html
-                constexpr Float c1 = ( Math::Sqrt( 5.f ) - 1 ) / 4;
-                constexpr Float c2 = ( Math::Sqrt( 5.f ) + 1 ) / 4;
-                constexpr Float s1 = Math::Sqrt( 10.f + 2.f * Math::Sqrt( 5.f ) ) / 4;
-                constexpr Float s2 = Math::Sqrt( 10.f - 2.f * Math::Sqrt( 5.f ) ) / 4;
+                Float c1 = ( std::sqrt( 5.f ) - 1 ) / 4;
+                Float c2 = ( std::sqrt( 5.f ) + 1 ) / 4;
+                Float s1 = std::sqrt( 10.f + 2.f * std::sqrt( 5.f ) ) / 4;
+                Float s2 = std::sqrt( 10.f - 2.f * std::sqrt( 5.f ) ) / 4;
                 // Vertices in CW order.
                 Point2f vert[ 5 ] = { Point2f( 0, 1 ), {s1, c1}, {s2, -c2}, {-s2, -c2}, {-s1, c1} };
                 // Scale down slightly
@@ -1580,13 +1576,9 @@ namespace pbrto
                 for ( int i = 0; i < 10; ++i )
                 {
                     // inner radius: https://math.stackexchange.com/a/2136996
-                    constexpr Float r2 = ( Math::Cos( Deg2Rad( 72.f ) ) / Math::Cos( Deg2Rad( 36.f ) ) );
-                    Float r = ( i & 1 ) ? 1.f : r2;
-                    Float sinV;
-                    Float cosV;
-                    SinCos( Pi * i / 5.f, &sinV, &cosV );
-
-                    vert[ i ] = Point2f( r * cosV, r * sinV );
+                    Float r =
+                        ( i & 1 ) ? 1.f : ( std::cos( Radians( 72.f ) ) / std::cos( Radians( 36.f ) ) );
+                    vert[ i ] = Point2f( r * std::cos( Pi * i / 5.f ), r * std::sin( Pi * i / 5.f ) );
                 }
                 std::reverse( vert.begin( ), vert.end( ) );
                 apertureImage = rasterize( vert );
@@ -1603,15 +1595,14 @@ namespace pbrto
                             "aperture image.",
                             apertureName );
 
-                    Image mono( PixelFormat::Float, apertureImage.Resolution( ), { "Y" }, nullptr, alloc );
+                    Image mono( PixelFormat::Float, apertureImage.Resolution( ), { "Y" }, nullptr,
+                        alloc );
                     for ( int y = 0; y < mono.Resolution( ).y; ++y )
-                    {
                         for ( int x = 0; x < mono.Resolution( ).x; ++x )
                         {
                             Float avg = apertureImage.GetChannels( { x, y }, rgbDesc ).Average( );
                             mono.SetChannel( { x, y }, 0, avg );
                         }
-                    }
 
                     apertureImage = std::move( mono );
                 }

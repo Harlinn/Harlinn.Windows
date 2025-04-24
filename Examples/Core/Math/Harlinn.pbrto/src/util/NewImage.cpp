@@ -201,7 +201,7 @@ namespace pbrto
         // Compute filter weights
         std::vector<Float> wts( 2 * halfWidth + 1, Float( 0 ) );
         for ( int d = 0; d < 2 * halfWidth + 1; ++d )
-            wts[ d ] = Gaussian( static_cast<Float>( d - halfWidth ), 0.f, sigma );
+            wts[ d ] = Gaussian( static_cast<float>( d - halfWidth ), 0.f, sigma );
 
         // Normalize weights
         Float wtSum = std::accumulate( wts.begin( ), wts.end( ), Float( 0 ) );
@@ -260,7 +260,7 @@ namespace pbrto
         {
             // Compute image resampling weights for _i_th pixel
             Float center = ( i + .5f ) * oldRes / newRes;
-            wt[ i ].firstPixel = Math::Floor( ( center - filterRadius ) + 0.5f );
+            wt[ i ].firstPixel = pstdo::floor( ( center - filterRadius ) + 0.5f );
             for ( int j = 0; j < 4; ++j )
             {
                 Float pos = wt[ i ].firstPixel + j + .5f;
@@ -938,7 +938,7 @@ namespace pbrto
         std::vector<Float> fx, fy;
         for ( int i = 0; i <= halfWidth; ++i )
         {
-            fx.push_back( Gaussian( static_cast<Float>( i ), 0.f, xySigma[ 0 ] ) );
+            fx.push_back( Gaussian( static_cast<Float>(i), 0.f, xySigma[ 0 ] ) );
             fy.push_back( Gaussian( static_cast< Float >( i ), 0.f, xySigma[ 1 ] ) );
         }
 

@@ -46,36 +46,43 @@ namespace pbrto
     public:
         // RGB Public Methods
         RGB( ) = default;
-        RGB( Float r, Float g, Float b ) : r( r ), g( g ), b( b ) {}
+        PBRT_CPU_GPU
+            RGB( Float r, Float g, Float b ) : r( r ), g( g ), b( b ) {}
 
-        RGB& operator+=( RGB s )
+        PBRT_CPU_GPU
+            RGB& operator+=( RGB s )
         {
             r += s.r;
             g += s.g;
             b += s.b;
             return *this;
         }
-        RGB operator+( RGB s ) const
+        PBRT_CPU_GPU
+            RGB operator+( RGB s ) const
         {
             RGB ret = *this;
             return ret += s;
         }
 
-        RGB& operator-=( RGB s )
+        PBRT_CPU_GPU
+            RGB& operator-=( RGB s )
         {
             r -= s.r;
             g -= s.g;
             b -= s.b;
             return *this;
         }
-        RGB operator-( RGB s ) const
+        PBRT_CPU_GPU
+            RGB operator-( RGB s ) const
         {
             RGB ret = *this;
             return ret -= s;
         }
-        friend RGB operator-( Float a, RGB s ) { return { a - s.r, a - s.g, a - s.b }; }
+        PBRT_CPU_GPU
+            friend RGB operator-( Float a, RGB s ) { return { a - s.r, a - s.g, a - s.b }; }
 
-        RGB& operator*=( RGB s )
+        PBRT_CPU_GPU
+            RGB& operator*=( RGB s )
         {
             r *= s.r;
             g *= s.g;
@@ -168,7 +175,7 @@ namespace pbrto
             return b;
         }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
         // RGB Public Members
         Float r = 0, g = 0, b = 0;
@@ -343,7 +350,7 @@ namespace pbrto
             return Z;
         }
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
         // XYZ Public Members
         Float X = 0, Y = 0, Z = 0;
@@ -381,17 +388,18 @@ namespace pbrto
     public:
         // RGBSigmoidPolynomial Public Methods
         RGBSigmoidPolynomial( ) = default;
-        RGBSigmoidPolynomial( Float c0, Float c1, Float c2 ) 
-            : c0( c0 ), c1( c1 ), c2( c2 ) 
-        { }
-        PBRTO_EXPORT std::string ToString( ) const;
+        PBRT_CPU_GPU
+            RGBSigmoidPolynomial( Float c0, Float c1, Float c2 ) : c0( c0 ), c1( c1 ), c2( c2 ) {}
+        std::string ToString( ) const;
 
-        Float operator()( Float lambda ) const
+        PBRT_CPU_GPU
+            Float operator()( Float lambda ) const
         {
             return s( EvaluatePolynomial( lambda, c2, c1, c0 ) );
         }
 
-        Float MaxValue( ) const
+        PBRT_CPU_GPU
+            Float MaxValue( ) const
         {
             Float result = std::max( ( *this )( 360 ), ( *this )( 830 ) );
             Float lambda = -c1 / ( 2 * c0 );
@@ -402,11 +410,12 @@ namespace pbrto
 
     private:
         // RGBSigmoidPolynomial Private Methods
-        static Float s( Float x )
+        PBRT_CPU_GPU
+            static Float s( Float x )
         {
             if ( IsInf( x ) )
                 return x > 0 ? 1 : 0;
-            return .5f + x / ( 2 * Math::Sqrt( 1 + Sqr( x ) ) );
+            return .5f + x / ( 2 * std::sqrt( 1 + Sqr( x ) ) );
         };
 
         // RGBSigmoidPolynomial Private Members
@@ -428,16 +437,17 @@ namespace pbrto
         {
         }
 
-        PBRTO_EXPORT RGBSigmoidPolynomial operator()( RGB rgb ) const;
+        PBRT_CPU_GPU
+            RGBSigmoidPolynomial operator()( RGB rgb ) const;
 
-        PBRTO_EXPORT static void Init( Allocator alloc );
+        static void Init( Allocator alloc );
 
-        PBRTO_EXPORT static const RGBToSpectrumTable* sRGB;
-        PBRTO_EXPORT static const RGBToSpectrumTable* DCI_P3;
-        PBRTO_EXPORT static const RGBToSpectrumTable* Rec2020;
-        PBRTO_EXPORT static const RGBToSpectrumTable* ACES2065_1;
+        static const RGBToSpectrumTable* sRGB;
+        static const RGBToSpectrumTable* DCI_P3;
+        static const RGBToSpectrumTable* Rec2020;
+        static const RGBToSpectrumTable* ACES2065_1;
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        std::string ToString( ) const;
 
     private:
         // RGBToSpectrumTable Private Members
@@ -456,12 +466,10 @@ namespace pbrto
     public:
         using TaggedPointer::TaggedPointer;
         // ColorEncoding Interface
-        PBRT_CPU_GPU inline void ToLinear( pstdo::span<const uint8_t> vin,
-            pstdo::span<Float> vout ) const;
-        PBRT_CPU_GPU inline void FromLinear( pstdo::span<const Float> vin,
-            pstdo::span<uint8_t> vout ) const;
+        inline void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
+        inline void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;
 
-        PBRT_CPU_GPU inline Float ToFloatLinear( Float v ) const;
+        inline Float ToFloatLinear( Float v ) const;
 
         std::string ToString( ) const;
 
@@ -476,65 +484,61 @@ namespace pbrto
     class LinearColorEncoding
     {
     public:
-        PBRT_CPU_GPU
-            void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const
+        void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const
         {
             NDCHECK_EQ( vin.size( ), vout.size( ) );
             for ( size_t i = 0; i < vin.size( ); ++i )
                 vout[ i ] = vin[ i ] / 255.f;
         }
 
-        PBRT_CPU_GPU
-            Float ToFloatLinear( Float v ) const { return v; }
+        Float ToFloatLinear( Float v ) const 
+        { 
+            return v; 
+        }
 
-        PBRT_CPU_GPU
-            void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const
+        void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const
         {
             NDCHECK_EQ( vin.size( ), vout.size( ) );
             for ( size_t i = 0; i < vin.size( ); ++i )
                 vout[ i ] = uint8_t( Clamp( vin[ i ] * 255.f + 0.5f, 0, 255 ) );
         }
 
-        std::string ToString( ) const { return "[ LinearColorEncoding ]"; }
+        std::string ToString( ) const 
+        { 
+            return "[ LinearColorEncoding ]"; 
+        }
     };
 
     class sRGBColorEncoding
     {
     public:
         // sRGBColorEncoding Public Methods
-        PBRTO_EXPORT
-            void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
-        PBRTO_EXPORT
-            Float ToFloatLinear( Float v ) const;
-        PBRTO_EXPORT
-            void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;
+        PBRTO_EXPORT void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
+        PBRTO_EXPORT Float ToFloatLinear( Float v ) const;
+        PBRTO_EXPORT void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;
 
         std::string ToString( ) const { return "[ sRGBColorEncoding ]"; }
     };
 
     class GammaColorEncoding
     {
+        Float gamma;
+        pstdo::array<Float, 256> applyLUT;
+        pstdo::array<Float, 1024> inverseLUT;
     public:
-        PBRTO_EXPORT
-            GammaColorEncoding( Float gamma );
+        PBRTO_EXPORT GammaColorEncoding( Float gamma );
 
-        PBRTO_EXPORT
-            void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
-        PBRTO_EXPORT
-            Float ToFloatLinear( Float v ) const;
-        PBRTO_EXPORT
-            void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;
+        PBRTO_EXPORT void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
+        PBRTO_EXPORT Float ToFloatLinear( Float v ) const;
+        PBRTO_EXPORT void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;
 
         PBRTO_EXPORT std::string ToString( ) const;
 
     private:
-        Float gamma;
-        pstdo::array<Float, 256> applyLUT;
-        pstdo::array<Float, 1024> inverseLUT;
+        
     };
 
-    inline void ColorEncoding::ToLinear( pstdo::span<const uint8_t> vin,
-        pstdo::span<Float> vout ) const
+    inline void ColorEncoding::ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const
     {
         auto tolin = [ & ]( auto ptr ) { return ptr->ToLinear( vin, vout ); };
         Dispatch( tolin );
@@ -546,15 +550,13 @@ namespace pbrto
         return Dispatch( tfl );
     }
 
-    inline void ColorEncoding::FromLinear( pstdo::span<const Float> vin,
-        pstdo::span<uint8_t> vout ) const
+    inline void ColorEncoding::FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const
     {
         auto fl = [ & ]( auto ptr ) { return ptr->FromLinear( vin, vout ); };
         Dispatch( fl );
     }
 
-    PBRT_CPU_GPU
-        inline Float LinearToSRGB( Float value )
+    inline Float LinearToSRGB( Float value )
     {
         if ( value <= 0.0031308f )
             return 12.92f * value;
@@ -569,18 +571,16 @@ namespace pbrto
         return p / q * value;
     }
 
-    PBRT_CPU_GPU
-        inline uint8_t LinearToSRGB8( Float value, Float dither = 0 )
+    inline uint8_t LinearToSRGB8( Float value, Float dither = 0 )
     {
         if ( value <= 0 )
             return 0;
         if ( value >= 1 )
             return 255;
-        return Clamp( Math::Round( 255.f * LinearToSRGB( value ) + dither ), 0, 255 );
+        return Clamp( pstdo::round( 255.f * LinearToSRGB( value ) + dither ), 0, 255 );
     }
 
-    PBRT_CPU_GPU
-        inline Float SRGBToLinear( float value )
+    inline Float SRGBToLinear( float value )
     {
         if ( value <= 0.04045f )
             return value * ( 1 / 12.92f );
@@ -595,8 +595,7 @@ namespace pbrto
 
     PBRTO_EXPORT extern PBRT_CONST Float SRGBToLinearLUT[ 256 ];
 
-    PBRT_CPU_GPU
-        inline Float SRGB8ToLinear( uint8_t value )
+    inline Float SRGB8ToLinear( uint8_t value )
     {
         return SRGBToLinearLUT[ value ];
     }

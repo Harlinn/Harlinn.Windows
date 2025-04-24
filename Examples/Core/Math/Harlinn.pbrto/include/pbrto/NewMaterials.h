@@ -110,12 +110,14 @@ namespace pbrto
     };
 
     // Normal Mapping Function Definitions
-    inline void NormalMap( const Image& normalMap, const NormalBumpEvalContext& ctx, Vector3f* dpdu, Vector3f* dpdv )
+    inline PBRT_CPU_GPU void NormalMap( const Image& normalMap,
+        const NormalBumpEvalContext& ctx, Vector3f* dpdu,
+        Vector3f* dpdv )
     {
         // Get normalized normal vector from normal map
         WrapMode2D wrap( WrapMode::Repeat );
         Point2f uv( ctx.uv[ 0 ], 1 - ctx.uv[ 1 ] );
-        Vector3f::Simd ns( 2 * normalMap.BilerpChannel( uv, 0, wrap ) - 1,
+        Vector3f ns( 2 * normalMap.BilerpChannel( uv, 0, wrap ) - 1,
             2 * normalMap.BilerpChannel( uv, 1, wrap ) - 1,
             2 * normalMap.BilerpChannel( uv, 2, wrap ) - 1 );
         ns = Normalize( ns );
@@ -125,9 +127,7 @@ namespace pbrto
         ns = frame.FromLocal( ns );
 
         // Find $\dpdu$ and $\dpdv$ that give shading normal
-        Float ulen = ScalarLength( ctx.shading.dpdu );
-        Float vlen = ScalarLength( ctx.shading.dpdv );
-
+        Float ulen = ScalarLength( ctx.shading.dpdu ), vlen = ScalarLength( ctx.shading.dpdv );
         *dpdu = Normalize( GramSchmidt( ctx.shading.dpdu, ns ) ) * ulen;
         *dpdv = Normalize( Cross( ns, *dpdu ) ) * vlen;
     }
@@ -433,19 +433,20 @@ namespace pbrto
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU HairBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU HairBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx,
+            SampledWavelengths& lambda ) const
         {
             Float bm = std::max<Float>( 1e-2, std::min<Float>( 1.0, texEval( beta_m, ctx ) ) );
             Float bn = std::max<Float>( 1e-2, std::min<Float>( 1.0, texEval( beta_n, ctx ) ) );
             Float a = texEval( alpha, ctx );
             Float e = texEval( eta, ctx );
 
-            SampledSpectrum::Simd sig_a;
+            SampledSpectrum sig_a;
             if ( sigma_a )
                 sig_a = ClampZero( texEval( sigma_a, ctx, lambda ) );
             else if ( color )
             {
-                SampledSpectrum::Simd c = Clamp( texEval( color, ctx, lambda ), 0, 1 );
+                SampledSpectrum c = Clamp( texEval( color, ctx, lambda ), 0, 1 );
                 sig_a = HairBxDF::SigmaAFromReflectance( c, bn, lambda );
             }
             else

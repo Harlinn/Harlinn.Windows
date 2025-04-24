@@ -262,7 +262,7 @@ PBRTO_EXPORT Vector3f EqualAreaSquareToSphere( Point2f p )
 // Via source code from Clarberg: Fast Equal-Area Mapping of the (Hemi)Sphere using SIMD
 PBRTO_EXPORT Point2f EqualAreaSphereToSquare( Vector3f d )
 {
-    NDCHECK( LengthSquared( d ) > .999 && LengthSquared( d ) < 1.001 );
+    NDCHECK( ScalarLengthSquared( d ) > .999 && ScalarLengthSquared( d ) < 1.001 );
     Float x = std::abs( d.x ), y = std::abs( d.y ), z = std::abs( d.z );
 
     // Compute the radius r

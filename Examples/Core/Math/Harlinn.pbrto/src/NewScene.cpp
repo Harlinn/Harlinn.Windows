@@ -671,17 +671,19 @@ namespace pbrto
 #endif  // PBRT_BUILD_GPU_RENDERER
     }
 
-    void BasicSceneBuilder::Transform( Float tr[ 16 ], FileLoc loc )
+    void BasicSceneBuilder::Transform( const std::array<Float, 16>& transform, FileLoc loc )
     {
-        graphicsState.ForActiveTransforms( [ = ]( auto t ) {
-            return Transpose( pbrto::Transform( SquareMatrix<4>( std::span( tr, 16 ) ) ) );
+        graphicsState.ForActiveTransforms( [ & ]( auto t ) {
+            //return Transpose( pbrto::Transform( SquareMatrix<4>( pstdo::MakeSpan( tr, 16 ) ) ) );
+            return Transpose( pbrto::Transform( SquareMatrix<4>( transform ) ) );
             } );
     }
 
-    void BasicSceneBuilder::ConcatTransform( Float tr[ 16 ], FileLoc loc )
+    void BasicSceneBuilder::ConcatTransform( const std::array<Float, 16>& transform, FileLoc loc )
     {
         graphicsState.ForActiveTransforms( [ = ]( auto t ) {
-            return t * Transpose( pbrto::Transform( SquareMatrix<4>( std::span( tr, 16 ) ) ) );
+            //return t * Transpose( pbrto::Transform( SquareMatrix<4>( pstdo::MakeSpan( tr, 16 ) ) ) );
+            return t * Transpose( pbrto::Transform( SquareMatrix<4>( transform ) ) );
             } );
     }
 
@@ -1205,12 +1207,12 @@ namespace pbrto
         std::set<std::string> unusedFloatTextures, unusedSpectrumTextures;
         for ( const auto f : floatTextures )
         {
-            CHECK( unusedFloatTextures.find( f.first ) == unusedFloatTextures.end( ) );
+            NCHECK( unusedFloatTextures.find( f.first ) == unusedFloatTextures.end( ) );
             unusedFloatTextures.insert( f.first );
         }
         for ( const auto s : spectrumTextures )
         {
-            CHECK( unusedSpectrumTextures.find( s.first ) == unusedSpectrumTextures.end( ) );
+            NCHECK( unusedSpectrumTextures.find( s.first ) == unusedSpectrumTextures.end( ) );
             unusedSpectrumTextures.insert( s.first );
         }
 

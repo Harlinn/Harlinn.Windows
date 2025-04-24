@@ -1003,6 +1003,18 @@ namespace pbrto
         {
         }
 
+        template<typename U>
+            requires ( std::is_same_v<U, float> == false )
+        explicit operator Point2<U>( ) const
+        {
+            return Point2<U>( static_cast< U >( x ), static_cast< U >( y ) );
+        }
+        template<typename U>
+        explicit operator Vector2<U>( ) const
+        {
+            return Vector2<U>( static_cast< U >( x ), static_cast< U >( y ) );
+        }
+
     };
 
     template <>
@@ -1032,88 +1044,145 @@ namespace pbrto
             : Base( other )
         {
         }
+
+        template<typename U>
+            requires ( std::is_same_v<U, Int32> == false )
+        explicit operator Point2<U>( ) const
+        {
+            return Point2<U>( static_cast< U >( x ), static_cast< U >( y ) );
+        }
+
+        template<typename U>
+        explicit operator Vector2<U>( ) const
+        {
+            return Vector2<U>( static_cast< U >( x ), static_cast< U >( y ) );
+        }
+
     };
 
-    inline Vector2<float>::Simd operator+( Point2<float> p, Vector2<float> v )
+    inline Point2<float>::Simd operator+( const Point2<float>& p, const Vector2<float>& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector2<float>::Simd operator+( Point2<float>::Simd p, Vector2<float> v )
+    inline Point2<float>::Simd operator+( const Point2<float>::Simd& p, const Vector2<float>& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Add( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector2<float>::Simd operator+( Point2<float> p, Vector2<float>::Simd v )
+    inline Point2<float>::Simd operator+( const Point2<float>& p, const Vector2<float>::Simd& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Add( Traits::Load( p.values ), v.simd );
     }
-    inline Vector2<float>::Simd operator+( Point2<float>::Simd p, Vector2<float>::Simd v )
+    inline Point2<float>::Simd operator+( const Point2<float>::Simd& p, const Vector2<float>::Simd& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Add( p.simd, v.simd );
     }
 
-    inline Vector2<float>::Simd operator-( Point2<float> p, Vector2<float> v )
+    inline Point2<float>::Simd operator-( const Point2<float>& p, const Vector2<float>& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector2<float>::Simd operator-( Point2<float>::Simd p, Vector2<float> v )
+    inline Point2<float>::Simd operator-( const Point2<float>::Simd& p, const Vector2<float>& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Sub( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector2<float>::Simd operator-( Point2<float> p, Vector2<float>::Simd v )
+    inline Point2<float>::Simd operator-( const Point2<float>& p, const Vector2<float>::Simd& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Sub( Traits::Load( p.values ), v.simd );
     }
-    inline Vector2<float>::Simd operator-( Point2<float>::Simd p, Vector2<float>::Simd v )
+    inline Point2<float>::Simd operator-( const Point2<float>::Simd& p, const Vector2<float>::Simd& v )
     {
         using Traits = Point2<float>::Traits;
         return Traits::Sub( p.simd, v.simd );
     }
 
+    inline Vector2<float>::Simd operator-( const Point2<float>& p, const Point2<float>& v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector2<float>::Simd operator-( const Point2<float>::Simd& p, const Point2<float>& v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector2<float>::Simd operator-( const Point2<float>& p, const Point2<float>::Simd& v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector2<float>::Simd operator-( const Point2<float>::Simd& p, const Point2<float>::Simd& v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
+
+
     //
-    inline Vector2<Int32>::Simd operator+( Point2<Int32> p, Vector2<Int32> v )
+    inline Point2<Int32>::Simd operator+( const Point2<Int32>& p, const Vector2<Int32>& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector2<Int32>::Simd operator+( Point2<Int32>::Simd p, Vector2<Int32> v )
+    inline Point2<Int32>::Simd operator+( const Point2<Int32>::Simd& p, const Vector2<Int32>& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Add( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector2<Int32>::Simd operator+( Point2<Int32> p, Vector2<Int32>::Simd v )
+    inline Point2<Int32>::Simd operator+( const Point2<Int32>& p, const Vector2<Int32>::Simd& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Add( Traits::Load( p.values ), v.simd );
     }
-    inline Vector2<Int32>::Simd operator+( Point2<Int32>::Simd p, Vector2<Int32>::Simd v )
+    inline Point2<Int32>::Simd operator+( const Point2<Int32>::Simd& p, const Vector2<Int32>::Simd& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Add( p.simd, v.simd );
     }
 
-    inline Vector2<Int32>::Simd operator-( Point2<Int32> p, Vector2<Int32> v )
+    inline Point2<Int32>::Simd operator-( const Point2<Int32>& p, const Vector2<Int32>& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector2<Int32>::Simd operator-( Point2<Int32>::Simd p, Vector2<Int32> v )
+    inline Point2<Int32>::Simd operator-( const Point2<Int32>::Simd& p, const Vector2<Int32>& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Sub( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector2<Int32>::Simd operator-( Point2<Int32> p, Vector2<Int32>::Simd v )
+    inline Point2<Int32>::Simd operator-( const Point2<Int32>& p, const Vector2<Int32>::Simd& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Sub( Traits::Load( p.values ), v.simd );
     }
-    inline Vector2<Int32>::Simd operator-( Point2<Int32>::Simd p, Vector2<Int32>::Simd v )
+    inline Point2<Int32>::Simd operator-( const Point2<Int32>::Simd& p, const Vector2<Int32>::Simd& v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
+
+    inline Vector2<Int32>::Simd operator-( const Point2<Int32>& p, const Point2<Int32>& v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector2<Int32>::Simd operator-( const Point2<Int32>::Simd& p, const Point2<Int32>& v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector2<Int32>::Simd operator-( const Point2<Int32>& p, const Point2<Int32>::Simd& v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector2<Int32>::Simd operator-( const Point2<Int32>::Simd& p, const Point2<Int32>::Simd& v )
     {
         using Traits = Point2<Int32>::Traits;
         return Traits::Sub( p.simd, v.simd );
@@ -1279,6 +1348,13 @@ namespace pbrto
         {
             return Vector3<double>( static_cast< double >( x ), static_cast< double >( y ), static_cast< double >( z ) );
         }
+
+        template<typename U>
+            requires ( std::is_same_v<U, float> == false )
+        explicit operator Point3<U>( ) const
+        {
+            return Point3<U>( static_cast< U >( x ), static_cast< U >( y ), static_cast< U >( z ) );
+        }
     };
 
     
@@ -1323,95 +1399,143 @@ namespace pbrto
         {
             return Vector3<Float>( static_cast< Float >( x ), static_cast< Float >( y ), static_cast< Float >( z ) );
         }
+        template<typename U>
+            requires (std::is_same_v<U,Int32> == false)
+        explicit operator Point3<U>( ) const
+        {
+            return Point3<U>( static_cast<U>( x ), static_cast< U >( y ), static_cast< U >( z ) );
+        }
 
     };
 
 
-    inline Vector3<float>::Simd operator+( Point3<float> p, Vector3<float> v )
+    inline Point3<float>::Simd operator+( const Point3<float>& p, const Vector3<float>& v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector3<float>::Simd operator+( Point3<float>::Simd p, Vector3<float> v )
+    inline Point3<float>::Simd operator+( const Point3<float>::Simd& p, const Vector3<float>& v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Add( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector3<float>::Simd operator+( Point3<float> p, Vector3<float>::Simd v )
+    inline Point3<float>::Simd operator+( const Point3<float>& p, const Vector3<float>::Simd& v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Add( Traits::Load( p.values ), v.simd );
     }
-    inline Vector3<float>::Simd operator+( Point3<float>::Simd p, Vector3<float>::Simd v )
+    inline Point3<float>::Simd operator+( const Point3<float>::Simd& p, const Vector3<float>::Simd&  v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Add( p.simd, v.simd );
     }
 
-    inline Vector3<float>::Simd operator-( Point3<float> p, Vector3<float> v )
+    inline Point3<float>::Simd operator-( const Point3<float>& p, const Vector3<float>& v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector3<float>::Simd operator-( Point3<float>::Simd p, Vector3<float> v )
+    inline Point3<float>::Simd operator-( const Point3<float>::Simd& p, const Vector3<float>& v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Sub( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector3<float>::Simd operator-( Point3<float> p, Vector3<float>::Simd v )
+    inline Point3<float>::Simd operator-( const Point3<float>& p, const Vector3<float>::Simd& v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Sub( Traits::Load( p.values ), v.simd );
     }
-    inline Vector3<float>::Simd operator-( Point3<float>::Simd p, Vector3<float>::Simd v )
+    inline Point3<float>::Simd operator-( const Point3<float>::Simd& p, const Vector3<float>::Simd& v )
     {
         using Traits = Point3<float>::Traits;
         return Traits::Sub( p.simd, v.simd );
     }
+
+    inline Vector3<float>::Simd operator-( const Point3<float>& p, const Point3<float>& v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector3<float>::Simd operator-( const Point3<float>::Simd& p, const Point3<float>& v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector3<float>::Simd operator-( const Point3<float>& p, const Point3<float>::Simd& v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector3<float>::Simd operator-( const Point3<float>::Simd& p, const Point3<float>::Simd& v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
+
 
     //
-    inline Vector3<Int32>::Simd operator+( Point3<Int32> p, Vector3<Int32> v )
+    inline Point3<Int32>::Simd operator+( const Point3<Int32>& p, const Vector3<Int32>& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector3<Int32>::Simd operator+( Point3<Int32>::Simd p, Vector3<Int32> v )
+    inline Point3<Int32>::Simd operator+( const Point3<Int32>::Simd& p, const Vector3<Int32>& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Add( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector3<Int32>::Simd operator+( Point3<Int32> p, Vector3<Int32>::Simd v )
+    inline Point3<Int32>::Simd operator+( const Point3<Int32>& p, const Vector3<Int32>::Simd& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Add( Traits::Load( p.values ), v.simd );
     }
-    inline Vector3<Int32>::Simd operator+( Point3<Int32>::Simd p, Vector3<Int32>::Simd v )
+    inline Point3<Int32>::Simd operator+( const Point3<Int32>::Simd& p, const Vector3<Int32>::Simd& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Add( p.simd, v.simd );
     }
 
-    inline Vector3<Int32>::Simd operator-( Point3<Int32> p, Vector3<Int32> v )
+    inline Point3<Int32>::Simd operator-( const Point3<Int32>& p, const Vector3<Int32>& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
     }
-    inline Vector3<Int32>::Simd operator-( Point3<Int32>::Simd p, Vector3<Int32> v )
+    inline Point3<Int32>::Simd operator-( const Point3<Int32>::Simd& p, const Vector3<Int32>& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Sub( p.simd, Traits::Load( v.values ) );
     }
-    inline Vector3<Int32>::Simd operator-( Point3<Int32> p, Vector3<Int32>::Simd v )
+    inline Point3<Int32>::Simd operator-( const Point3<Int32>& p, const Vector3<Int32>::Simd& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Sub( Traits::Load( p.values ), v.simd );
     }
-    inline Vector3<Int32>::Simd operator-( Point3<Int32>::Simd p, Vector3<Int32>::Simd v )
+    inline Point3<Int32>::Simd operator-( const Point3<Int32>::Simd& p, const Vector3<Int32>::Simd& v )
     {
         using Traits = Point3<Int32>::Traits;
         return Traits::Sub( p.simd, v.simd );
     }
 
+    inline Vector3<Int32>::Simd operator-( const Point3<Int32>& p, const Point3<Int32>& v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector3<Int32>::Simd operator-( const Point3<Int32>::Simd& p, const Point3<Int32>& v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector3<Int32>::Simd operator-( const Point3<Int32>& p, const Point3<Int32>::Simd& v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector3<Int32>::Simd operator-( const Point3<Int32>::Simd& p, const Point3<Int32>::Simd& v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
 
 
     // Point2* Definitions
@@ -2122,7 +2246,7 @@ namespace pbrto
             void BoundingSphere( Point2<T>* c, Float* rad ) const
         {
             *c = ( pMin + pMax ) / 2;
-            *rad = Inside( *c, *this ) ? Distance( *c, pMax ) : 0;
+            *rad = Inside( *c, *this ) ? ScalarDistance( *c, pMax ) : 0;
         }
 
         std::string ToString( ) const { return StringPrintf( "[ %s - %s ]", pMin, pMax ); }
@@ -2501,7 +2625,7 @@ namespace pbrto
     }
 
     template <typename T, typename U>
-    PBRT_CPU_GPU inline auto DistanceSquared( Point3<T> p, const Bounds3<U>& b )
+    PBRT_CPU_GPU inline auto ScalarDistanceSquared( Point3<T> p, const Bounds3<U>& b )
     {
         using TDist = decltype( T{} - U{} );
         TDist dx = std::max<TDist>( { 0, b.pMin.x - p.x, p.x - b.pMax.x } );
@@ -2511,9 +2635,9 @@ namespace pbrto
     }
 
     template <typename T, typename U>
-    PBRT_CPU_GPU inline auto Distance( Point3<T> p, const Bounds3<U>& b )
+    PBRT_CPU_GPU inline auto ScalarDistance( Point3<T> p, const Bounds3<U>& b )
     {
-        auto dist2 = DistanceSquared( p, b );
+        auto dist2 = ScalarDistanceSquared( p, b );
         using TDist = typename TupleLength<decltype( dist2 )>::type;
         return Math::Sqrt( TDist( dist2 ) );
     }
@@ -2637,10 +2761,10 @@ namespace pbrto
         auto dxa = Math::Cross( d, a );
 
 
-        if ( Traits::First( Math::LengthSquared( axb ).simd ) == 0 ||
-            Traits::First( Math::LengthSquared( bxc ).simd ) == 0 ||
-            Traits::First( Math::LengthSquared( cxd ).simd ) == 0 ||
-            Traits::First( Math::LengthSquared( dxa ).simd ) == 0 )
+        if ( Math::ScalarLengthSquared( axb ) == 0 ||
+            Math::LengthSquared( bxc ) == 0 ||
+            Math::LengthSquared( cxd ) == 0 ||
+            Math::LengthSquared( dxa ) == 0 )
             return 0;
         axb = Normalize( axb );
         bxc = Normalize( bxc );

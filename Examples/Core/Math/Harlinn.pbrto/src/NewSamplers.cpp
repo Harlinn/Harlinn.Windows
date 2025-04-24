@@ -351,7 +351,7 @@ namespace pbrto
         if ( Options->pixelSamples )
         {
             int nSamples = *Options->pixelSamples;
-            int div = Math::Sqrt( static_cast< float >( nSamples ) );
+            int div = std::sqrt( nSamples );
             while ( nSamples % div )
             {
                 NCHECK_GT( div, 0 );
@@ -430,10 +430,10 @@ namespace pbrto
         {
             int64_t nSmall = currentIteration - X_i.lastModificationIteration;
             // Apply _nSmall_ small step mutations to $\VEC{X}_i$
-            Float effSigma = sigma * Math::Sqrt( ( Float )nSmall );
+            Float effSigma = sigma * std::sqrt( ( Float )nSmall );
             Float delta = SampleNormal( rng.Uniform<Float>( ), 0, effSigma );
             X_i.value += delta;
-            X_i.value -= Math::Floor( X_i.value );
+            X_i.value -= pstdo::floor( X_i.value );
         }
         X_i.lastModificationIteration = currentIteration;
 

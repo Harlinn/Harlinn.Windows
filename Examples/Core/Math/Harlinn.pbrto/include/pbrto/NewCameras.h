@@ -45,9 +45,6 @@ namespace pbrto
     // CameraTransform Definition
     class CameraTransform
     {
-        // CameraTransform Private Members
-        AnimatedTransform renderFromCamera;
-        Transform worldFromRender;
     public:
         // CameraTransform Public Methods
         CameraTransform( ) = default;
@@ -57,7 +54,7 @@ namespace pbrto
         {
             return renderFromCamera( p, time );
         }
-        Point3f::Simd RenderFromCamera( const Point3f::Simd& p, Float time ) const
+        Point3f::Simd RenderFromCamera( Point3f::Simd p, Float time ) const
         {
             return renderFromCamera( p, time );
         }
@@ -65,16 +62,15 @@ namespace pbrto
         {
             return renderFromCamera.ApplyInverse( p, time );
         }
-        Point3f::Simd CameraFromRender( const Point3f::Simd& p, Float time ) const
+        Point3f::Simd CameraFromRender( Point3f::Simd p, Float time ) const
         {
             return renderFromCamera.ApplyInverse( p, time );
         }
-
         Point3f RenderFromWorld( Point3f p ) const 
         { 
             return worldFromRender.ApplyInverse( p ); 
         }
-        Point3f::Simd RenderFromWorld( const Point3f::Simd& p ) const
+        Point3f::Simd RenderFromWorld( Point3f::Simd p ) const
         {
             return worldFromRender.ApplyInverse( p );
         }
@@ -101,7 +97,7 @@ namespace pbrto
         {
             return renderFromCamera( v, time );
         }
-        Vector3f::Simd RenderFromCamera( const Vector3f::Simd& v, Float time ) const
+        Vector3f::Simd RenderFromCamera( Vector3f::Simd v, Float time ) const
         {
             return renderFromCamera( v, time );
         }
@@ -110,15 +106,12 @@ namespace pbrto
         {
             return renderFromCamera( n, time );
         }
-        Normal3f::Simd RenderFromCamera( const Normal3f::Simd& n, Float time ) const
+        Normal3f RenderFromCamera( Normal3f::Simd n, Float time ) const
         {
             return renderFromCamera( n, time );
         }
 
-        Ray RenderFromCamera( const Ray& r ) const 
-        { 
-            return renderFromCamera( r ); 
-        }
+        Ray RenderFromCamera( const Ray& r ) const { return renderFromCamera( r ); }
 
         RayDifferential RenderFromCamera( const RayDifferential& r ) const
         {
@@ -129,7 +122,7 @@ namespace pbrto
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
-        Vector3f::Simd CameraFromRender( const Vector3f::Simd& v, Float time ) const
+        Vector3f::Simd CameraFromRender( Vector3f::Simd v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
@@ -138,8 +131,7 @@ namespace pbrto
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
-
-        Normal3f::Simd CameraFromRender( const Normal3f::Simd& v, Float time ) const
+        Normal3f::Simd CameraFromRender( Normal3f::Simd v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
@@ -157,43 +149,42 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        
+        // CameraTransform Private Members
+        AnimatedTransform renderFromCamera;
+        Transform worldFromRender;
     };
 
     // CameraWiSample Definition
     struct CameraWiSample
     {
-        SampledSpectrum::Simd Wi;
-        Vector3f::Simd wi;
-        Float pdf;
-        Point2f pRaster;
-        Interaction pRef;
-        Interaction pLens;
-
         // CameraWiSample Public Methods
         CameraWiSample( ) = default;
-        CameraWiSample( SampledSpectrum Wi, Vector3f wi, Float pdf, Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
+        PBRT_CPU_GPU
+            CameraWiSample( const SampledSpectrum& Wi, const Vector3f& wi, Float pdf,
+                Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
             : Wi( Wi ), wi( wi ), pdf( pdf ), pRaster( pRaster ), pRef( pRef ), pLens( pLens )
-        { }
-        CameraWiSample( SampledSpectrum::Simd Wi, Vector3f::Simd wi, Float pdf, Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
-            : Wi( Wi ), wi( wi ), pdf( pdf ), pRaster( pRaster ), pRef( pRef ), pLens( pLens )
-        { }
+        {
+        }
 
-        
+        SampledSpectrum Wi;
+        Vector3f wi;
+        Float pdf;
+        Point2f pRaster;
+        Interaction pRef, pLens;
     };
 
     // CameraRay Definition
-    struct alignas( Point3f::Simd::Traits::AlignAs ) CameraRay
+    struct CameraRay
     {
         Ray ray;
-        SampledSpectrum weight = SampledSpectrum( 1.f );
+        SampledSpectrum weight = SampledSpectrum( 1 );
     };
 
     // CameraRayDifferential Definition
-    struct alignas(Point3f::Simd::Traits::AlignAs) CameraRayDifferential
+    struct CameraRayDifferential
     {
         RayDifferential ray;
-        SampledSpectrum weight = SampledSpectrum( 1.f );
+        SampledSpectrum weight = SampledSpectrum( 1 );
     };
 
     // CameraBaseParameters Definition
@@ -213,24 +204,20 @@ namespace pbrto
     {
     public:
         // CameraBase Public Methods
-        Film GetFilm( ) const 
-        { 
-            return film; 
-        }
-        const CameraTransform& GetCameraTransform( ) const 
-        { 
-            return cameraTransform; 
-        }
+        PBRT_CPU_GPU
+            Film GetFilm( ) const { return film; }
+        PBRT_CPU_GPU
+            const CameraTransform& GetCameraTransform( ) const { return cameraTransform; }
 
-        Float SampleTime( Float u ) const 
-        { 
-            return Lerp2( u, shutterOpen, shutterClose ); 
-        }
+        PBRT_CPU_GPU
+            Float SampleTime( Float u ) const { return Lerp2( u, shutterOpen, shutterClose ); }
 
         void InitMetadata( ImageMetadata* metadata ) const;
         std::string ToString( ) const;
 
-        void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const
+        PBRT_CPU_GPU
+            void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel,
+                Vector3f* dpdx, Vector3f* dpdy ) const
         {
             // Compute tangent plane equation for ray differential intersections
             Point3f pCamera = CameraFromRender( p, time );
@@ -253,11 +240,11 @@ namespace pbrto
             Float sppScale =
                 GetOptions( ).disablePixelJitter
                 ? 1
-                : std::max<Float>( .125, 1 / Math::Sqrt( ( Float )samplesPerPixel ) );
+                : std::max<Float>( .125, 1 / std::sqrt( ( Float )samplesPerPixel ) );
             *dpdx =
-                sppScale * RenderFromCamera( Vector3f(DownZFromCamera.ApplyInverse( Vector3f( px - pDownZ ) )), time );
+                sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( px - pDownZ ), time );
             *dpdy =
-                sppScale * RenderFromCamera( Vector3f(DownZFromCamera.ApplyInverse( Vector3f( py - pDownZ ) )), time );
+                sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( py - pDownZ ), time );
         }
 
     protected:
@@ -273,7 +260,7 @@ namespace pbrto
         CameraBase( ) = default;
         CameraBase( CameraBaseParameters p );
 
-        static std::optional<CameraRayDifferential> GenerateRayDifferential(Camera camera, CameraSample sample, SampledWavelengths& lambda );
+        static pstdo::optional<CameraRayDifferential> GenerateRayDifferential( Camera camera, CameraSample sample, SampledWavelengths& lambda );
 
         Ray RenderFromCamera( const Ray& r ) const
         {
@@ -289,19 +276,16 @@ namespace pbrto
         {
             return cameraTransform.RenderFromCamera( v, time );
         }
-
-        Vector3f::Simd RenderFromCamera( const Vector3f::Simd& v, Float time ) const
+        Vector3f::Simd RenderFromCamera( Vector3f::Simd v, Float time ) const
         {
             return cameraTransform.RenderFromCamera( v, time );
         }
-
 
         Normal3f RenderFromCamera( Normal3f v, Float time ) const
         {
             return cameraTransform.RenderFromCamera( v, time );
         }
-
-        Normal3f::Simd RenderFromCamera( const Normal3f::Simd& v, Float time ) const
+        Normal3f::Simd RenderFromCamera( Normal3f::Simd v, Float time ) const
         {
             return cameraTransform.RenderFromCamera( v, time );
         }
@@ -310,8 +294,7 @@ namespace pbrto
         {
             return cameraTransform.RenderFromCamera( p, time );
         }
-
-        Point3f::Simd RenderFromCamera( const Point3f::Simd& p, Float time ) const
+        Point3f::Simd RenderFromCamera( Point3f::Simd p, Float time ) const
         {
             return cameraTransform.RenderFromCamera( p, time );
         }
@@ -320,8 +303,7 @@ namespace pbrto
         {
             return cameraTransform.CameraFromRender( v, time );
         }
-
-        Vector3f::Simd CameraFromRender( const Vector3f::Simd& v, Float time ) const
+        Vector3f::Simd CameraFromRender( Vector3f::Simd v, Float time ) const
         {
             return cameraTransform.CameraFromRender( v, time );
         }
@@ -330,8 +312,7 @@ namespace pbrto
         {
             return cameraTransform.CameraFromRender( v, time );
         }
-
-        Normal3f::Simd CameraFromRender( const Normal3f::Simd& v, Float time ) const
+        Normal3f::Simd CameraFromRender( Normal3f::Simd v, Float time ) const
         {
             return cameraTransform.CameraFromRender( v, time );
         }
@@ -340,12 +321,10 @@ namespace pbrto
         {
             return cameraTransform.CameraFromRender( p, time );
         }
-
-        Point3f::Simd CameraFromRender( const Point3f::Simd& p, Float time ) const
+        Point3f::Simd CameraFromRender( Point3f::Simd p, Float time ) const
         {
             return cameraTransform.CameraFromRender( p, time );
         }
-
 
         void FindMinimumDifferentials( Camera camera );
     };
@@ -353,14 +332,6 @@ namespace pbrto
     // ProjectiveCamera Definition
     class ProjectiveCamera : public CameraBase
     {
-    protected:
-        // ProjectiveCamera Protected Members
-        Transform screenFromCamera; 
-        Transform cameraFromRaster;
-        Transform rasterFromScreen; 
-        Transform screenFromRaster;
-        Float lensRadius; 
-        Float focalDistance;
     public:
         // ProjectiveCamera Public Methods
         ProjectiveCamera( ) = default;
@@ -368,11 +339,13 @@ namespace pbrto
 
         std::string BaseToString( ) const;
 
-        ProjectiveCamera( CameraBaseParameters baseParameters, const Transform& screenFromCamera, Bounds2f screenWindow, Float lensRadius, Float focalDistance )
+        ProjectiveCamera( CameraBaseParameters baseParameters,
+            const Transform& screenFromCamera, Bounds2f screenWindow,
+            Float lensRadius, Float focalDistance )
             : CameraBase( baseParameters ),
-              screenFromCamera( screenFromCamera ),
-              lensRadius( lensRadius ),
-              focalDistance( focalDistance )
+            screenFromCamera( screenFromCamera ),
+            lensRadius( lensRadius ),
+            focalDistance( focalDistance )
         {
             // Compute projective camera transformations
             // Compute projective camera screen transformations
@@ -380,16 +353,19 @@ namespace pbrto
                 Scale( 1 / ( screenWindow.pMax.x - screenWindow.pMin.x ),
                     1 / ( screenWindow.pMax.y - screenWindow.pMin.y ), 1 ) *
                 Translate( Vector3f( -screenWindow.pMin.x, -screenWindow.pMax.y, 0 ) );
-
-            Transform rasterFromNDC = Scale( film.FullResolution( ).x, -film.FullResolution( ).y, 1 );
-
+            Transform rasterFromNDC =
+                Scale( film.FullResolution( ).x, -film.FullResolution( ).y, 1 );
             rasterFromScreen = rasterFromNDC * NDCFromScreen;
             screenFromRaster = Inverse( rasterFromScreen );
 
             cameraFromRaster = Inverse( screenFromCamera ) * screenFromRaster;
         }
 
-    
+    protected:
+        // ProjectiveCamera Protected Members
+        Transform screenFromCamera, cameraFromRaster;
+        Transform rasterFromScreen, screenFromRaster;
+        Float lensRadius, focalDistance;
     };
 
     // OrthographicCamera Definition
@@ -397,8 +373,10 @@ namespace pbrto
     {
     public:
         // OrthographicCamera Public Methods
-        OrthographicCamera( CameraBaseParameters baseParameters, Bounds2f screenWindow, Float lensRadius, Float focalDist )
-            : ProjectiveCamera( baseParameters, Orthographic( 0, 1 ), screenWindow, lensRadius, focalDist )
+        OrthographicCamera( CameraBaseParameters baseParameters, Bounds2f screenWindow,
+            Float lensRadius, Float focalDist )
+            : ProjectiveCamera( baseParameters, Orthographic( 0, 1 ), screenWindow, lensRadius,
+                focalDist )
         {
             // Compute differential changes in origin for orthographic camera rays
             dxCamera = cameraFromRaster( Vector3f( 1, 0, 0 ) );
@@ -410,25 +388,36 @@ namespace pbrto
             minPosDifferentialY = dyCamera;
         }
 
-        pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
+                SampledWavelengths& lambda ) const;
 
-        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
+                CameraSample sample, SampledWavelengths& lambda ) const;
 
-        static OrthographicCamera* Create( const ParameterDictionary& parameters, const CameraTransform& cameraTransform, Film film, Medium medium, const FileLoc* loc, Allocator alloc = {} );
+        static OrthographicCamera* Create( const ParameterDictionary& parameters,
+            const CameraTransform& cameraTransform, Film film,
+            Medium medium, const FileLoc* loc,
+            Allocator alloc = {} );
 
-        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
+        PBRT_CPU_GPU
+            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
                 Point2f* pRaster2 = nullptr ) const
         {
             NLOG_FATAL( "We() unimplemented for OrthographicCamera" );
             return {};
         }
 
-        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "PDF_We() unimplemented for OrthographicCamera" );
         }
 
-        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
+                SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "SampleWi() unimplemented for OrthographicCamera" );
             return {};
@@ -446,19 +435,23 @@ namespace pbrto
     {
     public:
         // PerspectiveCamera Public Methods
-        PerspectiveCamera( CameraBaseParameters baseParameters, Float fov, Bounds2f screenWindow, Float lensRadius, Float focalDist )
-            : ProjectiveCamera( baseParameters, Perspective( fov, 1e-2f, 1000.f ), screenWindow, lensRadius, focalDist )
+        PerspectiveCamera( CameraBaseParameters baseParameters, Float fov,
+            Bounds2f screenWindow, Float lensRadius, Float focalDist )
+            : ProjectiveCamera( baseParameters, Perspective( fov, 1e-2f, 1000.f ), screenWindow,
+                lensRadius, focalDist )
         {
             // Compute differential changes in origin for perspective camera rays
-            dxCamera = cameraFromRaster( Point3f( 1, 0, 0 ) ) - cameraFromRaster( Point3f( 0, 0, 0 ) );
-            dyCamera = cameraFromRaster( Point3f( 0, 1, 0 ) ) - cameraFromRaster( Point3f( 0, 0, 0 ) );
+            dxCamera =
+                cameraFromRaster( Point3f( 1, 0, 0 ) ) - cameraFromRaster( Point3f( 0, 0, 0 ) );
+            dyCamera =
+                cameraFromRaster( Point3f( 0, 1, 0 ) ) - cameraFromRaster( Point3f( 0, 0, 0 ) );
 
             // Compute _cosTotalWidth_ for perspective camera
             Point2f radius = Point2f( film.GetFilter( ).Radius( ) );
             Point3f pCorner( -radius.x, -radius.y, 0.f );
             Vector3f wCornerCamera = Normalize( Vector3f( cameraFromRaster( pCorner ) ) );
             cosTotalWidth = wCornerCamera.z;
-            NDCHECK_LT( .9999 * cosTotalWidth, Math::Cos( Radians( fov / 2 ) ) );
+            NDCHECK_LT( .9999 * cosTotalWidth, std::cos( Radians( fov / 2 ) ) );
 
             // Compute image plane area at $z=1$ for _PerspectiveCamera_
             Point2i res = film.FullResolution( );
@@ -474,15 +467,27 @@ namespace pbrto
 
         PerspectiveCamera( ) = default;
 
-        static PerspectiveCamera* Create( const ParameterDictionary& parameters, const CameraTransform& cameraTransform, Film film, Medium medium, const FileLoc* loc, Allocator alloc = {} );
+        static PerspectiveCamera* Create( const ParameterDictionary& parameters,
+            const CameraTransform& cameraTransform, Film film,
+            Medium medium, const FileLoc* loc,
+            Allocator alloc = {} );
 
-        pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
+                SampledWavelengths& lambda ) const;
 
-        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
+                CameraSample sample, SampledWavelengths& lambda ) const;
 
-        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const;
-        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
-        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
+                Point2f* pRaster2 = nullptr ) const;
+        PBRT_CPU_GPU
+            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
+                SampledWavelengths& lambda ) const;
 
         std::string ToString( ) const;
 
@@ -513,25 +518,34 @@ namespace pbrto
             Medium medium, const FileLoc* loc,
             Allocator alloc = {} );
 
-        pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
+                SampledWavelengths& lambda ) const;
 
-        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
+                CameraSample sample, SampledWavelengths& lambda ) const
         {
             return CameraBase::GenerateRayDifferential( this, sample, lambda );
         }
 
-        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
+        PBRT_CPU_GPU
+            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
+                Point2f* pRaster2 = nullptr ) const
         {
             NLOG_FATAL( "We() unimplemented for SphericalCamera" );
             return {};
         }
 
-        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "PDF_We() unimplemented for SphericalCamera" );
         }
 
-        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
+                SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "SampleWi() unimplemented for SphericalCamera" );
             return {};
@@ -554,20 +568,6 @@ namespace pbrto
     // RealisticCamera Definition
     class RealisticCamera : public CameraBase
     {
-        // RealisticCamera Private Members
-        struct LensElementInterface
-        {
-            Float curvatureRadius;
-            Float thickness;
-            Float eta;
-            Float apertureRadius;
-            std::string ToString( ) const;
-        };
-
-        Bounds2f physicalExtent;
-        pstdo::vector<LensElementInterface> elementInterfaces;
-        Image apertureImage;
-        pstdo::vector<Bounds2f> exitPupilBounds;
     public:
         // RealisticCamera Public Methods
         RealisticCamera( CameraBaseParameters baseParameters,
@@ -579,25 +579,34 @@ namespace pbrto
             Medium medium, const FileLoc* loc,
             Allocator alloc = {} );
 
-        pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
+                SampledWavelengths& lambda ) const;
 
-        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
+                CameraSample sample, SampledWavelengths& lambda ) const
         {
             return CameraBase::GenerateRayDifferential( this, sample, lambda );
         }
 
-        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
+        PBRT_CPU_GPU
+            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
+                Point2f* pRaster2 = nullptr ) const
         {
             NLOG_FATAL( "We() unimplemented for RealisticCamera" );
             return {};
         }
 
-        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+        PBRT_CPU_GPU
+            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "PDF_We() unimplemented for RealisticCamera" );
         }
 
-        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU
+            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
+                SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "SampleWi() unimplemented for RealisticCamera" );
             return {};
@@ -607,12 +616,21 @@ namespace pbrto
 
     private:
         // RealisticCamera Private Declarations
-        
+        struct LensElementInterface
+        {
+            Float curvatureRadius;
+            Float thickness;
+            Float eta;
+            Float apertureRadius;
+            std::string ToString( ) const;
+        };
 
         // RealisticCamera Private Methods
-        Float LensRearZ( ) const { return elementInterfaces.back( ).thickness; }
+        PBRT_CPU_GPU
+            Float LensRearZ( ) const { return elementInterfaces.back( ).thickness; }
 
-        Float LensFrontZ( ) const
+        PBRT_CPU_GPU
+            Float LensFrontZ( ) const
         {
             Float zSum = 0;
             for ( const LensElementInterface& element : elementInterfaces )
@@ -620,36 +638,40 @@ namespace pbrto
             return zSum;
         }
 
-        Float RearElementRadius( ) const { return elementInterfaces.back( ).apertureRadius; }
+        PBRT_CPU_GPU
+            Float RearElementRadius( ) const { return elementInterfaces.back( ).apertureRadius; }
 
-        Float TraceLensesFromFilm( const Ray& rCamera, Ray* rOut ) const;
+        PBRT_CPU_GPU
+            Float TraceLensesFromFilm( const Ray& rCamera, Ray* rOut ) const;
 
-        static bool IntersectSphericalElement( Float radius, Float zCenter, const Ray& ray, Float* tOut, Normal3f::Simd* nOut )
+        PBRT_CPU_GPU
+            static bool IntersectSphericalElement( Float radius, Float zCenter, const Ray& ray,
+                Float* t, Normal3f* n )
         {
-            Point3f::Simd o = ray.o - Vector3f( 0, 0, zCenter );
-            Float A = Math::ScalarLengthSquared( ray.d );
-            Float B = 2.f * ScalarHSum( ray.d * o );
-            Float C = Math::ScalarLengthSquared( o ) - radius * radius;
-
+            // Compute _t0_ and _t1_ for ray--element intersection
+            Point3f o = ray.o - Vector3f( 0, 0, zCenter );
+            Float A = ray.d.x * ray.d.x + ray.d.y * ray.d.y + ray.d.z * ray.d.z;
+            Float B = 2 * ( ray.d.x * o.x + ray.d.y * o.y + ray.d.z * o.z );
+            Float C = o.x * o.x + o.y * o.y + o.z * o.z - radius * radius;
             Float t0, t1;
             if ( !Quadratic( A, B, C, &t0, &t1 ) )
                 return false;
 
             // Select intersection $t$ based on ray direction and element curvature
-            bool useCloserT = ( ray.d.z( ) > 0 ) ^ ( radius < 0 );
-            auto t = useCloserT ? std::min( t0, t1 ) : std::max( t0, t1 );
-            *tOut = t;
-            if ( t < 0 )
+            bool useCloserT = ( ray.d.z > 0 ) ^ ( radius < 0 );
+            *t = useCloserT ? std::min( t0, t1 ) : std::max( t0, t1 );
+            if ( *t < 0 )
                 return false;
 
             // Compute surface normal of element at ray intersection point
-            Normal3f::Simd n = o + t * ray.d;
-            n = FaceForward( Normalize( n ), -ray.d );
-            *nOut = n;
+            *n = Normal3f( Vector3f( o + *t * ray.d ) );
+            *n = FaceForward( Normalize( *n ), -ray.d );
+
             return true;
         }
 
-        Float TraceLensesFromScene( const Ray& rCamera, Ray* rOut ) const;
+        PBRT_CPU_GPU
+            Float TraceLensesFromScene( const Ray& rCamera, Ray* rOut ) const;
 
         void DrawLensSystem( ) const;
         void DrawRayPathFromFilm( const Ray& r, bool arrow, bool toOpticalIntercept ) const;
@@ -661,33 +683,38 @@ namespace pbrto
         Bounds2f BoundExitPupil( Float filmX0, Float filmX1 ) const;
         void RenderExitPupil( Float sx, Float sy, const char* filename ) const;
 
-        pstdo::optional<ExitPupilSample> SampleExitPupil( Point2f pFilm, Point2f uLens ) const;
+        PBRT_CPU_GPU
+            pstdo::optional<ExitPupilSample> SampleExitPupil( Point2f pFilm, Point2f uLens ) const;
 
         void TestExitPupilBounds( ) const;
 
-        
+        // RealisticCamera Private Members
+        Bounds2f physicalExtent;
+        pstdo::vector<LensElementInterface> elementInterfaces;
+        Image apertureImage;
+        pstdo::vector<Bounds2f> exitPupilBounds;
     };
 
-    inline pstdo::optional<CameraRay> Camera::GenerateRay( CameraSample sample,
+    PBRT_CPU_GPU inline pstdo::optional<CameraRay> Camera::GenerateRay( CameraSample sample,
         SampledWavelengths& lambda ) const
     {
         auto generate = [ & ]( auto ptr ) { return ptr->GenerateRay( sample, lambda ); };
         return Dispatch( generate );
     }
 
-    inline Film Camera::GetFilm( ) const
+    PBRT_CPU_GPU inline Film Camera::GetFilm( ) const
     {
         auto getfilm = [ & ]( auto ptr ) { return ptr->GetFilm( ); };
         return Dispatch( getfilm );
     }
 
-    inline Float Camera::SampleTime( Float u ) const
+    PBRT_CPU_GPU inline Float Camera::SampleTime( Float u ) const
     {
         auto sample = [ & ]( auto ptr ) { return ptr->SampleTime( u ); };
         return Dispatch( sample );
     }
 
-    inline const CameraTransform& Camera::GetCameraTransform( ) const
+    PBRT_CPU_GPU inline const CameraTransform& Camera::GetCameraTransform( ) const
     {
         auto gtc = [ & ]( auto ptr ) -> const CameraTransform& {
             return ptr->GetCameraTransform( );
@@ -695,7 +722,9 @@ namespace pbrto
         return Dispatch( gtc );
     }
 
-    inline void Camera::Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const
+    PBRT_CPU_GPU inline void Camera::Approximate_dp_dxy( Point3f p, Normal3f n, Float time,
+        int samplesPerPixel, Vector3f* dpdx,
+        Vector3f* dpdy ) const
     {
         if constexpr ( AllInheritFrom<CameraBase>( Camera::Types( ) ) )
         {

@@ -482,9 +482,9 @@ namespace pbrto
             void LookAt( Float ex, Float ey, Float ez, Float lx, Float ly, Float lz, Float ux,
                 Float uy, Float uz, FileLoc loc );
         PBRTO_EXPORT
-            void ConcatTransform( Float transform[ 16 ], FileLoc loc );
+            void ConcatTransform( const std::array<Float, 16>& transform, FileLoc loc );
         PBRTO_EXPORT
-            void Transform( Float transform[ 16 ], FileLoc loc );
+            void Transform( const std::array<Float, 16>& transform, FileLoc loc );
         PBRTO_EXPORT
             void CoordinateSystem( const std::string&, FileLoc loc );
         PBRTO_EXPORT

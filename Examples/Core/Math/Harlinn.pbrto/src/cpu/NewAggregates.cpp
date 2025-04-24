@@ -611,9 +611,8 @@ namespace pbrto
         if ( !nodes )
             return {};
         pstdo::optional<ShapeIntersection> si;
-        //Vector3f invDir( 1.f / ray.d.x, 1.f / ray.d.y, 1.f / ray.d.z );
-        Vector3f invDir( Math::Reciprocal( ray.d ) );
-        int dirIsNeg[3] = {int( invDir.x < 0 ), int( invDir.y < 0 ), int( invDir.z < 0 )};
+        Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
+        int dirIsNeg[ 3 ] = { int( invDir.x < 0 ), int( invDir.y < 0 ), int( invDir.z < 0 ) };
         // Follow ray through BVH nodes to find primitive intersections
         int toVisitOffset = 0, currentNodeIndex = 0;
         int nodesToVisit[ 64 ];
@@ -675,9 +674,8 @@ namespace pbrto
     {
         if ( !nodes )
             return false;
-        //Vector3f invDir( 1.f / ray.d.x, 1.f / ray.d.y, 1.f / ray.d.z );
-        Vector3f invDir( Math::Reciprocal( ray.d ) );
-        int dirIsNeg[3] = {static_cast< int >( invDir.x < 0 ), static_cast< int >( invDir.y < 0 ),
+        Vector3f invDir( 1.f / ray.d.x, 1.f / ray.d.y, 1.f / ray.d.z );
+        int dirIsNeg[ 3 ] = { static_cast< int >( invDir.x < 0 ), static_cast< int >( invDir.y < 0 ),
                            static_cast< int >( invDir.z < 0 ) };
         int nodesToVisit[ 64 ];
         int toVisitOffset = 0, currentNodeIndex = 0;
@@ -931,7 +929,7 @@ namespace pbrto
         // Build kd-tree aggregate
         nextFreeNode = nAllocedNodes = 0;
         if ( maxDepth <= 0 )
-            maxDepth = Math::Round( 8 + 1.3f * Log2Int( int64_t( primitives.size( ) ) ) );
+            maxDepth = std::round( 8 + 1.3f * Log2Int( int64_t( primitives.size( ) ) ) );
         // Compute bounds for kd-tree construction
         std::vector<Bounds3f> primBounds;
         primBounds.reserve( primitives.size( ) );
@@ -1117,8 +1115,7 @@ namespace pbrto
             return {};
 
         // Prepare to traverse kd-tree for ray
-        //Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
-        Vector3f invDir( Math::Reciprocal( ray.d ) );
+        Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
         constexpr int maxToVisit = 64;
         KdNodeToVisit toVisit[ maxToVisit ];
         int toVisitIndex = 0;
@@ -1230,8 +1227,7 @@ namespace pbrto
             return false;
 
         // Prepare to traverse kd-tree for ray
-        //Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
-        Vector3f invDir( Math::Reciprocal( ray.d ) );
+        Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
         constexpr int maxTodo = 64;
         KdNodeToVisit toVisit[ maxTodo ];
         int toVisitIndex = 0;

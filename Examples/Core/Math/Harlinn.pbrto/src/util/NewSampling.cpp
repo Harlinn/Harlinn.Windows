@@ -44,13 +44,13 @@ namespace pbrto
 {
 
     // Sampling Function Definitions
-    PBRT_CPU_GPU pstdo::array<Float, 3> SampleSphericalTriangle( const pstdo::array<Point3f, 3>& v, Point3f p,
+    PBRTO_EXPORT pstdo::array<Float, 3> SampleSphericalTriangle( const pstdo::array<Point3f, 3>& v, Point3f p,
         Point2f u, Float* pdf )
     {
         if ( pdf )
             *pdf = 0;
         // Compute vectors _a_, _b_, and _c_ to spherical triangle vertices
-        Vector3f::Simd a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
+        Vector3f a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
         NCHECK_GT( ScalarLengthSquared( a ), 0 );
         NCHECK_GT( ScalarLengthSquared( b ), 0 );
         NCHECK_GT( ScalarLengthSquared( c ), 0 );
@@ -59,7 +59,7 @@ namespace pbrto
         c = Normalize( c );
 
         // Compute normalized cross products of all direction pairs
-        Vector3f::Simd n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
+        Vector3f n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
         if ( ScalarLengthSquared( n_ab ) == 0 || ScalarLengthSquared( n_bc ) == 0 || ScalarLengthSquared( n_ca ) == 0 )
             return {};
         n_ab = Normalize( n_ab );
@@ -81,17 +81,9 @@ namespace pbrto
         }
 
         // Find $\cos\beta'$ for point along _b_ for sampled area
-        Float sinAlpha;
-        Float cosAlpha;
-        SinCos( alpha, &sinAlpha, &cosAlpha );
-
-        Float sinAp_pi;
-        Float cosAp_pi;
-        SinCos( Ap_pi, &sinAp_pi, &cosAp_pi );
-
-        Float sinPhi = sinAp_pi * cosAlpha - cosAp_pi * sinAlpha;
-        Float cosPhi = cosAp_pi * cosAlpha + sinAp_pi * sinAlpha;
-
+        Float cosAlpha = std::cos( alpha ), sinAlpha = std::sin( alpha );
+        Float sinPhi = std::sin( Ap_pi ) * cosAlpha - std::cos( Ap_pi ) * sinAlpha;
+        Float cosPhi = std::cos( Ap_pi ) * cosAlpha + std::sin( Ap_pi ) * sinAlpha;
         Float k1 = cosPhi + cosAlpha;
         Float k2 = sinPhi - sinAlpha * ScalarDot( a, b ) /* cos c */;
         Float cosBp = ( k2 + ( DifferenceOfProducts( k2, cosPhi, k1, sinPhi ) ) * cosAlpha ) /
@@ -104,15 +96,15 @@ namespace pbrto
 
         // Sample $c'$ along the arc between $a$ and $c$
         Float sinBp = SafeSqrt( 1 - Sqr( cosBp ) );
-        Vector3f::Simd cp = cosBp * a + sinBp * Normalize( GramSchmidt( c, a ) );
+        Vector3f cp = cosBp * a + sinBp * Normalize( GramSchmidt( c, a ) );
 
         // Compute sampled spherical triangle direction and return barycentrics
         Float cosTheta = 1 - u[ 1 ] * ( 1 - ScalarDot( cp, b ) );
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
-        Vector3f::Simd w = cosTheta * b + sinTheta * Normalize( GramSchmidt( cp, b ) );
+        Vector3f w = cosTheta * b + sinTheta * Normalize( GramSchmidt( cp, b ) );
         // Find barycentric coordinates for sampled direction _w_
-        Vector3f::Simd e1 = v[ 1 ] - v[ 0 ], e2 = v[ 2 ] - v[ 0 ];
-        Vector3f::Simd s1 = Cross( w, e2 );
+        Vector3f e1 = v[ 1 ] - v[ 0 ], e2 = v[ 2 ] - v[ 0 ];
+        Vector3f s1 = Cross( w, e2 );
         Float divisor = ScalarDot( s1, e1 );
         NCHECK_RARE( 1e-6, divisor == 0 );
         if ( divisor == 0 )
@@ -122,7 +114,7 @@ namespace pbrto
             return { 1.f / 3.f, 1.f / 3.f, 1.f / 3.f };
         }
         Float invDivisor = 1 / divisor;
-        Vector3f::Simd s = p - v[ 0 ];
+        Vector3f s = p - v[ 0 ];
         Float b1 = ScalarDot( s, s1 ) * invDivisor;
         Float b2 = ScalarDot( w, Cross( s, e1 ) ) * invDivisor;
 
@@ -138,12 +130,11 @@ namespace pbrto
     }
 
     // Via Jim Arvo's SphTri.C
-    Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p, Vector3f w )
+    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p,
+        Vector3f w )
     {
         // Compute vectors _a_, _b_, and _c_ to spherical triangle vertices
-        Vector3f::Simd a( v[ 0 ] - p ); 
-        Vector3f::Simd b( v[ 1 ] - p ); 
-        Vector3f::Simd c( v[ 2 ] - p );
+        Vector3f a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
         NCHECK_GT( ScalarLengthSquared( a ), 0 );
         NCHECK_GT( ScalarLengthSquared( b ), 0 );
         NCHECK_GT( ScalarLengthSquared( c ), 0 );
@@ -152,13 +143,9 @@ namespace pbrto
         c = Normalize( c );
 
         // Compute normalized cross products of all direction pairs
-        Vector3f::Simd n_ab = Cross( a, b ); 
-        Vector3f::Simd n_bc = Cross( b, c );
-        Vector3f::Simd n_ca = Cross( c, a );
+        Vector3f n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
         if ( ScalarLengthSquared( n_ab ) == 0 || ScalarLengthSquared( n_bc ) == 0 || ScalarLengthSquared( n_ca ) == 0 )
-        {
             return {};
-        }
         n_ab = Normalize( n_ab );
         n_bc = Normalize( n_bc );
         n_ca = Normalize( n_ca );
@@ -169,26 +156,21 @@ namespace pbrto
         Float gamma = ScalarAngleBetween( n_ca, -n_bc );
 
         // Find vertex $\VEC{c'}$ along $\VEC{a}\VEC{c}$ arc for $\w{}$
-        Vector3f::Simd cp = Normalize( Cross( Cross( b, w ), Cross( c, a ) ) );
+        Vector3f cp = Normalize( Cross( Cross( b, w ), Cross( c, a ) ) );
         if ( ScalarDot( cp, a + c ) < 0 )
-        {
             cp = -cp;
-        }
+
         // Invert uniform area sampling to find _u0_
         Float u0;
         if ( ScalarDot( a, cp ) > 0.99999847691f /* 0.1 degrees */ )
-        {
             u0 = 0;
-        }
         else
         {
             // Compute area $A'$ of subtriangle
-            Vector3f::Simd n_cpb = Cross( cp, b ), n_acp = Cross( a, cp );
+            Vector3f n_cpb = Cross( cp, b ), n_acp = Cross( a, cp );
             NCHECK_RARE( 1e-5, ScalarLengthSquared( n_cpb ) == 0 || ScalarLengthSquared( n_acp ) == 0 );
             if ( ScalarLengthSquared( n_cpb ) == 0 || ScalarLengthSquared( n_acp ) == 0 )
-            {
                 return Point2f( 0.5, 0.5 );
-            }
             n_cpb = Normalize( n_cpb );
             n_acp = Normalize( n_acp );
             Float Ap = alpha + ScalarAngleBetween( n_ab, n_cpb ) + ScalarAngleBetween( n_acp, -n_cpb ) - Pi;
@@ -203,12 +185,12 @@ namespace pbrto
         return Point2f( Clamp( u0, 0, 1 ), Clamp( u1, 0, 1 ) );
     }
 
-    Point3f SampleSphericalRectangle( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point2f u, Float* pdf )
+    PBRTO_EXPORT Point3f SampleSphericalRectangle( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point2f u, Float* pdf )
     {
         // Compute local reference frame and transform rectangle coordinates
         Float exl = ScalarLength( ex ), eyl = ScalarLength( ey );
         Frame R = Frame::FromXY( ex / exl, ey / eyl );
-        Vector3f dLocal = R.ToLocal( Vector3f( s - pRef ) );
+        Vector3f dLocal = R.ToLocal( s - pRef );
         Float z0 = dLocal.z;
 
         // flip 'z' to make it point against 'Q'
@@ -221,13 +203,10 @@ namespace pbrto
         Float x1 = x0 + exl, y1 = y0 + eyl;
 
         // Find plane normals to rectangle edges and compute internal angles
-        Vector3f::Simd v00( x0, y0, z0 ); 
-        Vector3f::Simd v01( x0, y1, z0 );
-        Vector3f::Simd v10( x1, y0, z0 );
-        Vector3f::Simd v11( x1, y1, z0 );
-
-        Vector3f::Simd n0 = Normalize( Cross( v00, v10 ) ), n1 = Normalize( Cross( v10, v11 ) );
-        Vector3f::Simd n2 = Normalize( Cross( v11, v01 ) ), n3 = Normalize( Cross( v01, v00 ) );
+        Vector3f v00( x0, y0, z0 ), v01( x0, y1, z0 );
+        Vector3f v10( x1, y0, z0 ), v11( x1, y1, z0 );
+        Vector3f n0 = Normalize( Cross( v00, v10 ) ), n1 = Normalize( Cross( v10, v11 ) );
+        Vector3f n2 = Normalize( Cross( v11, v01 ) ), n3 = Normalize( Cross( v01, v00 ) );
         Float g0 = ScalarAngleBetween( -n0, n1 ), g1 = ScalarAngleBetween( -n1, n2 );
         Float g2 = ScalarAngleBetween( -n2, n3 ), g3 = ScalarAngleBetween( -n3, n0 );
 
@@ -246,14 +225,10 @@ namespace pbrto
             return Point3f( s + u[ 0 ] * ex + u[ 1 ] * ey );
 
         // Sample _cu_ for spherical rectangle sample
-        Float b0 = n0.z(), b1 = n2.z();
+        Float b0 = n0.z, b1 = n2.z;
         Float au = u[ 0 ] * ( g0 + g1 - 2 * Pi ) + ( u[ 0 ] - 1 ) * ( g2 + g3 );
-        Float sinAu;
-        Float cosAu;
-        SinCos( au, &sinAu, &cosAu );
-
-        Float fu = ( cosAu * b0 - b1 ) / sinAu;
-        Float cu = CopySign( 1 / Math::Sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
+        Float fu = ( std::cos( au ) * b0 - b1 ) / std::sin( au );
+        Float cu = pstdo::copysign( 1 / std::sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
         cu = Clamp( cu, -OneMinusEpsilon, OneMinusEpsilon );  // avoid NaNs
 
         // Find _xu_ along $x$ edge for spherical rectangle sample
@@ -261,17 +236,17 @@ namespace pbrto
         xu = Clamp( xu, x0, x1 );
 
         // Find _xv_ along $y$ edge for spherical rectangle sample
-        Float dd = Math::Sqrt( Sqr( xu ) + Sqr( z0 ) );
-        Float h0 = y0 / Math::Sqrt( Sqr( dd ) + Sqr( y0 ) );
-        Float h1 = y1 / Math::Sqrt( Sqr( dd ) + Sqr( y1 ) );
+        Float dd = std::sqrt( Sqr( xu ) + Sqr( z0 ) );
+        Float h0 = y0 / std::sqrt( Sqr( dd ) + Sqr( y0 ) );
+        Float h1 = y1 / std::sqrt( Sqr( dd ) + Sqr( y1 ) );
         Float hv = h0 + u[ 1 ] * ( h1 - h0 ), hvsq = Sqr( hv );
-        Float yv = ( hvsq < 1 - 1e-6f ) ? ( hv * dd ) / Math::Sqrt( 1 - hvsq ) : y1;
+        Float yv = ( hvsq < 1 - 1e-6f ) ? ( hv * dd ) / std::sqrt( 1 - hvsq ) : y1;
 
         // Return spherical triangle sample in original coordinate system
         return pRef + R.FromLocal( Vector3f( xu, yv, z0 ) );
     }
 
-    Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point3f pRect )
+    PBRTO_EXPORT Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point3f pRect )
     {
         // TODO: Delete anything unused in the below...
 
@@ -281,7 +256,7 @@ namespace pbrto
         Frame R = Frame::FromXY( ex / exl, ey / eyl );
 
         // compute rectangle coords in local reference system
-        Vector3f::Simd d = s - pRef;
+        Vector3f d = s - pRef;
         Vector3f dLocal = R.ToLocal( d );
         Float z0 = dLocal.z;
 
@@ -296,18 +271,17 @@ namespace pbrto
         Float y0 = dLocal.y;
         Float x1 = x0 + exl;
         Float y1 = y0 + eyl;
-        Float y0sq = Sqr( y0 ); 
-        Float y1sq = Sqr( y1 );
+        Float y0sq = Sqr( y0 ), y1sq = Sqr( y1 );
 
         // create vectors to four vertices
-        Vector3f::Simd v00( x0, y0, z0 ), v01( x0, y1, z0 );
-        Vector3f::Simd v10( x1, y0, z0 ), v11( x1, y1, z0 );
+        Vector3f v00( x0, y0, z0 ), v01( x0, y1, z0 );
+        Vector3f v10( x1, y0, z0 ), v11( x1, y1, z0 );
 
         // compute normals to edges
-        Vector3f::Simd n0 = Normalize( Cross( v00, v10 ) );
-        Vector3f::Simd n1 = Normalize( Cross( v10, v11 ) );
-        Vector3f::Simd n2 = Normalize( Cross( v11, v01 ) );
-        Vector3f::Simd n3 = Normalize( Cross( v01, v00 ) );
+        Vector3f n0 = Normalize( Cross( v00, v10 ) );
+        Vector3f n1 = Normalize( Cross( v10, v11 ) );
+        Vector3f n2 = Normalize( Cross( v11, v01 ) );
+        Vector3f n3 = Normalize( Cross( v01, v00 ) );
 
         // compute internal angles (gamma_i)
         Float g0 = ScalarAngleBetween( -n0, n1 );
@@ -316,7 +290,7 @@ namespace pbrto
         Float g3 = ScalarAngleBetween( -n3, n0 );
 
         // compute predefined constants
-        Float b0 = n0.z(), b1 = n2.z( ), b0sq = Sqr( b0 ), b1sq = Sqr( b1 );
+        Float b0 = n0.z, b1 = n2.z, b0sq = Sqr( b0 ), b1sq = Sqr( b1 );
 
         // compute solid angle from internal angles
         Float solidAngle = double( g0 ) + double( g1 ) + double( g2 ) + double( g3 ) - 2. * Pi;
@@ -324,11 +298,11 @@ namespace pbrto
         // TODO: this (rarely) goes differently than sample. figure out why...
         if ( solidAngle < 1e-3 )
         {
-            Vector3f::Simd pq = pRect - s;
+            Vector3f pq = pRect - s;
             return Point2f( ScalarDot( pq, ex ) / ScalarLengthSquared( ex ), ScalarDot( pq, ey ) / ScalarLengthSquared( ey ) );
         }
 
-        Vector3f v = R.ToLocal( Vector3f( pRect - pRef ) );
+        Vector3f v = R.ToLocal( pRect - pRef );
         Float xu = v.x, yv = v.y;
 
         xu = Clamp( xu, x0, x1 );  // avoid Infs
@@ -340,7 +314,7 @@ namespace pbrto
         // Float fusq = 1 / Sqr(cu) - b0sq;  // more stable
         Float invcusq = 1 + z0sq / Sqr( xu );
         Float fusq = invcusq - b0sq;  // the winner so far
-        Float fu = pstdo::copysign( Math::Sqrt( fusq ), xu );
+        Float fu = pstdo::copysign( std::sqrt( fusq ), xu );
         // Note, though have 1 + z^2/x^2 - b0^2, which isn't great if b0 \approx 1
         // double fusq = 1. - Sqr(double(b0)) + Sqr(double(z0) / double(xu));  //
         // this is worse?? double fu = pstdo::copysign(std::sqrt(fusq), cu);
@@ -363,8 +337,8 @@ namespace pbrto
 
         Float sqrt = SafeSqrt( DifferenceOfProducts( b0, b0, b1, b1 ) + fusq );
         // No benefit to difference of products here...
-        Float au = Math::ATan2( -( b1 * fu ) - Math::CopySign( b0 * sqrt, fu * b0 ),
-                            b0 * b1 - sqrt * std::abs( fu ) );
+        Float au = std::atan2( -( b1 * fu ) - pstdo::copysign( b0 * sqrt, fu * b0 ),
+            b0 * b1 - sqrt * std::abs( fu ) );
         if ( au > 0 )
             au -= 2 * Pi;
 
@@ -373,24 +347,24 @@ namespace pbrto
         Float u0 = ( au + g2 + g3 ) / solidAngle;
 
         Float ddsq = Sqr( xu ) + z0sq;
-        Float dd = Math::Sqrt( ddsq );
-        Float h0 = y0 / Math::Sqrt( ddsq + y0sq );
-        Float h1 = y1 / Math::Sqrt( ddsq + y1sq );
+        Float dd = std::sqrt( ddsq );
+        Float h0 = y0 / std::sqrt( ddsq + y0sq );
+        Float h1 = y1 / std::sqrt( ddsq + y1sq );
         Float yvsq = Sqr( yv );
 
         Float u1[ 2 ] = { ( DifferenceOfProducts( h0, h0, h0, h1 ) -
-                        std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                        std::abs( h0 - h1 ) * std::sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
                            Sqr( h0 - h1 ),
                        ( DifferenceOfProducts( h0, h0, h0, h1 ) +
-                        std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                        std::abs( h0 - h1 ) * std::sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
                            Sqr( h0 - h1 ) };
 
         // TODO: yuck is there a better way to figure out which is the right
         // solution?
         Float hv[ 2 ] = { Lerp2( u1[ 0 ], h0, h1 ), Lerp2( u1[ 1 ], h0, h1 ) };
         Float hvsq[ 2 ] = { Sqr( hv[ 0 ] ), Sqr( hv[ 1 ] ) };
-        Float yz[ 2 ] = { ( hv[ 0 ] * dd ) / Math::Sqrt( 1 - hvsq[ 0 ] ),
-                       ( hv[ 1 ] * dd ) / Math::Sqrt( 1 - hvsq[ 1 ] ) };
+        Float yz[ 2 ] = { ( hv[ 0 ] * dd ) / std::sqrt( 1 - hvsq[ 0 ] ),
+                       ( hv[ 1 ] * dd ) / std::sqrt( 1 - hvsq[ 1 ] ) };
 
         Point2f u = ( std::abs( yz[ 0 ] - yv ) < std::abs( yz[ 1 ] - yv ) )
             ? Point2f( Clamp( u0, 0, 1 ), u1[ 0 ] )
@@ -399,7 +373,7 @@ namespace pbrto
         return u;
     }
 
-    Vector3f::Simd SampleHenyeyGreenstein( Vector3f::Simd wo, Float g, Point2f u, Float* pdf )
+    PBRTO_EXPORT Vector3f SampleHenyeyGreenstein( Vector3f wo, Float g, Point2f u, Float* pdf )
     {
         // When g \approx -1 and u[0] \approx 0 or with g \approx 1 and u[0]
         // \approx 1, the computation of cosTheta below is unstable and can
@@ -414,13 +388,14 @@ namespace pbrto
         if ( std::abs( g ) < 1e-3f )
             cosTheta = 1 - 2 * u[ 0 ];
         else
-            cosTheta = -1 / ( 2 * g ) * ( 1 + Sqr( g ) - Sqr( ( 1 - Sqr( g ) ) / ( 1 + g - 2 * g * u[ 0 ] ) ) );
+            cosTheta =
+            -1 / ( 2 * g ) * ( 1 + Sqr( g ) - Sqr( ( 1 - Sqr( g ) ) / ( 1 + g - 2 * g * u[ 0 ] ) ) );
 
         // Compute direction _wi_ for Henyey--Greenstein sample
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
         Float phi = 2 * Pi * u[ 1 ];
         Frame wFrame = Frame::FromZ( wo );
-        Vector3f::Simd wi = wFrame.FromLocal( SphericalDirection( sinTheta, cosTheta, phi ) );
+        Vector3f wi = wFrame.FromLocal( SphericalDirection( sinTheta, cosTheta, phi ) );
 
         if ( pdf )
             *pdf = HenyeyGreenstein( cosTheta, g );
@@ -438,8 +413,7 @@ namespace pbrto
         return p;
     }
 
-    PBRT_CPU_GPU Float SampleCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f,
-        pstdo::span<const Float> F, Float u, Float* fval, Float* pdf )
+    PBRTO_EXPORT Float SampleCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, pstdo::span<const Float> F, Float u, Float* fval, Float* pdf )
     {
         NCHECK_EQ( nodes.size( ), f.size( ) );
         NCHECK_EQ( f.size( ), F.size( ) );
@@ -464,9 +438,9 @@ namespace pbrto
         Float Fhat, fhat;
         auto eval = [ & ]( Float t ) -> std::pair<Float, Float> {
             Fhat = EvaluatePolynomial( t, 0.f, f0, 0.5f * d0,
-                ( 1.f / 3.f ) * ( -2 * d0 - d1 ) + f1 - f0,
+                ( 1.f / 3.f ) * ( -2.f * d0 - d1 ) + f1 - f0,
                 0.25f * ( d0 + d1 ) + 0.5f * ( f0 - f1 ) );
-            fhat = EvaluatePolynomial( t, f0, d0, -2 * d0 - d1 + 3 * ( f1 - f0 ),
+            fhat = EvaluatePolynomial( t, f0, d0, -2.f * d0 - d1 + 3 * ( f1 - f0 ),
                 d0 + d1 + 2 * ( f0 - f1 ) );
             return { Fhat - u, fhat };
             };
@@ -479,7 +453,7 @@ namespace pbrto
         return x0 + width * t;
     }
 
-    PBRT_CPU_GPU Float SampleCatmullRom2D( pstdo::span<const Float> nodes1, pstdo::span<const Float> nodes2,
+    PBRTO_EXPORT Float SampleCatmullRom2D( pstdo::span<const Float> nodes1, pstdo::span<const Float> nodes2,
         pstdo::span<const Float> values, pstdo::span<const Float> cdf,
         Float alpha, Float u, Float* fval, Float* pdf )
     {

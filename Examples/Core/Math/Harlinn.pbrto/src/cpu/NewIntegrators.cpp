@@ -125,15 +125,14 @@ namespace pbrto
 
         Bounds2i pixelBounds = camera.GetFilm( ).PixelBounds( );
         int spp = samplerPrototype.SamplesPerPixel( );
-        ProgressReporter progress( int64_t( spp ) * pixelBounds.Area( ), "Rendering", Options->quiet );
+        ProgressReporter progress( int64_t( spp ) * pixelBounds.Area( ), "Rendering",
+            Options->quiet );
 
         int waveStart = 0, waveEnd = 1, nextWaveSize = 1;
 
         if ( Options->recordPixelStatistics )
-        {
-            StatsEnablePixelStats( pixelBounds, RemoveExtension( camera.GetFilm( ).GetFilename( ) ) );
-        }
-
+            StatsEnablePixelStats( pixelBounds,
+                RemoveExtension( camera.GetFilm( ).GetFilename( ) ) );
         // Handle MSE reference image, if provided
         pstdo::optional<Image> referenceImage;
         FILE* mseOutFile = nullptr;
@@ -189,30 +188,31 @@ namespace pbrto
         while ( waveStart < spp )
         {
             // Render current wave's image tiles in parallel
-            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) 
+            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) {
+                // Render image tile given by _tileBounds_
+                ScratchBuffer& scratchBuffer = scratchBuffers.Get( );
+                Sampler& sampler = samplers.Get( );
+                PBRT_DBG( "Starting image tile (%d,%d)-(%d,%d) waveStart %d, waveEnd %d\n",
+                    tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x,
+                    tileBounds.pMax.y, waveStart, waveEnd );
+                for ( Point2i pPixel : tileBounds )
                 {
-                    // Render image tile given by _tileBounds_
-                    ScratchBuffer& scratchBuffer = scratchBuffers.Get( );
-                    Sampler& sampler = samplers.Get( );
-                    PBRT_DBG( "Starting image tile (%d,%d)-(%d,%d) waveStart %d, waveEnd %d\n", tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y, waveStart, waveEnd );
-
-                    for ( Point2i pPixel : tileBounds )
+                    StatsReportPixelStart( pPixel );
+                    threadPixel = pPixel;
+                    // Render samples in pixel _pPixel_
+                    for ( int sampleIndex = waveStart; sampleIndex < waveEnd; ++sampleIndex )
                     {
-                        StatsReportPixelStart( pPixel );
-                        threadPixel = pPixel;
-                        // Render samples in pixel _pPixel_
-                        for ( int sampleIndex = waveStart; sampleIndex < waveEnd; ++sampleIndex )
-                        {
-                            threadSampleIndex = sampleIndex;
-                            sampler.StartPixelSample( pPixel, sampleIndex );
-                            EvaluatePixelSample( pPixel, sampleIndex, sampler, scratchBuffer );
-                            scratchBuffer.Reset( );
-                        }
-
-                        StatsReportPixelEnd( pPixel );
+                        threadSampleIndex = sampleIndex;
+                        sampler.StartPixelSample( pPixel, sampleIndex );
+                        EvaluatePixelSample( pPixel, sampleIndex, sampler, scratchBuffer );
+                        scratchBuffer.Reset( );
                     }
-                    PBRT_DBG( "Finished image tile (%d,%d)-(%d,%d)\n", tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y );
-                    progress.Update( ( waveEnd - waveStart ) * tileBounds.Area( ) );
+
+                    StatsReportPixelEnd( pPixel );
+                }
+                PBRT_DBG( "Finished image tile (%d,%d)-(%d,%d)\n", tileBounds.pMin.x,
+                    tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y );
+                progress.Update( ( waveEnd - waveStart ) * tileBounds.Area( ) );
                 } );
 
             // Update start and end wave
@@ -233,8 +233,10 @@ namespace pbrto
                 if ( referenceImage )
                 {
                     ImageMetadata filmMetadata;
-                    Image filmImage = camera.GetFilm( ).GetImage( &filmMetadata, 1.f / waveStart );
-                    ImageChannelValues mse = filmImage.MSE( filmImage.AllChannelsDesc( ), *referenceImage );
+                    Image filmImage =
+                        camera.GetFilm( ).GetImage( &filmMetadata, 1.f / waveStart );
+                    ImageChannelValues mse =
+                        filmImage.MSE( filmImage.AllChannelsDesc( ), *referenceImage );
                     fprintf( mseOutFile, "%d, %.9g\n", waveStart, mse.Average( ) );
                     metadata.MSE = mse.Average( );
                     fflush( mseOutFile );
@@ -254,7 +256,8 @@ namespace pbrto
     }
 
     // RayIntegrator Method Definitions
-    void RayIntegrator::EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler, ScratchBuffer& scratchBuffer )
+    void RayIntegrator::EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler,
+        ScratchBuffer& scratchBuffer )
     {
         // Sample wavelengths for the ray
         Float lu = sampler.Get1D( );
@@ -267,10 +270,11 @@ namespace pbrto
         CameraSample cameraSample = GetCameraSample( sampler, pPixel, filter );
 
         // Generate camera ray for current sample
-        std::optional<CameraRayDifferential> cameraRay = camera.GenerateRayDifferential( cameraSample, lambda );
+        pstdo::optional<CameraRayDifferential> cameraRay =
+            camera.GenerateRayDifferential( cameraSample, lambda );
 
         // Trace _cameraRay_ if valid
-        SampledSpectrum::Simd L( 0.f );
+        SampledSpectrum L( 0. );
         VisibleSurface visibleSurface;
         if ( cameraRay )
         {
@@ -278,7 +282,8 @@ namespace pbrto
             NDCHECK_GT( ScalarLength( cameraRay->ray.d ), .999f );
             NDCHECK_LT( ScalarLength( cameraRay->ray.d ), 1.001f );
             // Scale camera ray differentials based on image sampling rate
-            Float rayDiffScale = std::max<Float>( .125f, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+            Float rayDiffScale =
+                std::max<Float>( .125f, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
             if ( !Options->disablePixelJitter )
                 cameraRay->ray.ScaleDifferentials( rayDiffScale );
 
@@ -289,19 +294,19 @@ namespace pbrto
                 initializeVisibleSurface ? &visibleSurface : nullptr );
 
             // Issue warning if unexpected radiance value is returned
-            if ( L.HasNaN( ) )
+            if ( L.HasNaNs( ) )
             {
                 NLOG_ERROR( "Not-a-number radiance value returned for pixel (%d, "
                     "%d), sample %d. Setting to black.",
                     pPixel.x, pPixel.y, sampleIndex );
-                L = SampledSpectrum::Simd( 0.f );
+                L = SampledSpectrum( 0.f );
             }
-            else if ( IsInf( SampledSpectrum(L).Y( lambda ) ) )
+            else if ( IsInf( L.y( lambda ) ) )
             {
                 NLOG_ERROR( "Infinite radiance value returned for pixel (%d, %d), "
                     "sample %d. Setting to black.",
                     pPixel.x, pPixel.y, sampleIndex );
-                L = SampledSpectrum::Simd( 0.f );
+                L = SampledSpectrum( 0.f );
             }
 
             PBRT_DBG(
@@ -327,10 +332,11 @@ namespace pbrto
     NSTAT_COUNTER( "Intersections/Shadow ray intersection tests", nShadowTests );
 
     // Integrator Method Definitions
-    pstdo::optional<ShapeIntersection> Integrator::Intersect( const Ray& ray, Float tMax ) const
+    pstdo::optional<ShapeIntersection> Integrator::Intersect( const Ray& ray,
+        Float tMax ) const
     {
         ++nIntersectionTests;
-        NDCHECK_NE( ray.d, Vector3f::Simd( 0, 0, 0 ) );
+        NDCHECK_NE( ray.d, Vector3f( 0, 0, 0 ) );
         if ( aggregate )
             return aggregate.Intersect( ray, tMax );
         else
@@ -340,21 +346,22 @@ namespace pbrto
     bool Integrator::IntersectP( const Ray& ray, Float tMax ) const
     {
         ++nShadowTests;
-        NDCHECK_NE( ray.d, Vector3f::Simd( 0, 0, 0 ) );
+        NDCHECK_NE( ray.d, Vector3f( 0, 0, 0 ) );
         if ( aggregate )
             return aggregate.IntersectP( ray, tMax );
         else
             return false;
     }
 
-    SampledSpectrum::Simd Integrator::Tr( const Interaction& p0, const Interaction& p1, const SampledWavelengths& lambda ) const
+    SampledSpectrum Integrator::Tr( const Interaction& p0, const Interaction& p1,
+        const SampledWavelengths& lambda ) const
     {
         RNG rng( Hash( p0.p( ) ), Hash( p1.p( ) ) );
 
         // :-(
-        Ray ray = p0.IsSurfaceInteraction( ) ? p0.AsSurface( ).SpawnRayTo( p1 ) : p0.SpawnRayTo( p1 );
-
-        SampledSpectrum::Simd Tr( 1.f ), inv_w( 1.f );
+        Ray ray =
+            p0.IsSurfaceInteraction( ) ? p0.AsSurface( ).SpawnRayTo( p1 ) : p0.SpawnRayTo( p1 );
+        SampledSpectrum Tr( 1.f ), inv_w( 1.f );
         if ( ScalarLengthSquared( ray.d ) == 0 )
             return Tr;
 
@@ -363,29 +370,31 @@ namespace pbrto
             pstdo::optional<ShapeIntersection> si = Intersect( ray, 1 - ShadowEpsilon );
             // Handle opaque surface along ray's path
             if ( si && si->intr.material )
-                return SampledSpectrum::Simd( 0.0f );
+                return SampledSpectrum( 0.0f );
 
             // Update transmittance for current ray segment
             if ( ray.medium )
             {
-                Point3f::Simd pExit = ray( si ? si->tHit : ( 1 - ShadowEpsilon ) );
+                Point3f pExit = ray( si ? si->tHit : ( 1 - ShadowEpsilon ) );
                 ray.d = pExit - ray.o;
 
-                SampledSpectrum::Simd T_maj = SampleT_maj( ray, 1.f, rng.Uniform<Float>( ), rng, lambda,
-                        [ & ]( Point3f::Simd p, MediumProperties mp, SampledSpectrum::Simd sigma_maj, SampledSpectrum::Simd T_maj )
-                    {
-                        SampledSpectrum::Simd sigma_n = ClampZero( sigma_maj - mp.sigma_a - mp.sigma_s );
+                SampledSpectrum T_maj =
+                    SampleT_maj( ray, 1.f, rng.Uniform<Float>( ), rng, lambda,
+                        [ & ]( Point3f p, MediumProperties mp, SampledSpectrum sigma_maj,
+                            SampledSpectrum T_maj ) {
+                                SampledSpectrum sigma_n =
+                                    ClampZero( sigma_maj - mp.sigma_a - mp.sigma_s );
 
-                        // ratio-tracking: only evaluate null scattering
-                        Float pr = T_maj[ 0 ] * sigma_maj[ 0 ];
-                        Tr *= T_maj * sigma_n / pr;
-                        inv_w *= T_maj * sigma_maj / pr;
+                                // ratio-tracking: only evaluate null scattering
+                                Float pr = T_maj[ 0 ] * sigma_maj[ 0 ];
+                                Tr *= T_maj * sigma_n / pr;
+                                inv_w *= T_maj * sigma_maj / pr;
 
-                        if ( !Tr || !inv_w )
-                            return false;
+                                if ( !Tr || !inv_w )
+                                    return false;
 
-                        return true;
-                    } );
+                                return true;
+                        } );
                 Tr *= T_maj / T_maj[ 0 ];
                 inv_w *= T_maj / T_maj[ 0 ];
             }
@@ -396,7 +405,7 @@ namespace pbrto
             ray = si->intr.SpawnRayTo( p1 );
         }
         PBRT_DBG( "%s\n", StringPrintf( "Tr from %s to %s = %s", p0.pi, p1.pi, Tr ).c_str( ) );
-        return Tr / Avg( inv_w );
+        return Tr / inv_w.Average( );
     }
 
     std::string Integrator::ToString( ) const
@@ -412,19 +421,24 @@ namespace pbrto
     }
 
     // SimplePathIntegrator Method Definitions
-    SimplePathIntegrator::SimplePathIntegrator( int maxDepth, bool sampleLights, bool sampleBSDF, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights )
+    SimplePathIntegrator::SimplePathIntegrator( int maxDepth, bool sampleLights,
+        bool sampleBSDF, Camera camera,
+        Sampler sampler, Primitive aggregate,
+        std::vector<Light> lights )
         : RayIntegrator( camera, sampler, aggregate, lights ),
-          maxDepth( maxDepth ),
-          sampleLights( sampleLights ),
-          sampleBSDF( sampleBSDF ),
-          lightSampler( lights, Allocator( ) )
+        maxDepth( maxDepth ),
+        sampleLights( sampleLights ),
+        sampleBSDF( sampleBSDF ),
+        lightSampler( lights, Allocator( ) )
     {
     }
 
-    SampledSpectrum::Simd SimplePathIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* ) const
+    SampledSpectrum SimplePathIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda,
+        Sampler sampler, ScratchBuffer& scratchBuffer,
+        VisibleSurface* ) const
     {
         // Estimate radiance along ray using simple path tracing
-        SampledSpectrum::Simd L( 0.f ), beta( 1.f );
+        SampledSpectrum L( 0.f ), beta( 1.f );
         bool specularBounce = true;
         int depth = 0;
         while ( beta )
@@ -437,21 +451,15 @@ namespace pbrto
             if ( !si )
             {
                 if ( !sampleLights || specularBounce )
-                {
                     for ( const auto& light : infiniteLights )
-                    {
                         L += beta * light.Le( ray, lambda );
-                    }
-                }
                 break;
             }
 
             // Account for emissive surface if light was not sampled
             SurfaceInteraction& isect = si->intr;
             if ( !sampleLights || specularBounce )
-            {
                 L += beta * isect.Le( -ray.d, lambda );
-            }
 
             // End path if maximum depth reached
             if ( depth++ == maxDepth )
@@ -467,24 +475,24 @@ namespace pbrto
             }
 
             // Sample direct illumination if _sampleLights_ is true
-            Vector3f::Simd wo = -ray.d;
+            Vector3f wo = -ray.d;
             if ( sampleLights )
             {
-                pstdo::optional<SampledLight> sampledLight = lightSampler.Sample( sampler.Get1D( ) );
+                pstdo::optional<SampledLight> sampledLight =
+                    lightSampler.Sample( sampler.Get1D( ) );
                 if ( sampledLight )
                 {
                     // Sample point on _sampledLight_ to estimate direct illumination
                     Point2f uLight = sampler.Get2D( );
-                    pstdo::optional<LightLiSample> ls = sampledLight->light.SampleLi( isect, uLight, lambda );
+                    pstdo::optional<LightLiSample> ls =
+                        sampledLight->light.SampleLi( isect, uLight, lambda );
                     if ( ls && ls->L && ls->pdf > 0 )
                     {
                         // Evaluate BSDF for light and possibly add scattered radiance
-                        Vector3f::Simd wi = ls->wi;
-                        SampledSpectrum::Simd f = bsdf.f( wo, wi ) * ScalarAbsDot( wi, isect.shading.n );
+                        Vector3f wi = ls->wi;
+                        SampledSpectrum f = bsdf.f( wo, wi ) * ScalarAbsDot( wi, isect.shading.n );
                         if ( f && Unoccluded( isect, ls->pLight ) )
-                        {
                             L += beta * f * ls->L / ( sampledLight->p * ls->pdf );
-                        }
                     }
                 }
             }
@@ -506,7 +514,7 @@ namespace pbrto
             {
                 // Uniformly sample sphere or hemisphere to get new path direction
                 Float pdf;
-                Vector3f::Simd wi;
+                Vector3f wi;
                 BxDFFlags flags = bsdf.Flags( );
                 if ( IsReflective( flags ) && IsTransmissive( flags ) )
                 {
@@ -527,7 +535,7 @@ namespace pbrto
                 ray = isect.SpawnRay( wi );
             }
 
-            NCHECK_GE( SampledSpectrum( beta ).Y( lambda ), 0.f );
+            NCHECK_GE( beta.y( lambda ), 0.f );
             NDCHECK( !IsInf( beta.y( lambda ) ) );
         }
         return L;
@@ -589,7 +597,8 @@ namespace pbrto
         // Add contribution of directly visible light source
         if ( les->intr )
         {
-            pstdo::optional<CameraWiSample> cs = camera.SampleWi( *les->intr, sampler.Get2D( ), lambda );
+            pstdo::optional<CameraWiSample> cs =
+                camera.SampleWi( *les->intr, sampler.Get2D( ), lambda );
             if ( cs && cs->pdf != 0 )
             {
                 if ( Float pdf = light.PDF_Li( cs->pLens, -cs->wi ); pdf > 0 )
@@ -692,10 +701,12 @@ namespace pbrto
     {
     }
 
-    SampledSpectrum::Simd PathIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurf ) const
+    SampledSpectrum PathIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda,
+        Sampler sampler, ScratchBuffer& scratchBuffer,
+        VisibleSurface* visibleSurf ) const
     {
         // Declare local variables for _PathIntegrator::Li()_
-        SampledSpectrum::Simd L( 0.f ), beta( 1.f );
+        SampledSpectrum L( 0.f ), beta( 1.f );
         int depth = 0;
 
         Float p_b, etaScale = 1;
@@ -713,7 +724,7 @@ namespace pbrto
                 // Incorporate emission from infinite lights for escaped ray
                 for ( const auto& light : infiniteLights )
                 {
-                    SampledSpectrum::Simd Le = light.Le( ray, lambda );
+                    SampledSpectrum Le = light.Le( ray, lambda );
                     if ( depth == 0 || specularBounce )
                         L += beta * Le;
                     else
@@ -730,7 +741,7 @@ namespace pbrto
                 break;
             }
             // Incorporate emission from surface hit by ray
-            SampledSpectrum::Simd Le = si->intr.Le( -ray.d, lambda );
+            SampledSpectrum Le = si->intr.Le( -ray.d, lambda );
             if ( Le )
             {
                 if ( depth == 0 || specularBounce )
@@ -739,7 +750,8 @@ namespace pbrto
                 {
                     // Compute MIS weight for area light
                     Light areaLight( si->intr.areaLight );
-                    Float p_l = lightSampler.PMF( prevIntrCtx, areaLight ) * areaLight.PDF_Li( prevIntrCtx, ray.d, true );
+                    Float p_l = lightSampler.PMF( prevIntrCtx, areaLight ) *
+                        areaLight.PDF_Li( prevIntrCtx, ray.d, true );
                     Float w_l = PowerHeuristic( 1, p_b, 1, p_l );
 
                     L += beta * w_l * Le;
@@ -762,11 +774,11 @@ namespace pbrto
                 // Estimate BSDF's albedo
                 // Define sample arrays _ucRho_ and _uRho_ for reflectance estimate
                 constexpr int nRhoSamples = 16;
-                const std::array<Float, nRhoSamples> ucRho = {
+                const Float ucRho[ nRhoSamples ] = {
                     0.75741637, 0.37870818, 0.7083487, 0.18935409, 0.9149363, 0.35417435,
                     0.5990858,  0.09467703, 0.8578725, 0.45746812, 0.686759,  0.17708716,
                     0.9674518,  0.2995429,  0.5083201, 0.047338516 };
-                const std::array<Point2f, nRhoSamples> uRho = {
+                const Point2f uRho[ nRhoSamples ] = {
                     Point2f( 0.855985, 0.570367 ), Point2f( 0.381823, 0.851844 ),
                     Point2f( 0.285328, 0.764262 ), Point2f( 0.733380, 0.114073 ),
                     Point2f( 0.542663, 0.344465 ), Point2f( 0.127274, 0.414848 ),
@@ -776,7 +788,7 @@ namespace pbrto
                     Point2f( 0.756135, 0.731258 ), Point2f( 0.516165, 0.152852 ),
                     Point2f( 0.180888, 0.214174 ), Point2f( 0.898579, 0.503897 ) };
 
-                SampledSpectrum::Simd albedo = bsdf.rho( isect.wo, ucRho, uRho );
+                SampledSpectrum albedo = bsdf.rho( isect.wo, ucRho, uRho );
 
                 *visibleSurf = VisibleSurface( isect, albedo, lambda );
             }
@@ -848,7 +860,7 @@ namespace pbrto
         if ( IsReflective( flags ) && !IsTransmissive( flags ) )
             ctx.pi = intr.OffsetRayOrigin( intr.wo );
         else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-            ctx.pi = intr.OffsetRayOrigin( ToPoint3f( -intr.wo ) );
+            ctx.pi = intr.OffsetRayOrigin( -intr.wo );
 
         // Choose a light source for the direct lighting calculation
         Float u = sampler.Get1D( );
@@ -913,10 +925,12 @@ namespace pbrto
         }
     }
 
-    SampledSpectrum::Simd SimpleVolPathIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& buf, VisibleSurface* ) const
+    SampledSpectrum SimpleVolPathIntegrator::Li( RayDifferential ray,
+        SampledWavelengths& lambda, Sampler sampler,
+        ScratchBuffer& buf, VisibleSurface* ) const
     {
         // Declare local variables for delta tracking integration
-        SampledSpectrum::Simd L( 0.f );
+        SampledSpectrum L( 0.f );
         Float beta = 1.f;
         int depth = 0;
 
@@ -940,8 +954,8 @@ namespace pbrto
                 Float u = sampler.Get1D( );
                 Float uMode = sampler.Get1D( );
                 SampleT_maj( ray, tMax, u, rng, lambda,
-                    [ & ]( Point3f::Simd p, MediumProperties mp, SampledSpectrum::Simd sigma_maj, SampledSpectrum::Simd T_maj )
-                    {
+                    [ & ]( Point3f p, MediumProperties mp, SampledSpectrum sigma_maj,
+                        SampledSpectrum T_maj ) {
                             // Compute medium event probabilities for interaction
                             Float pAbsorb = mp.sigma_a[ 0 ] / sigma_maj[ 0 ];
                             Float pScatter = mp.sigma_s[ 0 ] / sigma_maj[ 0 ];
@@ -969,7 +983,8 @@ namespace pbrto
 
                                 // Sample phase function for medium scattering event
                                 Point2f u{ rng.Uniform<Float>( ), rng.Uniform<Float>( ) };
-                                pstdo::optional<PhaseFunctionSample> ps = mp.phase.Sample_p( -ray.d, u );
+                                pstdo::optional<PhaseFunctionSample> ps =
+                                    mp.phase.Sample_p( -ray.d, u );
                                 if ( !ps )
                                 {
                                     terminated = true;
@@ -1043,10 +1058,12 @@ namespace pbrto
     NSTAT_COUNTER( "Integrator/Surface interactions", surfaceInteractions );
 
     // VolPathIntegrator Method Definitions
-    SampledSpectrum::Simd VolPathIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurf ) const
+    SampledSpectrum VolPathIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda,
+        Sampler sampler, ScratchBuffer& scratchBuffer,
+        VisibleSurface* visibleSurf ) const
     {
         // Declare state variables for volumetric path sampling
-        SampledSpectrum::Simd L( 0.f ), beta( 1.f ), r_u( 1.f ), r_l( 1.f );
+        SampledSpectrum L( 0.f ), beta( 1.f ), r_u( 1.f ), r_l( 1.f );
         bool specularBounce = false, anyNonSpecularBounces = false;
         int depth = 0;
         Float etaScale = 1;
@@ -1072,8 +1089,8 @@ namespace pbrto
 
                 SampledSpectrum T_maj = SampleT_maj(
                     ray, tMax, sampler.Get1D( ), rng, lambda,
-                    [ & ]( Point3f::Simd p, MediumProperties mp, SampledSpectrum::Simd sigma_maj, SampledSpectrum::Simd T_maj ) 
-                    {
+                    [ & ]( Point3f p, MediumProperties mp, SampledSpectrum sigma_maj,
+                        SampledSpectrum T_maj ) {
                             // Handle medium scattering event for ray
                             if ( !beta )
                             {
@@ -1086,14 +1103,14 @@ namespace pbrto
                             {
                                 // Compute $\beta'$ at new path vertex
                                 Float pdf = sigma_maj[ 0 ] * T_maj[ 0 ];
-                                SampledSpectrum::Simd betap = beta * T_maj / pdf;
+                                SampledSpectrum betap = beta * T_maj / pdf;
 
                                 // Compute rescaled path probability for absorption at path vertex
-                                SampledSpectrum::Simd r_e = r_u * sigma_maj * T_maj / pdf;
+                                SampledSpectrum r_e = r_u * sigma_maj * T_maj / pdf;
 
                                 // Update _L_ for medium emission
                                 if ( r_e )
-                                    L += betap * mp.sigma_a * mp.Le / ScalarAvg( r_e );
+                                    L += betap * mp.sigma_a * mp.Le / r_e.Average( );
                             }
 
                             // Compute medium event probabilities for interaction
@@ -1130,12 +1147,14 @@ namespace pbrto
                                 if ( beta && r_u )
                                 {
                                     // Sample direct lighting at volume-scattering event
-                                    MediumInteraction intr( p, -ray.d, ray.time, ray.medium, mp.phase );
+                                    MediumInteraction intr( p, -ray.d, ray.time, ray.medium,
+                                        mp.phase );
                                     L += SampleLd( intr, nullptr, lambda, sampler, beta, r_u );
 
                                     // Sample new direction at real-scattering event
                                     Point2f u = sampler.Get2D( );
-                                    pstdo::optional<PhaseFunctionSample> ps = intr.phase.Sample_p( -ray.d, u );
+                                    pstdo::optional<PhaseFunctionSample> ps =
+                                        intr.phase.Sample_p( -ray.d, u );
                                     if ( !ps || ps->pdf == 0 )
                                         terminated = true;
                                     else
@@ -1157,11 +1176,12 @@ namespace pbrto
                             else
                             {
                                 // Handle null scattering along ray path
-                                SampledSpectrum::Simd sigma_n = ClampZero( sigma_maj - mp.sigma_a - mp.sigma_s );
+                                SampledSpectrum sigma_n =
+                                    ClampZero( sigma_maj - mp.sigma_a - mp.sigma_s );
                                 Float pdf = T_maj[ 0 ] * sigma_n[ 0 ];
                                 beta *= T_maj * sigma_n / pdf;
                                 if ( pdf == 0 )
-                                    beta = SampledSpectrum::Simd( 0.f );
+                                    beta = SampledSpectrum( 0.f );
                                 r_u *= T_maj * sigma_n / pdf;
                                 r_l *= T_maj * sigma_maj / pdf;
                                 return beta && r_u;
@@ -1184,17 +1204,17 @@ namespace pbrto
                 // Accumulate contributions from infinite light sources
                 for ( const auto& light : infiniteLights )
                 {
-                    if ( SampledSpectrum::Simd Le = light.Le( ray, lambda ); Le )
+                    if ( SampledSpectrum Le = light.Le( ray, lambda ); Le )
                     {
                         if ( depth == 0 || specularBounce )
-                            L += beta * Le / ScalarAvg( r_u );
+                            L += beta * Le / r_u.Average( );
                         else
                         {
                             // Add infinite light contribution using both PDFs with MIS
                             Float p_l = lightSampler.PMF( prevIntrContext, light ) *
                                 light.PDF_Li( prevIntrContext, ray.d, true );
                             r_l *= p_l;
-                            L += beta * Le / ScalarAvg( r_u + r_l );
+                            L += beta * Le / ( r_u + r_l ).Average( );
                         }
                     }
                 }
@@ -1206,7 +1226,7 @@ namespace pbrto
             {
                 // Add contribution of emission from intersected surface
                 if ( depth == 0 || specularBounce )
-                    L += beta * Le / ScalarAvg( r_u );
+                    L += beta * Le / r_u.Average( );
                 else
                 {
                     // Add surface light contribution using both PDFs with MIS
@@ -1214,7 +1234,7 @@ namespace pbrto
                     Float p_l = lightSampler.PMF( prevIntrContext, areaLight ) *
                         areaLight.PDF_Li( prevIntrContext, ray.d, true );
                     r_l *= p_l;
-                    L += beta * Le / ScalarAvg( r_u + r_l );
+                    L += beta * Le / ( r_u + r_l ).Average( );
                 }
             }
 
@@ -1232,11 +1252,11 @@ namespace pbrto
                 // Estimate BSDF's albedo
                 // Define sample arrays _ucRho_ and _uRho_ for reflectance estimate
                 constexpr int nRhoSamples = 16;
-                const std::array<Float, nRhoSamples> ucRho = {
+                const Float ucRho[ nRhoSamples ] = {
                     0.75741637, 0.37870818, 0.7083487, 0.18935409, 0.9149363, 0.35417435,
                     0.5990858,  0.09467703, 0.8578725, 0.45746812, 0.686759,  0.17708716,
                     0.9674518,  0.2995429,  0.5083201, 0.047338516 };
-                const std::array<Point2f, nRhoSamples> uRho = {
+                const Point2f uRho[ nRhoSamples ] = {
                     Point2f( 0.855985, 0.570367 ), Point2f( 0.381823, 0.851844 ),
                     Point2f( 0.285328, 0.764262 ), Point2f( 0.733380, 0.114073 ),
                     Point2f( 0.542663, 0.344465 ), Point2f( 0.127274, 0.414848 ),
@@ -1246,7 +1266,7 @@ namespace pbrto
                     Point2f( 0.756135, 0.731258 ), Point2f( 0.516165, 0.152852 ),
                     Point2f( 0.180888, 0.214174 ), Point2f( 0.898579, 0.503897 ) };
 
-                SampledSpectrum::Simd albedo = bsdf.rho( isect.wo, ucRho, uRho );
+                SampledSpectrum albedo = bsdf.rho( isect.wo, ucRho, uRho );
 
                 *visibleSurf = VisibleSurface( isect, albedo, lambda );
             }
@@ -1329,14 +1349,15 @@ namespace pbrto
 
                 // Convert probe intersection to _BSSRDFSample_
                 SubsurfaceInteraction ssi = interactionSampler.GetSample( );
-                BSSRDFSample bssrdfSample = bssrdf.ProbeIntersectionToSample( ssi, scratchBuffer );
-                if ( !bssrdfSample.Sp.AnyNotEqual(0.f) || !bssrdfSample.pdf.AnyNotEqual( 0.f ) )
+                BSSRDFSample bssrdfSample =
+                    bssrdf.ProbeIntersectionToSample( ssi, scratchBuffer );
+                if ( !bssrdfSample.Sp || !bssrdfSample.pdf )
                     break;
-                auto pdf0 = bssrdfSample.pdf[ 0 ];
+
                 // Update path state for subsurface scattering
-                Float pdf = interactionSampler.SampleProbability( ) * pdf0;
+                Float pdf = interactionSampler.SampleProbability( ) * bssrdfSample.pdf[ 0 ];
                 beta *= bssrdfSample.Sp / pdf;
-                r_u *= bssrdfSample.pdf / pdf0;
+                r_u *= bssrdfSample.pdf / bssrdfSample.pdf[ 0 ];
                 SurfaceInteraction pi = ssi;
                 pi.wo = bssrdfSample.wo;
                 prevIntrContext = LightSampleContext( pi );
@@ -1370,7 +1391,7 @@ namespace pbrto
             // Possibly terminate volumetric path with Russian roulette
             if ( !beta )
                 break;
-            SampledSpectrum rrBeta = beta * etaScale / ScalarAvg( r_u );
+            SampledSpectrum rrBeta = beta * etaScale / r_u.Average( );
             Float uRR = sampler.Get1D( );
             PBRT_DBG( "%s\n",
                 StringPrintf( "etaScale %f -> rrBeta %s", etaScale, rrBeta ).c_str( ) );
@@ -1385,7 +1406,10 @@ namespace pbrto
         return L;
     }
 
-    SampledSpectrum::Simd VolPathIntegrator::SampleLd( const Interaction& intr, const BSDF* bsdf, SampledWavelengths& lambda, Sampler sampler, SampledSpectrum::Simd beta, SampledSpectrum::Simd r_p ) const
+    SampledSpectrum VolPathIntegrator::SampleLd( const Interaction& intr, const BSDF* bsdf,
+        SampledWavelengths& lambda, Sampler sampler,
+        SampledSpectrum beta,
+        SampledSpectrum r_p ) const
     {
         // Estimate light-sampled direct illumination at _intr_
         // Initialize _LightSampleContext_ for volumetric light sampling
@@ -1398,7 +1422,7 @@ namespace pbrto
             if ( IsReflective( flags ) && !IsTransmissive( flags ) )
                 ctx.pi = intr.OffsetRayOrigin( intr.wo );
             else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-                ctx.pi = intr.OffsetRayOrigin( ToPoint3f( -intr.wo ) );
+                ctx.pi = intr.OffsetRayOrigin( -intr.wo );
 
         }
         else
@@ -1409,14 +1433,14 @@ namespace pbrto
         pstdo::optional<SampledLight> sampledLight = lightSampler.Sample( ctx, u );
         Point2f uLight = sampler.Get2D( );
         if ( !sampledLight )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         Light light = sampledLight->light;
         NDCHECK( light && sampledLight->p != 0 );
 
         // Sample a point on the light source
         pstdo::optional<LightLiSample> ls = light.SampleLi( ctx, uLight, lambda, true );
         if ( !ls || !ls->L || ls->pdf == 0 )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         Float p_l = sampledLight->p * ls->pdf;
 
         // Evaluate BSDF or phase function for light sample direction
@@ -1439,11 +1463,11 @@ namespace pbrto
             scatterPDF = phase.PDF( wo, wi );
         }
         if ( !f_hat )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
 
         // Declare path state variables for ray to light source
         Ray lightRay = intr.SpawnRayTo( ls->pLight );
-        SampledSpectrum::Simd T_ray( 1.f ), r_l( 1.f ), r_u( 1.f );
+        SampledSpectrum T_ray( 1.f ), r_l( 1.f ), r_u( 1.f );
         RNG rng( Hash( lightRay.o ), Hash( lightRay.d ) );
 
         while ( lightRay.d != Vector3f( 0, 0, 0 ) )
@@ -1452,20 +1476,21 @@ namespace pbrto
             pstdo::optional<ShapeIntersection> si = Intersect( lightRay, 1 - ShadowEpsilon );
             // Handle opaque surface along ray's path
             if ( si && si->intr.material )
-                return SampledSpectrum::Simd( 0.f );
+                return SampledSpectrum( 0.f );
 
             // Update transmittance for current ray segment
             if ( lightRay.medium )
             {
                 Float tMax = si ? si->tHit : ( 1 - ShadowEpsilon );
                 Float u = rng.Uniform<Float>( );
-                SampledSpectrum::Simd T_maj =
+                SampledSpectrum T_maj =
                     SampleT_maj( lightRay, tMax, u, rng, lambda,
-                        [ & ]( Point3f::Simd p, MediumProperties mp, SampledSpectrum::Simd sigma_maj, SampledSpectrum::Simd T_maj ) 
-                        {
+                        [ & ]( Point3f p, MediumProperties mp, SampledSpectrum sigma_maj,
+                            SampledSpectrum T_maj ) {
                                 // Update ray transmittance estimate at sampled point
                                 // Update _T_ray_ and PDFs using ratio-tracking estimator
-                                SampledSpectrum::Simd sigma_n = ClampZero( sigma_maj - mp.sigma_a - mp.sigma_s );
+                                SampledSpectrum sigma_n =
+                                    ClampZero( sigma_maj - mp.sigma_a - mp.sigma_s );
                                 Float pdf = T_maj[ 0 ] * sigma_maj[ 0 ];
                                 T_ray *= T_maj * sigma_n / pdf;
                                 r_l *= T_maj * sigma_maj / pdf;
@@ -1473,12 +1498,12 @@ namespace pbrto
 
                                 // Possibly terminate transmittance computation using
                                 // Russian roulette
-                                SampledSpectrum::Simd Tr = T_ray / ScalarAvg( r_l + r_u );
-                                if ( MaxComponentValue( Tr ) < 0.05f )
+                                SampledSpectrum Tr = T_ray / ( r_l + r_u ).Average( );
+                                if ( Tr.MaxComponentValue( ) < 0.05f )
                                 {
                                     Float q = 0.75f;
                                     if ( rng.Uniform<Float>( ) < q )
-                                        T_ray = SampledSpectrum::Simd( 0. );
+                                        T_ray = SampledSpectrum( 0. );
                                     else
                                         T_ray /= 1 - q;
                                 }
@@ -1495,7 +1520,7 @@ namespace pbrto
 
             // Generate next ray segment or return final transmittance
             if ( !T_ray )
-                return SampledSpectrum::Simd( 0.f );
+                return SampledSpectrum( 0.f );
             if ( !si )
                 break;
             lightRay = si->intr.SpawnRayTo( ls->pLight );
@@ -1504,9 +1529,9 @@ namespace pbrto
         r_l *= r_p * p_l;
         r_u *= r_p * scatterPDF;
         if ( IsDeltaLight( light.Type( ) ) )
-            return beta * f_hat * T_ray * ls->L / ScalarAvg(r_l );
+            return beta * f_hat * T_ray * ls->L / r_l.Average( );
         else
-            return beta * f_hat * T_ray * ls->L / ScalarAvg( r_l + r_u );
+            return beta * f_hat * T_ray * ls->L / ( r_l + r_u ).Average( );
     }
 
     std::string VolPathIntegrator::ToString( ) const
@@ -1539,7 +1564,7 @@ namespace pbrto
     {
     }
 
-    SampledSpectrum::Simd AOIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda,
+    SampledSpectrum AOIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda,
         Sampler sampler, ScratchBuffer& scratchBuffer,
         VisibleSurface* visibleSurface ) const
     {
@@ -1559,7 +1584,7 @@ namespace pbrto
 
             // Compute coordinate frame based on true geometry, not shading
             // geometry.
-            Normal3f n = FaceForward( isect.n, ToVector3f( -ray.d ) );
+            Normal3f n = FaceForward( isect.n, -ray.d );
 
             Vector3f wi;
             Float pdf;
@@ -1575,7 +1600,7 @@ namespace pbrto
                 pdf = UniformHemispherePDF( );
             }
             if ( pdf == 0 )
-                return SampledSpectrum::Simd( 0. );
+                return SampledSpectrum( 0. );
 
             Frame f = Frame::FromZ( n );
             wi = f.FromLocal( wi );
@@ -1588,7 +1613,7 @@ namespace pbrto
                     ScalarDot( wi, n ) / ( Pi * pdf );
             }
         }
-        return SampledSpectrum::Simd( 0. );
+        return SampledSpectrum( 0. );
     }
 
     std::string AOIntegrator::ToString( ) const
@@ -1615,7 +1640,7 @@ namespace pbrto
         ScratchBuffer& scratchBuffer, SampledSpectrum beta, Float pdf,
         int maxDepth, TransportMode mode, Vertex* path, bool regularize );
 
-    SampledSpectrum::Simd ConnectBDPT( const Integrator& integrator, SampledWavelengths& lambda,
+    SampledSpectrum ConnectBDPT( const Integrator& integrator, SampledWavelengths& lambda,
         Vertex* lightVertices, Vertex* cameraVertices, int s, int t,
         LightSampler lightSampler, Camera camera, Sampler sampler,
         pstdo::optional<Point2f>* pRaster,
@@ -1775,20 +1800,11 @@ namespace pbrto
             }
         }
 
-        Point3f p( ) const 
-        { 
-            return GetInteraction( ).p( ); 
-        }
+        Point3f p( ) const { return GetInteraction( ).p( ); }
 
-        Float time( ) const 
-        { 
-            return GetInteraction( ).time; 
-        }
-        const Normal3f::Simd& ng( ) const 
-        { 
-            return GetInteraction( ).n; 
-        }
-        const Normal3f::Simd& ns( ) const
+        Float time( ) const { return GetInteraction( ).time; }
+        const Normal3f& ng( ) const { return GetInteraction( ).n; }
+        const Normal3f& ns( ) const
         {
             if ( type == VertexType::Surface )
                 return si.shading.n;
@@ -1798,9 +1814,9 @@ namespace pbrto
 
         bool IsOnSurface( ) const { return ng( ) != Normal3f( ); }
 
-        SampledSpectrum::Simd f( const Vertex& next, TransportMode mode ) const
+        SampledSpectrum f( const Vertex& next, TransportMode mode ) const
         {
-            Vector3f::Simd wi = next.p( ) - p( );
+            Vector3f wi = next.p( ) - p( );
             if ( ScalarLengthSquared( wi ) == 0 )
                 return {};
             wi = Normalize( wi );
@@ -1809,10 +1825,10 @@ namespace pbrto
                 case VertexType::Surface:
                     return bsdf.f( si.wo, wi, mode );
                 case VertexType::Medium:
-                    return SampledSpectrum::Simd( mi.phase.p( mi.wo, wi ) );
+                    return SampledSpectrum( mi.phase.p( mi.wo, wi ) );
                 default:
                     NLOG_FATAL( "Vertex::f(): Unimplemented" );
-                    return SampledSpectrum::Simd( 0.f );
+                    return SampledSpectrum( 0.f );
             }
         }
 
@@ -1850,27 +1866,28 @@ namespace pbrto
                     ei.light.Type( ) == LightType::DeltaDirection );
         }
 
-        SampledSpectrum::Simd Le( const std::vector<Light>& infiniteLights, const Vertex& v, const SampledWavelengths& lambda ) const
+        SampledSpectrum Le( const std::vector<Light>& infiniteLights, const Vertex& v,
+            const SampledWavelengths& lambda ) const
         {
             if ( !IsLight( ) )
-                return SampledSpectrum::Simd( 0.f );
-            Vector3f::Simd w = v.p( ) - p( );
+                return SampledSpectrum( 0.f );
+            Vector3f w = v.p( ) - p( );
             if ( ScalarLengthSquared( w ) == 0 )
-                return SampledSpectrum::Simd( 0. );
+                return SampledSpectrum( 0. );
             w = Normalize( w );
             if ( IsInfiniteLight( ) )
             {
                 // Return emitted radiance for infinite light sources
-                SampledSpectrum::Simd Le( 0.f );
+                SampledSpectrum Le( 0.f );
                 for ( const auto& light : infiniteLights )
-                    Le += light.Le( Ray( Point3f::Simd( p( ) ), -w ), lambda );
+                    Le += light.Le( Ray( p( ), -w ), lambda );
                 return Le;
 
             }
             else if ( si.areaLight )
                 return si.areaLight.L( si.p( ), si.n, si.uv, w, lambda );
             else
-                return SampledSpectrum::Simd( 0.f );
+                return SampledSpectrum( 0.f );
         }
 
         std::string ToString( ) const
@@ -1923,7 +1940,7 @@ namespace pbrto
                 return 0;
             Float invDist2 = 1 / ScalarLengthSquared( w );
             if ( next.IsOnSurface( ) )
-                pdf *= ScalarAbsDot( next.ng( ), w * Math::Sqrt( invDist2 ) );
+                pdf *= ScalarAbsDot( next.ng( ), w * std::sqrt( invDist2 ) );
             return pdf * invDist2;
         }
 
@@ -1967,7 +1984,7 @@ namespace pbrto
         {
             Vector3f w = v.p( ) - p( );
             Float invDist2 = 1 / ScalarLengthSquared( w );
-            w *= Math::Sqrt( invDist2 );
+            w *= std::sqrt( invDist2 );
             // Compute sampling density _pdf_ for light type
             Float pdf;
             if ( IsInfiniteLight( ) )
@@ -2344,7 +2361,7 @@ namespace pbrto
     {
         Vector3f d = v0.p( ) - v1.p( );
         Float g = 1 / ScalarLengthSquared( d );
-        d *= Math::Sqrt( g );
+        d *= std::sqrt( g );
         if ( v0.IsOnSurface( ) )
             g *= ScalarAbsDot( v0.ns( ), d );
         if ( v1.IsOnSurface( ) )
@@ -2490,7 +2507,9 @@ namespace pbrto
         }
     }
 
-    SampledSpectrum::Simd BDPTIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* ) const
+    SampledSpectrum BDPTIntegrator::Li( RayDifferential ray, SampledWavelengths& lambda,
+        Sampler sampler, ScratchBuffer& scratchBuffer,
+        VisibleSurface* ) const
     {
         // Trace the camera and light subpaths
         Vertex* cameraVertices = scratchBuffer.Alloc<Vertex[ ]>( maxDepth + 2 );
@@ -2501,7 +2520,7 @@ namespace pbrto
             maxDepth + 1, cameraVertices[ 0 ].time( ),
             lightSampler, lightVertices, regularize );
 
-        SampledSpectrum::Simd L( 0.f );
+        SampledSpectrum L( 0.f );
         // Execute all BDPT connection strategies
         for ( int t = 1; t <= nCamera; ++t )
         {
@@ -2513,16 +2532,18 @@ namespace pbrto
                 // Execute the $(s, t)$ connection strategy and update _L_
                 pstdo::optional<Point2f> pFilmNew;
                 Float misWeight = 0.f;
-                SampledSpectrum::Simd Lpath = ConnectBDPT( *this, lambda, lightVertices, cameraVertices, s, t, lightSampler, camera, sampler, &pFilmNew, &misWeight );
+                SampledSpectrum Lpath =
+                    ConnectBDPT( *this, lambda, lightVertices, cameraVertices, s, t,
+                        lightSampler, camera, sampler, &pFilmNew, &misWeight );
                 PBRT_DBG( "%s\n",
                     StringPrintf( "Connect bdpt s: %d, t: %d, Lpath: %s, misWeight: %f\n",
                         s, t, Lpath, misWeight )
                     .c_str( ) );
                 if ( Lpath && ( visualizeStrategies || visualizeWeights ) )
                 {
-                    SampledSpectrum::Simd value;
+                    SampledSpectrum value;
                     if ( visualizeStrategies )
-                        value = misWeight == 0 ? SampledSpectrum::Simd( 0.f ) : Lpath / misWeight;
+                        value = misWeight == 0 ? SampledSpectrum( 0. ) : Lpath / misWeight;
                     if ( visualizeWeights )
                         value = Lpath;
                     if ( pFilmNew )
@@ -2559,15 +2580,15 @@ namespace pbrto
         return L;
     }
 
-    SampledSpectrum::Simd ConnectBDPT( const Integrator& integrator, SampledWavelengths& lambda,
+    SampledSpectrum ConnectBDPT( const Integrator& integrator, SampledWavelengths& lambda,
         Vertex* lightVertices, Vertex* cameraVertices, int s, int t,
         LightSampler lightSampler, Camera camera, Sampler sampler,
         pstdo::optional<Point2f>* pRaster, Float* misWeightPtr )
     {
-        SampledSpectrum::Simd L( 0.f );
+        SampledSpectrum L( 0.f );
         // Ignore invalid connections related to infinite area lights
         if ( t > 1 && s != 0 && cameraVertices[ t - 1 ].type == VertexType::Light )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
 
         // Perform connection and write contribution to _L_
         Vertex sampled;
@@ -2586,7 +2607,8 @@ namespace pbrto
             const Vertex& qs = lightVertices[ s - 1 ];
             if ( qs.IsConnectible( ) )
             {
-                pstdo::optional<CameraWiSample> cs = camera.SampleWi( qs.GetInteraction( ), sampler.Get2D( ), lambda );
+                pstdo::optional<CameraWiSample> cs =
+                    camera.SampleWi( qs.GetInteraction( ), sampler.Get2D( ), lambda );
                 if ( cs )
                 {
                     *pRaster = cs->pRaster;
@@ -2634,7 +2656,7 @@ namespace pbrto
                         if ( IsReflective( flags ) && !IsTransmissive( flags ) )
                             ctx.pi = si.OffsetRayOrigin( si.wo );
                         else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-                            ctx.pi = si.OffsetRayOrigin( ToVector3f( -si.wo ) );
+                            ctx.pi = si.OffsetRayOrigin( -si.wo );
                     }
                     else
                         ctx = LightSampleContext( pt.GetInteraction( ) );
@@ -2674,7 +2696,7 @@ namespace pbrto
                         s, t, qs, pt, qs.f( pt, TransportMode::Importance ),
                         pt.f( qs, TransportMode::Radiance ),
                         G( integrator, sampler, qs, pt, lambda ),
-                        DistanceSquared( qs.p( ), pt.p( ) ) )
+                        ScalarDistanceSquared( qs.p( ), pt.p( ) ) )
                     .c_str( ) );
                 if ( L )
                     L *= G( integrator, sampler, qs, pt, lambda );
@@ -2733,10 +2755,12 @@ namespace pbrto
     NSTAT_PERCENT( "Integrator/Acceptance rate", acceptedMutations, totalMutations );
 
     // MLTIntegrator Method Definitions
-    SampledSpectrum::Simd MLTIntegrator::L( ScratchBuffer& scratchBuffer, MLTSampler& sampler, int depth, Point2f* pRaster, SampledWavelengths* lambda )
+    SampledSpectrum MLTIntegrator::L( ScratchBuffer& scratchBuffer, MLTSampler& sampler,
+        int depth, Point2f* pRaster,
+        SampledWavelengths* lambda )
     {
         if ( lights.empty( ) )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         sampler.StartStream( cameraStreamIndex );
         // Determine the number of available strategies and pick a specific one
         int s, t, nStrategies;
@@ -2770,16 +2794,17 @@ namespace pbrto
         cameraSample.pLens = sampler.Get2D( );
 
         // Generate camera ray for MLT camera path
-        std::optional<CameraRayDifferential> crd = camera.GenerateRayDifferential( cameraSample, *lambda );
+        pstdo::optional<CameraRayDifferential> crd =
+            camera.GenerateRayDifferential( cameraSample, *lambda );
         if ( !crd || !crd->weight )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         Float rayDiffScale =
-            std::max<Float>( .125, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+            std::max<Float>( .125, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
         crd->ray.ScaleDifferentials( rayDiffScale );
 
         if ( GenerateCameraSubpath( *this, crd->ray, *lambda, &sampler, scratchBuffer, t,
             camera, cameraVertices, regularize ) != t )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
 
         // Generate a light subpath with exactly _s_ vertices
         sampler.StartStream( lightStreamIndex );
@@ -2787,12 +2812,12 @@ namespace pbrto
         if ( GenerateLightSubpath( *this, *lambda, &sampler, camera, scratchBuffer, s,
             cameraVertices[ 0 ].time( ), lightSampler, lightVertices,
             regularize ) != s )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
 
         // Execute connection strategy and return the radiance estimate
         sampler.StartStream( connectionStreamIndex );
         pstdo::optional<Point2f> pRasterNew;
-        SampledSpectrum::Simd L = ConnectBDPT( *this, *lambda, lightVertices, cameraVertices, s, t,
+        SampledSpectrum L = ConnectBDPT( *this, *lambda, lightVertices, cameraVertices, s, t,
             lightSampler, camera, &sampler, &pRasterNew ) *
             nStrategies;
         if ( pRasterNew )
@@ -3094,7 +3119,7 @@ namespace pbrto
         // Define variables for commonly used values in SPPM rendering
         int nIterations = samplerPrototype.SamplesPerPixel( );
         ProgressReporter progress( 2 * nIterations, "Rendering", Options->quiet );
-        const Float invSqrtSPP = 1.f / Math::Sqrt( static_cast<Float>( nIterations ) );
+        const Float invSqrtSPP = 1.f / std::sqrt( nIterations );
         Film film = camera.GetFilm( );
         Bounds2i pixelBounds = film.PixelBounds( );
         int nPixels = pixelBounds.Area( );
@@ -3150,8 +3175,7 @@ namespace pbrto
 
             Float timeSample = RadicalInverse( 2, iter );
 
-            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) 
-                {
+            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) {
                 // Follow camera paths for _tileBounds_ in image for SPPM
                 ScratchBuffer& scratchBuffer = threadScratchBuffers.Get( );
                 Sampler sampler = threadSamplers.Get( );
@@ -3162,15 +3186,14 @@ namespace pbrto
                     SampledWavelengths lambda = passLambda;
                     CameraSample cs = GetCameraSample( sampler, pPixel, film.GetFilter( ) );
                     cs.time = timeSample;
-                    std::optional<CameraRayDifferential> crd = camera.GenerateRayDifferential( cs, lambda );
+                    pstdo::optional<CameraRayDifferential> crd =
+                        camera.GenerateRayDifferential( cs, lambda );
                     if ( !crd || !crd->weight )
                         continue;
                     SampledSpectrum beta = crd->weight;
                     RayDifferential& ray = crd->ray;
                     if ( !Options->disablePixelJitter )
-                    {
                         ray.ScaleDifferentials( invSqrtSPP );
-                    }
 
                     // Follow camera ray path until a visible point is created
                     SPPMPixel& pixel = pixels[ pPixel ];
@@ -3502,7 +3525,7 @@ namespace pbrto
                     // Compute new photon count and search radius given photons
                     Float gamma = ( Float )2 / ( Float )3;
                     Float nNew = p.n + gamma * m;
-                    Float rNew = p.radius * Math::Sqrt( nNew / ( p.n + m ) );
+                    Float rNew = p.radius * std::sqrt( nNew / ( p.n + m ) );
 
                     // Update $\tau$ for pixel
                     RGB Phi_i( p.Phi_i[ 0 ], p.Phi_i[ 1 ], p.Phi_i[ 2 ] );
@@ -3584,7 +3607,9 @@ namespace pbrto
         DisconnectFromDisplayServer( );
     }
 
-    SampledSpectrum::Simd SPPMIntegrator::SampleLd( const SurfaceInteraction& intr, const BSDF& b, SampledWavelengths& lambda, Sampler sampler, LightSampler lightSampler ) const
+    SampledSpectrum SPPMIntegrator::SampleLd( const SurfaceInteraction& intr, const BSDF& b,
+        SampledWavelengths& lambda, Sampler sampler,
+        LightSampler lightSampler ) const
     {
         const BSDF* bsdf = &b;
         // Initialize _LightSampleContext_ for light sampling
@@ -3594,7 +3619,7 @@ namespace pbrto
         if ( IsReflective( flags ) && !IsTransmissive( flags ) )
             ctx.pi = intr.OffsetRayOrigin( intr.wo );
         else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-            ctx.pi = intr.OffsetRayOrigin( Vector3f( -intr.wo ) );
+            ctx.pi = intr.OffsetRayOrigin( -intr.wo );
 
         // Choose a light source for the direct lighting calculation
         Float u = sampler.Get1D( );
@@ -3612,7 +3637,7 @@ namespace pbrto
 
         // Evaluate BSDF for light sample and check light visibility
         Vector3f wo = intr.wo, wi = ls->wi;
-        SampledSpectrum::Simd f = bsdf->f( wo, wi ) * ScalarAbsDot( wi, intr.shading.n );
+        SampledSpectrum f = bsdf->f( wo, wi ) * ScalarAbsDot( wi, intr.shading.n );
         if ( !f || !Unoccluded( intr, ls->pLight ) )
             return {};
 
@@ -3683,15 +3708,15 @@ namespace pbrto
         static double checkerboard( Point2f p )
         {
             int freq = 10;
-            Point2i pi( ToPoint2i( p * freq ) );
+            Point2f tmp( p * freq );
+            Point2i pi( tmp );
             return ( ( pi.x & 1 ) ^ ( pi.y & 1 ) ) ? 2 : 0;
         }
         static double rotatedCheckerboard( Point2f p )
         {
-            constexpr double angle = Deg2Rad( 45.f );
-            constexpr double nrm = 1.00006866455078125;
-            constexpr double sa = Math::Sin( angle );
-            constexpr double ca = Math::Cos( angle );
+            double angle = Radians( 45.f );
+            double nrm = 1.00006866455078125;
+            static double sa = std::sin( angle ), ca = std::cos( angle );
             return ( double )checkerboard(
                 { Float( 10 + p.x * ca - p.y * sa ), Float( 10 + p.x * sa + p.y * ca ) } ) /
                 nrm;
@@ -3699,8 +3724,8 @@ namespace pbrto
         static double gaussian( Point2f p )
         {
             auto Gaussian = []( double x, double mu = 0, double sigma = 1 ) {
-                return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
-                    Math::Exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
+                return 1 / std::sqrt( 2 * Pi * sigma * sigma ) *
+                    std::exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
                 };
             auto GaussianIntegral = []( double x0, double x1, double mu = 0, double sigma = 1 ) {
                 double sigmaRoot2 = sigma * double( 1.414213562373095 );
@@ -3815,7 +3840,7 @@ namespace pbrto
             if ( skipBad )
             {
                 int nSamples = sampleIndex + 1;
-                if ( isStratified && Sqr( int( Math::Sqrt( static_cast<Float>( nSamples ) ) ) ) != nSamples )
+                if ( isStratified && Sqr( int( std::sqrt( nSamples ) ) ) != nSamples )
                 {
                     prog.Update( );
                     continue;
@@ -3850,7 +3875,7 @@ namespace pbrto
             if ( isStratified )
             {
                 int spp = sampleIndex + 1;
-                int factor = int( Math::Sqrt( static_cast<float>( spp ) ) );
+                int factor = int( std::sqrt( spp ) );
 
                 while ( ( spp % factor ) != 0 )
                     --factor;

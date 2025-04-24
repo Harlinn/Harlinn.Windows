@@ -87,7 +87,7 @@ namespace pbrto
     }
     std::string DiffuseTransmissionBxDF::ToString( ) const
     {
-        return StringPrintf( "[ DiffuseTransmissionBxDF R: %s T: %s ]", R_, T_ );
+        return StringPrintf( "[ DiffuseTransmissionBxDF R: %s T: %s ]", R, T );
     }
 
     template <typename TopBxDF, typename BottomBxDF, bool twoSided>
@@ -99,13 +99,14 @@ namespace pbrto
     }
 
     // DielectricBxDF Method Definitions
-    pstdo::optional<BSDFSample> DielectricBxDF::Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    PBRT_CPU_GPU pstdo::optional<BSDFSample> DielectricBxDF::Sample_f(
+        Vector3f wo, Float uc, Point2f u, TransportMode mode,
+        BxDFReflTransFlags sampleFlags ) const
     {
         if ( eta == 1 || mfDistrib.EffectivelySmooth( ) )
         {
             // Sample perfect specular dielectric BSDF
-            Float R = FrDielectric( CosTheta( wo ), eta ); 
-            Float T = 1 - R;
+            Float R = FrDielectric( CosTheta( wo ), eta ), T = 1 - R;
             // Compute probabilities _pr_ and _pt_ for sampling reflection and transmission
             Float pr = R, pt = T;
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
@@ -118,8 +119,8 @@ namespace pbrto
             if ( uc < pr / ( pr + pt ) )
             {
                 // Sample perfect specular dielectric BRDF
-                Vector3f::Simd wi( wo.WithNegatedXY() );
-                SampledSpectrum::Simd fr( R / AbsCosTheta( wi ) );
+                Vector3f wi( -wo.x, -wo.y, wo.z );
+                SampledSpectrum fr( R / AbsCosTheta( wi ) );
                 return BSDFSample( fr, wi, pr / ( pr + pt ), BxDFFlags::SpecularReflection );
 
             }
@@ -129,7 +130,7 @@ namespace pbrto
                 // Compute ray direction for specular transmission
                 Vector3f wi;
                 Float etap;
-                bool valid = Refract( wo, Normal3f::Simd( 0, 0, 1 ), eta, &etap, &wi );
+                bool valid = Refract( wo, Normal3f( 0, 0, 1 ), eta, &etap, &wi );
                 NCHECK_RARE( 1e-5f, !valid );
                 if ( !valid )
                     return {};
@@ -139,14 +140,15 @@ namespace pbrto
                 if ( mode == TransportMode::Radiance )
                     ft /= Sqr( etap );
 
-                return BSDFSample( ft, wi, pt / ( pr + pt ), BxDFFlags::SpecularTransmission, etap );
+                return BSDFSample( ft, wi, pt / ( pr + pt ), BxDFFlags::SpecularTransmission,
+                    etap );
             }
 
         }
         else
         {
             // Sample rough dielectric BSDF
-            Vector3f::Simd wm = mfDistrib.Sample_wm( wo, u );
+            Vector3f wm = mfDistrib.Sample_wm( wo, u );
             Float R = FrDielectric( ScalarDot( wo, wm ), eta );
             Float T = 1 - R;
             // Compute probabilities _pr_ and _pt_ for sampling reflection and transmission
@@ -162,14 +164,14 @@ namespace pbrto
             if ( uc < pr / ( pr + pt ) )
             {
                 // Sample reflection at rough dielectric interface
-                Vector3f::Simd wi = Reflect( wo, wm );
+                Vector3f wi = Reflect( wo, wm );
                 if ( !SameHemisphere( wo, wi ) )
                     return {};
                 // Compute PDF of rough dielectric reflection
                 pdf = mfDistrib.PDF( wo, wm ) / ( 4 * ScalarAbsDot( wo, wm ) ) * pr / ( pr + pt );
 
                 NDCHECK( !IsNaN( pdf ) );
-                SampledSpectrum::Simd f( mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) * R /
+                SampledSpectrum f( mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) * R /
                     ( 4 * CosTheta( wi ) * CosTheta( wo ) ) );
                 return BSDFSample( f, wi, pdf, BxDFFlags::GlossyReflection );
 
@@ -178,11 +180,10 @@ namespace pbrto
             {
                 // Sample transmission at rough dielectric interface
                 Float etap;
-                Vector3f tmp;
-                bool tir = !Refract( wo, Normal3f::Simd( wm ), eta, &etap, &tmp );
+                Vector3f wi;
+                bool tir = !Refract( wo, ( Normal3f )wm, eta, &etap, &wi );
                 NCHECK_RARE( 1e-5f, tir );
-                Vector3f::Simd wi = tmp;
-                if ( SameHemisphere( wo, wi ) || wi.z( ) == 0 || tir )
+                if ( SameHemisphere( wo, wi ) || wi.z == 0 || tir )
                     return {};
                 // Compute PDF of rough dielectric transmission
                 Float denom = Sqr( ScalarDot( wi, wm ) + ScalarDot( wo, wm ) / etap );
@@ -191,7 +192,7 @@ namespace pbrto
 
                 NCHECK( !IsNaN( pdf ) );
                 // Evaluate BRDF and return _BSDFSample_ for rough transmission
-                SampledSpectrum::Simd ft( T * mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) *
+                SampledSpectrum ft( T * mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) *
                     std::abs( ScalarDot( wi, wm ) * ScalarDot( wo, wm ) /
                         ( CosTheta( wi ) * CosTheta( wo ) * denom ) ) );
                 // Account for non-symmetry with transmission to different medium
@@ -203,10 +204,10 @@ namespace pbrto
         }
     }
 
-    SampledSpectrum::Simd DielectricBxDF::f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
+    PBRT_CPU_GPU SampledSpectrum DielectricBxDF::f( Vector3f wo, Vector3f wi, TransportMode mode ) const
     {
         if ( eta == 1 || mfDistrib.EffectivelySmooth( ) )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         // Evaluate rough dielectric BSDF
         // Compute generalized half vector _wm_
         Float cosTheta_o = CosTheta( wo ), cosTheta_i = CosTheta( wi );
@@ -214,10 +215,9 @@ namespace pbrto
         float etap = 1;
         if ( !reflect )
             etap = cosTheta_o > 0 ? eta : ( 1 / eta );
-        Vector3f::Simd wm = wi * etap + wo;
-        auto wmLengthSquared = ScalarLengthSquared( wm );
-        NCHECK_RARE( 1e-5f, wmLengthSquared == 0 );
-        if ( cosTheta_i == 0 || cosTheta_o == 0 || wmLengthSquared == 0 )
+        Vector3f wm = wi * etap + wo;
+        NCHECK_RARE( 1e-5f, ScalarLengthSquared( wm ) == 0 );
+        if ( cosTheta_i == 0 || cosTheta_o == 0 || ScalarLengthSquared( wm ) == 0 )
             return {};
         wm = FaceForward( Normalize( wm ), Normal3f( 0, 0, 1 ) );
 
@@ -229,7 +229,7 @@ namespace pbrto
         if ( reflect )
         {
             // Compute reflection at rough dielectric interface
-            return SampledSpectrum::Simd( mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) * F /
+            return SampledSpectrum( mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) * F /
                 std::abs( 4 * cosTheta_i * cosTheta_o ) );
 
         }
@@ -243,11 +243,12 @@ namespace pbrto
             if ( mode == TransportMode::Radiance )
                 ft /= Sqr( etap );
 
-            return SampledSpectrum::Simd( ft );
+            return SampledSpectrum( ft );
         }
     }
 
-    Float DielectricBxDF::PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    PBRT_CPU_GPU Float DielectricBxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode,
+        BxDFReflTransFlags sampleFlags ) const
     {
         if ( eta == 1 || mfDistrib.EffectivelySmooth( ) )
             return 0;
@@ -258,12 +259,11 @@ namespace pbrto
         float etap = 1;
         if ( !reflect )
             etap = cosTheta_o > 0 ? eta : ( 1 / eta );
-        Vector3f::Simd wm = wi * etap + wo;
-        auto wmLengthSquared = ScalarLengthSquared( wm );
-        NCHECK_RARE( 1e-5f, wmLengthSquared == 0 );
-        if ( cosTheta_i == 0 || cosTheta_o == 0 || wmLengthSquared == 0 )
+        Vector3f wm = wi * etap + wo;
+        NCHECK_RARE( 1e-5f, ScalarLengthSquared( wm ) == 0 );
+        if ( cosTheta_i == 0 || cosTheta_o == 0 || ScalarLengthSquared( wm ) == 0 )
             return {};
-        wm = FaceForward( Normalize( wm ), Normal3f::Simd( 0, 0, 1 ) );
+        wm = FaceForward( Normalize( wm ), Normal3f( 0, 0, 1 ) );
 
         // Discard backfacing microfacets
         if ( ScalarDot( wm, wi ) * cosTheta_i < 0 || ScalarDot( wm, wo ) * cosTheta_o < 0 )
@@ -318,7 +318,8 @@ namespace pbrto
     }
 
     // HairBxDF Method Definitions
-    HairBxDF::HairBxDF( Float h, Float eta, const SampledSpectrum& sigma_a, Float beta_m, Float beta_n, Float alpha )
+    PBRT_CPU_GPU HairBxDF::HairBxDF( Float h, Float eta, const SampledSpectrum& sigma_a, Float beta_m,
+        Float beta_n, Float alpha )
         : h( h ), eta( eta ), sigma_a( sigma_a ), beta_m( beta_m ), beta_n( beta_n )
     {
         NCHECK( h >= -1 && h <= 1 );
@@ -338,7 +339,7 @@ namespace pbrto
         s = SqrtPiOver8 * ( 0.265f * beta_n + 1.194f * Sqr( beta_n ) + 5.372f * FastPow<22>( beta_n ) );
         NDCHECK( !IsNaN( s ) );
 
-        sin2kAlpha[ 0 ] = Math::Sin( Radians( alpha ) );
+        sin2kAlpha[ 0 ] = std::sin( Radians( alpha ) );
         cos2kAlpha[ 0 ] = SafeSqrt( 1 - Sqr( sin2kAlpha[ 0 ] ) );
         for ( int i = 1; i < pMax; ++i )
         {
@@ -347,20 +348,18 @@ namespace pbrto
         }
     }
 
-    SampledSpectrum::Simd HairBxDF::f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
+    PBRT_CPU_GPU SampledSpectrum HairBxDF::f( Vector3f wo, Vector3f wi, TransportMode mode ) const
     {
         // Compute hair coordinate system terms related to _wo_
-        Vector3f w( wo );
-        Float sinTheta_o = w.x;
+        Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = Math::ATan2( w.z, w.y );
+        Float phi_o = std::atan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Compute hair coordinate system terms related to _wi_
-        w = wi;
-        Float sinTheta_i = w.x;
+        Float sinTheta_i = wi.x;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
-        Float phi_i = Math::ATan2( w.z, w.y );
+        Float phi_i = std::atan2( wi.z, wi.y );
 
         // Compute $\cos\,\thetat$ for refracted ray
         Float sinTheta_t = sinTheta_o / eta;
@@ -373,12 +372,12 @@ namespace pbrto
         Float gamma_t = SafeASin( sinGamma_t );
 
         // Compute the transmittance _T_ of a single path through the cylinder
-        SampledSpectrum::Simd T = Exp( -sigma_a * ( 2 * cosGamma_t / cosTheta_t ) );
+        SampledSpectrum T = Exp( -sigma_a * ( 2 * cosGamma_t / cosTheta_t ) );
 
         // Evaluate hair BSDF
         Float phi = phi_i - phi_o;
-        pstdo::array<SampledSpectrum::Simd, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
-        SampledSpectrum::Simd fsum( 0.f );
+        pstdo::array<SampledSpectrum, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
+        SampledSpectrum fsum( 0. );
 
         for ( int p = 0; p < pMax; ++p )
         {
@@ -422,7 +421,7 @@ namespace pbrto
         return fsum;
     }
 
-    pstdo::array<Float, HairBxDF::pMax + 1> HairBxDF::ApPDF( Float cosTheta_o ) const
+    PBRT_CPU_GPU pstdo::array<Float, HairBxDF::pMax + 1> HairBxDF::ApPDF( Float cosTheta_o ) const
     {
         // Initialize array of $A_p$ values for _cosTheta_o_
         Float sinTheta_o = SafeSqrt( 1 - Sqr( cosTheta_o ) );
@@ -437,9 +436,9 @@ namespace pbrto
         Float gamma_t = SafeASin( sinGamma_t );
 
         // Compute the transmittance _T_ of a single path through the cylinder
-        SampledSpectrum::Simd T = Exp( -sigma_a * ( 2 * cosGamma_t / cosTheta_t ) );
+        SampledSpectrum T = Exp( -sigma_a * ( 2 * cosGamma_t / cosTheta_t ) );
 
-        pstdo::array<SampledSpectrum::Simd, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
+        pstdo::array<SampledSpectrum, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
 
         // Compute $A_p$ PDF from individual $A_p$ terms
         pstdo::array<Float, pMax + 1> apPDF;
@@ -447,18 +446,19 @@ namespace pbrto
         for ( const SampledSpectrum& as : ap )
             sumY += as.Average( );
         for ( int i = 0; i <= pMax; ++i )
-            apPDF[ i ] = ScalarAvg(ap[ i ] ) / sumY;
+            apPDF[ i ] = ap[ i ].Average( ) / sumY;
 
         return apPDF;
     }
 
-    pstdo::optional<BSDFSample> HairBxDF::Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    PBRT_CPU_GPU pstdo::optional<BSDFSample> HairBxDF::Sample_f( Vector3f wo, Float uc, Point2f u,
+        TransportMode mode,
+        BxDFReflTransFlags sampleFlags ) const
     {
         // Compute hair coordinate system terms related to _wo_
-        Vector3f w( wo );
-        Float sinTheta_o = w.x;
+        Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = Math::ATan2( w.z, w.y );
+        Float phi_o = std::atan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Determine which term $p$ to sample for hair scattering
@@ -493,10 +493,10 @@ namespace pbrto
         cosThetap_o = std::abs( cosThetap_o );
 
         // Sample $M_p$ to compute $\thetai$
-        Float cosTheta = 1 + v[ p ] * Math::Log( std::max<Float>( u[ 0 ], 1e-5 ) +
+        Float cosTheta = 1 + v[ p ] * std::log( std::max<Float>( u[ 0 ], 1e-5 ) +
             ( 1 - u[ 0 ] ) * FastExp( -2 / v[ p ] ) );
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
-        Float cosPhi = Math::Cos( 2 * Pi * u[ 1 ] );
+        Float cosPhi = std::cos( 2 * Pi * u[ 1 ] );
         Float sinTheta_i = -cosTheta * sinThetap_o + sinTheta * cosPhi * cosThetap_o;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
 
@@ -515,10 +515,7 @@ namespace pbrto
 
         // Compute _wi_ from sampled hair scattering angles
         Float phi_i = phi_o + dphi;
-        Float sinPhi_i;
-        Float cosPhi_i;
-        SinCos( phi_i, &sinPhi_i, &cosPhi_i );
-        Vector3f::Simd wi( sinTheta_i, cosTheta_i * cosPhi_i, cosTheta_i * sinPhi_i );
+        Vector3f wi( sinTheta_i, cosTheta_i * std::cos( phi_i ), cosTheta_i * std::sin( phi_i ) );
 
         // Compute PDF for sampled hair scattering direction _wi_
         Float pdf = 0;
@@ -563,22 +560,21 @@ namespace pbrto
         return BSDFSample( f( wo, wi, mode ), wi, pdf, Flags( ) );
     }
 
-    Float HairBxDF::PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    PBRT_CPU_GPU Float HairBxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode,
+        BxDFReflTransFlags sampleFlags ) const
     {
         // TODO? flags...
 
         // Compute hair coordinate system terms related to _wo_
-        Vector3f w( wo );
-        Float sinTheta_o = w.x;
+        Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = Math::ATan2( w.z, w.y );
+        Float phi_o = std::atan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Compute hair coordinate system terms related to _wi_
-        w = wi;
-        Float sinTheta_i = w.x;
+        Float sinTheta_i = wi.x;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
-        Float phi_i = Math::ATan2( w.z, w.y );
+        Float phi_i = std::atan2( wi.z, wi.y );
 
         // Compute $\gammat$ for refracted ray
         Float etap = SafeSqrt( eta * eta - Sqr( sinTheta_o ) ) / cosTheta_o;
@@ -628,7 +624,7 @@ namespace pbrto
         return pdf;
     }
 
-    RGBUnboundedSpectrum HairBxDF::SigmaAFromConcentration( Float ce, Float cp )
+    PBRT_CPU_GPU RGBUnboundedSpectrum HairBxDF::SigmaAFromConcentration( Float ce, Float cp )
     {
         RGB eumelaninSigma_a( 0.419f, 0.697f, 1.37f );
         RGB pheomelaninSigma_a( 0.187f, 0.4f, 1.05f );
@@ -640,7 +636,8 @@ namespace pbrto
 #endif
     }
 
-    SampledSpectrum::Simd HairBxDF::SigmaAFromReflectance( SampledSpectrum::Simd c, Float beta_n, const SampledWavelengths& lambda )
+    PBRT_CPU_GPU SampledSpectrum HairBxDF::SigmaAFromReflectance( const SampledSpectrum& c, Float beta_n,
+        const SampledWavelengths& lambda )
     {
         SampledSpectrum sigma_a;
         for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -648,7 +645,7 @@ namespace pbrto
             Sqr( std::log( c[ i ] ) / ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
                 10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
                 0.245f * FastPow<5>( beta_n ) ) );
-        return SampledSpectrum::Simd( sigma_a );
+        return sigma_a;
     }
 
     std::string HairBxDF::ToString( ) const
@@ -1104,29 +1101,30 @@ namespace pbrto
     }
 
     // MeasuredBxDF Method Definitions
-    SampledSpectrum::Simd MeasuredBxDF::f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
+    PBRT_CPU_GPU SampledSpectrum MeasuredBxDF::f( Vector3f wo, Vector3f wi,
+        TransportMode mode ) const
     {
         // Check for valid reflection configurations
         if ( !SameHemisphere( wo, wi ) )
-            return SampledSpectrum::Simd( 0 );
-        if ( wo.z() < 0 )
+            return SampledSpectrum( 0 );
+        if ( wo.z < 0 )
         {
             wo = -wo;
             wi = -wi;
         }
 
         // Determine half-direction vector $\wm$
-        Vector3f::Simd wm = wi + wo;
+        Vector3f wm = wi + wo;
         if ( ScalarLengthSquared( wm ) == 0 )
-            return SampledSpectrum::Simd( 0 );
+            return SampledSpectrum( 0 );
         wm = Normalize( wm );
 
         // Map $\wo$ and $\wm$ to the unit square $[0,\,1]^2$
-        Float theta_o = SphericalTheta( wo ), phi_o = Math::ATan2( wo.y( ), wo.x( ) );
-        Float theta_m = SphericalTheta( wm ), phi_m = Math::ATan2( wm.y( ), wm.x( ) );
+        Float theta_o = SphericalTheta( wo ), phi_o = std::atan2( wo.y, wo.x );
+        Float theta_m = SphericalTheta( wm ), phi_m = std::atan2( wm.y, wm.x );
         Point2f u_wo( theta2u( theta_o ), phi2u( phi_o ) );
         Point2f u_wm( theta2u( theta_m ), phi2u( brdf->isotropic ? ( phi_m - phi_o ) : phi_m ) );
-        u_wm[ 1 ] = u_wm[ 1 ] - Math::Floor( u_wm[ 1 ] );
+        u_wm[ 1 ] = u_wm[ 1 ] - pstdo::floor( u_wm[ 1 ] );
 
         // Evaluate inverse parameterization $R^{-1}$
         PLSample ui = brdf->vndf.Invert( u_wm, phi_o, theta_o );
@@ -1134,29 +1132,30 @@ namespace pbrto
         // Evaluate spectral 5D interpolant
         SampledSpectrum fr;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-        {
-            fr[ i ] = std::max<Float>( 0, brdf->spectra.Evaluate( ui.p, phi_o, theta_o, lambda[ i ] ) );
-        }
+            fr[ i ] =
+            std::max<Float>( 0, brdf->spectra.Evaluate( ui.p, phi_o, theta_o, lambda[ i ] ) );
+
         // Return measured BRDF value
         return fr * brdf->ndf.Evaluate( u_wm ) /
             ( 4 * brdf->sigma.Evaluate( u_wo ) * CosTheta( wi ) );
     }
 
-    pstdo::optional<BSDFSample> MeasuredBxDF::Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    PBRT_CPU_GPU pstdo::optional<BSDFSample> MeasuredBxDF::Sample_f( Vector3f wo, Float uc, Point2f u,
+        TransportMode mode,
+        BxDFReflTransFlags sampleFlags ) const
     {
         // Check flags and detect interactions in lower hemisphere
         if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
             return {};
         bool flipWi = false;
-        
-        if ( wo.z( ) <= 0 )
+        if ( wo.z <= 0 )
         {
             wo = -wo;
             flipWi = true;
         }
 
         // Initialize parameters of conditional distribution
-        Float theta_o = SphericalTheta( wo ), phi_o = Math::ATan2( wo.y( ), wo.x( ) );
+        Float theta_o = SphericalTheta( wo ), phi_o = std::atan2( wo.y, wo.x );
 
         // Warp sample using luminance distribution
         auto s = brdf->luminance.Sample( u, phi_o, theta_o );
@@ -1172,12 +1171,10 @@ namespace pbrto
         Float phi_m = u2phi( u_wm.y ), theta_m = u2theta( u_wm.x );
         if ( brdf->isotropic )
             phi_m += phi_o;
-        Float sinTheta_m;
-        Float cosTheta_m;
-        SinCos( theta_m, &sinTheta_m, &cosTheta_m );
-        Vector3f::Simd wm = SphericalDirection( sinTheta_m, cosTheta_m, phi_m );
-        Vector3f::Simd wi = Reflect( wo, wm );
-        if ( wi.z( ) <= 0 )
+        Float sinTheta_m = std::sin( theta_m ), cosTheta_m = std::cos( theta_m );
+        Vector3f wm = SphericalDirection( sinTheta_m, cosTheta_m, phi_m );
+        Vector3f wi = Reflect( wo, wm );
+        if ( wi.z <= 0 )
             return {};
 
         // Interpolate spectral BRDF
@@ -1193,41 +1190,43 @@ namespace pbrto
         if ( flipWi )
             wi = -wi;
 
-        return BSDFSample( SampledSpectrum::Simd( fr ), wi, pdf * lum_pdf, BxDFFlags::GlossyReflection );
+        return BSDFSample( fr, wi, pdf * lum_pdf, BxDFFlags::GlossyReflection );
     }
 
-    Float MeasuredBxDF::PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    PBRT_CPU_GPU Float MeasuredBxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode,
+        BxDFReflTransFlags sampleFlags ) const
     {
         if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
             return 0;
         if ( !SameHemisphere( wo, wi ) )
             return 0;
-        if ( wo.z( ) < 0 )
+        if ( wo.z < 0 )
         {
             wo = -wo;
             wi = -wi;
         }
 
-        Vector3f::Simd wm = wi + wo;
+        Vector3f wm = wi + wo;
         if ( ScalarLengthSquared( wm ) == 0 )
             return 0;
         wm = Normalize( wm );
 
         /* Cartesian -> spherical coordinates */
-        Float theta_o = SphericalTheta( wo ), phi_o = Math::ATan2( wo.y( ), wo.x( ) );
-        Float theta_m = SphericalTheta( wm ), phi_m = Math::ATan2( wm.y( ), wm.x( ) );
+        Float theta_o = SphericalTheta( wo ), phi_o = std::atan2( wo.y, wo.x );
+        Float theta_m = SphericalTheta( wm ), phi_m = std::atan2( wm.y, wm.x );
 
         /* Spherical coordinates -> unit coordinate system */
         Point2f u_wm( theta2u( theta_m ), phi2u( brdf->isotropic ? ( phi_m - phi_o ) : phi_m ) );
-        u_wm.y = u_wm.y - Math::Floor( u_wm.y );
+        u_wm.y = u_wm.y - pstdo::floor( u_wm.y );
 
         auto ui = brdf->vndf.Invert( u_wm, phi_o, theta_o );
         Point2f sample = ui.p;
         Float vndfPDF = ui.pdf;
 
         Float pdf = brdf->luminance.Evaluate( sample, phi_o, theta_o );
-        Float sinTheta_m = Math::Sqrt( Sqr( wm.x( ) ) + Sqr( wm.y( ) ) );
-        Float jacobian = 4.f * ScalarDot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
+        Float sinTheta_m = std::sqrt( Sqr( wm.x ) + Sqr( wm.y ) );
+        Float jacobian =
+            4.f * ScalarDot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
         return vndfPDF * pdf / jacobian;
     }
 
@@ -1241,8 +1240,43 @@ namespace pbrto
         return StringPrintf( "[ NormalizedFresnelBxDF eta: %f ]", eta );
     }
 
-    
     // BxDF Method Definitions
+    PBRT_CPU_GPU SampledSpectrum BxDF::rho( Vector3f wo, pstdo::span<const Float> uc,
+        pstdo::span<const Point2f> u2 ) const
+    {
+        if ( wo.z == 0 )
+            return {};
+        SampledSpectrum r( 0. );
+        NDCHECK_EQ( uc.size( ), u2.size( ) );
+        for ( size_t i = 0; i < uc.size( ); ++i )
+        {
+            // Compute estimate of $\rho_\roman{hd}$
+            pstdo::optional<BSDFSample> bs = Sample_f( wo, uc[ i ], u2[ i ] );
+            if ( bs && bs->pdf > 0 )
+                r += bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
+        }
+        return r / uc.size( );
+    }
+
+    SampledSpectrum BxDF::rho( pstdo::span<const Point2f> u1, pstdo::span<const Float> uc,
+        pstdo::span<const Point2f> u2 ) const
+    {
+        NDCHECK_EQ( uc.size( ), u1.size( ) );
+        NDCHECK_EQ( u1.size( ), u2.size( ) );
+        SampledSpectrum r( 0.f );
+        for ( size_t i = 0; i < uc.size( ); ++i )
+        {
+            // Compute estimate of $\rho_\roman{hh}$
+            Vector3f wo = SampleUniformHemisphere( u1[ i ] );
+            if ( wo.z == 0 )
+                continue;
+            Float pdfo = UniformHemispherePDF( );
+            pstdo::optional<BSDFSample> bs = Sample_f( wo, uc[ i ], u2[ i ] );
+            if ( bs && bs->pdf > 0 )
+                r += bs->f * AbsCosTheta( bs->wi ) * AbsCosTheta( wo ) / ( pdfo * bs->pdf );
+        }
+        return r / ( Pi * uc.size( ) );
+    }
 
     std::string BxDF::ToString( ) const
     {

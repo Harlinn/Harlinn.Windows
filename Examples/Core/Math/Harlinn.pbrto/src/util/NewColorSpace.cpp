@@ -50,12 +50,12 @@ namespace pbrto
 
         // Initialize XYZ color space conversion matrices
         SquareMatrix<3> rgb( R.X, G.X, B.X, R.Y, G.Y, B.Y, R.Z, G.Z, B.Z );
-        XYZ C = SquareMatrix<3>(Math::Inverse( rgb )) * W;
+        XYZ C = SquareMatrix<3>( Inverse( rgb ) ) * W;
         XYZFromRGB = rgb * SquareMatrix<3>::Diag( C[ 0 ], C[ 1 ], C[ 2 ] );
-        RGBFromXYZ = Math::Inverse( XYZFromRGB );
+        RGBFromXYZ = Inverse( XYZFromRGB );
     }
 
-    SquareMatrix<3> ConvertRGBColorSpace( const RGBColorSpace& from, const RGBColorSpace& to )
+    PBRTO_EXPORT SquareMatrix<3> ConvertRGBColorSpace( const RGBColorSpace& from, const RGBColorSpace& to )
     {
         if ( from == to )
             return {};

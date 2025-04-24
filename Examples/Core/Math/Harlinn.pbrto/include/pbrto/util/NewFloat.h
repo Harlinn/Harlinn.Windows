@@ -138,7 +138,7 @@ namespace pbrto
 #ifdef PBRT_IS_GPU_CODE
         return __float_as_uint( f );
 #else
-        return std::bit_cast< uint32_t >( f );
+        return pstdo::bit_cast< uint32_t >( f );
 #endif
     }
 
@@ -148,7 +148,7 @@ namespace pbrto
 #ifdef PBRT_IS_GPU_CODE
         return __uint_as_float( ui );
 #else
-        return std::bit_cast< float >( ui );
+        return pstdo::bit_cast< float >( ui );
 #endif
     }
 
@@ -176,7 +176,7 @@ namespace pbrto
 #ifdef PBRT_IS_GPU_CODE
         return __double_as_longlong( f );
 #else
-        return std::bit_cast< uint64_t >( f );
+        return pstdo::bit_cast< uint64_t >( f );
 #endif
     }
 
@@ -186,7 +186,7 @@ namespace pbrto
 #ifdef PBRT_IS_GPU_CODE
         return __longlong_as_double( ui );
 #else
-        return std::bit_cast< double >( ui );
+        return pstdo::bit_cast< double >( ui );
 #endif
     }
 
@@ -324,7 +324,7 @@ namespace pbrto
         return __fsqrt_ru( a );
 #endif
 #else  // CPU
-        return NextUp( Math::Sqrt( a ) );
+        return NextFloatUp( std::sqrt( a ) );
 #endif
     }
 
@@ -337,7 +337,7 @@ namespace pbrto
         return __fsqrt_rd( a );
 #endif
 #else  // CPU
-        return std::max<Float>( 0, NextDown( Math::Sqrt( a ) ) );
+        return std::max<Float>( 0, NextFloatDown( std::sqrt( a ) ) );
 #endif
     }
 
@@ -638,5 +638,4 @@ namespace pbrto
     };
 
 }
-
 #endif

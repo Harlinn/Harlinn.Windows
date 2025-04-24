@@ -61,8 +61,8 @@ namespace pbrto
         virtual void Rotate( Float angle, Float ax, Float ay, Float az, FileLoc loc ) = 0;
         virtual void LookAt( Float ex, Float ey, Float ez, Float lx, Float ly, Float lz,
             Float ux, Float uy, Float uz, FileLoc loc ) = 0;
-        virtual void ConcatTransform( Float transform[ 16 ], FileLoc loc ) = 0;
-        virtual void Transform( Float transform[ 16 ], FileLoc loc ) = 0;
+        virtual void ConcatTransform( const std::array<Float, 16>& transform, FileLoc loc ) = 0;
+        virtual void Transform( const std::array<Float, 16>& transform, FileLoc loc ) = 0;
         virtual void CoordinateSystem( const std::string&, FileLoc loc ) = 0;
         virtual void CoordSysTransform( const std::string&, FileLoc loc ) = 0;
         virtual void ActiveTransformAll( FileLoc loc ) = 0;
@@ -251,9 +251,9 @@ namespace pbrto
             void LookAt( Float ex, Float ey, Float ez, Float lx, Float ly, Float lz, Float ux,
                 Float uy, Float uz, FileLoc loc );
         PBRTO_EXPORT
-            void ConcatTransform( Float transform[ 16 ], FileLoc loc );
+            void ConcatTransform( const std::array<Float, 16>& transform, FileLoc loc );
         PBRTO_EXPORT
-            void Transform( Float transform[ 16 ], FileLoc loc );
+            void Transform( const std::array<Float, 16>& transform, FileLoc loc );
         PBRTO_EXPORT
             void CoordinateSystem( const std::string&, FileLoc loc );
         PBRTO_EXPORT

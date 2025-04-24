@@ -51,19 +51,19 @@ namespace pbrto
     inline Float SampleLinear( Float u, Float a, Float b );
     inline Float InvertLinearSample( Float x, Float a, Float b );
 
-    pstdo::array<Float, 3> SampleSphericalTriangle( const pstdo::array<Point3f, 3>& v, Point3f p, Point2f u, Float* pdf = nullptr );
+    PBRTO_EXPORT pstdo::array<Float, 3> SampleSphericalTriangle( const pstdo::array<Point3f, 3>& v, Point3f p, Point2f u, Float* pdf = nullptr );
 
-    Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p, Vector3f w );
+    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p, Vector3f w );
 
-    Point3f SampleSphericalRectangle( Point3f p, Point3f v00, Vector3f eu, Vector3f ev, Point2f u, Float* pdf = nullptr );
+    PBRTO_EXPORT Point3f SampleSphericalRectangle( Point3f p, Point3f v00, Vector3f eu, Vector3f ev, Point2f u, Float* pdf = nullptr );
 
-    Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f v00, Vector3f eu, Vector3f ev, Point3f pRect );
+    PBRTO_EXPORT Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f v00, Vector3f eu, Vector3f ev, Point3f pRect );
 
-    Vector3f::Simd SampleHenyeyGreenstein( Vector3f::Simd wo, Float g, Point2f u, Float* pdf = nullptr );
+    PBRTO_EXPORT Vector3f SampleHenyeyGreenstein( Vector3f wo, Float g, Point2f u, Float* pdf = nullptr );
 
-    Float SampleCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, pstdo::span<const Float> cdf, Float sample, Float* fval = nullptr, Float* pdf = nullptr );
+    PBRTO_EXPORT Float SampleCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, pstdo::span<const Float> cdf, Float sample, Float* fval = nullptr, Float* pdf = nullptr );
 
-    Float SampleCatmullRom2D( pstdo::span<const Float> nodes1, pstdo::span<const Float> nodes2,
+    PBRTO_EXPORT Float SampleCatmullRom2D( pstdo::span<const Float> nodes1, pstdo::span<const Float> nodes2,
             pstdo::span<const Float> values, pstdo::span<const Float> cdf,
             Float alpha, Float sample, Float* fval = nullptr,
             Float* pdf = nullptr );
@@ -95,16 +95,12 @@ namespace pbrto
         // Compute sum of _weights_
         Float sumWeights = 0;
         for ( Float w : weights )
-        {
             sumWeights += w;
-        }
 
         // Compute rescaled $u'$ sample
         Float up = u * sumWeights;
         if ( up == sumWeights )
-        {
-            up = Math::NextDown( up );
-        }
+            up = NextFloatDown( up );
 
         // Find offset in _weights_ corresponding to $u'$
         int offset = 0;
@@ -128,9 +124,7 @@ namespace pbrto
     {
         NDCHECK( a >= 0 && b >= 0 );
         if ( x < 0 || x > 1 )
-        {
             return 0;
-        }
         return 2 * Lerp2( x, a, b ) / ( a + b );
     }
 
@@ -139,7 +133,7 @@ namespace pbrto
         NDCHECK( a >= 0 && b >= 0 );
         if ( u == 0 && a == 0 )
             return 0;
-        Float x = u * ( a + b ) / ( a + Math::Sqrt( Lerp2( u, Sqr( a ), Sqr( b ) ) ) );
+        Float x = u * ( a + b ) / ( a + std::sqrt( Lerp2( u, Sqr( a ), Sqr( b ) ) ) );
         return std::min( x, OneMinusEpsilon );
     }
 
@@ -195,7 +189,7 @@ namespace pbrto
     inline pstdo::array<Float, 3> SampleUniformTriangle( Point2f u )
     {
         Float b0, b1;
-        if ( u.x < u.y )
+        if ( u[ 0 ] < u[ 1 ] )
         {
             b0 = u[ 0 ] / 2;
             b1 = u[ 1 ] - b0;
@@ -248,19 +242,19 @@ namespace pbrto
     inline Float ExponentialPDF( Float x, Float a )
     {
         NDCHECK_GT( a, 0 );
-        return a * Math::Exp( -a * x );
+        return a * std::exp( -a * x );
     }
 
     inline Float SampleExponential( Float u, Float a )
     {
         NDCHECK_GT( a, 0 );
-        return -Math::Log( 1 - u ) / a;
+        return -std::log( 1 - u ) / a;
     }
 
     inline Float InvertExponentialSample( Float x, Float a )
     {
         NDCHECK_GT( a, 0 );
-        return 1 - Math::Exp( -a * x );
+        return 1 - std::exp( -a * x );
     }
 
     inline Float NormalPDF( Float x, Float mu = 0, Float sigma = 1 )
@@ -280,29 +274,25 @@ namespace pbrto
 
     inline Point2f SampleTwoNormal( Point2f u, Float mu = 0, Float sigma = 1 )
     {
-        Float r2 = -2.f * std::log1p( -u.x ); // Math::Log(1-u[0]), robustly.
-        Float sin2PiU;
-        Float cos2PiU;
-        SinCos( 2.f * Pi * u.y, &sin2PiU, &cos2PiU );
-        Float muSigmaSqrtR2 = mu + sigma * Math::Sqrt( r2 );
-        return { muSigmaSqrtR2 * cos2PiU,
-                muSigmaSqrtR2* cos2PiU };
+        Float r2 = -2 * std::log1p( -u[ 0 ] ); // log(1-u[0]), robustly.
+        return { mu + sigma * std::sqrt( r2 ) * std::cos( 2 * Pi * u[ 1 ] ),
+                mu + sigma * std::sqrt( r2 ) * std::sin( 2 * Pi * u[ 1 ] ) };
     }
 
     inline Float LogisticPDF( Float x, Float s )
     {
         x = std::abs( x );
-        return Math::Exp( -x / s ) / ( s * Sqr( 1 + Math::Exp( -x / s ) ) );
+        return std::exp( -x / s ) / ( s * Sqr( 1 + std::exp( -x / s ) ) );
     }
 
     inline Float SampleLogistic( Float u, Float s )
     {
-        return -s * Math::Log( 1 / u - 1 );
+        return -s * std::log( 1 / u - 1 );
     }
 
     inline Float InvertLogisticSample( Float x, Float s )
     {
-        return 1 / ( 1 + Math::Exp( -x / s ) );
+        return 1 / ( 1 + std::exp( -x / s ) );
     }
 
     inline Float TrimmedLogisticPDF( Float x, Float s, Float a, Float b )
@@ -359,32 +349,25 @@ namespace pbrto
 
     inline Point2f SampleUniformDiskPolar( Point2f u )
     {
-        Float r = Math::Sqrt( u.x );
-        Float theta = 2 * Pi * u.y;
-        Float sinTheta;
-        Float cosTheta;
-        SinCos( theta, &sinTheta, &cosTheta );
-        return { r * cosTheta, r * sinTheta };
+        Float r = std::sqrt( u[ 0 ] );
+        Float theta = 2 * Pi * u[ 1 ];
+        return { r * std::cos( theta ), r * std::sin( theta ) };
     }
 
     inline Point2f InvertUniformDiskPolarSample( Point2f p )
     {
-        Float phi = Math::ATan2( p.y, p.x );
+        Float phi = std::atan2( p.y, p.x );
         if ( phi < 0 )
-        {
             phi += 2 * Pi;
-        }
         return Point2f( Sqr( p.x ) + Sqr( p.y ), phi / ( 2 * Pi ) );
     }
 
     inline Point2f SampleUniformDiskConcentric( Point2f u )
     {
         // Map _u_ to $[-1,1]^2$ and handle degeneracy at the origin
-        Point2f uOffset = 2.f * u - Vector2f( 1.f, 1.f );
+        Point2f uOffset = 2 * u - Vector2f( 1, 1 );
         if ( uOffset.x == 0 && uOffset.y == 0 )
-        {
             return { 0, 0 };
-        }
 
         // Apply concentric mapping to point
         Float theta, r;
@@ -398,22 +381,19 @@ namespace pbrto
             r = uOffset.y;
             theta = PiOver2 - PiOver4 * ( uOffset.x / uOffset.y );
         }
-        Float sinTheta;
-        Float cosTheta;
-        SinCos( theta, &sinTheta, &cosTheta );
-        return r * Point2f( cosTheta, sinTheta );
+        return r * Point2f( std::cos( theta ), std::sin( theta ) );
     }
 
     inline Point2f InvertUniformDiskConcentricSample( Point2f p )
     {
-        Float theta = Math::ATan2( p.y, p.x );  // -pi -> pi
-        Float r = Math::Sqrt( Sqr( p.x ) + Sqr( p.y ) );
+        Float theta = std::atan2( p.y, p.x );  // -pi -> pi
+        Float r = std::sqrt( Sqr( p.x ) + Sqr( p.y ) );
 
         Point2f uo;
         // TODO: can we make this less branchy?
         if ( std::abs( theta ) < PiOver4 || std::abs( theta ) > 3 * PiOver4 )
         {
-            uo.x = r = Math::CopySign( r, p.x );
+            uo.x = r = pstdo::copysign( r, p.x );
             if ( p.x < 0 )
             {
                 if ( p.y < 0 )
@@ -432,7 +412,7 @@ namespace pbrto
         }
         else
         {
-            uo.y = r = Math::CopySign( r, p.y );
+            uo.y = r = pstdo::copysign( r, p.y );
             if ( p.y < 0 )
             {
                 uo.x = -( PiOver2 + theta ) * r / PiOver4;
@@ -446,17 +426,12 @@ namespace pbrto
         return { ( uo.x + 1 ) / 2, ( uo.y + 1 ) / 2 };
     }
 
-    inline Vector3f::Simd SampleUniformHemisphere( Point2f u )
+    inline Vector3f SampleUniformHemisphere( Point2f u )
     {
         Float z = u[ 0 ];
         Float r = SafeSqrt( 1 - Sqr( z ) );
         Float phi = 2 * Pi * u[ 1 ];
-
-        Float sinPhi;
-        Float cosPhi;
-        SinCos( phi, &sinPhi, &cosPhi );
-
-        return Vector3f::Simd( r * cosPhi, r * sinPhi, z );
+        return { r * std::cos( phi ), r * std::sin( phi ), z };
     }
 
     inline Float UniformHemispherePDF( )
@@ -466,25 +441,18 @@ namespace pbrto
 
     inline Point2f InvertUniformHemisphereSample( Vector3f w )
     {
-        Float phi = Math::ATan2( w.y, w.x );
-        if ( phi < 0.f )
-        {
-            phi += 2.f * Pi;
-        }
-        return Point2f( w.z, phi / ( 2.f * Pi ) );
+        Float phi = std::atan2( w.y, w.x );
+        if ( phi < 0 )
+            phi += 2 * Pi;
+        return Point2f( w.z, phi / ( 2 * Pi ) );
     }
 
-    inline Vector3f::Simd SampleUniformSphere( Point2f u )
+    inline Vector3f SampleUniformSphere( Point2f u )
     {
-        Float z = 1 - 2 * u.x;
+        Float z = 1 - 2 * u[ 0 ];
         Float r = SafeSqrt( 1 - Sqr( z ) );
-        Float phi = 2 * Pi * u.y;
-
-        Float sinPhi;
-        Float cosPhi;
-        SinCos( phi, &sinPhi, &cosPhi );
-
-        return { r * cosPhi, r * sinPhi, z };
+        Float phi = 2 * Pi * u[ 1 ];
+        return { r * std::cos( phi ), r * std::sin( phi ), z };
     }
 
     inline Float UniformSpherePDF( )
@@ -494,19 +462,17 @@ namespace pbrto
 
     inline Point2f InvertUniformSphereSample( Vector3f w )
     {
-        Float phi = Math::ATan2( w.y, w.x );
-        if ( phi < 0.f )
-        {
-            phi += 2.f * Pi;
-        }
+        Float phi = std::atan2( w.y, w.x );
+        if ( phi < 0 )
+            phi += 2 * Pi;
         return Point2f( ( 1 - w.z ) / 2, phi / ( 2 * Pi ) );
     }
 
-    inline Vector3f::Simd SampleCosineHemisphere( Point2f u )
+    inline Vector3f SampleCosineHemisphere( Point2f u )
     {
         Point2f d = SampleUniformDiskConcentric( u );
         Float z = SafeSqrt( 1 - Sqr( d.x ) - Sqr( d.y ) );
-        return Vector3f::Simd( d.x, d.y, z );
+        return Vector3f( d.x, d.y, z );
     }
 
     inline Float CosineHemispherePDF( Float cosTheta )
@@ -521,14 +487,14 @@ namespace pbrto
 
     inline Float UniformConePDF( Float cosThetaMax )
     {
-        return 1.f / ( 2.f * Pi * ( 1.f - cosThetaMax ) );
+        return 1 / ( 2 * Pi * ( 1 - cosThetaMax ) );
     }
 
     inline Vector3f SampleUniformCone( Point2f u, Float cosThetaMax )
     {
-        Float cosTheta = ( 1 - u.x ) + u.x * cosThetaMax;
+        Float cosTheta = ( 1 - u[ 0 ] ) + u[ 0 ] * cosThetaMax;
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
-        Float phi = u.y * 2.f * Pi;
+        Float phi = u[ 1 ] * 2 * Pi;
         return SphericalDirection( sinTheta, cosTheta, phi );
     }
 
@@ -536,26 +502,26 @@ namespace pbrto
     {
         Float cosTheta = w.z;
         Float phi = SphericalPhi( w );
-        return { ( cosTheta - 1.f ) / ( cosThetaMax - 1.f ), phi / ( 2.f * Pi ) };
+        return { ( cosTheta - 1 ) / ( cosThetaMax - 1 ), phi / ( 2 * Pi ) };
     }
 
     // Sample from e^(-c x), x from 0 to xMax
     inline Float SampleTrimmedExponential( Float u, Float c, Float xMax )
     {
-        return Math::Log( 1 - u * ( 1 - Math::Exp( -c * xMax ) ) ) / -c;
+        return std::log( 1 - u * ( 1 - std::exp( -c * xMax ) ) ) / -c;
     }
 
     inline Float TrimmedExponentialPDF( Float x, Float c, Float xMax )
     {
         if ( x < 0 || x > xMax )
             return 0;
-        return c / ( 1 - Math::Exp( -c * xMax ) ) * Math::Exp( -c * x );
+        return c / ( 1 - std::exp( -c * xMax ) ) * std::exp( -c * x );
     }
 
     inline Float InvertTrimmedExponentialSample( Float x, Float c, Float xMax )
     {
         NDCHECK( x >= 0 && x <= xMax );
-        return ( 1 - Math::Exp( -c * x ) ) / ( 1 - Math::Exp( -c * xMax ) );
+        return ( 1 - std::exp( -c * x ) ) / ( 1 - std::exp( -c * xMax ) );
     }
 
     inline Vector3f SampleUniformHemisphereConcentric( Point2f u )
@@ -565,9 +531,7 @@ namespace pbrto
 
         // Handle degeneracy at the origin
         if ( uOffset.x == 0 && uOffset.y == 0 )
-        {
             return Vector3f( 0, 0, 1 );
-        }
 
         // Apply concentric mapping to point
         Float theta, r;
@@ -582,19 +546,17 @@ namespace pbrto
             theta = PiOver2 - PiOver4 * ( uOffset.x / uOffset.y );
         }
 
-        Float sinTheta;
-        Float cosTheta;
-        SinCos( theta, &sinTheta, &cosTheta );
-        Float rTimesSqrt2MinusRTimesR = r * Math::Sqrt( 2 - r * r );
-
-        return Vector3f( cosTheta * rTimesSqrt2MinusRTimesR,
-            sinTheta * rTimesSqrt2MinusRTimesR, 1 - r * r );
+        return Vector3f( std::cos( theta ) * r * std::sqrt( 2 - r * r ),
+            std::sin( theta ) * r * std::sqrt( 2 - r * r ), 1 - r * r );
     }
 
     // VarianceEstimator Definition
     template <typename Float = Float>
     class VarianceEstimator
     {
+        // VarianceEstimator Private Members
+        Float mean = 0, S = 0;
+        int64_t n = 0;
     public:
         // VarianceEstimator Public Methods
         void Add( Float x )
@@ -607,7 +569,7 @@ namespace pbrto
         }
 
         Float Mean( ) const 
-        { 
+        {
             return mean; 
         }
         Float Variance( ) const 
@@ -631,21 +593,20 @@ namespace pbrto
             mean = ( n * mean + ve.n * ve.mean ) / ( n + ve.n );
             n += ve.n;
         }
-
-    private:
-        // VarianceEstimator Private Members
-        Float mean = 0, S = 0;
-        int64_t n = 0;
     };
 
     // WeightedReservoirSampler Definition
     template <typename T>
     class WeightedReservoirSampler
     {
+        // WeightedReservoirSampler Private Members
+        RNG rng;
+        Float weightSum = 0;
+        Float reservoirWeight = 0;
+        T reservoir{};
     public:
         // WeightedReservoirSampler Public Methods
         WeightedReservoirSampler( ) = default;
-
         WeightedReservoirSampler( uint64_t rngSeed ) 
             : rng( rngSeed ) 
         {}
@@ -712,16 +673,14 @@ namespace pbrto
 
         void Reset( ) 
         { 
-            reservoirWeight = weightSum = 0.f; 
+            reservoirWeight = weightSum = 0; 
         }
 
         void Merge( const WeightedReservoirSampler& wrs )
         {
             NDCHECK_LE( weightSum + wrs.WeightSum( ), 1e80 );
             if ( wrs.HasSample( ) && Add( wrs.reservoir, wrs.weightSum ) )
-            {
                 reservoirWeight = wrs.reservoirWeight;
-            }
         }
 
         std::string ToString( ) const
@@ -732,11 +691,7 @@ namespace pbrto
         }
 
     private:
-        // WeightedReservoirSampler Private Members
-        RNG rng;
-        Float weightSum = 0;
-        Float reservoirWeight = 0;
-        T reservoir{};
+        
     };
 
     // PiecewiseConstant1D Definition
@@ -759,15 +714,14 @@ namespace pbrto
         }
 
         PiecewiseConstant1D( ) = default;
-        PiecewiseConstant1D( Allocator alloc ) 
-            : func( alloc ), cdf( alloc ) 
-        {}
+        PiecewiseConstant1D( Allocator alloc ) : func( alloc ), cdf( alloc ) {}
         PiecewiseConstant1D( pstdo::span<const Float> f, Allocator alloc = {} )
             : PiecewiseConstant1D( f, 0., 1., alloc )
         {
         }
 
-        PiecewiseConstant1D( pstdo::span<const Float> f, Float min, Float max, Allocator alloc = {} )
+        PiecewiseConstant1D( pstdo::span<const Float> f, Float min, Float max,
+            Allocator alloc = {} )
             : func( f.begin( ), f.end( ), alloc ), cdf( f.size( ) + 1, alloc ), min( min ), max( max )
         {
             NCHECK_GT( max, min );
@@ -787,64 +741,46 @@ namespace pbrto
             // Transform step function integral into CDF
             funcInt = cdf[ n ];
             if ( funcInt == 0 )
-            {
                 for ( size_t i = 1; i < n + 1; ++i )
-                {
                     cdf[ i ] = Float( i ) / Float( n );
-                }
-            }
             else
-            {
                 for ( size_t i = 1; i < n + 1; ++i )
-                {
                     cdf[ i ] /= funcInt;
-                }
-            }
         }
 
-        Float Integral( ) const 
-        { 
-            return funcInt; 
-        }
-        size_t size( ) const 
-        { 
-            return func.size( ); 
-        }
+        PBRT_CPU_GPU
+            Float Integral( ) const { return funcInt; }
+        PBRT_CPU_GPU
+            size_t size( ) const { return func.size( ); }
 
-        Float Sample( Float u, Float* pdf = nullptr, int* offset = nullptr ) const
+        PBRT_CPU_GPU
+            Float Sample( Float u, Float* pdf = nullptr, int* offset = nullptr ) const
         {
             // Find surrounding CDF segments and _offset_
             int o = FindInterval( ( int )cdf.size( ), [ & ]( int index ) { return cdf[ index ] <= u; } );
             if ( offset )
-            {
                 *offset = o;
-            }
 
             // Compute offset along CDF segment
             Float du = u - cdf[ o ];
             if ( cdf[ o + 1 ] - cdf[ o ] > 0 )
-            {
                 du /= cdf[ o + 1 ] - cdf[ o ];
-            }
             NDCHECK( !IsNaN( du ) );
 
             // Compute PDF for sampled offset
             if ( pdf )
-            {
                 *pdf = ( funcInt > 0 ) ? func[ o ] / funcInt : 0;
-            }
 
             // Return $x$ corresponding to sample
             return Lerp2( ( o + du ) / size( ), min, max );
         }
 
-        pstdo::optional<Float> Invert( Float x ) const
+        PBRT_CPU_GPU
+            pstdo::optional<Float> Invert( Float x ) const
         {
             // Compute offset to CDF values that bracket $x$
             if ( x < min || x > max )
-            {
                 return {};
-            }
             Float c = ( x - min ) / ( max - min ) * func.size( );
             int offset = Clamp( int( c ), 0, func.size( ) - 1 );
             NDCHECK( offset >= 0 && offset + 1 < cdf.size( ) );
@@ -866,33 +802,37 @@ namespace pbrto
     public:
         // PiecewiseConstant2D Public Methods
         PiecewiseConstant2D( ) = default;
-        PiecewiseConstant2D( Allocator alloc ) 
-            : pConditionalV( alloc ), pMarginal( alloc ) 
-        { }
-        PiecewiseConstant2D( pstdo::span<const Float> data, int nx, int ny, Allocator alloc = {} )
-            : PiecewiseConstant2D( data, nx, ny, Bounds2f( Point2f( 0, 0 ), Point2f( 1, 1 ) ), alloc )
-        { }
+        PiecewiseConstant2D( Allocator alloc ) : pConditionalV( alloc ), pMarginal( alloc ) {}
+        PiecewiseConstant2D( pstdo::span<const Float> data, int nx, int ny,
+            Allocator alloc = {} )
+            : PiecewiseConstant2D( data, nx, ny, Bounds2f( Point2f( 0, 0 ), Point2f( 1, 1 ) ),
+                alloc )
+        {
+        }
         explicit PiecewiseConstant2D( const Array2D<Float>& data, Allocator alloc = {} )
             : PiecewiseConstant2D( pstdo::span<const Float>( data ), data.XSize( ), data.YSize( ),
                 alloc )
-        { }
+        {
+        }
         PiecewiseConstant2D( const Array2D<Float>& data, Bounds2f domain, Allocator alloc = {} )
-            : PiecewiseConstant2D( pstdo::span<const Float>( data ), data.XSize( ), data.YSize( ), domain, alloc )
-        { }
+            : PiecewiseConstant2D( pstdo::span<const Float>( data ), data.XSize( ), data.YSize( ),
+                domain, alloc )
+        {
+        }
 
-        size_t BytesUsed( ) const
+        PBRT_CPU_GPU
+            size_t BytesUsed( ) const
         {
             return pConditionalV.size( ) *
                 ( pConditionalV[ 0 ].BytesUsed( ) + sizeof( pConditionalV[ 0 ] ) ) +
                 pMarginal.BytesUsed( );
         }
 
-        Bounds2f Domain( ) const 
-        { 
-            return domain; 
-        }
+        PBRT_CPU_GPU
+            Bounds2f Domain( ) const { return domain; }
 
-        Point2i Resolution( ) const
+        PBRT_CPU_GPU
+            Point2i Resolution( ) const
         {
             return { int( pConditionalV[ 0 ].size( ) ), int( pMarginal.size( ) ) };
         }
@@ -903,60 +843,58 @@ namespace pbrto
                 "pMarginal: %s ]",
                 domain, pConditionalV, pMarginal );
         }
-        static void TestCompareDistributions( const PiecewiseConstant2D& da, const PiecewiseConstant2D& db, Float eps = 1e-5 );
+        static void TestCompareDistributions( const PiecewiseConstant2D& da,
+            const PiecewiseConstant2D& db, Float eps = 1e-5 );
 
-        PiecewiseConstant2D( pstdo::span<const Float> func, int nu, int nv, Bounds2f domain, Allocator alloc = {} )
+        PiecewiseConstant2D( pstdo::span<const Float> func, int nu, int nv, Bounds2f domain,
+            Allocator alloc = {} )
             : domain( domain ), pConditionalV( alloc ), pMarginal( alloc )
         {
             NCHECK_EQ( func.size( ), ( size_t )nu * ( size_t )nv );
             pConditionalV.reserve( nv );
             for ( int v = 0; v < nv; ++v )
-            {
                 // Compute conditional sampling distribution for $\tilde{v}$
-                pConditionalV.emplace_back( func.subspan( v * nu, nu ), domain.pMin[ 0 ], domain.pMax[ 0 ], alloc );
-            }
+                pConditionalV.emplace_back( func.subspan( v * nu, nu ), domain.pMin[ 0 ],
+                    domain.pMax[ 0 ], alloc );
 
             // Compute marginal sampling distribution $p[\tilde{v}]$
             pstdo::vector<Float> marginalFunc;
             marginalFunc.reserve( nv );
             for ( int v = 0; v < nv; ++v )
-            {
                 marginalFunc.push_back( pConditionalV[ v ].Integral( ) );
-            }
-            pMarginal = PiecewiseConstant1D( marginalFunc, domain.pMin[ 1 ], domain.pMax[ 1 ], alloc );
+            pMarginal =
+                PiecewiseConstant1D( marginalFunc, domain.pMin[ 1 ], domain.pMax[ 1 ], alloc );
         }
 
-        Float Integral( ) const 
-        { 
-            return pMarginal.Integral( ); 
-        }
+        PBRT_CPU_GPU
+            Float Integral( ) const { return pMarginal.Integral( ); }
 
-        Point2f Sample( Point2f u, Float* pdf = nullptr, Point2i* offset = nullptr ) const
+        PBRT_CPU_GPU
+            Point2f Sample( Point2f u, Float* pdf = nullptr, Point2i* offset = nullptr ) const
         {
             Float pdfs[ 2 ];
             Point2i uv;
             Float d1 = pMarginal.Sample( u[ 1 ], &pdfs[ 1 ], &uv[ 1 ] );
             Float d0 = pConditionalV[ uv[ 1 ] ].Sample( u[ 0 ], &pdfs[ 0 ], &uv[ 0 ] );
             if ( pdf )
-            {
                 *pdf = pdfs[ 0 ] * pdfs[ 1 ];
-            }
             if ( offset )
-            {
                 *offset = uv;
-            }
             return Point2f( d0, d1 );
         }
 
-        Float PDF( Point2f pr ) const
+        PBRT_CPU_GPU
+            Float PDF( Point2f pr ) const
         {
             Point2f p = Point2f( domain.Offset( pr ) );
-            int iu = Clamp( int( p[ 0 ] * pConditionalV[ 0 ].size( ) ), 0, pConditionalV[ 0 ].size( ) - 1 );
+            int iu =
+                Clamp( int( p[ 0 ] * pConditionalV[ 0 ].size( ) ), 0, pConditionalV[ 0 ].size( ) - 1 );
             int iv = Clamp( int( p[ 1 ] * pMarginal.size( ) ), 0, pMarginal.size( ) - 1 );
             return pConditionalV[ iv ].func[ iu ] / pMarginal.Integral( );
         }
 
-        pstdo::optional<Point2f> Invert( Point2f p ) const
+        PBRT_CPU_GPU
+            pstdo::optional<Point2f> Invert( Point2f p ) const
         {
             pstdo::optional<Float> mInv = pMarginal.Invert( p[ 1 ] );
             if ( !mInv )
@@ -987,11 +925,14 @@ namespace pbrto
         AliasTable( Allocator alloc = {} ) : bins( alloc ) {}
         AliasTable( pstdo::span<const Float> weights, Allocator alloc = {} );
 
-        int Sample( Float u, Float* pmf = nullptr, Float* uRemapped = nullptr ) const;
+        PBRT_CPU_GPU
+            int Sample( Float u, Float* pmf = nullptr, Float* uRemapped = nullptr ) const;
         std::string ToString( ) const;
 
-        size_t size( ) const { return bins.size( ); }
-        Float PMF( int index ) const { return bins[ index ].p; }
+        PBRT_CPU_GPU
+            size_t size( ) const { return bins.size( ); }
+        PBRT_CPU_GPU
+            Float PMF( int index ) const { return bins[ index ].p; }
 
     private:
         // AliasTable Private Members
@@ -1008,9 +949,7 @@ namespace pbrto
     {
     public:
         // SummedAreaTable Public Methods
-        SummedAreaTable( Allocator alloc ) 
-            : sum( alloc ) 
-        { }
+        SummedAreaTable( Allocator alloc ) : sum( alloc ) {}
         SummedAreaTable( const Array2D<Float>& values, Allocator alloc = {} )
             : sum( values.XSize( ), values.YSize( ), alloc )
         {
@@ -1028,7 +967,8 @@ namespace pbrto
                     ( values( x, y ) + sum( x - 1, y ) + sum( x, y - 1 ) - sum( x - 1, y - 1 ) );
         }
 
-        Float Integral( Bounds2f extent ) const
+        PBRT_CPU_GPU
+            Float Integral( Bounds2f extent ) const
         {
             double s = ( ( ( double )Lookup( extent.pMax.x, extent.pMax.y ) -
                 ( double )Lookup( extent.pMin.x, extent.pMax.y ) ) +
@@ -1041,7 +981,8 @@ namespace pbrto
 
     private:
         // SummedAreaTable Private Methods
-        Float Lookup( Float x, Float y ) const
+        PBRT_CPU_GPU
+            Float Lookup( Float x, Float y ) const
         {
             // Rescale $(x,y)$ to table resolution and compute integer coordinates
             x *= sum.XSize( );
@@ -1052,10 +993,12 @@ namespace pbrto
             Float v00 = LookupInt( x0, y0 ), v10 = LookupInt( x0 + 1, y0 );
             Float v01 = LookupInt( x0, y0 + 1 ), v11 = LookupInt( x0 + 1, y0 + 1 );
             Float dx = x - int( x ), dy = y - int( y );
-            return ( 1 - dx ) * ( 1 - dy ) * v00 + ( 1 - dx ) * dy * v01 + dx * ( 1 - dy ) * v10 + dx * dy * v11;
+            return ( 1 - dx ) * ( 1 - dy ) * v00 + ( 1 - dx ) * dy * v01 + dx * ( 1 - dy ) * v10 +
+                dx * dy * v11;
         }
 
-        Float LookupInt( int x, int y ) const
+        PBRT_CPU_GPU
+            Float LookupInt( int x, int y ) const
         {
             // Return zero at lower boundaries
             if ( x == 0 || y == 0 )
@@ -1082,7 +1025,8 @@ namespace pbrto
         {
         }
 
-        pstdo::optional<Point2f> Sample( Point2f u, Bounds2f b, Float* pdf ) const
+        PBRT_CPU_GPU
+            pstdo::optional<Point2f> Sample( Point2f u, Bounds2f b, Float* pdf ) const
         {
             // Handle zero-valued function for windowed sampling
             if ( sat.Integral( b ) == 0 )
@@ -1103,8 +1047,8 @@ namespace pbrto
             // Sample conditional windowed function in $y$
             // Compute 2D bounds _bCond_ for conditional sampling
             int nx = func.XSize( );
-            Bounds2f bCond( Point2f( Math::Floor( p.x * nx ) / nx, b.pMin.y ), Point2f( Math::Ceil( p.x * nx ) / nx, b.pMax.y ) );
-
+            Bounds2f bCond( Point2f( pstdo::floor( p.x * nx ) / nx, b.pMin.y ),
+                Point2f( pstdo::ceil( p.x * nx ) / nx, b.pMax.y ) );
             if ( bCond.pMin.x == bCond.pMax.x )
                 bCond.pMax.x += 1.f / nx;
             if ( sat.Integral( bCond ) == 0 )
@@ -1124,7 +1068,8 @@ namespace pbrto
             return p;
         }
 
-        Float PDF( Point2f p, const Bounds2f& b ) const
+        PBRT_CPU_GPU
+            Float PDF( Point2f p, const Bounds2f& b ) const
         {
             Float funcInt = sat.Integral( b );
             if ( funcInt == 0 )
@@ -1135,10 +1080,11 @@ namespace pbrto
     private:
         // WindowedPiecewiseConstant2D Private Methods
         template <typename CDF>
-        static Float SampleBisection( CDF P, Float u, Float min, Float max, int n )
+        PBRT_CPU_GPU static Float SampleBisection( CDF P, Float u, Float min, Float max,
+            int n )
         {
             // Apply bisection to bracket _u_
-            while ( Math::Ceil( n * max ) - Math::Floor( n * min ) > 1 )
+            while ( pstdo::ceil( n * max ) - pstdo::floor( n * min ) > 1 )
             {
                 NDCHECK_LE( P( min ), u );
                 NDCHECK_GE( P( max ), u );
@@ -1154,7 +1100,8 @@ namespace pbrto
             return Clamp( Lerp2( t, min, max ), min, max );
         }
 
-        Float Eval( Point2f p ) const
+        PBRT_CPU_GPU
+            Float Eval( Point2f p ) const
         {
             Point2i pi( std::min<int>( p[ 0 ] * func.XSize( ), func.XSize( ) - 1 ),
                 std::min<int>( p[ 1 ] * func.YSize( ), func.YSize( ) - 1 ) );
@@ -1166,9 +1113,14 @@ namespace pbrto
         Array2D<Float> func;
     };
 
-    pstdo::vector<Float> Sample1DFunction( std::function<Float( Float )> f, int nSteps, int nSamples, Float min = 0, Float max = 1, Allocator alloc = {} );
+    pstdo::vector<Float> Sample1DFunction( std::function<Float( Float )> f, int nSteps,
+        int nSamples, Float min = 0, Float max = 1,
+        Allocator alloc = {} );
 
-    Array2D<Float> Sample2DFunction( std::function<Float( Float, Float )> f, int nu, int nv, int nSamples, Bounds2f domain = { Point2f( 0, 0 ), Point2f( 1, 1 ) }, Allocator alloc = {} );
+    Array2D<Float> Sample2DFunction( std::function<Float( Float, Float )> f, int nu, int nv,
+        int nSamples,
+        Bounds2f domain = { Point2f( 0, 0 ), Point2f( 1, 1 ) },
+        Allocator alloc = {} );
 
     namespace detail
     {
@@ -1178,24 +1130,20 @@ namespace pbrto
         {
         public:
             template <typename Generator>
-            IndexingIterator( int i, int n, const Generator* ) 
-                : i( i ), n( n ) 
-            { }
+            PBRT_CPU_GPU IndexingIterator( int i, int n, const Generator* ) : i( i ), n( n ) {}
 
-            bool operator==( const Iterator& it ) const 
-            { 
-                return i == it.i; 
-            }
-            bool operator!=( const Iterator& it ) const 
-            { 
-                return !( *this == it ); 
-            }
-            Iterator& operator++( )
+            PBRT_CPU_GPU
+                bool operator==( const Iterator& it ) const { return i == it.i; }
+            PBRT_CPU_GPU
+                bool operator!=( const Iterator& it ) const { return !( *this == it ); }
+            PBRT_CPU_GPU
+                Iterator& operator++( )
             {
                 ++i;
                 return ( Iterator& )*this;
             }
-            Iterator operator++( int ) const
+            PBRT_CPU_GPU
+                Iterator operator++( int ) const
             {
                 Iterator it = *this;
                 return ++it;
@@ -1209,17 +1157,12 @@ namespace pbrto
         class IndexingGenerator
         {
         public:
-            IndexingGenerator( int n ) 
-                : n( n ) 
-            { }
-            Iterator begin( ) const 
-            { 
-                return Iterator( 0, n, ( const Generator* )this ); 
-            }
-            Iterator end( ) const 
-            { 
-                return Iterator( n, n, ( const Generator* )this ); 
-            }
+            PBRT_CPU_GPU
+                IndexingGenerator( int n ) : n( n ) {}
+            PBRT_CPU_GPU
+                Iterator begin( ) const { return Iterator( 0, n, ( const Generator* )this ); }
+            PBRT_CPU_GPU
+                Iterator end( ) const { return Iterator( n, n, ( const Generator* )this ); }
 
         protected:
             int n;
@@ -1240,7 +1183,8 @@ namespace pbrto
         class RNGGenerator : public IndexingGenerator<Generator, Iterator>
         {
         public:
-            RNGGenerator( int n, uint64_t sequenceIndex = 0, uint64_t seed = PCG32_DEFAULT_STATE )
+            PBRT_CPU_GPU
+                RNGGenerator( int n, uint64_t sequenceIndex = 0, uint64_t seed = PCG32_DEFAULT_STATE )
                 : IndexingGenerator<Generator, Iterator>( n ),
                 sequenceIndex( sequenceIndex ),
                 seed( seed )
@@ -1257,7 +1201,7 @@ namespace pbrto
         {
         public:
             template <typename Generator>
-            RNGIterator( int i, int n,
+            PBRT_CPU_GPU RNGIterator( int i, int n,
                 const RNGGenerator<Generator, Iterator>* generator )
                 : IndexingIterator<Iterator>( i, n, generator ), rng( generator->sequenceIndex ) {}
 
@@ -1310,7 +1254,8 @@ namespace pbrto
     class Stratified2D : public detail::RNGGenerator<Stratified2D, detail::Stratified2DIter>
     {
     public:
-        Stratified2D( int nx, int ny, uint64_t sequenceIndex = 0,
+        PBRT_CPU_GPU
+            Stratified2D( int nx, int ny, uint64_t sequenceIndex = 0,
                 uint64_t seed = PCG32_DEFAULT_STATE )
             : detail::RNGGenerator<Stratified2D, detail::Stratified2DIter>(
                 nx* ny, sequenceIndex, seed ),
@@ -1327,7 +1272,8 @@ namespace pbrto
     class Stratified3D : public detail::RNGGenerator<Stratified3D, detail::Stratified3DIter>
     {
     public:
-        Stratified3D( int nx, int ny, int nz, uint64_t sequenceIndex = 0,
+        PBRT_CPU_GPU
+            Stratified3D( int nx, int ny, int nz, uint64_t sequenceIndex = 0,
                 uint64_t seed = PCG32_DEFAULT_STATE )
             : detail::RNGGenerator<Stratified3D, detail::Stratified3DIter>(
                 nx* ny* nz, sequenceIndex, seed ),
@@ -1349,21 +1295,24 @@ namespace pbrto
         {
         public:
             using RNGIterator<Uniform1DIter>::RNGIterator;
-            Float operator*( ) { return rng.Uniform<Float>( ); }
+            PBRT_CPU_GPU
+                Float operator*( ) { return rng.Uniform<Float>( ); }
         };
 
         class Uniform2DIter : public RNGIterator<Uniform2DIter>
         {
         public:
             using RNGIterator<Uniform2DIter>::RNGIterator;
-            Point2f operator*( ) { return { rng.Uniform<Float>( ), rng.Uniform<Float>( ) }; }
+            PBRT_CPU_GPU
+                Point2f operator*( ) { return { rng.Uniform<Float>( ), rng.Uniform<Float>( ) }; }
         };
 
         class Uniform3DIter : public RNGIterator<Uniform3DIter>
         {
         public:
             using RNGIterator<Uniform3DIter>::RNGIterator;
-            Point3f operator*( )
+            PBRT_CPU_GPU
+                Point3f operator*( )
             {
                 return { rng.Uniform<Float>( ), rng.Uniform<Float>( ), rng.Uniform<Float>( ) };
             }
@@ -1373,20 +1322,23 @@ namespace pbrto
         {
         public:
             using RNGIterator<Stratified1DIter>::RNGIterator;
-            Float operator*( ) { return ( i + rng.Uniform<Float>( ) ) / n; }
+            PBRT_CPU_GPU
+                Float operator*( ) { return ( i + rng.Uniform<Float>( ) ) / n; }
         };
 
         class Stratified2DIter : public RNGIterator<Stratified2DIter>
         {
         public:
-            Stratified2DIter( int i, int n, const Stratified2D* generator )
+            PBRT_CPU_GPU
+                Stratified2DIter( int i, int n, const Stratified2D* generator )
                 : RNGIterator<Stratified2DIter>( i, n, generator ),
                 nx( generator->nx ),
                 ny( generator->ny )
             {
             }
 
-            Point2f operator*( )
+            PBRT_CPU_GPU
+                Point2f operator*( )
             {
                 int ix = i % nx, iy = i / nx;
                 return { ( ix + rng.Uniform<Float>( ) ) / nx, ( iy + rng.Uniform<Float>( ) ) / ny };
@@ -1399,7 +1351,8 @@ namespace pbrto
         class Stratified3DIter : public RNGIterator<Stratified3DIter>
         {
         public:
-            Stratified3DIter( int i, int n, const Stratified3D* generator )
+            PBRT_CPU_GPU
+                Stratified3DIter( int i, int n, const Stratified3D* generator )
                 : RNGIterator<Stratified3DIter>( i, n, generator ),
                 nx( generator->nx ),
                 ny( generator->ny ),
@@ -1407,7 +1360,8 @@ namespace pbrto
             {
             }
 
-            Point3f operator*( )
+            PBRT_CPU_GPU
+                Point3f operator*( )
             {
                 int ix = i % nx;
                 int iy = ( i / nx ) % ny;
@@ -1424,14 +1378,16 @@ namespace pbrto
         {
         public:
             using IndexingIterator<Hammersley2DIter>::IndexingIterator;
-            Point2f operator*( ) { return { Float( i ) / Float( n ), RadicalInverse( 0, i ) }; }
+            PBRT_CPU_GPU
+                Point2f operator*( ) { return { Float( i ) / Float( n ), RadicalInverse( 0, i ) }; }
         };
 
         class Hammersley3DIter : public IndexingIterator<Hammersley3DIter>
         {
         public:
             using IndexingIterator<Hammersley3DIter>::IndexingIterator;
-            Point3f operator*( )
+            PBRT_CPU_GPU
+                Point3f operator*( )
             {
                 return { Float( i ) / Float( n ), RadicalInverse( 0, i ), RadicalInverse( 1, i ) };
             }
@@ -1554,12 +1510,12 @@ namespace pbrto
          * eval() is used).
          */
         PiecewiseLinear2D( Allocator alloc, const float* data, int xSize, int ySize,
-            const pstdo::array<int, Dimension>& param_res = {},
-            const pstdo::array<const float*, Dimension>& param_values = {},
+            pstdo::array<int, Dimension> param_res = {},
+            pstdo::array<const float*, Dimension> param_values = {},
             bool normalize = true, bool build_cdf = true )
             : m_size( xSize, ySize ),
             m_patch_size( 1.f / ( xSize - 1 ), 1.f / ( ySize - 1 ) ),
-            m_inv_patch_size( Vector2f(m_size) - Vector2f( 1.f, 1.f ) ),
+            m_inv_patch_size( static_cast< Vector2f >( Vector2i( m_size - Vector2i( 1, 1 ))) ),
             m_param_values( alloc ),
             m_data( alloc ),
             m_marginal_cdf( alloc ),
@@ -1677,7 +1633,7 @@ namespace pbrto
          * Returns the warped sample and associated probability density.
          */
         template <typename... Ts>
-        PLSample Sample( Point2f sample, Ts... params ) const
+        PBRT_CPU_GPU PLSample Sample( Point2f sample, Ts... params ) const
         {
             static_assert( ( std::is_arithmetic_v<Ts> && ... ),
                 "Additional parameters must be numeric values" );
@@ -1785,7 +1741,7 @@ namespace pbrto
 
         /// Inverse of the mapping implemented in \c Sample()
         template <typename... Ts>
-        PLSample Invert( Point2f sample, Ts... params ) const
+        PBRT_CPU_GPU PLSample Invert( Point2f sample, Ts... params ) const
         {
             static_assert( ( std::is_arithmetic_v<Ts> && ... ),
                 "Additional parameters must be numeric values" );
@@ -1820,13 +1776,15 @@ namespace pbrto
             /* Fetch values at corners of bilinear patch */
             sample.x *= m_inv_patch_size.x;
             sample.y *= m_inv_patch_size.y;
-            Vector2i pos = Min( Vector2i( sample.x, sample.y ), m_size - Vector2i( 2, 2 ) );
+            Vector2i pos = Min( ToVector2i( sample ), ToVector2i( m_size - Vector2i( 2, 2 )) );
             sample -= Vector2f( pos );
 
             uint32_t offset = pos.x + pos.y * m_size.x;
             uint32_t slice_size = ScalarHProd( m_size );
             if ( Dimension != 0 )
+            {
                 offset += slice_offset * slice_size;
+            }
 
             /* Invert the X component */
             Float v00 = lookup<Dimension>( m_data.data( ), offset, slice_size, param_weight ),
@@ -1881,7 +1839,7 @@ namespace pbrto
          * parameterized by \c param if applicable.
          */
         template <typename... Ts>
-        float Evaluate( Point2f pos, Ts... params ) const
+        PBRT_CPU_GPU float Evaluate( Point2f pos, Ts... params ) const
         {
             static_assert( ( std::is_arithmetic_v<Ts> && ... ),
                 "Additional parameters must be numeric values" );
@@ -1917,7 +1875,7 @@ namespace pbrto
             /* Compute linear interpolation weights */
             pos.x *= m_inv_patch_size.x;
             pos.y *= m_inv_patch_size.y;
-            Vector2i offset = Min( Vector2i( pos.x, pos.y ), m_size - Vector2i( 2, 2 ) );
+            Vector2i offset = Min( ToVector2i( pos ), ToVector2i( m_size - Vector2i( 2, 2 ) ) );
 
             Vector2f w1 = Vector2f( pos ) - Vector2f( Vector2i( offset ) ),
                 w0 = Vector2f( 1, 1 ) - w1;
@@ -1939,7 +1897,8 @@ namespace pbrto
                 ScalarHProd( m_inv_patch_size );
         }
 
-        size_t BytesUsed( ) const
+        PBRT_CPU_GPU
+            size_t BytesUsed( ) const
         {
             size_t sum = 4 * ( m_data.capacity( ) + m_marginal_cdf.capacity( ) +
                 m_conditional_cdf.capacity( ) );
@@ -1950,7 +1909,8 @@ namespace pbrto
 
     private:
         template <size_t Dim, std::enable_if_t<Dim != 0, int> = 0>
-        Float lookup( const float* data, uint32_t i0, uint32_t size, const float* param_weight ) const
+        PBRT_CPU_GPU Float lookup( const float* data, uint32_t i0, uint32_t size,
+            const float* param_weight ) const
         {
             uint32_t i1 = i0 + m_param_strides[ Dim - 1 ] * size;
 
@@ -1962,7 +1922,8 @@ namespace pbrto
         }
 
         template <size_t Dim, std::enable_if_t<Dim == 0, int> = 0>
-        Float lookup( const float* data, uint32_t index, uint32_t, const float* ) const
+        PBRT_CPU_GPU Float lookup( const float* data, uint32_t index, uint32_t,
+            const float* ) const
         {
             return data[ index ];
         }
