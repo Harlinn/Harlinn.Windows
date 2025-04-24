@@ -708,7 +708,10 @@ namespace pbrto
         {
             // Compute ray direction using equirectangular mapping
             Float theta = Pi * uv[ 1 ], phi = 2 * Pi * uv[ 0 ];
-            dir = SphericalDirection( std::sin( theta ), std::cos( theta ), phi );
+            Float sinTheta;
+            Float cosTheta;
+            SinCos( theta, &sinTheta, &cosTheta );
+            dir = SphericalDirection( sinTheta, cosTheta, phi );
 
         }
         else
@@ -1184,12 +1187,12 @@ namespace pbrto
                     if ( r > 0 )
                     {
                         zp0 = z + element.curvatureRadius -
-                            element.apertureRadius / std::tan( theta );
+                            element.apertureRadius / Math::Tan( theta );
                     }
                     else
                     {
                         zp0 = z + element.curvatureRadius +
-                            element.apertureRadius / std::tan( theta );
+                            element.apertureRadius / Math::Tan( theta );
                     }
 
                     Float nextCurvatureRadius = elementInterfaces[ i + 1 ].curvatureRadius;
@@ -1198,12 +1201,12 @@ namespace pbrto
                     if ( nextCurvatureRadius > 0 )
                     {
                         zp1 = z + element.thickness + nextCurvatureRadius -
-                            nextApertureRadius / std::tan( nextTheta );
+                            nextApertureRadius / Math::Tan( nextTheta );
                     }
                     else
                     {
                         zp1 = z + element.thickness + nextCurvatureRadius +
-                            nextApertureRadius / std::tan( nextTheta );
+                            nextApertureRadius / Math::Tan( nextTheta );
                     }
 
                     // Connect tops
@@ -1576,9 +1579,13 @@ namespace pbrto
                 for ( int i = 0; i < 10; ++i )
                 {
                     // inner radius: https://math.stackexchange.com/a/2136996
-                    Float r =
-                        ( i & 1 ) ? 1.f : ( std::cos( Radians( 72.f ) ) / std::cos( Radians( 36.f ) ) );
-                    vert[ i ] = Point2f( r * std::cos( Pi * i / 5.f ), r * std::sin( Pi * i / 5.f ) );
+                    constexpr Float r1 = ( Math::Cos( Deg2Rad( 72.f ) ) / Math::Cos( Deg2Rad( 36.f ) ) );
+                    Float r = ( i & 1 ) ? 1.f : r1;
+                    Float phi = Pi * i / 5.f;
+                    Float sinPhi;
+                    Float cosPhi;
+                    SinCos( phi, &sinPhi, &cosPhi );
+                    vert[ i ] = Point2f( r * cosPhi, r * sinPhi );
                 }
                 std::reverse( vert.begin( ), vert.end( ) );
                 apertureImage = rasterize( vert );

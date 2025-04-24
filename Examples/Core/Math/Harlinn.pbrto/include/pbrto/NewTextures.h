@@ -201,7 +201,7 @@ namespace pbrto
             Float dsdx = ScalarDot( dsdp, dpdx ), dsdy = ScalarDot( dsdp, dpdy );
             Float dtdx = ScalarDot( dtdp, dpdx ), dtdy = ScalarDot( dtdp, dpdy );
 
-            Point2f st( ( Pi + std::atan2( pt.y, pt.x ) ) * Inv2Pi, pt.z );
+            Point2f st( ( Pi + Math::ATan2( pt.y, pt.x ) ) * Inv2Pi, pt.z );
             return TexCoord2D{ st, dsdx, dsdy, dtdx, dtdy };
         }
 

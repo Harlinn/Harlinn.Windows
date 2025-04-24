@@ -406,8 +406,13 @@ namespace pbrto
                 // Compute tangents of interior face
                 for ( int j = 0; j < valence; ++j )
                 {
-                    S += std::cos( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
-                    T += std::sin( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
+                    Float alpha = 2 * Pi * j / valence;
+                    Float sinAlpha;
+                    Float cosAlpha;
+                    SinCos( alpha, &sinAlpha, &cosAlpha );
+
+                    S += cosAlpha * Vector3f( pRing[ j ] );
+                    T += sinAlpha * Vector3f( pRing[ j ] );
                 }
             }
             else
@@ -424,10 +429,13 @@ namespace pbrto
                 else
                 {
                     Float theta = Pi / float( valence - 1 );
-                    T = Vector3f( std::sin( theta ) * ( pRing[ 0 ] + pRing[ valence - 1 ] ) );
+                    Float sinTheta;
+                    Float cosTheta;
+                    SinCos( theta, &sinTheta, &cosTheta );
+                    T = Vector3f( sinTheta * ( pRing[ 0 ] + pRing[ valence - 1 ] ) );
                     for ( int k = 1; k < valence - 1; ++k )
                     {
-                        Float wt = ( 2 * std::cos( theta ) - 2 ) * std::sin( ( k )*theta );
+                        Float wt = ( 2 * cosTheta - 2 ) * Math::Sin( ( k )*theta );
                         T += Vector3f( wt * pRing[ k ] );
                     }
                     T = -T;

@@ -451,7 +451,7 @@ namespace pbrto
             Point3f pCorner( -radius.x, -radius.y, 0.f );
             Vector3f wCornerCamera = Normalize( Vector3f( cameraFromRaster( pCorner ) ) );
             cosTotalWidth = wCornerCamera.z;
-            NDCHECK_LT( .9999 * cosTotalWidth, std::cos( Radians( fov / 2 ) ) );
+            NDCHECK_LT( .9999 * cosTotalWidth, Math::Cos( Deg2Rad( fov / 2 ) ) );
 
             // Compute image plane area at $z=1$ for _PerspectiveCamera_
             Point2i res = film.FullResolution( );

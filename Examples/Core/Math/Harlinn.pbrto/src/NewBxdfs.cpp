@@ -339,7 +339,7 @@ namespace pbrto
         s = SqrtPiOver8 * ( 0.265f * beta_n + 1.194f * Sqr( beta_n ) + 5.372f * FastPow<22>( beta_n ) );
         NDCHECK( !IsNaN( s ) );
 
-        sin2kAlpha[ 0 ] = std::sin( Radians( alpha ) );
+        sin2kAlpha[ 0 ] = Math::Sin( Deg2Rad( alpha ) );
         cos2kAlpha[ 0 ] = SafeSqrt( 1 - Sqr( sin2kAlpha[ 0 ] ) );
         for ( int i = 1; i < pMax; ++i )
         {
@@ -353,13 +353,13 @@ namespace pbrto
         // Compute hair coordinate system terms related to _wo_
         Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = std::atan2( wo.z, wo.y );
+        Float phi_o = Math::ATan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Compute hair coordinate system terms related to _wi_
         Float sinTheta_i = wi.x;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
-        Float phi_i = std::atan2( wi.z, wi.y );
+        Float phi_i = Math::ATan2( wi.z, wi.y );
 
         // Compute $\cos\,\thetat$ for refracted ray
         Float sinTheta_t = sinTheta_o / eta;
@@ -458,7 +458,7 @@ namespace pbrto
         // Compute hair coordinate system terms related to _wo_
         Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = std::atan2( wo.z, wo.y );
+        Float phi_o = Math::ATan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Determine which term $p$ to sample for hair scattering
@@ -496,7 +496,7 @@ namespace pbrto
         Float cosTheta = 1 + v[ p ] * std::log( std::max<Float>( u[ 0 ], 1e-5 ) +
             ( 1 - u[ 0 ] ) * FastExp( -2 / v[ p ] ) );
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
-        Float cosPhi = std::cos( 2 * Pi * u[ 1 ] );
+        Float cosPhi = Math::Cos( 2.f * Pi * u[ 1 ] );
         Float sinTheta_i = -cosTheta * sinThetap_o + sinTheta * cosPhi * cosThetap_o;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
 
@@ -515,7 +515,10 @@ namespace pbrto
 
         // Compute _wi_ from sampled hair scattering angles
         Float phi_i = phi_o + dphi;
-        Vector3f wi( sinTheta_i, cosTheta_i * std::cos( phi_i ), cosTheta_i * std::sin( phi_i ) );
+        Float sinPhi_i;
+        Float cosPhi_i;
+        SinCos( phi_i, &sinPhi_i, &cosPhi_i );
+        Vector3f wi( sinTheta_i, cosTheta_i * cosPhi_i, cosTheta_i * sinPhi_i );
 
         // Compute PDF for sampled hair scattering direction _wi_
         Float pdf = 0;
@@ -568,13 +571,13 @@ namespace pbrto
         // Compute hair coordinate system terms related to _wo_
         Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = std::atan2( wo.z, wo.y );
+        Float phi_o = Math::ATan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Compute hair coordinate system terms related to _wi_
         Float sinTheta_i = wi.x;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
-        Float phi_i = std::atan2( wi.z, wi.y );
+        Float phi_i = Math::ATan2( wi.z, wi.y );
 
         // Compute $\gammat$ for refracted ray
         Float etap = SafeSqrt( eta * eta - Sqr( sinTheta_o ) ) / cosTheta_o;
@@ -1120,8 +1123,8 @@ namespace pbrto
         wm = Normalize( wm );
 
         // Map $\wo$ and $\wm$ to the unit square $[0,\,1]^2$
-        Float theta_o = SphericalTheta( wo ), phi_o = std::atan2( wo.y, wo.x );
-        Float theta_m = SphericalTheta( wm ), phi_m = std::atan2( wm.y, wm.x );
+        Float theta_o = SphericalTheta( wo ), phi_o = Math::ATan2( wo.y, wo.x );
+        Float theta_m = SphericalTheta( wm ), phi_m = Math::ATan2( wm.y, wm.x );
         Point2f u_wo( theta2u( theta_o ), phi2u( phi_o ) );
         Point2f u_wm( theta2u( theta_m ), phi2u( brdf->isotropic ? ( phi_m - phi_o ) : phi_m ) );
         u_wm[ 1 ] = u_wm[ 1 ] - pstdo::floor( u_wm[ 1 ] );
@@ -1155,7 +1158,7 @@ namespace pbrto
         }
 
         // Initialize parameters of conditional distribution
-        Float theta_o = SphericalTheta( wo ), phi_o = std::atan2( wo.y, wo.x );
+        Float theta_o = SphericalTheta( wo ), phi_o = Math::ATan2( wo.y, wo.x );
 
         // Warp sample using luminance distribution
         auto s = brdf->luminance.Sample( u, phi_o, theta_o );
@@ -1171,7 +1174,10 @@ namespace pbrto
         Float phi_m = u2phi( u_wm.y ), theta_m = u2theta( u_wm.x );
         if ( brdf->isotropic )
             phi_m += phi_o;
-        Float sinTheta_m = std::sin( theta_m ), cosTheta_m = std::cos( theta_m );
+        Float sinTheta_m;
+        Float cosTheta_m;
+        SinCos( theta_m, &sinTheta_m, &cosTheta_m );
+        
         Vector3f wm = SphericalDirection( sinTheta_m, cosTheta_m, phi_m );
         Vector3f wi = Reflect( wo, wm );
         if ( wi.z <= 0 )
@@ -1212,8 +1218,8 @@ namespace pbrto
         wm = Normalize( wm );
 
         /* Cartesian -> spherical coordinates */
-        Float theta_o = SphericalTheta( wo ), phi_o = std::atan2( wo.y, wo.x );
-        Float theta_m = SphericalTheta( wm ), phi_m = std::atan2( wm.y, wm.x );
+        Float theta_o = SphericalTheta( wo ), phi_o = Math::ATan2( wo.y, wo.x );
+        Float theta_m = SphericalTheta( wm ), phi_m = Math::ATan2( wm.y, wm.x );
 
         /* Spherical coordinates -> unit coordinate system */
         Point2f u_wm( theta2u( theta_m ), phi2u( brdf->isotropic ? ( phi_m - phi_o ) : phi_m ) );

@@ -66,7 +66,7 @@ namespace pbrto
             n *= -1;
         // Compute $(u, v)$ coordinates for sphere sample
         Float theta = SafeACos( pObj.z / radius );
-        Float phi = std::atan2( pObj.y, pObj.x );
+        Float phi = Math::ATan2( pObj.y, pObj.x );
         if ( phi < 0 )
             phi += 2 * Pi;
         Point2f uv( phi / phiMax, ( theta - thetaZMin ) / ( thetaZMax - thetaZMin ) );
@@ -532,7 +532,7 @@ namespace pbrto
             n[ 0 ] = Normalize( norm[ 0 ] );
             n[ 1 ] = Normalize( norm[ 1 ] );
             normalAngle = ScalarAngleBetween( n[ 0 ], n[ 1 ] );
-            invSinNormalAngle = 1 / std::sin( normalAngle );
+            invSinNormalAngle = 1.f / Math::Sin( normalAngle );
         }
         ++nCurves;
     }
@@ -733,10 +733,8 @@ namespace pbrto
                     nHit = common->n[ 0 ];
                 else
                 {
-                    Float sin0 =
-                        std::sin( ( 1 - u ) * common->normalAngle ) * common->invSinNormalAngle;
-                    Float sin1 =
-                        std::sin( u * common->normalAngle ) * common->invSinNormalAngle;
+                    Float sin0 = Math::Sin( ( 1 - u ) * common->normalAngle ) * common->invSinNormalAngle;
+                    Float sin1 = Math::Sin( u * common->normalAngle ) * common->invSinNormalAngle;
                     nHit = sin0 * common->n[ 0 ] + sin1 * common->n[ 1 ];
                 }
                 hitWidth *= ScalarAbsDot( nHit, ray.d ) / rayLength;

@@ -262,8 +262,10 @@ namespace pbrto
             Float l = 2 * std::sqrt( Sqr( *r_max ) - Sqr( *r ) );
 
             // Return BSSRDF sampling ray segment
-            Point3f pStart =
-                po + *r * ( f.x * std::cos( phi ) + f.y * std::sin( phi ) ) - l * f.z / 2;
+            Float sinPhi;
+            Float cosPhi;
+            SinCos( phi, &sinPhi, &cosPhi );
+            Point3f pStart = po + *r * ( f.x * cosPhi + f.y * sinPhi ) - l * f.z / 2;
             Point3f pTarget = pStart + l * f.z;
             return BSSRDFProbeSegment{ pStart, pTarget };
         }

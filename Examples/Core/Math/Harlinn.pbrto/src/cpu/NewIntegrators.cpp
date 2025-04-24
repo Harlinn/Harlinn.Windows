@@ -3714,9 +3714,10 @@ namespace pbrto
         }
         static double rotatedCheckerboard( Point2f p )
         {
-            double angle = Radians( 45.f );
-            double nrm = 1.00006866455078125;
-            static double sa = std::sin( angle ), ca = std::cos( angle );
+            constexpr double angle = Deg2Rad( 45. );
+            constexpr double nrm = 1.00006866455078125;
+            constexpr double sa = Math::Sin( angle );
+            constexpr double ca = Math::Cos( angle );
             return ( double )checkerboard(
                 { Float( 10 + p.x * ca - p.y * sa ), Float( 10 + p.x * sa + p.y * ca ) } ) /
                 nrm;

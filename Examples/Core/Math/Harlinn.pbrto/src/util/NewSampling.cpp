@@ -81,9 +81,15 @@ namespace pbrto
         }
 
         // Find $\cos\beta'$ for point along _b_ for sampled area
-        Float cosAlpha = std::cos( alpha ), sinAlpha = std::sin( alpha );
-        Float sinPhi = std::sin( Ap_pi ) * cosAlpha - std::cos( Ap_pi ) * sinAlpha;
-        Float cosPhi = std::cos( Ap_pi ) * cosAlpha + std::sin( Ap_pi ) * sinAlpha;
+        Float sinAlpha;
+        Float cosAlpha;
+        SinCos( alpha, &sinAlpha, &cosAlpha );
+        Float sinAp_pi;
+        Float cosAp_pi;
+        SinCos( Ap_pi, &sinAp_pi, &cosAp_pi );
+
+        Float sinPhi = sinAp_pi * cosAlpha - cosAp_pi * sinAlpha;
+        Float cosPhi = cosAp_pi * cosAlpha + sinAp_pi * sinAlpha;
         Float k1 = cosPhi + cosAlpha;
         Float k2 = sinPhi - sinAlpha * ScalarDot( a, b ) /* cos c */;
         Float cosBp = ( k2 + ( DifferenceOfProducts( k2, cosPhi, k1, sinPhi ) ) * cosAlpha ) /
@@ -227,7 +233,10 @@ namespace pbrto
         // Sample _cu_ for spherical rectangle sample
         Float b0 = n0.z, b1 = n2.z;
         Float au = u[ 0 ] * ( g0 + g1 - 2 * Pi ) + ( u[ 0 ] - 1 ) * ( g2 + g3 );
-        Float fu = ( std::cos( au ) * b0 - b1 ) / std::sin( au );
+        Float sinAu;
+        Float cosAu;
+        SinCos( au, &sinAu, &cosAu );
+        Float fu = ( cosAu * b0 - b1 ) / sinAu;
         Float cu = pstdo::copysign( 1 / std::sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
         cu = Clamp( cu, -OneMinusEpsilon, OneMinusEpsilon );  // avoid NaNs
 
@@ -337,7 +346,7 @@ namespace pbrto
 
         Float sqrt = SafeSqrt( DifferenceOfProducts( b0, b0, b1, b1 ) + fusq );
         // No benefit to difference of products here...
-        Float au = std::atan2( -( b1 * fu ) - pstdo::copysign( b0 * sqrt, fu * b0 ),
+        Float au = Math::ATan2( -( b1 * fu ) - pstdo::copysign( b0 * sqrt, fu * b0 ),
             b0 * b1 - sqrt * std::abs( fu ) );
         if ( au > 0 )
             au -= 2 * Pi;

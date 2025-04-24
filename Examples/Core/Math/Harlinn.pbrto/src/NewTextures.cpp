@@ -552,9 +552,8 @@ namespace pbrto
     {
         TexCoord3D c = mapping.Map( ctx );
         c.p *= scale;
-        Float marble =
-            c.p.y + variation * FBm( c.p, scale * c.dpdx, scale * c.dpdy, omega, octaves );
-        Float t = .5f + .5f * std::sin( marble );
+        Float marble = c.p.y + variation * FBm( c.p, scale * c.dpdx, scale * c.dpdy, omega, octaves );
+        Float t = .5f + .5f * Math::Sin( marble );
         // Evaluate marble spline at $t$ to compute color _rgb_
         const RGB colors[ ] = {
             {.58f, .58f, .6f}, {.58f, .58f, .6f}, {.58f, .58f, .6f},

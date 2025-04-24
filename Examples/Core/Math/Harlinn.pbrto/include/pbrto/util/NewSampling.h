@@ -275,8 +275,12 @@ namespace pbrto
     inline Point2f SampleTwoNormal( Point2f u, Float mu = 0, Float sigma = 1 )
     {
         Float r2 = -2 * std::log1p( -u[ 0 ] ); // log(1-u[0]), robustly.
-        return { mu + sigma * std::sqrt( r2 ) * std::cos( 2 * Pi * u[ 1 ] ),
-                mu + sigma * std::sqrt( r2 ) * std::sin( 2 * Pi * u[ 1 ] ) };
+        Float twoPiU1 = 2 * Pi * u[ 1 ];
+        Float sinTwoPiU1;
+        Float cosTwoPiU1;
+        SinCos( twoPiU1, &sinTwoPiU1, &cosTwoPiU1 );
+        return { mu + sigma * std::sqrt( r2 ) * cosTwoPiU1,
+                mu + sigma * std::sqrt( r2 ) * sinTwoPiU1 };
     }
 
     inline Float LogisticPDF( Float x, Float s )
@@ -351,12 +355,15 @@ namespace pbrto
     {
         Float r = std::sqrt( u[ 0 ] );
         Float theta = 2 * Pi * u[ 1 ];
-        return { r * std::cos( theta ), r * std::sin( theta ) };
+        Float sinTheta;
+        Float cosTheta;
+        SinCos( theta, &sinTheta, &cosTheta );
+        return { r * cosTheta, r * sinTheta };
     }
 
     inline Point2f InvertUniformDiskPolarSample( Point2f p )
     {
-        Float phi = std::atan2( p.y, p.x );
+        Float phi = Math::ATan2( p.y, p.x );
         if ( phi < 0 )
             phi += 2 * Pi;
         return Point2f( Sqr( p.x ) + Sqr( p.y ), phi / ( 2 * Pi ) );
@@ -381,12 +388,15 @@ namespace pbrto
             r = uOffset.y;
             theta = PiOver2 - PiOver4 * ( uOffset.x / uOffset.y );
         }
-        return r * Point2f( std::cos( theta ), std::sin( theta ) );
+        Float sinTheta;
+        Float cosTheta;
+        SinCos( theta, &sinTheta, &cosTheta );
+        return r * Point2f( cosTheta, sinTheta );
     }
 
     inline Point2f InvertUniformDiskConcentricSample( Point2f p )
     {
-        Float theta = std::atan2( p.y, p.x );  // -pi -> pi
+        Float theta = Math::ATan2( p.y, p.x );  // -pi -> pi
         Float r = std::sqrt( Sqr( p.x ) + Sqr( p.y ) );
 
         Point2f uo;
@@ -431,7 +441,10 @@ namespace pbrto
         Float z = u[ 0 ];
         Float r = SafeSqrt( 1 - Sqr( z ) );
         Float phi = 2 * Pi * u[ 1 ];
-        return { r * std::cos( phi ), r * std::sin( phi ), z };
+        Float sinPhi;
+        Float cosPhi;
+        SinCos( phi, &sinPhi, &cosPhi );
+        return { r * cosPhi, r * sinPhi, z };
     }
 
     inline Float UniformHemispherePDF( )
@@ -441,7 +454,7 @@ namespace pbrto
 
     inline Point2f InvertUniformHemisphereSample( Vector3f w )
     {
-        Float phi = std::atan2( w.y, w.x );
+        Float phi = Math::ATan2( w.y, w.x );
         if ( phi < 0 )
             phi += 2 * Pi;
         return Point2f( w.z, phi / ( 2 * Pi ) );
@@ -452,7 +465,10 @@ namespace pbrto
         Float z = 1 - 2 * u[ 0 ];
         Float r = SafeSqrt( 1 - Sqr( z ) );
         Float phi = 2 * Pi * u[ 1 ];
-        return { r * std::cos( phi ), r * std::sin( phi ), z };
+        Float sinPhi;
+        Float cosPhi;
+        SinCos( phi, &sinPhi, &cosPhi );
+        return { r * cosPhi, r * sinPhi, z };
     }
 
     inline Float UniformSpherePDF( )
@@ -462,7 +478,7 @@ namespace pbrto
 
     inline Point2f InvertUniformSphereSample( Vector3f w )
     {
-        Float phi = std::atan2( w.y, w.x );
+        Float phi = Math::ATan2( w.y, w.x );
         if ( phi < 0 )
             phi += 2 * Pi;
         return Point2f( ( 1 - w.z ) / 2, phi / ( 2 * Pi ) );
@@ -546,8 +562,11 @@ namespace pbrto
             theta = PiOver2 - PiOver4 * ( uOffset.x / uOffset.y );
         }
 
-        return Vector3f( std::cos( theta ) * r * std::sqrt( 2 - r * r ),
-            std::sin( theta ) * r * std::sqrt( 2 - r * r ), 1 - r * r );
+        Float sinTheta;
+        Float cosTheta;
+        SinCos( theta, &sinTheta, &cosTheta );
+        return Vector3f( cosTheta * r * std::sqrt( 2 - r * r ),
+            sinTheta * r * std::sqrt( 2 - r * r ), 1 - r * r );
     }
 
     // VarianceEstimator Definition

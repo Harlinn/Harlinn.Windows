@@ -444,12 +444,13 @@ namespace pbrto
         Float EvaluateCost( const LightBounds& b, const Bounds3f& bounds, int dim ) const
         {
             // Evaluate direction bounds measure for _LightBounds_
-            Float theta_o = std::acos( b.cosTheta_o ), theta_e = std::acos( b.cosTheta_e );
+            Float theta_o = Math::ACos( b.cosTheta_o ), theta_e = Math::ACos( b.cosTheta_e );
             Float theta_w = std::min( theta_o + theta_e, Pi );
             Float sinTheta_o = SafeSqrt( 1 - Sqr( b.cosTheta_o ) );
+
             Float M_omega = 2 * Pi * ( 1 - b.cosTheta_o ) +
                 Pi / 2 *
-                ( 2 * theta_w * sinTheta_o - std::cos( theta_o - 2 * theta_w ) -
+                ( 2 * theta_w * sinTheta_o - Math::Cos( theta_o - 2 * theta_w ) -
                     2 * theta_o * sinTheta_o + b.cosTheta_o );
 
             // Return complete cost estimate for _LightBounds_

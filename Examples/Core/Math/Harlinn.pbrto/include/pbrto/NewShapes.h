@@ -157,8 +157,8 @@ namespace pbrto
             radius( radius ),
             zMin( Clamp( std::min( zMin, zMax ), -radius, radius ) ),
             zMax( Clamp( std::max( zMin, zMax ), -radius, radius ) ),
-            thetaZMin( std::acos( Clamp( std::min( zMin, zMax ) / radius, -1, 1 ) ) ),
-            thetaZMax( std::acos( Clamp( std::max( zMin, zMax ) / radius, -1, 1 ) ) ),
+            thetaZMin( Math::ACos( Clamp( std::min( zMin, zMax ) / radius, -1, 1 ) ) ),
+            thetaZMax( Math::ACos( Clamp( std::max( zMin, zMax ) / radius, -1, 1 ) ) ),
             phiMax( Radians( Clamp( phiMax, 0, 360 ) ) )
         {
         }
@@ -234,7 +234,7 @@ namespace pbrto
 
             if ( pHit.x == 0 && pHit.y == 0 )
                 pHit.x = 1e-5f * radius;
-            phi = std::atan2( pHit.y, pHit.x );
+            phi = Math::ATan2( pHit.y, pHit.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
 
@@ -254,7 +254,7 @@ namespace pbrto
 
                 if ( pHit.x == 0 && pHit.y == 0 )
                     pHit.x = 1e-5f * radius;
-                phi = std::atan2( pHit.y, pHit.x );
+                phi = Math::ATan2( pHit.y, pHit.x );
                 if ( phi < 0 )
                     phi += 2 * Pi;
 
@@ -394,7 +394,7 @@ namespace pbrto
             // Compute $(u,v)$ coordinates for sampled point on sphere
             Point3f pObj = ( *objectFromRender )( p );
             Float theta = SafeACos( pObj.z / radius );
-            Float spherePhi = std::atan2( pObj.y, pObj.x );
+            Float spherePhi = Math::ATan2( pObj.y, pObj.x );
             if ( spherePhi < 0 )
                 spherePhi += 2 * Pi;
             Point2f uv( spherePhi / phiMax, ( theta - thetaZMin ) / ( thetaZMax - thetaZMin ) );
@@ -514,7 +514,7 @@ namespace pbrto
             if ( dist2 > Sqr( radius ) || dist2 < Sqr( innerRadius ) )
                 return {};
             // Test disk $\phi$ value against $\phimax$
-            Float phi = std::atan2( pHit.y, pHit.x );
+            Float phi = Math::ATan2( pHit.y, pHit.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
             if ( phi > phiMax )
@@ -569,7 +569,7 @@ namespace pbrto
             if ( reverseOrientation )
                 n *= -1;
             // Compute $(u,v)$ for sampled point on disk
-            Float phi = std::atan2( pd.y, pd.x );
+            Float phi = Math::ATan2( pd.y, pd.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
             Float radiusSample = std::sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
@@ -716,7 +716,7 @@ namespace pbrto
             pHit.x *= radius / hitRad;
             pHit.y *= radius / hitRad;
 
-            phi = std::atan2( pHit.y, pHit.x );
+            phi = Math::ATan2( pHit.y, pHit.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
 
@@ -735,7 +735,7 @@ namespace pbrto
                 pHit.x *= radius / hitRad;
                 pHit.y *= radius / hitRad;
 
-                phi = std::atan2( pHit.y, pHit.x );
+                phi = Math::ATan2( pHit.y, pHit.x );
                 if ( phi < 0 )
                     phi += 2 * Pi;
 
@@ -799,7 +799,10 @@ namespace pbrto
             Float z = Lerp2( u[ 0 ], zMin, zMax );
             Float phi = u[ 1 ] * phiMax;
             // Compute cylinder sample position _pi_ and normal _n_ from $z$ and $\phi$
-            Point3f pObj = Point3f( radius * std::cos( phi ), radius * std::sin( phi ), z );
+            Float sinPhi;
+            Float cosPhi;
+            SinCos( phi, &sinPhi, &cosPhi );
+            Point3f pObj = Point3f( radius * cosPhi, radius * sinPhi, z );
             // Reproject _pObj_ to cylinder surface and compute _pObjError_
             Float hitRad = std::sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
             pObj.x *= radius / hitRad;

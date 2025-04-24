@@ -251,7 +251,9 @@ namespace pbrto
         {
             Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
             Float phi = 4 * Pi * scale * I->MaxValue( );
-            return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, std::cos( Pi ), std::cos( Pi / 2 ), false );
+            constexpr Float cosPi = Math::Cos( Pi );
+            constexpr Float cosPiOver2 = Math::Cos( Pi /2.f );
+            return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, cosPi, cosPiOver2, false );
         }
 
         std::string ToString( ) const;
@@ -735,7 +737,7 @@ namespace pbrto
             if ( duv_dw )
                 *duv_dw = Sqr( Pi ) * ( 1 - Sqr( w.x ) ) * ( 1 - Sqr( w.y ) ) / w.z;
 
-            Float alpha = std::atan2( w.x, w.z ), beta = std::atan2( w.y, w.z );
+            Float alpha = Math::ATan2( w.x, w.z ), beta = Math::ATan2( w.y, w.z );
             NDCHECK( !IsNaN( alpha + beta ) );
             return Point2f( Clamp( ( alpha + Pi / 2 ) / Pi, 0, 1 ),
                 Clamp( ( beta + Pi / 2 ) / Pi, 0, 1 ) );
@@ -745,7 +747,7 @@ namespace pbrto
             Vector3f RenderFromImage( Point2f uv, Float* duv_dw = nullptr ) const
         {
             Float alpha = -Pi / 2 + uv[ 0 ] * Pi, beta = -Pi / 2 + uv[ 1 ] * Pi;
-            Float x = std::tan( alpha ), y = std::tan( beta );
+            Float x = Math::Tan( alpha ), y = Math::Tan( beta );
             NDCHECK( !IsInf( x ) && !IsInf( y ) );
             Vector3f w = Normalize( Vector3f( x, y, 1 ) );
             // Compute Jacobian determinant of mapping $\roman{d}(u,v)/\roman{d}\omega$ if
