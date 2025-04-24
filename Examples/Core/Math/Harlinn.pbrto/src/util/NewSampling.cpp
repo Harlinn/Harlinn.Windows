@@ -237,7 +237,7 @@ namespace pbrto
         Float cosAu;
         SinCos( au, &sinAu, &cosAu );
         Float fu = ( cosAu * b0 - b1 ) / sinAu;
-        Float cu = pstdo::copysign( 1 / std::sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
+        Float cu = pstdo::copysign( 1 / Math::Hypot( fu, b0 ), fu );
         cu = Clamp( cu, -OneMinusEpsilon, OneMinusEpsilon );  // avoid NaNs
 
         // Find _xu_ along $x$ edge for spherical rectangle sample
@@ -245,11 +245,11 @@ namespace pbrto
         xu = Clamp( xu, x0, x1 );
 
         // Find _xv_ along $y$ edge for spherical rectangle sample
-        Float dd = std::sqrt( Sqr( xu ) + Sqr( z0 ) );
-        Float h0 = y0 / std::sqrt( Sqr( dd ) + Sqr( y0 ) );
-        Float h1 = y1 / std::sqrt( Sqr( dd ) + Sqr( y1 ) );
+        Float dd = Math::Hypot( xu, z0 );
+        Float h0 = y0 / Math::Hypot( dd, y0 );
+        Float h1 = y1 / Math::Hypot( dd, y1 );
         Float hv = h0 + u[ 1 ] * ( h1 - h0 ), hvsq = Sqr( hv );
-        Float yv = ( hvsq < 1 - 1e-6f ) ? ( hv * dd ) / std::sqrt( 1 - hvsq ) : y1;
+        Float yv = ( hvsq < 1 - 1e-6f ) ? ( hv * dd ) / Math::Sqrt( 1 - hvsq ) : y1;
 
         // Return spherical triangle sample in original coordinate system
         return pRef + R.FromLocal( Vector3f( xu, yv, z0 ) );
@@ -323,10 +323,10 @@ namespace pbrto
         // Float fusq = 1 / Sqr(cu) - b0sq;  // more stable
         Float invcusq = 1 + z0sq / Sqr( xu );
         Float fusq = invcusq - b0sq;  // the winner so far
-        Float fu = pstdo::copysign( std::sqrt( fusq ), xu );
+        Float fu = pstdo::copysign( Math::Sqrt( fusq ), xu );
         // Note, though have 1 + z^2/x^2 - b0^2, which isn't great if b0 \approx 1
         // double fusq = 1. - Sqr(double(b0)) + Sqr(double(z0) / double(xu));  //
-        // this is worse?? double fu = pstdo::copysign(std::sqrt(fusq), cu);
+        // this is worse?? double fu = pstdo::copysign(Math::Sqrt(fusq), cu);
         NCHECK_RARE( 1e-6, fu == 0 );
 
         // State of the floating point world: in the bad cases, about half the
@@ -356,24 +356,24 @@ namespace pbrto
         Float u0 = ( au + g2 + g3 ) / solidAngle;
 
         Float ddsq = Sqr( xu ) + z0sq;
-        Float dd = std::sqrt( ddsq );
-        Float h0 = y0 / std::sqrt( ddsq + y0sq );
-        Float h1 = y1 / std::sqrt( ddsq + y1sq );
+        Float dd = Math::Sqrt( ddsq );
+        Float h0 = y0 / Math::Sqrt( ddsq + y0sq );
+        Float h1 = y1 / Math::Sqrt( ddsq + y1sq );
         Float yvsq = Sqr( yv );
 
         Float u1[ 2 ] = { ( DifferenceOfProducts( h0, h0, h0, h1 ) -
-                        std::abs( h0 - h1 ) * std::sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                        std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
                            Sqr( h0 - h1 ),
                        ( DifferenceOfProducts( h0, h0, h0, h1 ) +
-                        std::abs( h0 - h1 ) * std::sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                        std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
                            Sqr( h0 - h1 ) };
 
         // TODO: yuck is there a better way to figure out which is the right
         // solution?
         Float hv[ 2 ] = { Lerp2( u1[ 0 ], h0, h1 ), Lerp2( u1[ 1 ], h0, h1 ) };
         Float hvsq[ 2 ] = { Sqr( hv[ 0 ] ), Sqr( hv[ 1 ] ) };
-        Float yz[ 2 ] = { ( hv[ 0 ] * dd ) / std::sqrt( 1 - hvsq[ 0 ] ),
-                       ( hv[ 1 ] * dd ) / std::sqrt( 1 - hvsq[ 1 ] ) };
+        Float yz[ 2 ] = { ( hv[ 0 ] * dd ) / Math::Sqrt( 1 - hvsq[ 0 ] ),
+                       ( hv[ 1 ] * dd ) / Math::Sqrt( 1 - hvsq[ 1 ] ) };
 
         Point2f u = ( std::abs( yz[ 0 ] - yv ) < std::abs( yz[ 1 ] - yv ) )
             ? Point2f( Clamp( u0, 0, 1 ), u1[ 0 ] )

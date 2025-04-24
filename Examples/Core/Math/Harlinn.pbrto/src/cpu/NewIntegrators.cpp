@@ -283,7 +283,7 @@ namespace pbrto
             NDCHECK_LT( ScalarLength( cameraRay->ray.d ), 1.001f );
             // Scale camera ray differentials based on image sampling rate
             Float rayDiffScale =
-                std::max<Float>( .125f, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+                std::max<Float>( .125f, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
             if ( !Options->disablePixelJitter )
                 cameraRay->ray.ScaleDifferentials( rayDiffScale );
 
@@ -1940,7 +1940,7 @@ namespace pbrto
                 return 0;
             Float invDist2 = 1 / ScalarLengthSquared( w );
             if ( next.IsOnSurface( ) )
-                pdf *= ScalarAbsDot( next.ng( ), w * std::sqrt( invDist2 ) );
+                pdf *= ScalarAbsDot( next.ng( ), w * Math::Sqrt( invDist2 ) );
             return pdf * invDist2;
         }
 
@@ -1984,7 +1984,7 @@ namespace pbrto
         {
             Vector3f w = v.p( ) - p( );
             Float invDist2 = 1 / ScalarLengthSquared( w );
-            w *= std::sqrt( invDist2 );
+            w *= Math::Sqrt( invDist2 );
             // Compute sampling density _pdf_ for light type
             Float pdf;
             if ( IsInfiniteLight( ) )
@@ -2361,7 +2361,7 @@ namespace pbrto
     {
         Vector3f d = v0.p( ) - v1.p( );
         Float g = 1 / ScalarLengthSquared( d );
-        d *= std::sqrt( g );
+        d *= Math::Sqrt( g );
         if ( v0.IsOnSurface( ) )
             g *= ScalarAbsDot( v0.ns( ), d );
         if ( v1.IsOnSurface( ) )
@@ -2799,7 +2799,7 @@ namespace pbrto
         if ( !crd || !crd->weight )
             return SampledSpectrum( 0.f );
         Float rayDiffScale =
-            std::max<Float>( .125, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+            std::max<Float>( .125, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
         crd->ray.ScaleDifferentials( rayDiffScale );
 
         if ( GenerateCameraSubpath( *this, crd->ray, *lambda, &sampler, scratchBuffer, t,
@@ -3119,7 +3119,7 @@ namespace pbrto
         // Define variables for commonly used values in SPPM rendering
         int nIterations = samplerPrototype.SamplesPerPixel( );
         ProgressReporter progress( 2 * nIterations, "Rendering", Options->quiet );
-        const Float invSqrtSPP = 1.f / std::sqrt( nIterations );
+        const Float invSqrtSPP = 1.f / Math::Sqrt( static_cast<float>( nIterations ) );
         Film film = camera.GetFilm( );
         Bounds2i pixelBounds = film.PixelBounds( );
         int nPixels = pixelBounds.Area( );
@@ -3525,7 +3525,7 @@ namespace pbrto
                     // Compute new photon count and search radius given photons
                     Float gamma = ( Float )2 / ( Float )3;
                     Float nNew = p.n + gamma * m;
-                    Float rNew = p.radius * std::sqrt( nNew / ( p.n + m ) );
+                    Float rNew = p.radius * Math::Sqrt( nNew / ( p.n + m ) );
 
                     // Update $\tau$ for pixel
                     RGB Phi_i( p.Phi_i[ 0 ], p.Phi_i[ 1 ], p.Phi_i[ 2 ] );
@@ -3725,7 +3725,7 @@ namespace pbrto
         static double gaussian( Point2f p )
         {
             auto Gaussian = []( double x, double mu = 0, double sigma = 1 ) {
-                return 1 / std::sqrt( 2 * Pi * sigma * sigma ) *
+                return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
                     std::exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
                 };
             auto GaussianIntegral = []( double x0, double x1, double mu = 0, double sigma = 1 ) {
@@ -3841,7 +3841,7 @@ namespace pbrto
             if ( skipBad )
             {
                 int nSamples = sampleIndex + 1;
-                if ( isStratified && Sqr( int( std::sqrt( nSamples ) ) ) != nSamples )
+                if ( isStratified && Sqr( int( Math::Sqrt( static_cast<float>( nSamples ) ) ) ) != nSamples )
                 {
                     prog.Update( );
                     continue;
@@ -3876,7 +3876,7 @@ namespace pbrto
             if ( isStratified )
             {
                 int spp = sampleIndex + 1;
-                int factor = int( std::sqrt( spp ) );
+                int factor = int( Math::Sqrt( static_cast<float>( spp ) ) );
 
                 while ( ( spp % factor ) != 0 )
                     --factor;

@@ -1230,7 +1230,7 @@ namespace pbrto
         Float vndfPDF = ui.pdf;
 
         Float pdf = brdf->luminance.Evaluate( sample, phi_o, theta_o );
-        Float sinTheta_m = std::sqrt( Sqr( wm.x ) + Sqr( wm.y ) );
+        Float sinTheta_m = Math::Hypot( wm.x, wm.y );
         Float jacobian =
             4.f * ScalarDot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
         return vndfPDF * pdf / jacobian;

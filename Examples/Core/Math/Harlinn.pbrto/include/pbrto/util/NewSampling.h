@@ -133,7 +133,7 @@ namespace pbrto
         NDCHECK( a >= 0 && b >= 0 );
         if ( u == 0 && a == 0 )
             return 0;
-        Float x = u * ( a + b ) / ( a + std::sqrt( Lerp2( u, Sqr( a ), Sqr( b ) ) ) );
+        Float x = u * ( a + b ) / ( a + Math::Sqrt( Lerp2( u, Sqr( a ), Sqr( b ) ) ) );
         return std::min( x, OneMinusEpsilon );
     }
 
@@ -279,8 +279,9 @@ namespace pbrto
         Float sinTwoPiU1;
         Float cosTwoPiU1;
         SinCos( twoPiU1, &sinTwoPiU1, &cosTwoPiU1 );
-        return { mu + sigma * std::sqrt( r2 ) * cosTwoPiU1,
-                mu + sigma * std::sqrt( r2 ) * sinTwoPiU1 };
+        Float sqrtR2 = Math::Sqrt( r2 );
+        return { mu + sigma * sqrtR2 * cosTwoPiU1,
+                mu + sigma * sqrtR2 * sinTwoPiU1 };
     }
 
     inline Float LogisticPDF( Float x, Float s )
@@ -353,7 +354,7 @@ namespace pbrto
 
     inline Point2f SampleUniformDiskPolar( Point2f u )
     {
-        Float r = std::sqrt( u[ 0 ] );
+        Float r = Math::Sqrt( u[ 0 ] );
         Float theta = 2 * Pi * u[ 1 ];
         Float sinTheta;
         Float cosTheta;
@@ -397,7 +398,7 @@ namespace pbrto
     inline Point2f InvertUniformDiskConcentricSample( Point2f p )
     {
         Float theta = Math::ATan2( p.y, p.x );  // -pi -> pi
-        Float r = std::sqrt( Sqr( p.x ) + Sqr( p.y ) );
+        Float r = Math::Hypot( p.x, p.y );
 
         Point2f uo;
         // TODO: can we make this less branchy?
@@ -565,8 +566,9 @@ namespace pbrto
         Float sinTheta;
         Float cosTheta;
         SinCos( theta, &sinTheta, &cosTheta );
-        return Vector3f( cosTheta * r * std::sqrt( 2 - r * r ),
-            sinTheta * r * std::sqrt( 2 - r * r ), 1 - r * r );
+        Float sqrt2MRxR = Math::Sqrt( 2 - r * r );
+        return Vector3f( cosTheta * r * sqrt2MRxR,
+            sinTheta * r * sqrt2MRxR, 1 - r * r );
     }
 
     // VarianceEstimator Definition

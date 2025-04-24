@@ -415,7 +415,7 @@ namespace pbrto
         {
             if ( IsInf( x ) )
                 return x > 0 ? 1 : 0;
-            return .5f + x / ( 2 * std::sqrt( 1 + Sqr( x ) ) );
+            return .5f + x / ( 2 * Math::Sqrt( 1 + Sqr( x ) ) );
         };
 
         // RGBSigmoidPolynomial Private Members

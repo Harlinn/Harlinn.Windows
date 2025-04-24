@@ -259,7 +259,7 @@ namespace pbrto
             pstdo::optional<Float> r_max = SampleSr( 0.999f );
             if ( !r_max || *r >= *r_max )
                 return {};
-            Float l = 2 * std::sqrt( Sqr( *r_max ) - Sqr( *r ) );
+            Float l = 2 * Math::Sqrt( Sqr( *r_max ) - Sqr( *r ) );
 
             // Return BSSRDF sampling ray segment
             Float sinPhi;
@@ -281,9 +281,12 @@ namespace pbrto
             Normal3f nLocal = f.ToLocal( ni );
 
             // Compute BSSRDF profile radius under projection along each axis
-            Float rProj[ 3 ] = { std::sqrt( Sqr( dLocal.y ) + Sqr( dLocal.z ) ),
-                              std::sqrt( Sqr( dLocal.z ) + Sqr( dLocal.x ) ),
-                              std::sqrt( Sqr( dLocal.x ) + Sqr( dLocal.y ) ) };
+            Float rProj[ 3 ] = 
+            { 
+                Math::Hypot( dLocal.y, dLocal.z ),
+                Math::Hypot( dLocal.z, dLocal.x ),
+                Math::Hypot( dLocal.x, dLocal.y )
+            };
 
             // Return combined probability from all BSSRDF sampling strategies
             SampledSpectrum pdf( 0.f );

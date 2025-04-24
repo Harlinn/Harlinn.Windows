@@ -240,7 +240,7 @@ namespace pbrto
             Float sppScale =
                 GetOptions( ).disablePixelJitter
                 ? 1
-                : std::max<Float>( .125, 1 / std::sqrt( ( Float )samplesPerPixel ) );
+                : std::max<Float>( .125, 1 / Math::Sqrt( ( Float )samplesPerPixel ) );
             *dpdx =
                 sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( px - pDownZ ), time );
             *dpdy =

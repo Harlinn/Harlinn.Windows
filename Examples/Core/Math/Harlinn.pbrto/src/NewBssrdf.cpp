@@ -76,7 +76,7 @@ namespace pbrto
 
             // Evaluate dipole integrand $E_{\roman{d}}$ at $\depthreal$ and add to _Ed_
             Float zv = -zr + 2 * ze;
-            Float dr = std::sqrt( Sqr( r ) + Sqr( zr ) ), dv = std::sqrt( Sqr( r ) + Sqr( zv ) );
+            Float dr = Math::Hypot( r, zr ), dv = Math::Hypot( r, zv );
             // Compute dipole fluence rate $\dipole(r)$ using Equation
             // $(\ref{eq:diffusion-dipole})$
             Float phiD =
@@ -109,7 +109,7 @@ namespace pbrto
             // Evaluate single-scattering integrand and add to _Ess_
             Float ti = tCrit + SampleExponential( ( i + 0.5f ) / nSamples, sigma_t );
             // Determine length $d$ of connecting segment and $\cos\theta_\roman{o}$
-            Float d = std::sqrt( Sqr( r ) + Sqr( ti ) );
+            Float d = Math::Hypot( r, ti );
             Float cosTheta_o = ti / d;
 
             // Add contribution of single scattering at depth $t$

@@ -743,7 +743,7 @@ namespace pbrto
     {
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = std::sqrt( s[ i ] );
+            ret[ i ] = Math::Sqrt( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
     }

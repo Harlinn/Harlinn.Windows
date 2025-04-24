@@ -324,7 +324,7 @@ namespace pbrto
         return __fsqrt_ru( a );
 #endif
 #else  // CPU
-        return NextFloatUp( std::sqrt( a ) );
+        return NextFloatUp( Math::Sqrt( a ) );
 #endif
     }
 
@@ -337,7 +337,7 @@ namespace pbrto
         return __fsqrt_rd( a );
 #endif
 #else  // CPU
-        return std::max<Float>( 0, NextFloatDown( std::sqrt( a ) ) );
+        return std::max<Float>( 0, NextFloatDown( Math::Sqrt( a ) ) );
 #endif
     }
 

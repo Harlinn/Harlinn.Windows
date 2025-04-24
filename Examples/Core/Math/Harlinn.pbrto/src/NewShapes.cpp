@@ -762,7 +762,7 @@ namespace pbrto
 
                 // Initialize _SurfaceInteraction_ _intr_ for curve intersection
                 // Compute $v$ coordinate of curve intersection point
-                Float ptCurveDist = std::sqrt( ptCurveDist2 );
+                Float ptCurveDist = Math::Sqrt( ptCurveDist2 );
                 Float edgeFunc = dpcdw.x * -pc.y + pc.x * dpcdw.y;
                 Float v = ( edgeFunc > 0 ) ? 0.5f + ptCurveDist / hitWidth
                     : 0.5f - ptCurveDist / hitWidth;

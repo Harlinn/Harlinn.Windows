@@ -285,7 +285,7 @@ namespace pbrto
             Float theta = SafeACos( cosTheta );
             Float v = ( theta - thetaZMin ) / ( thetaZMax - thetaZMin );
             // Compute sphere $\dpdu$ and $\dpdv$
-            Float zRadius = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+            Float zRadius = Math::Hypot(pHit.x, pHit.y );
             Float cosPhi = pHit.x / zRadius, sinPhi = pHit.y / zRadius;
             Vector3f dpdu( -phiMax * pHit.y, phiMax * pHit.x, 0 );
             Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
@@ -369,7 +369,7 @@ namespace pbrto
             {
                 // Compute cone sample via Taylor series expansion for small angles
                 sin2Theta = sin2ThetaMax * u[ 0 ];
-                cosTheta = std::sqrt( 1 - sin2Theta );
+                cosTheta = Math::Sqrt( 1 - sin2Theta );
                 oneMinusCosThetaMax = sin2ThetaMax / 2;
             }
 
@@ -532,7 +532,7 @@ namespace pbrto
             Float phi = isect.phi;
             // Find parametric representation of disk hit
             Float u = phi / phiMax;
-            Float rHit = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+            Float rHit = Math::Hypot( pHit.x, pHit.y );
             Float v = ( radius - rHit ) / ( radius - innerRadius );
             Vector3f dpdu( -phiMax * pHit.y, phiMax * pHit.x, 0 );
             Vector3f dpdv = Vector3f( pHit.x, pHit.y, 0 ) * ( innerRadius - radius ) / rHit;
@@ -572,7 +572,7 @@ namespace pbrto
             Float phi = Math::ATan2( pd.y, pd.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
-            Float radiusSample = std::sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
+            Float radiusSample = Math::Hypot( pObj.x, pObj.y );
             Point2f uv( phi / phiMax, ( radius - radiusSample ) / ( radius - innerRadius ) );
 
             return ShapeSample{ Interaction( pi, n, uv ), 1 / Area( ) };
@@ -712,7 +712,7 @@ namespace pbrto
             // Compute cylinder hit point and $\phi$
             pHit = Point3f( oi ) + ( Float )tShapeHit * Vector3f( di );
             // Refine cylinder intersection point
-            Float hitRad = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+            Float hitRad = Math::Hypot( pHit.x, pHit.y );
             pHit.x *= radius / hitRad;
             pHit.y *= radius / hitRad;
 
@@ -731,7 +731,7 @@ namespace pbrto
                 // Compute cylinder hit point and $\phi$
                 pHit = Point3f( oi ) + ( Float )tShapeHit * Vector3f( di );
                 // Refine cylinder intersection point
-                Float hitRad = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+                Float hitRad = Math::Hypot( pHit.x, pHit.y );
                 pHit.x *= radius / hitRad;
                 pHit.y *= radius / hitRad;
 
@@ -804,7 +804,7 @@ namespace pbrto
             SinCos( phi, &sinPhi, &cosPhi );
             Point3f pObj = Point3f( radius * cosPhi, radius * sinPhi, z );
             // Reproject _pObj_ to cylinder surface and compute _pObjError_
-            Float hitRad = std::sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
+            Float hitRad = Math::Hypot( pObj.x, pObj.y );
             pObj.x *= radius / hitRad;
             pObj.y *= radius / hitRad;
             Vector3f pObjError = gamma( 3 ) * Abs( Vector3f( pObj.x, pObj.y, 0 ) );

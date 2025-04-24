@@ -1179,8 +1179,10 @@ namespace pbrto
 
     private:
         // MeasuredBxDF Private Methods
-        PBRT_CPU_GPU
-            static Float theta2u( Float theta ) { return std::sqrt( theta * ( 2 / Pi ) ); }
+        static Float theta2u( Float theta ) 
+        { 
+            return Math::Sqrt( theta * ( 2 / Pi ) ); 
+        }
         PBRT_CPU_GPU
             static Float phi2u( Float phi ) { return phi * ( 1 / ( 2 * Pi ) ) + .5f; }
 

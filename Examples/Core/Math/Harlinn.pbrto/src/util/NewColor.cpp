@@ -58,7 +58,7 @@ namespace pbrto
         // Handle uniform _rgb_ values
         if ( rgb[ 0 ] == rgb[ 1 ] && rgb[ 1 ] == rgb[ 2 ] )
             return RGBSigmoidPolynomial( 0, 0,
-                ( rgb[ 0 ] - .5f ) / std::sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
+                ( rgb[ 0 ] - .5f ) / Math::Sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
 
         // Find maximum component and compute remapped component values
         int maxc =

@@ -813,7 +813,7 @@ namespace pbrto
         // Compute film's physical extent
         Float aspect = ( Float )film.FullResolution( ).y / ( Float )film.FullResolution( ).x;
         Float diagonal = film.Diagonal( );
-        Float x = std::sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
+        Float x = Math::Sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
         Float y = aspect * x;
         physicalExtent = Bounds2f( Point2f( -x / 2, -y / 2 ), Point2f( x / 2, y / 2 ) );
 
@@ -977,7 +977,7 @@ namespace pbrto
             ErrorExit( "Coefficient must be positive. It looks focusDistance %f "
                 " is too short for a given lenses configuration",
                 focusDistance );
-        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - std::sqrt( c ) ) / 2;
+        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - Math::Sqrt( c ) ) / 2;
 
         return elementInterfaces.back( ).thickness + delta;
     }
@@ -1016,7 +1016,7 @@ namespace pbrto
 
         // Expand bounds to account for sample spacing
         pupilBounds =
-            Expand( pupilBounds, 2 * ScalarLength( projRearBounds.Diagonal( ) ) / std::sqrt( nSamples ) );
+            Expand( pupilBounds, 2 * ScalarLength( projRearBounds.Diagonal( ) ) / Math::Sqrt( static_cast<float>( nSamples ) ) );
 
         return pupilBounds;
     }
@@ -1025,7 +1025,7 @@ namespace pbrto
         Point2f uLens ) const
     {
         // Find exit pupil bound for sample distance from film center
-        Float rFilm = std::sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
+        Float rFilm = Math::Hypot( pFilm.x, pFilm.y );
         int rIndex = rFilm / ( film.Diagonal( ) / 2 ) * exitPupilBounds.size( );
         rIndex = std::min<int>( exitPupilBounds.size( ) - 1, rIndex );
         Bounds2f pupilBounds = exitPupilBounds[ rIndex ];
@@ -1561,10 +1561,10 @@ namespace pbrto
             else if ( apertureName == "pentagon" )
             {
                 // https://mathworld.wolfram.com/RegularPentagon.html
-                Float c1 = ( std::sqrt( 5.f ) - 1 ) / 4;
-                Float c2 = ( std::sqrt( 5.f ) + 1 ) / 4;
-                Float s1 = std::sqrt( 10.f + 2.f * std::sqrt( 5.f ) ) / 4;
-                Float s2 = std::sqrt( 10.f - 2.f * std::sqrt( 5.f ) ) / 4;
+                constexpr Float c1 = ( Math::Sqrt( 5.f ) - 1 ) / 4;
+                constexpr Float c2 = ( Math::Sqrt( 5.f ) + 1 ) / 4;
+                constexpr Float s1 = Math::Sqrt( 10.f + 2.f * Math::Sqrt( 5.f ) ) / 4;
+                constexpr Float s2 = Math::Sqrt( 10.f - 2.f * Math::Sqrt( 5.f ) ) / 4;
                 // Vertices in CW order.
                 Point2f vert[ 5 ] = { Point2f( 0, 1 ), {s1, c1}, {s2, -c2}, {-s2, -c2}, {-s1, c1} };
                 // Scale down slightly
