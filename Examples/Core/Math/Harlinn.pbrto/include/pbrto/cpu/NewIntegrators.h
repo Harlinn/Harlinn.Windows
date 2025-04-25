@@ -468,7 +468,7 @@ namespace pbrto
 
         static Float c( const SampledSpectrum& L, const SampledWavelengths& lambda )
         {
-            return L.y( lambda );
+            return L.Y( lambda );
         }
 
         // MLTIntegrator Private Members

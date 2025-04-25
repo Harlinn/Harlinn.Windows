@@ -41,7 +41,7 @@ namespace pbrto
 
     std::string RGB::ToString( ) const
     {
-        return StringPrintf( "[ %f %f %f ]", r, g, b );
+        return StringPrintf( "[ %f %f %f ]", x, y, z );
     }
 
     std::string RGBSigmoidPolynomial::ToString( ) const
@@ -206,7 +206,7 @@ namespace pbrto
 
     std::string XYZ::ToString( ) const
     {
-        return StringPrintf( "[ %f %f %f ]", X, Y, Z );
+        return StringPrintf( "[ %f %f %f ]", x, y, z );
     }
 
     // ColorEncoding Method Definitions

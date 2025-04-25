@@ -554,7 +554,7 @@ namespace pbrto
         RGB rgb = sensor->ToSensorRGB( L, lambda );
 
         // Optionally clamp sensor RGB value
-        Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+        Float m = Math::Max( rgb.x, rgb.y, rgb.z );
         if ( m > maxComponentValue )
             rgb *= maxComponentValue / m;
 
@@ -596,14 +596,14 @@ namespace pbrto
         ParallelFor2D( pixelBounds, [ & ]( Point2i p ) {
             RGB rgb = GetPixelRGB( p, splatScale );
 
-            if ( writeFP16 && std::max( { rgb.r, rgb.g, rgb.b } ) > 65504 )
+            if ( writeFP16 && Math::Max( rgb.x, rgb.y, rgb.z ) > 65504 )
             {
-                if ( rgb.r > 65504 )
-                    rgb.r = 65504;
-                if ( rgb.g > 65504 )
-                    rgb.g = 65504;
-                if ( rgb.b > 65504 )
-                    rgb.b = 65504;
+                if ( rgb.x > 65504 )
+                    rgb.x = 65504;
+                if ( rgb.y > 65504 )
+                    rgb.y = 65504;
+                if ( rgb.z > 65504 )
+                    rgb.z = 65504;
                 ++nClamped;
             }
 
@@ -649,7 +649,7 @@ namespace pbrto
         const VisibleSurface* visibleSurface, Float weight )
     {
         RGB rgb = sensor->ToSensorRGB( L, lambda );
-        Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+        Float m = Math::Max( rgb.x, rgb.y, rgb.z );
         if ( m > maxComponentValue )
             rgb *= maxComponentValue / m;
 
@@ -727,7 +727,7 @@ namespace pbrto
         // NOTE: same code as RGBFilm::AddSplat()...
         NCHECK( !v.HasNaNs( ) );
         RGB rgb = sensor->ToSensorRGB( v, lambda );
-        Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+        Float m = Math::Max( rgb.x, rgb.y, rgb.z );
         if ( m > maxComponentValue )
             rgb *= maxComponentValue / m;
 
@@ -830,14 +830,14 @@ namespace pbrto
 
             rgb = outputRGBFromSensorRGB * rgb;
 
-            if ( writeFP16 && std::max( { rgb.r, rgb.g, rgb.b } ) > 65504 )
+            if ( writeFP16 && Math::Max( rgb.x, rgb.y, rgb.z ) > 65504 )
             {
-                if ( rgb.r > 65504 )
-                    rgb.r = 65504;
-                if ( rgb.g > 65504 )
-                    rgb.g = 65504;
-                if ( rgb.b > 65504 )
-                    rgb.b = 65504;
+                if ( rgb.x > 65504 )
+                    rgb.x = 65504;
+                if ( rgb.y > 65504 )
+                    rgb.y = 65504;
+                if ( rgb.z > 65504 )
+                    rgb.z = 65504;
                 ++nClamped;
             }
 
@@ -998,7 +998,7 @@ namespace pbrto
         RGB rgb = sensor->ToSensorRGB( L, lambda );
 
         // Optionally clamp sensor RGB value
-        Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+        Float m = Math::Max( rgb.x, rgb.y, rgb.z );
         if ( m > maxComponentValue )
             rgb *= maxComponentValue / m;
 

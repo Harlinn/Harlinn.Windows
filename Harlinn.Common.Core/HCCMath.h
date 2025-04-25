@@ -3319,12 +3319,14 @@ namespace Harlinn::Common::Core::Math
 
 
     template <typename FloatT, typename C>
+        requires IsArithmetic<FloatT>
     constexpr inline FloatT EvaluatePolynomial( FloatT t, C c )
     {
         return c;
     }
 
     template <typename FloatT, typename C, typename... Args>
+        requires IsArithmetic<FloatT>
     constexpr inline FloatT EvaluatePolynomial( FloatT t, C c, Args... remaining )
     {
         return FMA( t, EvaluatePolynomial( t, remaining... ), c );

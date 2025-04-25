@@ -1139,7 +1139,7 @@ namespace pbrto
                     {
                         ImageChannelValues channels = outImage.GetChannels( { x, y }, rgbDesc );
                         RGB rgb = Mul<RGB>( m, channels );
-                        outImage.SetChannels( { x, y }, rgbDesc, { rgb.r, rgb.g, rgb.b } );
+                        outImage.SetChannels( { x, y }, rgbDesc, { rgb.x, rgb.y, rgb.z } );
                     }
                 outMetadata.colorSpace = RGBColorSpace::sRGB;
             }

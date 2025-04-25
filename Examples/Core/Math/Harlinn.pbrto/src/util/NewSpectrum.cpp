@@ -234,16 +234,16 @@ namespace pbrto
 
         // Evaluate estimator to compute $(x,y,z)$ coefficients
         SampledSpectrum pdf = lambda.PDF( );
-        return XYZ( SafeDiv( X * *this, pdf ).Average( ), SafeDiv( Y * *this, pdf ).Average( ),
-            SafeDiv( Z * *this, pdf ).Average( ) ) /
+        return XYZ( ScalarAvg( SafeDiv( X * *this, pdf ) ), ScalarAvg( SafeDiv( Y * *this, pdf ) ),
+            ScalarAvg( SafeDiv( Z * *this, pdf ) ) ) /
             CIE_Y_integral;
     }
 
-    PBRT_CPU_GPU Float SampledSpectrum::y( const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU Float SampledSpectrum::Y( const SampledWavelengths& lambda ) const
     {
         SampledSpectrum Ys = Spectra::Y( ).Sample( lambda );
         SampledSpectrum pdf = lambda.PDF( );
-        return SafeDiv( Ys * *this, pdf ).Average( ) / CIE_Y_integral;
+        return ScalarAvg( SafeDiv( Ys * *this, pdf ) ) / CIE_Y_integral;
     }
 
     PBRT_CPU_GPU RGB SampledSpectrum::ToRGB( const SampledWavelengths& lambda,
@@ -255,14 +255,14 @@ namespace pbrto
 
     PBRT_CPU_GPU RGBAlbedoSpectrum::RGBAlbedoSpectrum( const RGBColorSpace& cs, RGB rgb )
     {
-        NDCHECK_LE( std::max( { rgb.r, rgb.g, rgb.b } ), 1 );
-        NDCHECK_GE( std::min( { rgb.r, rgb.g, rgb.b } ), 0 );
+        NDCHECK_LE( std::max( { rgb.x, rgb.y, rgb.z } ), 1 );
+        NDCHECK_GE( std::min( { rgb.x, rgb.y, rgb.z } ), 0 );
         rsp = cs.ToRGBCoeffs( rgb );
     }
 
     PBRT_CPU_GPU RGBUnboundedSpectrum::RGBUnboundedSpectrum( const RGBColorSpace& cs, RGB rgb )
     {
-        Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+        Float m = Math::Max( rgb.x, rgb.y, rgb.z );
         scale = 2 * m;
         rsp = cs.ToRGBCoeffs( scale ? rgb / scale : RGB( 0, 0, 0 ) );
     }
@@ -270,7 +270,7 @@ namespace pbrto
     PBRT_CPU_GPU RGBIlluminantSpectrum::RGBIlluminantSpectrum( const RGBColorSpace& cs, RGB rgb )
         : illuminant( &cs.illuminant )
     {
-        Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+        Float m = Math::Max( rgb.x, rgb.y, rgb.z );
         scale = 2 * m;
         rsp = cs.ToRGBCoeffs( scale ? rgb / scale : RGB( 0, 0, 0 ) );
     }

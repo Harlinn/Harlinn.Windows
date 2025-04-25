@@ -41,365 +41,74 @@ namespace pbrto
 {
 
     // RGB Definition
-    class RGB
+    class RGB : public Math::Tuple3<RGB, Float>
     {
     public:
+        using Base = Math::Tuple3<RGB, Float>;
+        using Base::Base;
         // RGB Public Methods
         RGB( ) = default;
-        PBRT_CPU_GPU
-            RGB( Float r, Float g, Float b ) : r( r ), g( g ), b( b ) {}
 
-        PBRT_CPU_GPU
-            RGB& operator+=( RGB s )
+        Float Average( ) const
         {
-            r += s.r;
-            g += s.g;
-            b += s.b;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            RGB operator+( RGB s ) const
-        {
-            RGB ret = *this;
-            return ret += s;
-        }
-
-        PBRT_CPU_GPU
-            RGB& operator-=( RGB s )
-        {
-            r -= s.r;
-            g -= s.g;
-            b -= s.b;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            RGB operator-( RGB s ) const
-        {
-            RGB ret = *this;
-            return ret -= s;
-        }
-        PBRT_CPU_GPU
-            friend RGB operator-( Float a, RGB s ) { return { a - s.r, a - s.g, a - s.b }; }
-
-        PBRT_CPU_GPU
-            RGB& operator*=( RGB s )
-        {
-            r *= s.r;
-            g *= s.g;
-            b *= s.b;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            RGB operator*( RGB s ) const
-        {
-            RGB ret = *this;
-            return ret *= s;
-        }
-        PBRT_CPU_GPU
-            RGB operator*( Float a ) const
-        {
-            NDCHECK( !IsNaN( a ) );
-            return { a * r, a * g, a * b };
-        }
-        PBRT_CPU_GPU
-            RGB& operator*=( Float a )
-        {
-            NDCHECK( !IsNaN( a ) );
-            r *= a;
-            g *= a;
-            b *= a;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            friend RGB operator*( Float a, RGB s ) { return s * a; }
-
-        PBRT_CPU_GPU
-            RGB& operator/=( RGB s )
-        {
-            r /= s.r;
-            g /= s.g;
-            b /= s.b;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            RGB operator/( RGB s ) const
-        {
-            RGB ret = *this;
-            return ret /= s;
-        }
-        PBRT_CPU_GPU
-            RGB& operator/=( Float a )
-        {
-            NDCHECK( !IsNaN( a ) );
-            NDCHECK_NE( a, 0 );
-            r /= a;
-            g /= a;
-            b /= a;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            RGB operator/( Float a ) const
-        {
-            RGB ret = *this;
-            return ret /= a;
-        }
-
-        PBRT_CPU_GPU
-            RGB operator-( ) const { return { -r, -g, -b }; }
-
-        PBRT_CPU_GPU
-            Float Average( ) const { return ( r + g + b ) / 3; }
-
-        PBRT_CPU_GPU
-            bool operator==( RGB s ) const { return r == s.r && g == s.g && b == s.b; }
-        PBRT_CPU_GPU
-            bool operator!=( RGB s ) const { return r != s.r || g != s.g || b != s.b; }
-        PBRT_CPU_GPU
-            Float operator[]( int c ) const
-        {
-            NDCHECK( c >= 0 && c < 3 );
-            if ( c == 0 )
-                return r;
-            else if ( c == 1 )
-                return g;
-            return b;
-        }
-        PBRT_CPU_GPU
-            Float& operator[]( int c )
-        {
-            NDCHECK( c >= 0 && c < 3 );
-            if ( c == 0 )
-                return r;
-            else if ( c == 1 )
-                return g;
-            return b;
+            return ( x + y + z ) / 3;
         }
 
         std::string ToString( ) const;
 
-        // RGB Public Members
-        Float r = 0, g = 0, b = 0;
+        
     };
 
-    PBRT_CPU_GPU
-        inline RGB max( RGB a, RGB b )
-    {
-        return RGB( std::max( a.r, b.r ), std::max( a.g, b.g ), std::max( a.b, b.b ) );
-    }
-
-    PBRT_CPU_GPU
-        inline RGB Lerp2( Float t, RGB s1, RGB s2 )
-    {
-        return ( 1 - t ) * s1 + t * s2;
-    }
-
-    // RGB Inline Functions
-    template <typename U, typename V>
-    PBRT_CPU_GPU inline RGB Clamp( RGB rgb, U min, V max )
-    {
-        return RGB( pbrto::Clamp( rgb.r, min, max ), pbrto::Clamp( rgb.g, min, max ),
-            pbrto::Clamp( rgb.b, min, max ) );
-    }
-    PBRT_CPU_GPU inline RGB ClampZero( RGB rgb )
-    {
-        return RGB( std::max<Float>( 0, rgb.r ), std::max<Float>( 0, rgb.g ),
-            std::max<Float>( 0, rgb.b ) );
-    }
-
     // XYZ Definition
-    class XYZ
+    class XYZ : public Math::Tuple3<XYZ,Float>
     {
     public:
+        using Base = Math::Tuple3<XYZ, Float>;
+        using Base::Base;
+        
         // XYZ Public Methods
         XYZ( ) = default;
-        PBRT_CPU_GPU
-            XYZ( Float X, Float Y, Float Z ) : X( X ), Y( Y ), Z( Z ) {}
 
-        PBRT_CPU_GPU
-            Float Average( ) const { return ( X + Y + Z ) / 3; }
+        Float Average( ) const 
+        { 
+            return ( x + y + z ) / 3; 
+        }
 
-        PBRT_CPU_GPU
-            Point2f xy( ) const { return Point2f( X / ( X + Y + Z ), Y / ( X + Y + Z ) ); }
+        Point2f xy( ) const 
+        { 
+            return Point2f( x / ( x + y + z ), y / ( x + y + z ) ); 
+        }
 
-        PBRT_CPU_GPU
-            static XYZ FromxyY( Point2f xy, Float Y = 1 )
+        static XYZ FromxyY( Point2f xy, Float Y = 1 )
         {
             if ( xy.y == 0 )
                 return XYZ( 0, 0, 0 );
             return XYZ( xy.x * Y / xy.y, Y, ( 1 - xy.x - xy.y ) * Y / xy.y );
         }
-
-        PBRT_CPU_GPU
-            XYZ& operator+=( const XYZ& s )
-        {
-            X += s.X;
-            Y += s.Y;
-            Z += s.Z;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            XYZ operator+( const XYZ& s ) const
-        {
-            XYZ ret = *this;
-            return ret += s;
-        }
-
-        PBRT_CPU_GPU
-            XYZ& operator-=( const XYZ& s )
-        {
-            X -= s.X;
-            Y -= s.Y;
-            Z -= s.Z;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            XYZ operator-( const XYZ& s ) const
-        {
-            XYZ ret = *this;
-            return ret -= s;
-        }
-        PBRT_CPU_GPU
-            friend XYZ operator-( Float a, const XYZ& s ) { return { a - s.X, a - s.Y, a - s.Z }; }
-
-        PBRT_CPU_GPU
-            XYZ& operator*=( const XYZ& s )
-        {
-            X *= s.X;
-            Y *= s.Y;
-            Z *= s.Z;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            XYZ operator*( const XYZ& s ) const
-        {
-            XYZ ret = *this;
-            return ret *= s;
-        }
-        PBRT_CPU_GPU
-            XYZ operator*( Float a ) const
-        {
-            NDCHECK( !IsNaN( a ) );
-            return { a * X, a * Y, a * Z };
-        }
-        PBRT_CPU_GPU
-            XYZ& operator*=( Float a )
-        {
-            NDCHECK( !IsNaN( a ) );
-            X *= a;
-            Y *= a;
-            Z *= a;
-            return *this;
-        }
-
-        PBRT_CPU_GPU
-            XYZ& operator/=( const XYZ& s )
-        {
-            X /= s.X;
-            Y /= s.Y;
-            Z /= s.Z;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            XYZ operator/( const XYZ& s ) const
-        {
-            XYZ ret = *this;
-            return ret /= s;
-        }
-        PBRT_CPU_GPU
-            XYZ& operator/=( Float a )
-        {
-            NDCHECK( !IsNaN( a ) );
-            NDCHECK_NE( a, 0 );
-            X /= a;
-            Y /= a;
-            Z /= a;
-            return *this;
-        }
-        PBRT_CPU_GPU
-            XYZ operator/( Float a ) const
-        {
-            XYZ ret = *this;
-            return ret /= a;
-        }
-
-        PBRT_CPU_GPU
-            XYZ operator-( ) const { return { -X, -Y, -Z }; }
-
-        PBRT_CPU_GPU
-            bool operator==( const XYZ& s ) const { return X == s.X && Y == s.Y && Z == s.Z; }
-        PBRT_CPU_GPU
-            bool operator!=( const XYZ& s ) const { return X != s.X || Y != s.Y || Z != s.Z; }
-        PBRT_CPU_GPU
-            Float operator[]( int c ) const
-        {
-            NDCHECK( c >= 0 && c < 3 );
-            if ( c == 0 )
-                return X;
-            else if ( c == 1 )
-                return Y;
-            return Z;
-        }
-        PBRT_CPU_GPU
-            Float& operator[]( int c )
-        {
-            NDCHECK( c >= 0 && c < 3 );
-            if ( c == 0 )
-                return X;
-            else if ( c == 1 )
-                return Y;
-            return Z;
-        }
-
         std::string ToString( ) const;
 
-        // XYZ Public Members
-        Float X = 0, Y = 0, Z = 0;
+        
     };
-
-    PBRT_CPU_GPU
-        inline XYZ operator*( Float a, const XYZ& s )
-    {
-        return s * a;
-    }
-
-    template <typename U, typename V>
-    PBRT_CPU_GPU inline XYZ Clamp( const XYZ& xyz, U min, V max )
-    {
-        return XYZ( pbrto::Clamp( xyz.X, min, max ), pbrto::Clamp( xyz.Y, min, max ),
-            pbrto::Clamp( xyz.Z, min, max ) );
-    }
-
-    PBRT_CPU_GPU
-        inline XYZ ClampZero( const XYZ& xyz )
-    {
-        return XYZ( std::max<Float>( 0, xyz.X ), std::max<Float>( 0, xyz.Y ),
-            std::max<Float>( 0, xyz.Z ) );
-    }
-
-    PBRT_CPU_GPU
-        inline XYZ Lerp2( Float t, const XYZ& s1, const XYZ& s2 )
-    {
-        return ( 1 - t ) * s1 + t * s2;
-    }
 
     // RGBSigmoidPolynomial Definition
     class RGBSigmoidPolynomial
     {
+        // RGBSigmoidPolynomial Private Members
+        Float c0, c1, c2;
     public:
         // RGBSigmoidPolynomial Public Methods
         RGBSigmoidPolynomial( ) = default;
-        PBRT_CPU_GPU
-            RGBSigmoidPolynomial( Float c0, Float c1, Float c2 ) : c0( c0 ), c1( c1 ), c2( c2 ) {}
+        RGBSigmoidPolynomial( Float c0, Float c1, Float c2 ) 
+            : c0( c0 ), c1( c1 ), c2( c2 ) 
+        { }
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Float operator()( Float lambda ) const
+        Float operator()( Float lambda ) const
         {
             return s( EvaluatePolynomial( lambda, c2, c1, c0 ) );
         }
 
-        PBRT_CPU_GPU
-            Float MaxValue( ) const
+        Float MaxValue( ) const
         {
             Float result = std::max( ( *this )( 360 ), ( *this )( 830 ) );
             Float lambda = -c1 / ( 2 * c0 );
@@ -410,16 +119,14 @@ namespace pbrto
 
     private:
         // RGBSigmoidPolynomial Private Methods
-        PBRT_CPU_GPU
-            static Float s( Float x )
+        static Float s( Float x )
         {
             if ( IsInf( x ) )
                 return x > 0 ? 1 : 0;
             return .5f + x / ( 2 * Math::Sqrt( 1 + Sqr( x ) ) );
         };
 
-        // RGBSigmoidPolynomial Private Members
-        Float c0, c1, c2;
+        
     };
 
     // RGBToSpectrumTable Definition

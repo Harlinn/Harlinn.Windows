@@ -464,12 +464,12 @@ namespace pbrto
                         RGB rgb( v[ 0 ], v[ 1 ], v[ 2 ] );
                         const RGBColorSpace& cs =
                             param.colorSpace ? *param.colorSpace : *colorSpace;
-                        if ( rgb.r < 0 || rgb.g < 0 || rgb.b < 0 )
+                        if ( rgb.x < 0 || rgb.y < 0 || rgb.z < 0 )
                             ErrorExit( loc, "RGB parameter \"%s\" has negative component.",
                                 param.name );
                         if ( spectrumType == SpectrumType::Albedo )
                         {
-                            if ( rgb.r > 1 || rgb.g > 1 || rgb.b > 1 )
+                            if ( rgb.x > 1 || rgb.y > 1 || rgb.z > 1 )
                                 ErrorExit( loc, "RGB parameter \"%s\" has > 1 component.",
                                     param.name );
                             return alloc.new_object<RGBAlbedoSpectrum>( cs, rgb );
@@ -1005,7 +1005,7 @@ namespace pbrto
                 p->lookedUp = true;
 
                 RGB rgb( p->floats[ 0 ], p->floats[ 1 ], p->floats[ 2 ] );
-                if ( rgb.r < 0 || rgb.g < 0 || rgb.b < 0 )
+                if ( rgb.x < 0 || rgb.y < 0 || rgb.z < 0 )
                     ErrorExit( &p->loc, "Negative value provided for RGB parameter \"%s\".",
                         p->name );
                 Spectrum s;
@@ -1016,7 +1016,7 @@ namespace pbrto
                 else
                 {
                     NCHECK( spectrumType == SpectrumType::Albedo );
-                    if ( rgb.r > 1 || rgb.g > 1 || rgb.b > 1 )
+                    if ( rgb.x > 1 || rgb.y > 1 || rgb.z > 1 )
                         ErrorExit( &p->loc,
                             "RGB parameter \"%s\" used as an albedo has > 1 component.",
                             p->name );

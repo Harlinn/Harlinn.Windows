@@ -120,9 +120,9 @@ namespace pbrto
             RGB ToSensorRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const
         {
             L = SafeDiv( L, lambda.PDF( ) );
-            return imagingRatio * RGB( ( r_bar.Sample( lambda ) * L ).Average( ),
-                ( g_bar.Sample( lambda ) * L ).Average( ),
-                ( b_bar.Sample( lambda ) * L ).Average( ) );
+            return imagingRatio * RGB( ScalarAvg( r_bar.Sample( lambda ) * L ),
+                ScalarAvg( g_bar.Sample( lambda ) * L ),
+                ScalarAvg( b_bar.Sample( lambda ) * L ) );
         }
 
         // PixelSensor Public Members
@@ -279,7 +279,7 @@ namespace pbrto
             RGB rgb = sensor->ToSensorRGB( L, lambda );
 
             // Optionally clamp sensor RGB value
-            Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+            Float m = Math::Max( rgb.x, rgb.y, rgb.z );
             if ( m > maxComponentValue )
                 rgb *= maxComponentValue / m;
 
@@ -466,7 +466,7 @@ namespace pbrto
             RGB rgb = sensor->ToSensorRGB( L, lambda );
 
             // Optionally clamp sensor RGB value
-            Float m = std::max( { rgb.r, rgb.g, rgb.b } );
+            Float m = Math::Max( rgb.x, rgb.y, rgb.z );
             if ( m > maxComponentValue )
                 rgb *= maxComponentValue / m;
 

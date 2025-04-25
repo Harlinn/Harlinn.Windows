@@ -49,7 +49,7 @@ namespace pbrto
         XYZ R = XYZ::FromxyY( r ), G = XYZ::FromxyY( g ), B = XYZ::FromxyY( b );
 
         // Initialize XYZ color space conversion matrices
-        SquareMatrix<3> rgb( R.X, G.X, B.X, R.Y, G.Y, B.Y, R.Z, G.Z, B.Z );
+        SquareMatrix<3> rgb( R.x, G.x, B.x, R.y, G.y, B.y, R.z, G.z, B.z );
         XYZ C = SquareMatrix<3>( Inverse( rgb ) ) * W;
         XYZFromRGB = rgb * SquareMatrix<3>::Diag( C[ 0 ], C[ 1 ], C[ 2 ] );
         RGBFromXYZ = Inverse( XYZFromRGB );

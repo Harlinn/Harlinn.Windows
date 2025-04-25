@@ -1710,7 +1710,7 @@ import.first->Wait();
 
         auto removeParamSilentIfConstant = [ & ]( const char* paramName, Float value ) {
             pstdo::optional<RGB> rgb = dict->GetOneRGB( paramName );
-            bool matches = ( rgb && rgb->r == value && rgb->g == value && rgb->b == value );
+            bool matches = ( rgb && rgb->x == value && rgb->y == value && rgb->z == value );
 
             if ( !matches &&
                 !dict->GetSpectrumArray( paramName, SpectrumType::Unbounded, {} ).empty( ) )
@@ -1748,7 +1748,7 @@ import.first->Wait();
                 return "";
 
             pstdo::optional<RGB> opacity = dict->GetOneRGB( "opacity" );
-            if ( opacity && opacity->r == 1 && opacity->g == 1 && opacity->b == 1 )
+            if ( opacity && opacity->x == 1 && opacity->y == 1 && opacity->z == 1 )
             {
                 dict->RemoveSpectrum( "opacity" );
                 return "";
@@ -1764,13 +1764,13 @@ import.first->Wait();
             pstdo::optional<RGB> rgb = dict->GetOneRGB( "amount" );
             if ( rgb )
             {
-                if ( rgb->r == rgb->g && rgb->g == rgb->b )
-                    extra += indent( 1 ) + StringPrintf( "\"float amount\" [ %f ]\n", rgb->r );
+                if ( rgb->x == rgb->y && rgb->y == rgb->z )
+                    extra += indent( 1 ) + StringPrintf( "\"float amount\" [ %f ]\n", rgb->x );
                 else
                 {
-                    Float avg = ( rgb->r + rgb->g + rgb->b ) / 3;
+                    Float avg = ( rgb->x + rgb->y + rgb->z ) / 3;
                     Warning( &loc, "Changing RGB \"amount\" (%f, %f, %f) to scalar average %f",
-                        rgb->r, rgb->g, rgb->b, avg );
+                        rgb->x, rgb->y, rgb->z, avg );
                     extra += indent( 1 ) + StringPrintf( "\"float amount\" [ %f ]\n", avg );
                 }
             }
@@ -1971,10 +1971,10 @@ import.first->Wait();
             return true;
 
         pstdo::optional<RGB> rgb = dict->GetOneRGB( name );
-        if ( !rgb || rgb->r != rgb->g || rgb->g != rgb->b )
+        if ( !rgb || rgb->x != rgb->y || rgb->y != rgb->z )
             return false;
 
-        *totalScale *= rgb->r;
+        *totalScale *= rgb->x;
         dict->RemoveSpectrum( name );
         return true;
     }

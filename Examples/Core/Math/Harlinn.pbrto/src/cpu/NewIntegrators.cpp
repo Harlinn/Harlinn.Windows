@@ -301,7 +301,7 @@ namespace pbrto
                     pPixel.x, pPixel.y, sampleIndex );
                 L = SampledSpectrum( 0.f );
             }
-            else if ( IsInf( L.y( lambda ) ) )
+            else if ( IsInf( L.Y( lambda ) ) )
             {
                 NLOG_ERROR( "Infinite radiance value returned for pixel (%d, %d), "
                     "sample %d. Setting to black.",
@@ -535,8 +535,8 @@ namespace pbrto
                 ray = isect.SpawnRay( wi );
             }
 
-            NCHECK_GE( beta.y( lambda ), 0.f );
-            NDCHECK( !IsInf( beta.y( lambda ) ) );
+            NCHECK_GE( beta.Y( lambda ), 0.f );
+            NDCHECK( !IsInf( beta.Y( lambda ) ) );
         }
         return L;
     }
@@ -1214,7 +1214,7 @@ namespace pbrto
                             Float p_l = lightSampler.PMF( prevIntrContext, light ) *
                                 light.PDF_Li( prevIntrContext, ray.d, true );
                             r_l *= p_l;
-                            L += beta * Le / ( r_u + r_l ).Average( );
+                            L += beta * Le / ScalarAvg( r_u + r_l );
                         }
                     }
                 }
@@ -1234,7 +1234,7 @@ namespace pbrto
                     Float p_l = lightSampler.PMF( prevIntrContext, areaLight ) *
                         areaLight.PDF_Li( prevIntrContext, ray.d, true );
                     r_l *= p_l;
-                    L += beta * Le / ( r_u + r_l ).Average( );
+                    L += beta * Le / ScalarAvg( r_u + r_l );
                 }
             }
 
@@ -1498,7 +1498,7 @@ namespace pbrto
 
                                 // Possibly terminate transmittance computation using
                                 // Russian roulette
-                                SampledSpectrum Tr = T_ray / ( r_l + r_u ).Average( );
+                                SampledSpectrum Tr = T_ray / ScalarAvg( r_l + r_u );
                                 if ( Tr.MaxComponentValue( ) < 0.05f )
                                 {
                                     Float q = 0.75f;
@@ -1531,7 +1531,7 @@ namespace pbrto
         if ( IsDeltaLight( light.Type( ) ) )
             return beta * f_hat * T_ray * ls->L / r_l.Average( );
         else
-            return beta * f_hat * T_ray * ls->L / ( r_l + r_u ).Average( );
+            return beta * f_hat * T_ray * ls->L / ScalarAvg( r_l + r_u );
     }
 
     std::string VolPathIntegrator::ToString( ) const
@@ -2543,7 +2543,7 @@ namespace pbrto
                 {
                     SampledSpectrum value;
                     if ( visualizeStrategies )
-                        value = misWeight == 0 ? SampledSpectrum( 0. ) : Lpath / misWeight;
+                        value = misWeight == 0 ? SampledSpectrum::Simd( 0.f ) : Lpath / misWeight;
                     if ( visualizeWeights )
                         value = Lpath;
                     if ( pFilmNew )
@@ -3557,7 +3557,7 @@ namespace pbrto
                     RGB L = pixel.Ld / ( iter + 1 ) + pixel.tau / ( np * Pi * Sqr( pixel.radius ) );
 
                     Point2i pImage = Point2i( pPixel - pixelBounds.pMin );
-                    rgbImage.SetChannels( pImage, { L.r, L.g, L.b } );
+                    rgbImage.SetChannels( pImage, { L.x, L.y, L.z } );
                     } );
 
                 ImageMetadata metadata;

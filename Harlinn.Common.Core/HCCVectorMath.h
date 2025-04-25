@@ -1932,6 +1932,11 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        Tuple4( value_type value ) noexcept
+            : x( value ), y( value ), z( value ), w( value )
+        {
+        }
+
         Tuple4( value_type xv, value_type yv, value_type zv, value_type wv ) noexcept
             : x( xv ), y( yv ), z( zv ), w( wv )
         {
@@ -4813,6 +4818,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
+
+
+    template <Internal::SimdType T, typename C>
+    constexpr inline T EvaluatePolynomial( T t, C c )
+    {
+        using Traits = typename T::Traits;
+        return Traits::Fill( c );
+    }
+
+    template <Internal::SimdType T, typename C, typename... Args>
+    constexpr inline T EvaluatePolynomial( T t, C c, Args... remaining )
+    {
+        using Traits = typename T::Traits;
+        return FMA( t, EvaluatePolynomial( t, remaining... ), T( Traits::Fill( c ) ) );
+    }
+
 
     // FMSub
 
