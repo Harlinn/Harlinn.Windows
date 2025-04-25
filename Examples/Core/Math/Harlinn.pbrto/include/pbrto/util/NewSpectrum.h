@@ -166,10 +166,14 @@ namespace pbrto
     // SampledWavelengths Definitions
     class SampledWavelengths
     {
+    public:
+        using VectorType = Math::Vector<float, 4>;
+        using VectorSimdType = VectorType::Simd;
+    private:
         // SampledWavelengths Private Members
         friend struct SOA<SampledWavelengths>;
-        Math::Vector<float,4 > lambda;
-        Math::Vector<float, 4> pdf;
+        VectorType lambda;
+        VectorType pdf;
     public:
         // SampledWavelengths Public Methods
         bool operator==( const SampledWavelengths& swl ) const
@@ -199,10 +203,17 @@ namespace pbrto
             }
 
             // Compute PDF for sampled wavelengths
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                swl.pdf[ i ] = 1 / ( lambda_max - lambda_min );
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    swl.pdf[ i ] = 1 / ( lambda_max - lambda_min );
+
+            swl.pdf = VectorType( 1.f / ( lambda_max - lambda_min ) );
 
             return swl;
+        }
+
+        const VectorSimdType& Lambda( ) const
+        {
+            return lambda;
         }
 
         Float operator[]( int i ) const 
@@ -215,7 +226,7 @@ namespace pbrto
         }
         SampledSpectrum::Simd PDF( ) const
         { 
-            return SampledSpectrum( pdf ); 
+            return SampledSpectrum::Simd( pdf.values ); 
         }
 
         void TerminateSecondary( )
@@ -223,17 +234,15 @@ namespace pbrto
             if ( SecondaryTerminated( ) )
                 return;
             // Update wavelength probabilities for termination
-            for ( int i = 1; i < NSpectrumSamples; ++i )
-                pdf[ i ] = 0;
-            pdf[ 0 ] /= NSpectrumSamples;
+            pdf.x /= NSpectrumSamples;
+            pdf.y = 0.f; 
+            pdf.z = 0.f; 
+            pdf.w = 0.f;
         }
 
         bool SecondaryTerminated( ) const
         {
-            for ( int i = 1; i < NSpectrumSamples; ++i )
-                if ( pdf[ i ] != 0 )
-                    return false;
-            return true;
+            return pdf.y == 0.f && pdf.z == 0.f && pdf.w == 0.f;
         }
 
         static SampledWavelengths SampleVisible( Float u )
@@ -269,7 +278,10 @@ namespace pbrto
             return c; 
         }
         // ConstantSpectrum Public Methods
-        PBRTO_EXPORT SampledSpectrum Sample( const SampledWavelengths& ) const;
+        SampledSpectrum Sample( const SampledWavelengths& ) const
+        {
+            return SampledSpectrum( c );
+        }
 
         Float MaxValue( ) const 
         { 

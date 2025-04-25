@@ -56,7 +56,18 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        
+        Float r( ) const
+        {
+            return x;
+        }
+        Float g( ) const
+        {
+            return y;
+        }
+        Float b( ) const
+        {
+            return z;
+        }
     };
 
     // XYZ Definition

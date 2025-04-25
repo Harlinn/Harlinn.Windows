@@ -179,11 +179,6 @@ namespace pbrto
         return StringPrintf( "[ BlackbodySpectrum T: %f ]", T );
     }
 
-    PBRT_CPU_GPU SampledSpectrum ConstantSpectrum::Sample( const SampledWavelengths& ) const
-    {
-        return SampledSpectrum( c );
-    }
-
     std::string ConstantSpectrum::ToString( ) const
     {
         return StringPrintf( "[ ConstantSpectrum c: %f ]", c );
