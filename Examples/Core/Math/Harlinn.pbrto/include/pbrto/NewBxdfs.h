@@ -802,7 +802,7 @@ namespace pbrto
                     Float sigma_t = 1;
                     Float dz = SampleExponential( r( ), sigma_t / AbsCosTheta( w ) );
                     Float zp = w.z > 0 ? ( z + dz ) : ( z - dz );
-                    NCHECK_RARE( 1e-5, zp == z );
+                    NCHECK_RARE( 1e-5f, zp == z );
                     if ( zp == z )
                         return {};
                     if ( 0 < zp && zp < thickness )

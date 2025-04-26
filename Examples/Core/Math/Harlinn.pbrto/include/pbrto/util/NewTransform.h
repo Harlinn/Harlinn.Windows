@@ -263,7 +263,7 @@ namespace pbrto
     Transform RotateZ( Float theta );
 
     PBRTO_EXPORT
-    Transform LookAt( Point3f pos, Point3f look, Vector3f up );
+    Transform LookAt( Point3f::Simd pos, Point3f::Simd look, Vector3f::Simd up );
 
     PBRTO_EXPORT
     Transform Orthographic( Float znear, Float zfar );

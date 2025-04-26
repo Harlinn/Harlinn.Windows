@@ -703,7 +703,7 @@ namespace pbrto
         Float ux, Float uy, Float uz, FileLoc loc )
     {
         class Transform lookAt =
-            pbrto::LookAt( Point3f( ex, ey, ez ), Point3f( lx, ly, lz ), Vector3f( ux, uy, uz ) );
+            pbrto::LookAt( Point3f::Simd( ex, ey, ez ), Point3f::Simd( lx, ly, lz ), Vector3f::Simd( ux, uy, uz ) );
         graphicsState.ForActiveTransforms( [ = ]( auto t ) { return t * lookAt; } );
     }
 

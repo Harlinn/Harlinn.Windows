@@ -115,8 +115,9 @@ namespace pbrto
     // clang-format on
 
     PBRTO_EXPORT
-    Transform LookAt( Point3f pos, Point3f look, Vector3f up )
+    Transform LookAtOld( Point3f pos, Point3f look, Vector3f up )
     {
+        
         SquareMatrix<4> worldFromCamera;
         // Initialize fourth column of viewing matrix
         worldFromCamera[ 0 ][ 3 ] = pos.x;
@@ -150,6 +151,110 @@ namespace pbrto
         return Transform( cameraFromWorld, worldFromCamera );
     }
 
+#if 1
+    PBRTO_EXPORT
+    Transform LookAt( Point3f::Simd pos, Point3f::Simd look, Vector3f::Simd up )
+    {
+        using Traits = SquareMatrix<4>::Traits;
+
+        Vector3f::Simd dir = Normalize( look - pos );
+        auto right1 = Cross( Normalize( up ), dir );
+        if ( ScalarLength( right1 ) == 0 )
+        {
+            NLOG_FATAL( "LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
+                "(%f, %f, %f) "
+                "passed to LookAt are pointing in the same direction.",
+                up.x( ), up.y( ), up.z( ), dir.x( ), dir.y( ), dir.z( ) );
+        }
+        Vector3f::Simd right = Normalize( right1 );
+        Vector3f::Simd newUp = Cross( dir, right );
+
+        Transform::MatrixSimdType worldFromCamera;
+        worldFromCamera.simd[ 0 ] = right.simd;
+        worldFromCamera.simd[ 1 ] = newUp.simd;
+        worldFromCamera.simd[ 2 ] = dir.simd;
+        worldFromCamera.simd[ 3 ] = Traits::SetW( pos.simd, 1.f );
+
+        Transform::MatrixSimdType cameraFromWorld = Inverse( worldFromCamera );
+        Transform result( cameraFromWorld, worldFromCamera, true );
+        return result;
+    }
+#else
+    PBRTO_EXPORT
+    Transform LookAt( Point3f::Simd pos, Point3f::Simd look, Vector3f::Simd up )
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        Transform::MatrixSimdType cameraFromWorld = Math::LookAt(pos,look,up);
+        cameraFromWorld.simd[ 3 ] = Traits::SetW( pos.simd, 1.f );
+
+        Transform::MatrixSimdType worldFromCamera = Inverse( cameraFromWorld );
+        Transform result( cameraFromWorld, worldFromCamera, true );
+        
+        auto expected = LookAtOld( pos, look, up );
+        if ( result.GetMatrixSimd( ) != expected.GetMatrixSimd( ) )
+        {
+            PrintLn( "Pos = {}", pos );
+            PrintLn( "Result     = {}", result.GetMatrixSimd( ) );
+            PrintLn( "Result I   = {}", result.GetInverseMatrixSimd( ) );
+            PrintLn( "Expected   = {}", expected.GetMatrixSimd( ) );
+            PrintLn( "Expected I = {}", expected.GetInverseMatrixSimd( ) );
+            DebugBreak( );
+        }
+
+        return result;
+    }
+#endif;
+    /*
+    Transform LookAt( Point3f::Simd pos, Point3f::Simd look, Vector3f::Simd up )
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        Transform::MatrixSimdType worldFromCamera;
+        // Initialize fourth row of viewing matrix
+        worldFromCamera.simd[ 3 ] = Traits::SetW( pos.simd, 1.f);
+
+        / *
+        worldFromCamera[ 0 ][ 3 ] = pos.x;
+        worldFromCamera[ 1 ][ 3 ] = pos.y;
+        worldFromCamera[ 2 ][ 3 ] = pos.z;
+        worldFromCamera[ 3 ][ 3 ] = 1;
+        * /
+
+        // Initialize first three columns of viewing matrix
+        Vector3f::Simd dir = Normalize( look - pos );
+        auto right1 = Cross( Normalize( up ), dir );
+        if ( ScalarLength( right1 ) == 0 )
+        {
+            NLOG_FATAL( "LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
+                "(%f, %f, %f) "
+                "passed to LookAt are pointing in the same direction.",
+                up.x( ), up.y( ), up.z( ), dir.x( ), dir.y( ), dir.z( ) );
+        }
+        Vector3f::Simd right = Normalize( right1 );
+        Vector3f::Simd newUp = Cross( dir, right );
+
+        worldFromCamera.simd[ 0 ] = Traits::SetW( right.simd, 0.f );
+        worldFromCamera.simd[ 1 ] = Traits::SetW( newUp.simd, 0.f );
+        worldFromCamera.simd[ 2 ] = Traits::SetW( dir.simd, 0.f );
+
+        / *
+        worldFromCamera[ 0 ][ 0 ] = right.x;
+        worldFromCamera[ 1 ][ 0 ] = right.y;
+        worldFromCamera[ 2 ][ 0 ] = right.z;
+        worldFromCamera[ 3 ][ 0 ] = 0.;
+        worldFromCamera[ 0 ][ 1 ] = newUp.x;
+        worldFromCamera[ 1 ][ 1 ] = newUp.y;
+        worldFromCamera[ 2 ][ 1 ] = newUp.z;
+        worldFromCamera[ 3 ][ 1 ] = 0.;
+        worldFromCamera[ 0 ][ 2 ] = dir.x;
+        worldFromCamera[ 1 ][ 2 ] = dir.y;
+        worldFromCamera[ 2 ][ 2 ] = dir.z;
+        worldFromCamera[ 3 ][ 2 ] = 0.;
+        * /
+
+        Transform::MatrixSimdType cameraFromWorld = Inverse( worldFromCamera );
+        return Transform( cameraFromWorld, worldFromCamera );
+    }
+    */
     PBRTO_EXPORT
     Transform Orthographic( Float zNear, Float zFar )
     {
