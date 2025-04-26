@@ -50,7 +50,7 @@ namespace pbrto
         if ( pdf )
             *pdf = 0;
         // Compute vectors _a_, _b_, and _c_ to spherical triangle vertices
-        Vector3f a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
+        Vector3f::Simd a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
         NCHECK_GT( ScalarLengthSquared( a ), 0 );
         NCHECK_GT( ScalarLengthSquared( b ), 0 );
         NCHECK_GT( ScalarLengthSquared( c ), 0 );
@@ -59,7 +59,7 @@ namespace pbrto
         c = Normalize( c );
 
         // Compute normalized cross products of all direction pairs
-        Vector3f n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
+        Vector3f::Simd n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
         if ( ScalarLengthSquared( n_ab ) == 0 || ScalarLengthSquared( n_bc ) == 0 || ScalarLengthSquared( n_ca ) == 0 )
             return {};
         n_ab = Normalize( n_ab );
@@ -102,15 +102,15 @@ namespace pbrto
 
         // Sample $c'$ along the arc between $a$ and $c$
         Float sinBp = SafeSqrt( 1 - Sqr( cosBp ) );
-        Vector3f cp = cosBp * a + sinBp * Normalize( GramSchmidt( c, a ) );
+        Vector3f::Simd cp = cosBp * a + sinBp * Normalize( GramSchmidt( c, a ) );
 
         // Compute sampled spherical triangle direction and return barycentrics
         Float cosTheta = 1 - u[ 1 ] * ( 1 - ScalarDot( cp, b ) );
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
-        Vector3f w = cosTheta * b + sinTheta * Normalize( GramSchmidt( cp, b ) );
+        Vector3f::Simd w = cosTheta * b + sinTheta * Normalize( GramSchmidt( cp, b ) );
         // Find barycentric coordinates for sampled direction _w_
-        Vector3f e1 = v[ 1 ] - v[ 0 ], e2 = v[ 2 ] - v[ 0 ];
-        Vector3f s1 = Cross( w, e2 );
+        Vector3f::Simd e1 = v[ 1 ] - v[ 0 ], e2 = v[ 2 ] - v[ 0 ];
+        Vector3f::Simd s1 = Cross( w, e2 );
         Float divisor = ScalarDot( s1, e1 );
         NCHECK_RARE( 1e-6, divisor == 0 );
         if ( divisor == 0 )
@@ -120,7 +120,7 @@ namespace pbrto
             return { 1.f / 3.f, 1.f / 3.f, 1.f / 3.f };
         }
         Float invDivisor = 1 / divisor;
-        Vector3f s = p - v[ 0 ];
+        Vector3f::Simd s = p - v[ 0 ];
         Float b1 = ScalarDot( s, s1 ) * invDivisor;
         Float b2 = ScalarDot( w, Cross( s, e1 ) ) * invDivisor;
 
@@ -136,11 +136,10 @@ namespace pbrto
     }
 
     // Via Jim Arvo's SphTri.C
-    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p,
-        Vector3f w )
+    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p, Vector3f w )
     {
         // Compute vectors _a_, _b_, and _c_ to spherical triangle vertices
-        Vector3f a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
+        Vector3f::Simd a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
         NCHECK_GT( ScalarLengthSquared( a ), 0 );
         NCHECK_GT( ScalarLengthSquared( b ), 0 );
         NCHECK_GT( ScalarLengthSquared( c ), 0 );
@@ -149,7 +148,7 @@ namespace pbrto
         c = Normalize( c );
 
         // Compute normalized cross products of all direction pairs
-        Vector3f n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
+        Vector3f::Simd n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
         if ( ScalarLengthSquared( n_ab ) == 0 || ScalarLengthSquared( n_bc ) == 0 || ScalarLengthSquared( n_ca ) == 0 )
             return {};
         n_ab = Normalize( n_ab );
@@ -162,7 +161,7 @@ namespace pbrto
         Float gamma = ScalarAngleBetween( n_ca, -n_bc );
 
         // Find vertex $\VEC{c'}$ along $\VEC{a}\VEC{c}$ arc for $\w{}$
-        Vector3f cp = Normalize( Cross( Cross( b, w ), Cross( c, a ) ) );
+        Vector3f::Simd cp = Normalize( Cross( Cross( b, w ), Cross( c, a ) ) );
         if ( ScalarDot( cp, a + c ) < 0 )
             cp = -cp;
 
@@ -173,7 +172,7 @@ namespace pbrto
         else
         {
             // Compute area $A'$ of subtriangle
-            Vector3f n_cpb = Cross( cp, b ), n_acp = Cross( a, cp );
+            Vector3f::Simd n_cpb = Cross( cp, b ), n_acp = Cross( a, cp );
             NCHECK_RARE( 1e-5, ScalarLengthSquared( n_cpb ) == 0 || ScalarLengthSquared( n_acp ) == 0 );
             if ( ScalarLengthSquared( n_cpb ) == 0 || ScalarLengthSquared( n_acp ) == 0 )
                 return Point2f( 0.5, 0.5 );
@@ -209,10 +208,10 @@ namespace pbrto
         Float x1 = x0 + exl, y1 = y0 + eyl;
 
         // Find plane normals to rectangle edges and compute internal angles
-        Vector3f v00( x0, y0, z0 ), v01( x0, y1, z0 );
-        Vector3f v10( x1, y0, z0 ), v11( x1, y1, z0 );
-        Vector3f n0 = Normalize( Cross( v00, v10 ) ), n1 = Normalize( Cross( v10, v11 ) );
-        Vector3f n2 = Normalize( Cross( v11, v01 ) ), n3 = Normalize( Cross( v01, v00 ) );
+        Vector3f::Simd v00( x0, y0, z0 ), v01( x0, y1, z0 );
+        Vector3f::Simd v10( x1, y0, z0 ), v11( x1, y1, z0 );
+        Vector3f::Simd n0 = Normalize( Cross( v00, v10 ) ), n1 = Normalize( Cross( v10, v11 ) );
+        Vector3f::Simd n2 = Normalize( Cross( v11, v01 ) ), n3 = Normalize( Cross( v01, v00 ) );
         Float g0 = ScalarAngleBetween( -n0, n1 ), g1 = ScalarAngleBetween( -n1, n2 );
         Float g2 = ScalarAngleBetween( -n2, n3 ), g3 = ScalarAngleBetween( -n3, n0 );
 
@@ -231,7 +230,7 @@ namespace pbrto
             return Point3f( s + u[ 0 ] * ex + u[ 1 ] * ey );
 
         // Sample _cu_ for spherical rectangle sample
-        Float b0 = n0.z, b1 = n2.z;
+        Float b0 = n0.z(), b1 = n2.z();
         Float au = u[ 0 ] * ( g0 + g1 - 2 * Pi ) + ( u[ 0 ] - 1 ) * ( g2 + g3 );
         Float sinAu;
         Float cosAu;
@@ -265,7 +264,7 @@ namespace pbrto
         Frame R = Frame::FromXY( ex / exl, ey / eyl );
 
         // compute rectangle coords in local reference system
-        Vector3f d = s - pRef;
+        Vector3f::Simd d = s - pRef;
         Vector3f dLocal = R.ToLocal( d );
         Float z0 = dLocal.z;
 
@@ -283,14 +282,14 @@ namespace pbrto
         Float y0sq = Sqr( y0 ), y1sq = Sqr( y1 );
 
         // create vectors to four vertices
-        Vector3f v00( x0, y0, z0 ), v01( x0, y1, z0 );
-        Vector3f v10( x1, y0, z0 ), v11( x1, y1, z0 );
+        Vector3f::Simd v00( x0, y0, z0 ), v01( x0, y1, z0 );
+        Vector3f::Simd v10( x1, y0, z0 ), v11( x1, y1, z0 );
 
         // compute normals to edges
-        Vector3f n0 = Normalize( Cross( v00, v10 ) );
-        Vector3f n1 = Normalize( Cross( v10, v11 ) );
-        Vector3f n2 = Normalize( Cross( v11, v01 ) );
-        Vector3f n3 = Normalize( Cross( v01, v00 ) );
+        Vector3f::Simd n0 = Normalize( Cross( v00, v10 ) );
+        Vector3f::Simd n1 = Normalize( Cross( v10, v11 ) );
+        Vector3f::Simd n2 = Normalize( Cross( v11, v01 ) );
+        Vector3f::Simd n3 = Normalize( Cross( v01, v00 ) );
 
         // compute internal angles (gamma_i)
         Float g0 = ScalarAngleBetween( -n0, n1 );
@@ -299,7 +298,7 @@ namespace pbrto
         Float g3 = ScalarAngleBetween( -n3, n0 );
 
         // compute predefined constants
-        Float b0 = n0.z, b1 = n2.z, b0sq = Sqr( b0 ), b1sq = Sqr( b1 );
+        Float b0 = n0.z(), b1 = n2.z(), b0sq = Sqr( b0 ), b1sq = Sqr( b1 );
 
         // compute solid angle from internal angles
         Float solidAngle = double( g0 ) + double( g1 ) + double( g2 ) + double( g3 ) - 2. * Pi;
@@ -307,7 +306,7 @@ namespace pbrto
         // TODO: this (rarely) goes differently than sample. figure out why...
         if ( solidAngle < 1e-3 )
         {
-            Vector3f pq = pRect - s;
+            Vector3f::Simd pq = pRect - s;
             return Point2f( ScalarDot( pq, ex ) / ScalarLengthSquared( ex ), ScalarDot( pq, ey ) / ScalarLengthSquared( ey ) );
         }
 
@@ -382,34 +381,6 @@ namespace pbrto
         return u;
     }
 
-    PBRTO_EXPORT Vector3f SampleHenyeyGreenstein( Vector3f wo, Float g, Point2f u, Float* pdf )
-    {
-        // When g \approx -1 and u[0] \approx 0 or with g \approx 1 and u[0]
-        // \approx 1, the computation of cosTheta below is unstable and can
-        // give, leading to NaNs. For now we limit g to the range where it is
-        // still ok; it would be nice to come up with a numerically robust
-        // rewrite of the computation instead, but with |g| \approx 1, the
-        // sampling distribution has a very sharp turn to deal with.
-        g = Clamp( g, -.99, .99 );
-
-        // Compute $\cos\theta$ for Henyey--Greenstein sample
-        Float cosTheta;
-        if ( std::abs( g ) < 1e-3f )
-            cosTheta = 1 - 2 * u[ 0 ];
-        else
-            cosTheta =
-            -1 / ( 2 * g ) * ( 1 + Sqr( g ) - Sqr( ( 1 - Sqr( g ) ) / ( 1 + g - 2 * g * u[ 0 ] ) ) );
-
-        // Compute direction _wi_ for Henyey--Greenstein sample
-        Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
-        Float phi = 2 * Pi * u[ 1 ];
-        Frame wFrame = Frame::FromZ( wo );
-        Vector3f wi = wFrame.FromLocal( SphericalDirection( sinTheta, cosTheta, phi ) );
-
-        if ( pdf )
-            *pdf = HenyeyGreenstein( cosTheta, g );
-        return wi;
-    }
 
     Point2f RejectionSampleDisk( RNG& rng )
     {

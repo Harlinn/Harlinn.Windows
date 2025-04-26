@@ -45,6 +45,9 @@ namespace pbrto
     // CameraTransform Definition
     class CameraTransform
     {
+        // CameraTransform Private Members
+        AnimatedTransform renderFromCamera;
+        Transform worldFromRender;
     public:
         // CameraTransform Public Methods
         CameraTransform( ) = default;
@@ -149,9 +152,7 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // CameraTransform Private Members
-        AnimatedTransform renderFromCamera;
-        Transform worldFromRender;
+        
     };
 
     // CameraWiSample Definition
@@ -159,8 +160,7 @@ namespace pbrto
     {
         // CameraWiSample Public Methods
         CameraWiSample( ) = default;
-        PBRT_CPU_GPU
-            CameraWiSample( const SampledSpectrum& Wi, const Vector3f& wi, Float pdf,
+        CameraWiSample( const SampledSpectrum& Wi, const Vector3f& wi, Float pdf,
                 Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
             : Wi( Wi ), wi( wi ), pdf( pdf ), pRaster( pRaster ), pRef( pRef ), pLens( pLens )
         {
@@ -195,34 +195,35 @@ namespace pbrto
         Film film;
         Medium medium;
         CameraBaseParameters( ) = default;
-        CameraBaseParameters( const CameraTransform& cameraTransform, Film film, Medium medium,
-            const ParameterDictionary& parameters, const FileLoc* loc );
+        CameraBaseParameters( const CameraTransform& cameraTransform, Film film, Medium medium, const ParameterDictionary& parameters, const FileLoc* loc );
     };
 
     // CameraBase Definition
     class CameraBase
     {
+    protected:
+        // CameraBase Protected Members
+        CameraTransform cameraTransform;
+        Float shutterOpen, shutterClose;
+        Film film;
+        Medium medium;
+        Vector3f minPosDifferentialX, minPosDifferentialY;
+        Vector3f minDirDifferentialX, minDirDifferentialY;
     public:
         // CameraBase Public Methods
-        PBRT_CPU_GPU
-            Film GetFilm( ) const { return film; }
-        PBRT_CPU_GPU
-            const CameraTransform& GetCameraTransform( ) const { return cameraTransform; }
+        Film GetFilm( ) const { return film; }
+        const CameraTransform& GetCameraTransform( ) const { return cameraTransform; }
 
-        PBRT_CPU_GPU
-            Float SampleTime( Float u ) const { return Lerp2( u, shutterOpen, shutterClose ); }
+        Float SampleTime( Float u ) const { return Lerp2( u, shutterOpen, shutterClose ); }
 
         void InitMetadata( ImageMetadata* metadata ) const;
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel,
-                Vector3f* dpdx, Vector3f* dpdy ) const
+        void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const
         {
             // Compute tangent plane equation for ray differential intersections
             Point3f pCamera = CameraFromRender( p, time );
-            Transform DownZFromCamera =
-                RotateFromTo( Normalize( Vector3f( pCamera ) ), Vector3f( 0, 0, 1 ) );
+            Transform DownZFromCamera = RotateFromTo( Normalize( Vector3f( pCamera ) ), Vector3f( 0, 0, 1 ) );
             Point3f pDownZ = DownZFromCamera( pCamera );
             Normal3f nDownZ = DownZFromCamera( CameraFromRender( n, time ) );
             Float d = nDownZ.z * pDownZ.z;
@@ -247,15 +248,9 @@ namespace pbrto
                 sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( py - pDownZ ), time );
         }
 
+    
+        
     protected:
-        // CameraBase Protected Members
-        CameraTransform cameraTransform;
-        Float shutterOpen, shutterClose;
-        Film film;
-        Medium medium;
-        Vector3f minPosDifferentialX, minPosDifferentialY;
-        Vector3f minDirDifferentialX, minDirDifferentialY;
-
         // CameraBase Protected Methods
         CameraBase( ) = default;
         CameraBase( CameraBaseParameters p );

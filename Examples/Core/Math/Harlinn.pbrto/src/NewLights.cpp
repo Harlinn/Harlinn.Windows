@@ -129,11 +129,11 @@ namespace pbrto
     }
 
     // LightBounds Method Definitions
-    PBRT_CPU_GPU Float LightBounds::Importance( Point3f p, Normal3f n ) const
+    Float LightBounds::Importance( Point3f::Simd p, Normal3f::Simd n ) const
     {
         // Return importance for light bounds at reference point
         // Compute clamped squared distance to reference point
-        Point3f pc = ( bounds.pMin + bounds.pMax ) / 2;
+        Point3f::Simd pc = ( bounds.pMin + bounds.pMax ) / 2;
         Float d2 = ScalarDistanceSquared( p, pc );
         d2 = std::max( d2, ScalarLength( bounds.Diagonal( ) ) / 2 );
 
@@ -153,8 +153,8 @@ namespace pbrto
             };
 
         // Compute sine and cosine of angle to vector _w_, $\theta_\roman{w}$
-        Vector3f wi = Normalize( p - pc );
-        Float cosTheta_w = ScalarDot( Vector3f( w ), wi );
+        Vector3f::Simd wi = Normalize( p - pc );
+        Float cosTheta_w = ScalarDot( w, wi );
         if ( twoSided )
             cosTheta_w = std::abs( cosTheta_w );
         Float sinTheta_w = SafeSqrt( 1 - Sqr( cosTheta_w ) );
@@ -189,11 +189,9 @@ namespace pbrto
 
 
 
-    PBRT_CPU_GPU pstdo::optional<LightLeSample> PointLight::SampleLe( Point2f u1, Point2f u2,
-        SampledWavelengths& lambda,
-        Float time ) const
+    pstdo::optional<LightLeSample> PointLight::SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const
     {
-        Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+        Point3f::Simd p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
         Ray ray( p, SampleUniformSphere( u1 ), time, mediumInterface.outside );
         return LightLeSample( scale * I->Sample( lambda ), ray, 1, UniformSpherePDF( ) );
     }
@@ -1507,7 +1505,7 @@ namespace pbrto
         Float time ) const
     {
         // Choose whether to sample spotlight center cone or falloff region
-        Float p[ 2 ] = { 1 - cosFalloffStart, ( cosFalloffStart - cosFalloffEnd ) / 2 };
+        std::array < Float, 2> p = { 1 - cosFalloffStart, ( cosFalloffStart - cosFalloffEnd ) / 2 };
         Float sectionPDF;
         int section = SampleDiscrete( p, u2[ 0 ], &sectionPDF );
 

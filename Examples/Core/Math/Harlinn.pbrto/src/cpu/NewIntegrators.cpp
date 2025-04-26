@@ -962,7 +962,8 @@ namespace pbrto
                             Float pNull = std::max<Float>( 0, 1 - pAbsorb - pScatter );
 
                             // Randomly sample medium scattering event for delta tracking
-                            int mode = SampleDiscrete( { pAbsorb, pScatter, pNull }, uMode );
+                            std::array < Float, 3> weights{ pAbsorb, pScatter, pNull };
+                            int mode = SampleDiscrete( weights, uMode );
                             if ( mode == 0 )
                             {
                                 // Handle absorption event for medium sample
@@ -1121,7 +1122,8 @@ namespace pbrto
                             NCHECK_GE( 1 - pAbsorb - pScatter, -1e-6 );
                             // Sample medium scattering event type and update path
                             Float um = rng.Uniform<Float>( );
-                            int mode = SampleDiscrete( { pAbsorb, pScatter, pNull }, um );
+                            std::array < Float, 3> weights{ pAbsorb, pScatter, pNull };
+                            int mode = SampleDiscrete( weights, um );
                             if ( mode == 0 )
                             {
                                 // Handle absorption along ray path
@@ -2228,7 +2230,8 @@ namespace pbrto
 
                             // Randomly sample medium event for _RandomRalk()_ ray
                             Float um = sampler.Get1D( );
-                            int mode = SampleDiscrete( { pAbsorb, pScatter, pNull }, um );
+                            std::array < Float, 3> weights{ pAbsorb, pScatter, pNull };
+                            int mode = SampleDiscrete( weights, um );
                             if ( mode == 0 )
                             {
                                 // Handle absorption for _RandomWalk()_ ray

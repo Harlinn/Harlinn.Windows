@@ -1037,44 +1037,46 @@ namespace pbrto
     // HairBxDF Definition
     class HairBxDF
     {
-    public:
-        // HairBxDF Public Methods
-        HairBxDF( ) = default;
-        PBRT_CPU_GPU
-            HairBxDF( Float h, Float eta, const SampledSpectrum& sigma_a, Float beta_m,
-                Float beta_n, Float alpha );
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const;
-        PBRT_CPU_GPU
-            pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u,
-                TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const;
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const;
-
-        PBRT_CPU_GPU
-            void Regularize( ) {}
-
-        PBRT_CPU_GPU
-            static constexpr const char* Name( ) { return "HairBxDF"; }
-        std::string ToString( ) const;
-
-        PBRT_CPU_GPU
-            BxDFFlags Flags( ) const { return BxDFFlags::GlossyReflection; }
-
-        PBRT_CPU_GPU
-            static RGBUnboundedSpectrum SigmaAFromConcentration( Float ce, Float cp );
-        PBRT_CPU_GPU
-            static SampledSpectrum SigmaAFromReflectance( const SampledSpectrum& c, Float beta_n,
-                const SampledWavelengths& lambda );
-
-    private:
         // HairBxDF Constants
         static constexpr int pMax = 3;
 
+        // HairBxDF Private Members
+        SampledSpectrum::Simd sigma_a;
+        Float h, eta;
+        Float beta_m, beta_n;
+        Float v[ pMax + 1 ];
+        Float s;
+        Float sin2kAlpha[ pMax ], cos2kAlpha[ pMax ];
+    public:
+        // HairBxDF Public Methods
+        HairBxDF( ) = default;
+        HairBxDF( Float h, Float eta, const SampledSpectrum& sigma_a, Float beta_m, Float beta_n, Float alpha );
+        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const;
+        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const;
+        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const;
+
+        void Regularize( ) {}
+
+        static constexpr const char* Name( ) { return "HairBxDF"; }
+        std::string ToString( ) const;
+
+        BxDFFlags Flags( ) const { return BxDFFlags::GlossyReflection; }
+
+        static RGBUnboundedSpectrum SigmaAFromConcentration( Float ce, Float cp );
+        static SampledSpectrum::Simd SigmaAFromReflectance( SampledSpectrum::Simd c, Float beta_n, const SampledWavelengths& lambda )
+        {
+            Float tmp = ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
+                10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
+                0.245f * FastPow<5>( beta_n ) );
+
+            return Math::Sqr( Math::Log( c ) / tmp );
+        }
+
+    private:
+        
+
         // HairBxDF Private Methods
-        PBRT_CPU_GPU static Float Mp( Float cosTheta_i, Float cosTheta_o, Float sinTheta_i,
+        static Float Mp( Float cosTheta_i, Float cosTheta_o, Float sinTheta_i,
             Float sinTheta_o, Float v )
         {
             Float a = cosTheta_i * cosTheta_o / v, b = sinTheta_i * sinTheta_o / v;
@@ -1085,11 +1087,9 @@ namespace pbrto
             return mp;
         }
 
-        PBRT_CPU_GPU static pstdo::array<SampledSpectrum, pMax + 1> Ap( Float cosTheta_o,
-            Float eta, Float h,
-            SampledSpectrum T )
+        static std::array<SampledSpectrum, pMax + 1> Ap( Float cosTheta_o, Float eta, Float h, SampledSpectrum T )
         {
-            pstdo::array<SampledSpectrum, pMax + 1> ap;
+            std::array<SampledSpectrum, pMax + 1> ap;
             // Compute $p=0$ attenuation at initial cylinder intersection
             Float cosGamma_o = SafeSqrt( 1 - Sqr( h ) );
             Float cosTheta = cosTheta_o * cosGamma_o;
@@ -1110,13 +1110,12 @@ namespace pbrto
             return ap;
         }
 
-        PBRT_CPU_GPU static inline Float Phi( int p, Float gamma_o, Float gamma_t )
+        static inline Float Phi( int p, Float gamma_o, Float gamma_t )
         {
             return 2 * p * gamma_t - 2 * gamma_o + p * Pi;
         }
 
-        PBRT_CPU_GPU static inline Float Np( Float phi, int p, Float s, Float gamma_o,
-            Float gamma_t )
+        static inline Float Np( Float phi, int p, Float s, Float gamma_o, Float gamma_t )
         {
             Float dphi = phi - Phi( p, gamma_o, gamma_t );
             // Remap _dphi_ to $[-\pi,\pi]$
@@ -1128,16 +1127,9 @@ namespace pbrto
             return TrimmedLogistic( dphi, s, -Pi, Pi );
         }
 
-        PBRT_CPU_GPU
-            pstdo::array<Float, pMax + 1> ApPDF( Float cosTheta_o ) const;
+        std::array<Float, pMax + 1> ApPDF( Float cosTheta_o ) const;
 
-        // HairBxDF Private Members
-        Float h, eta;
-        SampledSpectrum sigma_a;
-        Float beta_m, beta_n;
-        Float v[ pMax + 1 ];
-        Float s;
-        Float sin2kAlpha[ pMax ], cos2kAlpha[ pMax ];
+        
     };
 
     // MeasuredBxDF Definition

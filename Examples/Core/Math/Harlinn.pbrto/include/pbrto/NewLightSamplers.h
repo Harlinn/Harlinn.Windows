@@ -348,7 +348,7 @@ namespace pbrto
                         // Compute light BVH child node importances
                         const LightBVHNode* children[ 2 ] = { &nodes[ nodeIndex + 1 ],
                                                            &nodes[ node.childOrLightIndex ] };
-                        Float ci[ 2 ] = {
+                        std::array < Float, 2> ci = {
                             children[ 0 ]->lightBounds.Importance( p, n, allLightBounds ),
                             children[ 1 ]->lightBounds.Importance( p, n, allLightBounds ) };
                         if ( ci[ 0 ] == 0 && ci[ 1 ] == 0 )

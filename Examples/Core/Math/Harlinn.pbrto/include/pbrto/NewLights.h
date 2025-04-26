@@ -71,8 +71,8 @@ namespace pbrto
         }
         std::string ToString( ) const;
 
-        SampledSpectrum L;
-        Vector3f wi;
+        SampledSpectrum::Simd L;
+        Vector3f::Simd wi;
         Float pdf;
         Interaction pLight;
     };
@@ -100,7 +100,7 @@ namespace pbrto
             Float AbsCosTheta( Vector3f w ) const { return intr ? ScalarAbsDot( w, intr->n ) : 1; }
 
         // LightLeSample Public Members
-        SampledSpectrum L;
+        SampledSpectrum::Simd L;
         Ray ray;
         pstdo::optional<Interaction> intr;
         Float pdfPos = 0, pdfDir = 0;
@@ -127,7 +127,7 @@ namespace pbrto
 
         // LightSampleContext Public Members
         Point3fi pi;
-        Normal3f n, ns;
+        Normal3f::Simd n, ns;
     };
 
     // LightBounds Definition
@@ -139,18 +139,16 @@ namespace pbrto
         LightBounds( const Bounds3f& b, Vector3f w, Float phi, Float cosTheta_o,
             Float cosTheta_e, bool twoSided );
 
-        PBRT_CPU_GPU
-            Point3f Centroid( ) const { return ( bounds.pMin + bounds.pMax ) / 2; }
+        Point3f Centroid( ) const { return ( bounds.pMin + bounds.pMax ) / 2; }
 
-        PBRT_CPU_GPU
-            Float Importance( Point3f p, Normal3f n ) const;
+        Float Importance( Point3f::Simd p, Normal3f::Simd n ) const;
 
         std::string ToString( ) const;
 
         // LightBounds Public Members
         Bounds3f bounds;
         Float phi = 0;
-        Vector3f w;
+        Vector3f::Simd w;
         Float cosTheta_o, cosTheta_e;
         bool twoSided;
     };

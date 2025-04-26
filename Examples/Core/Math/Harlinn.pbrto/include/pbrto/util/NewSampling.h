@@ -44,9 +44,40 @@
 
 namespace pbrto
 {
+    inline Float HenyeyGreenstein( Float cosTheta, Float g );
 
     // Sampling Function Declarations
-    inline int SampleDiscrete( pstdo::span<const Float> weights, Float u, Float* pmf = nullptr, Float* uRemapped = nullptr );
+    template<size_t N>
+        requires ( N > 0 )
+    inline int SampleDiscrete( const std::array<Float,N>& weights, Float u, Float* pmf = nullptr, Float* uRemapped = nullptr )
+    {
+        // Compute sum of _weights_
+        Float sumWeights = 0;
+        for ( Float w : weights )
+            sumWeights += w;
+
+        // Compute rescaled $u'$ sample
+        Float up = u * sumWeights;
+        if ( up == sumWeights )
+            up = NextFloatDown( up );
+
+        // Find offset in _weights_ corresponding to $u'$
+        int offset = 0;
+        Float sum = 0;
+        while ( sum + weights[ offset ] <= up )
+        {
+            sum += weights[ offset++ ];
+            NDCHECK_LT( offset, weights.size( ) );
+        }
+
+        // Compute PMF and remapped _u_ value, if necessary
+        if ( pmf )
+            *pmf = weights[ offset ] / sumWeights;
+        if ( uRemapped )
+            *uRemapped = std::min( ( up - sum ) / weights[ offset ], OneMinusEpsilon );
+
+        return offset;
+    }
 
     inline Float SampleLinear( Float u, Float a, Float b );
     inline Float InvertLinearSample( Float x, Float a, Float b );
@@ -59,7 +90,34 @@ namespace pbrto
 
     PBRTO_EXPORT Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f v00, Vector3f eu, Vector3f ev, Point3f pRect );
 
-    PBRTO_EXPORT Vector3f SampleHenyeyGreenstein( Vector3f wo, Float g, Point2f u, Float* pdf = nullptr );
+    inline Vector3f::Simd SampleHenyeyGreenstein( Vector3f::Simd wo, Float g, Point2f u, Float* pdf = nullptr )
+    {
+        // When g \approx -1 and u[0] \approx 0 or with g \approx 1 and u[0]
+        // \approx 1, the computation of cosTheta below is unstable and can
+        // give, leading to NaNs. For now we limit g to the range where it is
+        // still ok; it would be nice to come up with a numerically robust
+        // rewrite of the computation instead, but with |g| \approx 1, the
+        // sampling distribution has a very sharp turn to deal with.
+        g = Clamp( g, -.99, .99 );
+
+        // Compute $\cos\theta$ for Henyey--Greenstein sample
+        Float cosTheta;
+        if ( std::abs( g ) < 1e-3f )
+            cosTheta = 1 - 2 * u[ 0 ];
+        else
+            cosTheta =
+            -1 / ( 2 * g ) * ( 1 + Sqr( g ) - Sqr( ( 1 - Sqr( g ) ) / ( 1 + g - 2 * g * u[ 0 ] ) ) );
+
+        // Compute direction _wi_ for Henyey--Greenstein sample
+        Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
+        Float phi = 2 * Pi * u[ 1 ];
+        Frame wFrame = Frame::FromZ( wo );
+        Vector3f::Simd wi = wFrame.FromLocal( SphericalDirection( sinTheta, cosTheta, phi ) );
+
+        if ( pdf )
+            *pdf = HenyeyGreenstein( cosTheta, g );
+        return wi;
+    }
 
     PBRTO_EXPORT Float SampleCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, pstdo::span<const Float> cdf, Float sample, Float* fval = nullptr, Float* pdf = nullptr );
 
@@ -82,6 +140,7 @@ namespace pbrto
         return Sqr( f ) / ( Sqr( f ) + Sqr( g ) );
     }
 
+    /*
     inline int SampleDiscrete( pstdo::span<const Float> weights, Float u, Float* pmf, Float* uRemapped )
     {
         // Handle empty _weights_ for discrete sampling
@@ -119,6 +178,7 @@ namespace pbrto
 
         return offset;
     }
+    */
 
     inline Float LinearPDF( Float x, Float a, Float b )
     {
@@ -218,7 +278,8 @@ namespace pbrto
 
     inline Float SampleTent( Float u, Float r )
     {
-        if ( SampleDiscrete( { 0.5f, 0.5f }, u, nullptr, &u ) == 0 )
+        constexpr std::array < Float, 2> weights{ 0.5f, 0.5f };
+        if ( SampleDiscrete( weights, u, nullptr, &u ) == 0 )
             return -r + r * SampleLinear( u, 0, 1 );
         else
             return r * SampleLinear( u, 1, 0 );
@@ -437,7 +498,7 @@ namespace pbrto
         return { ( uo.x + 1 ) / 2, ( uo.y + 1 ) / 2 };
     }
 
-    inline Vector3f SampleUniformHemisphere( Point2f u )
+    inline Vector3f::Simd SampleUniformHemisphere( Point2f u )
     {
         Float z = u[ 0 ];
         Float r = SafeSqrt( 1 - Sqr( z ) );
@@ -461,7 +522,7 @@ namespace pbrto
         return Point2f( w.z, phi / ( 2 * Pi ) );
     }
 
-    inline Vector3f SampleUniformSphere( Point2f u )
+    inline Vector3f::Simd SampleUniformSphere( Point2f u )
     {
         Float z = 1 - 2 * u[ 0 ];
         Float r = SafeSqrt( 1 - Sqr( z ) );
@@ -485,11 +546,11 @@ namespace pbrto
         return Point2f( ( 1 - w.z ) / 2, phi / ( 2 * Pi ) );
     }
 
-    inline Vector3f SampleCosineHemisphere( Point2f u )
+    inline Vector3f::Simd SampleCosineHemisphere( Point2f u )
     {
         Point2f d = SampleUniformDiskConcentric( u );
         Float z = SafeSqrt( 1 - Sqr( d.x ) - Sqr( d.y ) );
-        return Vector3f( d.x, d.y, z );
+        return Vector3f::Simd( d.x, d.y, z );
     }
 
     inline Float CosineHemispherePDF( Float cosTheta )
@@ -507,7 +568,7 @@ namespace pbrto
         return 1 / ( 2 * Pi * ( 1 - cosThetaMax ) );
     }
 
-    inline Vector3f SampleUniformCone( Point2f u, Float cosThetaMax )
+    inline Vector3f::Simd SampleUniformCone( Point2f u, Float cosThetaMax )
     {
         Float cosTheta = ( 1 - u[ 0 ] ) + u[ 0 ] * cosThetaMax;
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
@@ -541,7 +602,7 @@ namespace pbrto
         return ( 1 - std::exp( -c * x ) ) / ( 1 - std::exp( -c * xMax ) );
     }
 
-    inline Vector3f SampleUniformHemisphereConcentric( Point2f u )
+    inline Vector3f::Simd SampleUniformHemisphereConcentric( Point2f u )
     {
         // Map uniform random numbers to $[-1,1]^2$
         Point2f uOffset = 2.f * u - Vector2f( 1, 1 );
@@ -567,8 +628,7 @@ namespace pbrto
         Float cosTheta;
         SinCos( theta, &sinTheta, &cosTheta );
         Float sqrt2MRxR = Math::Sqrt( 2 - r * r );
-        return Vector3f( cosTheta * r * sqrt2MRxR,
-            sinTheta * r * sqrt2MRxR, 1 - r * r );
+        return Vector3f::Simd( cosTheta * r * sqrt2MRxR, sinTheta * r * sqrt2MRxR, 1 - r * r );
     }
 
     // VarianceEstimator Definition

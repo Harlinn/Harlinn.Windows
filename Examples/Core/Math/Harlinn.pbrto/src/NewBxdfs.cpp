@@ -376,7 +376,7 @@ namespace pbrto
 
         // Evaluate hair BSDF
         Float phi = phi_i - phi_o;
-        pstdo::array<SampledSpectrum, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
+        std::array<SampledSpectrum, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
         SampledSpectrum fsum( 0. );
 
         for ( int p = 0; p < pMax; ++p )
@@ -421,7 +421,7 @@ namespace pbrto
         return fsum;
     }
 
-    PBRT_CPU_GPU pstdo::array<Float, HairBxDF::pMax + 1> HairBxDF::ApPDF( Float cosTheta_o ) const
+    std::array<Float, HairBxDF::pMax + 1> HairBxDF::ApPDF( Float cosTheta_o ) const
     {
         // Initialize array of $A_p$ values for _cosTheta_o_
         Float sinTheta_o = SafeSqrt( 1 - Sqr( cosTheta_o ) );
@@ -438,10 +438,10 @@ namespace pbrto
         // Compute the transmittance _T_ of a single path through the cylinder
         SampledSpectrum T = Exp( -sigma_a * ( 2 * cosGamma_t / cosTheta_t ) );
 
-        pstdo::array<SampledSpectrum, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
+        std::array<SampledSpectrum, pMax + 1> ap = Ap( cosTheta_o, eta, h, T );
 
         // Compute $A_p$ PDF from individual $A_p$ terms
-        pstdo::array<Float, pMax + 1> apPDF;
+        std::array<Float, pMax + 1> apPDF;
         Float sumY = 0;
         for ( const SampledSpectrum& as : ap )
             sumY += as.Average( );
@@ -451,9 +451,7 @@ namespace pbrto
         return apPDF;
     }
 
-    PBRT_CPU_GPU pstdo::optional<BSDFSample> HairBxDF::Sample_f( Vector3f wo, Float uc, Point2f u,
-        TransportMode mode,
-        BxDFReflTransFlags sampleFlags ) const
+    pstdo::optional<BSDFSample> HairBxDF::Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
     {
         // Compute hair coordinate system terms related to _wo_
         Float sinTheta_o = wo.x;
@@ -462,7 +460,7 @@ namespace pbrto
         Float gamma_o = SafeASin( h );
 
         // Determine which term $p$ to sample for hair scattering
-        pstdo::array<Float, pMax + 1> apPDF = ApPDF( cosTheta_o );
+        std::array<Float, pMax + 1> apPDF = ApPDF( cosTheta_o );
         int p = SampleDiscrete( apPDF, uc, nullptr, &uc );
 
         // Compute $\sin\,\thetao$ and $\cos\,\thetao$ terms accounting for scales
@@ -563,8 +561,7 @@ namespace pbrto
         return BSDFSample( f( wo, wi, mode ), wi, pdf, Flags( ) );
     }
 
-    PBRT_CPU_GPU Float HairBxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-        BxDFReflTransFlags sampleFlags ) const
+    Float HairBxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
     {
         // TODO? flags...
 
@@ -585,7 +582,7 @@ namespace pbrto
         Float gamma_t = SafeASin( sinGamma_t );
 
         // Compute PDF for $A_p$ terms
-        pstdo::array<Float, pMax + 1> apPDF = ApPDF( cosTheta_o );
+        std::array<Float, pMax + 1> apPDF = ApPDF( cosTheta_o );
 
         // Compute PDF sum for hair scattering events
         Float phi = phi_i - phi_o;
@@ -639,17 +636,20 @@ namespace pbrto
 #endif
     }
 
-    PBRT_CPU_GPU SampledSpectrum HairBxDF::SigmaAFromReflectance( const SampledSpectrum& c, Float beta_n,
-        const SampledWavelengths& lambda )
+    /*
+    SampledSpectrum::Simd HairBxDF::SigmaAFromReflectance( const SampledSpectrum::Simd& c, Float beta_n, const SampledWavelengths& lambda )
     {
-        SampledSpectrum sigma_a;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            sigma_a[ i ] =
-            Sqr( std::log( c[ i ] ) / ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
-                10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
-                0.245f * FastPow<5>( beta_n ) ) );
+        SampledSpectrum::Simd sigma_a;
+        Float tmp = ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
+            10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
+            0.245f * FastPow<5>( beta_n ) );
+
+        //for ( int i = 0; i < NSpectrumSamples; ++i )
+        //    sigma_a[ i ] = Sqr( std::log( c[ i ] ) / tmp );
+        sigma_a = Math::Sqr( Math::Log( c ) / tmp );
         return sigma_a;
     }
+    */
 
     std::string HairBxDF::ToString( ) const
     {
