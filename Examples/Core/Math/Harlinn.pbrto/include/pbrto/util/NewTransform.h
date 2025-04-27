@@ -250,7 +250,7 @@ namespace pbrto
 
     // Transform Function Declarations
     PBRTO_EXPORT
-    Transform Translate( const Vector3f delta );
+    Transform Translate( const Vector3f::Simd delta );
 
     PBRTO_EXPORT
     Transform Scale( Float x, Float y, Float z );

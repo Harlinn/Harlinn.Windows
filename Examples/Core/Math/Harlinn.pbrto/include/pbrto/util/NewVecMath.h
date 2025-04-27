@@ -2548,7 +2548,11 @@ namespace pbrto
     template <typename T>
     PBRT_CPU_GPU inline bool Inside( Point2<T> pt, const Bounds2<T>& b )
     {
-        return ( pt.x >= b.pMin.x && pt.x <= b.pMax.x && pt.y >= b.pMin.y && pt.y <= b.pMax.y );
+        return ( 
+            pt.x >= b.pMin.x && 
+            pt.y >= b.pMin.y &&
+            pt.x <= b.pMax.x &&
+            pt.y <= b.pMax.y );
     }
 
     template <typename T>
@@ -2575,13 +2579,14 @@ namespace pbrto
 
     // Bounds3 Inline Functions
     template <typename T>
-    PBRT_CPU_GPU inline Bounds3<T> Union( const Bounds3<T>& b, Point3<T> p )
+    inline Bounds3<T> Union( const Bounds3<T>& b, Point3<T> p )
     {
         Bounds3<T> ret;
         ret.pMin = Min( b.pMin, p );
         ret.pMax = Max( b.pMax, p );
         return ret;
     }
+
 
     template <typename T>
     PBRT_CPU_GPU inline Bounds3<T> Union( const Bounds3<T>& b1, const Bounds3<T>& b2 )
@@ -2611,18 +2616,62 @@ namespace pbrto
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline bool Inside( Point3<T> p, const Bounds3<T>& b )
+    inline bool Inside( Point3<T> p, const Bounds3<T>& b )
     {
-        return ( p.x >= b.pMin.x && p.x <= b.pMax.x && p.y >= b.pMin.y && p.y <= b.pMax.y &&
-            p.z >= b.pMin.z && p.z <= b.pMax.z );
+        return ( 
+            p.x >= b.pMin.x && 
+            p.y >= b.pMin.y &&
+            p.z >= b.pMin.z &&
+            p.x <= b.pMax.x &&
+            p.y <= b.pMax.y &&
+            p.z <= b.pMax.z );
     }
 
-    template <typename T>
-    PBRT_CPU_GPU inline bool InsideExclusive( Point3<T> p, const Bounds3<T>& b )
+    template <>
+    inline bool Inside<float>( Point3<float> p, const Bounds3<float>& b )
     {
-        return ( p.x >= b.pMin.x && p.x < b.pMax.x && p.y >= b.pMin.y && p.y < b.pMax.y &&
-            p.z >= b.pMin.z && p.z < b.pMax.z );
+        using Traits = Point3<float>::Traits;
+        auto pmm = Traits::Load( p.values );
+        return Traits::AllGreaterOrEqual( pmm, Traits::Load( b.pMin.values ) ) &&
+            Traits::AllLessOrEqual( pmm, Traits::Load( b.pMax.values ) );
     }
+
+    inline bool Inside( Point3f::Simd p, const Bounds3<float>& b )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::AllGreaterOrEqual( p.simd, Traits::Load( b.pMin.values ) ) &&
+            Traits::AllLessOrEqual( p.simd, Traits::Load( b.pMax.values ) );
+    }
+
+
+    template <typename T>
+    inline bool InsideExclusive( Point3<T> p, const Bounds3<T>& b )
+    {
+        return ( 
+            p.x >= b.pMin.x && 
+            p.y >= b.pMin.y &&
+            p.z >= b.pMin.z &&
+            p.x < b.pMax.x &&
+            p.y < b.pMax.y &&
+            p.z < b.pMax.z );
+    }
+
+    template <>
+    inline bool InsideExclusive<float>( Point3<float> p, const Bounds3<float>& b )
+    {
+        using Traits = Point3<float>::Traits;
+        auto pmm = Traits::Load( p.values );
+        return Traits::AllGreaterOrEqual( pmm, Traits::Load( b.pMin.values ) ) &&
+            Traits::AllLess( pmm, Traits::Load( b.pMax.values ) );
+    }
+
+    inline bool InsideExclusive( Point3f::Simd p, const Bounds3<float>& b )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::AllGreaterOrEqual( p.simd, Traits::Load( b.pMin.values ) ) &&
+            Traits::AllLess( p.simd, Traits::Load( b.pMax.values ) );
+    }
+
 
     template <typename T, typename U>
     PBRT_CPU_GPU inline auto ScalarDistanceSquared( Point3<T> p, const Bounds3<U>& b )
@@ -2634,12 +2683,39 @@ namespace pbrto
         return Sqr( dx ) + Sqr( dy ) + Sqr( dz );
     }
 
+    template <>
+    inline auto ScalarDistanceSquared<float,float>( Point3<float> p, const Bounds3<float>& b )
+    {
+        using Traits = Point3<float>::Traits;
+        auto pmm = Traits::Load( p.values );
+        auto pMin = Traits::Load( b.pMin.values );
+        auto pMax = Traits::Load( b.pMax.values );
+        auto rmm = Traits::Max( Traits::Zero( ), Traits::Max( Traits::Sub( pMin, pmm ), Traits::Sub( pmm, pMax ) ) );
+        return Traits::First( Traits::HSum( Traits::Mul( rmm, rmm ) ) );
+    }
+
+    inline auto ScalarDistanceSquared( Point3f::Simd p, const Bounds3<float>& b )
+    {
+        using Traits = Point3<float>::Traits;
+        auto pMin = Traits::Load( b.pMin.values );
+        auto pMax = Traits::Load( b.pMax.values );
+        auto rmm = Traits::Max( Traits::Zero( ), Traits::Max( Traits::Sub( pMin, p.simd ), Traits::Sub( p.simd, pMax ) ) );
+        return Traits::First( Traits::HSum( Traits::Mul( rmm, rmm ) ) );
+    }
+
+
     template <typename T, typename U>
-    PBRT_CPU_GPU inline auto ScalarDistance( Point3<T> p, const Bounds3<U>& b )
+    inline auto ScalarDistance( Point3<T> p, const Bounds3<U>& b )
     {
         auto dist2 = ScalarDistanceSquared( p, b );
         using TDist = typename TupleLength<decltype( dist2 )>::type;
         return Math::Sqrt( TDist( dist2 ) );
+    }
+
+    inline auto ScalarDistance( Point3f::Simd p, const Bounds3<float>& b )
+    {
+        auto dist2 = ScalarDistanceSquared( p, b );
+        return Math::Sqrt( dist2 );
     }
 
     template <typename T, typename U>
@@ -2652,8 +2728,7 @@ namespace pbrto
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline bool Bounds3<T>::IntersectP( Point3f o, Vector3f d, Float tMax,
-        Float* hitt0, Float* hitt1 ) const
+    PBRT_CPU_GPU inline bool Bounds3<T>::IntersectP( Point3f o, Vector3f d, Float tMax, Float* hitt0, Float* hitt1 ) const
     {
         Float t0 = 0, t1 = tMax;
         for ( int i = 0; i < 3; ++i )
