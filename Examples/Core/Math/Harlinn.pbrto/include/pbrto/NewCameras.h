@@ -639,21 +639,20 @@ namespace pbrto
         PBRT_CPU_GPU
             Float TraceLensesFromFilm( const Ray& rCamera, Ray* rOut ) const;
 
-        PBRT_CPU_GPU
-            static bool IntersectSphericalElement( Float radius, Float zCenter, const Ray& ray,
-                Float* t, Normal3f* n )
+        static bool IntersectSphericalElement( Float radius, Float zCenter, const Ray& ray, Float* t, Normal3f* n )
         {
             // Compute _t0_ and _t1_ for ray--element intersection
             Point3f o = ray.o - Vector3f( 0, 0, zCenter );
-            Float A = ray.d.x * ray.d.x + ray.d.y * ray.d.y + ray.d.z * ray.d.z;
-            Float B = 2 * ( ray.d.x * o.x + ray.d.y * o.y + ray.d.z * o.z );
+            Vector3f rayD( ray.d );
+            Float A = rayD.x * rayD.x + rayD.y * rayD.y + rayD.z * rayD.z;
+            Float B = 2 * ( rayD.x * o.x + rayD.y * o.y + rayD.z * o.z );
             Float C = o.x * o.x + o.y * o.y + o.z * o.z - radius * radius;
             Float t0, t1;
             if ( !Quadratic( A, B, C, &t0, &t1 ) )
                 return false;
 
             // Select intersection $t$ based on ray direction and element curvature
-            bool useCloserT = ( ray.d.z > 0 ) ^ ( radius < 0 );
+            bool useCloserT = ( rayD.z > 0 ) ^ ( radius < 0 );
             *t = useCloserT ? std::min( t0, t1 ) : std::max( t0, t1 );
             if ( *t < 0 )
                 return false;

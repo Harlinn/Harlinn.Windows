@@ -343,7 +343,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z;
+            Float ft = focalDistance / ray.d.z( );
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -370,7 +370,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z;
+            Float ft = focalDistance / ray.d.z( );
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -385,7 +385,7 @@ namespace pbrto
             // Sample point on lens
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
-            Float ft = focalDistance / ray.d.z;
+            Float ft = focalDistance / ray.d.z( );
             Point3f pFocus = pCamera + dxCamera + ( ft * Vector3f( 0, 0, 1 ) );
             ray.rxOrigin = Point3f( pLens.x, pLens.y, 0 );
             ray.rxDirection = Normalize( pFocus - ray.rxOrigin );
@@ -483,7 +483,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z;
+            Float ft = focalDistance / ray.d.z( );
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -509,7 +509,7 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute point on plane of focus
-            Float ft = focalDistance / ray.d.z;
+            Float ft = focalDistance / ray.d.z( );
             Point3f pFocus = ray( ft );
 
             // Update ray for effect of lens
@@ -862,9 +862,10 @@ namespace pbrto
     {
         Float elementZ = 0, weight = 1;
         // Transform _rCamera_ from camera to lens system space
-        Ray rLens( Point3f( rCamera.o.x, rCamera.o.y, -rCamera.o.z ),
-            Vector3f( rCamera.d.x, rCamera.d.y, -rCamera.d.z ), rCamera.time );
-
+        Ray rLens( rCamera.o.WithNegatedZ( ),
+            rCamera.d.WithNegatedZ( ), rCamera.time );
+        Point3f rLensO( rLens.o );
+        Vector3f rLensD( rLens.d );
         for ( int i = elementInterfaces.size( ) - 1; i >= 0; --i )
         {
             const LensElementInterface& element = elementInterfaces[ i ];
@@ -877,7 +878,7 @@ namespace pbrto
             if ( isStop )
             {
                 // Compute _t_ at plane of aperture stop
-                t = ( elementZ - rLens.o.z ) / rLens.d.z;
+                t = ( elementZ - rLensO.z ) / rLensD.z;
                 if ( t < 0 )
                     return 0;
 
@@ -911,6 +912,7 @@ namespace pbrto
                     return 0;
             }
             rLens.o = pHit;
+            rLensO = rLens.o;
 
             // Update ray path for element interface interaction
             if ( !isStop )
@@ -927,18 +929,22 @@ namespace pbrto
         }
         // Transform lens system space ray back to camera space
         if ( rOut )
-            *rOut = Ray( Point3f( rLens.o.x, rLens.o.y, -rLens.o.z ),
-                Vector3f( rLens.d.x, rLens.d.y, -rLens.d.z ), rLens.time );
+            *rOut = Ray( rLens.o.WithNegatedZ( ),
+                rLens.d.WithNegatedZ( ), rLens.time );
 
         return weight;
     }
 
     void RealisticCamera::ComputeCardinalPoints( Ray rIn, Ray rOut, Float* pz, Float* fz )
     {
-        Float tf = -rOut.o.x / rOut.d.x;
-        *fz = -rOut( tf ).z;
-        Float tp = ( rIn.o.x - rOut.o.x ) / rOut.d.x;
-        *pz = -rOut( tp ).z;
+        Point3f rInO( rIn.o );
+        Point3f rOutO( rOut.o );
+        auto rOutDX = rOut.d.x( );
+
+        Float tf = -rOutO.x / rOutDX;
+        *fz = -rOut( tf ).z( );
+        Float tp = ( rInO.x - rOutO.x ) / rOutDX;
+        *pz = -rOut( tp ).z( );
     }
 
     void RealisticCamera::ComputeThickLensApproximation( Float pz[ 2 ], Float fz[ 2 ] ) const
@@ -1092,6 +1098,8 @@ namespace pbrto
         // Transform _rCamera_ from camera to lens system space
         const Transform LensFromCamera = Scale( 1, 1, -1 );
         Ray rLens = LensFromCamera( rCamera );
+        Point3f rLensO( rLens.o );
+        Vector3f rLensD( rLens.d );
         for ( size_t i = 0; i < elementInterfaces.size( ); ++i )
         {
             const LensElementInterface& element = elementInterfaces[ i ];
@@ -1101,7 +1109,7 @@ namespace pbrto
             bool isStop = ( element.curvatureRadius == 0 );
             if ( isStop )
             {
-                t = ( elementZ - rLens.o.z ) / rLens.d.z;
+                t = ( elementZ - rLensO.z ) / rLensD.z;
                 if ( t < 0 )
                     return 0;
             }
@@ -1120,6 +1128,7 @@ namespace pbrto
             if ( r2 > element.apertureRadius * element.apertureRadius )
                 return 0;
             rLens.o = pHit;
+            rLensO = rLens.o;
 
             // Update ray path for from-scene element interface interaction
             if ( !isStop )
@@ -1137,8 +1146,8 @@ namespace pbrto
         }
         // Transform _rLens_ from lens system space back to camera space
         if ( rOut )
-            *rOut = Ray( Point3f( rLens.o.x, rLens.o.y, -rLens.o.z ),
-                Vector3f( rLens.d.x, rLens.d.y, -rLens.d.z ), rLens.time );
+            *rOut = Ray( rLens.o.WithNegatedZ( ),
+                rLens.d.WithNegatedZ( ), rLens.time );
         return 1;
     }
 
@@ -1250,6 +1259,8 @@ namespace pbrto
         else
             printf( "RGBColor[.5, .5, .8]" );
 
+        Point3f rayO( ray.o );
+        Vector3f rayD( ray.d );
         for ( int i = elementInterfaces.size( ) - 1; i >= 0; --i )
         {
             const LensElementInterface& element = elementInterfaces[ i ];
@@ -1259,7 +1270,7 @@ namespace pbrto
             Float t;
             Normal3f n;
             if ( isStop )
-                t = -( ray.o.z - elementZ ) / ray.d.z;
+                t = -( rayO.z - elementZ ) / rayD.z;
             else
             {
                 Float radius = element.curvatureRadius;
@@ -1269,7 +1280,7 @@ namespace pbrto
             }
             NCHECK_GE( t, 0 );
 
-            printf( ", Line[{{%f, %f}, {%f, %f}}]", ray.o.z, ray.o.x, ray( t ).z, ray( t ).x );
+            printf( ", Line[{{%f, %f}, {%f, %f}}]", rayO.z, rayO.x, ray( t ).z( ), ray( t ).x( ) );
 
             // Test intersection point against element aperture
             Point3f pHit = ray( t );
@@ -1278,6 +1289,7 @@ namespace pbrto
             if ( r2 > apertureRadius2 )
                 goto done;
             ray.o = pHit;
+            rayO = ray.o;
 
             // Update ray path for element interface interaction
             if ( !isStop )
@@ -1290,23 +1302,25 @@ namespace pbrto
                 if ( !Refract( Normalize( -ray.d ), n, eta_t / eta_i, nullptr, &wt ) )
                     goto done;
                 ray.d = wt;
+                rayD = ray.d;
             }
         }
 
         ray.d = Normalize( ray.d );
+        rayD = ray.d;
         {
             Float ta = std::abs( elementZ / 4 );
             if ( toOpticalIntercept )
             {
-                ta = -ray.o.x / ray.d.x;
-                printf( ", Point[{%f, %f}]", ray( ta ).z, ray( ta ).x );
+                ta = -rayO.x / rayD.x;
+                printf( ", Point[{%f, %f}]", ray( ta ).z( ), ray( ta ).x( ) );
             }
-            printf( ", %s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", ray.o.z, ray.o.x,
-                ray( ta ).z, ray( ta ).x );
+            printf( ", %s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", ray.o.z( ), ray.o.x( ),
+                ray( ta ).z( ), ray( ta ).x( ) );
 
             // overdraw the optical axis if needed...
             if ( toOpticalIntercept )
-                printf( ", Line[{{%f, 0}, {%f, 0}}]", ray.o.z, ray( ta ).z * 1.05f );
+                printf( ", Line[{{%f, 0}, {%f, 0}}]", ray.o.z( ), ray( ta ).z( ) * 1.05f );
         }
 
     done:
@@ -1321,6 +1335,8 @@ namespace pbrto
         // Transform _ray_ from camera to lens system space
         static const Transform LensFromCamera = Scale( 1, 1, -1 );
         Ray ray = LensFromCamera( r );
+        Point3f rayO( ray.o );
+        Vector3f rayD( ray.d );
         for ( size_t i = 0; i < elementInterfaces.size( ); ++i )
         {
             const LensElementInterface& element = elementInterfaces[ i ];
@@ -1329,7 +1345,7 @@ namespace pbrto
             Float t;
             Normal3f n;
             if ( isStop )
-                t = -( ray.o.z - elementZ ) / ray.d.z;
+                t = -( rayO.z - elementZ ) / rayD.z;
             else
             {
                 Float radius = element.curvatureRadius;
@@ -1339,7 +1355,7 @@ namespace pbrto
             }
             NCHECK_GE( t, 0.f );
 
-            printf( "Line[{{%f, %f}, {%f, %f}}],", ray.o.z, ray.o.x, ray( t ).z, ray( t ).x );
+            printf( "Line[{{%f, %f}, {%f, %f}}],", rayO.z, rayO.x, ray( t ).z( ), ray( t ).x( ) );
 
             // Test intersection point against element aperture
             Point3f pHit = ray( t );
@@ -1348,6 +1364,7 @@ namespace pbrto
             if ( r2 > apertureRadius2 )
                 return;
             ray.o = pHit;
+            rayO = ray.o;
 
             // Update ray path for from-scene element interface interaction
             if ( !isStop )
@@ -1361,20 +1378,21 @@ namespace pbrto
                 if ( !Refract( Normalize( -ray.d ), n, eta_t / eta_i, nullptr, &wt ) )
                     return;
                 ray.d = wt;
+                rayD = ray.d;
             }
             elementZ += element.thickness;
         }
 
         // go to the film plane by default
         {
-            Float ta = -ray.o.z / ray.d.z;
+            Float ta = -rayO.z / rayD.z;
             if ( toOpticalIntercept )
             {
-                ta = -ray.o.x / ray.d.x;
-                printf( "Point[{%f, %f}], ", ray( ta ).z, ray( ta ).x );
+                ta = -rayO.x / rayD.x;
+                printf( "Point[{%f, %f}], ", ray( ta ).z( ), ray( ta ).x() );
             }
-            printf( "%s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", ray.o.z, ray.o.x,
-                ray( ta ).z, ray( ta ).x );
+            printf( "%s[{{%f, %f}, {%f, %f}}]", arrow ? "Arrow" : "Line", rayO.z, rayO.x,
+                ray( ta ).z( ), ray( ta ).x( ) );
         }
     }
 

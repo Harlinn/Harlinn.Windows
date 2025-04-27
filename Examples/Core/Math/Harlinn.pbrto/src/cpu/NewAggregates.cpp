@@ -611,7 +611,7 @@ namespace pbrto
         if ( !nodes )
             return {};
         pstdo::optional<ShapeIntersection> si;
-        Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
+        Vector3f invDir( Reciprocal( ray.d ) );
         int dirIsNeg[ 3 ] = { int( invDir.x < 0 ), int( invDir.y < 0 ), int( invDir.z < 0 ) };
         // Follow ray through BVH nodes to find primitive intersections
         int toVisitOffset = 0, currentNodeIndex = 0;
@@ -674,7 +674,7 @@ namespace pbrto
     {
         if ( !nodes )
             return false;
-        Vector3f invDir( 1.f / ray.d.x, 1.f / ray.d.y, 1.f / ray.d.z );
+        Vector3f invDir( Reciprocal( ray.d ) );
         int dirIsNeg[ 3 ] = { static_cast< int >( invDir.x < 0 ), static_cast< int >( invDir.y < 0 ),
                            static_cast< int >( invDir.z < 0 ) };
         int nodesToVisit[ 64 ];
@@ -1115,7 +1115,7 @@ namespace pbrto
             return {};
 
         // Prepare to traverse kd-tree for ray
-        Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
+        Vector3f invDir( Reciprocal( ray.d ) );
         constexpr int maxToVisit = 64;
         KdNodeToVisit toVisit[ maxToVisit ];
         int toVisitIndex = 0;
@@ -1227,7 +1227,7 @@ namespace pbrto
             return false;
 
         // Prepare to traverse kd-tree for ray
-        Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
+        Vector3f invDir( Reciprocal( ray.d ) );
         constexpr int maxTodo = 64;
         KdNodeToVisit toVisit[ maxTodo ];
         int toVisitIndex = 0;

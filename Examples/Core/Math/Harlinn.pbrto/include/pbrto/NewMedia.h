@@ -176,8 +176,9 @@ namespace pbrto
         {
             // Set up 3D DDA for ray through the majorant grid
             Vector3f diag = grid->bounds.Diagonal( );
-            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ),
-                Vector3f( ray.d.x / diag.x, ray.d.y / diag.y, ray.d.z / diag.z ) );
+            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ), ray.d / diag  );
+            Vector3f rayGridD( rayGrid.d );
+
             Point3f gridIntersect = rayGrid( tMin );
             for ( int axis = 0; axis < 3; ++axis )
             {
@@ -185,16 +186,32 @@ namespace pbrto
                 // Compute current voxel for axis and handle negative zero direction
                 voxel[ axis ] =
                     Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
-                deltaT[ axis ] = 1 / ( std::abs( rayGrid.d[ axis ] ) * grid->res[ axis ] );
-                if ( rayGrid.d[ axis ] == -0.f )
-                    rayGrid.d[ axis ] = 0.f;
+                deltaT[ axis ] = 1 / ( std::abs( rayGridD[ axis ] ) * grid->res[ axis ] );
+                if ( rayGridD[ axis ] == -0.f )
+                {
+                    switch ( axis )
+                    {
+                        case 0:
+                            rayGrid.d.SetX( 0.f );
+                            rayGridD.x = 0.f;
+                            break;
+                        case 1:
+                            rayGrid.d.SetY( 0.f );
+                            rayGridD.y = 0.f;
+                            break;
+                        case 2:
+                            rayGrid.d.SetZ( 0.f );
+                            rayGridD.z = 0.f;
+                            break;
+                    }
+                }
 
-                if ( rayGrid.d[ axis ] >= 0 )
+                if ( rayGridD[ axis ] >= 0 )
                 {
                     // Handle ray with positive direction for voxel stepping
                     Float nextVoxelPos = Float( voxel[ axis ] + 1 ) / grid->res[ axis ];
                     nextCrossingT[ axis ] =
-                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGridD[ axis ];
                     step[ axis ] = 1;
                     voxelLimit[ axis ] = grid->res[ axis ];
 
@@ -204,7 +221,7 @@ namespace pbrto
                     // Handle ray with negative direction for voxel stepping
                     Float nextVoxelPos = Float( voxel[ axis ] ) / grid->res[ axis ];
                     nextCrossingT[ axis ] =
-                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGridD[ axis ];
                     step[ axis ] = -1;
                     voxelLimit[ axis ] = -1;
                 }

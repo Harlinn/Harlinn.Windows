@@ -1411,9 +1411,10 @@ namespace pbrto
             Float p2 = ScalarLengthSquared( perp );
 
             // Compute matrix determinants for $v$ and $t$ numerators
+            Vector3f rayD( ray.d );
             Float v1 =
-                ScalarDeterminant( SquareMatrix<3>( deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
-                    perp.y, deltao.z, ray.d.z, perp.z ) );
+                ScalarDeterminant( SquareMatrix<3>( deltao.x, rayD.x, perp.x, deltao.y, rayD.y,
+                    perp.y, deltao.z, rayD.z, perp.z ) );
             Float t1 = ScalarDeterminant( SquareMatrix<3>( deltao.x, ud.x, perp.x, deltao.y, ud.y,
                 perp.y, deltao.z, ud.z, perp.z ) );
 
@@ -1434,9 +1435,10 @@ namespace pbrto
             Vector3f deltao = uo - ray.o;
             Vector3f perp = Cross( ray.d, ud );
             Float p2 = ScalarLengthSquared( perp );
+            Vector3f rayD( ray.d );
             Float v2 =
-                ScalarDeterminant( SquareMatrix<3>( deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
-                    perp.y, deltao.z, ray.d.z, perp.z ) );
+                ScalarDeterminant( SquareMatrix<3>( deltao.x, rayD.x, perp.x, deltao.y, rayD.y,
+                    perp.y, deltao.z, rayD.z, perp.z ) );
             Float t2 = ScalarDeterminant( SquareMatrix<3>( deltao.x, ud.x, perp.x, deltao.y, ud.y,
                 perp.y, deltao.z, ud.z, perp.z ) );
             t2 /= p2;
