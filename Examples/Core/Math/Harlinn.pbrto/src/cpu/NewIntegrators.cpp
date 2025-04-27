@@ -1805,8 +1805,8 @@ namespace pbrto
         Point3f p( ) const { return GetInteraction( ).p( ); }
 
         Float time( ) const { return GetInteraction( ).time; }
-        const Normal3f& ng( ) const { return GetInteraction( ).n; }
-        const Normal3f& ns( ) const
+        const Normal3f::Simd& ng( ) const { return GetInteraction( ).n; }
+        const Normal3f::Simd& ns( ) const
         {
             if ( type == VertexType::Surface )
                 return si.shading.n;

@@ -87,8 +87,11 @@ namespace pbrto
         }
         else
         {
+            Vector3f tmpdpdx, tmpdpdy;
             // Approximate screen-space change in $\pt{}$ based on camera projection
-            camera.Approximate_dp_dxy( p( ), n, time, samplesPerPixel, &dpdx, &dpdy );
+            camera.Approximate_dp_dxy( p( ), n, time, samplesPerPixel, &tmpdpdx, &tmpdpdy );
+            dpdx = tmpdpdx, dpdy = tmpdpdy;
+
         }
         // Estimate screen-space change in $(u,v)$
         // Compute $\transpose{\XFORM{A}} \XFORM{A}$ and its determinant
@@ -114,7 +117,7 @@ namespace pbrto
         dvdy = IsFinite( dvdy ) ? Clamp( dvdy, -1e8f, 1e8f ) : 0.f;
     }
 
-    PBRT_CPU_GPU void SurfaceInteraction::SkipIntersection( RayDifferential* ray, Float t ) const
+    void SurfaceInteraction::SkipIntersection( RayDifferential* ray, Float t ) const
     {
         *( ( Ray* )ray ) = SpawnRay( ray->d );
         if ( ray->hasDifferentials )
@@ -124,19 +127,17 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi,
-        const BSDF& bsdf, Vector3f wi, int flags,
-        Float eta ) const
+    RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi, const BSDF& bsdf, Vector3f::Simd wi, int flags, Float eta ) const
     {
         RayDifferential rd( SpawnRay( wi ) );
         if ( rayi.hasDifferentials )
         {
             // Compute ray differentials for specular reflection or transmission
             // Compute common factors for specular ray differentials
-            Normal3f n = shading.n;
-            Normal3f dndx = shading.dndu * dudx + shading.dndv * dvdx;
-            Normal3f dndy = shading.dndu * dudy + shading.dndv * dvdy;
-            Vector3f dwodx = -rayi.rxDirection - wo, dwody = -rayi.ryDirection - wo;
+            Normal3f::Simd n = shading.n;
+            Normal3f::Simd dndx = shading.dndu * dudx + shading.dndv * dvdx;
+            Normal3f::Simd dndy = shading.dndu * dudy + shading.dndv * dvdy;
+            Vector3f::Simd dwodx = -rayi.rxDirection - wo, dwody = -rayi.ryDirection - wo;
 
             if ( flags == BxDFFlags::SpecularReflection )
             {
@@ -149,9 +150,9 @@ namespace pbrto
                 Float dwoDotn_dx = ScalarDot( dwodx, n ) + ScalarDot( wo, dndx );
                 Float dwoDotn_dy = ScalarDot( dwody, n ) + ScalarDot( wo, dndy );
                 rd.rxDirection =
-                    wi - dwodx + 2 * Vector3f( ScalarDot( wo, n ) * dndx + dwoDotn_dx * n );
+                    wi - dwodx + 2 * Dot( wo, n ) * dndx + dwoDotn_dx * n;
                 rd.ryDirection =
-                    wi - dwody + 2 * Vector3f( ScalarDot( wo, n ) * dndy + dwoDotn_dy * n );
+                    wi - dwody + 2 * Dot( wo, n ) * dndy + dwoDotn_dy * n;
 
             }
             else if ( flags == BxDFFlags::SpecularTransmission )
@@ -177,22 +178,20 @@ namespace pbrto
                 Float dmudx = dwoDotn_dx * ( 1 / eta + 1 / Sqr( eta ) * ScalarDot( wo, n ) / ScalarDot( wi, n ) );
                 Float dmudy = dwoDotn_dy * ( 1 / eta + 1 / Sqr( eta ) * ScalarDot( wo, n ) / ScalarDot( wi, n ) );
 
-                rd.rxDirection = wi - eta * dwodx + Vector3f( mu * dndx + dmudx * n );
-                rd.ryDirection = wi - eta * dwody + Vector3f( mu * dndy + dmudy * n );
+                rd.rxDirection = wi - eta * dwodx + Vector3f::Simd ( mu * dndx + dmudx * n );
+                rd.ryDirection = wi - eta * dwody + Vector3f::Simd( mu * dndy + dmudy * n );
             }
         }
         // Squash potentially troublesome differentials
         if ( ScalarLengthSquared( rd.rxDirection ) > 1e16f || ScalarLengthSquared( rd.ryDirection ) > 1e16f ||
-            ScalarLengthSquared( Vector3f( rd.rxOrigin ) ) > 1e16f ||
-            ScalarLengthSquared( Vector3f( rd.ryOrigin ) ) > 1e16f )
+            ScalarLengthSquared( rd.rxOrigin ) > 1e16f ||
+            ScalarLengthSquared( rd.ryOrigin ) > 1e16f )
             rd.hasDifferentials = false;
 
         return rd;
     }
 
-    BSDF SurfaceInteraction::GetBSDF( const RayDifferential& ray, SampledWavelengths& lambda,
-        Camera camera, ScratchBuffer& scratchBuffer,
-        Sampler sampler )
+    BSDF SurfaceInteraction::GetBSDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer, Sampler sampler )
     {
         // Estimate $(u,v)$ and position differentials at intersection point
         ComputeDifferentials( ray, camera, sampler.SamplesPerPixel( ) );
@@ -220,13 +219,12 @@ namespace pbrto
             else
                 BumpMap( UniversalTextureEvaluator( ), displacement, *this, &dpdu, &dpdv );
 
-            Normal3f ns( Normalize( Cross( dpdu, dpdv ) ) );
+            Normal3f::Simd ns( Normalize( Cross( dpdu, dpdv ) ) );
             SetShadingGeometry( ns, dpdu, dpdv, shading.dndu, shading.dndv, false );
         }
 
         // Return BSDF for surface interaction
-        BSDF bsdf =
-            material.GetBSDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
+        BSDF bsdf = material.GetBSDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
         if ( bsdf && GetOptions( ).forceDiffuse )
         {
             // Override _bsdf_ with diffuse equivalent
@@ -236,9 +234,7 @@ namespace pbrto
         return bsdf;
     }
 
-    BSSRDF SurfaceInteraction::GetBSSRDF( const RayDifferential& ray,
-        SampledWavelengths& lambda, Camera camera,
-        ScratchBuffer& scratchBuffer )
+    BSSRDF SurfaceInteraction::GetBSSRDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer )
     {
         // Resolve _MixMaterial_ if necessary
         while ( material.Is<MixMaterial>( ) )
@@ -250,10 +246,9 @@ namespace pbrto
         return material.GetBSSRDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
     }
 
-    PBRT_CPU_GPU SampledSpectrum SurfaceInteraction::Le( Vector3f w,
-        const SampledWavelengths& lambda ) const
+    SampledSpectrum::Simd SurfaceInteraction::Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const
     {
-        return areaLight ? areaLight.L( p( ), n, uv, w, lambda ) : SampledSpectrum( 0.f );
+        return areaLight ? SampledSpectrum::Simd( areaLight.L( p( ), n, uv, w, lambda ) ) : SampledSpectrum::Simd( 0.f );
     }
 
     std::string SurfaceInteraction::ToString( ) const
