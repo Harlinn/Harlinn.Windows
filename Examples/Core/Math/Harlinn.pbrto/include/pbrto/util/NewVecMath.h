@@ -2451,7 +2451,7 @@ namespace pbrto
             return b.pMin != pMin || b.pMax != pMax;
         }
         PBRT_CPU_GPU
-        bool IntersectP( Point3f o, Vector3f d, Float tMax = Infinity, Float* hitt0 = nullptr, Float* hitt1 = nullptr ) const;
+        bool IntersectP( Point3f::Simd o, Vector3f::Simd d, Float tMax = Infinity, Float* hitt0 = nullptr, Float* hitt1 = nullptr ) const;
         PBRT_CPU_GPU
         bool IntersectP( Point3f o, Vector3f d, Float tMax, Vector3f invDir, const int dirIsNeg[ 3 ] ) const;
 
@@ -2728,20 +2728,31 @@ namespace pbrto
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline bool Bounds3<T>::IntersectP( Point3f o, Vector3f d, Float tMax, Float* hitt0, Float* hitt1 ) const
+    inline bool Bounds3<T>::IntersectP( Point3f::Simd o, Vector3f::Simd d, Float tMax, Float* hitt0, Float* hitt1 ) const
     {
+        using Traits = Vector3f::Traits;
         Float t0 = 0, t1 = tMax;
+
+        // Update interval for _i_th bounding box slab
+        Vector3f::Simd invRayDir = Math::Reciprocal( d );
+        Vector3f::Simd vNear = ( pMin - o ) * invRayDir;
+        Vector3f::Simd vFar = ( pMax - o ) * invRayDir;
+
+        // Update parametric interval from slab intersection $t$ values
+        auto greater = Traits::Greater( vNear.simd, vFar.simd );
+        Vector3f::Simd nearV = Traits::Select( vNear.simd, vFar.simd, greater );
+        Vector3f::Simd farV = Traits::Select( vFar.simd, vNear.simd, greater );
+
+        // Update _tFar_ to ensure robust ray--bounds intersection
+        farV *= 1.f + 2.f * gamma( 3 );
+
+        Vector3f n( nearV );
+        Vector3f f( farV );
+
         for ( int i = 0; i < 3; ++i )
         {
-            // Update interval for _i_th bounding box slab
-            Float invRayDir = 1 / d[ i ];
-            Float tNear = ( pMin[ i ] - o[ i ] ) * invRayDir;
-            Float tFar = ( pMax[ i ] - o[ i ] ) * invRayDir;
-            // Update parametric interval from slab intersection $t$ values
-            if ( tNear > tFar )
-                pstdo::swap( tNear, tFar );
-            // Update _tFar_ to ensure robust ray--bounds intersection
-            tFar *= 1 + 2 * gamma( 3 );
+            Float tNear = n[ i ];
+            Float tFar = f[ i ];
 
             t0 = tNear > t0 ? tNear : t0;
             t1 = tFar < t1 ? tFar : t1;
