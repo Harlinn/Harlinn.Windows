@@ -33,8 +33,7 @@ namespace pbrto
 
     // Bezier Inline Functions
     template <typename P>
-    PBRT_CPU_GPU inline P BlossomCubicBezier( pstdo::span<const P> p, Float u0, Float u1,
-        Float u2 )
+    inline P BlossomCubicBezier( std::span<const P,4> p, Float u0, Float u1, Float u2 )
     {
         P a[ 3 ] = { Lerp2( u0, p[ 0 ], p[ 1 ] ), Lerp2( u0, p[ 1 ], p[ 2 ] ), Lerp2( u0, p[ 2 ], p[ 3 ] ) };
         P b[ 2 ] = { Lerp2( u1, a[ 0 ], a[ 1 ] ), Lerp2( u1, a[ 1 ], a[ 2 ] ) };
@@ -42,13 +41,12 @@ namespace pbrto
     }
 
     template <typename P>
-    PBRT_CPU_GPU inline P EvaluateCubicBezier( pstdo::span<const P> cp, Float u )
+    PBRT_CPU_GPU inline P EvaluateCubicBezier( std::span<const P, 4> cp, Float u )
     {
         return BlossomCubicBezier( cp, u, u, u );
     }
 
-    PBRT_CPU_GPU inline Point3f EvaluateCubicBezier( pstdo::span<const Point3f> cp, Float u,
-        Vector3f* deriv )
+    inline Point3f EvaluateCubicBezier( std::span<const Point3f,4> cp, Float u, Vector3f* deriv )
     {
         Point3f cp1[ 3 ] = { Lerp2( u, cp[ 0 ], cp[ 1 ] ), Lerp2( u, cp[ 1 ], cp[ 2 ] ),
                           Lerp2( u, cp[ 2 ], cp[ 3 ] ) };
@@ -64,8 +62,7 @@ namespace pbrto
         return Lerp2( u, cp2[ 0 ], cp2[ 1 ] );
     }
 
-    PBRT_CPU_GPU inline pstdo::array<Point3f, 7> SubdivideCubicBezier(
-        pstdo::span<const Point3f> cp )
+    inline std::array<Point3f, 7> SubdivideCubicBezier( std::span<const Point3f, 4> cp )
     {
         return { cp[ 0 ],
                 ( cp[ 0 ] + cp[ 1 ] ) / 2,
@@ -76,8 +73,7 @@ namespace pbrto
                 cp[ 3 ] };
     }
 
-    PBRT_CPU_GPU inline pstdo::array<Point3f, 4> CubicBezierControlPoints(
-        pstdo::span<const Point3f> cp, Float uMin, Float uMax )
+    inline std::array<Point3f, 4> CubicBezierControlPoints( std::span<const Point3f, 4> cp, Float uMin, Float uMax )
     {
         return { BlossomCubicBezier( cp, uMin, uMin, uMin ),
                 BlossomCubicBezier( cp, uMin, uMin, uMax ),
@@ -85,28 +81,25 @@ namespace pbrto
                 BlossomCubicBezier( cp, uMax, uMax, uMax ) };
     }
 
-    PBRT_CPU_GPU inline Bounds3f BoundCubicBezier( pstdo::span<const Point3f> cp )
+    inline Bounds3f BoundCubicBezier( std::span<const Point3f, 4> cp )
     {
         return Union( Bounds3f( cp[ 0 ], cp[ 1 ] ), Bounds3f( cp[ 2 ], cp[ 3 ] ) );
     }
 
-    PBRT_CPU_GPU inline Bounds3f BoundCubicBezier( pstdo::span<const Point3f> cp, Float uMin,
-        Float uMax )
+    inline Bounds3f BoundCubicBezier( std::span<const Point3f, 4> cp, Float uMin, Float uMax )
     {
         if ( uMin == 0 && uMax == 1 )
             return BoundCubicBezier( cp );
         auto cpSeg = CubicBezierControlPoints( cp, uMin, uMax );
-        return BoundCubicBezier( pstdo::span<const Point3f>( cpSeg ) );
+        return BoundCubicBezier( cpSeg );
     }
 
-    PBRT_CPU_GPU inline pstdo::array<Point3f, 4> ElevateQuadraticBezierToCubic(
-        pstdo::span<const Point3f> cp )
+    inline std::array<Point3f, 4> ElevateQuadraticBezierToCubic( std::span<const Point3f, 3> cp )
     {
         return { cp[ 0 ], Lerp2( 2.f / 3.f, cp[ 0 ], cp[ 1 ] ), Lerp2( 1.f / 3.f, cp[ 1 ], cp[ 2 ] ), cp[ 2 ] };
     }
 
-    PBRT_CPU_GPU inline pstdo::array<Point3f, 3> QuadraticBSplineToBezier(
-        pstdo::span<const Point3f> cp )
+    inline std::array<Point3f, 3> QuadraticBSplineToBezier( std::span<const Point3f, 3> cp )
     {
         // We can compute equivalent Bezier control points via some blossoming.
         // We have three control points and a uniform knot vector; we will label
@@ -118,8 +111,7 @@ namespace pbrto
         return { p11, cp[ 1 ], p22 };
     }
 
-    PBRT_CPU_GPU inline pstdo::array<Point3f, 4> CubicBSplineToBezier(
-        pstdo::span<const Point3f> cp )
+    inline std::array<Point3f, 4> CubicBSplineToBezier( std::span<const Point3f, 4> cp )
     {
         // Blossom from p012, p123, p234, and p345 to the Bezier control points
         // p222, p223, p233, and p333.

@@ -86,6 +86,7 @@ namespace pbrto
         PBRTO_EXPORT XYZ ToXYZ( const SampledWavelengths& lambda ) const;
         PBRTO_EXPORT RGB ToRGB( const SampledWavelengths& lambda, const RGBColorSpace& cs ) const;
         PBRTO_EXPORT Float Y( const SampledWavelengths& lambda ) const;
+        PBRTO_EXPORT static Float Y( SampledSpectrum::Simd l, const SampledWavelengths& lambda );
 
 
         Float MinComponentValue( ) const

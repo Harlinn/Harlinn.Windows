@@ -241,6 +241,14 @@ namespace pbrto
         return ScalarAvg( SafeDiv( Ys * *this, pdf ) ) / CIE_Y_integral;
     }
 
+    PBRTO_EXPORT Float SampledSpectrum::Y( SampledSpectrum::Simd l, const SampledWavelengths& lambda )
+    {
+        SampledSpectrum::Simd Ys = Spectra::Y( ).Sample( lambda );
+        SampledSpectrum::Simd pdf = lambda.PDF( );
+        return ScalarAvg( SafeDiv( Ys * l, pdf ) ) / CIE_Y_integral;
+    }
+
+
     PBRT_CPU_GPU RGB SampledSpectrum::ToRGB( const SampledWavelengths& lambda,
         const RGBColorSpace& cs ) const
     {

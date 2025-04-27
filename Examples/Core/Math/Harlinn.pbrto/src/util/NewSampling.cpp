@@ -44,8 +44,7 @@ namespace pbrto
 {
 
     // Sampling Function Definitions
-    PBRTO_EXPORT pstdo::array<Float, 3> SampleSphericalTriangle( const pstdo::array<Point3f, 3>& v, Point3f p,
-        Point2f u, Float* pdf )
+    PBRTO_EXPORT std::array<Float, 3> SampleSphericalTriangle( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Point2f u, Float* pdf )
     {
         if ( pdf )
             *pdf = 0;
@@ -136,7 +135,7 @@ namespace pbrto
     }
 
     // Via Jim Arvo's SphTri.C
-    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p, Vector3f w )
+    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Vector3f::Simd w )
     {
         // Compute vectors _a_, _b_, and _c_ to spherical triangle vertices
         Vector3f::Simd a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );

@@ -563,7 +563,7 @@ namespace pbrto
         int nSeg = sizeof( colors ) / sizeof( colors[ 0 ] ) - 3;
         int first = std::min<int>( pstdo::floor( t * nSeg ), nSeg - 1 );
         t = t * nSeg - first;
-        RGB rgb = 1.5f * EvaluateCubicBezier( pstdo::span( colors + first, 4 ), t );
+        RGB rgb = 1.5f * EvaluateCubicBezier( std::span<const RGB, 4>( colors + first, 4 ), t );
 
 #ifdef PBRT_IS_GPU_CODE
         return RGBAlbedoSpectrum( *RGBColorSpace_sRGB, rgb ).Sample( lambda );

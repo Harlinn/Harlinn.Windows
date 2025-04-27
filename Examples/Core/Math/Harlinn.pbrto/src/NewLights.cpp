@@ -86,8 +86,7 @@ namespace pbrto
     }
 
     // LightBase Method Definitions
-    LightBase::LightBase( LightType type, const Transform& renderFromLight,
-        const MediumInterface& mediumInterface )
+    LightBase::LightBase( LightType type, const Transform& renderFromLight, const MediumInterface& mediumInterface )
         : type( type ), mediumInterface( mediumInterface ), renderFromLight( renderFromLight )
     {
         ++numLights;

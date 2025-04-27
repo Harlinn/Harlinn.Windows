@@ -61,25 +61,23 @@ namespace pbrto
             Allocator alloc );
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline Bounds3f Bounds( ) const;
+        inline Bounds3f Bounds( ) const;
 
-        PBRT_CPU_GPU inline DirectionCone NormalBounds( ) const;
+        inline DirectionCone NormalBounds( ) const;
 
-        PBRT_CPU_GPU inline pstdo::optional<ShapeIntersection> Intersect(
-            const Ray& ray, Float tMax = Infinity ) const;
+        inline pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax = Infinity ) const;
 
-        PBRT_CPU_GPU inline bool IntersectP( const Ray& ray, Float tMax = Infinity ) const;
+        inline bool IntersectP( const Ray& ray, Float tMax = Infinity ) const;
 
-        PBRT_CPU_GPU inline Float Area( ) const;
+        inline Float Area( ) const;
 
-        PBRT_CPU_GPU inline pstdo::optional<ShapeSample> Sample( Point2f u ) const;
+        inline pstdo::optional<ShapeSample> Sample( Point2f u ) const;
 
-        PBRT_CPU_GPU inline Float PDF( const Interaction& ) const;
+        inline Float PDF( const Interaction& ) const;
 
-        PBRT_CPU_GPU inline pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx,
-            Point2f u ) const;
+        inline pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const;
 
-        PBRT_CPU_GPU inline Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const;
+        inline Float PDF( const ShapeSampleContext& ctx, Vector3f::Simd wi ) const;
     };
 
 }

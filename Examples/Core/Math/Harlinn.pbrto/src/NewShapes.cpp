@@ -46,13 +46,12 @@ namespace pbrto
 {
 
     // Sphere Method Definitions
-    PBRT_CPU_GPU Bounds3f Sphere::Bounds( ) const
+    Bounds3f Sphere::Bounds( ) const
     {
-        return ( *renderFromObject )(
-            Bounds3f( Point3f( -radius, -radius, zMin ), Point3f( radius, radius, zMax ) ) );
+        return ( *renderFromObject )( Bounds3f( Point3f( -radius, -radius, zMin ), Point3f( radius, radius, zMax ) ) );
     }
 
-    PBRT_CPU_GPU pstdo::optional<ShapeSample> Sphere::Sample( Point2f u ) const
+    pstdo::optional<ShapeSample> Sphere::Sample( Point2f u ) const
     {
         Point3f pObj = Point3f( 0, 0, 0 ) + radius * SampleUniformSphere( u );
         // Reproject _pObj_ to sphere surface and compute _pObjError_
@@ -101,18 +100,18 @@ namespace pbrto
     }
 
     // Disk Method Definitions
-    PBRT_CPU_GPU Bounds3f Disk::Bounds( ) const
+    Bounds3f Disk::Bounds( ) const
     {
         return ( *renderFromObject )(
             Bounds3f( Point3f( -radius, -radius, height ), Point3f( radius, radius, height ) ) );
     }
 
-    PBRT_CPU_GPU DirectionCone Disk::NormalBounds( ) const
+    DirectionCone Disk::NormalBounds( ) const
     {
-        Normal3f n = ( *renderFromObject )( Normal3f( 0, 0, 1 ) );
+        Normal3f::Simd n = ( *renderFromObject )( Normal3f::Simd( 0, 0, 1 ) );
         if ( reverseOrientation )
             n = -n;
-        return DirectionCone( Vector3f( n ) );
+        return DirectionCone( Vector3f::Simd( n ) );
     }
 
     std::string Disk::ToString( ) const
@@ -134,15 +133,13 @@ namespace pbrto
         Float radius = parameters.GetOneFloat( "radius", 1 );
         Float innerRadius = parameters.GetOneFloat( "innerradius", 0 );
         Float phimax = parameters.GetOneFloat( "phimax", 360 );
-        return alloc.new_object<Disk>( renderFromObject, objectFromRender, reverseOrientation,
-            height, radius, innerRadius, phimax );
+        return alloc.new_object<Disk>( renderFromObject, objectFromRender, reverseOrientation, height, radius, innerRadius, phimax );
     }
 
     // Cylinder Method Definitions
-    PBRT_CPU_GPU Bounds3f Cylinder::Bounds( ) const
+    Bounds3f Cylinder::Bounds( ) const
     {
-        return ( *renderFromObject )(
-            Bounds3f( { -radius, -radius, zMin }, { radius, radius, zMax } ) );
+        return ( *renderFromObject )( Bounds3f( { -radius, -radius, zMin }, { radius, radius, zMax } ) );
     }
 
     std::string Cylinder::ToString( ) const
@@ -194,9 +191,7 @@ namespace pbrto
     NSTAT_MEMORY_COUNTER( "Memory/Triangles", triangleBytes );
 
     // Triangle Functions
-    PBRTO_EXPORT pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax,
-        Point3f p0, Point3f p1,
-        Point3f p2 )
+    PBRTO_EXPORT pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax, Point3f::Simd p0, Point3f::Simd p1, Point3f::Simd p2 )
     {
         // Return no intersection if triangle is degenerate
         if ( ScalarLengthSquared( Cross( p2 - p0, p1 - p0 ) ) == 0 )
@@ -204,9 +199,9 @@ namespace pbrto
 
         // Transform triangle vertices to ray coordinate space
         // Translate vertices based on ray origin
-        Point3f p0t = p0 - Vector3f( ray.o );
-        Point3f p1t = p1 - Vector3f( ray.o );
-        Point3f p2t = p2 - Vector3f( ray.o );
+        Point3f p0t = p0 - Vector3f::Simd( ray.o );
+        Point3f p1t = p1 - Vector3f::Simd( ray.o );
+        Point3f p2t = p2 - Vector3f::Simd( ray.o );
 
         // Permute components of triangle vertices and ray direction
         int kz = MaxComponentIndex( Abs( ray.d ) );
@@ -320,37 +315,37 @@ namespace pbrto
         return tris;
     }
 
-    PBRT_CPU_GPU Bounds3f Triangle::Bounds( ) const
+    Bounds3f Triangle::Bounds( ) const
     {
         // Get triangle vertices in _p0_, _p1_, and _p2_
         const TriangleMesh* mesh = GetMesh( );
         const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-        Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+        Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
         return Union( Bounds3f( p0, p1 ), p2 );
     }
 
-    PBRT_CPU_GPU DirectionCone Triangle::NormalBounds( ) const
+    DirectionCone Triangle::NormalBounds( ) const
     {
         // Get triangle vertices in _p0_, _p1_, and _p2_
         const TriangleMesh* mesh = GetMesh( );
         const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-        Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+        Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
-        Normal3f n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
+        Normal3f::Simd n = Normalize( Normal3f::Simd( Cross( p1 - p0, p2 - p0 ) ) );
         // Ensure correct orientation of geometric normal for normal bounds
         if ( mesh->n )
         {
-            Normal3f ns( mesh->n[ v[ 0 ] ] + mesh->n[ v[ 1 ] ] + mesh->n[ v[ 2 ] ] );
+            Normal3f::Simd ns( mesh->n[ v[ 0 ] ] + mesh->n[ v[ 1 ] ] + mesh->n[ v[ 2 ] ] );
             n = FaceForward( n, ns );
         }
         else if ( mesh->reverseOrientation ^ mesh->transformSwapsHandedness )
             n *= -1;
 
-        return DirectionCone( Vector3f( n ) );
+        return DirectionCone( Vector3f::Simd( n ) );
     }
 
-    PBRT_CPU_GPU pstdo::optional<ShapeIntersection> Triangle::Intersect( const Ray& ray, Float tMax ) const
+    pstdo::optional<ShapeIntersection> Triangle::Intersect( const Ray& ray, Float tMax ) const
     {
 #ifndef PBRT_IS_GPU_CODE
         ++nTriTests;
@@ -358,7 +353,7 @@ namespace pbrto
         // Get triangle vertices in _p0_, _p1_, and _p2_
         const TriangleMesh* mesh = GetMesh( );
         const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-        Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+        Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
         pstdo::optional<TriangleIntersection> triIsect =
             IntersectTriangle( ray, tMax, p0, p1, p2 );
@@ -372,7 +367,7 @@ namespace pbrto
         return ShapeIntersection{ intr, triIsect->t };
     }
 
-    PBRT_CPU_GPU bool Triangle::IntersectP( const Ray& ray, Float tMax ) const
+    bool Triangle::IntersectP( const Ray& ray, Float tMax ) const
     {
 #ifndef PBRT_IS_GPU_CODE
         ++nTriTests;
@@ -380,7 +375,7 @@ namespace pbrto
         // Get triangle vertices in _p0_, _p1_, and _p2_
         const TriangleMesh* mesh = GetMesh( );
         const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-        Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+        Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
         pstdo::optional<TriangleIntersection> isect = IntersectTriangle( ray, tMax, p0, p1, p2 );
         if ( isect )
@@ -512,21 +507,13 @@ namespace pbrto
     }
 
     // CurveCommon Method Definitions
-    CurveCommon::CurveCommon( pstdo::span<const Point3f> c, Float width0, Float width1,
-        CurveType type, pstdo::span<const Normal3f> norm,
-        const Transform* renderFromObject,
-        const Transform* objectFromRender, bool reverseOrientation )
-        : type( type ),
-        renderFromObject( renderFromObject ),
-        objectFromRender( objectFromRender ),
-        reverseOrientation( reverseOrientation ),
-        transformSwapsHandedness( renderFromObject->SwapsHandedness( ) )
+    CurveCommon::CurveCommon( const std::array<Point3f, 4>& c, Float width0, Float width1, CurveType type, const boost::container::small_vector<Normal3f, 2>& norm, const Transform* renderFromObject, const Transform* objectFromRender, bool reverseOrientation )
+        : cpObj( c ), width { width0, width1 }, type( type ),
+          renderFromObject( renderFromObject ),
+          objectFromRender( objectFromRender ),
+          reverseOrientation( reverseOrientation ),
+          transformSwapsHandedness( renderFromObject->SwapsHandedness( ) )
     {
-        width[ 0 ] = width0;
-        width[ 1 ] = width1;
-        NCHECK_EQ( c.size( ), 4 );
-        for ( int i = 0; i < 4; ++i )
-            cpObj[ i ] = c[ i ];
         if ( norm.size( ) == 2 )
         {
             n[ 0 ] = Normalize( norm[ 0 ] );
@@ -551,9 +538,9 @@ namespace pbrto
 
     pstdo::vector<Shape> CreateCurve( const Transform* renderFromObject,
         const Transform* objectFromRender,
-        bool reverseOrientation, pstdo::span<const Point3f> c,
+        bool reverseOrientation, const std::array<Point3f, 4>& c,
         Float w0, Float w1, CurveType type,
-        pstdo::span<const Normal3f> norm, int splitDepth,
+        const boost::container::small_vector<Normal3f, 2>& norm, int splitDepth,
         Allocator alloc )
     {
         CurveCommon* common = alloc.new_object<CurveCommon>(
@@ -576,10 +563,9 @@ namespace pbrto
     }
 
     // Curve Method Definitions
-    PBRT_CPU_GPU Bounds3f Curve::Bounds( ) const
+    Bounds3f Curve::Bounds( ) const
     {
-        pstdo::span<const Point3f> cpSpan( common->cpObj );
-        Bounds3f objBounds = BoundCubicBezier( cpSpan, uMin, uMax );
+        Bounds3f objBounds = BoundCubicBezier( common->cpObj, uMin, uMax );
         // Expand _objBounds_ by maximum curve width over $u$ range
         Float width[ 2 ] = { Lerp2( uMin, common->width[ 0 ], common->width[ 1 ] ),
                           Lerp2( uMax, common->width[ 0 ], common->width[ 1 ] ) };
@@ -590,14 +576,15 @@ namespace pbrto
 
     PBRT_CPU_GPU Float Curve::Area( ) const
     {
-        pstdo::array<Point3f, 4> cpObj =
-            CubicBezierControlPoints( pstdo::MakeConstSpan( common->cpObj ), uMin, uMax );
+        std::array<Point3f, 4> cpObj = CubicBezierControlPoints( common->cpObj, uMin, uMax );
         Float width0 = Lerp2( uMin, common->width[ 0 ], common->width[ 1 ] );
         Float width1 = Lerp2( uMax, common->width[ 0 ], common->width[ 1 ] );
         Float avgWidth = ( width0 + width1 ) * 0.5f;
         Float approxLength = 0.f;
         for ( int i = 0; i < 3; ++i )
+        {
             approxLength += ScalarDistance( cpObj[ i ], cpObj[ i + 1 ] );
+        }
         return approxLength * avgWidth;
     }
 
@@ -613,8 +600,7 @@ namespace pbrto
         return IntersectRay( ray, tMax, nullptr );
     }
 
-    bool Curve::IntersectRay( const Ray& r, Float tMax,
-        pstdo::optional<ShapeIntersection>* si ) const
+    bool Curve::IntersectRay( const Ray& r, Float tMax, pstdo::optional<ShapeIntersection>* si ) const
     {
 #ifndef PBRT_IS_GPU_CODE
         ++nCurveTests;
@@ -623,8 +609,7 @@ namespace pbrto
         Ray ray = ( *common->objectFromRender )( r );
 
         // Get object-space control points for curve segment, _cpObj_
-        pstdo::array<Point3f, 4> cpObj =
-            CubicBezierControlPoints( pstdo::span<const Point3f>( common->cpObj ), uMin, uMax );
+        std::array<Point3f, 4> cpObj = CubicBezierControlPoints( common->cpObj, uMin, uMax );
 
         // Project curve control points to plane perpendicular to ray
         Vector3f::Simd dx = Cross( ray.d, cpObj[ 3 ] - cpObj[ 0 ] );
@@ -636,7 +621,7 @@ namespace pbrto
             dx = dxTmp;
         }
         Transform rayFromObject = pbrto::LookAt( ray.o, ray.o + ray.d, dx );
-        pstdo::array<Point3f, 4> cp = { rayFromObject( cpObj[ 0 ] ), rayFromObject( cpObj[ 1 ] ),
+        std::array<Point3f, 4> cp = { rayFromObject( cpObj[ 0 ] ), rayFromObject( cpObj[ 1 ] ),
                                       rayFromObject( cpObj[ 2 ] ), rayFromObject( cpObj[ 3 ] ) };
 
         // Test ray against bound of projected control points
@@ -665,12 +650,11 @@ namespace pbrto
         }
 
         // Recursively test for ray--curve intersection
-        pstdo::span<const Point3f> cpSpan( cp );
-        return RecursiveIntersect( ray, tMax, cpSpan, Inverse( rayFromObject ), uMin, uMax,
-            maxDepth, si );
+        
+        return RecursiveIntersect( ray, tMax, cp, Inverse( rayFromObject ), uMin, uMax, maxDepth, si );
     }
 
-    bool Curve::RecursiveIntersect( const Ray& ray, Float tMax, pstdo::span<const Point3f> cp,
+    bool Curve::RecursiveIntersect( const Ray& ray, Float tMax, std::span<const Point3f, 4> cp,
         const Transform& objectFromRay, Float u0, Float u1,
         int depth, pstdo::optional<ShapeIntersection>* si ) const
     {
@@ -678,7 +662,7 @@ namespace pbrto
         if ( depth > 0 )
         {
             // Split curve segment into subsegments and test for intersection
-            pstdo::array<Point3f, 7> cpSplit = SubdivideCubicBezier( cp );
+            std::array<Point3f, 7> cpSplit = SubdivideCubicBezier( cp );
             Float u[ 3 ] = { u0, ( u0 + u1 ) / 2, u1 };
             for ( int seg = 0; seg < 2; ++seg )
             {
@@ -686,9 +670,8 @@ namespace pbrto
                 Float maxWidth =
                     std::max( Lerp2( u[ seg ], common->width[ 0 ], common->width[ 1 ] ),
                         Lerp2( u[ seg + 1 ], common->width[ 0 ], common->width[ 1 ] ) );
-                pstdo::span<const Point3f> cps = pstdo::MakeConstSpan( &cpSplit[ 3 * seg ], 4 );
-                Bounds3f curveBounds =
-                    Union( Bounds3f( cps[ 0 ], cps[ 1 ] ), Bounds3f( cps[ 2 ], cps[ 3 ] ) );
+                std::span<const Point3f,4> cps( &cpSplit[ 3 * seg ], 4 );
+                Bounds3f curveBounds = Union( Bounds3f( cps[ 0 ], cps[ 1 ] ), Bounds3f( cps[ 2 ], cps[ 3 ] ) );
                 curveBounds = Expand( curveBounds, 0.5f * maxWidth );
                 Bounds3f rayBounds( Point3f( 0, 0, 0 ), Point3f( 0, 0, ScalarLength( ray.d ) * tMax ) );
                 if ( !Overlaps( rayBounds, curveBounds ) )
@@ -744,8 +727,7 @@ namespace pbrto
 
             // Test intersection point against curve width
             Vector3f dpcdw;
-            Point3f pc =
-                EvaluateCubicBezier( pstdo::span<const Point3f>( cp ), Clamp( w, 0, 1 ), &dpcdw );
+            Point3f pc = EvaluateCubicBezier( cp, Clamp( w, 0, 1 ), &dpcdw );
             Float ptCurveDist2 = Sqr( pc.x ) + Sqr( pc.y );
 
             if ( ptCurveDist2 > Sqr( hitWidth ) * 0.25f )
@@ -771,7 +753,7 @@ namespace pbrto
 
                 // Compute $\dpdu$ and $\dpdv$ for curve intersection
                 Vector3f dpdu, dpdv;
-                EvaluateCubicBezier( pstdo::MakeConstSpan( common->cpObj ), u, &dpdu );
+                EvaluateCubicBezier( common->cpObj, u, &dpdu );
                 NCHECK_NE( Vector3f( 0, 0, 0 ), dpdu );
                 if ( common->type == CurveType::Ribbon )
                     dpdv = Normalize( Cross( nHit, dpdu ) ) * hitWidth;
@@ -779,7 +761,7 @@ namespace pbrto
                 {
                     // Compute curve $\dpdv$ for flat and cylinder curves
                     Vector3f dpduPlane = objectFromRay.ApplyInverse( dpdu );
-                    Vector3f dpdvPlane =
+                    Vector3f::Simd dpdvPlane =
                         Normalize( Vector3f( -dpduPlane.y, dpduPlane.x, 0 ) ) * hitWidth;
                     if ( common->type == CurveType::Cylinder )
                     {
@@ -829,7 +811,7 @@ namespace pbrto
         return {};
     }
 
-    PBRT_CPU_GPU Float Curve::PDF( const ShapeSampleContext& ctx, Vector3f wi ) const
+    PBRT_CPU_GPU Float Curve::PDF( const ShapeSampleContext& ctx, Vector3f::Simd wi ) const
     {
         NLOG_FATAL( "Curve::PDF not implemented." );
         return {};
@@ -954,7 +936,7 @@ namespace pbrto
         int cpOffset = 0;
         for ( int seg = 0; seg < nSegments; ++seg )
         {
-            pstdo::array<Point3f, 4> segCpBezier;
+            std::array<Point3f, 4> segCpBezier;
 
             // First, compute the cubic Bezier control points for the current
             // segment and store them in segCpBezier. (It is admittedly
@@ -967,7 +949,7 @@ namespace pbrto
                 {
                     // Elevate to degree 3.
                     segCpBezier = ElevateQuadraticBezierToCubic(
-                        pstdo::MakeConstSpan( cp ).subspan( cpOffset, 3 ) );
+                        std::span<const Point3f,3>(cp.data( ) + cpOffset, 3 ) );
                 }
                 else
                 {
@@ -982,26 +964,31 @@ namespace pbrto
                 // Uniform b-spline.
                 if ( degree == 2 )
                 {
-                    pstdo::array<Point3f, 3> bezCp = QuadraticBSplineToBezier(
-                        pstdo::MakeConstSpan( cp ).subspan( cpOffset, 3 ) );
-                    segCpBezier = ElevateQuadraticBezierToCubic( pstdo::MakeConstSpan( bezCp ) );
+                    std::array<Point3f, 3> bezCp = QuadraticBSplineToBezier(
+                        std::span<const Point3f, 3>( cp.data( ) + cpOffset, 3 ) );
+                    segCpBezier = ElevateQuadraticBezierToCubic( bezCp );
                 }
                 else
                 {
                     segCpBezier =
-                        CubicBSplineToBezier( pstdo::MakeConstSpan( cp ).subspan( cpOffset, 4 ) );
+                        CubicBSplineToBezier( std::span<const Point3f, 4>( cp.data( ) + cpOffset, 4 ) );
                 }
                 ++cpOffset;
             }
 
-            pstdo::span<const Normal3f> nspan;
+            //pstdo::span<const Normal3f> nspan;
+            boost::container::small_vector<Normal3f, 2> normals;
             if ( !n.empty( ) )
-                nspan = pstdo::MakeSpan( &n[ seg ], 2 );
+            {
+                //nspan = pstdo::MakeSpan( &n[ seg ], 2 );
+                normals.assign( &n[ seg ], &n[ seg + 2 ] );
+            }
+                
             auto c =
                 CreateCurve( renderFromObject, objectFromRender, reverseOrientation,
                     segCpBezier, Lerp2( Float( seg ) / Float( nSegments ), width0, width1 ),
                     Lerp2( Float( seg + 1 ) / Float( nSegments ), width0, width1 ), type,
-                    nspan, sd, alloc );
+                    normals, sd, alloc );
             curves.insert( curves.end( ), c.begin( ), c.end( ) );
         }
         return curves;
@@ -1166,8 +1153,8 @@ namespace pbrto
         // Store area of bilinear patch in _area_
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         if ( IsRectangle( mesh ) )
             area = ScalarDistance( p00, p01 ) * ScalarDistance( p00, p10 );
@@ -1177,7 +1164,7 @@ namespace pbrto
             // FIXME: it would be good to skip this for flat patches, or to
             // be adaptive based on curvature in some manner
             constexpr int na = 3;
-            Point3f p[ na + 1 ][ na + 1 ];
+            Point3f::Simd p[ na + 1 ][ na + 1 ];
             for ( int i = 0; i <= na; ++i )
             {
                 Float u = Float( i ) / Float( na );
@@ -1200,8 +1187,8 @@ namespace pbrto
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         return Union( Bounds3f( p00, p01 ), Bounds3f( p10, p11 ) );
     }
@@ -1211,18 +1198,18 @@ namespace pbrto
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         // If patch is a triangle, return bounds for single surface normal
         if ( p00 == p10 || p10 == p11 || p11 == p01 || p01 == p00 )
         {
-            Vector3f dpdu = Lerp2( 0.5f, p10, p11 ) - Lerp2( 0.5f, p00, p01 );
-            Vector3f dpdv = Lerp2( 0.5f, p01, p11 ) - Lerp2( 0.5f, p00, p10 );
-            Vector3f n = Normalize( Cross( dpdu, dpdv ) );
+            Vector3f::Simd dpdu = Lerp2( 0.5f, p10, p11 ) - Lerp2( 0.5f, p00, p01 );
+            Vector3f::Simd dpdv = Lerp2( 0.5f, p01, p11 ) - Lerp2( 0.5f, p00, p10 );
+            Vector3f::Simd n = Normalize( Cross( dpdu, dpdv ) );
             if ( mesh->n )
             {
-                Normal3f ns =
+                Normal3f::Simd ns =
                     ( mesh->n[ v[ 0 ] ] + mesh->n[ v[ 1 ] ] + mesh->n[ v[ 2 ] ] + mesh->n[ v[ 3 ] ] ) / 4;
                 n = FaceForward( n, ns );
             }
@@ -1232,16 +1219,16 @@ namespace pbrto
         }
 
         // Compute bilinear patch normal _n00_ at $(0,0)$
-        Vector3f n00 = Normalize( Cross( p10 - p00, p01 - p00 ) );
+        Vector3f::Simd n00 = Normalize( Cross( p10 - p00, p01 - p00 ) );
         if ( mesh->n )
             n00 = FaceForward( n00, mesh->n[ v[ 0 ] ] );
         else if ( mesh->reverseOrientation ^ mesh->transformSwapsHandedness )
             n00 = -n00;
 
         // Compute bilinear patch normals _n10_, _n01_, and _n11_
-        Vector3f n10 = Normalize( Cross( p11 - p10, p00 - p10 ) );
-        Vector3f n01 = Normalize( Cross( p00 - p01, p11 - p01 ) );
-        Vector3f n11 = Normalize( Cross( p01 - p11, p10 - p11 ) );
+        Vector3f::Simd n10 = Normalize( Cross( p11 - p10, p00 - p10 ) );
+        Vector3f::Simd n01 = Normalize( Cross( p00 - p01, p11 - p01 ) );
+        Vector3f::Simd n11 = Normalize( Cross( p01 - p11, p10 - p11 ) );
         if ( mesh->n )
         {
             n10 = FaceForward( n10, mesh->n[ v[ 1 ] ] );
@@ -1256,19 +1243,18 @@ namespace pbrto
         }
 
         // Compute average normal and return normal bounds for patch
-        Vector3f n = Normalize( n00 + n10 + n01 + n11 );
+        Vector3f::Simd n = Normalize( n00 + n10 + n01 + n11 );
         Float cosTheta = std::min( { ScalarDot( n, n00 ), ScalarDot( n, n01 ), ScalarDot( n, n10 ), ScalarDot( n, n11 ) } );
         return DirectionCone( n, Clamp( cosTheta, -1, 1 ) );
     }
 
-    PBRT_CPU_GPU pstdo::optional<ShapeIntersection> BilinearPatch::Intersect( const Ray& ray,
-        Float tMax ) const
+    pstdo::optional<ShapeIntersection> BilinearPatch::Intersect( const Ray& ray, Float tMax ) const
     {
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         pstdo::optional<BilinearIntersection> blpIsect =
             IntersectBilinearPatch( ray, tMax, p00, p10, p01, p11 );
@@ -1284,19 +1270,19 @@ namespace pbrto
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         return IntersectBilinearPatch( ray, tMax, p00, p10, p01, p11 ).has_value( );
     }
 
-    PBRT_CPU_GPU pstdo::optional<ShapeSample> BilinearPatch::Sample( Point2f u ) const
+    pstdo::optional<ShapeSample> BilinearPatch::Sample( Point2f u ) const
     {
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         // Sample bilinear patch parametric $(u,v)$ coordinates
         Float pdf = 1;
@@ -1320,10 +1306,10 @@ namespace pbrto
 
         // Compute bilinear patch geometric quantities at sampled $(u,v)$
         // Compute $\pt{}$, $\dpdu$, and $\dpdv$ for sampled $(u,v)$
-        Point3f pu0 = Lerp2( uv[ 1 ], p00, p01 ), pu1 = Lerp2( uv[ 1 ], p10, p11 );
-        Point3f p = Lerp2( uv[ 0 ], pu0, pu1 );
-        Vector3f dpdu = pu1 - pu0;
-        Vector3f dpdv = Lerp2( uv[ 0 ], p01, p11 ) - Lerp2( uv[ 0 ], p00, p10 );
+        Point3f::Simd pu0 = Lerp2( uv[ 1 ], p00, p01 ), pu1 = Lerp2( uv[ 1 ], p10, p11 );
+        Point3f::Simd p = Lerp2( uv[ 0 ], pu0, pu1 );
+        Vector3f::Simd dpdu = pu1 - pu0;
+        Vector3f::Simd dpdv = Lerp2( uv[ 0 ], p01, p11 ) - Lerp2( uv[ 0 ], p00, p10 );
         if ( ScalarLengthSquared( dpdu ) == 0 || ScalarLengthSquared( dpdv ) == 0 )
             return {};
 
@@ -1336,34 +1322,34 @@ namespace pbrto
             st = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], uv00, uv01 ), Lerp2( uv[ 1 ], uv10, uv11 ) );
         }
         // Compute surface normal for sampled bilinear patch $(u,v)$
-        Normal3f n = Normal3f( Normalize( Cross( dpdu, dpdv ) ) );
+        Normal3f::Simd n = Normal3f::Simd( Normalize( Cross( dpdu, dpdv ) ) );
         // Flip normal at sampled $(u,v)$ if necessary
         if ( mesh->n )
         {
-            Normal3f n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
-            Normal3f n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
-            Normal3f ns = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], n00, n01 ), Lerp2( uv[ 1 ], n10, n11 ) );
+            Normal3f::Simd n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
+            Normal3f::Simd n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
+            Normal3f::Simd ns = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], n00, n01 ), Lerp2( uv[ 1 ], n10, n11 ) );
             n = FaceForward( n, ns );
         }
         else if ( mesh->reverseOrientation ^ mesh->transformSwapsHandedness )
             n = -n;
 
         // Compute _pError_ for sampled bilinear patch $(u,v)$
-        Point3f pAbsSum = Abs( p00 ) + Abs( p01 ) + Abs( p10 ) + Abs( p11 );
-        Vector3f pError = gamma( 6 ) * Vector3f( pAbsSum );
+        Point3f::Simd pAbsSum = Abs( p00 ) + Abs( p01 ) + Abs( p10 ) + Abs( p11 );
+        Vector3f pError = gamma( 6 ) * Vector3f::Simd( pAbsSum );
 
         // Return _ShapeSample_ for sampled bilinear patch point
         return ShapeSample{ Interaction( Point3fi( p, pError ), n, st ),
                            pdf / ScalarLength( Cross( dpdu, dpdv ) ) };
     }
 
-    PBRT_CPU_GPU Float BilinearPatch::PDF( const Interaction& intr ) const
+    Float BilinearPatch::PDF( const Interaction& intr ) const
     {
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         // Compute parametric $(u,v)$ of point on bilinear patch
         Point2f uv = intr.uv;
@@ -1391,26 +1377,25 @@ namespace pbrto
             pdf = 1;
 
         // Find $\dpdu$ and $\dpdv$ at bilinear patch $(u,v)$
-        Point3f pu0 = Lerp2( uv[ 1 ], p00, p01 ), pu1 = Lerp2( uv[ 1 ], p10, p11 );
-        Vector3f dpdu = pu1 - pu0;
-        Vector3f dpdv = Lerp2( uv[ 0 ], p01, p11 ) - Lerp2( uv[ 0 ], p00, p10 );
+        Point3f::Simd pu0 = Lerp2( uv[ 1 ], p00, p01 ), pu1 = Lerp2( uv[ 1 ], p10, p11 );
+        Vector3f::Simd dpdu = pu1 - pu0;
+        Vector3f::Simd dpdv = Lerp2( uv[ 0 ], p01, p11 ) - Lerp2( uv[ 0 ], p00, p10 );
 
         // Return final bilinear patch area sampling PDF
         return pdf / ScalarLength( Cross( dpdu, dpdv ) );
     }
 
-    PBRT_CPU_GPU pstdo::optional<ShapeSample> BilinearPatch::Sample( const ShapeSampleContext& ctx,
-        Point2f u ) const
+    pstdo::optional<ShapeSample> BilinearPatch::Sample( const ShapeSampleContext& ctx, Point2f u ) const
     {
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         // Sample bilinear patch with respect to solid angle from reference point
-        Vector3f v00 = Normalize( p00 - ctx.p( ) ), v10 = Normalize( p10 - ctx.p( ) );
-        Vector3f v01 = Normalize( p01 - ctx.p( ) ), v11 = Normalize( p11 - ctx.p( ) );
+        Vector3f::Simd v00 = Normalize( p00 - ctx.p( ) ), v10 = Normalize( p10 - ctx.p( ) );
+        Vector3f::Simd v01 = Normalize( p01 - ctx.p( ) ), v11 = Normalize( p11 - ctx.p( ) );
         if ( !IsRectangle( mesh ) || mesh->imageDistribution ||
             SphericalQuadArea( v00, v10, v11, v01 ) <= MinSphericalSampleArea )
         {
@@ -1418,7 +1403,7 @@ namespace pbrto
             pstdo::optional<ShapeSample> ss = Sample( u );
             NDCHECK( ss.has_value( ) );
             ss->intr.time = ctx.time;
-            Vector3f wi = ss->intr.p( ) - ctx.p( );
+            Vector3f::Simd wi = ss->intr.p( ) - ctx.p( );
             if ( ScalarLengthSquared( wi ) == 0 )
                 return {};
             wi = Normalize( wi );
@@ -1447,21 +1432,21 @@ namespace pbrto
         }
 
         // Sample spherical rectangle at reference point
-        Vector3f eu = p10 - p00, ev = p01 - p00;
+        Vector3f::Simd eu = p10 - p00, ev = p01 - p00;
         Float quadPDF;
-        Point3f p = SampleSphericalRectangle( ctx.p( ), p00, eu, ev, u, &quadPDF );
+        Point3f::Simd p = SampleSphericalRectangle( ctx.p( ), p00, eu, ev, u, &quadPDF );
         pdf *= quadPDF;
 
         // Compute $(u,v)$ and surface normal for sampled point on rectangle
         Point2f uv( ScalarDot( p - p00, eu ) / ScalarDistanceSquared( p10, p00 ),
             ScalarDot( p - p00, ev ) / ScalarDistanceSquared( p01, p00 ) );
-        Normal3f n = Normal3f( Normalize( Cross( eu, ev ) ) );
+        Normal3f::Simd n = Normal3f::Simd( Normalize( Cross( eu, ev ) ) );
         // Flip normal at sampled $(u,v)$ if necessary
         if ( mesh->n )
         {
-            Normal3f n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
-            Normal3f n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
-            Normal3f ns = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], n00, n01 ), Lerp2( uv[ 1 ], n10, n11 ) );
+            Normal3f::Simd n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
+            Normal3f::Simd n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
+            Normal3f::Simd ns = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], n00, n01 ), Lerp2( uv[ 1 ], n10, n11 ) );
             n = FaceForward( n, ns );
         }
         else if ( mesh->reverseOrientation ^ mesh->transformSwapsHandedness )
@@ -1480,13 +1465,13 @@ namespace pbrto
         return ShapeSample{ Interaction( p, n, ctx.time, st ), pdf };
     }
 
-    PBRT_CPU_GPU Float BilinearPatch::PDF( const ShapeSampleContext& ctx, Vector3f wi ) const
+    Float BilinearPatch::PDF( const ShapeSampleContext& ctx, Vector3f::Simd wi ) const
     {
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         // Compute solid angle PDF for sampling bilinear patch from _ctx_
         // Intersect sample ray with shape geometry
@@ -1495,8 +1480,8 @@ namespace pbrto
         if ( !isect )
             return 0;
 
-        Vector3f v00 = Normalize( p00 - ctx.p( ) ), v10 = Normalize( p10 - ctx.p( ) );
-        Vector3f v01 = Normalize( p01 - ctx.p( ) ), v11 = Normalize( p11 - ctx.p( ) );
+        Vector3f::Simd v00 = Normalize( p00 - ctx.p( ) ), v10 = Normalize( p10 - ctx.p( ) );
+        Vector3f::Simd v01 = Normalize( p01 - ctx.p( ) ), v11 = Normalize( p11 - ctx.p( ) );
         if ( !IsRectangle( mesh ) || mesh->imageDistribution ||
             SphericalQuadArea( v00, v10, v11, v01 ) <= MinSphericalSampleArea )
         {
@@ -1510,7 +1495,7 @@ namespace pbrto
         {
             // Return PDF for sample in spherical rectangle
             Float pdf = 1 / SphericalQuadArea( v00, v10, v11, v01 );
-            if ( ctx.ns != Normal3f( 0, 0, 0 ) )
+            if ( ctx.ns != Normal3f::Simd( 0, 0, 0 ) )
             {
                 // Compute $\cos\theta$ weights for rectangle seen from reference point
                 pstdo::array<Float, 4> w =

@@ -82,9 +82,9 @@ namespace pbrto
     inline Float SampleLinear( Float u, Float a, Float b );
     inline Float InvertLinearSample( Float x, Float a, Float b );
 
-    PBRTO_EXPORT pstdo::array<Float, 3> SampleSphericalTriangle( const pstdo::array<Point3f, 3>& v, Point3f p, Point2f u, Float* pdf = nullptr );
+    PBRTO_EXPORT std::array<Float, 3> SampleSphericalTriangle( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Point2f u, Float* pdf = nullptr );
 
-    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p, Vector3f w );
+    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Vector3f::Simd w );
 
     PBRTO_EXPORT Point3f SampleSphericalRectangle( Point3f p, Point3f v00, Vector3f eu, Vector3f ev, Point2f u, Float* pdf = nullptr );
 
@@ -530,7 +530,7 @@ namespace pbrto
         Float sinPhi;
         Float cosPhi;
         SinCos( phi, &sinPhi, &cosPhi );
-        return { r * cosPhi, r * sinPhi, z };
+        return Vector3f::Simd( r * cosPhi, r * sinPhi, z );
     }
 
     inline Float UniformSpherePDF( )
