@@ -49,48 +49,48 @@ namespace pbrto
     // TextureEvalContext Definition
     struct TextureEvalContext
     {
+        Point3f::Simd p;
+        Vector3f::Simd dpdx, dpdy;
+        Normal3f::Simd n;
+        Point2f uv;
+        Float dudx = 0, dudy = 0, dvdx = 0, dvdy = 0;
+        int faceIndex = 0;
+
         // TextureEvalContext Public Methods
         TextureEvalContext( ) = default;
-        PBRT_CPU_GPU
-            TextureEvalContext( const Interaction& intr ) : p( intr.p( ) ), uv( intr.uv ) {}
-        PBRT_CPU_GPU
-            TextureEvalContext( const SurfaceInteraction& si )
+        TextureEvalContext( const Interaction& intr ) 
+            : p( intr.p( ) ), uv( intr.uv ) 
+        { }
+        TextureEvalContext( const SurfaceInteraction& si )
             : p( si.p( ) ),
-            dpdx( si.dpdx ),
-            dpdy( si.dpdy ),
-            n( si.n ),
-            uv( si.uv ),
-            dudx( si.dudx ),
-            dudy( si.dudy ),
-            dvdx( si.dvdx ),
-            dvdy( si.dvdy ),
-            faceIndex( si.faceIndex )
+              dpdx( si.dpdx ),
+              dpdy( si.dpdy ),
+              n( si.n ),
+              uv( si.uv ),
+              dudx( si.dudx ),
+              dudy( si.dudy ),
+              dvdx( si.dvdx ),
+              dvdy( si.dvdy ),
+              faceIndex( si.faceIndex )
         {
         }
-        PBRT_CPU_GPU
-            TextureEvalContext( Point3f p, Vector3f dpdx, Vector3f dpdy, Normal3f n, Point2f uv,
-                Float dudx, Float dudy, Float dvdx, Float dvdy, int faceIndex )
+        TextureEvalContext( Point3f::Simd p, Vector3f::Simd dpdx, Vector3f::Simd dpdy, Normal3f::Simd n, Point2f uv, Float dudx, Float dudy, Float dvdx, Float dvdy, int faceIndex )
             : p( p ),
-            dpdx( dpdx ),
-            dpdy( dpdy ),
-            n( n ),
-            uv( uv ),
-            dudx( dudx ),
-            dudy( dudy ),
-            dvdx( dvdx ),
-            dvdy( dvdy ),
-            faceIndex( faceIndex )
+              dpdx( dpdx ),
+              dpdy( dpdy ),
+              n( n ),
+              uv( uv ),
+              dudx( dudx ),
+              dudy( dudy ),
+              dvdx( dvdx ),
+              dvdy( dvdy ),
+              faceIndex( faceIndex )
         {
         }
 
         std::string ToString( ) const;
 
-        Point3f p;
-        Vector3f dpdx, dpdy;
-        Normal3f n;
-        Point2f uv;
-        Float dudx = 0, dudy = 0, dvdx = 0, dvdy = 0;
-        int faceIndex = 0;
+        
     };
 
     // TexCoord2D Definition
@@ -112,6 +112,7 @@ namespace pbrto
     // UVMapping Definition
     class UVMapping
     {
+        Float su, sv, du, dv;
     public:
         // UVMapping Public Methods
         UVMapping( Float su = 1, Float sv = 1, Float du = 0, Float dv = 0 )
@@ -121,8 +122,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map( TextureEvalContext ctx ) const
         {
             // Compute texture differentials for 2D $(u,v)$ mapping
             Float dsdx = su * ctx.dudx, dsdy = su * ctx.dudy;
@@ -131,39 +131,34 @@ namespace pbrto
             Point2f st( su * ctx.uv[ 0 ] + du, sv * ctx.uv[ 1 ] + dv );
             return TexCoord2D{ st, dsdx, dsdy, dtdx, dtdy };
         }
-
-    private:
-        Float su, sv, du, dv;
     };
 
     // SphericalMapping Definition
     class SphericalMapping
     {
+        // SphericalMapping Private Members
+        Transform textureFromRender;
     public:
         // SphericalMapping Public Methods
         SphericalMapping( const Transform& textureFromRender )
             : textureFromRender( textureFromRender )
-        {
-        }
+        { }
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map( TextureEvalContext ctx ) const
         {
             Point3f pt = textureFromRender( ctx.p );
             // Compute $\partial\,s/\partial\,\pt{}$ and $\partial\,t/\partial\,\pt{}$ for
             // spherical mapping
             Float x2y2 = Sqr( pt.x ) + Sqr( pt.y );
             Float sqrtx2y2 = Math::Sqrt( x2y2 );
-            Vector3f dsdp = Vector3f( -pt.y, pt.x, 0 ) / ( 2 * Pi * x2y2 );
-            Vector3f dtdp =
-                1 / ( Pi * ( x2y2 + Sqr( pt.z ) ) ) *
-                Vector3f( pt.x * pt.z / sqrtx2y2, pt.y * pt.z / sqrtx2y2, -sqrtx2y2 );
+            Vector3f::Simd dsdp = Vector3f::Simd( -pt.y, pt.x, 0 ) / ( 2 * Pi * x2y2 );
+            Vector3f::Simd dtdp = 1 / ( Pi * ( x2y2 + Sqr( pt.z ) ) ) * Vector3f::Simd( pt.x * pt.z / sqrtx2y2, pt.y * pt.z / sqrtx2y2, -sqrtx2y2 );
 
             // Compute texture coordinate differentials for spherical mapping
-            Vector3f dpdx = textureFromRender( ctx.dpdx );
-            Vector3f dpdy = textureFromRender( ctx.dpdy );
+            Vector3f::Simd dpdx = textureFromRender( ctx.dpdx );
+            Vector3f::Simd dpdy = textureFromRender( ctx.dpdy );
             Float dsdx = ScalarDot( dsdp, dpdx ), dsdy = ScalarDot( dsdp, dpdy );
             Float dtdx = ScalarDot( dtdp, dpdx ), dtdy = ScalarDot( dtdp, dpdy );
 
@@ -174,13 +169,14 @@ namespace pbrto
         }
 
     private:
-        // SphericalMapping Private Members
-        Transform textureFromRender;
+        
     };
 
     // CylindricalMapping Definition
     class CylindricalMapping
     {
+        // CylindricalMapping Private Members
+        Transform textureFromRender;
     public:
         // CylindricalMapping Public Methods
         CylindricalMapping( const Transform& textureFromRender )
@@ -189,15 +185,14 @@ namespace pbrto
         }
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map( TextureEvalContext ctx ) const
         {
             Point3f pt = textureFromRender( ctx.p );
             // Compute texture coordinate differentials for cylinder $(u,v)$ mapping
             Float x2y2 = Sqr( pt.x ) + Sqr( pt.y );
-            Vector3f dsdp = Vector3f( -pt.y, pt.x, 0 ) / ( 2 * Pi * x2y2 ),
-                dtdp = Vector3f( 0, 0, 1 );
-            Vector3f dpdx = textureFromRender( ctx.dpdx ), dpdy = textureFromRender( ctx.dpdy );
+            Vector3f::Simd dsdp = Vector3f::Simd( -pt.y, pt.x, 0 ) / ( 2 * Pi * x2y2 ),
+                dtdp = Vector3f::Simd( 0, 0, 1 );
+            Vector3f::Simd dpdx = textureFromRender( ctx.dpdx ), dpdy = textureFromRender( ctx.dpdy );
             Float dsdx = ScalarDot( dsdp, dpdx ), dsdy = ScalarDot( dsdp, dpdy );
             Float dtdx = ScalarDot( dtdp, dpdx ), dtdy = ScalarDot( dtdp, dpdy );
 
@@ -206,28 +201,28 @@ namespace pbrto
         }
 
     private:
-        // CylindricalMapping Private Members
-        Transform textureFromRender;
+        
     };
 
     // PlanarMapping Definition
     class PlanarMapping
     {
+        // PlanarMapping Private Members
+        Transform textureFromRender;
+        Vector3f::Simd vs, vt;
+        Float ds, dt;
     public:
         // PlanarMapping Public Methods
-        PlanarMapping( const Transform& textureFromRender, Vector3f vs, Vector3f vt, Float ds,
-            Float dt )
+        PlanarMapping( const Transform& textureFromRender, Vector3f::Simd vs, Vector3f::Simd vt, Float ds, Float dt )
             : textureFromRender( textureFromRender ), vs( vs ), vt( vt ), ds( ds ), dt( dt )
-        {
-        }
+        { }
 
-        PBRT_CPU_GPU
-            TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map( TextureEvalContext ctx ) const
         {
-            Vector3f vec( textureFromRender( ctx.p ) );
+            Vector3f::Simd vec( textureFromRender( ctx.p ) );
             // Initialize partial derivatives of planar mapping $(s,t)$ coordinates
-            Vector3f dpdx = textureFromRender( ctx.dpdx );
-            Vector3f dpdy = textureFromRender( ctx.dpdy );
+            Vector3f::Simd dpdx = textureFromRender( ctx.dpdx );
+            Vector3f::Simd dpdy = textureFromRender( ctx.dpdy );
             Float dsdx = ScalarDot( vs, dpdx ), dsdy = ScalarDot( vs, dpdy );
             Float dtdx = ScalarDot( vt, dpdx ), dtdy = ScalarDot( vt, dpdy );
 
@@ -238,10 +233,7 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // PlanarMapping Private Members
-        Transform textureFromRender;
-        Vector3f vs, vt;
-        Float ds, dt;
+        
     };
 
     // TextureMapping2D Definition
@@ -251,9 +243,7 @@ namespace pbrto
     public:
         // TextureMapping2D Interface
         using TaggedPointer::TaggedPointer;
-        PBRT_CPU_GPU
-            TextureMapping2D(
-                TaggedPointer<UVMapping, SphericalMapping, CylindricalMapping, PlanarMapping> tp )
+        TextureMapping2D( TaggedPointer<UVMapping, SphericalMapping, CylindricalMapping, PlanarMapping> tp )
             : TaggedPointer( tp )
         {
         }
@@ -262,7 +252,7 @@ namespace pbrto
             const Transform& renderFromTexture, const FileLoc* loc,
             Allocator alloc );
 
-        PBRT_CPU_GPU inline TexCoord2D Map( TextureEvalContext ctx ) const;
+        inline TexCoord2D Map( TextureEvalContext ctx ) const;
     };
 
     // TextureMapping2D Inline Functions
@@ -275,6 +265,7 @@ namespace pbrto
     // PointTransformMapping Definition
     class PointTransformMapping
     {
+        Transform textureFromRender;
     public:
         // PointTransformMapping Public Methods
         PointTransformMapping( const Transform& textureFromRender )
@@ -284,15 +275,14 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            TexCoord3D Map( TextureEvalContext ctx ) const
+        TexCoord3D Map( TextureEvalContext ctx ) const
         {
             return TexCoord3D{ textureFromRender( ctx.p ), textureFromRender( ctx.dpdx ),
                               textureFromRender( ctx.dpdy ) };
         }
 
     private:
-        Transform textureFromRender;
+        
     };
 
     // TextureMapping3D Definition
@@ -301,15 +291,13 @@ namespace pbrto
     public:
         // TextureMapping3D Interface
         using TaggedPointer::TaggedPointer;
-        PBRT_CPU_GPU
-            TextureMapping3D( TaggedPointer<PointTransformMapping> tp ) : TaggedPointer( tp ) {}
+        TextureMapping3D( TaggedPointer<PointTransformMapping> tp ) : TaggedPointer( tp ) {}
 
         static TextureMapping3D Create( const ParameterDictionary& parameters,
             const Transform& renderFromTexture, const FileLoc* loc,
             Allocator alloc );
 
-        PBRT_CPU_GPU
-            TexCoord3D Map( TextureEvalContext ctx ) const;
+        TexCoord3D Map( TextureEvalContext ctx ) const;
     };
 
     inline TexCoord3D TextureMapping3D::Map( TextureEvalContext ctx ) const
@@ -322,9 +310,13 @@ namespace pbrto
     class FloatConstantTexture
     {
     public:
-        FloatConstantTexture( Float value ) : value( value ) {}
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const { return value; }
+        FloatConstantTexture( Float value ) 
+            : value( value ) 
+        { }
+        Float Evaluate( TextureEvalContext ctx ) const
+        { 
+            return value; 
+        }
         // FloatConstantTexture Public Methods
         static FloatConstantTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -343,8 +335,7 @@ namespace pbrto
         // SpectrumConstantTexture Public Methods
         SpectrumConstantTexture( Spectrum value ) : value( value ) {}
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             return value.Sample( lambda );
         }
@@ -362,6 +353,9 @@ namespace pbrto
     // FloatBilerpTexture Definition
     class FloatBilerpTexture
     {
+        // BilerpTexture Private Data
+        TextureMapping2D mapping;
+        Float v00, v01, v10, v11;
     public:
         FloatBilerpTexture( TextureMapping2D mapping, Float v00, Float v01, Float v10,
             Float v11 )
@@ -369,8 +363,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return ( 1 - c.st[ 0 ] ) * ( 1 - c.st[ 1 ] ) * v00 + c.st[ 0 ] * ( 1 - c.st[ 1 ] ) * v10 +
@@ -384,14 +377,15 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // BilerpTexture Private Data
-        TextureMapping2D mapping;
-        Float v00, v01, v10, v11;
+        
     };
 
     // SpectrumBilerpTexture Definition
     class SpectrumBilerpTexture
     {
+        // BilerpTexture Private Data
+        TextureMapping2D mapping;
+        Spectrum v00, v01, v10, v11;
     public:
         SpectrumBilerpTexture( TextureMapping2D mapping, Spectrum v00, Spectrum v01,
             Spectrum v10, Spectrum v11 )
@@ -399,8 +393,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return Bilerp( { c.st[ 0 ], c.st[ 1 ] }, { v00.Sample( lambda ), v10.Sample( lambda ),
@@ -415,17 +408,16 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // BilerpTexture Private Data
-        TextureMapping2D mapping;
-        Spectrum v00, v01, v10, v11;
+        
     };
 
-    PBRT_CPU_GPU
-        Float Checkerboard( TextureEvalContext ctx, TextureMapping2D map2D,
-            TextureMapping3D map3D );
+    Float Checkerboard( TextureEvalContext ctx, TextureMapping2D map2D, TextureMapping3D map3D );
 
     class FloatCheckerboardTexture
     {
+        TextureMapping2D map2D;
+        TextureMapping3D map3D;
+        FloatTexture tex[ 2 ];
     public:
         FloatCheckerboardTexture( TextureMapping2D map2D, TextureMapping3D map3D,
             FloatTexture tex1, FloatTexture tex2 )
@@ -433,8 +425,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             Float w = Checkerboard( ctx, map2D, map3D );
             Float t0 = 0, t1 = 0;
@@ -452,14 +443,16 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        TextureMapping2D map2D;
-        TextureMapping3D map3D;
-        FloatTexture tex[ 2 ];
+        
     };
 
     // SpectrumCheckerboardTexture Definition
     class SpectrumCheckerboardTexture
     {
+        // SpectrumCheckerboardTexture Private Members
+        TextureMapping2D map2D;
+        TextureMapping3D map3D;
+        SpectrumTexture tex[ 2 ];
     public:
         // SpectrumCheckerboardTexture Public Methods
         SpectrumCheckerboardTexture( TextureMapping2D map2D, TextureMapping3D map3D,
@@ -474,11 +467,10 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float w = Checkerboard( ctx, map2D, map3D );
-            SampledSpectrum t0, t1;
+            SampledSpectrum::Simd t0, t1;
             if ( w != 1 )
                 t0 = tex[ 0 ].Evaluate( ctx, lambda );
             if ( w != 0 )
@@ -487,10 +479,7 @@ namespace pbrto
         }
 
     private:
-        // SpectrumCheckerboardTexture Private Members
-        TextureMapping2D map2D;
-        TextureMapping3D map3D;
-        SpectrumTexture tex[ 2 ];
+        
     };
 
     PBRT_CPU_GPU
@@ -498,6 +487,9 @@ namespace pbrto
 
     class FloatDotsTexture
     {
+        // DotsTexture Private Data
+        TextureMapping2D mapping;
+        FloatTexture outsideDot, insideDot;
     public:
         FloatDotsTexture( TextureMapping2D mapping, FloatTexture outsideDot,
             FloatTexture insideDot )
@@ -505,8 +497,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return InsidePolkaDot( c.st ) ? insideDot.Evaluate( ctx ) : outsideDot.Evaluate( ctx );
@@ -519,14 +510,15 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // DotsTexture Private Data
-        TextureMapping2D mapping;
-        FloatTexture outsideDot, insideDot;
+        
     };
 
     // SpectrumDotsTexture Definition
     class SpectrumDotsTexture
     {
+        // SpectrumDotsTexture Private Members
+        TextureMapping2D mapping;
+        SpectrumTexture outsideDot, insideDot;
     public:
         // SpectrumDotsTexture Public Methods
         SpectrumDotsTexture( TextureMapping2D mapping, SpectrumTexture outsideDot,
@@ -535,8 +527,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return InsidePolkaDot( c.st ) ? insideDot.Evaluate( ctx, lambda )
@@ -551,14 +542,15 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // SpectrumDotsTexture Private Members
-        TextureMapping2D mapping;
-        SpectrumTexture outsideDot, insideDot;
+        
     };
 
     // FBmTexture Definition
     class FBmTexture
     {
+        TextureMapping3D mapping;
+        Float omega;
+        int octaves;
     public:
         // FBmTexture Public Methods
         FBmTexture( TextureMapping3D mapping, int octaves, Float omega )
@@ -566,8 +558,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             return FBm( c.p, c.dpdx, c.dpdy, omega, octaves );
@@ -580,9 +571,7 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        TextureMapping3D mapping;
-        Float omega;
-        int octaves;
+        
     };
 
     // TexInfo Definition
@@ -612,6 +601,18 @@ namespace pbrto
     // ImageTextureBase Definition
     class ImageTextureBase
     {
+    protected:
+        // ImageTextureBase Protected Members
+        TextureMapping2D mapping;
+        std::string filename;
+        Float scale;
+        bool invert;
+        MIPMap* mipmap;
+
+    private:
+        // ImageTextureBase Private Members
+        static std::mutex textureCacheMutex;
+        static std::map<TexInfo, MIPMap*> textureCache;
     public:
         // ImageTextureBase Public Methods
         ImageTextureBase( TextureMapping2D mapping, std::string filename,
@@ -644,18 +645,7 @@ namespace pbrto
 
         void MultiplyScale( Float s ) { scale *= s; }
 
-    protected:
-        // ImageTextureBase Protected Members
-        TextureMapping2D mapping;
-        std::string filename;
-        Float scale;
-        bool invert;
-        MIPMap* mipmap;
-
-    private:
-        // ImageTextureBase Private Members
-        static std::mutex textureCacheMutex;
-        static std::map<TexInfo, MIPMap*> textureCache;
+    
     };
 
     // FloatImageTexture Definition
@@ -669,8 +659,7 @@ namespace pbrto
                 alloc )
         {
         }
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
 #ifdef PBRT_IS_GPU_CODE
             assert( !"Should not be called in GPU code" );
@@ -707,8 +696,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static SpectrumImageTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -848,7 +836,7 @@ namespace pbrto
     class GPUSpectrumImageTexture
     {
     public:
-        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             NLOG_FATAL( "GPUSpectrumImageTexture::Evaluate called from CPU" );
             return SampledSpectrum( 0 );
@@ -869,7 +857,7 @@ namespace pbrto
     class GPUFloatImageTexture
     {
     public:
-        Float Evaluate( const TextureEvalContext& ) const
+        Float Evaluate( TextureEvalContext ) const
         {
             NLOG_FATAL( "GPUFloatImageTexture::Evaluate called from CPU" );
             return 0;
@@ -891,6 +879,10 @@ namespace pbrto
     // MarbleTexture Definition
     class MarbleTexture
     {
+        // MarbleTexture Private Members
+        TextureMapping3D mapping;
+        int octaves;
+        Float omega, scale, variation;
     public:
         // MarbleTexture Public Methods
         MarbleTexture( TextureMapping3D mapping, int octaves, Float omega, Float scale,
@@ -903,8 +895,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static MarbleTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -913,15 +904,14 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // MarbleTexture Private Members
-        TextureMapping3D mapping;
-        int octaves;
-        Float omega, scale, variation;
+        
     };
 
     // FloatMixTexture Definition
     class FloatMixTexture
     {
+        FloatTexture tex1, tex2;
+        FloatTexture amount;
     public:
         // FloatMixTexture Public Methods
         FloatMixTexture( FloatTexture tex1, FloatTexture tex2, FloatTexture amount )
@@ -929,8 +919,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             Float amt = amount.Evaluate( ctx );
             Float t1 = 0, t2 = 0;
@@ -948,22 +937,23 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        FloatTexture tex1, tex2;
-        FloatTexture amount;
+        
     };
 
     // FloatDirectionMixTexture Definition
     class FloatDirectionMixTexture
     {
+        // FloatDirectionMixTexture Private Members
+        FloatTexture tex1, tex2;
+        Vector3f::Simd dir;
     public:
         // FloatDirectionMixTexture Public Methods
-        FloatDirectionMixTexture( FloatTexture tex1, FloatTexture tex2, Vector3f dir )
+        FloatDirectionMixTexture( FloatTexture tex1, FloatTexture tex2, Vector3f::Simd dir )
             : tex1( tex1 ), tex2( tex2 ), dir( dir )
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             Float amt = ScalarAbsDot( ctx.n, dir );
             Float t1 = 0, t2 = 0;
@@ -981,25 +971,24 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // FloatDirectionMixTexture Private Members
-        FloatTexture tex1, tex2;
-        Vector3f dir;
+        
     };
 
     // SpectrumMixTexture Definition
     class SpectrumMixTexture
     {
+        SpectrumTexture tex1, tex2;
+        FloatTexture amount;
     public:
         SpectrumMixTexture( SpectrumTexture tex1, SpectrumTexture tex2, FloatTexture amount )
             : tex1( tex1 ), tex2( tex2 ), amount( amount )
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float amt = amount.Evaluate( ctx );
-            SampledSpectrum t1, t2;
+            SampledSpectrum::Simd t1, t2;
             if ( amt != 1 )
                 t1 = tex1.Evaluate( ctx, lambda );
             if ( amt != 0 )
@@ -1015,25 +1004,26 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        SpectrumTexture tex1, tex2;
-        FloatTexture amount;
+        
     };
 
     // SpectrumDirectionMixTexture Definition
     class SpectrumDirectionMixTexture
     {
+        // SpectrumDirectionMixTexture Private Members
+        SpectrumTexture tex1, tex2;
+        Vector3f::Simd dir;
     public:
         // SpectrumDirectionMixTexture Public Methods
-        SpectrumDirectionMixTexture( SpectrumTexture tex1, SpectrumTexture tex2, Vector3f dir )
+        SpectrumDirectionMixTexture( SpectrumTexture tex1, SpectrumTexture tex2, Vector3f::Simd dir )
             : tex1( tex1 ), tex2( tex2 ), dir( dir )
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float amt = ScalarAbsDot( ctx.n, dir );
-            SampledSpectrum t1, t2;
+            SampledSpectrum::Simd t1, t2;
             if ( amt != 0 )
                 t1 = tex1.Evaluate( ctx, lambda );
             if ( amt != 1 )
@@ -1048,14 +1038,16 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        // SpectrumDirectionMixTexture Private Members
-        SpectrumTexture tex1, tex2;
-        Vector3f dir;
+        
     };
 
     // PtexTexture Declarations
     class PtexTextureBase
     {
+        bool valid;
+        std::string filename;
+        ColorEncoding encoding;
+        Float scale;
     public:
         PtexTextureBase( const std::string& filename, ColorEncoding encoding, Float scale );
 
@@ -1067,10 +1059,7 @@ namespace pbrto
         std::string BaseToString( ) const;
 
     private:
-        bool valid;
-        std::string filename;
-        ColorEncoding encoding;
-        Float scale;
+        
     };
 
     class FloatPtexTexture : public PtexTextureBase
@@ -1081,8 +1070,8 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const;
+        Float Evaluate( TextureEvalContext ctx ) const;
+
         static FloatPtexTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );
@@ -1091,6 +1080,7 @@ namespace pbrto
 
     class SpectrumPtexTexture : public PtexTextureBase
     {
+        SpectrumType spectrumType;
     public:
         SpectrumPtexTexture( const std::string& filename, ColorEncoding encoding, Float scale,
             SpectrumType spectrumType )
@@ -1098,8 +1088,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static SpectrumPtexTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -1109,17 +1098,17 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        SpectrumType spectrumType;
+        
     };
 
     class GPUFloatPtexTexture
     {
+        pstdo::vector<Float> faceValues;
     public:
         GPUFloatPtexTexture( const std::string& filename, ColorEncoding encoding, Float scale,
             Allocator alloc );
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             NDCHECK( ctx.faceIndex >= 0 && ctx.faceIndex < faceValues.size( ) );
             return faceValues[ ctx.faceIndex ];
@@ -1131,17 +1120,18 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        pstdo::vector<Float> faceValues;
+        
     };
 
     class GPUSpectrumPtexTexture
     {
+        SpectrumType spectrumType;
+        pstdo::vector<RGB> faceValues;
     public:
         GPUSpectrumPtexTexture( const std::string& filename, ColorEncoding encoding,
             Float scale, SpectrumType spectrumType, Allocator alloc );
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             NCHECK( ctx.faceIndex >= 0 && ctx.faceIndex < faceValues.size( ) );
 
@@ -1168,13 +1158,13 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        SpectrumType spectrumType;
-        pstdo::vector<RGB> faceValues;
+        
     };
 
     // FloatScaledTexture Definition
     class FloatScaledTexture
     {
+        FloatTexture tex, scale;
     public:
         // FloatScaledTexture Public Methods
         FloatScaledTexture( FloatTexture tex, FloatTexture scale ) : tex( tex ), scale( scale ) {}
@@ -1183,8 +1173,7 @@ namespace pbrto
             const TextureParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             Float sc = scale.Evaluate( ctx );
             if ( sc == 0 )
@@ -1195,24 +1184,25 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        FloatTexture tex, scale;
+        
     };
 
     // SpectrumScaledTexture Definition
     class SpectrumScaledTexture
     {
+        SpectrumTexture tex;
+        FloatTexture scale;
     public:
         SpectrumScaledTexture( SpectrumTexture tex, FloatTexture scale )
             : tex( tex ), scale( scale )
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float sc = scale.Evaluate( ctx );
             if ( sc == 0 )
-                return SampledSpectrum( 0.f );
+                return SampledSpectrum::Simd( 0.f );
             return tex.Evaluate( ctx, lambda ) * sc;
         }
 
@@ -1224,19 +1214,18 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        SpectrumTexture tex;
-        FloatTexture scale;
+        
     };
 
     // WindyTexture Definition
     class WindyTexture
     {
+        TextureMapping3D mapping;
     public:
         // WindyTexture Public Methods
         WindyTexture( TextureMapping3D mapping ) : mapping( mapping ) {}
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             Float windStrength = FBm( .1f * c.p, .1f * c.dpdx, .1f * c.dpdy, .5, 3 );
@@ -1251,7 +1240,7 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        TextureMapping3D mapping;
+        
     };
 
     // WrinkledTexture Definition
@@ -1264,8 +1253,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             return Turbulence( c.p, c.dpdx, c.dpdy, omega, octaves );
@@ -1290,8 +1278,7 @@ namespace pbrto
         return Dispatch( eval );
     }
 
-    inline SampledSpectrum SpectrumTexture::Evaluate( TextureEvalContext ctx,
-        SampledWavelengths lambda ) const
+    inline SampledSpectrum::Simd SpectrumTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
     {
         auto eval = [ & ]( auto ptr ) { return ptr->Evaluate( ctx, lambda ); };
         return Dispatch( eval );
@@ -1302,19 +1289,14 @@ namespace pbrto
     {
     public:
         // UniversalTextureEvaluator Public Methods
-        PBRT_CPU_GPU
-            bool CanEvaluate( std::initializer_list<FloatTexture>,
-                std::initializer_list<SpectrumTexture> ) const
+        bool CanEvaluate( std::initializer_list<FloatTexture>, std::initializer_list<SpectrumTexture> ) const
         {
             return true;
         }
 
-        PBRT_CPU_GPU
-            Float operator()( FloatTexture tex, TextureEvalContext ctx );
+        Float operator()( FloatTexture tex, TextureEvalContext ctx );
 
-        PBRT_CPU_GPU
-            SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx,
-                SampledWavelengths lambda );
+        SampledSpectrum::Simd operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda );
     };
 
     // BasicTextureEvaluator Definition
@@ -1322,9 +1304,7 @@ namespace pbrto
     {
     public:
         // BasicTextureEvaluator Public Methods
-        PBRT_CPU_GPU
-            bool CanEvaluate( std::initializer_list<FloatTexture> ftex,
-                std::initializer_list<SpectrumTexture> stex ) const
+        bool CanEvaluate( std::initializer_list<FloatTexture> ftex, std::initializer_list<SpectrumTexture> stex ) const
         {
             // Return _false_ if any _FloatTexture_s cannot be evaluated
             for ( FloatTexture f : ftex )
@@ -1341,8 +1321,7 @@ namespace pbrto
             return true;
         }
 
-        PBRT_CPU_GPU
-            Float operator()( FloatTexture tex, TextureEvalContext ctx )
+        Float operator()( FloatTexture tex, TextureEvalContext ctx )
         {
             if ( tex.Is<FloatConstantTexture>( ) )
                 return tex.Cast<FloatConstantTexture>( )->Evaluate( ctx );
@@ -1360,9 +1339,7 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx,
-                SampledWavelengths lambda )
+        SampledSpectrum::Simd operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda )
         {
             if ( tex.Is<SpectrumConstantTexture>( ) )
                 return tex.Cast<SpectrumConstantTexture>( )->Evaluate( ctx, lambda );

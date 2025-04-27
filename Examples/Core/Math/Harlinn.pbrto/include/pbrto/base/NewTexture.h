@@ -24,6 +24,7 @@
 
 #include <pbrto/NewPbrt.h>
 #include <pbrto/util/NewTaggedPtr.h>
+#include <pbrto/util/NewSpectrum.h>
 
 
 #include <string>
@@ -69,7 +70,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline Float Evaluate( TextureEvalContext ctx ) const;
+        inline Float Evaluate( TextureEvalContext ctx ) const;
     };
 
     class RGBConstantTexture;
@@ -109,8 +110,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline SampledSpectrum Evaluate( TextureEvalContext ctx,
-            SampledWavelengths lambda ) const;
+        inline SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
     };
 
 }
