@@ -125,7 +125,7 @@ namespace pbrto
 
         Vector3f::Simd dir = Normalize( look - pos );
         auto right1 = Cross( Normalize( up ), dir );
-        if ( ScalarLength( right1 ) == 0 )
+        if ( ScalarLengthSquared( right1 ) == 0 )
         {
             NLOG_FATAL( "LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
                 "(%f, %f, %f) "

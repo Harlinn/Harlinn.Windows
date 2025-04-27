@@ -59,13 +59,12 @@ namespace pbrto
     }
 
     // SurfaceInteraction Method Definitions
-    PBRT_CPU_GPU void SurfaceInteraction::ComputeDifferentials( const RayDifferential& ray, Camera camera,
-        int samplesPerPixel )
+    void SurfaceInteraction::ComputeDifferentials( const RayDifferential& ray, Camera camera, int samplesPerPixel )
     {
         if ( GetOptions( ).disableTextureFiltering )
         {
             dudx = dudy = dvdx = dvdy = 0;
-            dpdx = dpdy = Vector3f( 0, 0, 0 );
+            dpdx = dpdy = Vector3f::Simd( 0, 0, 0 );
             return;
         }
         if ( ray.hasDifferentials && ScalarDot( n, ray.rxDirection ) != 0 &&
@@ -74,12 +73,12 @@ namespace pbrto
             // Estimate screen-space change in $\pt{}$ using ray differentials
             // Compute auxiliary intersection points with plane, _px_ and _py_
             Float d = -ScalarDot( n, Vector3f( p( ) ) );
-            Float tx = ( -ScalarDot( n, Vector3f( ray.rxOrigin ) ) - d ) / ScalarDot( n, ray.rxDirection );
+            Float tx = ( -ScalarDot( n, ray.rxOrigin ) - d ) / ScalarDot( n, ray.rxDirection );
             NDCHECK( !IsInf( tx ) && !IsNaN( tx ) );
-            Point3f px = ray.rxOrigin + tx * ray.rxDirection;
-            Float ty = ( -ScalarDot( n, Vector3f( ray.ryOrigin ) ) - d ) / ScalarDot( n, ray.ryDirection );
+            Point3f::Simd px = ray.rxOrigin + tx * ray.rxDirection;
+            Float ty = ( -ScalarDot( n, ray.ryOrigin ) - d ) / ScalarDot( n, ray.ryDirection );
             NDCHECK( !IsInf( ty ) && !IsNaN( ty ) );
-            Point3f py = ray.ryOrigin + ty * ray.ryDirection;
+            Point3f::Simd py = ray.ryOrigin + ty * ray.ryDirection;
 
             dpdx = px - p( );
             dpdy = py - p( );

@@ -63,7 +63,10 @@ namespace pbrto
         {
         }
 
-        Point3f p( ) const { return Point3f( pi ); }
+        Point3f::Simd p( ) const 
+        { 
+            return Point3f( pi ); 
+        }
 
         bool IsSurfaceInteraction( ) const 
         { 

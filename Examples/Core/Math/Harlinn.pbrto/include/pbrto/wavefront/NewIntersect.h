@@ -188,9 +188,15 @@ namespace pbrto
 
     struct TransmittanceTraceResult
     {
-        bool hit;
         Point3f pHit;
+        bool hit;
         Material material;
+
+        TransmittanceTraceResult( ) = default;
+        TransmittanceTraceResult( bool hit, Point3f::Simd pHit, Material material )
+            : hit(hit), pHit( pHit ), material( material )
+        { }
+
     };
 
     template <typename T, typename S>
@@ -210,11 +216,11 @@ namespace pbrto
         SampledSpectrum T_ray( 1.f );
         SampledSpectrum r_u( 1.f ), r_l( 1.f );
 
-        while ( ray.d != Vector3f( 0, 0, 0 ) )
+        while ( ray.d != Vector3f::Simd( 0, 0, 0 ) )
         {
             PBRT_DBG(
                 "Tracing shadow tr shadow ray pixel index %d o %f %f %f d %f %f %f tMax %f\n",
-                sr.pixelIndex, ray.o.x, ray.o.y, ray.o.z, ray.d.x, ray.d.y, ray.d.z, tMax );
+                sr.pixelIndex, ray.o.x(), ray.o.y( ), ray.o.z( ), ray.d.x( ), ray.d.y( ), ray.d.z( ), tMax );
 
             TransmittanceTraceResult result = trace( ray, tMax );
 

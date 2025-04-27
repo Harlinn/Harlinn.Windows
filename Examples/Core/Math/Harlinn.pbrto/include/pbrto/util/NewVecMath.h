@@ -2587,6 +2587,14 @@ namespace pbrto
         return ret;
     }
 
+    inline Bounds3f Union( const Bounds3f& b, Point3f::Simd p )
+    {
+        Bounds3f ret;
+        ret.pMin = Min( b.pMin, p );
+        ret.pMax = Max( b.pMax, p );
+        return ret;
+    }
+
 
     template <typename T>
     PBRT_CPU_GPU inline Bounds3<T> Union( const Bounds3<T>& b1, const Bounds3<T>& b2 )
