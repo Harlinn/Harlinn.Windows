@@ -25,7 +25,8 @@ This is the repository for Harlinn.Windows, a Visual Studio 2022 Solution with a
     <img src="./Readme/Images/lte-orb-silver2.png" width="240"/>
 
     [pbrto](https://github.com/Harlinn/Harlinn.Windows/tree/master/Examples/Core/Math/pbrto) 
-    includes both the original rendering machinery and my modified version of the machinery.
+    includes both the original rendering machinery and my modified version of the machinery, making it easy 
+    spot differences in functionality and performance.  
    
   - [Single Instruction Multiple Data (SIMD)](https://harlinn.github.io/Cpp/Cpp/Math/SimdOperations.html)
   - [Optimized basic math functions](https://harlinn.github.io/Cpp/Cpp/Math/BasicMath.html)
