@@ -54,7 +54,7 @@ namespace pbrto
     // Floating-point Constants
     static constexpr Float Infinity = std::numeric_limits<Float>::infinity( );
 
-    static constexpr Float MachineEpsilon = std::numeric_limits<Float>::epsilon( ) * 0.5;
+    static constexpr Float MachineEpsilon = std::numeric_limits<Float>::epsilon( ) * 0.5f;
 
     static constexpr double DoubleOneMinusEpsilon = 0x1.fffffffffffffp-1;
     static constexpr float FloatOneMinusEpsilon = 0x1.fffffep-1;

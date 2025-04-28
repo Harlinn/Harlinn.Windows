@@ -503,6 +503,7 @@ namespace Harlinn::Common::Core::Math
             else
             {
                 _mm_store_sd( &result, _mm_sqrt_pd( _mm_set_sd( x ) ) );
+                
             }
             return result;
         }
@@ -1129,6 +1130,38 @@ namespace Harlinn::Common::Core::Math
         }
     }
     static_assert( Abs( -1.0 ) == 1.0 );
+
+
+    template<typename T>
+        requires IsUnsignedInteger<T>
+    constexpr inline std::remove_cvref_t<T> FastAbs( T val ) noexcept
+    {
+        return val;
+    }
+
+    template<typename T>
+        requires IsSignedInteger<T>
+    constexpr inline std::remove_cvref_t<T> FastAbs( T val ) noexcept
+    {
+        using IntT = std::remove_cvref_t<T>;
+        
+        if constexpr ( sizeof( IntT ) == 1 )
+        {
+            return std::bit_cast< IntT >( std::bit_cast< UInt8 >( val ) & static_cast< UInt8 >(0x7FU) );
+        }
+        else if constexpr ( sizeof( IntT ) == 2 )
+        {
+            return std::bit_cast< IntT >( std::bit_cast< UInt16 >( val ) & static_cast< UInt16 >( 0x7FFFU ) );
+        }
+        else if constexpr ( sizeof( IntT ) == 4 )
+        {
+            return std::bit_cast< IntT >( std::bit_cast< UInt32 >( val ) & 0x7FFFFFFFUL );
+        }
+        else
+        {
+            return std::bit_cast< IntT >( std::bit_cast< UInt64 >( val ) & 0x7FFFFFFFFFFFFFFFULL );
+        }
+    }
 
     template<typename T>
         requires IsFloatingPoint<T>
@@ -2309,8 +2342,8 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Exp( T x ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
-        if constexpr ( std::is_same_v<FloatT, float> )
+        using FloatType = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatType, float> )
         {
             return Math::Internal::OpenLibM::expf( x );
         }

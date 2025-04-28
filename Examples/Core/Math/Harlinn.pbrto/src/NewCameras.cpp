@@ -1169,7 +1169,7 @@ namespace pbrto
             }
             else
             {
-                Float theta = std::abs( SafeASin( element.apertureRadius / r ) );
+                Float theta = Math::FastAbs( SafeASin( element.apertureRadius / r ) );
                 if ( r > 0 )
                 {
                     // convex as seen from front of lens
@@ -1206,7 +1206,7 @@ namespace pbrto
 
                     Float nextCurvatureRadius = elementInterfaces[ i + 1 ].curvatureRadius;
                     Float nextTheta =
-                        std::abs( SafeASin( nextApertureRadius / nextCurvatureRadius ) );
+                        Math::FastAbs( SafeASin( nextApertureRadius / nextCurvatureRadius ) );
                     if ( nextCurvatureRadius > 0 )
                     {
                         zp1 = z + element.thickness + nextCurvatureRadius -
@@ -1309,7 +1309,7 @@ namespace pbrto
         ray.d = Normalize( ray.d );
         rayD = ray.d;
         {
-            Float ta = std::abs( elementZ / 4 );
+            Float ta = Math::FastAbs( elementZ / 4 );
             if ( toOpticalIntercept )
             {
                 ta = -rayO.x / rayD.x;
@@ -1564,7 +1564,7 @@ namespace pbrto
                         Float r2 = Sqr( uv.x ) + Sqr( uv.y );
                         Float sigma2 = 1;
                         Float v = std::max<Float>(
-                            0, std::exp( -r2 / sigma2 ) - std::exp( -1 / sigma2 ) );
+                            0, Math::Exp( -r2 / sigma2 ) - Math::Exp( -1 / sigma2 ) );
                         apertureImage.SetChannel( { x, y }, 0, v );
                     }
             }

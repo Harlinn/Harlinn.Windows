@@ -6718,6 +6718,115 @@ namespace Harlinn::Common::Core::Math
         return Traits::Pow( Traits::Load( base.values.data( ) ), Traits::Load( exponent.values.data( ) ) );
     }
 
+    namespace Internal
+    {
+        template<SimdType T>
+        struct SimdFastPowImpl
+        {
+            using Traits = typename T::Traits;
+            using ValueType = Traits::Type;
+            template<int n>
+            static constexpr inline T Pow( const T& v )
+            {
+                if constexpr ( n < 0 )
+                {
+                    return Traits::Div( Traits::Fill( Constants<ValueType>::One ), Pow<-n>( v ).simd );
+                }
+                auto n2 = Pow<n / 2>( v );
+                return n2 * n2 * Pow<n & 1>( v );
+            }
+
+            template<>
+            static constexpr inline T Pow<1>( const T& v )
+            {
+                return v;
+            }
+            template<>
+            static constexpr inline T Pow<0>( const T& v )
+            {
+                return Traits::Fill( Constants<ValueType>::One );
+            }
+        };
+    }
+
+    template<int n, Internal::SimdType T>
+    inline T FastPow( const T& v )
+    {
+        return Internal::SimdFastPowImpl<T>::Pow<n>( v );
+    }
+
+    template<int n, Internal::TupleType T>
+    inline typename T::Simd FastPow( const T& v )
+    {
+        return Internal::SimdFastPowImpl<typename T::Simd>::Pow<n>( v );
+    }
+
+
+
+    // FMod
+
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T FMod( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMod( x.simd, y.simd );
+    }
+
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T FMod( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMod( x.simd, Traits::Load( y.values ) );
+    }
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T FMod( const U& x, const T& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMod( Traits::Load( x.values ), y.simd );
+    }
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT FMod( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMod( Traits::Load( x.values ), Traits::Load( y.values ) );
+    }
+
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<Internal::SimdType T, typename U>
+        requires std::is_convertible_v<U,typename T::Traits::Type>
+    inline T FMod( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMod( x.simd, Traits::Fill( static_cast< T::Traits::Type >( y ) ) );
+    }
+
+    template<Internal::TupleType T, typename U>
+        requires std::is_convertible_v<U, typename T::Traits::Type>
+    inline T FMod( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMod( Traits::Load( x.values ), Traits::Fill( static_cast< T::Traits::Type >( y ) ) );
+    }
+
+
     // Hypot
 
     /// <summary>

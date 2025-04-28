@@ -173,7 +173,7 @@ namespace pbrto
             Float la2 = ScalarLengthSquared( ( *this )( Vector3f( 1, 0, 0 ) ) );
             Float lb2 = ScalarLengthSquared( ( *this )( Vector3f( 0, 1, 0 ) ) );
             Float lc2 = ScalarLengthSquared( ( *this )( Vector3f( 0, 0, 1 ) ) );
-            return ( std::abs( la2 - 1 ) > tolerance || std::abs( lb2 - 1 ) > tolerance || std::abs( lc2 - 1 ) > tolerance );
+            return ( Math::FastAbs( la2 - 1 ) > tolerance || Math::FastAbs( lb2 - 1 ) > tolerance || Math::FastAbs( lc2 - 1 ) > tolerance );
         }
 
         template <typename T>
@@ -300,9 +300,9 @@ namespace pbrto
     {
         // Compute intermediate vector for vector reflection
         Vector3f refl;
-        if ( std::abs( from.x ) < 0.72f && std::abs( to.x ) < 0.72f )
+        if ( Math::FastAbs( from.x ) < 0.72f && Math::FastAbs( to.x ) < 0.72f )
             refl = Vector3f( 1, 0, 0 );
-        else if ( std::abs( from.y ) < 0.72f && std::abs( to.y ) < 0.72f )
+        else if ( Math::FastAbs( from.y ) < 0.72f && Math::FastAbs( to.y ) < 0.72f )
             refl = Vector3f( 0, 1, 0 );
         else
             refl = Vector3f( 0, 0, 1 );

@@ -496,6 +496,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline C<T> Abs( const Tuple3<C, T>& t )
     {
         using std::abs;
@@ -503,6 +504,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline C<T> Ceil( const Tuple3<C, T>& t )
     {
         using pstdo::ceil;
@@ -510,6 +512,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline C<T> Floor( const Tuple3<C, T>& t )
     {
         using pstdo::floor;
@@ -517,24 +520,28 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline auto Lerp2( Float t, const Tuple3<C, T>& t0, const Tuple3<C, T>& t1 )
     {
         return ( 1 - t ) * t0 + t * t1;
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline C<T> FMA( Float a, const Tuple3<C, T>& b, const Tuple3<C, T>& c )
     {
         return { FMA( a, b.x, c.x ), FMA( a, b.y, c.y ), FMA( a, b.z, c.z ) };
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline C<T> FMA( const Tuple3<C, T>& a, Float b, const Tuple3<C, T>& c )
     {
         return FMA( b, a, c );
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline C<T> Min( const Tuple3<C, T>& t1, const Tuple3<C, T>& t2 )
     {
         using std::min;
@@ -542,6 +549,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline T MinComponentValue( const Tuple3<C, T>& t )
     {
         using std::min;
@@ -549,12 +557,14 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline int MinComponentIndex( const Tuple3<C, T>& t )
     {
         return ( t.x < t.y ) ? ( ( t.x < t.z ) ? 0 : 2 ) : ( ( t.y < t.z ) ? 1 : 2 );
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline C<T> Max( const Tuple3<C, T>& t1, const Tuple3<C, T>& t2 )
     {
         using std::max;
@@ -562,6 +572,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline T MaxComponentValue( const Tuple3<C, T>& t )
     {
         using std::max;
@@ -569,6 +580,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline int MaxComponentIndex( const Tuple3<C, T>& t )
     {
         return ( t.x > t.y ) ? ( ( t.x > t.z ) ? 0 : 2 ) : ( ( t.y > t.z ) ? 1 : 2 );
@@ -583,6 +595,7 @@ namespace pbrto
 
 
     template <template <class> class C, typename T>
+        requires ( IsArithmetic<T> == false )
     inline T HProd( const Tuple3<C, T>& t )
     {
         return t.x * t.y * t.z;
@@ -1210,9 +1223,9 @@ namespace pbrto
         Float k0 = cross2d( h, e );
 
         // if edges are parallel, this is a linear equation
-        if ( std::abs( k2 ) < 0.001f )
+        if ( Math::FastAbs( k2 ) < 0.001f )
         {
-            if ( std::abs( e.x * k1 - g.x * k0 ) < 1e-5f )
+            if ( Math::FastAbs( e.x * k1 - g.x * k0 ) < 1e-5f )
                 return Point2f( ( h.y * k1 + f.y * k0 ) / ( e.y * k1 - g.y * k0 ), -k0 / k1 );
             else
                 return Point2f( ( h.x * k1 + f.x * k0 ) / ( e.x * k1 - g.x * k0 ), -k0 / k1 );
@@ -2843,7 +2856,7 @@ namespace pbrto
     // Spherical Geometry Inline Functions
     inline Float SphericalTriangleArea( Vector3f::Simd a, Vector3f::Simd b, Vector3f::Simd c )
     {
-        return std::abs( 2.f * Math::ATan2( ScalarDot( a, Cross( b, c ) ), 1.f + ScalarDot( a, b ) + ScalarDot( a, c ) + ScalarDot( b, c ) ) );
+        return Math::FastAbs( 2.f * Math::ATan2( ScalarDot( a, Cross( b, c ) ), 1.f + ScalarDot( a, b ) + ScalarDot( a, c ) + ScalarDot( b, c ) ) );
     }
 
     inline Float SphericalQuadArea( Vector3f::Simd a, Vector3f::Simd b, Vector3f::Simd c, Vector3f::Simd d )
@@ -2870,7 +2883,7 @@ namespace pbrto
         Float gamma = Math::ScalarAngleBetween( bxc, -cxd );
         Float delta = Math::ScalarAngleBetween( cxd, -dxa );
 
-        return std::abs( alpha + beta + gamma + delta - 2 * Pi );
+        return Math::FastAbs( alpha + beta + gamma + delta - 2 * Pi );
     }
 
     inline Vector3f::Simd SphericalDirection( Float sinTheta, Float cosTheta, Float phi )
@@ -2927,11 +2940,11 @@ namespace pbrto
 
     inline Float AbsCosTheta( const Vector3f w )
     {
-        return std::abs( w.z );
+        return Math::FastAbs( w.z );
     }
     inline Float AbsCosTheta( Vector3f::Simd w )
     {
-        return std::abs( w.z( ) );
+        return Math::FastAbs( w.z( ) );
     }
 
     inline Float Sin2Theta( const Vector3f w )
@@ -3042,7 +3055,7 @@ namespace pbrto
         OctahedralVector( ) = default;
         OctahedralVector( const Vector3f& vec )
         {
-            Vector3f v = vec / ( std::abs( vec.x ) + std::abs( vec.y ) + std::abs( vec.z ) );
+            Vector3f v = vec / ( Math::FastAbs( vec.x ) + Math::FastAbs( vec.y ) + Math::FastAbs( vec.z ) );
 
             if ( v.z >= 0 )
             {
@@ -3052,8 +3065,8 @@ namespace pbrto
             else
             {
                 // Encode octahedral vector with $z < 0$
-                x = Encode( ( 1 - std::abs( v.y ) ) * Sign( v.x ) );
-                y = Encode( ( 1 - std::abs( v.x ) ) * Sign( v.y ) );
+                x = Encode( ( 1 - Math::FastAbs( v.y ) ) * Sign( v.x ) );
+                y = Encode( ( 1 - Math::FastAbs( v.x ) ) * Sign( v.y ) );
             }
         }
 
@@ -3062,13 +3075,13 @@ namespace pbrto
             Vector3f v;
             v.x = -1 + 2 * ( x / 65535.f );
             v.y = -1 + 2 * ( y / 65535.f );
-            v.z = 1 - ( std::abs( v.x ) + std::abs( v.y ) );
+            v.z = 1 - ( Math::FastAbs( v.x ) + Math::FastAbs( v.y ) );
             // Reparameterize directions in the $z<0$ portion of the octahedron
             if ( v.z < 0 )
             {
                 Float xo = v.x;
-                v.x = ( 1 - std::abs( v.y ) ) * Sign( xo );
-                v.y = ( 1 - std::abs( xo ) ) * Sign( v.y );
+                v.x = ( 1 - Math::FastAbs( v.y ) ) * Sign( xo );
+                v.y = ( 1 - Math::FastAbs( xo ) ) * Sign( v.y );
             }
 
             return Normalize( v );
@@ -3189,12 +3202,12 @@ namespace pbrto
         Frame( const Vector3f& x, const Vector3f& y, const Vector3f& z )
             : x( x ), y( y ), z( z )
         {
-            NDCHECK_LT( std::abs( ScalarLengthSquared( x ) - 1 ), 1e-4 );
-            NDCHECK_LT( std::abs( ScalarLengthSquared( y ) - 1 ), 1e-4 );
-            NDCHECK_LT( std::abs( ScalarLengthSquared( z ) - 1 ), 1e-4 );
-            NDCHECK_LT( std::abs( ScalarDot( x, y ) ), 1e-4 );
-            NDCHECK_LT( std::abs( ScalarDot( y, z ) ), 1e-4 );
-            NDCHECK_LT( std::abs( ScalarDot( z, x ) ), 1e-4 );
+            NDCHECK_LT( Math::FastAbs( ScalarLengthSquared( x ) - 1 ), 1e-4 );
+            NDCHECK_LT( Math::FastAbs( ScalarLengthSquared( y ) - 1 ), 1e-4 );
+            NDCHECK_LT( Math::FastAbs( ScalarLengthSquared( z ) - 1 ), 1e-4 );
+            NDCHECK_LT( Math::FastAbs( ScalarDot( x, y ) ), 1e-4 );
+            NDCHECK_LT( Math::FastAbs( ScalarDot( y, z ) ), 1e-4 );
+            NDCHECK_LT( Math::FastAbs( ScalarDot( z, x ) ), 1e-4 );
         }
 
         Frame( const Vector3f::Simd& x, const Vector3f::Simd& y, const Vector3f::Simd& z )

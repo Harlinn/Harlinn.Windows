@@ -193,7 +193,7 @@ namespace pbrto
                 NCHECK( !IsNaN( pdf ) );
                 // Evaluate BRDF and return _BSDFSample_ for rough transmission
                 SampledSpectrum ft( T * mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) *
-                    std::abs( ScalarDot( wi, wm ) * ScalarDot( wo, wm ) /
+                    Math::FastAbs( ScalarDot( wi, wm ) * ScalarDot( wo, wm ) /
                         ( CosTheta( wi ) * CosTheta( wo ) * denom ) ) );
                 // Account for non-symmetry with transmission to different medium
                 if ( mode == TransportMode::Radiance )
@@ -230,7 +230,7 @@ namespace pbrto
         {
             // Compute reflection at rough dielectric interface
             return SampledSpectrum( mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) * F /
-                std::abs( 4 * cosTheta_i * cosTheta_o ) );
+                Math::FastAbs( 4 * cosTheta_i * cosTheta_o ) );
 
         }
         else
@@ -238,7 +238,7 @@ namespace pbrto
             // Compute transmission at rough dielectric interface
             Float denom = Sqr( ScalarDot( wi, wm ) + ScalarDot( wo, wm ) / etap ) * cosTheta_i * cosTheta_o;
             Float ft = mfDistrib.D( wm ) * ( 1 - F ) * mfDistrib.G( wo, wi ) *
-                std::abs( ScalarDot( wi, wm ) * ScalarDot( wo, wm ) / denom );
+                Math::FastAbs( ScalarDot( wi, wm ) * ScalarDot( wo, wm ) / denom );
             // Account for non-symmetry with transmission to different medium
             if ( mode == TransportMode::Radiance )
                 ft /= Sqr( etap );
@@ -406,7 +406,7 @@ namespace pbrto
             }
 
             // Handle out-of-range $\cos\,\thetao$ from scale adjustment
-            cosThetap_o = std::abs( cosThetap_o );
+            cosThetap_o = Math::FastAbs( cosThetap_o );
 
             fsum += Mp( cosTheta_i, cosThetap_o, sinTheta_i, sinThetap_o, v[ p ] ) * ap[ p ] *
                 Np( phi, p, s, gamma_o, gamma_t );
@@ -488,10 +488,10 @@ namespace pbrto
         }
 
         // Handle out-of-range $\cos\,\thetao$ from scale adjustment
-        cosThetap_o = std::abs( cosThetap_o );
+        cosThetap_o = Math::FastAbs( cosThetap_o );
 
         // Sample $M_p$ to compute $\thetai$
-        Float cosTheta = 1 + v[ p ] * std::log( std::max<Float>( u[ 0 ], 1e-5 ) +
+        Float cosTheta = 1 + v[ p ] * Math::Log( std::max<Float>( u[ 0 ], 1e-5 ) +
             ( 1 - u[ 0 ] ) * FastExp( -2 / v[ p ] ) );
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
         Float cosPhi = Math::Cos( 2.f * Pi * u[ 1 ] );
@@ -547,10 +547,10 @@ namespace pbrto
             }
 
             // Handle out-of-range $\cos\,\thetao$ from scale adjustment
-            cosThetap_o = std::abs( cosThetap_o );
+            cosThetap_o = Math::FastAbs( cosThetap_o );
 
             // Handle out-of-range $\cos\,\thetao$ from scale adjustment
-            cosThetap_o = std::abs( cosThetap_o );
+            cosThetap_o = Math::FastAbs( cosThetap_o );
 
             pdf += Mp( cosTheta_i, cosThetap_o, sinTheta_i, sinThetap_o, v[ p ] ) * apPDF[ p ] *
                 Np( dphi, p, s, gamma_o, gamma_t );
@@ -614,7 +614,7 @@ namespace pbrto
             }
 
             // Handle out-of-range $\cos\,\thetao$ from scale adjustment
-            cosThetap_o = std::abs( cosThetap_o );
+            cosThetap_o = Math::FastAbs( cosThetap_o );
 
             pdf += Mp( cosTheta_i, cosThetap_o, sinTheta_i, sinThetap_o, v[ p ] ) * apPDF[ p ] *
                 Np( phi, p, s, gamma_o, gamma_t );

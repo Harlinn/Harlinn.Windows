@@ -641,7 +641,7 @@ namespace pbrto
 
                 for ( int c = 0; c < desc.size( ); ++c )
                 {
-                    double error = std::abs( double( v[ c ] ) - double( vref[ c ] ) );
+                    double error = Math::FastAbs( double( v[ c ] ) - double( vref[ c ] ) );
                     if ( IsInf( error ) )
                         continue;
                     sumError[ c ] += error;
@@ -963,7 +963,7 @@ namespace pbrto
                                     continue;
                                 ImageChannelValues jointOtherChannels =
                                     GetChannels( { x + dx, y + dy }, jointDesc );
-                                Float weight = fx[ std::abs( dx ) ] * fy[ std::abs( dy ) ];
+                                Float weight = fx[ Math::FastAbs( dx ) ] * fy[ Math::FastAbs( dy ) ];
                                 for ( int c = 0; c < jointDesc.size( ); ++c )
                                     weight *= Gaussian( jointPixelChannels[ c ],
                                         jointOtherChannels[ c ], jointSigma[ c ] );
@@ -1891,9 +1891,9 @@ namespace pbrto
                 memcpy( &rgb32[ i ], bytes, 4 );
             }
         }
-        if ( std::abs( scale ) != 1.f )
+        if ( Math::FastAbs( scale ) != 1.f )
             for ( unsigned int i = 0; i < nFloats; ++i )
-                rgb32[ i ] *= std::abs( scale );
+                rgb32[ i ] *= Math::FastAbs( scale );
 
         fclose( fp );
         NLOG_VERBOSE( "Read PFM image %s (%d x %d)", filename, width, height );

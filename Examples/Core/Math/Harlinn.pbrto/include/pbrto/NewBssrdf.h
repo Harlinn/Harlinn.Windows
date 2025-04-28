@@ -292,7 +292,7 @@ namespace pbrto
             SampledSpectrum pdf( 0.f );
             Float axisProb[ 3 ] = { .25f, .25f, .5f };
             for ( int axis = 0; axis < 3; ++axis )
-                pdf += PDF_Sr( rProj[ axis ] ) * std::abs( nLocal[ axis ] ) * axisProb[ axis ];
+                pdf += PDF_Sr( rProj[ axis ] ) * Math::FastAbs( nLocal[ axis ] ) * axisProb[ axis ];
             return pdf;
         }
 

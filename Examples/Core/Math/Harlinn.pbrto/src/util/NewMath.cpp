@@ -236,18 +236,18 @@ PBRTO_EXPORT Vector3f EqualAreaSquareToSphere( Point2f p )
     NCHECK( p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1 );
     // Transform _p_ to $[-1,1]^2$ and compute absolute values
     Float u = 2 * p.x - 1, v = 2 * p.y - 1;
-    Float up = std::abs( u ), vp = std::abs( v );
+    Float up = Math::FastAbs( u ), vp = Math::FastAbs( v );
 
     // Compute radius _r_ as signed distance from diagonal
     Float signedDistance = 1 - ( up + vp );
-    Float d = std::abs( signedDistance );
+    Float d = Math::FastAbs( signedDistance );
     Float r = 1 - d;
 
     // Compute angle $\phi$ for square to sphere mapping
     Float phi = ( r == 0 ? 1 : ( vp - up ) / r + 1 ) * Pi / 4;
 
     // Find $z$ coordinate for spherical direction
-    Float z = pstdo::copysign( 1 - Sqr( r ), signedDistance );
+    Float z = Math::CopySign( 1 - Sqr( r ), signedDistance );
 
     // Compute $\cos\phi$ and $\sin\phi$ for original quadrant and return vector
     Float cosPhi;
@@ -263,7 +263,7 @@ PBRTO_EXPORT Vector3f EqualAreaSquareToSphere( Point2f p )
 PBRTO_EXPORT Point2f EqualAreaSphereToSquare( Vector3f d )
 {
     NDCHECK( ScalarLengthSquared( d ) > .999 && ScalarLengthSquared( d ) < 1.001 );
-    Float x = std::abs( d.x ), y = std::abs( d.y ), z = std::abs( d.z );
+    Float x = Math::FastAbs( d.x ), y = Math::FastAbs( d.y ), z = Math::FastAbs( d.z );
 
     // Compute the radius r
     Float r = SafeSqrt( 1 - z );  // r = sqrt(1-|z|)
@@ -301,8 +301,8 @@ PBRTO_EXPORT Point2f EqualAreaSphereToSquare( Vector3f d )
     }
 
     // Move (u,v) to the correct quadrant based on the signs of (x,y)
-    u = pstdo::copysign( u, d.x );
-    v = pstdo::copysign( v, d.y );
+    u = Math::CopySign( u, d.x );
+    v = Math::CopySign( v, d.y );
 
     // Transform (u,v) from [-1,1] to [0,1]
     return Point2f( 0.5f * ( u + 1 ), 0.5f * ( v + 1 ) );

@@ -203,7 +203,7 @@ namespace pbrto
             Vector3f wi = Normalize( p - pc );
             Float cosTheta_w = ScalarDot( Vector3f( w ), wi );
             if ( twoSided )
-                cosTheta_w = std::abs( cosTheta_w );
+                cosTheta_w = Math::FastAbs( cosTheta_w );
             Float sinTheta_w = SafeSqrt( 1 - Sqr( cosTheta_w ) );
 
             // Compute $\cos\,\theta_\roman{\+b}$ for reference point

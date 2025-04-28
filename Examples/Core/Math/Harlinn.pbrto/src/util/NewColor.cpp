@@ -284,12 +284,12 @@ namespace pbrto
         for ( int i = 0; i < 256; ++i )
         {
             Float v = Float( i ) / 255.f;
-            applyLUT[ i ] = std::pow( v, gamma );
+            applyLUT[ i ] = Math::Pow( v, gamma );
         }
         for ( int i = 0; i < int( inverseLUT.size( ) ); ++i )
         {
             Float v = Float( i ) / Float( inverseLUT.size( ) - 1 );
-            inverseLUT[ i ] = Clamp( 255.f * std::pow( v, 1.f / gamma ) + .5f, 0, 255 );
+            inverseLUT[ i ] = Clamp( 255.f * Math::Pow( v, 1.f / gamma ) + .5f, 0, 255 );
         }
     }
 
@@ -303,7 +303,7 @@ namespace pbrto
 
     PBRT_CPU_GPU Float GammaColorEncoding::ToFloatLinear( Float v ) const
     {
-        return std::pow( v, gamma );
+        return Math::Pow( v, gamma );
     }
 
     PBRT_CPU_GPU void GammaColorEncoding::FromLinear( pstdo::span<const Float> vin,

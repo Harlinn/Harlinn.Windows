@@ -2,14 +2,22 @@
 
 This app runs my modified version of [pbrt](https://github.com/mmp/pbrt-v4) when 
 executed with the `--new` command line option. Without the `--new` option the app 
-executes the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery.
+executes the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery, slightly modified to
+allow compilation with `/std:c++latest`.
 
 Most of my testing is performed using [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt), 
-which rendered in 627.9 seconds using a release version of pbrt built using a cmake generated Visual Studio 2022 solution.
+which, originally, rendered in 627.9 seconds using the release version of pbrt 
+built using a cmake generated Visual Studio 2022 solution.
+
+Changing the build options of the cmake generated Visual Studio 2022 solution by enabling AVX2 instructions, whole program 
+optimization, any suitable inline expansion and intrinsic functions - improves the performance of pbrt, rendering 
+[kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt) in 590.5 seconds.
+
+
 
 pbrto renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt) in 478.7 
 seconds without the `--new` command line option, demonstrating that significant performance gains can be achieved using
-appropriate build options.
+appropriate build options, including `/std:c++latest`.
 
 
 With the `--new` command line option pbrto renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt)

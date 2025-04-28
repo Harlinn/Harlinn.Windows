@@ -224,7 +224,7 @@ namespace pbrto
         // Define 1D checkerboard filtered integral functions
         auto d = []( Float x ) {
             Float y = x / 2 - pstdo::floor( x / 2 ) - 0.5f;
-            return x / 2 + y * ( 1 - 2 * std::abs( y ) );
+            return x / 2 + y * ( 1 - 2 * Math::FastAbs( y ) );
             };
 
         auto bf = [ & ]( Float x, Float r ) -> Float {
@@ -238,8 +238,8 @@ namespace pbrto
             // Return weights for 2D checkerboard texture
             NCHECK( !map3D );
             TexCoord2D c = map2D.Map( ctx );
-            Float ds = std::max( std::abs( c.dsdx ), std::abs( c.dsdy ) );
-            Float dt = std::max( std::abs( c.dtdx ), std::abs( c.dtdy ) );
+            Float ds = std::max( Math::FastAbs( c.dsdx ), Math::FastAbs( c.dsdy ) );
+            Float dt = std::max( Math::FastAbs( c.dtdx ), Math::FastAbs( c.dtdy ) );
             // Integrate product of 2D checkerboard function and triangle filter
             ds *= 1.5f;
             dt *= 1.5f;
@@ -251,9 +251,9 @@ namespace pbrto
             // Return weights for 3D checkerboard texture
             NCHECK( map3D );
             TexCoord3D c = map3D.Map( ctx );
-            Float dx = 1.5f * std::max( std::abs( c.dpdx.x ), std::abs( c.dpdy.x ) );
-            Float dy = 1.5f * std::max( std::abs( c.dpdx.y ), std::abs( c.dpdy.y ) );
-            Float dz = 1.5f * std::max( std::abs( c.dpdx.z ), std::abs( c.dpdy.z ) );
+            Float dx = 1.5f * std::max( Math::FastAbs( c.dpdx.x ), Math::FastAbs( c.dpdy.x ) );
+            Float dy = 1.5f * std::max( Math::FastAbs( c.dpdx.y ), Math::FastAbs( c.dpdy.y ) );
+            Float dz = 1.5f * std::max( Math::FastAbs( c.dpdx.z ), Math::FastAbs( c.dpdy.z ) );
             return 0.5f - 0.5f * bf( c.p.x, dx ) * bf( c.p.y, dy ) * bf( c.p.z, dz );
         }
     }

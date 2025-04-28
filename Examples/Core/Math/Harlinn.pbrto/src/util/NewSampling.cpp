@@ -235,7 +235,7 @@ namespace pbrto
         Float cosAu;
         SinCos( au, &sinAu, &cosAu );
         Float fu = ( cosAu * b0 - b1 ) / sinAu;
-        Float cu = pstdo::copysign( 1 / Math::Hypot( fu, b0 ), fu );
+        Float cu = Math::CopySign( 1 / Math::Hypot( fu, b0 ), fu );
         cu = Clamp( cu, -OneMinusEpsilon, OneMinusEpsilon );  // avoid NaNs
 
         // Find _xu_ along $x$ edge for spherical rectangle sample
@@ -321,10 +321,10 @@ namespace pbrto
         // Float fusq = 1 / Sqr(cu) - b0sq;  // more stable
         Float invcusq = 1 + z0sq / Sqr( xu );
         Float fusq = invcusq - b0sq;  // the winner so far
-        Float fu = pstdo::copysign( Math::Sqrt( fusq ), xu );
+        Float fu = Math::CopySign( Math::Sqrt( fusq ), xu );
         // Note, though have 1 + z^2/x^2 - b0^2, which isn't great if b0 \approx 1
         // double fusq = 1. - Sqr(double(b0)) + Sqr(double(z0) / double(xu));  //
-        // this is worse?? double fu = pstdo::copysign(Math::Sqrt(fusq), cu);
+        // this is worse?? double fu = Math::CopySign(Math::Sqrt(fusq), cu);
         NCHECK_RARE( 1e-6, fu == 0 );
 
         // State of the floating point world: in the bad cases, about half the
@@ -344,8 +344,8 @@ namespace pbrto
 
         Float sqrt = SafeSqrt( DifferenceOfProducts( b0, b0, b1, b1 ) + fusq );
         // No benefit to difference of products here...
-        Float au = Math::ATan2( -( b1 * fu ) - pstdo::copysign( b0 * sqrt, fu * b0 ),
-            b0 * b1 - sqrt * std::abs( fu ) );
+        Float au = Math::ATan2( -( b1 * fu ) - Math::CopySign( b0 * sqrt, fu * b0 ),
+            b0 * b1 - sqrt * Math::FastAbs( fu ) );
         if ( au > 0 )
             au -= 2 * Pi;
 
@@ -360,10 +360,10 @@ namespace pbrto
         Float yvsq = Sqr( yv );
 
         Float u1[ 2 ] = { ( DifferenceOfProducts( h0, h0, h0, h1 ) -
-                        std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                        Math::FastAbs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
                            Sqr( h0 - h1 ),
                        ( DifferenceOfProducts( h0, h0, h0, h1 ) +
-                        std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                        Math::FastAbs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
                            Sqr( h0 - h1 ) };
 
         // TODO: yuck is there a better way to figure out which is the right
@@ -373,7 +373,7 @@ namespace pbrto
         Float yz[ 2 ] = { ( hv[ 0 ] * dd ) / Math::Sqrt( 1 - hvsq[ 0 ] ),
                        ( hv[ 1 ] * dd ) / Math::Sqrt( 1 - hvsq[ 1 ] ) };
 
-        Point2f u = ( std::abs( yz[ 0 ] - yv ) < std::abs( yz[ 1 ] - yv ) )
+        Point2f u = ( Math::FastAbs( yz[ 0 ] - yv ) < Math::FastAbs( yz[ 1 ] - yv ) )
             ? Point2f( Clamp( u0, 0, 1 ), u1[ 0 ] )
             : Point2f( Clamp( u0, 0, 1 ), u1[ 1 ] );
 
@@ -508,7 +508,7 @@ namespace pbrto
             {
                 Float delta = Float( j ) / nSamples;
                 Float v = Lerp2( ( i + delta ) / Float( nSteps ), min, max );
-                Float fv = std::abs( f( v ) );
+                Float fv = Math::FastAbs( f( v ) );
                 accum = std::max<double>( accum, fv );
             }
             // There's actually no need for the divide by nSamples, since
@@ -539,7 +539,7 @@ namespace pbrto
                 {
                     Point2f p = domain.Lerp2(
                         Point2f( ( u + samples[ i ][ 0 ] ) / nu, ( v + samples[ i ][ 1 ] ) / nv ) );
-                    Float fuv = std::abs( f( p.x, p.y ) );
+                    Float fuv = Math::FastAbs( f( p.x, p.y ) );
                     accum = std::max<double>( accum, fuv );
                 }
                 // There's actually no need for the divide by nSamples, since
@@ -562,7 +562,7 @@ namespace pbrto
         for ( size_t i = 0; i < da.func.size( ); ++i )
         {
             Float pdfa = da.func[ i ] / da.funcInt, pdfb = db.func[ i ] / db.funcInt;
-            Float err = std::abs( pdfa - pdfb ) / ( ( pdfa + pdfb ) / 2 );
+            Float err = Math::FastAbs( pdfa - pdfb ) / ( ( pdfa + pdfb ) / 2 );
             EXPECT_LT( err, eps ) << pdfa << " - " << pdfb;
         }
     }

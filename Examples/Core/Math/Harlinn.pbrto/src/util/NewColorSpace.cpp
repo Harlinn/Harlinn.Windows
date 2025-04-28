@@ -87,8 +87,8 @@ namespace pbrto
     const RGBColorSpace* RGBColorSpace::Lookup( Point2f r, Point2f g, Point2f b, Point2f w )
     {
         auto closeEnough = []( const Point2f& a, const Point2f& b ) {
-            return ( ( a.x == b.x || std::abs( ( a.x - b.x ) / b.x ) < 1e-3 ) &&
-                ( a.y == b.y || std::abs( ( a.y - b.y ) / b.y ) < 1e-3 ) );
+            return ( ( a.x == b.x || Math::FastAbs( ( a.x - b.x ) / b.x ) < 1e-3 ) &&
+                ( a.y == b.y || Math::FastAbs( ( a.y - b.y ) / b.y ) < 1e-3 ) );
             };
         for ( const RGBColorSpace* cs : { ACES2065_1, DCI_P3, Rec2020, sRGB } )
         {

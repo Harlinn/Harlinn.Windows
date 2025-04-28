@@ -13,6 +13,20 @@ This is the repository for Harlinn.Windows, a Visual Studio 2022 Solution with a
   - [Using the ONNX runtime with the DirectML execution provider (Harlinn.AI.ONNX.DirectML)](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.AI/Harlinn.AI.ONNX.DirectML.html)
 - [Harlinn.Common.Core](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.Common.Core/Harlinn.Common.Core.html) library.
   - [Fast Linear Algebra Classes for Games and Graphics](https://harlinn.github.io/Cpp/Cpp/Math/FastLinearAlgebra.html)
+    
+    The main demo, [pbrto](https://github.com/Harlinn/Harlinn.Windows/tree/master/Examples/Core/Math/pbrto), 
+    is a modified version of the [pbrt-v4](https://github.com/mmp/pbrt-v4) ray-tracer
+    that speeds up the rendering machinery. This image rendered in 1004 seconds:
+    
+    <img src="./Readme/Images/lte-orb-silver.png" width="240"/>
+   
+    While this image rendered in 1397 seconds using the original pbrt rendering machinery:
+
+    <img src="./Readme/Images/lte-orb-silver2.png" width="240"/>
+
+    [pbrto](https://github.com/Harlinn/Harlinn.Windows/tree/master/Examples/Core/Math/pbrto) 
+    includes both the original rendering machinery and my modified version of the machinery.
+   
   - [Single Instruction Multiple Data (SIMD)](https://harlinn.github.io/Cpp/Cpp/Math/SimdOperations.html)
   - [Optimized basic math functions](https://harlinn.github.io/Cpp/Cpp/Math/BasicMath.html)
   - [C++ classes for Working with Threads, Processes and Kernel Mode Synchronization](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.Common.Core/WindowsSynchronization.html)

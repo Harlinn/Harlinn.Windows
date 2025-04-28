@@ -454,7 +454,7 @@ namespace pbrto
             Point3f pMax = cameraFromRaster( Point3f( res.x, res.y, 0 ) );
             pMin /= pMin.z;
             pMax /= pMax.z;
-            A = std::abs( ( pMax.x - pMin.x ) * ( pMax.y - pMin.y ) );
+            A = Math::FastAbs( ( pMax.x - pMin.x ) * ( pMax.y - pMin.y ) );
 
             // Compute minimum differentials for _PerspectiveCamera_
             FindMinimumDifferentials( this );
@@ -639,7 +639,7 @@ namespace pbrto
         PBRT_CPU_GPU
             Float TraceLensesFromFilm( const Ray& rCamera, Ray* rOut ) const;
 
-        static bool IntersectSphericalElement( Float radius, Float zCenter, const Ray& ray, Float* t, Normal3f* n )
+        static bool IntersectSphericalElement( Float radius, Float zCenter, const Ray& ray, Float* t, Normal3f* nOut )
         {
             // Compute _t0_ and _t1_ for ray--element intersection
             Point3f o = ray.o - Vector3f( 0, 0, zCenter );
@@ -658,9 +658,9 @@ namespace pbrto
                 return false;
 
             // Compute surface normal of element at ray intersection point
-            *n = Normal3f( Vector3f( o + *t * ray.d ) );
-            *n = FaceForward( Normalize( *n ), -ray.d );
-
+            Normal3f::Simd n = Normal3f::Simd( Vector3f::Simd( o + *t * ray.d ) );
+            n = FaceForward( Normalize( n ), -ray.d );
+            *nOut = n;
             return true;
         }
 

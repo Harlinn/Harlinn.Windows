@@ -115,7 +115,7 @@ namespace pbrto
             // Add contribution of single scattering at depth $t$
             Ess += rho * FastExp( -sigma_t * ( d + tCrit ) ) / Sqr( d ) *
                 HenyeyGreenstein( cosTheta_o, g ) * ( 1 - FrDielectric( -cosTheta_o, eta ) ) *
-                std::abs( cosTheta_o );
+                Math::FastAbs( cosTheta_o );
         }
         return Ess / nSamples;
     }

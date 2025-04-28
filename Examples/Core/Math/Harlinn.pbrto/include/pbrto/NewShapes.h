@@ -932,7 +932,7 @@ namespace pbrto
             Float determinant = DifferenceOfProducts( duv02[ 0 ], duv12[ 1 ], duv02[ 1 ], duv12[ 0 ] );
 
             Vector3f::Simd dpdu, dpdv;
-            bool degenerateUV = std::abs( determinant ) < 1e-9f;
+            bool degenerateUV = Math::FastAbs( determinant ) < 1e-9f;
             if ( !degenerateUV )
             {
                 // Compute triangle $\dpdu$ and $\dpdv$ via matrix inversion
@@ -1026,7 +1026,7 @@ namespace pbrto
                     Normal3f::Simd dn2 = mesh->n[ v[ 1 ] ] - mesh->n[ v[ 2 ] ];
 
                     Float determinant = DifferenceOfProducts( duv02[ 0 ], duv12[ 1 ], duv02[ 1 ], duv12[ 0 ] );
-                    bool degenerateUV = std::abs( determinant ) < 1e-9;
+                    bool degenerateUV = Math::FastAbs( determinant ) < 1e-9;
                     if ( degenerateUV )
                     {
                         // We can still compute dndu and dndv, with respect to the
@@ -1479,10 +1479,10 @@ namespace pbrto
                 // Compute partial derivatives of $(u,v)$ with respect to $(s,t)$
                 Vector2f dstdu = Lerp2( uv[ 1 ], uv10, uv11 ) - Lerp2( uv[ 1 ], uv00, uv01 );
                 Vector2f dstdv = Lerp2( uv[ 0 ], uv01, uv11 ) - Lerp2( uv[ 0 ], uv00, uv10 );
-                duds = std::abs( dstdu[ 0 ] ) < 1e-8f ? 0 : 1 / dstdu[ 0 ];
-                dvds = std::abs( dstdv[ 0 ] ) < 1e-8f ? 0 : 1 / dstdv[ 0 ];
-                dudt = std::abs( dstdu[ 1 ] ) < 1e-8f ? 0 : 1 / dstdu[ 1 ];
-                dvdt = std::abs( dstdv[ 1 ] ) < 1e-8f ? 0 : 1 / dstdv[ 1 ];
+                duds = Math::FastAbs( dstdu[ 0 ] ) < 1e-8f ? 0 : 1 / dstdu[ 0 ];
+                dvds = Math::FastAbs( dstdv[ 0 ] ) < 1e-8f ? 0 : 1 / dstdv[ 0 ];
+                dudt = Math::FastAbs( dstdu[ 1 ] ) < 1e-8f ? 0 : 1 / dstdu[ 1 ];
+                dvdt = Math::FastAbs( dstdv[ 1 ] ) < 1e-8f ? 0 : 1 / dstdv[ 1 ];
 
                 // Compute partial derivatives of $\pt{}$ with respect to $(s,t)$
                 Vector3f::Simd dpds = dpdu * duds + dpdv * dvds;
@@ -1587,7 +1587,7 @@ namespace pbrto
             Float d2[ 4 ] = { ScalarDistanceSquared( p00, pCenter ), ScalarDistanceSquared( p01, pCenter ),
                            ScalarDistanceSquared( p10, pCenter ), ScalarDistanceSquared( p11, pCenter ) };
             for ( int i = 1; i < 4; ++i )
-                if ( std::abs( d2[ i ] - d2[ 0 ] ) / d2[ 0 ] > 1e-4f )
+                if ( Math::FastAbs( d2[ i ] - d2[ 0 ] ) / d2[ 0 ] > 1e-4f )
                     return false;
             return true;
         }

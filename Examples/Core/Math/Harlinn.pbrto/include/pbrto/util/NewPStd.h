@@ -1411,7 +1411,7 @@ namespace pstdo
         if ( z.re >= 0 )
             return { t1, t2 };
         else
-            return { pstdo::abs( t2 ), pstdo::copysign( t1, z.im ) };
+            return { pstdo::abs( t2 ), Math::CopySign( t1, z.im ) };
     }
 
 }

@@ -218,9 +218,9 @@ namespace pbrto
             norm = 0;
             for ( int i = 0; i < 3; ++i )
             {
-                Float n = std::abs( ( *R )[ i ][ 0 ] - Rnext[ i ][ 0 ] ) +
-                    std::abs( ( *R )[ i ][ 1 ] - Rnext[ i ][ 1 ] ) +
-                    std::abs( ( *R )[ i ][ 2 ] - Rnext[ i ][ 2 ] );
+                Float n = Math::FastAbs( ( *R )[ i ][ 0 ] - Rnext[ i ][ 0 ] ) +
+                    Math::FastAbs( ( *R )[ i ][ 1 ] - Rnext[ i ][ 1 ] ) +
+                    Math::FastAbs( ( *R )[ i ][ 2 ] - Rnext[ i ][ 2 ] );
                 norm = std::max( norm, n );
             }
 

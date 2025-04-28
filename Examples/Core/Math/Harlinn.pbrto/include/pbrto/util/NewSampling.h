@@ -102,7 +102,7 @@ namespace pbrto
 
         // Compute $\cos\theta$ for Henyey--Greenstein sample
         Float cosTheta;
-        if ( std::abs( g ) < 1e-3f )
+        if ( Math::FastAbs( g ) < 1e-3f )
             cosTheta = 1 - 2 * u[ 0 ];
         else
             cosTheta =
@@ -287,9 +287,9 @@ namespace pbrto
 
     inline Float TentPDF( Float x, Float r )
     {
-        if ( std::abs( x ) >= r )
+        if ( Math::FastAbs( x ) >= r )
             return 0;
-        return 1 / r - std::abs( x ) / Sqr( r );
+        return 1 / r - Math::FastAbs( x ) / Sqr( r );
     }
 
     inline Float InvertTentSample( Float x, Float r )
@@ -303,19 +303,19 @@ namespace pbrto
     inline Float ExponentialPDF( Float x, Float a )
     {
         NDCHECK_GT( a, 0 );
-        return a * std::exp( -a * x );
+        return a * Math::Exp( -a * x );
     }
 
     inline Float SampleExponential( Float u, Float a )
     {
         NDCHECK_GT( a, 0 );
-        return -std::log( 1 - u ) / a;
+        return -Math::Log( 1 - u ) / a;
     }
 
     inline Float InvertExponentialSample( Float x, Float a )
     {
         NDCHECK_GT( a, 0 );
-        return 1 - std::exp( -a * x );
+        return 1 - Math::Exp( -a * x );
     }
 
     inline Float NormalPDF( Float x, Float mu = 0, Float sigma = 1 )
@@ -347,18 +347,18 @@ namespace pbrto
 
     inline Float LogisticPDF( Float x, Float s )
     {
-        x = std::abs( x );
-        return std::exp( -x / s ) / ( s * Sqr( 1 + std::exp( -x / s ) ) );
+        x = Math::FastAbs( x );
+        return Math::Exp( -x / s ) / ( s * Sqr( 1 + Math::Exp( -x / s ) ) );
     }
 
     inline Float SampleLogistic( Float u, Float s )
     {
-        return -s * std::log( 1 / u - 1 );
+        return -s * Math::Log( 1 / u - 1 );
     }
 
     inline Float InvertLogisticSample( Float x, Float s )
     {
-        return 1 / ( 1 + std::exp( -x / s ) );
+        return 1 / ( 1 + Math::Exp( -x / s ) );
     }
 
     inline Float TrimmedLogisticPDF( Float x, Float s, Float a, Float b )
@@ -440,7 +440,7 @@ namespace pbrto
 
         // Apply concentric mapping to point
         Float theta, r;
-        if ( std::abs( uOffset.x ) > std::abs( uOffset.y ) )
+        if ( Math::FastAbs( uOffset.x ) > Math::FastAbs( uOffset.y ) )
         {
             r = uOffset.x;
             theta = PiOver4 * ( uOffset.y / uOffset.x );
@@ -463,9 +463,9 @@ namespace pbrto
 
         Point2f uo;
         // TODO: can we make this less branchy?
-        if ( std::abs( theta ) < PiOver4 || std::abs( theta ) > 3 * PiOver4 )
+        if ( Math::FastAbs( theta ) < PiOver4 || Math::FastAbs( theta ) > 3 * PiOver4 )
         {
-            uo.x = r = pstdo::copysign( r, p.x );
+            uo.x = r = Math::CopySign( r, p.x );
             if ( p.x < 0 )
             {
                 if ( p.y < 0 )
@@ -484,7 +484,7 @@ namespace pbrto
         }
         else
         {
-            uo.y = r = pstdo::copysign( r, p.y );
+            uo.y = r = Math::CopySign( r, p.y );
             if ( p.y < 0 )
             {
                 uo.x = -( PiOver2 + theta ) * r / PiOver4;
@@ -586,20 +586,20 @@ namespace pbrto
     // Sample from e^(-c x), x from 0 to xMax
     inline Float SampleTrimmedExponential( Float u, Float c, Float xMax )
     {
-        return std::log( 1 - u * ( 1 - std::exp( -c * xMax ) ) ) / -c;
+        return Math::Log( 1 - u * ( 1 - Math::Exp( -c * xMax ) ) ) / -c;
     }
 
     inline Float TrimmedExponentialPDF( Float x, Float c, Float xMax )
     {
         if ( x < 0 || x > xMax )
             return 0;
-        return c / ( 1 - std::exp( -c * xMax ) ) * std::exp( -c * x );
+        return c / ( 1 - Math::Exp( -c * xMax ) ) * Math::Exp( -c * x );
     }
 
     inline Float InvertTrimmedExponentialSample( Float x, Float c, Float xMax )
     {
         NDCHECK( x >= 0 && x <= xMax );
-        return ( 1 - std::exp( -c * x ) ) / ( 1 - std::exp( -c * xMax ) );
+        return ( 1 - Math::Exp( -c * x ) ) / ( 1 - Math::Exp( -c * xMax ) );
     }
 
     inline Vector3f::Simd SampleUniformHemisphereConcentric( Point2f u )
@@ -613,7 +613,7 @@ namespace pbrto
 
         // Apply concentric mapping to point
         Float theta, r;
-        if ( std::abs( uOffset.x ) > std::abs( uOffset.y ) )
+        if ( Math::FastAbs( uOffset.x ) > Math::FastAbs( uOffset.y ) )
         {
             r = uOffset.x;
             theta = PiOver4 * ( uOffset.y / uOffset.x );
@@ -808,7 +808,7 @@ namespace pbrto
             NCHECK_GT( max, min );
             // Take absolute value of _func_
             for ( Float& f : func )
-                f = std::abs( f );
+                f = Math::FastAbs( f );
 
             // Compute integral of step function at $x_i$
             cdf[ 0 ] = 0;
@@ -1776,7 +1776,7 @@ namespace pbrto
                 lookup<Dimension>( m_conditional_cdf.data( ), offset + ( m_size.x * 2 - 1 ),
                     slice_size, param_weight );
 
-            bool is_const = std::abs( r0 - r1 ) < 1e-4f * ( r0 + r1 );
+            bool is_const = Math::FastAbs( r0 - r1 ) < 1e-4f * ( r0 + r1 );
             sample.y = is_const ? ( 2.f * sample.y )
                 : ( r0 - SafeSqrt( r0 * r0 - 2.f * sample.y * ( r0 - r1 ) ) );
             sample.y /= is_const ? ( r0 + r1 ) : ( r0 - r1 );
@@ -1810,7 +1810,7 @@ namespace pbrto
                 c0 = FMA( ( 1.f - sample.y ), v00, sample.y * v01 ),
                 c1 = FMA( ( 1.f - sample.y ), v10, sample.y * v11 );
 
-            is_const = std::abs( c0 - c1 ) < 1e-4f * ( c0 + c1 );
+            is_const = Math::FastAbs( c0 - c1 ) < 1e-4f * ( c0 + c1 );
             sample.x = is_const ? ( 2.f * sample.x )
                 : ( c0 - SafeSqrt( c0 * c0 - 2.f * sample.x * ( c0 - c1 ) ) );
             sample.x /= is_const ? ( c0 + c1 ) : ( c0 - c1 );

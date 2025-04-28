@@ -28,16 +28,12 @@
 namespace pbrto
 {
 
-    PBRT_CPU_GPU
-        Float Noise( Float x, Float y = .5f, Float z = .5f );
-    PBRT_CPU_GPU
-        Float Noise( Point3f p );
-    PBRT_CPU_GPU
-        Vector3f DNoise( Point3f p );
-    PBRT_CPU_GPU
-        Float FBm( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int octaves );
-    PBRT_CPU_GPU
-        Float Turbulence( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int octaves );
+    Float Noise( Float x, Float y = .5f, Float z = .5f );
+
+    Float Noise( Point3f p );
+    Vector3f DNoise( Point3f p );
+    Float FBm( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int octaves );
+    Float Turbulence( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int octaves );
 
 }
 

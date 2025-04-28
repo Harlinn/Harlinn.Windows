@@ -1230,7 +1230,7 @@ namespace pbrto
             TexCoord3D c = mapping.Map( ctx );
             Float windStrength = FBm( .1f * c.p, .1f * c.dpdx, .1f * c.dpdy, .5, 3 );
             Float waveHeight = FBm( c.p, c.dpdx, c.dpdy, .5, 6 );
-            return std::abs( windStrength ) * waveHeight;
+            return Math::FastAbs( windStrength ) * waveHeight;
         }
 
         static WindyTexture* Create( const Transform& renderFromTexture,

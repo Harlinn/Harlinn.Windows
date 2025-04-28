@@ -186,7 +186,7 @@ namespace pbrto
                 // Compute current voxel for axis and handle negative zero direction
                 voxel[ axis ] =
                     Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
-                deltaT[ axis ] = 1 / ( std::abs( rayGridD[ axis ] ) * grid->res[ axis ] );
+                deltaT[ axis ] = 1 / ( Math::FastAbs( rayGridD[ axis ] ) * grid->res[ axis ] );
                 if ( rayGridD[ axis ] == -0.f )
                 {
                     switch ( axis )

@@ -1533,7 +1533,7 @@ namespace pbrto
             if ( cosSample )
             {
                 wi = SampleCosineHemisphere( u );
-                pdf = CosineHemispherePDF( std::abs( wi.z() ) );
+                pdf = CosineHemispherePDF( Math::FastAbs( wi.z() ) );
             }
             else
             {
@@ -3594,7 +3594,7 @@ namespace pbrto
         {
             auto Gaussian = []( double x, double mu = 0, double sigma = 1 ) {
                 return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
-                    std::exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
+                    Math::Exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
                 };
             auto GaussianIntegral = []( double x0, double x1, double mu = 0, double sigma = 1 ) {
                 double sigmaRoot2 = sigma * double( 1.414213562373095 );

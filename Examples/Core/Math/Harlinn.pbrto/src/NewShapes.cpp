@@ -286,7 +286,7 @@ namespace pbrto
         // Compute $\delta_t$ term for triangle $t$ error bounds and check _t_
         Float maxE = MaxComponentValue( Abs( Vector3f( e0, e1, e2 ) ) );
         Float deltaT =
-            3 * ( gamma( 3 ) * maxE * maxZt + deltaE * maxZt + deltaZ * maxE ) * std::abs( invDet );
+            3 * ( gamma( 3 ) * maxE * maxZt + deltaE * maxZt + deltaZ * maxE ) * Math::FastAbs( invDet );
         if ( t <= deltaT )
             return {};
 
@@ -637,9 +637,10 @@ namespace pbrto
         Float L0 = 0;
         for ( int i = 0; i < 2; ++i )
             L0 = std::max(
-                L0, std::max( std::max( std::abs( cp[ i ].x - 2 * cp[ i + 1 ].x + cp[ i + 2 ].x ),
-                    std::abs( cp[ i ].y - 2 * cp[ i + 1 ].y + cp[ i + 2 ].y ) ),
-                    std::abs( cp[ i ].z - 2 * cp[ i + 1 ].z + cp[ i + 2 ].z ) ) );
+                L0, std::max( 
+                    std::max( Math::FastAbs( cp[ i ].x - 2 * cp[ i + 1 ].x + cp[ i + 2 ].x ),
+                    Math::FastAbs( cp[ i ].y - 2 * cp[ i + 1 ].y + cp[ i + 2 ].y ) ),
+                    Math::FastAbs( cp[ i ].z - 2 * cp[ i + 1 ].z + cp[ i + 2 ].z ) ) );
         int maxDepth = 0;
         if ( L0 > 0 )
         {

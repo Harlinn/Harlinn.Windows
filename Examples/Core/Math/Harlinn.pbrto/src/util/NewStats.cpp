@@ -424,11 +424,11 @@ namespace pbrto
         size_t totalMemoryReported = 0;
         auto printBytes = []( size_t bytes ) -> std::string {
             float kb = ( double )bytes / 1024.;
-            if ( std::abs( kb ) < 1024. )
+            if ( Math::FastAbs( kb ) < 1024. )
                 return StringPrintf( "%9.2f kB", kb );
 
             float mib = kb / 1024.;
-            if ( std::abs( mib ) < 1024. )
+            if ( Math::FastAbs( mib ) < 1024. )
                 return StringPrintf( "%9.2f MiB", mib );
 
             float gib = mib / 1024.;

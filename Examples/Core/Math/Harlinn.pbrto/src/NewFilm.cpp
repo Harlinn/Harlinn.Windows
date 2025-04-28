@@ -851,7 +851,7 @@ namespace pbrto
             Normal3f ns =
                 ScalarLengthSquared( pixel.nsSum ) > 0 ? Normalize( pixel.nsSum ) : Normal3f::Simd( 0, 0, 0 );
             image.SetChannels( pOffset, pDesc, { pt.x, pt.y, pt.z } );
-            image.SetChannels( pOffset, dzDesc, { std::abs( dzdx ), std::abs( dzdy ) } );
+            image.SetChannels( pOffset, dzDesc, { Math::FastAbs( dzdx ), Math::FastAbs( dzdy ) } );
             image.SetChannels( pOffset, nDesc, { n.x, n.y, n.z } );
             image.SetChannels( pOffset, nsDesc, { ns.x, ns.y, ns.z } );
             image.SetChannels( pOffset, uvDesc, { uv[ 0 ], uv[ 1 ] } );

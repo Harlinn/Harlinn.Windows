@@ -635,7 +635,7 @@ namespace pbrto
                     {
                         // Sample medium scattering for layered BSDF evaluation
                         Float sigma_t = 1;
-                        Float dz = SampleExponential( r( ), sigma_t / std::abs( w.z ) );
+                        Float dz = SampleExponential( r( ), sigma_t / Math::FastAbs( w.z ) );
                         Float zp = w.z > 0 ? ( z + dz ) : ( z - dz );
                         NDCHECK_RARE( 1e-5, z == zp );
                         if ( z == zp )
@@ -1001,9 +1001,9 @@ namespace pbrto
         PBRT_CPU_GPU
             static Float Tr( Float dz, Vector3f w )
         {
-            if ( std::abs( dz ) <= std::numeric_limits<Float>::min( ) )
+            if ( Math::FastAbs( dz ) <= std::numeric_limits<Float>::min( ) )
                 return 1;
-            return FastExp( -std::abs( dz / w.z ) );
+            return FastExp( -Math::FastAbs( dz / w.z ) );
         }
 
         // LayeredBxDF Private Members
@@ -1081,7 +1081,7 @@ namespace pbrto
         {
             Float a = cosTheta_i * cosTheta_o / v, b = sinTheta_i * sinTheta_o / v;
             Float mp = ( v <= .1 )
-                ? ( FastExp( LogI0( a ) - b - 1 / v + 0.6931f + std::log( 1 / ( 2 * v ) ) ) )
+                ? ( FastExp( LogI0( a ) - b - 1 / v + 0.6931f + Math::Log( 1 / ( 2 * v ) ) ) )
                 : ( FastExp( -b ) * I0( a ) ) / ( std::sinh( 1 / v ) * 2 * v );
             NDCHECK( !IsInf( mp ) && !IsNaN( mp ) );
             return mp;

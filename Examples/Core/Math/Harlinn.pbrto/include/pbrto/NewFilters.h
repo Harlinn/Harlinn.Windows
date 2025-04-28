@@ -88,7 +88,7 @@ namespace pbrto
         PBRT_CPU_GPU
             Float Evaluate( Point2f p ) const
         {
-            return ( std::abs( p.x ) <= radius.x && std::abs( p.y ) <= radius.y ) ? 1 : 0;
+            return ( Math::FastAbs( p.x ) <= radius.x && Math::FastAbs( p.y ) <= radius.y ) ? 1 : 0;
         }
 
         PBRT_CPU_GPU
@@ -187,7 +187,7 @@ namespace pbrto
         PBRT_CPU_GPU
             Float Mitchell1D( Float x ) const
         {
-            x = std::abs( x );
+            x = Math::FastAbs( x );
             if ( x <= 1 )
                 return ( ( 12 - 9 * b - 6 * c ) * x * x * x + ( -18 + 12 * b + 6 * c ) * x * x +
                     ( 6 - 2 * b ) ) *
@@ -261,8 +261,8 @@ namespace pbrto
         PBRT_CPU_GPU
             Float Evaluate( Point2f p ) const
         {
-            return std::max<Float>( 0, radius.x - std::abs( p.x ) ) *
-                std::max<Float>( 0, radius.y - std::abs( p.y ) );
+            return std::max<Float>( 0, radius.x - Math::FastAbs( p.x ) ) *
+                std::max<Float>( 0, radius.y - Math::FastAbs( p.y ) );
         }
 
         PBRT_CPU_GPU

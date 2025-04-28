@@ -142,7 +142,7 @@ namespace pbrto
         // Compute offset positions and evaluate displacement texture
         TextureEvalContext shiftedCtx = ctx;
         // Shift _shiftedCtx_ _du_ in the $u$ direction
-        Float du = .5f * ( std::abs( ctx.dudx ) + std::abs( ctx.dudy ) );
+        Float du = .5f * ( Math::FastAbs( ctx.dudx ) + Math::FastAbs( ctx.dudy ) );
         if ( du == 0 )
             du = .0005f;
         shiftedCtx.p = ctx.p + du * ctx.shading.dpdu;
@@ -150,7 +150,7 @@ namespace pbrto
 
         Float uDisplace = texEval( displacement, shiftedCtx );
         // Shift _shiftedCtx_ _dv_ in the $v$ direction
-        Float dv = .5f * ( std::abs( ctx.dvdx ) + std::abs( ctx.dvdy ) );
+        Float dv = .5f * ( Math::FastAbs( ctx.dvdx ) + Math::FastAbs( ctx.dvdy ) );
         if ( dv == 0 )
             dv = .0005f;
         shiftedCtx.p = ctx.p + dv * ctx.shading.dpdv;

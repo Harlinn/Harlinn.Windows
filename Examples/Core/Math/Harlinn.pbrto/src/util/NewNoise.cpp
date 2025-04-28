@@ -72,40 +72,71 @@ namespace pbrto
 
     };
 
+    inline Float NoiseWeight( Float t )
+    {
+        return 6 * FastPow<5>( t ) - 15 * FastPow<4>( t ) + 10 * FastPow<3>( t );
+    }
+
+    inline Vector3f::Simd NoiseWeight( Vector3f::Simd t )
+    {
+        return Vector3f::Simd(6.f) * FastPow<5>( t ) - 15 * FastPow<4>( t ) + 10 * FastPow<3>( t );
+    }
+
     // Noise Function Definitions
-    Float Noise( Float x, Float y, Float z )
+    Float Noise( Vector3f::Simd v )
     {
         // Compute noise cell coordinates and offsets
         // Avoid overflow when computing deltas if the coordinates are too large to store in
         // int32s.
+        v = Math::FMod( v, Vector3f::Simd( Float( 1 << 30 ) ) );
+        auto ii = Math::Floor( v );
+        Vector3f d = v - ii;
+        Vector3f i( ii  );
+        /*
         x = Math::FMod( x, Float( 1 << 30 ) );
         y = Math::FMod( y, Float( 1 << 30 ) );
         z = Math::FMod( z, Float( 1 << 30 ) );
-        int ix = Math::Floor( x ), iy = Math::Floor( y ), iz = Math::Floor( z );
-        Float dx = x - ix, dy = y - iy, dz = z - iz;
+        int ix = Math::Floor( x ); 
+        int iy = Math::Floor( y ); 
+        int iz = Math::Floor( z );
+        Float dx = x - ix; 
+        Float dy = y - iy; 
+        Float dz = z - iz;
+        */
 
         // Compute gradient weights
-        ix &= NoisePermSize - 1;
-        iy &= NoisePermSize - 1;
-        iz &= NoisePermSize - 1;
-        Float w000 = Grad( ix, iy, iz, dx, dy, dz );
-        Float w100 = Grad( ix + 1, iy, iz, dx - 1, dy, dz );
-        Float w010 = Grad( ix, iy + 1, iz, dx, dy - 1, dz );
-        Float w110 = Grad( ix + 1, iy + 1, iz, dx - 1, dy - 1, dz );
-        Float w001 = Grad( ix, iy, iz + 1, dx, dy, dz - 1 );
-        Float w101 = Grad( ix + 1, iy, iz + 1, dx - 1, dy, dz - 1 );
-        Float w011 = Grad( ix, iy + 1, iz + 1, dx, dy - 1, dz - 1 );
-        Float w111 = Grad( ix + 1, iy + 1, iz + 1, dx - 1, dy - 1, dz - 1 );
+        int ix = static_cast< int >( i.x ) & NoisePermSize - 1;
+        int iy = static_cast< int >( i.y ) & NoisePermSize - 1;
+        int iz = static_cast< int >( i.z ) & NoisePermSize - 1;
+        Float w000 = Grad( ix, iy, iz, d.x, d.y, d.z );
+        Float w100 = Grad( ix + 1, iy, iz, d.x - 1, d.y, d.z );
+        Float w010 = Grad( ix, iy + 1, iz, d.x, d.y - 1, d.z );
+        Float w110 = Grad( ix + 1, iy + 1, iz, d.x - 1, d.y - 1, d.z );
+        Float w001 = Grad( ix, iy, iz + 1, d.x, d.y, d.z - 1 );
+        Float w101 = Grad( ix + 1, iy, iz + 1, d.x - 1, d.y, d.z - 1 );
+        Float w011 = Grad( ix, iy + 1, iz + 1, d.x, d.y - 1, d.z - 1 );
+        Float w111 = Grad( ix + 1, iy + 1, iz + 1, d.x - 1, d.y - 1, d.z - 1 );
 
         // Compute trilinear interpolation of weights
-        Float wx = NoiseWeight( dx ), wy = NoiseWeight( dy ), wz = NoiseWeight( dz );
-        Float x00 = Lerp2( wx, w000, w100 );
-        Float x10 = Lerp2( wx, w010, w110 );
-        Float x01 = Lerp2( wx, w001, w101 );
-        Float x11 = Lerp2( wx, w011, w111 );
-        Float y0 = Lerp2( wy, x00, x10 );
-        Float y1 = Lerp2( wy, x01, x11 );
-        return Lerp2( wz, y0, y1 );
+        Vector3f w = NoiseWeight( d );
+        //Float wx = NoiseWeight( dx ), wy = NoiseWeight( dy ), wz = NoiseWeight( dz );
+        Float x00 = Lerp2( w.x, w000, w100 );
+        Float x10 = Lerp2( w.x, w010, w110 );
+        Float x01 = Lerp2( w.x, w001, w101 );
+        Float x11 = Lerp2( w.x, w011, w111 );
+        Float y0 = Lerp2( w.y, x00, x10 );
+        Float y1 = Lerp2( w.y, x01, x11 );
+        return Lerp2( w.z, y0, y1 );
+    }
+
+    Float Noise( Float x, Float y, Float z )
+    {
+        return Noise( Vector3f::Simd( x, y, z ) );
+    }
+
+    Float Noise( Point3f::Simd p )
+    {
+        return Noise( Vector3f::Simd( p ) );
     }
 
     Float Noise( Point3f p )
@@ -122,10 +153,7 @@ namespace pbrto
         return ( ( h & 1 ) ? -u : u ) + ( ( h & 2 ) ? -v : v );
     }
 
-    inline Float NoiseWeight( Float t )
-    {
-        return 6 * FastPow<5>( t ) - 15 * FastPow<4>( t ) + 10 * FastPow<3>( t );
-    }
+    
 
     Vector3f DNoise( Point3f p )
     {
@@ -141,7 +169,7 @@ namespace pbrto
         // Compute number of octaves for antialiased FBm
         Float len2 = std::max( ScalarLengthSquared( dpdx ), ScalarLengthSquared( dpdy ) );
         Float n = Clamp( -1 - Log2( len2 ) / 2, 0, maxOctaves );
-        int nInt = Math::Floor( n );
+        int nInt = static_cast<int>(Math::Floor( n ));
 
         // Compute sum of octaves of noise for FBm
         Float sum = 0, lambda = 1, o = 1;
@@ -168,14 +196,14 @@ namespace pbrto
         Float sum = 0, lambda = 1, o = 1;
         for ( int i = 0; i < nInt; ++i )
         {
-            sum += o * std::abs( Noise( lambda * p ) );
+            sum += o * Math::FastAbs( Noise( lambda * p ) );
             lambda *= 1.99f;
             o *= omega;
         }
 
         // Account for contributions of clamped octaves in turbulence
         Float nPartial = n - nInt;
-        sum += o * Lerp2( SmoothStep( nPartial, .3f, .7f ), 0.2, std::abs( Noise( lambda * p ) ) );
+        sum += o * Lerp2( SmoothStep( nPartial, .3f, .7f ), 0.2, Math::FastAbs( Noise( lambda * p ) ) );
         for ( int i = nInt; i < maxOctaves; ++i )
         {
             sum += o * 0.2f;

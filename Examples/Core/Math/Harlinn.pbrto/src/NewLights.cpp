@@ -155,7 +155,7 @@ namespace pbrto
         Vector3f::Simd wi = Normalize( p - pc );
         Float cosTheta_w = ScalarDot( w, wi );
         if ( twoSided )
-            cosTheta_w = std::abs( cosTheta_w );
+            cosTheta_w = Math::FastAbs( cosTheta_w );
         Float sinTheta_w = SafeSqrt( 1 - Sqr( cosTheta_w ) );
 
         // Compute $\cos\,\theta_\roman{\+b}$ for reference point
@@ -902,7 +902,7 @@ namespace pbrto
                 w = SampleCosineHemisphere( u2 );
                 w.z *= -1;
             }
-            pdfDir = CosineHemispherePDF( std::abs( w.z ) ) / 2;
+            pdfDir = CosineHemispherePDF( Math::FastAbs( w.z ) ) / 2;
 
         }
         else
@@ -1228,11 +1228,11 @@ namespace pbrto
         Vector3f p32 = Normalize( portal[ 2 ] - portal[ 3 ] );
         Vector3f p03 = Normalize( portal[ 3 ] - portal[ 0 ] );
         // Do opposite edges have the same direction?
-        if ( std::abs( ScalarDot( p01, p32 ) - 1 ) > .001 || std::abs( ScalarDot( p12, p03 ) - 1 ) > .001 )
+        if ( Math::FastAbs( ScalarDot( p01, p32 ) - 1 ) > .001 || Math::FastAbs( ScalarDot( p12, p03 ) - 1 ) > .001 )
             Error( "Infinite light portal isn't a planar quadrilateral" );
         // Sides perpendicular?
-        if ( std::abs( ScalarDot( p01, p12 ) ) > .001 || std::abs( ScalarDot( p12, p32 ) ) > .001 ||
-            std::abs( ScalarDot( p32, p03 ) ) > .001 || std::abs( ScalarDot( p03, p01 ) ) > .001 )
+        if ( Math::FastAbs( ScalarDot( p01, p12 ) ) > .001 || Math::FastAbs( ScalarDot( p12, p32 ) ) > .001 ||
+            Math::FastAbs( ScalarDot( p32, p03 ) ) > .001 || Math::FastAbs( ScalarDot( p03, p01 ) ) > .001 )
             Error( "Infinite light portal isn't a planar quadrilateral" );
         portalFrame = Frame::FromXY( p03, p01 );
 
