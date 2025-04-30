@@ -77,7 +77,7 @@ namespace pbrto
             const MediumInterface& mediumInterface, const Shape shape,
             FloatTexture alpha, const FileLoc* loc, Allocator alloc );
 
-        SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( SampledWavelengths lambda ) const;
 
         inline LightType Type( ) const;
 
@@ -88,10 +88,10 @@ namespace pbrto
         std::string ToString( ) const;
 
         // AreaLights only
-        inline SampledSpectrum::Simd L( Point3f::Simd p, Normal3f::Simd n, Point2f uv, Vector3f::Simd w, const SampledWavelengths& lambda ) const;
+        inline SampledSpectrum L( Point3f::Simd p, Normal3f::Simd n, Point2f uv, Vector3f::Simd w, const SampledWavelengths& lambda ) const;
 
         // InfiniteLights only
-        inline SampledSpectrum::Simd Le( const Ray& ray, const SampledWavelengths& lambda ) const;
+        inline SampledSpectrum Le( const Ray& ray, const SampledWavelengths& lambda ) const;
 
         void Preprocess( const Bounds3f& sceneBounds );
 

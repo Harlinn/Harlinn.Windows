@@ -46,11 +46,11 @@ namespace pbrto
 {
 
     // Parallel Function Declarations
-    void ParallelInit( int nThreads = -1 );
-    void ParallelCleanup( );
+    PBRTO_EXPORT void ParallelInit( int nThreads = -1 );
+    PBRTO_EXPORT void ParallelCleanup( );
 
-    int AvailableCores( );
-    int RunningThreads( );
+    PBRTO_EXPORT int AvailableCores( );
+    PBRTO_EXPORT int RunningThreads( );
 
     // ThreadLocal Definition
     template <typename T>
@@ -306,8 +306,8 @@ namespace pbrto
         int numToBlock, numToExit;
     };
 
-    void ParallelFor( int64_t start, int64_t end, std::function<void( int64_t, int64_t )> func );
-    void ParallelFor2D( const Bounds2i& extent, std::function<void( Bounds2i )> func );
+    PBRTO_EXPORT void ParallelFor( int64_t start, int64_t end, std::function<void( int64_t, int64_t )> func );
+    PBRTO_EXPORT void ParallelFor2D( const Bounds2i& extent, std::function<void( Bounds2i )> func );
 
     // Parallel Inline Functions
     inline void ParallelFor( int64_t start, int64_t end, std::function<void( int64_t )> func )
@@ -479,10 +479,10 @@ namespace pbrto
         std::condition_variable cv;
     };
 
-    void ForEachThread( std::function<void( void )> func );
+    PBRTO_EXPORT void ForEachThread( std::function<void( void )> func );
 
-    void DisableThreadPool( );
-    void ReenableThreadPool( );
+    PBRTO_EXPORT void DisableThreadPool( );
+    PBRTO_EXPORT void ReenableThreadPool( );
 
     // Asynchronous Task Launch Function Definitions
     template <typename F, typename... Args>

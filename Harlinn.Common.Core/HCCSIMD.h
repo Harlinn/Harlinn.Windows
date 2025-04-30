@@ -20,6 +20,7 @@
 //#include <HCCMath.h>
 #include <HCCLib.h>
 #include <HCCBits.h>
+#include "HCCFloatingPoint.h"
 #include <zmmintrin.h>
 
 namespace Harlinn::Common::Core::SIMD
@@ -3310,71 +3311,10 @@ namespace Harlinn::Common::Core::SIMD
 
 
 
-        /// <summary>
-        /// Returns true if at least one of the values in <c>v</c> is NaN,
-        /// otherwise false.
-        /// </summary>
-        /// <param name="v">
-        /// A SIMDType holding the values to test.
-        /// </param>
-        /// <returns>
-        /// Returns true if at least one of the values in <c>v</c> is NaN,
-        /// otherwise false.
-        /// </returns>
-        static bool HasNaN( SIMDType v ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                auto rmm1 = _mm_cmpneq_ps( v, v );
-                if constexpr ( N == 1 )
-                {
-                    return ( _mm_movemask_ps( rmm1 ) & 1 ) != 0;
-                }
-                else if constexpr ( N == 2 )
-                {
-                    return ( _mm_movemask_ps( rmm1 ) & 3 ) != 0;
-                }
-                else if constexpr ( N == 3 )
-                {
-                    return ( _mm_movemask_ps( rmm1 ) & 7 ) != 0;
-                }
-                else // N == 3 
-                {
-                    return ( _mm_movemask_ps( rmm1 ) & 15 ) != 0;
-                }
-            }
-            else
-            {
-                __m128 low = _mm256_castps256_ps128( v );
-                auto rmm1 = _mm_cmpneq_ps( low, low );
-                if ( ( _mm_movemask_ps( rmm1 ) & 15 ) != 0 )
-                {
-                    return true;
-                }
-                else
-                {
-                    __m128 high = _mm256_extractf128_ps( v, 1 );
-                    auto rmm2 = _mm_cmpneq_ps( high, high );
-                    if constexpr ( N == 5 )
-                    {
-                        return ( _mm_movemask_ps( rmm2 ) & 1 ) != 0;
-                    }
-                    else if constexpr ( N == 6 )
-                    {
-                        return ( _mm_movemask_ps( rmm2 ) & 3 ) != 0;
-                    }
-                    else if constexpr ( N == 7 )
-                    {
-                        return ( _mm_movemask_ps( rmm2 ) & 7 ) != 0;
-                    }
-                    else // N == 8
-                    {
-                        return ( _mm_movemask_ps( rmm2 ) & 15 ) != 0;
-                    }
-                }
+        
 
-            }
-        }
+
+
         /// <summary>
         /// Compute the bitwise AND of packed single-precision (32-bit) 
         /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
@@ -3520,7 +3460,7 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
-        Type Avg( SIMDType v ) noexcept
+        static Type Avg( SIMDType v ) noexcept
         {
             return First( HSum( v ) ) / static_cast< Type >( N );
         }
@@ -4331,7 +4271,52 @@ namespace Harlinn::Common::Core::SIMD
 
         static SIMDType IsNaN( SIMDType v ) noexcept
         {
+            /*
+            using FloatType = Math::FloatingPoint<Type>;
+            //return ( ( value_ & ExponentMask ) == MaxExponent ) && ( ( value_ & FractionMask ) != 0 );
+
+            if constexpr ( UseShortSIMDType )
+            {
+                auto exponent = _mm_castps_si128( And( v, Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) ) );
+                auto maxExponent = _mm_castps_si128( Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) );
+                auto exponentEqual = _mm_cmpeq_epi32( exponent, maxExponent );
+
+                auto fraction = _mm_castps_si128( And( v, Fill( std::bit_cast< Type >( FloatType::FractionMask ) ) ) );
+                auto zeros = _mm_castps_si128( Zero( ) );
+                auto fractionEqualZero = _mm_cmpeq_epi32( fraction, zeros );
+                return AndNot( _mm_castsi128_ps( fractionEqualZero ), _mm_castsi128_ps( exponentEqual ) );
+            }
+            else
+            { 
+                auto exponent = _mm256_castps_si256( And( v, Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) ) );
+                auto maxExponent = _mm256_castps_si256( Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) );
+                auto exponentEqual = _mm256_cmpeq_epi32( exponent, maxExponent );
+
+                auto fraction = _mm256_castps_si256( And( v, Fill( std::bit_cast< Type >( FloatType::FractionMask ) ) ) );
+                auto zeros = _mm256_castps_si256( Zero( ) );
+                auto fractionEqualZero = _mm256_cmpeq_epi32( fraction, zeros );
+                return AndNot( _mm256_castsi256_ps( fractionEqualZero ), _mm256_castsi256_ps( exponentEqual ) );
+            }
+            */
             return NotEqual( v, v );
+        }
+
+        /// <summary>
+        /// Returns true if at least one of the values in <c>v</c> is NaN,
+        /// otherwise false.
+        /// </summary>
+        /// <param name="v">
+        /// A SIMDType holding the values to test.
+        /// </param>
+        /// <returns>
+        /// Returns true if at least one of the values in <c>v</c> is NaN,
+        /// otherwise false.
+        /// </returns>
+
+        static bool HasNaN( SIMDType v ) noexcept
+        {
+            auto tmp = IsNaN( v );
+            return AnyTrue( tmp );
         }
 
 
@@ -4578,13 +4563,15 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                //return _mm_fmadd_ps( Fill<Size>( t ), v2, _mm_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
+                return _mm_fmadd_ps( Fill<Size>( t ), v2, _mm_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
 
-                return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
+                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
             else
             {   
-                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
+                return _mm256_fmadd_ps( Fill<Size>( t ), v2, _mm256_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
+
+                //return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
         }
 
@@ -4592,13 +4579,15 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                //return _mm_fmadd_ps( t, v2, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
+                return _mm_fmadd_ps( t, v2, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
 
-                return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), t ));
+                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), t ));
             }
             else
             {
-                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
+                return _mm256_fmadd_ps( t, v2, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
+
+                //return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
             }
         }
 
@@ -4612,7 +4601,9 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
+                return _mm256_fmadd_ps( Fill<Size>( t ), v2, _mm256_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
+
+                // return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
         }
 
@@ -4626,7 +4617,8 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
+                return _mm256_fmadd_ps( t, v2, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
+                //return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
             }
         }
 
@@ -5346,19 +5338,19 @@ namespace Harlinn::Common::Core::SIMD
             {
                 if constexpr ( N == 5 )
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 31 ) != 0;
+                    return ( _mm256_movemask_ps( v ) & 31 ) != 0;
                 }
                 else if constexpr ( N == 6 )
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 63 ) != 0;
+                    return ( _mm256_movemask_ps( v ) & 63 ) != 0;
                 }
                 else if constexpr ( N == 7 )
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 127 ) != 0;
+                    return ( _mm256_movemask_ps( v ) & 127 ) != 0;
                 }
                 else
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 255 ) != 0;
+                    return ( _mm256_movemask_ps( v ) & 255 ) != 0;
                 }
             }
         }
@@ -5691,12 +5683,12 @@ namespace Harlinn::Common::Core::SIMD
                 else if constexpr ( N == 7 )
                 {
                     auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 127 ) == 127;
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 0x7F ) == 0x7F;
                 }
                 else 
                 {
                     auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 255 ) == 255;
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 0xFF ) == 0xFF;
                 }
             }
         }
@@ -6565,6 +6557,33 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        template<size_t Num>
+        static SIMDType Fill( Type value ) noexcept requires ( Num > 0 && Num <= Size )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Num == 1 )
+                {
+                    return Set( value );
+                }
+                else
+                {
+                    return _mm_set1_pd( value );
+                }
+            }
+            else
+            {
+                if constexpr ( Num == 3 )
+                {
+                    return Set( value, value, value );
+                }
+                else
+                {
+                    return _mm256_set1_pd( value );
+                }
+            }
+        }
+
         /// <summary>
         /// Returns a mask suitable for extracting
         /// the <c>Size</c> lowest elements from
@@ -7428,27 +7447,31 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 ) noexcept
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, Type t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_fmadd_pd( v2, v1, _mm_mul_pd( _mm_sub_ps( _mm_set_pd1( 1.f ), v2 ), _mm_set_pd1( t ) ) );
+                return _mm_fmadd_pd( Fill<Size>( t ), v2, _mm_mul_pd( Fill<Size>( 1.f - t ), v1 ) );
+
+                //return _mm_fmadd_pd( v2, v1, _mm_mul_pd( _mm_sub_ps( _mm_set_pd1( 1.f ), v2 ), _mm_set_pd1( t ) ) );
             }
             else
             {
-                return _mm256_fmadd_pd( v2, v1, _mm256_mul_pd( _mm256_sub_pd( _mm256_set1_pd( 1.f ), v2 ), _mm256_set1_pd( t ) ) );
+                return _mm256_fmadd_pd( Fill<Size>( t ), v2, _mm256_mul_pd( Fill<Size>( 1.f - t ), v1 ) );
+
+                //return _mm256_fmadd_pd( v2, v1, _mm256_mul_pd( _mm256_sub_pd( _mm256_set1_pd( 1.f ), v2 ), _mm256_set1_pd( t ) ) );
             }
         }
 
-        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 ) noexcept
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_fmadd_pd( v3, v2, _mm_mul_pd( _mm_sub_pd( _mm_set_pd1( 1.f ), v3 ), v1 ) );
+                return _mm_fmadd_pd( t, v2, _mm_mul_pd( _mm_sub_pd( Fill<Size>( 1.f ), t ), v1 ) );
             }
             else
             {
-                return _mm256_fmadd_pd( v3, v2, _mm256_mul_pd( _mm256_sub_pd( _mm256_set1_pd( 1.f ), v3 ), v1 ) );
+                return _mm256_fmadd_pd( t, v2, _mm256_mul_pd( _mm256_sub_pd( Fill<Size>( 1.f ), t ), v1 ) );
             }
         }
 

@@ -1979,7 +1979,6 @@ BOOST_AUTO_TEST_CASE( Lerp1Test1 )
     ArrayType arg1( { 12 } );
     ArrayType arg2( { 0 } );
     ArrayType arg3( { 0.5 } );
-    ArrayType expected{ 6 };
     auto rmm1 = Traits::Load( arg1 );
     auto rmm2 = Traits::Load( arg2 );
     auto rmm3 = Traits::Load( arg3 );
@@ -1987,15 +1986,16 @@ BOOST_AUTO_TEST_CASE( Lerp1Test1 )
 
     auto result = Traits::ToArray( rmm4 );
 
-    for ( size_t i = 0; i < expected.size( ); i++ )
+    for ( size_t i = 0; i < result.size( ); i++ )
     {
+        auto val = std::lerp( arg1[ i ], arg2[ i ], arg3[ i ] );
         if ( Math::IsNaN( result[ i ] ) )
         {
-            BOOST_CHECK( Math::IsNaN( expected[ i ] ) );
+            BOOST_CHECK( Math::IsNaN( val ) );
         }
         else
         {
-            BOOST_CHECK( result[ i ] == expected[ i ] );
+            BOOST_CHECK( result[ i ] == val );
         }
     }
 }
@@ -2008,7 +2008,6 @@ BOOST_AUTO_TEST_CASE( Lerp2Test1 )
     ArrayType arg1( { 12, 0 } );
     ArrayType arg2( { 0, 12 } );
     ArrayType arg3( { 0.5, 1 } );
-    ArrayType expected{ 6, 12 };
     auto rmm1 = Traits::Load( arg1 );
     auto rmm2 = Traits::Load( arg2 );
     auto rmm3 = Traits::Load( arg3 );
@@ -2016,15 +2015,16 @@ BOOST_AUTO_TEST_CASE( Lerp2Test1 )
 
     auto result = Traits::ToArray( rmm4 );
 
-    for ( size_t i = 0; i < expected.size( ); i++ )
+    for ( size_t i = 0; i < result.size( ); i++ )
     {
+        auto val = std::lerp( arg1[ i ], arg2[ i ], arg3[ i ] );
         if ( Math::IsNaN( result[ i ] ) )
         {
-            BOOST_CHECK( Math::IsNaN( expected[ i ] ) );
+            BOOST_CHECK( Math::IsNaN( val ) );
         }
         else
         {
-            BOOST_CHECK( result[ i ] == expected[ i ] );
+            BOOST_CHECK( result[ i ] == val );
         }
     }
 }
@@ -2209,39 +2209,111 @@ BOOST_AUTO_TEST_CASE( HasNaN1Test1 )
 {
     using Traits = SIMD::Traits<float, 1>;
     using Type = typename Traits::Type;
-    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    constexpr auto QNaN = std::numeric_limits<Type>::quiet_NaN( );
+    constexpr auto NaN = std::numeric_limits<Type>::signaling_NaN( );
+    constexpr auto Inf = std::numeric_limits<Type>::infinity( );
     using ArrayType = typename Traits::ArrayType;
     ArrayType arg1( { NaN } );
-    ArrayType arg2( { 1 } );
+    ArrayType arg2( { QNaN } );
+    ArrayType arg3( { -NaN } );
+    ArrayType arg4( { -QNaN } );
+    ArrayType arg5( { Inf } );
+    ArrayType arg6( { -Inf } );
+    ArrayType arg7( { 1 } );
+    
     
     auto rmm1 = Traits::Load( arg1 );
     auto rmm2 = Traits::Load( arg2 );
-    auto hasNaN = Traits::HasNaN( rmm1 );
-    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+    auto rmm3 = Traits::Load( arg3 );
+    auto rmm4 = Traits::Load( arg4 );
+    auto rmm5 = Traits::Load( arg5 );
+    auto rmm6 = Traits::Load( arg6 );
+    auto rmm7 = Traits::Load( arg7 );
+    auto hasNaN1 = Traits::HasNaN( rmm1 );
+    auto hasNaN2 = Traits::HasNaN( rmm2 );
+    auto hasNaN3 = Traits::HasNaN( rmm3 );
+    auto hasNaN4 = Traits::HasNaN( rmm4 );
+    auto hasNotNaN1 = Traits::HasNaN( rmm5 ) == false;
+    auto hasNotNaN2 = Traits::HasNaN( rmm6 ) == false;
+    auto hasNotNaN3 = Traits::HasNaN( rmm7 ) == false;
 
 
-    BOOST_CHECK( hasNaN );
-    BOOST_CHECK( hasNotNaN );
+    BOOST_CHECK( hasNaN1 );
+    BOOST_CHECK( hasNaN2 );
+    BOOST_CHECK( hasNaN3 );
+    BOOST_CHECK( hasNaN4 );
+    BOOST_CHECK( hasNotNaN1 );
+    BOOST_CHECK( hasNotNaN2 );
+    BOOST_CHECK( hasNotNaN3 );
+}
+
+template<size_t N>
+void HasNaNTestFunction( )
+{
+    using Traits = SIMD::Traits<float, N>;
+    using Type = typename Traits::Type;
+    constexpr auto QNaN = std::numeric_limits<Type>::quiet_NaN( );
+    constexpr auto NaN = std::numeric_limits<Type>::signaling_NaN( );
+    constexpr auto Inf = std::numeric_limits<Type>::infinity( );
+    using ArrayType = typename Traits::ArrayType;
+
+    for ( size_t i = 0; i < Traits::Size; i++ )
+    {
+        ArrayType arg1, arg2, arg3, arg4, arg5, arg6, arg7;
+        arg1.fill( 2 );
+        arg2.fill( 2 );
+        arg3.fill( 2 );
+        arg4.fill( 2 );
+        arg5.fill( 2 );
+        arg6.fill( 2 );
+        arg7.fill( 2 );
+
+        arg1[ i ] = NaN;
+        arg2[ i ] = QNaN;
+        arg3[ i ] = -NaN;
+        arg4[ i ] = -QNaN;
+        arg5[ i ] = Inf;
+        arg6[ i ] = -Inf;
+        arg7[ i ] = 1;
+
+
+        auto rmm1 = Traits::Load( arg1 );
+        auto rmm2 = Traits::Load( arg2 );
+        auto rmm3 = Traits::Load( arg3 );
+        auto rmm4 = Traits::Load( arg4 );
+        auto rmm5 = Traits::Load( arg5 );
+        auto rmm6 = Traits::Load( arg6 );
+        auto rmm7 = Traits::Load( arg7 );
+        auto hasNaN1 = Traits::HasNaN( rmm1 );
+        auto hasNaN2 = Traits::HasNaN( rmm2 );
+        auto hasNaN3 = Traits::HasNaN( rmm3 );
+        auto hasNaN4 = Traits::HasNaN( rmm4 );
+        auto hasNotNaN1 = Traits::HasNaN( rmm5 ) == false;
+        auto hasNotNaN2 = Traits::HasNaN( rmm6 ) == false;
+        auto hasNotNaN3 = Traits::HasNaN( rmm7 ) == false;
+
+
+        BOOST_CHECK( hasNaN1 );
+        BOOST_CHECK( hasNaN2 );
+        BOOST_CHECK( hasNaN3 );
+        BOOST_CHECK( hasNaN4 );
+        BOOST_CHECK( hasNotNaN1 );
+        BOOST_CHECK( hasNotNaN2 );
+        BOOST_CHECK( hasNotNaN3 );
+    }
 }
 
 // --run_test=SIMDFloatTests/HasNaN2Test1
 BOOST_AUTO_TEST_CASE( HasNaN2Test1 )
 {
-    using Traits = SIMD::Traits<float, 2>;
-    using Type = typename Traits::Type;
-    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
-    using ArrayType = typename Traits::ArrayType;
-    ArrayType arg1( { 2, NaN } );
-    ArrayType arg2( { 2, 1 } );
+    HasNaNTestFunction<2>( );
+    HasNaNTestFunction<3>( );
+    HasNaNTestFunction<4>( );
+    HasNaNTestFunction<5>( );
+    HasNaNTestFunction<6>( );
+    HasNaNTestFunction<7>( );
+    HasNaNTestFunction<8>( );
 
-    auto rmm1 = Traits::Load( arg1 );
-    auto rmm2 = Traits::Load( arg2 );
-    auto hasNaN = Traits::HasNaN( rmm1 );
-    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
-
-
-    BOOST_CHECK( hasNaN );
-    BOOST_CHECK( hasNotNaN );
 }
 
 // --run_test=SIMDFloatTests/HasNaN3Test1

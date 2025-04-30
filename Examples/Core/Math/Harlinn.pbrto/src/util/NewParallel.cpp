@@ -343,7 +343,7 @@ namespace pbrto
     }
 
     // Parallel Function Definitions
-    void ParallelFor( int64_t start, int64_t end, std::function<void( int64_t, int64_t )> func )
+    PBRTO_EXPORT void ParallelFor( int64_t start, int64_t end, std::function<void( int64_t, int64_t )> func )
     {
         NCHECK( ParallelJob::threadPool );
         if ( start == end )
@@ -360,7 +360,7 @@ namespace pbrto
             ParallelJob::threadPool->WorkOrWait( &lock, true );
     }
 
-    void ParallelFor2D( const Bounds2i& extent, std::function<void( Bounds2i )> func )
+    PBRTO_EXPORT void ParallelFor2D( const Bounds2i& extent, std::function<void( Bounds2i )> func )
     {
         NCHECK( ParallelJob::threadPool );
 
@@ -389,17 +389,17 @@ namespace pbrto
 
     ///////////////////////////////////////////////////////////////////////////
 
-    int AvailableCores( )
+    PBRTO_EXPORT int AvailableCores( )
     {
         return std::max<int>( 1, std::thread::hardware_concurrency( ) );
     }
 
-    int RunningThreads( )
+    PBRTO_EXPORT int RunningThreads( )
     {
         return ParallelJob::threadPool ? ( 1 + ParallelJob::threadPool->size( ) ) : 1;
     }
 
-    void ParallelInit( int nThreads )
+    PBRTO_EXPORT void ParallelInit( int nThreads )
     {
         NCHECK( !ParallelJob::threadPool );
         if ( nThreads <= 0 )
@@ -407,25 +407,25 @@ namespace pbrto
         ParallelJob::threadPool = new ThreadPool( nThreads );
     }
 
-    void ParallelCleanup( )
+    PBRTO_EXPORT void ParallelCleanup( )
     {
         delete ParallelJob::threadPool;
         ParallelJob::threadPool = nullptr;
     }
 
-    void ForEachThread( std::function<void( void )> func )
+    PBRTO_EXPORT void ForEachThread( std::function<void( void )> func )
     {
         if ( ParallelJob::threadPool )
             ParallelJob::threadPool->ForEachThread( std::move( func ) );
     }
 
-    void DisableThreadPool( )
+    PBRTO_EXPORT void DisableThreadPool( )
     {
         NCHECK( ParallelJob::threadPool );
         ParallelJob::threadPool->Disable( );
     }
 
-    void ReenableThreadPool( )
+    PBRTO_EXPORT void ReenableThreadPool( )
     {
         NCHECK( ParallelJob::threadPool );
         ParallelJob::threadPool->Reenable( );

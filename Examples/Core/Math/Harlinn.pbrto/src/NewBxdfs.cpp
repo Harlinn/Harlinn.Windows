@@ -637,9 +637,9 @@ namespace pbrto
     }
 
     /*
-    SampledSpectrum::Simd HairBxDF::SigmaAFromReflectance( const SampledSpectrum::Simd& c, Float beta_n, const SampledWavelengths& lambda )
+    SampledSpectrum HairBxDF::SigmaAFromReflectance( const SampledSpectrum& c, Float beta_n, const SampledWavelengths& lambda )
     {
-        SampledSpectrum::Simd sigma_a;
+        SampledSpectrum sigma_a;
         Float tmp = ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
             10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
             0.245f * FastPow<5>( beta_n ) );

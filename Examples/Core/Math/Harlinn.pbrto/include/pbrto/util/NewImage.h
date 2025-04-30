@@ -48,20 +48,20 @@ namespace pbrto
     enum class PixelFormat { U256, Half, Float };
 
     // PixelFormat Inline Functions
-    PBRT_CPU_GPU inline bool Is8Bit( PixelFormat format )
+    inline bool Is8Bit( PixelFormat format )
     {
         return format == PixelFormat::U256;
     }
-    PBRT_CPU_GPU inline bool Is16Bit( PixelFormat format )
+    inline bool Is16Bit( PixelFormat format )
     {
         return format == PixelFormat::Half;
     }
-    PBRT_CPU_GPU inline bool Is32Bit( PixelFormat format )
+    inline bool Is32Bit( PixelFormat format )
     {
         return format == PixelFormat::Float;
     }
 
-    std::string ToString( PixelFormat format );
+    PBRTO_EXPORT std::string ToString( PixelFormat format );
 
     PBRT_CPU_GPU
         int TexelBytes( PixelFormat format );
@@ -187,8 +187,8 @@ namespace pbrto
     struct ImageMetadata
     {
         // ImageMetadata Public Methods
-        const RGBColorSpace* GetColorSpace( ) const;
-        std::string ToString( ) const;
+        PBRTO_EXPORT const RGBColorSpace* GetColorSpace( ) const;
+        PBRTO_EXPORT std::string ToString( ) const;
 
         // ImageMetadata Public Members
         pstdo::optional<float> renderTimeSeconds;
@@ -263,7 +263,7 @@ namespace pbrto
     {
     public:
         // Image Public Methods
-        Image( Allocator alloc = {} )
+        PBRTO_EXPORT Image( Allocator alloc = {} )
             : p8( alloc ),
             p16( alloc ),
             p32( alloc ),
@@ -271,38 +271,33 @@ namespace pbrto
             resolution( 0, 0 )
         {
         }
-        Image( pstdo::vector<uint8_t> p8, Point2i resolution,
+        PBRTO_EXPORT Image( pstdo::vector<uint8_t> p8, Point2i resolution,
             pstdo::span<const std::string> channels, ColorEncoding encoding );
-        Image( pstdo::vector<Half> p16, Point2i resolution,
+        PBRTO_EXPORT Image( pstdo::vector<Half> p16, Point2i resolution,
             pstdo::span<const std::string> channels );
-        Image( pstdo::vector<float> p32, Point2i resolution,
+        PBRTO_EXPORT Image( pstdo::vector<float> p32, Point2i resolution,
             pstdo::span<const std::string> channels );
 
-        Image( PixelFormat format, Point2i resolution,
+        PBRTO_EXPORT Image( PixelFormat format, Point2i resolution,
             pstdo::span<const std::string> channelNames, ColorEncoding encoding = nullptr,
             Allocator alloc = {} );
 
-        PBRT_CPU_GPU
-            PixelFormat Format( ) const { return format; }
-        PBRT_CPU_GPU
-            Point2i Resolution( ) const { return resolution; }
-        PBRT_CPU_GPU
-            int NChannels( ) const { return channelNames.size( ); }
-        std::vector<std::string> ChannelNames( ) const;
+        PixelFormat Format( ) const { return format; }
+        Point2i Resolution( ) const { return resolution; }
+        int NChannels( ) const { return channelNames.size( ); }
+        
+        PBRTO_EXPORT std::vector<std::string> ChannelNames( ) const;
         const ColorEncoding Encoding( ) const { return encoding; }
 
-        PBRT_CPU_GPU
-            operator bool( ) const { return resolution.x > 0 && resolution.y > 0; }
+        operator bool( ) const { return resolution.x > 0 && resolution.y > 0; }
 
-        PBRT_CPU_GPU
-            size_t PixelOffset( Point2i p ) const
+        size_t PixelOffset( Point2i p ) const
         {
             NDCHECK( InsideExclusive( p, Bounds2i( { 0, 0 }, resolution ) ) );
             return NChannels( ) * ( p.y * resolution.x + p.x );
         }
 
-        PBRT_CPU_GPU
-            Float GetChannel( Point2i p, int c, WrapMode2D wrapMode = WrapMode::Clamp ) const
+        Float GetChannel( Point2i p, int c, WrapMode2D wrapMode = WrapMode::Clamp ) const
         {
             // Remap provided pixel coordinates before reading channel
             if ( !RemapPixelCoords( &p, resolution, wrapMode ) )
@@ -347,13 +342,11 @@ namespace pbrto
                 dx * dy * v[ 3 ] );
         }
 
-        PBRT_CPU_GPU
-            void SetChannel( Point2i p, int c, Float value );
+        void SetChannel( Point2i p, int c, Float value );
 
-        ImageChannelValues GetChannels( Point2i p,
-            WrapMode2D wrapMode = WrapMode::Clamp ) const;
+        PBRTO_EXPORT ImageChannelValues GetChannels( Point2i p, WrapMode2D wrapMode = WrapMode::Clamp ) const;
 
-        ImageChannelDesc GetChannelDesc( pstdo::span<const std::string> channels ) const;
+        PBRTO_EXPORT ImageChannelDesc GetChannelDesc( pstdo::span<const std::string> channels ) const;
 
         ImageChannelDesc AllChannelsDesc( ) const
         {
@@ -364,29 +357,24 @@ namespace pbrto
             return desc;
         }
 
-        ImageChannelValues GetChannels( Point2i p, const ImageChannelDesc& desc,
-            WrapMode2D wrapMode = WrapMode::Clamp ) const;
+        PBRTO_EXPORT ImageChannelValues GetChannels( Point2i p, const ImageChannelDesc& desc, WrapMode2D wrapMode = WrapMode::Clamp ) const;
 
-        Image SelectChannels( const ImageChannelDesc& desc, Allocator alloc = {} ) const;
-        Image Crop( const Bounds2i& bounds, Allocator alloc = {} ) const;
+        PBRTO_EXPORT Image SelectChannels( const ImageChannelDesc& desc, Allocator alloc = {} ) const;
+        PBRTO_EXPORT Image Crop( const Bounds2i& bounds, Allocator alloc = {} ) const;
 
-        void CopyRectOut( const Bounds2i& extent, pstdo::span<float> buf,
-            WrapMode2D wrapMode = WrapMode::Clamp ) const;
-        void CopyRectIn( const Bounds2i& extent, pstdo::span<const float> buf );
+        PBRTO_EXPORT void CopyRectOut( const Bounds2i& extent, pstdo::span<float> buf, WrapMode2D wrapMode = WrapMode::Clamp ) const;
+        PBRTO_EXPORT void CopyRectIn( const Bounds2i& extent, pstdo::span<const float> buf );
 
-        ImageChannelValues Average( const ImageChannelDesc& desc ) const;
+        PBRTO_EXPORT ImageChannelValues Average( const ImageChannelDesc& desc ) const;
 
-        bool HasAnyInfinitePixels( ) const;
-        bool HasAnyNaNPixels( ) const;
+        PBRTO_EXPORT bool HasAnyInfinitePixels( ) const;
+        PBRTO_EXPORT bool HasAnyNaNPixels( ) const;
 
-        ImageChannelValues MAE( const ImageChannelDesc& desc, const Image& ref,
-            Image* errorImage = nullptr ) const;
-        ImageChannelValues MSE( const ImageChannelDesc& desc, const Image& ref,
-            Image* mseImage = nullptr ) const;
-        ImageChannelValues MRSE( const ImageChannelDesc& desc, const Image& ref,
-            Image* mrseImage = nullptr ) const;
+        PBRTO_EXPORT ImageChannelValues MAE( const ImageChannelDesc& desc, const Image& ref, Image* errorImage = nullptr ) const;
+        PBRTO_EXPORT ImageChannelValues MSE( const ImageChannelDesc& desc, const Image& ref, Image* mseImage = nullptr ) const;
+        PBRTO_EXPORT ImageChannelValues MRSE( const ImageChannelDesc& desc, const Image& ref, Image* mrseImage = nullptr ) const;
 
-        Image GaussianFilter( const ImageChannelDesc& desc, int halfWidth, Float sigma ) const;
+        PBRTO_EXPORT Image GaussianFilter( const ImageChannelDesc& desc, int halfWidth, Float sigma ) const;
 
         template <typename F>
         Array2D<Float> GetSamplingDistribution(
@@ -397,12 +385,11 @@ namespace pbrto
             return GetSamplingDistribution( []( Point2f ) { return Float( 1 ); } );
         }
 
-        static ImageAndMetadata Read( std::string filename, Allocator alloc = {},
-            ColorEncoding encoding = nullptr );
+        PBRTO_EXPORT static ImageAndMetadata Read( std::string filename, Allocator alloc = {}, ColorEncoding encoding = nullptr );
 
-        bool Write( std::string name, const ImageMetadata& metadata = {} ) const;
+        PBRTO_EXPORT bool Write( std::string name, const ImageMetadata& metadata = {} ) const;
 
-        Image ConvertToFormat( PixelFormat format, ColorEncoding encoding = nullptr ) const;
+        PBRTO_EXPORT Image ConvertToFormat( PixelFormat format, ColorEncoding encoding = nullptr ) const;
 
         // TODO? provide an iterator to iterate over all pixels and channels?
 
@@ -414,26 +401,21 @@ namespace pbrto
             return GetChannel( pi, c, wrapMode );
         }
 
-        ImageChannelValues LookupNearest( Point2f p,
-            WrapMode2D wrapMode = WrapMode::Clamp ) const;
-        ImageChannelValues LookupNearest( Point2f p, const ImageChannelDesc& desc,
-            WrapMode2D wrapMode = WrapMode::Clamp ) const;
+        PBRTO_EXPORT ImageChannelValues LookupNearest( Point2f p, WrapMode2D wrapMode = WrapMode::Clamp ) const;
+        PBRTO_EXPORT ImageChannelValues LookupNearest( Point2f p, const ImageChannelDesc& desc, WrapMode2D wrapMode = WrapMode::Clamp ) const;
 
-        ImageChannelValues Bilerp( Point2f p, WrapMode2D wrapMode = WrapMode::Clamp ) const;
-        ImageChannelValues Bilerp( Point2f p, const ImageChannelDesc& desc,
-            WrapMode2D wrapMode = WrapMode::Clamp ) const;
+        PBRTO_EXPORT ImageChannelValues Bilerp( Point2f p, WrapMode2D wrapMode = WrapMode::Clamp ) const;
+        PBRTO_EXPORT ImageChannelValues Bilerp( Point2f p, const ImageChannelDesc& desc, WrapMode2D wrapMode = WrapMode::Clamp ) const;
 
-        void SetChannels( Point2i p, const ImageChannelValues& values );
-        void SetChannels( Point2i p, pstdo::span<const Float> values );
-        void SetChannels( Point2i p, const ImageChannelDesc& desc,
-            pstdo::span<const Float> values );
+        PBRTO_EXPORT void SetChannels( Point2i p, const ImageChannelValues& values );
+        PBRTO_EXPORT void SetChannels( Point2i p, pstdo::span<const Float> values );
+        PBRTO_EXPORT void SetChannels( Point2i p, const ImageChannelDesc& desc, pstdo::span<const Float> values );
 
-        Image FloatResizeUp( Point2i newResolution, WrapMode2D wrap ) const;
-        void FlipY( );
-        static pstdo::vector<Image> GeneratePyramid( Image image, WrapMode2D wrapMode,
-            Allocator alloc = {} );
+        PBRTO_EXPORT Image FloatResizeUp( Point2i newResolution, WrapMode2D wrap ) const;
+        PBRTO_EXPORT void FlipY( );
+        PBRTO_EXPORT static pstdo::vector<Image> GeneratePyramid( Image image, WrapMode2D wrapMode, Allocator alloc = {} );
 
-        std::vector<std::string> ChannelNames( const ImageChannelDesc& ) const;
+        PBRTO_EXPORT std::vector<std::string> ChannelNames( const ImageChannelDesc& ) const;
 
         PBRT_CPU_GPU
             size_t BytesUsed( ) const { return p8.size( ) + 2 * p16.size( ) + 4 * p32.size( ); }
@@ -457,11 +439,11 @@ namespace pbrto
             return const_cast< void* >( ( ( const Image* )this )->RawPointer( p ) );
         }
 
-        Image JointBilateralFilter( const ImageChannelDesc& toFilter, int halfWidth,
+        PBRTO_EXPORT Image JointBilateralFilter( const ImageChannelDesc& toFilter, int halfWidth,
             const Float xySigma[ 2 ], const ImageChannelDesc& joint,
             const ImageChannelValues& jointSigma ) const;
 
-        std::string ToString( ) const;
+        PBRTO_EXPORT std::string ToString( ) const;
 
     private:
         // Image Private Methods

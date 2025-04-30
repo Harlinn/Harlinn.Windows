@@ -418,7 +418,7 @@ namespace pbrto
     }
 
     // SpectrumImageTexture Method Definitions
-    SampledSpectrum::Simd SpectrumImageTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+    SampledSpectrum SpectrumImageTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
     {
 #ifdef PBRT_IS_GPU_CODE
         assert( !"Should not be called in GPU code" );
@@ -444,7 +444,7 @@ namespace pbrto
         }
         // otherwise it better be a one-channel texture
         NDCHECK( rgb[ 0 ] == rgb[ 1 ] && rgb[ 1 ] == rgb[ 2 ] );
-        return SampledSpectrum::Simd( rgb[ 0 ] );
+        return SampledSpectrum( rgb[ 0 ] );
 
 #endif
     }
@@ -545,7 +545,7 @@ namespace pbrto
     }
 
     // MarbleTexture Method Definitions
-    SampledSpectrum::Simd MarbleTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+    SampledSpectrum MarbleTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
     {
         TexCoord3D c = mapping.Map( ctx );
         c.p *= scale;
@@ -798,7 +798,7 @@ namespace pbrto
 #endif
     }
 
-    SampledSpectrum::Simd SpectrumPtexTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+    SampledSpectrum SpectrumPtexTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
     {
 #ifdef PBRT_IS_GPU_CODE
         NLOG_FATAL( "Ptex not supported with GPU renderer" );
@@ -807,7 +807,7 @@ namespace pbrto
         float result[ 3 ];
         int nc = SampleTexture( ctx, result );
         if ( nc == 1 )
-            return SampledSpectrum::Simd( result[ 0 ] );
+            return SampledSpectrum( result[ 0 ] );
         NDCHECK_EQ( 3, nc );
         RGB rgb( result[ 0 ], result[ 1 ], result[ 2 ] );
         if ( spectrumType == SpectrumType::Unbounded )
@@ -1741,7 +1741,7 @@ namespace pbrto
         return tex.Evaluate( ctx );
     }
 
-    SampledSpectrum::Simd UniversalTextureEvaluator::operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda )
+    SampledSpectrum UniversalTextureEvaluator::operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda )
     {
         return tex.Evaluate( ctx, lambda );
     }

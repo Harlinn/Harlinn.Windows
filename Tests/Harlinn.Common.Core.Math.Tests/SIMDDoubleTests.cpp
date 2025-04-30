@@ -1022,7 +1022,6 @@ BOOST_AUTO_TEST_CASE( Lerp1Test1 )
     ArrayType arg1( { 12 } );
     ArrayType arg2( { 0 } );
     ArrayType arg3( { 0.5 } );
-    ArrayType expected{ 6 };
     auto rmm1 = Traits::Load( arg1 );
     auto rmm2 = Traits::Load( arg2 );
     auto rmm3 = Traits::Load( arg3 );
@@ -1030,15 +1029,16 @@ BOOST_AUTO_TEST_CASE( Lerp1Test1 )
 
     auto result = Traits::ToArray( rmm4 );
 
-    for ( size_t i = 0; i < expected.size( ); i++ )
+    for ( size_t i = 0; i < result.size( ); i++ )
     {
+        auto val = std::lerp( arg1[ i ], arg2[ i ], arg3[ i ] );
         if ( Math::IsNaN( result[ i ] ) )
         {
-            BOOST_CHECK( Math::IsNaN( expected[ i ] ) );
+            BOOST_CHECK( Math::IsNaN( val ) );
         }
         else
         {
-            BOOST_CHECK( result[ i ] == expected[ i ] );
+            BOOST_CHECK( result[ i ] == val );
         }
     }
 }
@@ -1051,7 +1051,6 @@ BOOST_AUTO_TEST_CASE( Lerp2Test1 )
     ArrayType arg1( { 12, 0 } );
     ArrayType arg2( { 0, 12 } );
     ArrayType arg3( { 0.5, 1 } );
-    ArrayType expected{ 6, 12 };
     auto rmm1 = Traits::Load( arg1 );
     auto rmm2 = Traits::Load( arg2 );
     auto rmm3 = Traits::Load( arg3 );
@@ -1059,15 +1058,16 @@ BOOST_AUTO_TEST_CASE( Lerp2Test1 )
 
     auto result = Traits::ToArray( rmm4 );
 
-    for ( size_t i = 0; i < expected.size( ); i++ )
+    for ( size_t i = 0; i < result.size( ); i++ )
     {
+        auto val = std::lerp( arg1[ i ], arg2[ i ], arg3[ i ] );
         if ( Math::IsNaN( result[ i ] ) )
         {
-            BOOST_CHECK( Math::IsNaN( expected[ i ] ) );
+            BOOST_CHECK( Math::IsNaN( val ) );
         }
         else
         {
-            BOOST_CHECK( result[ i ] == expected[ i ] );
+            BOOST_CHECK( result[ i ] == val );
         }
     }
 }

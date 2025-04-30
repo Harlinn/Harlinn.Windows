@@ -245,9 +245,9 @@ namespace pbrto
         return material.GetBSSRDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
     }
 
-    SampledSpectrum::Simd SurfaceInteraction::Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const
+    SampledSpectrum SurfaceInteraction::Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const
     {
-        return areaLight ? SampledSpectrum::Simd( areaLight.L( p( ), n, uv, w, lambda ) ) : SampledSpectrum::Simd( 0.f );
+        return areaLight ? SampledSpectrum( areaLight.L( p( ), n, uv, w, lambda ) ) : SampledSpectrum( 0.f );
     }
 
     std::string SurfaceInteraction::ToString( ) const

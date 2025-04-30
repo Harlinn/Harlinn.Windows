@@ -53,7 +53,7 @@ namespace pbrto
 
     static filesystem::path searchDirectory;
 
-    void SetSearchDirectory( std::string filename )
+    PBRTO_EXPORT void SetSearchDirectory( std::string filename )
     {
         filesystem::path path( filename );
         if ( !path.is_directory( ) )
@@ -68,7 +68,7 @@ namespace pbrto
         return filesystem::path( filename ).is_absolute( );
     }
 
-    bool HasExtension( std::string filename, std::string e )
+    PBRTO_EXPORT bool HasExtension( std::string filename, std::string e )
     {
         std::string ext = e;
         if ( !ext.empty( ) && ext[ 0 ] == '.' )
@@ -81,7 +81,7 @@ namespace pbrto
             []( char a, char b ) { return std::tolower( a ) == std::tolower( b ); } );
     }
 
-    std::string RemoveExtension( std::string filename )
+    PBRTO_EXPORT std::string RemoveExtension( std::string filename )
     {
         std::string ext = filesystem::path( filename ).extension( );
         if ( ext.empty( ) )
@@ -91,7 +91,7 @@ namespace pbrto
         return f;
     }
 
-    std::string ResolveFilename( std::string filename )
+    PBRTO_EXPORT std::string ResolveFilename( std::string filename )
     {
         if ( searchDirectory.empty( ) || filename.empty( ) || IsAbsolutePath( filename ) )
             return filename;
@@ -102,7 +102,7 @@ namespace pbrto
         return filename;
     }
 
-    std::vector<std::string> MatchingFilenames( std::string filenameBase )
+    PBRTO_EXPORT std::vector<std::string> MatchingFilenames( std::string filenameBase )
     {
         std::vector<std::string> filenames;
 
@@ -132,7 +132,7 @@ namespace pbrto
         return filenames;
     }
 
-    bool FileExists( std::string filename )
+    PBRTO_EXPORT bool FileExists( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         std::ifstream ifs( WStringFromUTF8( filename ).c_str( ) );
@@ -142,7 +142,7 @@ namespace pbrto
         return ( bool )ifs;
     }
 
-    bool RemoveFile( std::string filename )
+    PBRTO_EXPORT bool RemoveFile( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         return _wremove( WStringFromUTF8( filename ).c_str( ) ) == 0;
@@ -151,7 +151,7 @@ namespace pbrto
 #endif
     }
 
-    std::string ReadFileContents( std::string filename )
+    PBRTO_EXPORT std::string ReadFileContents( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         std::ifstream ifs( WStringFromUTF8( filename ).c_str( ), std::ios::binary );
@@ -177,7 +177,7 @@ namespace pbrto
 #endif
     }
 
-    std::string ReadDecompressedFileContents( std::string filename )
+    PBRTO_EXPORT std::string ReadDecompressedFileContents( std::string filename )
     {
         std::string compressed = ReadFileContents( filename );
 
@@ -239,7 +239,7 @@ namespace pbrto
         }
     }
 
-    FILE* FOpenRead( std::string filename )
+    PBRTO_EXPORT FILE* FOpenRead( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         return _wfopen( WStringFromUTF8( filename ).c_str( ), L"rb" );
@@ -248,7 +248,7 @@ namespace pbrto
 #endif
     }
 
-    FILE* FOpenWrite( std::string filename )
+    PBRTO_EXPORT FILE* FOpenWrite( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         return _wfopen( WStringFromUTF8( filename ).c_str( ), L"wb" );
@@ -257,7 +257,7 @@ namespace pbrto
 #endif
     }
 
-    std::vector<Float> ReadFloatFile( std::string filename )
+    PBRTO_EXPORT std::vector<Float> ReadFloatFile( std::string filename )
     {
         FILE* f = FOpenRead( filename );
         if ( f == nullptr )
@@ -327,7 +327,7 @@ namespace pbrto
         return values;
     }
 
-    bool WriteFileContents( std::string filename, const std::string& contents )
+    PBRTO_EXPORT bool WriteFileContents( std::string filename, const std::string& contents )
     {
 #ifdef PBRT_IS_WINDOWS
         std::ofstream out( WStringFromUTF8( filename ).c_str( ), std::ios::binary );

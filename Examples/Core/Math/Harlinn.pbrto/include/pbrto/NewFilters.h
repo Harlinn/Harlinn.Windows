@@ -51,7 +51,7 @@ namespace pbrto
     {
     public:
         // FilterSampler Public Methods
-        FilterSampler( Filter filter, Allocator alloc = {} );
+        PBRTO_EXPORT FilterSampler( Filter filter, Allocator alloc = {} );
         std::string ToString( ) const;
 
         PBRT_CPU_GPU

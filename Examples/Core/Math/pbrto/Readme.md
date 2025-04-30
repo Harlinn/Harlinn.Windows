@@ -42,3 +42,13 @@ provided by [`HCCMath.h`](https://github.com/Harlinn/Harlinn.Windows/blob/master
 [`HCCVectorMath.h`](https://github.com/Harlinn/Harlinn.Windows/blob/master/Harlinn.Common.Core/HCCVectorMath.h) into
 the rendering machinery provided by [pbrt](https://github.com/mmp/pbrt-v4) is a great way to determine how well
 my library actually works when it's integrated with an existing code base.
+
+### Notes about the new rendering machinery.
+
+The primary purpose PBRTO is to demonstrate the use of my [Fast Linear Algebra Classes for Games and Graphics](https://harlinn.github.io/Cpp/Cpp/Math/FastLinearAlgebra.html).
+
+#### NSpectrumSamples cannot, for now, be changed.
+
+The original pbrt rendering machinery allows values for `NSpectrumSamples` greater than 4. The
+modified rendering machinery only supports a value of 4. This 
+

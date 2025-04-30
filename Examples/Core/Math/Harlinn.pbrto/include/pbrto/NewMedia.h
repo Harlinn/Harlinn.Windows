@@ -452,10 +452,10 @@ namespace pbrto
             };
             SampledSpectrum sigma_a =
                 sigmaScale *
-                ( sigma_aGrid ? sigma_aGrid->Lookup( p, convert ) : SampledSpectrum::Simd( 1.f ) );
+                ( sigma_aGrid ? sigma_aGrid->Lookup( p, convert ) : SampledSpectrum( 1.f ) );
             SampledSpectrum sigma_s =
                 sigmaScale *
-                ( sigma_sGrid ? sigma_sGrid->Lookup( p, convert ) : SampledSpectrum::Simd( 1.f ) );
+                ( sigma_sGrid ? sigma_sGrid->Lookup( p, convert ) : SampledSpectrum( 1.f ) );
 
             // Find emitted radiance _Le_ for _RGBGridMedium_
             SampledSpectrum Le( 0.f );

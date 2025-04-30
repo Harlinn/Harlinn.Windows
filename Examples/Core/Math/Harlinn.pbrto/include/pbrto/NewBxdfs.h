@@ -1041,7 +1041,7 @@ namespace pbrto
         static constexpr int pMax = 3;
 
         // HairBxDF Private Members
-        SampledSpectrum::Simd sigma_a;
+        SampledSpectrum sigma_a;
         Float h, eta;
         Float beta_m, beta_n;
         Float v[ pMax + 1 ];
@@ -1063,13 +1063,13 @@ namespace pbrto
         BxDFFlags Flags( ) const { return BxDFFlags::GlossyReflection; }
 
         static RGBUnboundedSpectrum SigmaAFromConcentration( Float ce, Float cp );
-        static SampledSpectrum::Simd SigmaAFromReflectance( SampledSpectrum::Simd c, Float beta_n, const SampledWavelengths& lambda )
+        static SampledSpectrum SigmaAFromReflectance( SampledSpectrum c, Float beta_n, const SampledWavelengths& lambda )
         {
             Float tmp = ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
                 10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
                 0.245f * FastPow<5>( beta_n ) );
 
-            return Math::Sqr( Math::Log( c ) / tmp );
+            return Sqr( Log( c ) / tmp );
         }
 
     private:

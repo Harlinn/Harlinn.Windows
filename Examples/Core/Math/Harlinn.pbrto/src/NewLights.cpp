@@ -232,7 +232,7 @@ namespace pbrto
     }
 
     // DistantLight Method Definitions
-    SampledSpectrum::Simd DistantLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum DistantLight::Phi( SampledWavelengths lambda ) const
     {
         return scale * Lemit->Sample( lambda ) * Pi * Sqr( sceneRadius );
     }
@@ -365,7 +365,7 @@ namespace pbrto
             A );
     }
 
-    SampledSpectrum::Simd ProjectionLight::I( Vector3f::Simd w, const SampledWavelengths& lambda ) const
+    SampledSpectrum ProjectionLight::I( Vector3f::Simd w, const SampledWavelengths& lambda ) const
     {
         // Discard directions behind projection light
         if ( w.z() < hither )
@@ -374,7 +374,7 @@ namespace pbrto
         // Project point onto projection plane and compute RGB
         Point3f ps = screenFromLight( Point3f( w ) );
         if ( !Inside( Point2f( ps.x, ps.y ), screenBounds ) )
-            return SampledSpectrum::Simd( 0.f );
+            return SampledSpectrum( 0.f );
         Point2f uv = Point2f( screenBounds.Offset( Point2f( ps.x, ps.y ) ) );
         RGB rgb;
         for ( int c = 0; c < 3; ++c )
@@ -385,7 +385,7 @@ namespace pbrto
         return scale * s.Sample( lambda );
     }
 
-    SampledSpectrum::Simd ProjectionLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum ProjectionLight::Phi( SampledWavelengths lambda ) const
     {
         SampledSpectrum sum( 0.f );
         for ( int y = 0; y < image.Resolution( ).y; ++y )
@@ -590,7 +590,7 @@ namespace pbrto
         return 0.f;
     }
 
-    SampledSpectrum::Simd GoniometricLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum GoniometricLight::Phi( SampledWavelengths lambda ) const
     {
         Float sumY = 0;
         for ( int y = 0; y < image.Resolution( ).y; ++y )
@@ -822,9 +822,9 @@ namespace pbrto
         return shape.PDF( shapeCtx, wi );
     }
 
-    SampledSpectrum::Simd DiffuseAreaLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum DiffuseAreaLight::Phi( SampledWavelengths lambda ) const
     {
-        SampledSpectrum::Simd L( 0.f );
+        SampledSpectrum L( 0.f );
         if ( image )
         {
             // Compute average light image emission
@@ -1027,7 +1027,7 @@ namespace pbrto
     {
     }
 
-    SampledSpectrum::Simd UniformInfiniteLight::Le( const Ray& ray, const SampledWavelengths& lambda ) const
+    SampledSpectrum UniformInfiniteLight::Le( const Ray& ray, const SampledWavelengths& lambda ) const
     {
         return scale * Lemit->Sample( lambda );
     }
@@ -1050,7 +1050,7 @@ namespace pbrto
         return UniformSpherePDF( );
     }
 
-    SampledSpectrum::Simd UniformInfiniteLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum UniformInfiniteLight::Phi( SampledWavelengths lambda ) const
     {
         return 4 * Pi * Pi * Sqr( sceneRadius ) * scale * Lemit->Sample( lambda );
     }
@@ -1133,10 +1133,10 @@ namespace pbrto
         return pdf / ( 4 * Pi );
     }
 
-    SampledSpectrum::Simd ImageInfiniteLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum ImageInfiniteLight::Phi( SampledWavelengths lambda ) const
     {
         // We're computing fluence, then converting to power...
-        SampledSpectrum::Simd sumL( 0. );
+        SampledSpectrum sumL( 0. );
 
         int width = image.Resolution( ).x, height = image.Resolution( ).y;
         for ( int v = 0; v < height; ++v )
@@ -1269,11 +1269,11 @@ namespace pbrto
         distribution = WindowedPiecewiseConstant2D( d, alloc );
     }
 
-    SampledSpectrum::Simd PortalImageInfiniteLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum PortalImageInfiniteLight::Phi( SampledWavelengths lambda ) const
     {
         // We're really computing fluence, then converting to power, for what
         // that's worth..
-        SampledSpectrum::Simd sumL( 0. );
+        SampledSpectrum sumL( 0. );
 
         for ( int y = 0; y < image.Resolution( ).y; ++y )
         {
@@ -1297,7 +1297,7 @@ namespace pbrto
         return scale * Area( ) * sumL / ( image.Resolution( ).x * image.Resolution( ).y );
     }
 
-    SampledSpectrum::Simd PortalImageInfiniteLight::Le( const Ray& ray, const SampledWavelengths& lambda ) const
+    SampledSpectrum PortalImageInfiniteLight::Le( const Ray& ray, const SampledWavelengths& lambda ) const
     {
         pstdo::optional<Point2f> uv = ImageFromRender( Normalize( ray.d ) );
         pstdo::optional<Bounds2f> b = ImageBounds( ray.o );
@@ -1335,7 +1335,7 @@ namespace pbrto
         NCHECK( !IsInf( pdf ) );
 
         // Compute radiance for portal light sample and return _LightLiSample_
-        SampledSpectrum::Simd L = ImageLookup( *uv, lambda );
+        SampledSpectrum L = ImageLookup( *uv, lambda );
         Point3f pl = ctx.p( ) + 2 * sceneRadius * wi;
         return LightLiSample( L, wi, pdf, Interaction( pl, &mediumInterface ) );
     }
@@ -1396,7 +1396,7 @@ namespace pbrto
         Float pdfPos = 1 / ( Pi * Sqr( sceneRadius ) );
 #endif
 
-        SampledSpectrum::Simd L = ImageLookup( *uv, lambda );
+        SampledSpectrum L = ImageLookup( *uv, lambda );
 
         return LightLeSample( L, ray, pdfPos, pdfDir );
     }
@@ -1452,13 +1452,13 @@ namespace pbrto
         return 0.f;
     }
 
-    SampledSpectrum::Simd SpotLight::I( Vector3f::Simd w, SampledWavelengths lambda ) const
+    SampledSpectrum SpotLight::I( Vector3f::Simd w, SampledWavelengths lambda ) const
     {
         return SmoothStep( CosTheta( w ), cosFalloffEnd, cosFalloffStart ) * scale *
             Iemit->Sample( lambda );
     }
 
-    SampledSpectrum::Simd SpotLight::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum SpotLight::Phi( SampledWavelengths lambda ) const
     {
         return scale * Iemit->Sample( lambda ) * 2 * Pi *
             ( ( 1 - cosFalloffStart ) + ( cosFalloffStart - cosFalloffEnd ) / 2 );
@@ -1566,7 +1566,7 @@ namespace pbrto
             coneangle - conedelta );
     }
 
-    SampledSpectrum::Simd Light::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum Light::Phi( SampledWavelengths lambda ) const
     {
         auto phi = [ & ]( auto ptr ) { return ptr->Phi( lambda ); };
         return DispatchCPU( phi );

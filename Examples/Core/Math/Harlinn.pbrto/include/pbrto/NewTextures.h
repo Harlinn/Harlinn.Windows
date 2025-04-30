@@ -335,7 +335,7 @@ namespace pbrto
         // SpectrumConstantTexture Public Methods
         SpectrumConstantTexture( Spectrum value ) : value( value ) {}
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             return value.Sample( lambda );
         }
@@ -393,7 +393,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return Bilerp( { c.st[ 0 ], c.st[ 1 ] }, { v00.Sample( lambda ), v10.Sample( lambda ),
@@ -467,10 +467,10 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float w = Checkerboard( ctx, map2D, map3D );
-            SampledSpectrum::Simd t0, t1;
+            SampledSpectrum t0, t1;
             if ( w != 1 )
                 t0 = tex[ 0 ].Evaluate( ctx, lambda );
             if ( w != 0 )
@@ -527,7 +527,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return InsidePolkaDot( c.st ) ? insideDot.Evaluate( ctx, lambda )
@@ -696,7 +696,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static SpectrumImageTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -836,7 +836,7 @@ namespace pbrto
     class GPUSpectrumImageTexture
     {
     public:
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             NLOG_FATAL( "GPUSpectrumImageTexture::Evaluate called from CPU" );
             return SampledSpectrum( 0 );
@@ -895,7 +895,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static MarbleTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -985,10 +985,10 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float amt = amount.Evaluate( ctx );
-            SampledSpectrum::Simd t1, t2;
+            SampledSpectrum t1, t2;
             if ( amt != 1 )
                 t1 = tex1.Evaluate( ctx, lambda );
             if ( amt != 0 )
@@ -1020,10 +1020,10 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float amt = ScalarAbsDot( ctx.n, dir );
-            SampledSpectrum::Simd t1, t2;
+            SampledSpectrum t1, t2;
             if ( amt != 0 )
                 t1 = tex1.Evaluate( ctx, lambda );
             if ( amt != 1 )
@@ -1088,7 +1088,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static SpectrumPtexTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -1131,7 +1131,7 @@ namespace pbrto
         GPUSpectrumPtexTexture( const std::string& filename, ColorEncoding encoding,
             Float scale, SpectrumType spectrumType, Allocator alloc );
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             NCHECK( ctx.faceIndex >= 0 && ctx.faceIndex < faceValues.size( ) );
 
@@ -1198,11 +1198,11 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float sc = scale.Evaluate( ctx );
             if ( sc == 0 )
-                return SampledSpectrum::Simd( 0.f );
+                return SampledSpectrum( 0.f );
             return tex.Evaluate( ctx, lambda ) * sc;
         }
 
@@ -1278,7 +1278,7 @@ namespace pbrto
         return Dispatch( eval );
     }
 
-    inline SampledSpectrum::Simd SpectrumTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+    inline SampledSpectrum SpectrumTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
     {
         auto eval = [ & ]( auto ptr ) { return ptr->Evaluate( ctx, lambda ); };
         return Dispatch( eval );
@@ -1296,7 +1296,7 @@ namespace pbrto
 
         Float operator()( FloatTexture tex, TextureEvalContext ctx );
 
-        SampledSpectrum::Simd operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda );
+        SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda );
     };
 
     // BasicTextureEvaluator Definition
@@ -1339,7 +1339,7 @@ namespace pbrto
             }
         }
 
-        SampledSpectrum::Simd operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda )
+        SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda )
         {
             if ( tex.Is<SpectrumConstantTexture>( ) )
                 return tex.Cast<SpectrumConstantTexture>( )->Evaluate( ctx, lambda );

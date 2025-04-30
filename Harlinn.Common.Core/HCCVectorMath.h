@@ -813,6 +813,10 @@ namespace Harlinn::Common::Core::Math
         TupleSimd( value_type x ) noexcept requires ( Size == 4 )
             : simd( Traits::Set( x, x, x, x ) )
         { }
+        TupleSimd( value_type x ) noexcept requires ( Size == 8 )
+            : simd( Traits::Set( x, x, x, x, x, x, x, x ) )
+        {
+        }
 
         TupleType Values( ) const noexcept
         {
@@ -1145,6 +1149,28 @@ namespace Harlinn::Common::Core::Math
                         return Traits::Extract<2>( simd );
                     case 3:
                         return Traits::Extract<3>( simd );
+                }
+            }
+            else if constexpr ( Size == 8 )
+            {
+                switch ( idx )
+                {
+                    case 0:
+                        return Traits::Extract<0>( simd );
+                    case 1:
+                        return Traits::Extract<1>( simd );
+                    case 2:
+                        return Traits::Extract<2>( simd );
+                    case 3:
+                        return Traits::Extract<3>( simd );
+                    case 4:
+                        return Traits::Extract<4>( simd );
+                    case 5:
+                        return Traits::Extract<5>( simd );
+                    case 6:
+                        return Traits::Extract<6>( simd );
+                    case 7:
+                        return Traits::Extract<7>( simd );
                 }
             }
             return operator[]( idx % Size );
@@ -2246,6 +2272,411 @@ namespace Harlinn::Common::Core::Math
 
     };
 
+    template<typename DerivedT, typename T>
+    class Tuple8 : public Internal::TupleBase
+    {
+    public:
+        using DerivedType = DerivedT;
+        using value_type = T;
+        using size_type = size_t;
+        using ValueType = value_type;
+        using SizeType = size_type;
+        static constexpr size_type Size = 8;
+        static constexpr bool Loaded = false;
+        static constexpr bool Unloaded = true;
+
+        using Traits = SIMD::Traits<value_type, Size>;
+        using SIMDType = typename Traits::SIMDType;
+        static constexpr size_type Capacity = Size;
+        using ArrayType = typename Traits::ArrayType;
+
+        using reference = typename ArrayType::reference;
+        using const_reference = typename ArrayType::const_reference;
+        using pointer = typename ArrayType::pointer;
+        using const_pointer = typename ArrayType::const_pointer;
+        using iterator = typename ArrayType::iterator;
+        using const_iterator = typename ArrayType::const_iterator;
+        using reverse_iterator = typename ArrayType::reverse_iterator;
+        using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
+
+        /// <summary>
+        /// The mathematical operations are performed using 
+        /// this type which holds a SIMD vector.  
+        /// </summary>
+        using Simd = TupleSimd<Traits, DerivedType>;
+
+        union
+        {
+            ArrayType values;
+            struct
+            {
+                value_type a, b, c, d, e, f, g, h;
+            };
+        };
+
+        Tuple8( ) noexcept
+            : a( static_cast< value_type >( 0 ) ), b( static_cast< value_type >( 0 ) ), c( static_cast< value_type >( 0 ) ), d( static_cast< value_type >( 0 ) )
+        {
+        }
+
+        Tuple8( value_type value ) noexcept
+            : a( value ), b( value ), c( value ), d( value ), e( value ), f( value ), g( value ), h( value )
+        {
+        }
+
+        Tuple8( value_type av, value_type bv, value_type cv, value_type dv, value_type ev, value_type fv, value_type gv, value_type hv ) noexcept
+            : a( av ), b( bv ), c( cv ), d( dv ), e( ev ), f( fv ), g(gv), h(hv)
+        {
+        }
+
+        Tuple8( const ArrayType& a ) noexcept
+            : values( a )
+        {
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple8( const U& other ) noexcept
+            : values( Traits::ToArray( other.simd ) )
+        {
+        }
+
+        template<Internal::TupleType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple8( const U& other ) noexcept
+            : values( other.values )
+        {
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        DerivedType& operator = ( const U& other ) noexcept
+        {
+            values = Traits::ToArray( other.simd );
+            return static_cast< DerivedType& >( *this );
+        }
+
+        Simd ToSimd( ) const noexcept
+        {
+            return Simd( Traits::Load( values ) );
+        }
+
+        explicit operator Simd( ) const noexcept
+        {
+            return ToSimd( );
+        }
+
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        constexpr bool operator == ( const U& other ) const noexcept
+        {
+            return IsSameValue( a, other.a ) && IsSameValue( b, other.b ) && IsSameValue( c, other.c ) && IsSameValue( d, other.d ) &&
+                IsSameValue( e, other.e ) && IsSameValue( f, other.f ) && IsSameValue( g, other.g ) && IsSameValue( h, other.h );
+        }
+
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        constexpr bool operator != ( const U& other ) const noexcept
+        {
+            return !IsSameValue( a, other.a ) || !IsSameValue( b, other.b ) || !IsSameValue( c, other.c ) || !IsSameValue( d, other.d ) ||
+                !IsSameValue( e, other.e ) || !IsSameValue( f, other.f ) || !IsSameValue( g, other.g ) || !IsSameValue( h, other.h );
+        }
+
+        constexpr bool operator == ( value_type value ) const noexcept
+        {
+            return IsSameValue( a, value ) && IsSameValue( b, value ) && IsSameValue( c, value ) && IsSameValue( d, value ) &&
+                IsSameValue( e, value ) && IsSameValue( f, value ) && IsSameValue( g, value ) && IsSameValue( h, value );
+        }
+        constexpr bool operator != ( value_type value ) const noexcept
+        {
+            return !IsSameValue( a, value ) || !IsSameValue( b, value ) || !IsSameValue( c, value ) || !IsSameValue( d, value ) ||
+                !IsSameValue( e, value ) || !IsSameValue( f, value ) || !IsSameValue( g, value ) || !IsSameValue( h, value );
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator == ( const U& other ) const noexcept
+        {
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd );
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator != ( const U& other ) const noexcept
+        {
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd ) == false;
+        }
+
+        Simd operator-( ) const noexcept
+        {
+            return Traits::Negate( Traits::Load( values.data( ) ) );
+        }
+
+        DerivedType& operator += ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
+            return static_cast< DerivedType& >( *this );
+        }
+
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator += ( const U& other ) noexcept
+        {
+            a += other.a;
+            b += other.b;
+            c += other.c;
+            d += other.d;
+            e += other.e;
+            f += other.f;
+            g += other.g;
+            h += other.h;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator += ( const value_type& value ) noexcept
+        {
+            a += value;
+            b += value;
+            c += value;
+            d += value;
+            e += value;
+            f += value;
+            g += value;
+            h += value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator -= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
+            return static_cast< DerivedType& >( *this );
+        }
+
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator -= ( const U& other ) noexcept
+        {
+            a -= other.a;
+            b -= other.b;
+            c -= other.c;
+            d -= other.d;
+            e -= other.e;
+            f -= other.f;
+            g -= other.g;
+            h -= other.h;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator -= ( const value_type& value ) noexcept
+        {
+            a -= value;
+            b -= value;
+            c -= value;
+            d -= value;
+            e -= value;
+            f -= value;
+            g -= value;
+            h -= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+
+        DerivedType& operator *= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
+            return static_cast< DerivedType& >( *this );
+        }
+
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator *= ( const U& other ) noexcept
+        {
+            a *= other.a;
+            b *= other.b;
+            c *= other.c;
+            d *= other.d;
+            e *= other.e;
+            f *= other.f;
+            g *= other.g;
+            h *= other.h;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator *= ( const value_type& value ) noexcept
+        {
+            a *= value;
+            b *= value;
+            c *= value;
+            d *= value;
+            e *= value;
+            f *= value;
+            g *= value;
+            h *= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator /= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
+            return static_cast< DerivedType& >( *this );
+        }
+
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator /= ( const U& other ) noexcept
+        {
+            a /= other.a;
+            b /= other.b;
+            c /= other.c;
+            d /= other.d;
+            e /= other.e;
+            f /= other.f;
+            g /= other.g;
+            h /= other.h;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator /= ( const value_type& value ) noexcept
+        {
+            a /= value;
+            b /= value;
+            c /= value;
+            d /= value;
+            e /= value;
+            f /= value;
+            g /= value;
+            h /= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        const_reference operator[]( size_t index ) const noexcept
+        {
+            return values[ index ];
+        }
+
+        reference operator[]( size_t index ) noexcept
+        {
+            return values[ index ];
+        }
+
+        const_pointer data( ) const noexcept
+        {
+            return values.data( );
+        }
+        pointer data( ) noexcept
+        {
+            return values.data( );
+        }
+
+        constexpr size_t size( ) const noexcept
+        {
+            return Size;
+        }
+
+        const_reference front( ) const noexcept
+        {
+            return values.front( );
+        }
+        reference front( ) noexcept
+        {
+            return values.front( );
+        }
+
+        const_reference back( ) const noexcept
+        {
+            return values.back( );
+        }
+        reference back( ) noexcept
+        {
+            return values.back( );
+        }
+
+        const_iterator begin( ) const noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator cbegin( ) const noexcept
+        {
+            return values.cbegin( );
+        }
+        iterator begin( ) noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator end( ) const noexcept
+        {
+            return values.end( );
+        }
+        const_iterator cend( ) const noexcept
+        {
+            return values.cend( );
+        }
+        iterator end( ) noexcept
+        {
+            return values.end( );
+        }
+        const_reverse_iterator rbegin( ) const noexcept
+        {
+            return values.rbegin( );
+        }
+        reverse_iterator rbegin( ) noexcept
+        {
+            return values.rbegin( );
+        }
+        const_reverse_iterator rend( ) const noexcept
+        {
+            return values.rend( );
+        }
+        reverse_iterator rend( ) noexcept
+        {
+            return values.rend( );
+        }
+
+        void Assign( value_type av, value_type bv, value_type cv, value_type dv, value_type ev, value_type fv, value_type gv, value_type hv ) noexcept
+        {
+            a = av;
+            b = bv;
+            c = cv;
+            d = dv;
+            e = ev;
+            f = fv;
+            g = gv;
+            h = hv;
+        }
+        void Assign( const ArrayType& src ) noexcept
+        {
+            values = src;
+        }
+        void Assign( SIMDType src ) noexcept
+        {
+            values = Traits::ToArray( src );
+        }
+
+        bool HasNaN( ) const noexcept
+        {
+            return std::isnan( a ) || std::isnan( b ) || std::isnan( c ) || std::isnan( d ) ||
+                std::isnan( e ) || std::isnan( f ) || std::isnan( g ) || std::isnan( h );
+        }
+
+        bool IsFinite( ) const noexcept
+        {
+            return std::isfinite( a ) && std::isfinite( b ) && std::isfinite( c ) && std::isfinite( d ) ||
+                std::isfinite( e ) && std::isfinite( f ) && std::isfinite( g ) && std::isfinite( h );
+        }
+
+        bool IsInfinite( ) const noexcept
+        {
+            return std::isinf( a ) || std::isinf( b ) || std::isinf( c ) || std::isinf( d ) ||
+                std::isinf( e ) || std::isinf( f ) || std::isinf( g ) || std::isinf( h );
+        }
+
+        WideString ToString( ) const
+        {
+            return Format( L"[{}, {}, {}, {}, {}, {}, {}, {}]", a, b, c, d, e, f, g, h );
+        }
+
+    };
+
     
 
 
@@ -2572,9 +3003,18 @@ namespace Harlinn::Common::Core::Math
         {
             return t.x + t.y + t.z;
         }
-        else 
+        else if constexpr ( T::Size == 4 )
         {
             return t.x + t.y + t.z + t.w;
+        }
+        else
+        {
+            ResultT result{};
+            for ( size_t i = 0; i < T::Size; i++ )
+            {
+                result += t.values[ i ];
+            }
+            return result;
         }
     }
     /// <summary>
@@ -2663,9 +3103,18 @@ namespace Harlinn::Common::Core::Math
         {
             return t.x * t.y * t.z;
         }
-        else
+        else if constexpr ( T::Size == 4 )
         {
             return t.x * t.y * t.z * t.w;
+        }
+        else
+        {
+            ResultT result = static_cast< ResultT >( 1 );
+            for ( size_t i = 0; i < T::Size; i++ )
+            {
+                result *= t.values[ i ];
+            }
+            return result;
         }
     }
     /// <summary>
@@ -7122,6 +7571,49 @@ namespace Harlinn::Common::Core::Math
         return Traits::Dot( Traits::Load( v1.values.data( ) ), v2.simd );
     }
 
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<int mask, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Dot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Dot<mask>( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<int mask, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Dot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Dot<mask>( v1.simd, Traits::Load( v2.values.data( ) ) );
+    }
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<int mask, Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Dot( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Dot<mask>( Traits::Load( v1.values.data( ) ), v2.simd );
+    }
+
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<int mask, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Dot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Dot<mask>( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
     // ScalarDot
 
     template<Internal::SimdType T, Internal::SimdType U>
@@ -7176,6 +7668,8 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Fill( ScalarDot( v1, v2 ) );
     }
+
+    
 
     // AbsDot
 
@@ -10530,9 +11024,13 @@ namespace Harlinn::Common::Core::Math
         {
             return Min( v.x, v.y, v.z );
         }
-        else
+        else if constexpr ( T::Size == 4 )
         {
             return Min( v.x, v.y, v.z, v.w );
+        }
+        else
+        {
+            return *std::min_element( v.values.begin( ), v.values.end( ) );
         }
     }
 
@@ -10574,9 +11072,13 @@ namespace Harlinn::Common::Core::Math
         {
             return Max( v.x, v.y, v.z );
         }
-        else
+        else if constexpr ( T::Size == 4 )
         {
             return Max( v.x, v.y, v.z, v.w );
+        }
+        else
+        {
+            return *std::max_element( v.values.begin( ), v.values.end( ) );
         }
     }
 
@@ -11806,6 +12308,46 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
+
+    template<>
+    class Vector<float, 8> : public Tuple8<Vector<float, 8>, float>, public Internal::VectorBase
+    {
+    public:
+        using Base = Tuple8<Vector<float, 8>, float>;
+
+        using Traits = Base::Traits;
+        using Base::Size;
+        using value_type = Base::value_type;
+
+        Vector( ) noexcept = default;
+        explicit Vector( float v ) noexcept
+            : Base( v, v, v, v, v, v, v, v )
+        {
+        }
+        Vector( float av, float bv, float cv, float dv, float ev, float fv, float gv, float hv ) noexcept
+            : Base( av, bv, cv, dv, ev, fv, gv, hv )
+        {
+        }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Base( other.a, other.b, other.c, other.d, other.e, other.f, other.g, other.h )
+        {
+        }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        {
+        }
+    };
 
     /// <summary>
     /// Calculates the angle in radians between two vectors.
@@ -19246,9 +19788,9 @@ namespace Harlinn::Common::Core::Math
 
         auto negCameraPosition = -cameraPosition;
 
-        auto d0 = Dot( r0, negCameraPosition );
-        auto d1 = Dot( r1, negCameraPosition );
-        auto d2 = Dot( r2, negCameraPosition );
+        auto d0 = Dot<0xFF>( r0, negCameraPosition );
+        auto d1 = Dot<0xFF>( r1, negCameraPosition );
+        auto d2 = Dot<0xFF>( r2, negCameraPosition );
 
         MatrixSimd result;
         result.simd[ 0 ] = Traits::Select( d0.simd, r0.simd, Constants::Select2221 );

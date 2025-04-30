@@ -52,59 +52,672 @@ namespace pbrto
     // Spectrum Constants
     constexpr Float Lambda_min = 360, Lambda_max = 830;
 
+    // Must be a multiple of 4
     static constexpr int NSpectrumSamples = 4;
+    static_assert( ( NSpectrumSamples & 3 ) == 0 );
+
+    constexpr bool SampledSpectrumUsesLargeTraits = ( NSpectrumSamples & 7 ) == 0;
+    constexpr size_t SampledSpectrumTraitsSize = SampledSpectrumUsesLargeTraits ? 8 : 4;
+    constexpr size_t SampledSpectrumAlignAs = SampledSpectrumUsesLargeTraits ? 32 : 16;
+    constexpr size_t SampledSpectrumIterationCount = NSpectrumSamples / SampledSpectrumTraitsSize;
 
     static constexpr Float CIE_Y_integral = 106.856895;
 
 
     // SampledSpectrum Definition
-    class SampledSpectrum : public Math::Tuple4<SampledSpectrum, Float>
+    class alignas( SampledSpectrumAlignAs ) SampledSpectrum
     {
     public:
-        using Base = Math::Tuple4<SampledSpectrum, Float>;
-        using Base::Base;
-
+        
+        using Traits = SIMD::Traits<Float, SampledSpectrumTraitsSize>;
+        using VectorType = std::array<Float, NSpectrumSamples>;
+        static constexpr size_t IterationCount = SampledSpectrumIterationCount;
+        static constexpr size_t TraitsSize = SampledSpectrumTraitsSize;
+    private:
+        friend struct SOA<SampledSpectrum>;
+        
+    public:
+        VectorType values;
         SampledSpectrum( ) = default;
+        explicit SampledSpectrum( Float c ) 
+        { 
+            values.fill( c ); 
+        }
 
+        SampledSpectrum( const VectorType& v )
+            : values( v )
+        { }
+
+        /*
+        SampledSpectrum( std::span<const Float> v )
+            : values( v.begin(), v.end() )
+        {
+            NDCHECK_EQ( NSpectrumSamples, v.size( ) );
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] = v[ i ];
+        }
+        */
+        Float operator[]( int i ) const
+        {
+            NDCHECK( i >= 0 && i < NSpectrumSamples );
+            return values[ i ];
+        }
+        Float& operator[]( int i )
+        {
+            NDCHECK( i >= 0 && i < NSpectrumSamples );
+            return values[ i ];
+        }
+
+    //private:
+        Traits::SIMDType Load( size_t i ) const
+        {
+            size_t offset = i * TraitsSize;
+            return Traits::Load( values.data( ) + offset );
+        }
+        void Store( size_t i, Traits::SIMDType v )
+        {
+            size_t offset = i * TraitsSize;
+            Traits::Store( values.data( ) + offset, v );
+        }
+    public:
 
         explicit operator bool( ) const
         {
+            /*
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 if ( values[ i ] != 0 )
                     return true;
             return false;
+            */
+            auto zero = Traits::Zero( );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v = Load( i );
+                if ( Traits::AllEqual( v, zero ) == false )
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        // SampledSpectrum Public Methods
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        // SampledSpectrum Public Methods
+        SampledSpectrum operator+( const SampledSpectrum& s ) const
+        {
+            /*
+            SampledSpectrum ret = *this;
+            return ret += s;
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                result.Store( i, Traits::Add( v1, v2 ) );
+            }
+            return result;
+        }
+
+        SampledSpectrum& operator+=( const SampledSpectrum& s )
+        {
+            /*
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] += s.values[ i ];
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                Store( i, Traits::Add( v1, v2 ) );
+            }
+            return *this;
+        }
+
+        SampledSpectrum operator-( const SampledSpectrum& s ) const
+        {
+            /*
+            SampledSpectrum ret = *this;
+            return ret -= s;
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                result.Store( i, Traits::Sub( v1, v2 ) );
+            }
+            return result;
+        }
+
+        SampledSpectrum& operator-=( const SampledSpectrum& s )
+        {
+            /*
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] -= s.values[ i ];
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                Store( i, Traits::Sub( v1, v2 ) );
+            }
+            return *this;
+        }
+        
+        friend SampledSpectrum operator-( Float a, const SampledSpectrum& s )
+        {
+            NDCHECK( !IsNaN( a ) );
+            /*
+            SampledSpectrum ret;
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                ret.values[ i ] = a - s.values[ i ];
+            return ret;
+            */
+            SampledSpectrum result;
+            auto v1 = Traits::Fill( a );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                
+                auto v2 = s.Load( i );
+                result.Store( i, Traits::Sub( v1, v2 ) );
+            }
+            return result;
+        }
+
+        SampledSpectrum operator*( const SampledSpectrum& s ) const
+        {
+            /*
+            SampledSpectrum ret = *this;
+            return ret *= s;
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                result.Store( i, Traits::Mul( v1, v2 ) );
+            }
+            return result;
+        }
+
+        SampledSpectrum& operator*=( const SampledSpectrum& s )
+        {
+            /*
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] *= s.values[ i ];
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                Store( i, Traits::Mul( v1, v2 ) );
+            }
+            return *this;
+        }
+        
+        SampledSpectrum operator*( Float a ) const
+        {
+            NDCHECK( !IsNaN( a ) );
+            /*
+            SampledSpectrum ret = *this;
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                ret.values[ i ] *= a;
+            return ret;
+            */
+            SampledSpectrum result;
+            auto v2 = Traits::Fill( a );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                result.Store( i, Traits::Mul( v1, v2 ) );
+            }
+            return result;
+        }
+        SampledSpectrum& operator*=( Float a )
+        {
+            NDCHECK( !IsNaN( a ) );
+            /*
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] *= a;
+            */
+            SampledSpectrum result;
+            auto v2 = Traits::Fill( a );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                Store( i, Traits::Mul( v1, v2 ) );
+            }
+            return *this;
+        }
+        friend SampledSpectrum operator*( Float a, const SampledSpectrum& s ) { return s * a; }
+
+        SampledSpectrum operator/( const SampledSpectrum& s ) const
+        {
+            /*
+            SampledSpectrum ret = *this;
+            return ret /= s;
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                result.Store( i, Traits::Div( v1, v2 ) );
+            }
+            return result;
+        }
+
+        SampledSpectrum& operator/=( const SampledSpectrum& s )
+        {
+            /*
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+            {
+                NDCHECK_NE( 0, s.values[ i ] );
+                values[ i ] /= s.values[ i ];
+            }
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v2 = s.Load( i );
+                Store( i, Traits::Div( v1, v2 ) );
+            }
+            return *this;
+        }
+        
+        SampledSpectrum operator/( Float a ) const
+        {
+            /*
+            SampledSpectrum ret = *this;
+            return ret /= a;
+            */
+            SampledSpectrum result;
+            auto v2 = Traits::Fill( a );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                result.Store( i, Traits::Div( v1, v2 ) );
+            }
+            return result;
+        }
+
+        SampledSpectrum& operator/=( Float a )
+        {
+            /*
+            NDCHECK_NE( a, 0 );
+            NDCHECK( !IsNaN( a ) );
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] /= a;
+            */
+            auto v2 = Traits::Fill( a );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                Store( i, Traits::Div( v1, v2 ) );
+            }
+            return *this;
+        }
+        
+
+        SampledSpectrum operator-( ) const
+        {
+            /*
+            SampledSpectrum ret;
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                ret.values[ i ] = -values[ i ];
+            return ret;
+            */
+            SampledSpectrum result;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                result.Store( i, Traits::Negate( v1 ) );
+            }
+            return result;
+        }
+        bool operator==( const SampledSpectrum& s ) const { return values == s.values; }
+        bool operator!=( const SampledSpectrum& s ) const { return values != s.values; }
+
+        std::string ToString( ) const;
 
         bool HasNaNs( ) const
         {
-            return HasNaN( );
+            
+            auto zero = Traits::Zero( );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v = Load( i );
+                if ( Traits::HasNaN( v ) )
+                {
+                    return true;
+                }
+            }
+            return false;
+            
+            /*
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                if ( IsNaN( values[ i ] ) )
+                    return true;
+            return false;
+            */
         }
 
         PBRTO_EXPORT XYZ ToXYZ( const SampledWavelengths& lambda ) const;
         PBRTO_EXPORT RGB ToRGB( const SampledWavelengths& lambda, const RGBColorSpace& cs ) const;
         PBRTO_EXPORT Float Y( const SampledWavelengths& lambda ) const;
-        PBRTO_EXPORT static Float Y( SampledSpectrum::Simd l, const SampledWavelengths& lambda );
+        PBRTO_EXPORT static Float Y( const SampledSpectrum& s, const SampledWavelengths& lambda );
 
+        
+
+        
 
         Float MinComponentValue( ) const
         {
-            return Math::MinComponentValue( static_cast< const Base& >( *this ) );
+            
+            Float result = std::numeric_limits<Float>::max( );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v = Traits::HorizontalMin( v1 );
+                result = Math::Min( result, v );
+            }
+            return result;
+            
+            /*
+            Float m = values[ 0 ];
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                m = std::min( m, values[ i ] );
+            return m;
+            */
         }
         Float MaxComponentValue( ) const
         {
-            return Math::MaxComponentValue( static_cast< const Base& >( *this ) );
+            
+            Float result = std::numeric_limits<Float>::lowest( );
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                auto v = Traits::HorizontalMax( v1 );
+                result = Math::Max( result, v );
+            }
+            return result;
+            /*
+            Float m = values[ 0 ];
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                m = std::max( m, values[ i ] );
+            return m;
+            */
         }
         Float Average( ) const
         {
-            return Math::ScalarAvg( static_cast< const Base& >( *this ) );
+            
+            Float result = 0,f;
+            for ( size_t i = 0; i < IterationCount; i++ )
+            {
+                auto v1 = Load( i );
+                result += Traits::Avg( v1 );
+            }
+            return result / IterationCount;
+            
+            /*
+            Float sum = values[ 0 ];
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                sum += values[ i ];
+            return sum / NSpectrumSamples;
+            */
         }
 
     private:
-
+        
     };
+
+    inline SampledSpectrum Sqr( const SampledSpectrum& sampledSpectrum )
+    {
+        return sampledSpectrum * sampledSpectrum;
+    }
+
+    inline SampledSpectrum SafeDiv( SampledSpectrum a, SampledSpectrum b )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+
+        auto zeros = Traits::Zero( );
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v1 = a.Load( i );
+            auto v2 = b.Load( i );
+            auto r = Traits::Div( v1, v2 );
+            auto isZero = Traits::Equal( v2, zeros );
+
+            r = Traits::Select( r, zeros, isZero );
+            result.Store( i, r );
+        }
+
+        return result;
+        /*
+        SampledSpectrum r;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            r[ i ] = ( b[ i ] != 0 ) ? a[ i ] / b[ i ] : 0.;
+        return r;
+        */
+    }
+
+    template <typename U, typename V>
+    inline SampledSpectrum Clamp( const SampledSpectrum& s, U low, V high )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+        auto l = Traits::Fill( low );
+        auto h = Traits::Fill( high );
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+
+            auto r = Traits::Clamp( v, l, h );
+            result.Store( i, r );
+        }
+
+        return result;
+
+        /*
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = Math::Clamp( s[ i ], low, high );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+        */
+    }
+
+    inline SampledSpectrum ClampZero( const SampledSpectrum& s )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+        auto zeros = Traits::Zero( );
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+
+            auto r = Traits::Max( zeros, v );
+            result.Store( i, r );
+        }
+
+        return result;
+
+        /*
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = Math::Max<Float>( 0, s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+        */
+    }
+
+    inline SampledSpectrum Sqrt( const SampledSpectrum& s )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+            auto r = Traits::Sqrt( v );
+            result.Store( i, r );
+        }
+
+        return result;
+
+        /*
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = Math::Sqrt( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+        */
+    }
+
+    inline SampledSpectrum SafeSqrt( const SampledSpectrum& s )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+        auto zeros = Traits::Zero( );
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+            v = Traits::Max( zeros, v );
+            auto r = Traits::Sqrt( v );
+            result.Store( i, r );
+        }
+
+        return result;
+
+        /*
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = SafeSqrt( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+        */
+    }
+
+    inline SampledSpectrum Pow( const SampledSpectrum& s, Float e )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+        auto exponent = Traits::Fill( e );
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+            auto r = Traits::Pow( v, exponent );
+            result.Store( i, r );
+        }
+
+        return result;
+
+        /*
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = Math::Pow( s[ i ], e );
+        return ret;
+        */
+    }
+
+    inline SampledSpectrum Exp( const SampledSpectrum& s )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+            auto r = Traits::Exp( v );
+            result.Store( i, r );
+        }
+
+        return result;
+
+        /*
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = Math::Exp( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+        */
+    }
+
+    inline SampledSpectrum FastExp( const SampledSpectrum& s )
+    {
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = FastExp( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+    }
+
+    inline SampledSpectrum Log( const SampledSpectrum& s )
+    {
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+            auto r = Traits::Log( v );
+            result.Store( i, r );
+        }
+
+        return result;
+
+        /*
+        SampledSpectrum ret;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            ret[ i ] = Math::Log( s[ i ] );
+        NDCHECK( !ret.HasNaNs( ) );
+        return ret;
+        */
+    }
+
+    inline Float ScalarAvg( const SampledSpectrum& s )
+    {
+        return s.Average( );
+    }
+
+    inline SampledSpectrum Avg( const SampledSpectrum& s )
+    {
+        return SampledSpectrum( s.Average( ) );
+    }
+
+    inline Float MaxComponentValue( const SampledSpectrum& s )
+    {
+        return s.MaxComponentValue( );
+    }
+
+    inline Float MinComponentValue( const SampledSpectrum& s )
+    {
+        return s.MinComponentValue( );
+    }
+
+
+    inline SampledSpectrum Bilerp( pstdo::array<Float, 2> p, pstdo::span<const SampledSpectrum> v )
+    {
+        return ( ( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * ( 1 - p[ 1 ] ) * v[ 1 ] +
+            ( 1 - p[ 0 ] ) * p[ 1 ] * v[ 2 ] + p[ 0 ] * p[ 1 ] * v[ 3 ] );
+    }
+
+    inline SampledSpectrum Lerp2( Float t, const SampledSpectrum& s1, const SampledSpectrum& s2 )
+    {
+        return ( 1 - t ) * s1 + t * s2;
+    }
+
+
 
     // Spectrum Definition
     class BlackbodySpectrum;
@@ -129,7 +742,7 @@ namespace pbrto
 
         Float MaxValue( ) const;
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const;
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const;
     };
 
     // Spectrum Function Declarations
@@ -158,18 +771,14 @@ namespace pbrto
 
     
 
-    inline SampledSpectrum Sqr( const SampledSpectrum& sampledSpectrum )
-    {
-        return sampledSpectrum * sampledSpectrum;
-    }
+    
 
 
     // SampledWavelengths Definitions
-    class SampledWavelengths
+    class alignas( SampledSpectrumAlignAs ) SampledWavelengths
     {
     public:
-        using VectorType = Math::Vector<float, 4>;
-        using VectorSimdType = VectorType::Simd;
+        using VectorType = SampledSpectrum::VectorType;
     private:
         // SampledWavelengths Private Members
         friend struct SOA<SampledWavelengths>;
@@ -207,12 +816,12 @@ namespace pbrto
             //for ( int i = 0; i < NSpectrumSamples; ++i )
             //    swl.pdf[ i ] = 1 / ( lambda_max - lambda_min );
 
-            swl.pdf = VectorType( 1.f / ( lambda_max - lambda_min ) );
+            swl.pdf.fill( 1.f / ( lambda_max - lambda_min ) );
 
             return swl;
         }
 
-        const VectorSimdType& Lambda( ) const
+        const VectorType& Lambda( ) const
         {
             return lambda;
         }
@@ -225,9 +834,9 @@ namespace pbrto
         {
             return lambda[ i ]; 
         }
-        SampledSpectrum::Simd PDF( ) const
+        SampledSpectrum PDF( ) const
         { 
-            return SampledSpectrum::Simd( pdf.values ); 
+            return SampledSpectrum( pdf ); 
         }
 
         void TerminateSecondary( )
@@ -235,15 +844,20 @@ namespace pbrto
             if ( SecondaryTerminated( ) )
                 return;
             // Update wavelength probabilities for termination
-            pdf.x /= NSpectrumSamples;
-            pdf.y = 0.f; 
-            pdf.z = 0.f; 
-            pdf.w = 0.f;
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+            {
+                pdf[ i ] = 0;
+            }
+            pdf[ 0 ] /= NSpectrumSamples;
+            
         }
 
         bool SecondaryTerminated( ) const
         {
-            return pdf.y == 0.f && pdf.z == 0.f && pdf.w == 0.f;
+            for ( int i = 1; i < NSpectrumSamples; ++i )
+                if ( pdf[ i ] != 0 )
+                    return false;
+            return true;
         }
 
         static SampledWavelengths SampleVisible( Float u )
@@ -279,9 +893,9 @@ namespace pbrto
             return c; 
         }
         // ConstantSpectrum Public Methods
-        SampledSpectrum::Simd Sample( const SampledWavelengths& ) const
+        SampledSpectrum Sample( const SampledWavelengths& ) const
         {
-            return SampledSpectrum::Simd( c );
+            return SampledSpectrum( c );
         }
 
         Float MaxValue( ) const 
@@ -315,7 +929,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -342,11 +956,10 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        DenselySampledSpectrum( Spectrum spec, int lambda_min = Lambda_min,
-            int lambda_max = Lambda_max, Allocator alloc = {} )
+        DenselySampledSpectrum( Spectrum spec, int lambda_min = Lambda_min, int lambda_max = Lambda_max, Allocator alloc = {} )
             : lambda_min( lambda_min ),
-            lambda_max( lambda_max ),
-            values( lambda_max - lambda_min + 1, alloc )
+              lambda_max( lambda_max ),
+              values( lambda_max - lambda_min + 1, alloc )
         {
             NCHECK_GE( lambda_max, lambda_min );
             if ( spec )
@@ -355,9 +968,7 @@ namespace pbrto
         }
 
         template <typename F>
-        static DenselySampledSpectrum SampleFunction( F func, int lambda_min = Lambda_min,
-            int lambda_max = Lambda_max,
-            Allocator alloc = {} )
+        static DenselySampledSpectrum SampleFunction( F func, int lambda_min = Lambda_min, int lambda_max = Lambda_max, Allocator alloc = {} )
         {
             DenselySampledSpectrum s( lambda_min, lambda_max, alloc );
             for ( int lambda = lambda_min; lambda <= lambda_max; ++lambda )
@@ -413,7 +1024,7 @@ namespace pbrto
             return *std::max_element( values.begin( ), values.end( ) );
         }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -464,7 +1075,7 @@ namespace pbrto
             return Blackbody( lambda, T ) * normalizationFactor;
         }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -494,7 +1105,7 @@ namespace pbrto
 
         PBRTO_EXPORT RGBAlbedoSpectrum( const RGBColorSpace& cs, RGB rgb );
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -528,7 +1139,7 @@ namespace pbrto
             : rsp( 0, 0, 0 ), scale( 0 ) 
         { }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -569,7 +1180,7 @@ namespace pbrto
             return illuminant; 
         }
 
-        SampledSpectrum::Simd Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             if ( !illuminant )
                 return SampledSpectrum( 0 );
@@ -583,30 +1194,7 @@ namespace pbrto
     };
 
 
-    inline SampledSpectrum::Simd SafeDiv( SampledSpectrum::Simd a, SampledSpectrum::Simd b )
-    {
-        using Traits = SampledSpectrum::Traits;
-        auto result = a / b;
-        auto zeros = Traits::Zero( );
-        auto isZero = Traits::Equal( b.simd, zeros );
-        
-        result.simd = Traits::Select( result.simd, zeros, isZero );
-        return result;
-    }
-    inline SampledSpectrum FastExp( const SampledSpectrum& s )
-    {
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = FastExp( s[ i ] );
-        NDCHECK( !ret.HasNaNs( ) );
-        return ret;
-    }
-
-    inline SampledSpectrum Bilerp( pstdo::array<Float, 2> p, pstdo::span<const SampledSpectrum> v )
-    {
-        return ( ( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * ( 1 - p[ 1 ] ) * v[ 1 ] +
-            ( 1 - p[ 0 ] ) * p[ 1 ] * v[ 2 ] + p[ 0 ] * p[ 1 ] * v[ 3 ] );
-    }
+    
 
     // Spectral Data Declarations
     namespace Spectra
@@ -677,7 +1265,7 @@ namespace pbrto
         return Dispatch( op );
     }
 
-    PBRT_CPU_GPU inline SampledSpectrum::Simd Spectrum::Sample( const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU inline SampledSpectrum Spectrum::Sample( const SampledWavelengths& lambda ) const
     {
         auto samp = [ & ]( auto ptr ) 
             { 

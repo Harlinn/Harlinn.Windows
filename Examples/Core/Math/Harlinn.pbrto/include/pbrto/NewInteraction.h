@@ -294,7 +294,7 @@ namespace pbrto
         BSDF GetBSDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer, Sampler sampler );
         BSSRDF GetBSSRDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer );
 
-        SampledSpectrum::Simd Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const;
+        SampledSpectrum Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const;
 
         
     };
