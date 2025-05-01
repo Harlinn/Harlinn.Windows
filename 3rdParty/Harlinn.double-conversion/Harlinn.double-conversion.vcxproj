@@ -91,7 +91,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ModuleDefinitionFile>Harlinn.double-conversion.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,7 +117,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ModuleDefinitionFile>Harlinn.double-conversion.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -139,7 +141,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
-      <ModuleDefinitionFile>Harlinn.double-conversion.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -165,7 +168,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
-      <ModuleDefinitionFile>Harlinn.double-conversion.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -184,6 +188,7 @@
     <ClInclude Include="include\double-conversion\bignum.h" />
     <ClInclude Include="include\double-conversion\cached-powers.h" />
     <ClInclude Include="include\double-conversion\diy-fp.h" />
+    <ClInclude Include="include\double-conversion\double-conversion-export.h" />
     <ClInclude Include="include\double-conversion\double-conversion.h" />
     <ClInclude Include="include\double-conversion\double-to-string.h" />
     <ClInclude Include="include\double-conversion\fast-dtoa.h" />
@@ -194,7 +199,6 @@
     <ClInclude Include="include\double-conversion\utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Harlinn.double-conversion.def" />
     <None Include="Readme\AUTHORS" />
     <None Include="Readme\COPYING" />
     <None Include="Readme\LICENSE" />

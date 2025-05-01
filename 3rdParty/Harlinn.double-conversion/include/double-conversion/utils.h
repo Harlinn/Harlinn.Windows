@@ -28,15 +28,13 @@
 #ifndef DOUBLE_CONVERSION_UTILS_H_
 #define DOUBLE_CONVERSION_UTILS_H_
 
+#include "double-conversion-export.h"
+
 // Use DOUBLE_CONVERSION_NON_PREFIXED_MACROS to get unprefixed macros as was
 // the case in double-conversion releases prior to 3.1.6
 
 #include <cstdlib>
 #include <cstring>
-
-#ifndef BUILDING_HARLINN_DOUBLE_CONVERSION
-#pragma comment(lib, "Harlinn.double-conversion.lib" )
-#endif
 
 // For pre-C++11 compatibility
 #if __cplusplus >= 201103L

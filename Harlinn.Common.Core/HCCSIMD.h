@@ -2738,7 +2738,8 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_broadcast_ss( &value );
+                return _mm_set_ps1( value );
+                //return _mm_broadcast_ss( &value );
             }
             else
             {

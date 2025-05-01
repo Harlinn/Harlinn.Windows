@@ -49,6 +49,8 @@
 namespace pbrto
 {
 
+//#define USE_MODIFIED_SAMPLEDSPECTRUM
+#define USE_MODIFIED_SAMPLEDSPECTRUM_TEST
     // Spectrum Constants
     constexpr Float Lambda_min = 360, Lambda_max = 830;
 
@@ -123,12 +125,12 @@ namespace pbrto
 
         explicit operator bool( ) const
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 if ( values[ i ] != 0 )
                     return true;
             return false;
-            */
+#else            
             auto zero = Traits::Zero( );
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -139,15 +141,16 @@ namespace pbrto
                 }
             }
             return false;
+#endif
         }
 
         // SampledSpectrum Public Methods
         SampledSpectrum operator+( const SampledSpectrum& s ) const
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret = *this;
             return ret += s;
-            */
+#else            
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -156,14 +159,15 @@ namespace pbrto
                 result.Store( i, Traits::Add( v1, v2 ) );
             }
             return result;
+#endif
         }
 
         SampledSpectrum& operator+=( const SampledSpectrum& s )
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] += s.values[ i ];
-            */
+#else            
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -171,15 +175,16 @@ namespace pbrto
                 auto v2 = s.Load( i );
                 Store( i, Traits::Add( v1, v2 ) );
             }
+#endif
             return *this;
         }
 
         SampledSpectrum operator-( const SampledSpectrum& s ) const
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret = *this;
             return ret -= s;
-            */
+#else
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -188,14 +193,15 @@ namespace pbrto
                 result.Store( i, Traits::Sub( v1, v2 ) );
             }
             return result;
+#endif
         }
 
         SampledSpectrum& operator-=( const SampledSpectrum& s )
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] -= s.values[ i ];
-            */
+#else
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -203,18 +209,19 @@ namespace pbrto
                 auto v2 = s.Load( i );
                 Store( i, Traits::Sub( v1, v2 ) );
             }
+#endif
             return *this;
         }
         
         friend SampledSpectrum operator-( Float a, const SampledSpectrum& s )
         {
             NDCHECK( !IsNaN( a ) );
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 ret.values[ i ] = a - s.values[ i ];
             return ret;
-            */
+#else
             SampledSpectrum result;
             auto v1 = Traits::Fill( a );
             for ( size_t i = 0; i < IterationCount; i++ )
@@ -224,14 +231,15 @@ namespace pbrto
                 result.Store( i, Traits::Sub( v1, v2 ) );
             }
             return result;
+#endif
         }
 
         SampledSpectrum operator*( const SampledSpectrum& s ) const
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret = *this;
             return ret *= s;
-            */
+#else            
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -240,14 +248,15 @@ namespace pbrto
                 result.Store( i, Traits::Mul( v1, v2 ) );
             }
             return result;
+#endif
         }
 
         SampledSpectrum& operator*=( const SampledSpectrum& s )
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] *= s.values[ i ];
-            */
+#else            
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -255,18 +264,19 @@ namespace pbrto
                 auto v2 = s.Load( i );
                 Store( i, Traits::Mul( v1, v2 ) );
             }
+#endif
             return *this;
         }
         
         SampledSpectrum operator*( Float a ) const
         {
             NDCHECK( !IsNaN( a ) );
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret = *this;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 ret.values[ i ] *= a;
             return ret;
-            */
+#else
             SampledSpectrum result;
             auto v2 = Traits::Fill( a );
             for ( size_t i = 0; i < IterationCount; i++ )
@@ -275,14 +285,15 @@ namespace pbrto
                 result.Store( i, Traits::Mul( v1, v2 ) );
             }
             return result;
+#endif
         }
         SampledSpectrum& operator*=( Float a )
         {
             NDCHECK( !IsNaN( a ) );
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] *= a;
-            */
+#else            
             SampledSpectrum result;
             auto v2 = Traits::Fill( a );
             for ( size_t i = 0; i < IterationCount; i++ )
@@ -290,16 +301,20 @@ namespace pbrto
                 auto v1 = Load( i );
                 Store( i, Traits::Mul( v1, v2 ) );
             }
+#endif
             return *this;
         }
-        friend SampledSpectrum operator*( Float a, const SampledSpectrum& s ) { return s * a; }
+        friend SampledSpectrum operator*( Float a, const SampledSpectrum& s ) 
+        { 
+            return s * a; 
+        }
 
         SampledSpectrum operator/( const SampledSpectrum& s ) const
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret = *this;
             return ret /= s;
-            */
+#else            
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -308,17 +323,19 @@ namespace pbrto
                 result.Store( i, Traits::Div( v1, v2 ) );
             }
             return result;
+#endif
+            
         }
 
         SampledSpectrum& operator/=( const SampledSpectrum& s )
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             for ( int i = 0; i < NSpectrumSamples; ++i )
             {
                 NDCHECK_NE( 0, s.values[ i ] );
                 values[ i ] /= s.values[ i ];
             }
-            */
+#else
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -326,15 +343,16 @@ namespace pbrto
                 auto v2 = s.Load( i );
                 Store( i, Traits::Div( v1, v2 ) );
             }
+#endif
             return *this;
         }
         
         SampledSpectrum operator/( Float a ) const
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret = *this;
             return ret /= a;
-            */
+#else
             SampledSpectrum result;
             auto v2 = Traits::Fill( a );
             for ( size_t i = 0; i < IterationCount; i++ )
@@ -343,34 +361,36 @@ namespace pbrto
                 result.Store( i, Traits::Div( v1, v2 ) );
             }
             return result;
+#endif
         }
 
         SampledSpectrum& operator/=( Float a )
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             NDCHECK_NE( a, 0 );
             NDCHECK( !IsNaN( a ) );
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] /= a;
-            */
+#else
             auto v2 = Traits::Fill( a );
             for ( size_t i = 0; i < IterationCount; i++ )
             {
                 auto v1 = Load( i );
                 Store( i, Traits::Div( v1, v2 ) );
             }
+#endif
             return *this;
         }
         
 
         SampledSpectrum operator-( ) const
         {
-            /*
+#ifndef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             SampledSpectrum ret;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 ret.values[ i ] = -values[ i ];
             return ret;
-            */
+#else
             SampledSpectrum result;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -378,6 +398,7 @@ namespace pbrto
                 result.Store( i, Traits::Negate( v1 ) );
             }
             return result;
+#endif
         }
         bool operator==( const SampledSpectrum& s ) const { return values == s.values; }
         bool operator!=( const SampledSpectrum& s ) const { return values != s.values; }
@@ -386,7 +407,7 @@ namespace pbrto
 
         bool HasNaNs( ) const
         {
-            
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             auto zero = Traits::Zero( );
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -398,12 +419,12 @@ namespace pbrto
             }
             return false;
             
-            /*
+#else
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 if ( IsNaN( values[ i ] ) )
                     return true;
             return false;
-            */
+#endif
         }
 
         PBRTO_EXPORT XYZ ToXYZ( const SampledWavelengths& lambda ) const;
@@ -417,7 +438,7 @@ namespace pbrto
 
         Float MinComponentValue( ) const
         {
-            
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             Float result = std::numeric_limits<Float>::max( );
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -426,17 +447,18 @@ namespace pbrto
                 result = Math::Min( result, v );
             }
             return result;
+#else
             
-            /*
             Float m = values[ 0 ];
             for ( int i = 1; i < NSpectrumSamples; ++i )
                 m = std::min( m, values[ i ] );
             return m;
-            */
+#endif
+            
         }
         Float MaxComponentValue( ) const
         {
-            
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             Float result = std::numeric_limits<Float>::lowest( );
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -445,16 +467,16 @@ namespace pbrto
                 result = Math::Max( result, v );
             }
             return result;
-            /*
+#else
             Float m = values[ 0 ];
             for ( int i = 1; i < NSpectrumSamples; ++i )
                 m = std::max( m, values[ i ] );
             return m;
-            */
+#endif            
         }
         Float Average( ) const
         {
-            
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
             Float result = 0,f;
             for ( size_t i = 0; i < IterationCount; i++ )
             {
@@ -462,13 +484,13 @@ namespace pbrto
                 result += Traits::Avg( v1 );
             }
             return result / IterationCount;
+#else
             
-            /*
             Float sum = values[ 0 ];
             for ( int i = 1; i < NSpectrumSamples; ++i )
                 sum += values[ i ];
             return sum / NSpectrumSamples;
-            */
+#endif            
         }
 
     private:
@@ -482,6 +504,7 @@ namespace pbrto
 
     inline SampledSpectrum SafeDiv( SampledSpectrum a, SampledSpectrum b )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
 
@@ -499,17 +522,18 @@ namespace pbrto
         }
 
         return result;
-        /*
+#else
         SampledSpectrum r;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             r[ i ] = ( b[ i ] != 0 ) ? a[ i ] / b[ i ] : 0.;
         return r;
-        */
+#endif
     }
 
     template <typename U, typename V>
     inline SampledSpectrum Clamp( const SampledSpectrum& s, U low, V high )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
         auto l = Traits::Fill( low );
@@ -525,17 +549,18 @@ namespace pbrto
 
         return result;
 
-        /*
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = Math::Clamp( s[ i ], low, high );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
-        */
+#endif
     }
 
     inline SampledSpectrum ClampZero( const SampledSpectrum& s )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
         auto zeros = Traits::Zero( );
@@ -550,17 +575,18 @@ namespace pbrto
 
         return result;
 
-        /*
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = Math::Max<Float>( 0, s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
-        */
+#endif
     }
 
     inline SampledSpectrum Sqrt( const SampledSpectrum& s )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
 
@@ -573,17 +599,18 @@ namespace pbrto
 
         return result;
 
-        /*
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = Math::Sqrt( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
-        */
+#endif
     }
 
     inline SampledSpectrum SafeSqrt( const SampledSpectrum& s )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
         auto zeros = Traits::Zero( );
@@ -598,17 +625,18 @@ namespace pbrto
 
         return result;
 
-        /*
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = SafeSqrt( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
-        */
+#endif
     }
 
     inline SampledSpectrum Pow( const SampledSpectrum& s, Float e )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
         auto exponent = Traits::Fill( e );
@@ -622,16 +650,17 @@ namespace pbrto
 
         return result;
 
-        /*
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = Math::Pow( s[ i ], e );
         return ret;
-        */
+#endif
     }
 
     inline SampledSpectrum Exp( const SampledSpectrum& s )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
 
@@ -644,13 +673,13 @@ namespace pbrto
 
         return result;
 
-        /*
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = Math::Exp( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
-        */
+#endif
     }
 
     inline SampledSpectrum FastExp( const SampledSpectrum& s )
@@ -664,6 +693,7 @@ namespace pbrto
 
     inline SampledSpectrum Log( const SampledSpectrum& s )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
 
@@ -676,23 +706,18 @@ namespace pbrto
 
         return result;
 
-        /*
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = Math::Log( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
-        */
+#endif
     }
 
     inline Float ScalarAvg( const SampledSpectrum& s )
     {
         return s.Average( );
-    }
-
-    inline SampledSpectrum Avg( const SampledSpectrum& s )
-    {
-        return SampledSpectrum( s.Average( ) );
     }
 
     inline Float MaxComponentValue( const SampledSpectrum& s )

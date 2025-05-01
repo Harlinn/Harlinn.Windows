@@ -43,7 +43,7 @@ namespace PowersOfTenCache {
 
   // Returns a cached power-of-ten with a binary exponent in the range
   // [min_exponent; max_exponent] (boundaries included).
-  void GetCachedPowerForBinaryExponentRange(int min_exponent,
+  DBLCNV_EXPORT void GetCachedPowerForBinaryExponentRange(int min_exponent,
                                             int max_exponent,
                                             DiyFp* power,
                                             int* decimal_exponent);
@@ -53,7 +53,7 @@ namespace PowersOfTenCache {
   // The given decimal_exponent must satisfy
   //   kMinDecimalExponent <= requested_exponent, and
   //   requested_exponent < kMaxDecimalExponent + kDecimalExponentDistance.
-  void GetCachedPowerForDecimalExponent(int requested_exponent,
+  DBLCNV_EXPORT void GetCachedPowerForDecimalExponent(int requested_exponent,
                                         DiyFp* power,
                                         int* found_exponent);
 

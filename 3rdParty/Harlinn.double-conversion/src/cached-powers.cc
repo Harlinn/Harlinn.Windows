@@ -136,7 +136,7 @@ static const CachedPower kCachedPowers[] = {
 static const int kCachedPowersOffset = 348;  // -1 * the first decimal_exponent.
 static const double kD_1_LOG2_10 = 0.30102999566398114;  //  1 / lg(10)
 
-void GetCachedPowerForBinaryExponentRange(
+DBLCNV_EXPORT void GetCachedPowerForBinaryExponentRange(
     int min_exponent,
     int max_exponent,
     DiyFp* power,
@@ -156,7 +156,7 @@ void GetCachedPowerForBinaryExponentRange(
 }
 
 
-void GetCachedPowerForDecimalExponent(int requested_exponent,
+DBLCNV_EXPORT void GetCachedPowerForDecimalExponent(int requested_exponent,
                                       DiyFp* power,
                                       int* found_exponent) {
   DOUBLE_CONVERSION_ASSERT(kMinDecimalExponent <= requested_exponent);

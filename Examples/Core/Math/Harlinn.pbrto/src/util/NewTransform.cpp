@@ -121,6 +121,11 @@ namespace pbrto
     PBRTO_EXPORT
     Transform LookAt( Point3f::Simd pos, Point3f::Simd look, Vector3f::Simd up )
     {
+        auto cameraFromWorld = Math::LookAt( pos, look, up );
+        Transform::MatrixSimdType worldFromCamera = Inverse( cameraFromWorld );
+        Transform result( cameraFromWorld, worldFromCamera, true );
+        return result;
+        /*
         using Traits = SquareMatrix<4>::Traits;
 
         Vector3f::Simd dir = Normalize( look - pos );
@@ -144,6 +149,7 @@ namespace pbrto
         Transform::MatrixSimdType cameraFromWorld = Inverse( worldFromCamera );
         Transform result( cameraFromWorld, worldFromCamera, true );
         return result;
+        */
     }
     PBRTO_EXPORT
     Transform Orthographic( Float zNear, Float zFar )

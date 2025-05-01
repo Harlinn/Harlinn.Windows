@@ -463,7 +463,7 @@ static bool AssertTrimmedDigits(const Vector<const char>& buffer) {
   return (buffer.length() == 0) || (IsNonZeroDigit(buffer[0]) && IsNonZeroDigit(buffer[buffer.length()-1]));
 }
 
-double StrtodTrimmed(Vector<const char> trimmed, int exponent) {
+DBLCNV_EXPORT double StrtodTrimmed(Vector<const char> trimmed, int exponent) {
   DOUBLE_CONVERSION_ASSERT(trimmed.length() <= kMaxSignificantDecimalDigits);
   DOUBLE_CONVERSION_ASSERT(AssertTrimmedDigits(trimmed));
   double guess;
@@ -485,7 +485,7 @@ double StrtodTrimmed(Vector<const char> trimmed, int exponent) {
   }
 }
 
-double Strtod(Vector<const char> buffer, int exponent) {
+DBLCNV_EXPORT double Strtod(Vector<const char> buffer, int exponent) {
   char copy_buffer[kMaxSignificantDecimalDigits];
   Vector<const char> trimmed;
   int updated_exponent;
@@ -518,7 +518,7 @@ static float SanitizedDoubletof(double d) {
   }
 }
 
-float Strtof(Vector<const char> buffer, int exponent) {
+DBLCNV_EXPORT float Strtof(Vector<const char> buffer, int exponent) {
   char copy_buffer[kMaxSignificantDecimalDigits];
   Vector<const char> trimmed;
   int updated_exponent;
@@ -528,7 +528,7 @@ float Strtof(Vector<const char> buffer, int exponent) {
   return StrtofTrimmed(trimmed, exponent);
 }
 
-float StrtofTrimmed(Vector<const char> trimmed, int exponent) {
+DBLCNV_EXPORT float StrtofTrimmed(Vector<const char> trimmed, int exponent) {
   DOUBLE_CONVERSION_ASSERT(trimmed.length() <= kMaxSignificantDecimalDigits);
   DOUBLE_CONVERSION_ASSERT(AssertTrimmedDigits(trimmed));
 

@@ -41,39 +41,39 @@ class Bignum {
 
   Bignum() : used_bigits_(0), exponent_(0) {}
 
-  void AssignUInt16(const uint16_t value);
-  void AssignUInt64(uint64_t value);
-  void AssignBignum(const Bignum& other);
+  DBLCNV_EXPORT void AssignUInt16(const uint16_t value);
+  DBLCNV_EXPORT void AssignUInt64(uint64_t value);
+  DBLCNV_EXPORT void AssignBignum(const Bignum& other);
 
-  void AssignDecimalString(const Vector<const char> value);
-  void AssignHexString(const Vector<const char> value);
+  DBLCNV_EXPORT void AssignDecimalString(const Vector<const char> value);
+  DBLCNV_EXPORT void AssignHexString(const Vector<const char> value);
 
-  void AssignPowerUInt16(uint16_t base, const int exponent);
+  DBLCNV_EXPORT void AssignPowerUInt16(uint16_t base, const int exponent);
 
-  void AddUInt64(const uint64_t operand);
-  void AddBignum(const Bignum& other);
+  DBLCNV_EXPORT void AddUInt64(const uint64_t operand);
+  DBLCNV_EXPORT void AddBignum(const Bignum& other);
   // Precondition: this >= other.
-  void SubtractBignum(const Bignum& other);
+  DBLCNV_EXPORT void SubtractBignum(const Bignum& other);
 
-  void Square();
-  void ShiftLeft(const int shift_amount);
-  void MultiplyByUInt32(const uint32_t factor);
-  void MultiplyByUInt64(const uint64_t factor);
-  void MultiplyByPowerOfTen(const int exponent);
+  DBLCNV_EXPORT void Square();
+  DBLCNV_EXPORT void ShiftLeft(const int shift_amount);
+  DBLCNV_EXPORT void MultiplyByUInt32(const uint32_t factor);
+  DBLCNV_EXPORT void MultiplyByUInt64(const uint64_t factor);
+  DBLCNV_EXPORT void MultiplyByPowerOfTen(const int exponent);
   void Times10() { return MultiplyByUInt32(10); }
   // Pseudocode:
   //  int result = this / other;
   //  this = this % other;
   // In the worst case this function is in O(this/other).
-  uint16_t DivideModuloIntBignum(const Bignum& other);
+  DBLCNV_EXPORT uint16_t DivideModuloIntBignum(const Bignum& other);
 
-  bool ToHexString(char* buffer, const int buffer_size) const;
+  DBLCNV_EXPORT bool ToHexString(char* buffer, const int buffer_size) const;
 
   // Returns
   //  -1 if a < b,
   //   0 if a == b, and
   //  +1 if a > b.
-  static int Compare(const Bignum& a, const Bignum& b);
+  DBLCNV_EXPORT static int Compare(const Bignum& a, const Bignum& b);
   static bool Equal(const Bignum& a, const Bignum& b) {
     return Compare(a, b) == 0;
   }
@@ -84,7 +84,7 @@ class Bignum {
     return Compare(a, b) < 0;
   }
   // Returns Compare(a + b, c);
-  static int PlusCompare(const Bignum& a, const Bignum& b, const Bignum& c);
+  DBLCNV_EXPORT static int PlusCompare(const Bignum& a, const Bignum& b, const Bignum& c);
   // Returns a + b == c
   static bool PlusEqual(const Bignum& a, const Bignum& b, const Bignum& c) {
     return PlusCompare(a, b, c) == 0;
@@ -116,8 +116,8 @@ class Bignum {
       DOUBLE_CONVERSION_UNREACHABLE();
     }
   }
-  void Align(const Bignum& other);
-  void Clamp();
+  DBLCNV_EXPORT void Align(const Bignum& other);
+  DBLCNV_EXPORT void Clamp();
   bool IsClamped() const {
     return used_bigits_ == 0 || RawBigit(used_bigits_ - 1) != 0;
   }
@@ -128,13 +128,13 @@ class Bignum {
   // Requires this to have enough capacity (no tests done).
   // Updates used_bigits_ if necessary.
   // shift_amount must be < kBigitSize.
-  void BigitsShiftLeft(const int shift_amount);
+  DBLCNV_EXPORT void BigitsShiftLeft(const int shift_amount);
   // BigitLength includes the "hidden" bigits encoded in the exponent.
-  int BigitLength() const { return used_bigits_ + exponent_; }
-  Chunk& RawBigit(const int index);
-  const Chunk& RawBigit(const int index) const;
-  Chunk BigitOrZero(const int index) const;
-  void SubtractTimes(const Bignum& other, const int factor);
+  DBLCNV_EXPORT int BigitLength() const { return used_bigits_ + exponent_; }
+  DBLCNV_EXPORT Chunk& RawBigit(const int index);
+  DBLCNV_EXPORT const Chunk& RawBigit(const int index) const;
+  DBLCNV_EXPORT Chunk BigitOrZero(const int index) const;
+  DBLCNV_EXPORT void SubtractTimes(const Bignum& other, const int factor);
 
   // The Bignum's value is value(bigits_buffer_) * 2^(exponent_ * kBigitSize),
   // where the value of the buffer consists of the lower kBigitSize bits of

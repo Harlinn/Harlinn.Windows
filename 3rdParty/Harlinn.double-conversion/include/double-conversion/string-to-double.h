@@ -183,36 +183,36 @@ class StringToDoubleConverter {
   // of characters that have been processed to read the number.
   // Spaces than are processed with ALLOW_{LEADING|TRAILING}_SPACES are included
   // in the 'processed_characters_count'. Trailing junk is never included.
-  double StringToDouble(const char* buffer,
+  DBLCNV_EXPORT double StringToDouble(const char* buffer,
                         int length,
                         int* processed_characters_count) const;
 
   // Same as StringToDouble above but for 16 bit characters.
-  double StringToDouble(const uc16* buffer,
+  DBLCNV_EXPORT double StringToDouble(const uc16* buffer,
                         int length,
                         int* processed_characters_count) const;
 
   // Same as StringToDouble but reads a float.
   // Note that this is not equivalent to static_cast<float>(StringToDouble(...))
   // due to potential double-rounding.
-  float StringToFloat(const char* buffer,
+  DBLCNV_EXPORT float StringToFloat(const char* buffer,
                       int length,
                       int* processed_characters_count) const;
 
   // Same as StringToFloat above but for 16 bit characters.
-  float StringToFloat(const uc16* buffer,
+  DBLCNV_EXPORT float StringToFloat(const uc16* buffer,
                       int length,
                       int* processed_characters_count) const;
 
   // Same as StringToDouble for T = double, and StringToFloat for T = float.
   template <typename T>
-  T StringTo(const char* buffer,
+  DBLCNV_EXPORT T StringTo(const char* buffer,
              int length,
              int* processed_characters_count) const;
 
   // Same as StringTo above but for 16 bit characters.
   template <typename T>
-  T StringTo(const uc16* buffer,
+  DBLCNV_EXPORT T StringTo(const uc16* buffer,
              int length,
              int* processed_characters_count) const;
 
@@ -225,7 +225,7 @@ class StringToDoubleConverter {
   const uc16 separator_;
 
   template <class Iterator>
-  double StringToIeee(Iterator start_pointer,
+  DBLCNV_EXPORT double StringToIeee(Iterator start_pointer,
                       int length,
                       bool read_as_double,
                       int* processed_characters_count) const;

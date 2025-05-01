@@ -66,6 +66,7 @@ namespace pbrto
             const RGBColorSpace* colorSpace, const FileLoc* loc );
 
         virtual std::string ToString( ) const = 0;
+        virtual std::string Name( ) const = 0;
 
         virtual void Render( ) = 0;
 
@@ -153,6 +154,7 @@ namespace pbrto
             Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
         SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const override
         {
@@ -221,6 +223,7 @@ namespace pbrto
         static std::unique_ptr<SimplePathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         
@@ -242,6 +245,7 @@ namespace pbrto
         static std::unique_ptr<PathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         // PathIntegrator Private Methods
@@ -264,6 +268,7 @@ namespace pbrto
         static std::unique_ptr<SimpleVolPathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         
@@ -291,6 +296,7 @@ namespace pbrto
         static std::unique_ptr<VolPathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         // VolPathIntegrator Private Methods
@@ -315,6 +321,7 @@ namespace pbrto
         static std::unique_ptr<AOIntegrator> Create( const ParameterDictionary& parameters, Spectrum illuminant, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         
@@ -335,6 +342,7 @@ namespace pbrto
         static std::unique_ptr<LightPathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         
@@ -367,6 +375,7 @@ namespace pbrto
         static std::unique_ptr<BDPTIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
         void Render( ) override;
 
@@ -414,6 +423,7 @@ namespace pbrto
         static std::unique_ptr<MLTIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         // MLTIntegrator Private Methods
@@ -456,6 +466,7 @@ namespace pbrto
         static std::unique_ptr<SPPMIntegrator> Create( const ParameterDictionary& parameters, const RGBColorSpace* colorSpace, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
         void Render( ) override;
 
@@ -483,6 +494,7 @@ namespace pbrto
         void Render( ) override;
 
         std::string ToString( ) const;
+        std::string Name( ) const;
 
     private:
         

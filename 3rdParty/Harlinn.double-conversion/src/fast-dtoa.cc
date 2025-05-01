@@ -632,7 +632,7 @@ static bool Grisu3Counted(double v,
 }
 
 
-bool FastDtoa(double v,
+DBLCNV_EXPORT bool FastDtoa(double v,
               FastDtoaMode mode,
               int requested_digits,
               Vector<char> buffer,

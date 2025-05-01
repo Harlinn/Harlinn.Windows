@@ -77,6 +77,11 @@ namespace pbrto
         return StringPrintf( "[ RandomWalkIntegrator maxDepth: %d ]", maxDepth );
     }
 
+    std::string RandomWalkIntegrator::Name( ) const
+    {
+        return "RandomWalkIntegrator";
+    }
+
     // Integrator Method Definitions
     Integrator::~Integrator( ) {}
 
@@ -290,16 +295,17 @@ namespace pbrto
             // Issue warning if unexpected radiance value is returned
             if ( L.HasNaNs( ) )
             {
-                NLOG_ERROR( "Not-a-number radiance value returned for pixel (%d, "
+                
+                NLOG_ERROR( "%s: Not-a-number radiance value returned for pixel (%d, "
                     "%d), sample %d. Setting to black.",
-                    pPixel.x, pPixel.y, sampleIndex );
+                    this->Name().c_str(), pPixel.x, pPixel.y, sampleIndex );
                 L = SampledSpectrum( 0.f );
             }
             else if ( IsInf( SampledSpectrum::Y(L, lambda ) ) )
             {
-                NLOG_ERROR( "Infinite radiance value returned for pixel (%d, %d), "
+                NLOG_ERROR( "%s: Infinite radiance value returned for pixel (%d, %d), "
                     "sample %d. Setting to black.",
-                    pPixel.x, pPixel.y, sampleIndex );
+                    this->Name( ).c_str( ), pPixel.x, pPixel.y, sampleIndex );
                 L = SampledSpectrum( 0.f );
             }
 
@@ -394,7 +400,7 @@ namespace pbrto
             ray = si->intr.SpawnRayTo( p1 );
         }
         PBRT_DBG( "%s\n", StringPrintf( "Tr from %s to %s = %s", p0.pi, p1.pi, Tr ).c_str( ) );
-        return Tr / Avg( inv_w );
+        return Tr / inv_w.Average( );
     }
 
     std::string Integrator::ToString( ) const
@@ -538,6 +544,11 @@ namespace pbrto
             maxDepth, sampleLights, sampleBSDF );
     }
 
+    std::string SimplePathIntegrator::Name( ) const
+    {
+        return "SimplePathIntegrator";
+    }
+
     std::unique_ptr<SimplePathIntegrator> SimplePathIntegrator::Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
     {
         int maxDepth = parameters.GetOneInt( "maxdepth", 5 );
@@ -649,6 +660,11 @@ namespace pbrto
     {
         return StringPrintf( "[ LightPathIntegrator maxDepth: %d lightSampler: %s ]", maxDepth,
             lightSampler );
+    }
+
+    std::string LightPathIntegrator::Name( ) const
+    {
+        return "LightPathIntegrator";
     }
 
     std::unique_ptr<LightPathIntegrator> LightPathIntegrator::Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
@@ -867,6 +883,11 @@ namespace pbrto
             maxDepth, lightSampler, regularize );
     }
 
+    std::string PathIntegrator::Name( ) const
+    {
+        return "PathIntegrator";
+    }
+
     std::unique_ptr<PathIntegrator> PathIntegrator::Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
     {
         int maxDepth = parameters.GetOneInt( "maxdepth", 5 );
@@ -1004,6 +1025,11 @@ namespace pbrto
         return StringPrintf( "[ SimpleVolPathIntegrator maxDepth: %d ] ", maxDepth );
     }
 
+    std::string SimpleVolPathIntegrator::Name( ) const
+    {
+        return "SimpleVolPathIntegrator";
+    }
+
     std::unique_ptr<SimpleVolPathIntegrator> SimpleVolPathIntegrator::Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
     {
         int maxDepth = parameters.GetOneInt( "maxdepth", 5 );
@@ -1064,7 +1090,7 @@ namespace pbrto
 
                             // Update _L_ for medium emission
                             if ( r_e )
-                                L += betap * mp.sigma_a * mp.Le / Avg( r_e );
+                                L += betap * mp.sigma_a * mp.Le / r_e.Average( );
                         }
 
                         // Compute medium event probabilities for interaction
@@ -1159,13 +1185,13 @@ namespace pbrto
                     if ( SampledSpectrum Le = light.Le( ray, lambda ); Le )
                     {
                         if ( depth == 0 || specularBounce )
-                            L += beta * Le / Avg( r_u );
+                            L += beta * Le /  r_u.Average();
                         else
                         {
                             // Add infinite light contribution using both PDFs with MIS
                             Float p_l = lightSampler.PMF( prevIntrContext, light ) * light.PDF_Li( prevIntrContext, ray.d, true );
                             r_l *= p_l;
-                            L += beta * Le / Avg( r_u + r_l );
+                            L += beta * Le / ( r_u + r_l ).Average( );
                         }
                     }
                 }
@@ -1177,7 +1203,7 @@ namespace pbrto
             {
                 // Add contribution of emission from intersected surface
                 if ( depth == 0 || specularBounce )
-                    L += beta * Le / Avg( r_u );
+                    L += beta * Le / r_u.Average( );
                 else
                 {
                     // Add surface light contribution using both PDFs with MIS
@@ -1185,7 +1211,7 @@ namespace pbrto
                     Float p_l = lightSampler.PMF( prevIntrContext, areaLight ) *
                         areaLight.PDF_Li( prevIntrContext, ray.d, true );
                     r_l *= p_l;
-                    L += beta * Le / Avg( r_u + r_l );
+                    L += beta * Le / ( r_u + r_l ).Average( );
                 }
             }
 
@@ -1342,7 +1368,7 @@ namespace pbrto
             // Possibly terminate volumetric path with Russian roulette
             if ( !beta )
                 break;
-            SampledSpectrum rrBeta = beta * SampledSpectrum( etaScale ) / Avg( r_u );
+            SampledSpectrum rrBeta = beta * SampledSpectrum( etaScale ) / r_u.Average( );
             Float uRR = sampler.Get1D( );
             PBRT_DBG( "%s\n",
                 StringPrintf( "etaScale %f -> rrBeta %s", etaScale, rrBeta ).c_str( ) );
@@ -1445,7 +1471,7 @@ namespace pbrto
 
                             // Possibly terminate transmittance computation using
                             // Russian roulette
-                            SampledSpectrum Tr = T_ray / Avg( r_l + r_u );
+                            SampledSpectrum Tr = T_ray / ( r_l + r_u ).Average( );
                             if ( MaxComponentValue( Tr ) < 0.05f )
                             {
                                 Float q = 0.75f;
@@ -1476,9 +1502,9 @@ namespace pbrto
         r_l *= r_p * p_l;
         r_u *= r_p * scatterPDF;
         if ( IsDeltaLight( light.Type( ) ) )
-            return beta * f_hat * T_ray * ls->L / Avg( r_l);
+            return beta * f_hat * T_ray * ls->L / r_l.Average( );
         else
-            return beta * f_hat * T_ray * ls->L / Avg( r_l + r_u );
+            return beta * f_hat * T_ray * ls->L / ( r_l + r_u ).Average( );
     }
 
     std::string VolPathIntegrator::ToString( ) const
@@ -1486,6 +1512,11 @@ namespace pbrto
         return StringPrintf(
             "[ VolPathIntegrator maxDepth: %d lightSampler: %s regularize: %s ]", maxDepth,
             lightSampler, regularize );
+    }
+
+    std::string VolPathIntegrator::Name( ) const
+    {
+        return "VolPathIntegrator";
     }
 
     std::unique_ptr<VolPathIntegrator> VolPathIntegrator::Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
@@ -1560,6 +1591,10 @@ namespace pbrto
     {
         return StringPrintf( "[ AOIntegrator cosSample: %s maxDist: %f illuminant: %s ]",
             cosSample, maxDist, illuminant );
+    }
+    std::string AOIntegrator::Name( ) const
+    {
+        return "AOIntegrator";
     }
 
     std::unique_ptr<AOIntegrator> AOIntegrator::Create( const ParameterDictionary& parameters, Spectrum illuminant, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
@@ -2616,6 +2651,11 @@ namespace pbrto
             lightSampler );
     }
 
+    std::string BDPTIntegrator::Name( ) const
+    {
+        return "BDPTIntegrator";
+    }
+
     std::unique_ptr<BDPTIntegrator> BDPTIntegrator::Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
     {
         if ( !camera.Is<PerspectiveCamera>( ) )
@@ -2894,6 +2934,11 @@ namespace pbrto
             "largeStepProbability: %f lightSampler: %s regularize: %s ]",
             camera, maxDepth, nBootstrap, nChains, mutationsPerPixel, sigma,
             largeStepProbability, lightSampler, regularize );
+    }
+
+    std::string MLTIntegrator::Name( ) const
+    {
+        return "MLTIntegrator";
     }
 
     std::unique_ptr<MLTIntegrator> MLTIntegrator::Create(
@@ -3532,6 +3577,11 @@ namespace pbrto
             *colorSpace );
     }
 
+    std::string SPPMIntegrator::Name( ) const
+    {
+        return "SPPMIntegrator";
+    }
+
     std::unique_ptr<SPPMIntegrator> SPPMIntegrator::Create( const ParameterDictionary& parameters, const RGBColorSpace* colorSpace, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
     {
         int maxDepth = parameters.GetOneInt( "maxdepth", 5 );
@@ -3891,6 +3941,11 @@ namespace pbrto
         return StringPrintf(
             "[ FunctionIntegrator outputFilename: %s camera: %s baseSampler: %s ]",
             outputFilename, camera, baseSampler );
+    }
+
+    std::string FunctionIntegrator::Name( ) const
+    {
+        return "FunctionIntegrator";
     }
 
     std::unique_ptr<Integrator> Integrator::Create(

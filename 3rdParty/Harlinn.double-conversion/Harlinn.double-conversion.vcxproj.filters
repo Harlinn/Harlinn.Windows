@@ -92,11 +92,11 @@
     <ClInclude Include="include\double-conversion\utils.h">
       <Filter>include\double-conversion</Filter>
     </ClInclude>
+    <ClInclude Include="include\double-conversion\double-conversion-export.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Harlinn.double-conversion.def">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="Readme\AUTHORS">
       <Filter>Readme</Filter>
     </None>

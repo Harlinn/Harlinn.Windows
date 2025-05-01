@@ -307,7 +307,7 @@ static void TrimZeros(Vector<char> buffer, int* length, int* decimal_point) {
 }
 
 
-bool FastFixedDtoa(double v,
+DBLCNV_EXPORT bool FastFixedDtoa(double v,
                    int fractional_count,
                    Vector<char> buffer,
                    int* length,

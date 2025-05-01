@@ -197,7 +197,7 @@ class DoubleToStringConverter {
   // decimal_in_shortest_high: 21
   // max_leading_padding_zeroes_in_precision_mode: 6
   // max_trailing_padding_zeroes_in_precision_mode: 0
-  static const DoubleToStringConverter& EcmaScriptConverter();
+  DBLCNV_EXPORT static const DoubleToStringConverter& EcmaScriptConverter();
 
   // Computes the shortest string of digits that correctly represent the input
   // number. Depending on decimal_in_shortest_low and decimal_in_shortest_high
@@ -282,7 +282,7 @@ class DoubleToStringConverter {
   //  1 + kMaxFixedDigitsBeforePoint + 1 + kMaxFixedDigitsAfterPoint characters
   // (one additional character for the sign, and one for the decimal point).
   // In addition, the buffer must be able to hold the trailing '\0' character.
-  bool ToFixed(double value,
+  DBLCNV_EXPORT bool ToFixed(double value,
                int requested_digits,
                StringBuilder* result_builder) const;
 
@@ -316,7 +316,7 @@ class DoubleToStringConverter {
   // decimal point, the decimal point, the exponent character, the
   // exponent's sign, and at most 3 exponent digits).
   // In addition, the buffer must be able to hold the trailing '\0' character.
-  bool ToExponential(double value,
+  DBLCNV_EXPORT bool ToExponential(double value,
                      int requested_digits,
                      StringBuilder* result_builder) const;
 
@@ -357,7 +357,7 @@ class DoubleToStringConverter {
   // kMaxPrecisionDigits + 7 characters (the sign, the decimal point, the
   // exponent character, the exponent's sign, and at most 3 exponent digits).
   // In addition, the buffer must be able to hold the trailing '\0' character.
-  bool ToPrecision(double value,
+  DBLCNV_EXPORT bool ToPrecision(double value,
                    int precision,
                    StringBuilder* result_builder) const;
 
@@ -419,7 +419,7 @@ class DoubleToStringConverter {
   // terminating null-character when computing the maximal output size.
   // The given length is only used in debug mode to ensure the buffer is big
   // enough.
-  static void DoubleToAscii(double v,
+  DBLCNV_EXPORT static void DoubleToAscii(double v,
                             DtoaMode mode,
                             int requested_digits,
                             char* buffer,
@@ -430,7 +430,7 @@ class DoubleToStringConverter {
 
  private:
   // Implementation for ToShortest and ToShortestSingle.
-  bool ToShortestIeeeNumber(double value,
+  DBLCNV_EXPORT bool ToShortestIeeeNumber(double value,
                             StringBuilder* result_builder,
                             DtoaMode mode) const;
 
@@ -438,15 +438,15 @@ class DoubleToStringConverter {
   // corresponding string using the configured infinity/nan-symbol.
   // If either of them is NULL or the value is not special then the
   // function returns false.
-  bool HandleSpecialValues(double value, StringBuilder* result_builder) const;
+  DBLCNV_EXPORT bool HandleSpecialValues(double value, StringBuilder* result_builder) const;
   // Constructs an exponential representation (i.e. 1.234e56).
   // The given exponent assumes a decimal point after the first decimal digit.
-  void CreateExponentialRepresentation(const char* decimal_digits,
+  DBLCNV_EXPORT void CreateExponentialRepresentation(const char* decimal_digits,
                                        int length,
                                        int exponent,
                                        StringBuilder* result_builder) const;
   // Creates a decimal representation (i.e 1234.5678).
-  void CreateDecimalRepresentation(const char* decimal_digits,
+  DBLCNV_EXPORT void CreateDecimalRepresentation(const char* decimal_digits,
                                    int length,
                                    int decimal_point,
                                    int digits_after_point,

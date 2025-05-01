@@ -86,7 +86,7 @@ static void GenerateCountedDigits(int count, int* decimal_point,
                                   Vector<char> buffer, int* length);
 
 
-void BignumDtoa(double v, BignumDtoaMode mode, int requested_digits,
+DBLCNV_EXPORT void BignumDtoa(double v, BignumDtoaMode mode, int requested_digits,
                 Vector<char> buffer, int* length, int* decimal_point) {
   DOUBLE_CONVERSION_ASSERT(v > 0);
   DOUBLE_CONVERSION_ASSERT(!Double(v).IsSpecial());
