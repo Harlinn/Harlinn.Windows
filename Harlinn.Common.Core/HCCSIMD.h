@@ -2739,11 +2739,10 @@ namespace Harlinn::Common::Core::SIMD
             if constexpr ( UseShortSIMDType )
             {
                 return _mm_set_ps1( value );
-                //return _mm_broadcast_ss( &value );
             }
             else
             {
-                return _mm256_broadcast_ss( &value );
+                return _mm256_set1_ps( value );
             }
         }
         template<size_t Num>
@@ -2765,7 +2764,7 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else
                 {
-                    return _mm_broadcast_ss( &value );
+                    return _mm_set_ps1( value );
                 }
             }
             else
@@ -2784,7 +2783,7 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else
                 {
-                    return _mm256_broadcast_ss( &value );
+                    return _mm256_set1_ps( value );
                 }
             }
         }
@@ -2918,11 +2917,11 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b0001 );
+                return _mm_blend_ps( v, _mm_set_ps1( value ), 0b0001 );
             }
             else
             {
-                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b0001 );
+                return _mm256_blend_ps( v, _mm256_set1_ps( value ), 0b0001 );
             }
         }
 
@@ -2930,11 +2929,11 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b0010 );
+                return _mm_blend_ps( v, _mm_set_ps1( value ), 0b0010 );
             }
             else
             {
-                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b0010 );
+                return _mm256_blend_ps( v, _mm256_set1_ps( value ), 0b0010 );
             }
         }
 
@@ -2942,11 +2941,11 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b0100 );
+                return _mm_blend_ps( v, _mm_set_ps1( value ), 0b0100 );
             }
             else
             {
-                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b0100 );
+                return _mm256_blend_ps( v, _mm256_set1_ps( value ), 0b0100 );
             }
         }
 
@@ -2954,11 +2953,11 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b1000 );
+                return _mm_blend_ps( v, _mm_set_ps1( value ), 0b1000 );
             }
             else
             {
-                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b1000 );
+                return _mm256_blend_ps( v, _mm256_set1_ps( value ), 0b1000 );
             }
         }
         
@@ -3192,15 +3191,15 @@ namespace Harlinn::Common::Core::SIMD
                     }
                     else if constexpr ( index == 1 )
                     {
-                        return _mm256_broadcastss_ps( _mm_permute_ps( low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                        return _mm256_broadcastss_ps( _mm_shuffle_ps( low, low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
                     }
                     else if constexpr ( index == 2 )
                     {
-                        return _mm256_broadcastss_ps( _mm_permute_ps( low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                        return _mm256_broadcastss_ps( _mm_shuffle_ps( low, low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
                     }
                     else
                     {
-                        return _mm256_broadcastss_ps( _mm_permute_ps( low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                        return _mm256_broadcastss_ps( _mm_shuffle_ps( low, low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
                     }
                 }
                 else
@@ -3212,15 +3211,15 @@ namespace Harlinn::Common::Core::SIMD
                     }
                     else if constexpr ( index == 5 )
                     {
-                        return _mm256_broadcastss_ps( _mm_permute_ps( high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                        return _mm256_broadcastss_ps( _mm_shuffle_ps( high, high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
                     }
                     else if constexpr ( index == 6 )
                     {
-                        return _mm256_broadcastss_ps( _mm_permute_ps( high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                        return _mm256_broadcastss_ps( _mm_shuffle_ps( high, high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
                     }
                     else
                     {
-                        return _mm256_broadcastss_ps( _mm_permute_ps( high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                        return _mm256_broadcastss_ps( _mm_shuffle_ps( high, high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
                     }
                 }
             }

@@ -536,8 +536,8 @@ namespace pbrto
 #ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
-        auto l = Traits::Fill( low );
-        auto h = Traits::Fill( high );
+        auto l = Traits::Fill( static_cast< Traits::Type >( low ) );
+        auto h = Traits::Fill( static_cast< Traits::Type >( high ) );
 
         for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
         {

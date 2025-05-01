@@ -121,6 +121,7 @@ namespace pbrto
     PBRTO_EXPORT
     Transform LookAt( Point3f::Simd pos, Point3f::Simd look, Vector3f::Simd up )
     {
+        
         auto cameraFromWorld = Math::LookAt( pos, look, up );
         Transform::MatrixSimdType worldFromCamera = Inverse( cameraFromWorld );
         Transform result( cameraFromWorld, worldFromCamera, true );
