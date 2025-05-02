@@ -3,18 +3,19 @@
 // The pbrt source code is licensed under the Apache License, Version 2.0.
 // SPDX: Apache-2.0
 
-#include <pbrto/gpu/util.h>
+#include <pbrto/gpu/NewUtil.h>
 
-#include <pbrto/options.h>
-#include <pbrto/util/check.h>
-#include <pbrto/util/error.h>
-#include <pbrto/util/log.h>
-#include <pbrto/util/print.h>
+#include <pbrto/NewOptions.h>
+#include <pbrto/util/NewCheck.h>
+#include <pbrto/util/NewError.h>
+#include <pbrto/util/NewLog.h>
+#include <pbrto/util/NewPrint.h>
 
 #include <algorithm>
 #include <vector>
 
-#include <optix_function_table_definition.h>
+// Only in util.cpp:
+//#include <optix_function_table_definition.h>
 
 #ifdef NVTX
 #ifdef PBRT_IS_WINDOWS
@@ -26,30 +27,30 @@
 #include "nvtx3/nvToolsExtCuda.h"
 #endif
 
-namespace pbrt {
+namespace pbrto {
 
 PBRTO_EXPORT void GPUInit() {
     cudaFree(nullptr);
 
     int driverVersion;
-    CUDA_CHECK(cudaDriverGetVersion(&driverVersion));
+    NCUDA_CHECK(cudaDriverGetVersion(&driverVersion));
     int runtimeVersion;
-    CUDA_CHECK(cudaRuntimeGetVersion(&runtimeVersion));
+    NCUDA_CHECK(cudaRuntimeGetVersion(&runtimeVersion));
     auto versionToString = [](int version) {
         int major = version / 1000;
         int minor = (version - major * 1000) / 10;
         return StringPrintf("%d.%d", major, minor);
     };
-    LOG_VERBOSE("GPU CUDA driver %s, CUDA runtime %s", versionToString(driverVersion),
+    NLOG_VERBOSE("GPU CUDA driver %s, CUDA runtime %s", versionToString(driverVersion),
                 versionToString(runtimeVersion));
 
     int nDevices;
-    CUDA_CHECK(cudaGetDeviceCount(&nDevices));
+    NCUDA_CHECK(cudaGetDeviceCount(&nDevices));
     std::string devices;
     for (int i = 0; i < nDevices; ++i) {
         cudaDeviceProp deviceProperties;
-        CUDA_CHECK(cudaGetDeviceProperties(&deviceProperties, i));
-        CHECK(deviceProperties.canMapHostMemory);
+        NCUDA_CHECK(cudaGetDeviceProperties(&deviceProperties, i));
+        NCHECK(deviceProperties.canMapHostMemory);
 
         std::string deviceString = StringPrintf(
             "CUDA device %d (%s) with %f MiB, %d SMs running at %f MHz "
@@ -57,7 +58,7 @@ PBRTO_EXPORT void GPUInit() {
             i, deviceProperties.name, deviceProperties.totalGlobalMem / (1024. * 1024.),
             deviceProperties.multiProcessorCount, deviceProperties.clockRate / 1000.,
             deviceProperties.major, deviceProperties.minor);
-        LOG_VERBOSE("%s", deviceString);
+        NLOG_VERBOSE("%s", deviceString);
         devices += deviceString + "\n";
     }
 
@@ -73,27 +74,25 @@ PBRTO_EXPORT void GPUInit() {
 #endif
 
     int device = Options->gpuDevice ? *Options->gpuDevice : 0;
-    LOG_VERBOSE("Selecting GPU device %d", device);
+    NLOG_VERBOSE("Selecting GPU device %d", device);
 #ifdef NVTX
     nvtxNameCuDevice(device, "PBRT_GPU");
 #endif
-    CUDA_CHECK(cudaSetDevice(device));
+    NCUDA_CHECK(cudaSetDevice(device));
 
     int hasUnifiedAddressing;
-    CUDA_CHECK(cudaDeviceGetAttribute(&hasUnifiedAddressing, cudaDevAttrUnifiedAddressing,
-                                      device));
+    NCUDA_CHECK(cudaDeviceGetAttribute(&hasUnifiedAddressing, cudaDevAttrUnifiedAddressing, device));
     if (!hasUnifiedAddressing)
-        LOG_FATAL("The selected GPU device (%d) does not support unified addressing.",
-                  device);
+        NLOG_FATAL("The selected GPU device (%d) does not support unified addressing.", device);
 
-    CUDA_CHECK(cudaDeviceSetLimit(cudaLimitStackSize, 8192));
+    NCUDA_CHECK(cudaDeviceSetLimit(cudaLimitStackSize, 8192));
     size_t stackSize;
-    CUDA_CHECK(cudaDeviceGetLimit(&stackSize, cudaLimitStackSize));
-    LOG_VERBOSE("Reset stack size to %d", stackSize);
+    NCUDA_CHECK(cudaDeviceGetLimit(&stackSize, cudaLimitStackSize));
+    NLOG_VERBOSE("Reset stack size to %d", stackSize);
 
-    CUDA_CHECK(cudaDeviceSetLimit(cudaLimitPrintfFifoSize, 32 * 1024 * 1024));
+    NCUDA_CHECK(cudaDeviceSetLimit(cudaLimitPrintfFifoSize, 32 * 1024 * 1024));
 
-    CUDA_CHECK(cudaDeviceSetCacheConfig(cudaFuncCachePreferL1));
+    NCUDA_CHECK(cudaDeviceSetCacheConfig(cudaFuncCachePreferL1));
 
 #ifdef NVTX
 #ifdef PBRT_IS_WINDOWS
@@ -108,8 +107,8 @@ PBRTO_EXPORT void GPUThreadInit() {
     if (!Options->useGPU)
         return;
     int device = Options->gpuDevice ? *Options->gpuDevice : 0;
-    LOG_VERBOSE("Selecting GPU device %d", device);
-    CUDA_CHECK(cudaSetDevice(device));
+    NLOG_VERBOSE("Selecting GPU device %d", device);
+    NCUDA_CHECK(cudaSetDevice(device));
 }
 
 PBRTO_EXPORT void GPURegisterThread(const char *name) {
@@ -142,17 +141,17 @@ static std::vector<KernelStats *> kernelStats;
 
 struct ProfilerEvent {
     ProfilerEvent() {
-        CUDA_CHECK(cudaEventCreate(&start));
-        CUDA_CHECK(cudaEventCreate(&stop));
+        NCUDA_CHECK(cudaEventCreate(&start));
+        NCUDA_CHECK(cudaEventCreate(&stop));
     }
 
     void Sync() {
-        CHECK(active);
-        CUDA_CHECK(cudaEventSynchronize(start));
-        CUDA_CHECK(cudaEventSynchronize(stop));
+        NCHECK(active);
+        NCUDA_CHECK(cudaEventSynchronize(start));
+        NCUDA_CHECK(cudaEventSynchronize(stop));
 
         float ms = 0;
-        CUDA_CHECK(cudaEventElapsedTime(&ms, start, stop));
+        NCUDA_CHECK(cudaEventElapsedTime(&ms, start, stop));
 
         ++stats->numLaunches;
         if (stats->numLaunches == 1)
@@ -204,15 +203,15 @@ std::pair<cudaEvent_t, cudaEvent_t> GetProfilerEvents(const char *description) {
 }
 
 PBRTO_EXPORT void GPUWait() {
-    CUDA_CHECK(cudaDeviceSynchronize());
+    NCUDA_CHECK(cudaDeviceSynchronize());
 }
 
 PBRTO_EXPORT void GPUMemset(void *ptr, int byte, size_t bytes) {
-    CUDA_CHECK(cudaMemset(ptr, byte, bytes));
+    NCUDA_CHECK(cudaMemset(ptr, byte, bytes));
 }
 
 PBRTO_EXPORT void ReportKernelStats() {
-    CUDA_CHECK(cudaDeviceSynchronize());
+    NCUDA_CHECK(cudaDeviceSynchronize());
 
     // Drain active profiler events
     for (size_t i = 0; i < eventPool.size(); ++i)

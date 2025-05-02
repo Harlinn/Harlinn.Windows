@@ -4,7 +4,7 @@
 
 #include <HWDef.h>
 
-#define HDMC_USES_HCC_MATH 1
+//#define HDMC_USES_HCC_MATH 1
 #ifdef HDMC_USES_HCC_MATH
 #define HDMC_USES_HCC_MATH_DEBUG 1
 #include <HCCVectorMath.h>

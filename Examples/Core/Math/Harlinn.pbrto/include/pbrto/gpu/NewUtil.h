@@ -2,15 +2,15 @@
 // The pbrt source code is licensed under the Apache License, Version 2.0.
 // SPDX: Apache-2.0
 
-#ifndef PBRT_GPU_UTIL_H
-#define PBRT_GPU_UTIL_H
+#ifndef PBRTO_GPU_NEWUTIL_H
+#define PBRTO_GPU_NEWUTIL_H
 
-#include <pbrto/pbrt.h>
+#include <pbrto/NewPbrt.h>
 
-#include <pbrto/util/check.h>
-#include <pbrto/util/log.h>
-#include <pbrto/util/parallel.h>
-#include <pbrto/util/progressreporter.h>
+#include <pbrto/util/NewCheck.h>
+#include <pbrto/util/NewLog.h>
+#include <pbrto/util/NewParallel.h>
+#include <pbrto/util/NewProgressReporter.h>
 
 #include <map>
 #include <typeindex>
@@ -32,23 +32,23 @@
 #endif  // RGB
 #endif
 
-#define CUDA_CHECK(EXPR)                                        \
+#define NCUDA_CHECK(EXPR)                                        \
     if (EXPR != cudaSuccess) {                                  \
         cudaError_t error = cudaGetLastError();                 \
-        LOG_FATAL("CUDA error: %s", cudaGetErrorString(error)); \
+        NLOG_FATAL("CUDA error: %s", cudaGetErrorString(error)); \
     } else /* eat semicolon */
 
-#define CU_CHECK(EXPR)                                              \
+#define NCU_CHECK(EXPR)                                              \
     do {                                                            \
         CUresult result = EXPR;                                     \
         if (result != CUDA_SUCCESS) {                               \
             const char *str;                                        \
-            CHECK_EQ(CUDA_SUCCESS, cuGetErrorString(result, &str)); \
-            LOG_FATAL("CUDA error: %s", str);                       \
+            NCHECK_EQ(CUDA_SUCCESS, cuGetErrorString(result, &str)); \
+            NLOG_FATAL("CUDA error: %s", str);                       \
         }                                                           \
     } while (false) /* eat semicolon */
 
-namespace pbrt
+namespace pbrto
 {
 
     std::pair<cudaEvent_t, cudaEvent_t> GetProfilerEvents( const char* description );
@@ -66,10 +66,10 @@ namespace pbrt
             return iter->second;
 
         int minGridSize, blockSize;
-        CUDA_CHECK(
+        NCUDA_CHECK(
             cudaOccupancyMaxPotentialBlockSize( &minGridSize, &blockSize, kernel, 0, 0 ) );
         kernelBlockSizes[ index ] = blockSize;
-        LOG_VERBOSE( "[%s]: block size %d", description, blockSize );
+        NLOG_VERBOSE( "[%s]: block size %d", description, blockSize );
 
         return blockSize;
     }

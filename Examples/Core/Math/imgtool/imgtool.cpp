@@ -4,13 +4,15 @@
 
 #include <pbrto/NewPbrt.h>
 
+#define PBRT_BUILD_GPU_RENDERER
+
 #include <pbrto/NewFilters.h>
 #include <pbrto/NewOptions.h>
 #ifdef PBRT_BUILD_GPU_RENDERER
 #ifndef __HIP_PLATFORM_AMD__
-#include <pbrt/gpu/optix/denoiser.h>
+#include <pbrto/gpu/optix/NewDenoiser.h>
 #endif // __HIP_PLATFORM_AMD__
-#include <pbrt/gpu/util.h>
+#include <pbrto/gpu/NewUtil.h>
 #endif  // PBRT_BUILD_GPU_RENDERER
 #include <pbrto/util/NewArgs.h>
 #include <pbrto/util/NewCheck.h>
@@ -2246,7 +2248,7 @@ int denoise_optix(std::vector<std::string> args) {
     ImageAndMetadata im = Image::Read(inFilename);
     Image &image = im.image;
 
-    CUDA_CHECK(cudaFree(nullptr));
+    NCUDA_CHECK(cudaFree(nullptr));
 
     int nLayers = 3;
     bool oldNormalNaming = false;
@@ -2277,13 +2279,13 @@ int denoise_optix(std::vector<std::string> args) {
         }
     }
 
-    Denoiser denoiser((Vector2i)image.Resolution(), nLayers == 3);
+    pbrto::Denoiser denoiser(( pbrto::Vector2i)image.Resolution(), nLayers == 3);
 
     size_t imageBytes = 3 * image.Resolution().x * image.Resolution().y * sizeof(float);
 
     auto copyChannelsToGPU = [&](std::array<std::string, 3> ch, bool flipZ = false) {
         void *bufGPU;
-        CUDA_CHECK(cudaMalloc(&bufGPU, imageBytes));
+        NCUDA_CHECK(cudaMalloc(&bufGPU, imageBytes));
         std::vector<float> hostStaging(imageBytes / sizeof(float));
 
         ImageChannelDesc desc = image.GetChannelDesc(ch);
@@ -2297,34 +2299,34 @@ int denoise_optix(std::vector<std::string> args) {
                 for (int c = 0; c < 3; ++c)
                     hostStaging[offset++] = v[c];
             }
-        CUDA_CHECK(
+        NCUDA_CHECK(
             cudaMemcpy(bufGPU, hostStaging.data(), imageBytes, cudaMemcpyHostToDevice));
         return bufGPU;
     };
-    RGB *rgbGPU = (RGB *)copyChannelsToGPU({"R", "G", "B"});
+    pbrto::RGB *rgbGPU = ( pbrto::RGB *)copyChannelsToGPU({"R", "G", "B"});
 
-    RGB *albedoGPU = nullptr;
-    Normal3f *normalGPU = nullptr;
+    pbrto::RGB *albedoGPU = nullptr;
+    pbrto::Normal3f *normalGPU = nullptr;
     if (nLayers == 3) {
-        albedoGPU = (RGB *)copyChannelsToGPU({"Albedo.R", "Albedo.G", "Albedo.B"});
+        albedoGPU = ( pbrto::RGB *)copyChannelsToGPU({"Albedo.R", "Albedo.G", "Albedo.B"});
         if (oldNormalNaming)
-            normalGPU = (Normal3f *)copyChannelsToGPU({"Nsx", "Nsy", "Nsz"}, true);
+            normalGPU = ( pbrto::Normal3f *)copyChannelsToGPU({"Nsx", "Nsy", "Nsz"}, true);
         else
-            normalGPU = (Normal3f *)copyChannelsToGPU({"Ns.X", "Ns.Y", "Ns.Z"}, true);
+            normalGPU = ( pbrto::Normal3f *)copyChannelsToGPU({"Ns.X", "Ns.Y", "Ns.Z"}, true);
     }
 
-    RGB *rgbResultGPU;
-    CUDA_CHECK(cudaMalloc(&rgbResultGPU, imageBytes));
+    pbrto::RGB *rgbResultGPU;
+    NCUDA_CHECK(cudaMalloc(&rgbResultGPU, imageBytes));
 
     denoiser.Denoise(rgbGPU, normalGPU, albedoGPU, rgbResultGPU);
 
-    CUDA_CHECK(cudaDeviceSynchronize());
+    NCUDA_CHECK(cudaDeviceSynchronize());
 
-    Image result(PixelFormat::Float, image.Resolution(), {"R", "G", "B"});
-    CUDA_CHECK(cudaMemcpy(result.RawPointer({0, 0}), (const void *)rgbResultGPU,
+    pbrto::Image result( pbrto::PixelFormat::Float, image.Resolution(), {"R", "G", "B"});
+    NCUDA_CHECK(cudaMemcpy(result.RawPointer({0, 0}), (const void *)rgbResultGPU,
                           imageBytes, cudaMemcpyDeviceToHost));
 
-    ImageMetadata outMetadata;
+    pbrto::ImageMetadata outMetadata;
     outMetadata.cameraFromWorld = im.metadata.cameraFromWorld;
     outMetadata.NDCFromWorld = im.metadata.NDCFromWorld;
     outMetadata.pixelBounds = im.metadata.pixelBounds;

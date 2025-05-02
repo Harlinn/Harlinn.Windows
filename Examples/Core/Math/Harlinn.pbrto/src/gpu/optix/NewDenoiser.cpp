@@ -3,10 +3,10 @@
 // The pbrt source code is licensed under the Apache License, Version 2.0.
 // SPDX: Apache-2.0
 
-#include <pbrto/gpu/optix/denoiser.h>
+#include <pbrto/gpu/optix/NewDenoiser.h>
 
-#include <pbrto/gpu/memory.h>
-#include <pbrto/gpu/util.h>
+//#include <pbrto/gpu/memory.h>
+#include <pbrto/gpu/NewUtil.h>
 
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -15,11 +15,11 @@
 #include <optix.h>
 #include <optix_stubs.h>
 
-#define OPTIX_CHECK(EXPR)                                                           \
+#define NOPTIX_CHECK(EXPR)                                                           \
     do {                                                                            \
         OptixResult res = EXPR;                                                     \
         if (res != OPTIX_SUCCESS)                                                   \
-            LOG_FATAL("OptiX call " #EXPR " failed with code %d: \"%s\"", int(res), \
+            NLOG_FATAL("OptiX call " #EXPR " failed with code %d: \"%s\"", int(res), \
                       optixGetErrorString(res));                                    \
     } while (false) /* eat semicolon */
 
@@ -28,17 +28,17 @@
 #undef RGB
 #endif
 
-namespace pbrt {
+namespace pbrto {
 
 Denoiser::Denoiser(Vector2i resolution, bool haveAlbedoAndNormal)
     : resolution(resolution), haveAlbedoAndNormal(haveAlbedoAndNormal) {
     CUcontext cudaContext;
-    CU_CHECK(cuCtxGetCurrent(&cudaContext));
-    CHECK(cudaContext != nullptr);
+    NCU_CHECK(cuCtxGetCurrent(&cudaContext));
+    NCHECK(cudaContext != nullptr);
 
-    OPTIX_CHECK(optixInit());
+    NOPTIX_CHECK(optixInit());
     OptixDeviceContext optixContext;
-    OPTIX_CHECK(optixDeviceContextCreate(cudaContext, 0, &optixContext));
+    NOPTIX_CHECK(optixDeviceContextCreate(cudaContext, 0, &optixContext));
 
     OptixDenoiserOptions options = {};
 #if (OPTIX_VERSION >= 80000)
@@ -49,7 +49,7 @@ Denoiser::Denoiser(Vector2i resolution, bool haveAlbedoAndNormal)
     if (haveAlbedoAndNormal)
         options.guideAlbedo = options.guideNormal = 1;
 
-    OPTIX_CHECK(optixDenoiserCreate(optixContext, OPTIX_DENOISER_MODEL_KIND_HDR, &options,
+    NOPTIX_CHECK(optixDenoiserCreate(optixContext, OPTIX_DENOISER_MODEL_KIND_HDR, &options,
                                     &denoiserHandle));
 #else
     options.inputKind = haveAlbedoAndNormal ? OPTIX_DENOISER_INPUT_RGB_ALBEDO_NORMAL
@@ -61,18 +61,18 @@ Denoiser::Denoiser(Vector2i resolution, bool haveAlbedoAndNormal)
         optixDenoiserSetModel(denoiserHandle, OPTIX_DENOISER_MODEL_KIND_HDR, nullptr, 0));
 #endif
 
-    OPTIX_CHECK(optixDenoiserComputeMemoryResources(denoiserHandle, resolution.x,
+    NOPTIX_CHECK(optixDenoiserComputeMemoryResources(denoiserHandle, resolution.x,
                                                     resolution.y, &memorySizes));
 
-    CUDA_CHECK(cudaMalloc(&denoiserState, memorySizes.stateSizeInBytes));
-    CUDA_CHECK(cudaMalloc(&scratchBuffer, memorySizes.withoutOverlapScratchSizeInBytes));
+    NCUDA_CHECK(cudaMalloc(&denoiserState, memorySizes.stateSizeInBytes));
+    NCUDA_CHECK(cudaMalloc(&scratchBuffer, memorySizes.withoutOverlapScratchSizeInBytes));
 
-    OPTIX_CHECK(optixDenoiserSetup(
+    NOPTIX_CHECK(optixDenoiserSetup(
         denoiserHandle, 0 /* stream */, resolution.x, resolution.y,
         CUdeviceptr(denoiserState), memorySizes.stateSizeInBytes,
         CUdeviceptr(scratchBuffer), memorySizes.withoutOverlapScratchSizeInBytes));
 
-    CUDA_CHECK(cudaMalloc(&intensity, sizeof(float)));
+    NCUDA_CHECK(cudaMalloc(&intensity, sizeof(float)));
 }
 
 void Denoiser::Denoise(RGB *rgb, Normal3f *n, RGB *albedo, RGB *result) {
@@ -87,11 +87,11 @@ void Denoiser::Denoise(RGB *rgb, Normal3f *n, RGB *albedo, RGB *result) {
     }
     inputLayers[0].data = CUdeviceptr(rgb);
     if (haveAlbedoAndNormal) {
-        CHECK(n != nullptr && albedo != nullptr);
+        NCHECK(n != nullptr && albedo != nullptr);
         inputLayers[1].data = CUdeviceptr(albedo);
         inputLayers[2].data = CUdeviceptr(n);
     } else
-        CHECK(n == nullptr && albedo == nullptr);
+        NCHECK(n == nullptr && albedo == nullptr);
 
     OptixImage2D outputImage;
     outputImage.width = resolution.x;
@@ -101,7 +101,7 @@ void Denoiser::Denoise(RGB *rgb, Normal3f *n, RGB *albedo, RGB *result) {
     outputImage.format = OPTIX_PIXEL_FORMAT_FLOAT3;
     outputImage.data = CUdeviceptr(result);
 
-    OPTIX_CHECK(optixDenoiserComputeIntensity(
+    NOPTIX_CHECK(optixDenoiserComputeIntensity(
         denoiserHandle, 0 /* stream */, &inputLayers[0], CUdeviceptr(intensity),
         CUdeviceptr(scratchBuffer), memorySizes.withoutOverlapScratchSizeInBytes));
 
@@ -127,13 +127,13 @@ void Denoiser::Denoise(RGB *rgb, Normal3f *n, RGB *albedo, RGB *result) {
     layers.input = inputLayers[0];
     layers.output = outputImage;
 
-    OPTIX_CHECK(optixDenoiserInvoke(
+    NOPTIX_CHECK(optixDenoiserInvoke(
         denoiserHandle, 0 /* stream */, &params, CUdeviceptr(denoiserState),
         memorySizes.stateSizeInBytes, &guideLayer, &layers, 1 /* # layers to denoise */,
         0 /* offset x */, 0 /* offset y */, CUdeviceptr(scratchBuffer),
         memorySizes.withoutOverlapScratchSizeInBytes));
 #else
-    OPTIX_CHECK(optixDenoiserInvoke(
+    NOPTIX_CHECK(optixDenoiserInvoke(
         denoiserHandle, 0 /* stream */, &params, CUdeviceptr(denoiserState),
         memorySizes.stateSizeInBytes, inputLayers.data(), nLayers, 0 /* offset x */,
         0 /* offset y */, &outputImage, CUdeviceptr(scratchBuffer),

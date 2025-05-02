@@ -33,7 +33,7 @@
 #include <pbrto/base/NewLightSampler.h>
 #include <pbrto/base/NewSampler.h>
 #ifdef PBRT_BUILD_GPU_RENDERER
-#include <pbrto/gpu/util.h>
+#include <pbrto/gpu/NewUtil.h>
 #endif  // PBRT_BUILD_GPU_RENDERER
 #include <pbrto/NewOptions.h>
 #include <pbrto/util/NewParallel.h>

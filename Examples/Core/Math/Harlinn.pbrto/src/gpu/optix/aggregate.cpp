@@ -1,25 +1,26 @@
+#include "pch.h"
 // pbrt is Copyright(c) 1998-2020 Matt Pharr, Wenzel Jakob, and Greg Humphreys.
 // The pbrt source code is licensed under the Apache License, Version 2.0.
 // SPDX: Apache-2.0
 
-#include <pbrt/gpu/optix/aggregate.h>
+#include <pbrto/gpu/optix/aggregate.h>
 
-#include <pbrt/gpu/optix/optix.h>
-#include <pbrt/gpu/util.h>
-#include <pbrt/lights.h>
-#include <pbrt/materials.h>
-#include <pbrt/scene.h>
-#include <pbrt/textures.h>
-#include <pbrt/util/error.h>
-#include <pbrt/util/file.h>
-#include <pbrt/util/log.h>
-#include <pbrt/util/loopsubdiv.h>
-#include <pbrt/util/mesh.h>
-#include <pbrt/util/parallel.h>
-#include <pbrt/util/pstd.h>
-#include <pbrt/util/splines.h>
-#include <pbrt/util/stats.h>
-#include <pbrt/wavefront/intersect.h>
+#include <pbrto/gpu/optix/optix.h>
+#include <pbrto/gpu/util.h>
+#include <pbrto/lights.h>
+#include <pbrto/materials.h>
+#include <pbrto/scene.h>
+#include <pbrto/textures.h>
+#include <pbrto/util/error.h>
+#include <pbrto/util/file.h>
+#include <pbrto/util/log.h>
+#include <pbrto/util/loopsubdiv.h>
+#include <pbrto/util/mesh.h>
+#include <pbrto/util/parallel.h>
+#include <pbrto/util/pstd.h>
+#include <pbrto/util/splines.h>
+#include <pbrto/util/stats.h>
+#include <pbrto/wavefront/intersect.h>
 
 #include <atomic>
 #include <mutex>

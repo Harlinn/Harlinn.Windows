@@ -31,7 +31,7 @@
 #include <pbrto/NewScene.h>
 #include <pbrto/util/NewContainers.h>
 #include <pbrto/util/NewPStd.h>
-#include <pbrto/util/soa.h>
+#include <pbrto/util/NewSoa.h>
 #include <pbrto/wavefront/NewIntegrator.h>
 #include <pbrto/wavefront/NewWorkitems.h>
 

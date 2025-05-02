@@ -5,14 +5,14 @@
 #ifndef PBRT_GPU_DENOISER_H
 #define PBRT_GPU_DENOISER_H
 
-#include <pbrto/pbrt.h>
+#include <pbrto/NewPbrt.h>
 
-#include <pbrto/util/color.h>
-#include <pbrto/util/vecmath.h>
+#include <pbrto/util/NewColor.h>
+#include <pbrto/util/NewVecMath.h>
 
-#include "optix.h"
+#include "NewOptix.h"
 
-namespace pbrt
+namespace pbrto
 {
 
     class Denoiser

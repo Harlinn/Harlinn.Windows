@@ -64,7 +64,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Scalar DistanceFromPoint( Vector3 point ) const
             {
 #ifdef HDMC_USES_HCC_MATH
-                return (Dot( point, GetNormal( ) ) + ToVector3( m_repr.W( ) ));
+                return (Dot<0xFF>( point, GetNormal( ) ) + ToVector3( m_repr.W( ) ));
 #else
                 return Dot( point, GetNormal( ) ) + m_repr.GetW( );
 #endif

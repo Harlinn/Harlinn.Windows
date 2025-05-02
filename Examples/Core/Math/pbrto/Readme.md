@@ -1,5 +1,7 @@
 # PBRTO
 
+<img src="./Images/Kroken1.png" width="640"/>
+
 PBRTO is the main demo/example for my [Fast Linear Algebra Classes for Games and Graphics](https://harlinn.github.io/Cpp/Cpp/Math/FastLinearAlgebra.html).
 
 This app runs my modified version of [pbrt](https://github.com/mmp/pbrt-v4) when 

@@ -1,12 +1,13 @@
+#include "pch.h"
 // pbrt is Copyright(c) 1998-2020 Matt Pharr, Wenzel Jakob, and Greg Humphreys.
 // The pbrt source code is licensed under the Apache License, Version 2.0.
 // SPDX: Apache-2.0
 
-#include <pbrt/gpu/memory.h>
+#include <pbrto/gpu/memory.h>
 
-#include <pbrt/gpu/util.h>
-#include <pbrt/util/check.h>
-#include <pbrt/util/log.h>
+#include <pbrto/gpu/util.h>
+#include <pbrto/util/check.h>
+#include <pbrto/util/log.h>
 
 #include <cuda.h>
 #include <cuda_runtime.h>

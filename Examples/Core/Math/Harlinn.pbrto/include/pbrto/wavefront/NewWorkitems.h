@@ -32,7 +32,7 @@
 #include <pbrto/NewRay.h>
 #include <pbrto/util/NewContainers.h>
 #include <pbrto/util/NewPStd.h>
-#include <pbrto/util/soa.h>
+#include <pbrto/util/NewSoa.h>
 #include <pbrto/wavefront/NewWorkqueue.h>
 
 namespace pbrto
@@ -366,7 +366,7 @@ namespace pbrto
         MediumInterface mediumInterface;
     };
 
-#include "wavefront_workitems_soa.h"
+#include "NewWavefront_workitems_soa.h"
 
     // RayQueue Definition
     class RayQueue : public WorkQueue<RayWorkItem>

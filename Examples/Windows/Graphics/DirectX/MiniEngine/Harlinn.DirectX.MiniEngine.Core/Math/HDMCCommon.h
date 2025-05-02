@@ -102,7 +102,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 #ifdef HDMC_USES_HCC_MATH
         INLINE m::SIMDType SplatOne( )
         {
-            return m::Traits::Constants::IdentityR1;
+            return m::Traits::Constants::One;
         }
 #else
         INLINE XMVECTOR SplatOne( XMVECTOR zero = SplatZero( ) )

@@ -591,6 +591,24 @@
     <ClInclude Include="include\pbrto\util\NewPrint.h">
       <Filter>include\pbrto\util</Filter>
     </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\NewUtil.h">
+      <Filter>include\pbrto\gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\optix\NewDenoiser.h">
+      <Filter>include\pbrto\gpu\optix</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\optix\NewOptix.h">
+      <Filter>include\pbrto\gpu\optix</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewSoa.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\wavefront_workitems_soa.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\NewWavefront_workitems_soa.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1015,6 +1033,24 @@
     </ClCompile>
     <ClCompile Include="src\util\NewPrint.cpp">
       <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu\memory.cpp">
+      <Filter>src\gpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu\util.cpp">
+      <Filter>src\gpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu\optix\aggregate.cpp">
+      <Filter>src\gpu\optix</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu\optix\denoiser.cpp">
+      <Filter>src\gpu\optix</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu\NewUtil.cpp">
+      <Filter>src\gpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu\optix\NewDenoiser.cpp">
+      <Filter>src\gpu\optix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

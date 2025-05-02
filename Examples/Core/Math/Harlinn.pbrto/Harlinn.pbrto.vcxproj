@@ -80,7 +80,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;$(OPTIX_HOME);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -91,8 +91,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(CUDA_PATH)\lib\x64;$(OPTIX_LIB_DIR)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;cuda.lib;cudart.lib;optixDenoiser.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -104,7 +104,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;$(OPTIX_HOME);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -117,8 +117,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(CUDA_PATH)\lib\x64;$(OPTIX_LIB_DIR)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;cuda.lib;cudart.lib;optixDenoiser.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,7 +129,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;$(OPTIX_HOME);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -140,8 +140,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(CUDA_PATH)\lib\x64;$(OPTIX_LIB_DIR)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;cuda.lib;cudart.lib;optixDenoiser.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,7 +153,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;$(CUDA_PATH)\include;$(OPTIX_HOME);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -166,8 +166,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(CUDA_PATH)\lib\x64;$(OPTIX_LIB_DIR)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;cuda.lib;cudart.lib;optixDenoiser.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -212,8 +212,11 @@
     <ClInclude Include="include\pbrto\filters.h" />
     <ClInclude Include="include\pbrto\gpu\cudagl.h" />
     <ClInclude Include="include\pbrto\gpu\memory.h" />
+    <ClInclude Include="include\pbrto\gpu\NewUtil.h" />
     <ClInclude Include="include\pbrto\gpu\optix\aggregate.h" />
     <ClInclude Include="include\pbrto\gpu\optix\denoiser.h" />
+    <ClInclude Include="include\pbrto\gpu\optix\NewDenoiser.h" />
+    <ClInclude Include="include\pbrto\gpu\optix\NewOptix.h" />
     <ClInclude Include="include\pbrto\gpu\optix\optix.h" />
     <ClInclude Include="include\pbrto\gpu\util.h" />
     <ClInclude Include="include\pbrto\interaction.h" />
@@ -303,6 +306,7 @@
     <ClInclude Include="include\pbrto\util\NewRng.h" />
     <ClInclude Include="include\pbrto\util\NewSampling.h" />
     <ClInclude Include="include\pbrto\util\NewScattering.h" />
+    <ClInclude Include="include\pbrto\util\NewSoa.h" />
     <ClInclude Include="include\pbrto\util\NewSobolMatrices.h" />
     <ClInclude Include="include\pbrto\util\NewSpectrum.h" />
     <ClInclude Include="include\pbrto\util\NewSplines.h" />
@@ -337,9 +341,11 @@
     <ClInclude Include="include\pbrto\wavefront\NewIntegrator.h" />
     <ClInclude Include="include\pbrto\wavefront\NewIntersect.h" />
     <ClInclude Include="include\pbrto\wavefront\NewWavefront.h" />
+    <ClInclude Include="include\pbrto\wavefront\NewWavefront_workitems_soa.h" />
     <ClInclude Include="include\pbrto\wavefront\NewWorkitems.h" />
     <ClInclude Include="include\pbrto\wavefront\NewWorkqueue.h" />
     <ClInclude Include="include\pbrto\wavefront\wavefront.h" />
+    <ClInclude Include="include\pbrto\wavefront\wavefront_workitems_soa.h" />
     <ClInclude Include="include\pbrto\wavefront\workitems.h" />
     <ClInclude Include="include\pbrto\wavefront\workqueue.h" />
     <ClInclude Include="pch.h" />
@@ -385,6 +391,22 @@
     </ClCompile>
     <ClCompile Include="src\film.cpp" />
     <ClCompile Include="src\filters.cpp" />
+    <ClCompile Include="src\gpu\memory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\gpu\NewUtil.cpp" />
+    <ClCompile Include="src\gpu\optix\aggregate.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\gpu\optix\denoiser.cpp" />
+    <ClCompile Include="src\gpu\optix\NewDenoiser.cpp" />
+    <ClCompile Include="src\gpu\util.cpp" />
     <ClCompile Include="src\interaction.cpp" />
     <ClCompile Include="src\lights.cpp" />
     <ClCompile Include="src\lightsamplers.cpp" />

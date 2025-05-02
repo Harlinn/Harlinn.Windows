@@ -2742,7 +2742,7 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                return _mm256_set1_ps( value );
+                return _mm256_broadcast_ss( &value );
             }
         }
         template<size_t Num>
@@ -2783,7 +2783,7 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else
                 {
-                    return _mm256_set1_ps( value );
+                    return _mm256_broadcast_ss( &value );
                 }
             }
         }
@@ -2960,8 +2960,8 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_blend_ps( v, _mm256_set1_ps( value ), 0b1000 );
             }
         }
-        
-        
+
+
 
 
         static SIMDType Load( const Type* src ) noexcept
