@@ -66,8 +66,6 @@ namespace pbrto
     static constexpr Float CIE_Y_integral = 106.856895;
 
 
-    
-
 
     // SampledSpectrum Definition
     class alignas( SampledSpectrumAlignAs ) SampledSpectrum
