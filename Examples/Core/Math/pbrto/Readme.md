@@ -6,6 +6,8 @@ This app runs my modified version of [pbrt](https://github.com/mmp/pbrt-v4) when
 executed with the `--new` command line option. Without the `--new` option, the app 
 executes the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery.
 
+The modified rendering machinery is approximately 65 % faster than the original Visual Studio 2022 build of pbrt.
+
 Rolling the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery, and my modified version of this machinery,
 into a single app; makes it easier to verify that my modifications works as expected while exercising functionality provided by
 the [Harlinn.Common.Core](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.Common.Core/Harlinn.Common.Core.html) library.

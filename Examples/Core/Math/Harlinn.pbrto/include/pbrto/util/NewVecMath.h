@@ -2339,14 +2339,62 @@ namespace pbrto
             return boundaries_[ i ];
         }
 
-        Point3<T> Corner( int corner ) const
+        typename Point3<T>::Simd Corner( int corner ) const 
         {
             NDCHECK( corner >= 0 && corner < 8 );
-            return Point3<T>( ( *this )[ ( corner & 1 ) ].x, ( *this )[ ( corner & 2 ) ? 1 : 0 ].y,
+            /*
+            return Point3<T>( 
+                ( *this )[ ( corner & 1 ) ].x, 
+                ( *this )[ ( corner & 2 ) ? 1 : 0 ].y,
                 ( *this )[ ( corner & 4 ) ? 1 : 0 ].z );
+            */
+            using Point = typename Point3<T>::Simd;
+            switch ( corner )
+            {
+                case 0:
+                {
+                    return pMin;
+                }
+                break;
+                case 1:
+                {
+                    return Point( pMax.x, pMin.y, pMin.z );
+                }
+                break;
+                case 2:
+                {
+                    return Point( pMin.x, pMax.y, pMin.z );
+                }
+                break;
+                case 3:
+                {
+                    return Point( pMax.x, pMax.y, pMin.z );
+                }
+                break;
+                case 4:
+                {
+                    return Point( pMin.x, pMin.y, pMax.z );
+                }
+                break;
+                case 5:
+                {
+                    return Point( pMax.x, pMin.y, pMax.z );
+                }
+                break;
+                case 6:
+                {
+                    return Point( pMin.x, pMax.y, pMax.z );
+                }
+                break;
+                case 7:
+                {
+                    return pMax;
+                }
+                break;
+            }
         }
 
-        Vector3<T> Diagonal( ) const 
+        typename Vector3<T>::Simd Diagonal( ) const
         { 
             return pMax - pMin; 
         }
@@ -2869,9 +2917,9 @@ namespace pbrto
 
 
         if ( Math::ScalarLengthSquared( axb ) == 0 ||
-            Math::LengthSquared( bxc ) == 0 ||
-            Math::LengthSquared( cxd ) == 0 ||
-            Math::LengthSquared( dxa ) == 0 )
+            Math::ScalarLengthSquared( bxc ) == 0 ||
+            Math::ScalarLengthSquared( cxd ) == 0 ||
+            Math::ScalarLengthSquared( dxa ) == 0 )
             return 0;
         axb = Normalize( axb );
         bxc = Normalize( bxc );
@@ -2895,7 +2943,8 @@ namespace pbrto
         Float cosPhi;
         SinCos( phi, &sinPhi, &cosPhi );
 
-        return Vector3f::Simd( Math::Clamp( sinTheta, -1.0f, 1.0f ) * cosPhi,
+        return Vector3f::Simd( 
+            Math::Clamp( sinTheta, -1.0f, 1.0f ) * cosPhi,
             Math::Clamp( sinTheta, -1.0f, 1.0f ) * sinPhi, 
             Math::Clamp( cosTheta, -1.0f, 1.0f ) );
     }
@@ -3111,18 +3160,18 @@ namespace pbrto
     {
     public:
         // DirectionCone Public Members
-        Vector3f w;
+        Vector3f::Simd w;
         Float cosTheta = Infinity;
 
         // DirectionCone Public Methods
         DirectionCone( ) = default;
 
-        DirectionCone( const Vector3f& w, Float cosTheta )
+        DirectionCone( const Vector3f::Simd w, Float cosTheta )
             : w( Normalize( w ) ), cosTheta( cosTheta )
         {
         }
 
-        explicit DirectionCone( const Vector3f& w )
+        explicit DirectionCone( const Vector3f::Simd w )
             : DirectionCone( w, 1 )
         {
         }
@@ -3134,14 +3183,14 @@ namespace pbrto
 
         static DirectionCone EntireSphere( )
         {
-            return DirectionCone( Vector3f( 0, 0, 1 ), -1 );
+            return DirectionCone( Vector3f::Simd( 0, 0, 1 ), -1 );
         }
 
-        Vector3f ClosestVectorInCone( const Vector3f& wp ) const;
+        Vector3f::Simd ClosestVectorInCone( Vector3f::Simd wp ) const;
     };
 
     // DirectionCone Inline Functions
-    inline bool Inside( const DirectionCone& d, const Vector3f& w )
+    inline bool Inside( DirectionCone d, const Vector3f::Simd w )
     {
         return !d.IsEmpty( ) && Math::ScalarDot( d.w, Normalize( w ) ) >= d.cosTheta;
     }
@@ -3165,23 +3214,25 @@ namespace pbrto
         return DirectionCone( w, cosThetaMax );
     }
 
-    inline Vector3f DirectionCone::ClosestVectorInCone( const Vector3f& wpv ) const
+    inline Vector3f::Simd DirectionCone::ClosestVectorInCone( Vector3f::Simd wpv ) const
     {
         NDCHECK( !IsEmpty( ) );
-        Vector3f wp = Normalize( wpv );
+        Vector3f::Simd wp = Normalize( wpv );
         // Return provided vector if it is inside the cone
         if ( ScalarDot( wp, w ) > cosTheta )
             return wp;
 
         // Find closest vector by rotating _wp_ until it touches the cone
         Float sinTheta = -Math::SafeSqrt( 1 - cosTheta * cosTheta );
-        Vector3f a = Cross( wp, w );
+        Vector3f::Simd a = Cross( wp, w );
+        Vector3f wTmp( w );
+        Vector3f wpTmp( wp );
         return cosTheta * w +
             ( sinTheta / Length( a ) ) *
-            Vector3f( 
-                w.x * ( wp.y * w.y + wp.z * w.z ) - wp.x * ( Sqr( w.y ) + Sqr( w.z ) ),
-                w.y * ( wp.x * w.x + wp.z * w.z ) - wp.y * ( Sqr( w.x ) + Sqr( w.z ) ),
-                w.z * ( wp.x * w.x + wp.y * w.y ) - wp.z * ( Sqr( w.x ) + Sqr( w.y ) ) );
+            Vector3f::Simd(
+                wTmp.x * ( wpTmp.y * wTmp.y + wpTmp.z * wTmp.z ) - wpTmp.x * ( Sqr( wTmp.y ) + Sqr( wTmp.z ) ),
+                wTmp.y * ( wpTmp.x * wTmp.x + wpTmp.z * wTmp.z ) - wpTmp.y * ( Sqr( wTmp.x ) + Sqr( wTmp.z ) ),
+                wTmp.z * ( wpTmp.x * wTmp.x + wpTmp.y * wTmp.y ) - wpTmp.z * ( Sqr( wTmp.x ) + Sqr( wTmp.y ) ) );
     }
 
     // DirectionCone Function Declarations

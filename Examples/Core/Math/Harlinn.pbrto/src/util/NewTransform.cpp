@@ -65,18 +65,6 @@ namespace pbrto
     {
         auto m = Math::RotationX( Deg2Rad( theta ) );
         return Transform( m, Transpose( m ), true );
-
-        /*
-        Float sinTheta;
-        Float cosTheta;
-        SinCos( Deg2Rad( theta ), &sinTheta, &cosTheta );
-
-        SquareMatrix<4> m( 1, 0, 0, 0,
-            0, cosTheta, -sinTheta, 0,
-            0, sinTheta, cosTheta, 0,
-            0, 0, 0, 1 );
-        return Transform( m, Transpose( m ) );
-        */
     }
     // clang-format on
 
@@ -86,34 +74,12 @@ namespace pbrto
     {
         auto m = Math::RotationY( Deg2Rad( theta ) );
         return Transform( m, Transpose( m ), true );
-        /*
-        Float sinTheta;
-        Float cosTheta;
-        SinCos( Deg2Rad( theta ), &sinTheta, &cosTheta );
-
-        SquareMatrix<4> m( cosTheta, 0, sinTheta, 0,
-            0, 1, 0, 0,
-            -sinTheta, 0, cosTheta, 0,
-            0, 0, 0, 1 );
-        return Transform( m, Transpose( m ) );
-        */
     }
     PBRTO_EXPORT
     Transform RotateZ( Float theta )
     {
         auto m = Math::RotationZ( Deg2Rad( theta ) );
         return Transform( m, Transpose( m ), true );
-        /*
-        Float sinTheta;
-        Float cosTheta;
-        SinCos( Deg2Rad( theta ), &sinTheta, &cosTheta );
-
-        SquareMatrix<4> m( cosTheta, -sinTheta, 0, 0,
-            sinTheta, cosTheta, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1 );
-        return Transform( m, Transpose( m ) );
-        */
     }
     // clang-format on
 
@@ -126,31 +92,6 @@ namespace pbrto
         Transform::MatrixSimdType worldFromCamera = Inverse( cameraFromWorld );
         Transform result( cameraFromWorld, worldFromCamera, true );
         return result;
-        /*
-        using Traits = SquareMatrix<4>::Traits;
-
-        Vector3f::Simd dir = Normalize( look - pos );
-        auto right1 = Cross( Normalize( up ), dir );
-        if ( ScalarLengthSquared( right1 ) == 0 )
-        {
-            NLOG_FATAL( "LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
-                "(%f, %f, %f) "
-                "passed to LookAt are pointing in the same direction.",
-                up.x( ), up.y( ), up.z( ), dir.x( ), dir.y( ), dir.z( ) );
-        }
-        Vector3f::Simd right = Normalize( right1 );
-        Vector3f::Simd newUp = Cross( dir, right );
-
-        Transform::MatrixSimdType worldFromCamera;
-        worldFromCamera.simd[ 0 ] = right.simd;
-        worldFromCamera.simd[ 1 ] = newUp.simd;
-        worldFromCamera.simd[ 2 ] = dir.simd;
-        worldFromCamera.simd[ 3 ] = Traits::SetW( pos.simd, 1.f );
-
-        Transform::MatrixSimdType cameraFromWorld = Inverse( worldFromCamera );
-        Transform result( cameraFromWorld, worldFromCamera, true );
-        return result;
-        */
     }
     PBRTO_EXPORT
     Transform Orthographic( Float zNear, Float zFar )

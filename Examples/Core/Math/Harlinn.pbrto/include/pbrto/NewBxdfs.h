@@ -49,24 +49,22 @@ namespace pbrto
     // DiffuseBxDF Definition
     class DiffuseBxDF
     {
+        SampledSpectrum R;
     public:
         // DiffuseBxDF Public Methods
         DiffuseBxDF( ) = default;
-        PBRT_CPU_GPU
-            DiffuseBxDF( SampledSpectrum R ) : R( R ) {}
+        DiffuseBxDF( SampledSpectrum R ) 
+            : R( R ) 
+        { }
 
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
         {
             if ( !SameHemisphere( wo, wi ) )
                 return SampledSpectrum( 0.f );
             return R * InvPi;
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<BSDFSample> Sample_f(
-                Vector3f wo, Float uc, Point2f u, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 return {};
@@ -103,7 +101,7 @@ namespace pbrto
         }
 
     private:
-        SampledSpectrum R;
+        
     };
 
     // DiffuseTransmissionBxDF Definition

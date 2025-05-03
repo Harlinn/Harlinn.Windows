@@ -50,8 +50,8 @@ namespace pbrto
         Vector3f::Simd wo;
         Normal3f::Simd n;
         Point3fi pi;
-        Float time = 0;
         Point2f uv;
+        Float time = 0;
         const MediumInterface* mediumInterface = nullptr;
         Medium medium = nullptr;
 
@@ -92,18 +92,22 @@ namespace pbrto
         // used by medium ctor
         Interaction( Point3f::Simd p, Vector3f::Simd wo, Float time, Medium medium )
             : pi( p ), time( time ), wo( wo ), medium( medium )
-        {
-        }
+        { }
         Interaction( Point3f::Simd p, Normal3f::Simd n, Float time, Medium medium )
             : pi( p ), n( n ), time( time ), medium( medium )
-        {
-        }
-        Interaction( Point3f::Simd p, Point2f uv ) : pi( p ), uv( uv ) {}
+        { }
+        Interaction( Point3f::Simd p, Point2f uv ) 
+            : pi( p ), uv( uv ) 
+        { }
+
         Interaction( const Point3fi& pi, Normal3f::Simd n, Float time = 0, Point2f uv = {} )
             : pi( pi ), n( n ), uv( uv ), time( time )
         {
         }
-        Interaction( const Point3fi& pi, Normal3f::Simd n, Point2f uv ) : pi( pi ), n( n ), uv( uv ) {}
+        Interaction( const Point3fi& pi, Normal3f::Simd n, Point2f uv ) 
+            : pi( pi ), n( n ), uv( uv ) 
+        { }
+
         Interaction( Point3f::Simd p, Float time, Medium medium )
             : pi( p ), time( time ), medium( medium )
         {
@@ -159,7 +163,7 @@ namespace pbrto
             return r;
         }
 
-        Medium GetMedium( Vector3f w ) const
+        Medium GetMedium( Vector3f::Simd w ) const
         {
             if ( mediumInterface )
                 return ScalarDot( w, n ) > 0 ? mediumInterface->outside : mediumInterface->inside;
@@ -180,6 +184,9 @@ namespace pbrto
     class MediumInteraction : public Interaction
     {
     public:
+        // MediumInteraction Public Members
+        PhaseFunction phase;
+
         // MediumInteraction Public Methods
         MediumInteraction( ) 
             : phase( nullptr ) 
@@ -191,8 +198,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        // MediumInteraction Public Members
-        PhaseFunction phase;
+        
     };
 
     // SurfaceInteraction Definition
