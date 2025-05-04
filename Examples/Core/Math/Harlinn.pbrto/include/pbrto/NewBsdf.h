@@ -40,25 +40,30 @@ namespace pbrto
     public:
         // BSDF Public Methods
         BSDF( ) = default;
-        PBRT_CPU_GPU
-            BSDF( Normal3f ns, Vector3f dpdus, BxDF bxdf )
+        BSDF( Normal3f ns, Vector3f dpdus, BxDF bxdf )
             : bxdf( bxdf ), shadingFrame( Frame::FromXZ( Normalize( dpdus ), Vector3f::Simd( ns ) ) )
         {
         }
 
-        PBRT_CPU_GPU
-            operator bool( ) const { return ( bool )bxdf; }
-        PBRT_CPU_GPU
-            BxDFFlags Flags( ) const { return bxdf.Flags( ); }
+        operator bool( ) const 
+        { 
+            return ( bool )bxdf; 
+        }
+        BxDFFlags Flags( ) const 
+        { 
+            return bxdf.Flags( ); 
+        }
 
-        PBRT_CPU_GPU
-            Vector3f RenderToLocal( Vector3f v ) const { return shadingFrame.ToLocal( v ); }
-        PBRT_CPU_GPU
-            Vector3f LocalToRender( Vector3f v ) const { return shadingFrame.FromLocal( v ); }
+        Vector3f RenderToLocal( Vector3f v ) const 
+        { 
+            return shadingFrame.ToLocal( v ); 
+        }
+        Vector3f LocalToRender( Vector3f v ) const 
+        { 
+            return shadingFrame.FromLocal( v ); 
+        }
 
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f woRender, Vector3f wiRender,
-                TransportMode mode = TransportMode::Radiance ) const
+        SampledSpectrum f( Vector3f woRender, Vector3f wiRender, TransportMode mode = TransportMode::Radiance ) const
         {
             Vector3f wi = RenderToLocal( wiRender ), wo = RenderToLocal( woRender );
             if ( wo.z == 0 )

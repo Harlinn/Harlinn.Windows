@@ -2788,6 +2788,50 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        template<size_t Num>
+        static SIMDType FillDivisor( Type value ) noexcept requires ( Num > 0 && Num <= SIMDTypeCapacity )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Num == 1 )
+                {
+                    return _mm_set_ps( 1.f, 1.f, 1.f, value );
+                }
+                else if constexpr ( Num == 2 )
+                {
+                    return _mm_set_ps( 1.f, 1.f, value, value );
+                }
+                else if constexpr ( Num == 3 )
+                {
+                    return _mm_set_ps( 1.f, value, value, value );
+                }
+                else
+                {
+                    return _mm_set_ps1( value );
+                }
+            }
+            else
+            {
+                if constexpr ( Num == 5 )
+                {
+                    return _mm256_set_ps( 1.f, 1.f, 1.f, value, value, value, value, value );
+                }
+                else if constexpr ( Num == 6 )
+                {
+                    return _mm256_set_ps( 1.f, 1.f, value, value, value, value, value, value );
+                }
+                else if constexpr ( Num == 7 )
+                {
+                    return _mm256_set_ps( 1.f, value, value, value, value, value, value, value );
+                }
+                else
+                {
+                    return _mm256_broadcast_ss( &value );
+                }
+            }
+        }
+
+
 
 
         

@@ -2039,16 +2039,16 @@ namespace pbrto
     
 
     template <typename T>
-    inline Normal3<T> FaceForward( const Normal3<T>& n, const Vector3<T>& v )
+    inline Normal3<T> FaceForward( Normal3<T> n, Vector3<T> v )
     {
         return ( Dot( n, v ) < 0.f ) ? -n : n;
     }
     template <>
-    inline Normal3<Float> FaceForward<Float>( const Normal3<Float>& n, const Vector3<Float>& v )
+    inline Normal3<Float> FaceForward<Float>( Normal3<Float> n, Vector3<Float> v )
     {
         return ( ScalarDot( n, v ) < 0.f ) ? Normal3<Float>( -n ) : n;
     }
-    inline Normal3f::Simd FaceForward( const Normal3f::Simd& n, const Vector3f::Simd& v )
+    inline Normal3f::Simd FaceForward( Normal3f::Simd n, Vector3f::Simd v )
     {
         return ( ScalarDot( n, v ) < 0.f ) ? -n : n;
     }
@@ -2056,18 +2056,18 @@ namespace pbrto
 
 
     template <typename T>
-    inline Normal3<T> FaceForward( const Normal3<T>& n, const Normal3<T>& n2 )
+    inline Normal3<T> FaceForward( Normal3<T> n, Normal3<T> n2 )
     {
         return ( Dot( n, n2 ) < 0.f ) ? -n : n;
     }
 
     template <>
-    inline Normal3<Float> FaceForward<Float>( const Normal3<Float>& n, const Normal3<Float>& n2 )
+    inline Normal3<Float> FaceForward<Float>( Normal3<Float> n, Normal3<Float> n2 )
     {
         return ( ScalarDot( n, n2 ) < 0.f ) ? Normal3<Float>( -n ) : n;
     }
 
-    inline Normal3f::Simd FaceForward( const Normal3f::Simd& n, const Normal3f::Simd& n2 )
+    inline Normal3f::Simd FaceForward( Normal3f::Simd n, Normal3f::Simd n2 )
     {
         return ( ScalarDot( n, n2 ) < 0.f ) ? -n : n;
     }
@@ -2075,42 +2075,50 @@ namespace pbrto
 
 
     template <typename T>
-    inline Vector3<T> FaceForward( const Vector3<T>& v, const Vector3<T>& v2 )
+    inline Vector3<T> FaceForward( Vector3<T> v, Vector3<T> v2 )
     {
         return ( Dot( v, v2 ) < 0.f ) ? -v : v;
     }
 
     template <>
-    inline Vector3<Float> FaceForward<Float>( const Vector3<Float>& v, const Vector3<Float>& v2 )
+    inline Vector3<Float> FaceForward<Float>( Vector3<Float> v, Vector3<Float> v2 )
     {
         return ( ScalarDot( v, v2 ) < 0.f ) ? Vector3<Float>( -v ) : v;
     }
 
-    inline Vector3f::Simd FaceForward( const Vector3f::Simd& v, const Vector3f::Simd& v2 )
+    inline Vector3f::Simd FaceForward( Vector3f::Simd v, Vector3f::Simd v2 )
     {
         return ( ScalarDot( v, v2 ) < 0.f ) ? -v : v;
     }
 
 
     template <typename T>
-    inline Vector3<T> FaceForward( const Vector3<T>& v, const Normal3<T>& n2 )
+    inline Vector3<T> FaceForward( Vector3<T> v, Normal3<T> n2 )
     {
         return ( Dot( v, n2 ) < 0.f ) ? -v : v;
     }
 
     template <>
-    inline Vector3<Float> FaceForward<Float>( const Vector3<Float>& v, const Normal3<Float>& n2 )
+    inline Vector3<Float> FaceForward<Float>( Vector3<Float> v, Normal3<Float> n2 )
     {
         return ( ScalarDot( v, n2 ) < 0.f ) ? Vector3<Float>( -v ) : v;
     }
 
-    inline Vector3f::Simd FaceForward( const Vector3f::Simd& v, const Normal3f::Simd& n2 )
+    inline Vector3f::Simd FaceForward( Vector3f::Simd v, Normal3f::Simd n2 )
     {
         return ( ScalarDot( v, n2 ) < 0.f ) ? -v : v;
     }
 
 
-    inline Float AngleBetween( const Quaternion& q1, const Quaternion& q2 )
+    inline Float AngleBetween( Quaternion q1, Quaternion q2 )
+    {
+        if ( ScalarDot( q1, q2 ) < 0.f )
+            return Pi - 2 * SafeASin( ScalarLength( q1 + q2 ) / 2 );
+        else
+            return 2 * SafeASin( ScalarLength( q2 - q1 ) / 2 );
+    }
+
+    inline Float AngleBetween( Quaternion::Simd q1, Quaternion::Simd q2 )
     {
         if ( ScalarDot( q1, q2 ) < 0.f )
             return Pi - 2 * SafeASin( ScalarLength( q1 + q2 ) / 2 );

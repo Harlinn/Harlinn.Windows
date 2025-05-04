@@ -788,32 +788,32 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        TupleSimd( value_type x, value_type y ) noexcept
+        TupleSimd( value_type x, value_type y ) noexcept requires ( Size == 2 )
             : simd( Traits::Set(y, x) )
         {
         }
 
-        TupleSimd( value_type x, value_type y, value_type z ) noexcept
+        TupleSimd( value_type x, value_type y, value_type z ) noexcept requires ( Size == 3 )
             : simd( Traits::Set( z, y, x ) )
         {
         }
 
-        TupleSimd( value_type x, value_type y, value_type z, value_type w ) noexcept
+        TupleSimd( value_type x, value_type y, value_type z, value_type w ) noexcept requires ( Size == 4 )
             : simd( Traits::Set( w, z, y, x ) )
         {
         }
 
-        TupleSimd( value_type x ) noexcept requires ( Size == 2 )
+        explicit TupleSimd( value_type x ) noexcept requires ( Size == 2 )
             : simd( Traits::Set( x, x ) )
         { }
-        TupleSimd( value_type x ) noexcept requires ( Size == 3 )
+        explicit TupleSimd( value_type x ) noexcept requires ( Size == 3 )
             : simd( Traits::Set( x, x, x ) )
         {
         }
-        TupleSimd( value_type x ) noexcept requires ( Size == 4 )
+        explicit TupleSimd( value_type x ) noexcept requires ( Size == 4 )
             : simd( Traits::Set( x, x, x, x ) )
         { }
-        TupleSimd( value_type x ) noexcept requires ( Size == 8 )
+        explicit TupleSimd( value_type x ) noexcept requires ( Size == 8 )
             : simd( Traits::Set( x, x, x, x, x, x, x, x ) )
         {
         }
@@ -890,6 +890,11 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Add( simd, other.simd );
             return *this;
         }
+        TupleSimd& operator += ( const value_type other ) noexcept
+        {
+            simd = Traits::Add( simd, Traits::Fill<Size>( other ) );
+            return *this;
+        }
 
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
@@ -904,6 +909,13 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
+        TupleSimd& operator -= ( const value_type other ) noexcept
+        {
+            simd = Traits::Sub( simd, Traits::Fill<Size>( other ) );
+            return *this;
+        }
+
+
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator *= ( const T& other ) noexcept
@@ -917,6 +929,12 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
+        TupleSimd& operator *= ( const value_type other ) noexcept
+        {
+            simd = Traits::Mul( simd, Traits::Fill<Size>( other ) );
+            return *this;
+        }
+
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator /= ( const T& other ) noexcept
@@ -927,6 +945,12 @@ namespace Harlinn::Common::Core::Math
         TupleSimd& operator /= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Div( simd, other.simd );
+            return *this;
+        }
+
+        TupleSimd& operator /= ( const value_type v ) noexcept
+        {
+            simd = Traits::Div( simd, Traits::FillDivisor<Size>( v ) );
             return *this;
         }
 
@@ -963,6 +987,10 @@ namespace Harlinn::Common::Core::Math
         {
             SetX( src.simd );
         }
+        void SetX( const value_type value )
+        {
+            SetX( Traits::Fill<Size>( value ) );
+        }
         void AbsX( )
         {
             simd = Traits::AbsX( simd );
@@ -997,7 +1025,10 @@ namespace Harlinn::Common::Core::Math
         {
             SetY( src.simd );
         }
-
+        void SetY( const value_type value )
+        {
+            SetY( Traits::Fill<Size>( value ) );
+        }
         void AbsY( )
         {
             simd = Traits::AbsY( simd );
@@ -1044,11 +1075,14 @@ namespace Harlinn::Common::Core::Math
         {
             simd = Traits::Permute<0, 1, 6, 3>( simd, src );
         }
-        void SetZ( const TupleSimd& src )
+        void SetZ( const TupleSimd& src ) requires ( Size > 2 )
         {
             SetZ( src.simd );
         }
-
+        void SetZ( const value_type value ) requires ( Size > 2 )
+        {
+            SetZ( Traits::Fill<Size>( value ) );
+        }
         void AbsZ( ) requires ( Size > 2 )
         {
             simd = Traits::AbsZ( simd );
@@ -1087,9 +1121,13 @@ namespace Harlinn::Common::Core::Math
         {
             simd = Traits::Permute<0, 1, 2, 7>( simd, src );
         }
-        void SetW( const TupleSimd& src )
+        void SetW( const TupleSimd& src ) requires ( Size > 3 )
         {
             SetW( src.simd );
+        }
+        void SetW( const value_type value ) requires ( Size > 3 )
+        {
+            SetW( Traits::Fill<Size>( value ) );
         }
 
         void AbsW( ) requires ( Size > 3 )
@@ -2917,7 +2955,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
-        return Traits::Div( lhs.simd, Traits::Fill( static_cast< Type >( rhs ) ) );
+        return Traits::Div( lhs.simd, Traits::FillDivisor<Traits::Size>( static_cast< Type >( rhs ) ) );
     }
     template<typename U, Internal::SimdType T>
         requires IsArithmetic<U>
@@ -2934,7 +2972,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::Fill( static_cast< Type >( rhs ) ) );
+        return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::FillDivisor<Traits::Size>( static_cast< Type >( rhs ) ) );
     }
     template<typename U, Internal::TupleType T, typename ResultT = typename T::Simd>
         requires IsArithmetic<U>
@@ -13962,6 +14000,22 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename Quaternion<T>::Traits;
         return Traits::Dot( Traits::Load( q1.values ), Traits::Load( q2.values ) );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarDot( const QuaternionSimd<Quaternion<T>>& q1, const QuaternionSimd<Quaternion<T>>& q2 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        return Traits::First( Traits::Dot( q1.simd, q2.simd ) );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarDot( const Quaternion<T>& q1, const QuaternionSimd<Quaternion<T>>& q2 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        return Traits::First( Traits::Dot( Traits::Load( q1.values ), q2.simd ) );
     }
 
     template<typename T>

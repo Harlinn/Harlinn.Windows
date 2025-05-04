@@ -37,7 +37,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         Vector3 extremeA = GetCenter( ) + diff * m::Max( Vector3( radA.simd ), Vector3( radB.simd ) - dist );
         Vector3 extremeB = rhs.GetCenter( ) - diff * m::Max( Vector3( radB.simd ), Vector3( radA.simd ) - dist );
 
-        return BoundingSphere( ( extremeA + extremeB ) * 0.5f, m::ScalarLength( extremeA - extremeB ) * 0.5f );
+        return BoundingSphere( ( extremeA + extremeB ) * 0.5f, Scalar( m::ScalarLength( extremeA - extremeB ) * 0.5f) );
 #else
         float radA = GetRadius( );
         if ( radA == 0.0f )
