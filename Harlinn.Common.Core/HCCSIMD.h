@@ -5511,6 +5511,40 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Compares <c>Size</c> elements of v1 and v2,
+        /// returning true if all are equal.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// Returns <c>true</c> if the lower <c>Size</c> elements of v1 and v2
+        /// are equal.
+        /// </returns>
+        static bool AllEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = Equal( v1, v2 );
+            return AllTrue( result );
+        }
+
+        static bool AllEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
+        {
+            auto v = Abs( Sub( v1, v2 ) );
+            auto rmm1 = LessOrEqual( v, epsilon );
+            return AllTrue( rmm1 );
+        }
+
+        static bool AnyEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
+        {
+            auto v = Abs( Sub( v1, v2 ) );
+            auto rmm1 = LessOrEqual( v, epsilon );
+            return AnyTrue( rmm1 );
+        }
+
         static bool AnyEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Equal( v1, v2 );
@@ -5673,83 +5707,7 @@ namespace Harlinn::Common::Core::SIMD
             return AnyTrue( result );
         }
 
-        /// <summary>
-        /// Compares <c>Size</c> elements of v1 and v2,
-        /// returning true if all are equal.
-        /// </summary>
-        /// <param name="v1">
-        /// The first source of values for the comparison.
-        /// </param>
-        /// <param name="v2">
-        /// The second source of values for the comparison.
-        /// </param>
-        /// <returns>
-        /// Returns <c>true</c> if the lower <c>Size</c> elements of v1 and v2
-        /// are equal.
-        /// </returns>
-        static bool AllEqual( SIMDType v1, SIMDType v2 ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                if constexpr ( N == 1 )
-                {
-                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
-                    return ( _mm_movemask_ps( rmm1 ) & 1 ) == 1;
-                }
-                else if constexpr ( N == 2 )
-                {
-                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
-                    return ( _mm_movemask_ps( rmm1 ) & 3 ) == 3;
-                }
-                else if constexpr ( N == 3 )
-                {
-                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
-                    return ( _mm_movemask_ps( rmm1 ) & 7 ) == 7;
-                }
-                else
-                {
-                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
-                    return ( _mm_movemask_ps( rmm1 ) & 15 ) == 15;
-                }
-            }
-            else
-            {
-                if constexpr ( N == 5 )
-                {
-                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 31 ) == 31;
-                }
-                else if constexpr ( N == 6 )
-                {
-                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 63 ) == 63;
-                }
-                else if constexpr ( N == 7 )
-                {
-                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 0x7F ) == 0x7F;
-                }
-                else 
-                {
-                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 0xFF ) == 0xFF;
-                }
-            }
-        }
-
-        static bool AllEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
-        {
-            auto v = Abs( Sub( v1, v2 ) );
-            auto rmm1 = LessOrEqual( v, epsilon );
-            return AllTrue( rmm1 );
-        }
-
-        static bool AnyEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
-        {
-            auto v = Abs( Sub( v1, v2 ) );
-            auto rmm1 = LessOrEqual( v, epsilon );
-            return AnyTrue( rmm1 );
-        }
+        
 
         /// <summary>
         /// Performs binary, element wise comparision of v1 and v2. 
