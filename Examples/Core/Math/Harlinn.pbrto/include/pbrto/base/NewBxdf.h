@@ -47,20 +47,17 @@ namespace pbrto
         All = Reflection | Transmission
     };
 
-    PBRT_CPU_GPU
-        inline BxDFReflTransFlags operator|( BxDFReflTransFlags a, BxDFReflTransFlags b )
+    inline BxDFReflTransFlags operator|( BxDFReflTransFlags a, BxDFReflTransFlags b )
     {
         return BxDFReflTransFlags( ( int )a | ( int )b );
     }
 
-    PBRT_CPU_GPU
-        inline int operator&( BxDFReflTransFlags a, BxDFReflTransFlags b )
+    inline int operator&( BxDFReflTransFlags a, BxDFReflTransFlags b )
     {
         return ( ( int )a & ( int )b );
     }
 
-    PBRT_CPU_GPU
-        inline BxDFReflTransFlags& operator|=( BxDFReflTransFlags& a, BxDFReflTransFlags b )
+    inline BxDFReflTransFlags& operator|=( BxDFReflTransFlags& a, BxDFReflTransFlags b )
     {
         ( int& )a |= int( b );
         return a;
@@ -88,53 +85,49 @@ namespace pbrto
 
     };
 
-    PBRT_CPU_GPU
-        inline BxDFFlags operator|( BxDFFlags a, BxDFFlags b )
+    inline BxDFFlags operator|( BxDFFlags a, BxDFFlags b )
     {
         return BxDFFlags( ( int )a | ( int )b );
     }
 
-    PBRT_CPU_GPU
-        inline int operator&( BxDFFlags a, BxDFFlags b )
+    inline int operator&( BxDFFlags a, BxDFFlags b )
     {
         return ( ( int )a & ( int )b );
     }
 
-    PBRT_CPU_GPU
-        inline int operator&( BxDFFlags a, BxDFReflTransFlags b )
+    inline int operator&( BxDFFlags a, BxDFReflTransFlags b )
     {
         return ( ( int )a & ( int )b );
     }
 
-    PBRT_CPU_GPU
-        inline BxDFFlags& operator|=( BxDFFlags& a, BxDFFlags b )
+    inline BxDFFlags& operator|=( BxDFFlags& a, BxDFFlags b )
     {
         ( int& )a |= int( b );
         return a;
     }
 
     // BxDFFlags Inline Functions
-    PBRT_CPU_GPU inline bool IsReflective( BxDFFlags f )
+    inline bool IsReflective( BxDFFlags f )
     {
         return f & BxDFFlags::Reflection;
     }
-    PBRT_CPU_GPU inline bool IsTransmissive( BxDFFlags f )
+    inline bool IsTransmissive( BxDFFlags f )
     {
         return f & BxDFFlags::Transmission;
     }
-    PBRT_CPU_GPU inline bool IsDiffuse( BxDFFlags f )
+    inline bool IsDiffuse( BxDFFlags f )
     {
         return f & BxDFFlags::Diffuse;
     }
-    PBRT_CPU_GPU inline bool IsGlossy( BxDFFlags f )
+    inline bool IsGlossy( BxDFFlags f )
     {
         return f & BxDFFlags::Glossy;
     }
-    PBRT_CPU_GPU inline bool IsSpecular( BxDFFlags f )
+    inline bool IsSpecular( BxDFFlags f )
     {
         return f & BxDFFlags::Specular;
     }
-    PBRT_CPU_GPU inline bool IsNonSpecular( BxDFFlags f )
+    inline bool IsNonSpecular( BxDFFlags f )
     {
         return f & ( BxDFFlags::Diffuse | BxDFFlags::Glossy );
     }
@@ -144,8 +137,7 @@ namespace pbrto
     // TransportMode Definition
     enum class TransportMode { Radiance, Importance };
 
-    PBRT_CPU_GPU
-        inline TransportMode operator!( TransportMode mode )
+    inline TransportMode operator!( TransportMode mode )
     {
         return ( mode == TransportMode::Radiance ) ? TransportMode::Importance
             : TransportMode::Radiance;
@@ -156,38 +148,33 @@ namespace pbrto
     // BSDFSample Definition
     struct BSDFSample
     {
-        // BSDFSample Public Methods
-        BSDFSample( ) = default;
-        PBRT_CPU_GPU
-            BSDFSample( SampledSpectrum f, Vector3f wi, Float pdf, BxDFFlags flags, Float eta = 1,
-                bool pdfIsProportional = false )
-            : f( f ),
-            wi( wi ),
-            pdf( pdf ),
-            flags( flags ),
-            eta( eta ),
-            pdfIsProportional( pdfIsProportional )
-        {
-        }
-
-        PBRT_CPU_GPU
-            bool IsReflection( ) const { return pbrto::IsReflective( flags ); }
-        PBRT_CPU_GPU
-            bool IsTransmission( ) const { return pbrto::IsTransmissive( flags ); }
-        PBRT_CPU_GPU
-            bool IsDiffuse( ) const { return pbrto::IsDiffuse( flags ); }
-        PBRT_CPU_GPU
-            bool IsGlossy( ) const { return pbrto::IsGlossy( flags ); }
-        PBRT_CPU_GPU
-            bool IsSpecular( ) const { return pbrto::IsSpecular( flags ); }
-
-        std::string ToString( ) const;
         SampledSpectrum f;
-        Vector3f wi;
+        Vector3f::Simd wi;
         Float pdf = 0;
         BxDFFlags flags;
         Float eta = 1;
         bool pdfIsProportional = false;
+
+        // BSDFSample Public Methods
+        BSDFSample( ) = default;
+        BSDFSample( const SampledSpectrum& f, const Vector3f::Simd& wi, Float pdf, BxDFFlags flags, Float eta = 1, bool pdfIsProportional = false )
+            : f( f ),
+              wi( wi ),
+              pdf( pdf ),
+              flags( flags ),
+              eta( eta ),
+              pdfIsProportional( pdfIsProportional )
+        {
+        }
+
+        bool IsReflection( ) const { return pbrto::IsReflective( flags ); }
+        bool IsTransmission( ) const { return pbrto::IsTransmissive( flags ); }
+        bool IsDiffuse( ) const { return pbrto::IsDiffuse( flags ); }
+        bool IsGlossy( ) const { return pbrto::IsGlossy( flags ); }
+        bool IsSpecular( ) const { return pbrto::IsSpecular( flags ); }
+
+        std::string ToString( ) const;
+        
     };
 
     class DiffuseBxDF;
@@ -202,37 +189,28 @@ namespace pbrto
     class CoatedConductorBxDF;
 
     // BxDF Definition
-    class BxDF
-        : public TaggedPointer<DiffuseTransmissionBxDF, DiffuseBxDF, CoatedDiffuseBxDF,
-        CoatedConductorBxDF, DielectricBxDF, ThinDielectricBxDF,
-        HairBxDF, MeasuredBxDF, ConductorBxDF, NormalizedFresnelBxDF>
+    class BxDF : public TaggedPointer<DiffuseTransmissionBxDF, DiffuseBxDF, CoatedDiffuseBxDF,
+                                    CoatedConductorBxDF, DielectricBxDF, ThinDielectricBxDF,
+                                    HairBxDF, MeasuredBxDF, ConductorBxDF, NormalizedFresnelBxDF>
     {
     public:
         // BxDF Interface
-        PBRT_CPU_GPU inline BxDFFlags Flags( ) const;
+        inline BxDFFlags Flags( ) const;
 
         using TaggedPointer::TaggedPointer;
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline SampledSpectrum f( Vector3f wo, Vector3f wi,
-            TransportMode mode ) const;
+        inline SampledSpectrum f( const Vector3f::Simd& wo, const Vector3f::Simd& wi, TransportMode mode ) const;
 
-        PBRT_CPU_GPU inline pstdo::optional<BSDFSample> Sample_f(
-            Vector3f wo, Float uc, Point2f u, TransportMode mode = TransportMode::Radiance,
-            BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
+        inline pstdo::optional<BSDFSample> Sample_f( const Vector3f::Simd& wo, Float uc, const Point2f& u, TransportMode mode = TransportMode::Radiance, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
 
-        PBRT_CPU_GPU inline Float PDF(
-            Vector3f wo, Vector3f wi, TransportMode mode,
-            BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
+        inline Float PDF( const Vector3f::Simd& wo, const Vector3f::Simd& wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
 
-        PBRT_CPU_GPU
-            SampledSpectrum rho( Vector3f wo, pstdo::span<const Float> uc,
-                pstdo::span<const Point2f> u2 ) const;
-        SampledSpectrum rho( pstdo::span<const Point2f> u1, pstdo::span<const Float> uc2,
-            pstdo::span<const Point2f> u2 ) const;
+        SampledSpectrum rho( const Vector3f::Simd& wo, pstdo::span<const Float> uc, pstdo::span<const Point2f> u2 ) const;
+        SampledSpectrum rho( pstdo::span<const Point2f> u1, pstdo::span<const Float> uc2, pstdo::span<const Point2f> u2 ) const;
 
-        PBRT_CPU_GPU inline void Regularize( );
+        inline void Regularize( );
     };
 
 }

@@ -140,45 +140,6 @@ namespace pbrto
         return Sqr( f ) / ( Sqr( f ) + Sqr( g ) );
     }
 
-    /*
-    inline int SampleDiscrete( pstdo::span<const Float> weights, Float u, Float* pmf, Float* uRemapped )
-    {
-        // Handle empty _weights_ for discrete sampling
-        if ( weights.empty( ) )
-        {
-            if ( pmf )
-                *pmf = 0;
-            return -1;
-        }
-
-        // Compute sum of _weights_
-        Float sumWeights = 0;
-        for ( Float w : weights )
-            sumWeights += w;
-
-        // Compute rescaled $u'$ sample
-        Float up = u * sumWeights;
-        if ( up == sumWeights )
-            up = NextFloatDown( up );
-
-        // Find offset in _weights_ corresponding to $u'$
-        int offset = 0;
-        Float sum = 0;
-        while ( sum + weights[ offset ] <= up )
-        {
-            sum += weights[ offset++ ];
-            NDCHECK_LT( offset, weights.size( ) );
-        }
-
-        // Compute PMF and remapped _u_ value, if necessary
-        if ( pmf )
-            *pmf = weights[ offset ] / sumWeights;
-        if ( uRemapped )
-            *uRemapped = std::min( ( up - sum ) / weights[ offset ], OneMinusEpsilon );
-
-        return offset;
-    }
-    */
 
     inline Float LinearPDF( Float x, Float a, Float b )
     {
@@ -431,7 +392,7 @@ namespace pbrto
         return Point2f( Sqr( p.x ) + Sqr( p.y ), phi / ( 2 * Pi ) );
     }
 
-    inline Point2f SampleUniformDiskConcentric( Point2f u )
+    inline Point2f SampleUniformDiskConcentric( const Point2f& u )
     {
         // Map _u_ to $[-1,1]^2$ and handle degeneracy at the origin
         Point2f uOffset = 2 * u - Vector2f( 1, 1 );
@@ -538,7 +499,7 @@ namespace pbrto
         return Inv4Pi;
     }
 
-    inline Point2f InvertUniformSphereSample( Vector3f w )
+    inline Point2f InvertUniformSphereSample( const Vector3f& w )
     {
         Float phi = Math::ATan2( w.y, w.x );
         if ( phi < 0 )
@@ -546,7 +507,7 @@ namespace pbrto
         return Point2f( ( 1 - w.z ) / 2, phi / ( 2 * Pi ) );
     }
 
-    inline Vector3f::Simd SampleCosineHemisphere( Point2f u )
+    inline Vector3f::Simd SampleCosineHemisphere( const Point2f& u )
     {
         Point2f d = SampleUniformDiskConcentric( u );
         Float z = SafeSqrt( 1 - Sqr( d.x ) - Sqr( d.y ) );

@@ -34,14 +34,14 @@ namespace pbrto
 {
 
     // Scattering Inline Functions
-    PBRT_CPU_GPU inline Vector3f Reflect( Vector3f wo, Vector3f n )
+    inline Vector3f::Simd Reflect( const Vector3f::Simd& wo, const Vector3f::Simd& n )
     {
         return -wo + 2 * ScalarDot( wo, n ) * n;
     }
 
-    PBRT_CPU_GPU inline bool Refract( Vector3f wi, Normal3f n, Float eta, Float* etap,
-        Vector3f* wt )
+    inline bool Refract( const Vector3f::Simd& wi, const Normal3f::Simd& nIn, Float eta, Float* etap, Vector3f::Simd* wt )
     {
+        auto n = nIn;
         Float cosTheta_i = ScalarDot( n, wi );
         // Potentially flip interface orientation for Snell's law
         if ( cosTheta_i < 0 )
@@ -60,7 +60,7 @@ namespace pbrto
 
         Float cosTheta_t = Math::Sqrt( 1 - sin2Theta_t );
 
-        *wt = -wi / eta + ( cosTheta_i / eta - cosTheta_t ) * Vector3f( n );
+        *wt = -wi / eta + ( cosTheta_i / eta - cosTheta_t ) * Vector3f::Simd( n );
         // Provide relative IOR along ray to caller
         if ( etap )
             *etap = eta;

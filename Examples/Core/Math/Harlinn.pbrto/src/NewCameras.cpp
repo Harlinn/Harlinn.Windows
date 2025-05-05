@@ -917,7 +917,7 @@ namespace pbrto
             // Update ray path for element interface interaction
             if ( !isStop )
             {
-                Vector3f w;
+                Vector3f::Simd w;
                 Float eta_i = element.eta;
                 Float eta_t = ( i > 0 && elementInterfaces[ i - 1 ].eta != 0 )
                     ? elementInterfaces[ i - 1 ].eta
@@ -1133,7 +1133,7 @@ namespace pbrto
             // Update ray path for from-scene element interface interaction
             if ( !isStop )
             {
-                Vector3f wt;
+                Vector3f::Simd wt;
                 Float eta_i = ( i == 0 || elementInterfaces[ i - 1 ].eta == 0 )
                     ? 1
                     : elementInterfaces[ i - 1 ].eta;
@@ -1294,7 +1294,7 @@ namespace pbrto
             // Update ray path for element interface interaction
             if ( !isStop )
             {
-                Vector3f wt;
+                Vector3f::Simd wt;
                 Float eta_i = element.eta;
                 Float eta_t = ( i > 0 && elementInterfaces[ i - 1 ].eta != 0 )
                     ? elementInterfaces[ i - 1 ].eta
@@ -1369,7 +1369,7 @@ namespace pbrto
             // Update ray path for from-scene element interface interaction
             if ( !isStop )
             {
-                Vector3f wt;
+                Vector3f::Simd wt;
                 Float eta_i = ( i == 0 || elementInterfaces[ i - 1 ].eta == 0.f )
                     ? 1.f
                     : elementInterfaces[ i - 1 ].eta;

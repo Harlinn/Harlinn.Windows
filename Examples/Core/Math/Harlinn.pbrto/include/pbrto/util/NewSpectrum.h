@@ -503,7 +503,7 @@ namespace pbrto
         return sampledSpectrum * sampledSpectrum;
     }
 
-    inline SampledSpectrum SafeDiv( SampledSpectrum a, SampledSpectrum b )
+    inline SampledSpectrum SafeDiv( const SampledSpectrum& a, const SampledSpectrum& b )
     {
 #ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
         using Traits = SampledSpectrum::Traits;
