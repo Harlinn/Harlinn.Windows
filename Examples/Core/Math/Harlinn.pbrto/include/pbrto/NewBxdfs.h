@@ -613,7 +613,7 @@ namespace pbrto
                             // Sample phase function and update layered path state
                             Point2f u{ r( ), r( ) };
                             pstdo::optional<PhaseFunctionSample> ps = phase.Sample_p( -w, u );
-                            if ( !ps || ps->pdf == 0 || ps->wi.z == 0 )
+                            if ( !ps || ps->pdf == 0 || ps->wi.z( ) == 0 )
                                 continue;
                             beta *= albedo * ps->p / ps->pdf;
                             w = ps->wi;
@@ -704,20 +704,21 @@ namespace pbrto
 
         pstdo::optional<BSDFSample> Sample_f( const Vector3f::Simd& woIn, Float uc, const Point2f& u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
-            Vector3f wo( woIn );
+            Vector3f::Simd wo( woIn );
+            Float woz = wo.z( );
             NCHECK( sampleFlags == BxDFReflTransFlags::All );  // for now
             // Set _wo_ for layered BSDF sampling
             bool flipWi = false;
-            if ( twoSided&& wo.z < 0 )
+            if ( twoSided&& woz < 0 )
             {
                 wo = -wo;
+                woz = Math::FastAbs( woz );
                 flipWi = true;
             }
 
             // Sample BSDF at entrance interface to get initial direction _w_
-            bool enteredTop = twoSided || wo.z > 0;
-            pstdo::optional<BSDFSample> bs =
-                enteredTop ? top.Sample_f( wo, uc, u, mode ) : bottom.Sample_f( wo, uc, u, mode );
+            bool enteredTop = twoSided || woz > 0;
+            pstdo::optional<BSDFSample> bs = enteredTop ? top.Sample_f( wo, uc, u, mode ) : bottom.Sample_f( wo, uc, u, mode );
             if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z( ) == 0 )
                 return {};
             if ( bs->IsReflection( ) )
@@ -727,7 +728,7 @@ namespace pbrto
                 bs->pdfIsProportional = true;
                 return bs;
             }
-            Vector3f w = bs->wi;
+            Vector3f::Simd w = bs->wi;
             bool specularPath = bs->IsSpecular( );
 
             // Declare _RNG_ for layered BSDF sampling
@@ -741,7 +742,7 @@ namespace pbrto
             Float pdf = bs->pdf;
             Float z = enteredTop ? thickness : 0;
             HGPhaseFunction phase( g );
-
+            Float wz = w.z( );
             for ( int depth = 0; depth < maxDepth; ++depth )
             {
                 // Follow random walk through layers to sample layered BSDF
@@ -754,7 +755,7 @@ namespace pbrto
                         return {};
                     pdf *= 1 - q;
                 }
-                if ( w.z == 0 )
+                if ( wz == 0 )
                     return {};
 
                 if ( albedo )
@@ -762,21 +763,21 @@ namespace pbrto
                     // Sample potential scattering event in layered medium
                     Float sigma_t = 1;
                     Float dz = SampleExponential( r( ), sigma_t / AbsCosTheta( w ) );
-                    Float zp = w.z > 0 ? ( z + dz ) : ( z - dz );
+                    Float zp = wz > 0 ? ( z + dz ) : ( z - dz );
                     NCHECK_RARE( 1e-5f, zp == z );
                     if ( zp == z )
                         return {};
                     if ( 0 < zp && zp < thickness )
                     {
                         // Update path state for valid scattering event between interfaces
-                        pstdo::optional<PhaseFunctionSample> ps =
-                            phase.Sample_p( -w, Point2f( r( ), r( ) ) );
-                        if ( !ps || ps->pdf == 0 || ps->wi.z == 0 )
+                        pstdo::optional<PhaseFunctionSample> ps = phase.Sample_p( -w, Point2f( r( ), r( ) ) );
+                        if ( !ps || ps->pdf == 0 || ps->wi.z( ) == 0 )
                             return {};
                         f *= albedo * ps->p;
                         pdf *= ps->pdf;
                         specularPath = false;
                         w = ps->wi;
+                        wz = w.z( );
                         z = zp;
 
                         continue;
@@ -814,6 +815,7 @@ namespace pbrto
                 pdf *= bs->pdf;
                 specularPath &= bs->IsSpecular( );
                 w = bs->wi;
+                wz = w.z( );
 
                 // Return _BSDFSample_ if path has left the layers
                 if ( bs->IsTransmission( ) )

@@ -63,22 +63,24 @@ namespace pbrto
     public:
         // HGPhaseFunction Public Methods
         HGPhaseFunction( ) = default;
-        PBRT_CPU_GPU
-            HGPhaseFunction( Float g ) : g( g ) {}
+        HGPhaseFunction( Float g ) : g( g ) {}
 
-        PBRT_CPU_GPU
-            Float p( Vector3f wo, Vector3f wi ) const { return HenyeyGreenstein( ScalarDot( wo, wi ), g ); }
+        Float p( const Vector3f::Simd& wo, const Vector3f::Simd& wi ) const
+        { 
+            return HenyeyGreenstein( ScalarDot( wo, wi ), g ); 
+        }
 
-        PBRT_CPU_GPU
-            pstdo::optional<PhaseFunctionSample> Sample_p( Vector3f wo, Point2f u ) const
+        pstdo::optional<PhaseFunctionSample> Sample_p( const Vector3f::Simd& wo, const Point2f& u ) const
         {
             Float pdf;
             Vector3f wi = SampleHenyeyGreenstein( wo, g, u, &pdf );
             return PhaseFunctionSample{ pdf, wi, pdf };
         }
 
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi ) const { return p( wo, wi ); }
+        Float PDF( const Vector3f::Simd& wo, const Vector3f::Simd& wi ) const
+        { 
+            return p( wo, wi ); 
+        }
 
         static const char* Name( ) { return "Henyey-Greenstein"; }
 
@@ -771,20 +773,19 @@ namespace pbrto
         Float LeScale, temperatureOffset, temperatureScale;
     };
 
-    PBRT_CPU_GPU inline Float PhaseFunction::p( Vector3f wo, Vector3f wi ) const
+    inline Float PhaseFunction::p( const Vector3f::Simd& wo, const Vector3f::Simd& wi ) const
     {
         auto p = [ & ]( auto ptr ) { return ptr->p( wo, wi ); };
         return Dispatch( p );
     }
 
-    PBRT_CPU_GPU inline pstdo::optional<PhaseFunctionSample> PhaseFunction::Sample_p( Vector3f wo,
-        Point2f u ) const
+    inline pstdo::optional<PhaseFunctionSample> PhaseFunction::Sample_p( const Vector3f::Simd& wo, const Point2f& u ) const
     {
         auto sample = [ & ]( auto ptr ) { return ptr->Sample_p( wo, u ); };
         return Dispatch( sample );
     }
 
-    PBRT_CPU_GPU inline Float PhaseFunction::PDF( Vector3f wo, Vector3f wi ) const
+    inline Float PhaseFunction::PDF( const Vector3f::Simd& wo, const Vector3f::Simd& wi ) const
     {
         auto pdf = [ & ]( auto ptr ) { return ptr->PDF( wo, wi ); };
         return Dispatch( pdf );
