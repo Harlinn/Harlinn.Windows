@@ -502,20 +502,22 @@ namespace pbrto
 
         SampledSpectrum f( const Vector3f::Simd& woIn, const Vector3f::Simd& wiIn, TransportMode mode ) const
         {
-            Vector3f wo( woIn );
-            Vector3f wi( wiIn );
+            Vector3f::Simd wo( woIn );
+            Vector3f::Simd wi( wiIn );
             SampledSpectrum f( 0. );
+            Float woz = wo.z( );
             // Estimate _LayeredBxDF_ value _f_ using random sampling
             // Set _wo_ and _wi_ for layered BSDF evaluation
-            if ( twoSided&& wo.z < 0 )
+            if ( twoSided && woz < 0 )
             {
                 wo = -wo;
+                woz = Math::FastAbs( woz );
                 wi = -wi;
             }
 
             // Determine entrance interface for layered BSDF
             TopOrBottomBxDF<TopBxDF, BottomBxDF> enterInterface;
-            bool enteredTop = twoSided || wo.z > 0;
+            bool enteredTop = twoSided || woz > 0;
             if ( enteredTop )
                 enterInterface = &top;
             else
@@ -550,30 +552,27 @@ namespace pbrto
                 // Sample random walk through layers to estimate BSDF value
                 // Sample transmission direction through entrance interface
                 Float uc = r( );
-                pstdo::optional<BSDFSample> wos = enterInterface.Sample_f(
-                    wo, uc, Point2f( r( ), r( ) ), mode, BxDFReflTransFlags::Transmission );
+                pstdo::optional<BSDFSample> wos = enterInterface.Sample_f( wo, uc, Point2f( r( ), r( ) ), mode, BxDFReflTransFlags::Transmission );
                 if ( !wos || !wos->f || wos->pdf == 0 || wos->wi.z( ) == 0 )
                     continue;
 
                 // Sample BSDF for virtual light from _wi_
                 uc = r( );
-                pstdo::optional<BSDFSample> wis = exitInterface.Sample_f(
-                    wi, uc, Point2f( r( ), r( ) ), !mode, BxDFReflTransFlags::Transmission );
+                pstdo::optional<BSDFSample> wis = exitInterface.Sample_f( wi, uc, Point2f( r( ), r( ) ), !mode, BxDFReflTransFlags::Transmission );
                 if ( !wis || !wis->f || wis->pdf == 0 || wis->wi.z( ) == 0 )
                     continue;
 
                 // Declare state for random walk through BSDF layers
                 SampledSpectrum beta = wos->f * AbsCosTheta( wos->wi ) / wos->pdf;
                 Float z = enteredTop ? thickness : 0;
-                Vector3f w = wos->wi;
+                Vector3f::Simd w = wos->wi;
+                Float wz = w.z( );
                 HGPhaseFunction phase( g );
 
                 for ( int depth = 0; depth < maxDepth; ++depth )
                 {
                     // Sample next event for layered BSDF evaluation random walk
-                    PBRT_DBG( "beta: %f %f %f %f, w: %f %f %f, f: %f %f %f %f\n", beta[ 0 ],
-                        beta[ 1 ], beta[ 2 ], beta[ 3 ], w.x, w.y, w.z, f[ 0 ], f[ 1 ], f[ 2 ],
-                        f[ 3 ] );
+                    PBRT_DBG( "beta: %f %f %f %f, w: %f %f %f, f: %f %f %f %f\n", beta[ 0 ], beta[ 1 ], beta[ 2 ], beta[ 3 ], w.x( ), w.y( ), w.z( ), f[ 0 ], f[ 1 ], f[ 2 ], f[ 3 ] );
                     // Possibly terminate layered BSDF random walk with Russian roulette
                     if ( depth > 3 && beta.MaxComponentValue( ) < 0.25f )
                     {
@@ -581,8 +580,7 @@ namespace pbrto
                         if ( r( ) < q )
                             break;
                         beta /= 1 - q;
-                        PBRT_DBG( "After RR with q = %f, beta: %f %f %f %f\n", q, beta[ 0 ],
-                            beta[ 1 ], beta[ 2 ], beta[ 3 ] );
+                        PBRT_DBG( "After RR with q = %f, beta: %f %f %f %f\n", q, beta[ 0 ], beta[ 1 ], beta[ 2 ], beta[ 3 ] );
                     }
 
                     // Account for media between layers and possibly scatter
@@ -597,8 +595,8 @@ namespace pbrto
                     {
                         // Sample medium scattering for layered BSDF evaluation
                         Float sigma_t = 1;
-                        Float dz = SampleExponential( r( ), sigma_t / Math::FastAbs( w.z ) );
-                        Float zp = w.z > 0 ? ( z + dz ) : ( z - dz );
+                        Float dz = SampleExponential( r( ), sigma_t / Math::FastAbs( wz ) );
+                        Float zp = wz > 0 ? ( z + dz ) : ( z - dz );
                         NDCHECK_RARE( 1e-5, z == zp );
                         if ( z == zp )
                             continue;
@@ -619,10 +617,11 @@ namespace pbrto
                                 continue;
                             beta *= albedo * ps->p / ps->pdf;
                             w = ps->wi;
+                            wz = w.z( );
                             z = zp;
 
                             // Possibly account for scattering through _exitInterface_
-                            if ( ( ( z < exitZ && w.z > 0 ) || ( z > exitZ && w.z < 0 ) ) &&
+                            if ( ( ( z < exitZ && wz > 0 ) || ( z > exitZ && wz < 0 ) ) &&
                                 !IsSpecular( exitInterface.Flags( ) ) )
                             {
                                 // Account for scattering through _exitInterface_
@@ -652,6 +651,7 @@ namespace pbrto
                             break;
                         beta *= bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
                         w = bs->wi;
+                        wz = w.z( );
 
                     }
                     else
@@ -677,6 +677,7 @@ namespace pbrto
                             break;
                         beta *= bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
                         w = bs->wi;
+                        wz = w.z( );
 
                         if ( !IsSpecular( exitInterface.Flags( ) ) )
                         {
