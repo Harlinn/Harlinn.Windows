@@ -2832,7 +2832,17 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
-
+        static SIMDType Trim( SIMDType v ) noexcept
+        {
+            if constexpr ( Size == SIMDTypeCapacity )
+            {
+                return v;
+            }
+            else
+            {
+                return And( v, Mask( ) );
+            }
+        }
 
         
 

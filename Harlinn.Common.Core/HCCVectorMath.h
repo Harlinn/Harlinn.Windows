@@ -2655,7 +2655,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT HSum( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Fill( ScalarHSum( t ) );
+        return Traits::Fill<Traits::Size>( ScalarHSum( t ) );
     }
 
     // Avg
@@ -2667,7 +2667,7 @@ namespace Harlinn::Common::Core::Math
     inline T Avg( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Div( Traits::HSum( t.simd ), Traits::Fill( static_cast<typename Traits::Type>( Traits::Size ) ));
+        return Traits::Div( Traits::HSum( t.simd ), Traits::FillDivisor<Traits::Size>( static_cast<typename Traits::Type>( Traits::Size ) ));
     }
 
     /// <summary>
@@ -2677,7 +2677,7 @@ namespace Harlinn::Common::Core::Math
     inline typename T::Simd Avg( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Div( Traits::HSum( Traits::Load( t.values ) ), Traits::Fill( static_cast< typename Traits::Type >( Traits::Size ) ) );
+        return Traits::Div( Traits::HSum( Traits::Load( t.values ) ), Traits::FillDivisor<Traits::Size>( static_cast< typename Traits::Type >( Traits::Size ) ) );
     }
 
     /// <summary>
@@ -2755,7 +2755,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT HProd( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Fill( ScalarHProc( t ) );
+        return Traits::Fill<Traits::Size>( ScalarHProc( t ) );
     }
 
 
@@ -2832,7 +2832,7 @@ namespace Harlinn::Common::Core::Math
     inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+        return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T, typename U>
@@ -2840,7 +2840,7 @@ namespace Harlinn::Common::Core::Math
     inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T, typename U>
@@ -2848,7 +2848,7 @@ namespace Harlinn::Common::Core::Math
     inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T, typename U>
@@ -2856,7 +2856,7 @@ namespace Harlinn::Common::Core::Math
     inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
 
     template<Internal::SimdType S, Internal::SimdType T>
@@ -3124,7 +3124,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( a.simd, b.simd, static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp( a.simd, b.simd, static_cast< Type >( t ) ) );
     }
 
     /// <summary>
@@ -3139,7 +3139,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) ) );
     }
 
     /// <summary>
@@ -3154,7 +3154,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) ) );
     }
 
     /// <summary>
@@ -3169,7 +3169,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) ) );
     }
 
     
@@ -3185,7 +3185,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, b.simd, t.simd );
+        return Traits::Trim( Traits::Lerp( a.simd, b.simd, t.simd ) );
     }
 
     /// <summary>
@@ -3199,7 +3199,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, b.simd, Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp( a.simd, b.simd, Traits::Load( t.values ) ) );
     }
 
     /// <summary>
@@ -3213,7 +3213,7 @@ namespace Harlinn::Common::Core::Math
     inline U Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, Traits::Load( b.values ), t.simd );
+        return Traits::Trim( Traits::Lerp( a.simd, Traits::Load( b.values ), t.simd ) );
     }
 
     /// <summary>
@@ -3227,7 +3227,7 @@ namespace Harlinn::Common::Core::Math
     inline S Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) ) );
     }
 
     //
@@ -3243,7 +3243,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values ), b.simd, t.simd );
+        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), b.simd, t.simd ) );
     }
 
     /// <summary>
@@ -3257,7 +3257,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) ) );
     }
 
     /// <summary>
@@ -3271,7 +3271,7 @@ namespace Harlinn::Common::Core::Math
     inline U Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), t.simd );
+        return Traits::Trim( Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), t.simd ) );
     }
 
     /// <summary>
@@ -3285,7 +3285,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) ) );
     }
 
     
@@ -3300,7 +3300,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd );
+        return Traits::Trim( Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd ) );
     }
 
     /// <summary>
@@ -3314,7 +3314,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) ) );
     }
     
 
@@ -3332,7 +3332,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp2( a.simd, b.simd, static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp2( a.simd, b.simd, static_cast< Type >( t ) ) );
     }
 
     /// <summary>
@@ -3347,7 +3347,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp2( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp2( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) ) );
     }
 
     /// <summary>
@@ -3362,7 +3362,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp2( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) ) );
     }
 
     /// <summary>
@@ -3377,7 +3377,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) );
+        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) ) );
     }
 
 
@@ -3393,7 +3393,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( a.simd, b.simd, t.simd );
+        return Traits::Trim( Traits::Lerp2( a.simd, b.simd, t.simd ) );
     }
 
     /// <summary>
@@ -3407,7 +3407,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( a.simd, Traits::Load( b.values ), t.simd );
+        return Traits::Trim( Traits::Lerp2( a.simd, Traits::Load( b.values ), t.simd ) );
     }
 
     /// <summary>
@@ -3421,7 +3421,7 @@ namespace Harlinn::Common::Core::Math
     inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( Traits::Load( a.values ), b.simd, t.simd );
+        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), b.simd, t.simd ) );
     }
 
     /// <summary>
@@ -3435,7 +3435,7 @@ namespace Harlinn::Common::Core::Math
     inline S Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), t.simd );
+        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), t.simd ) );
     }
 
     //
@@ -3451,7 +3451,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( a.simd, b.simd, Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp2( a.simd, b.simd, Traits::Load( t.values ) ) );
     }
 
     /// <summary>
@@ -3465,7 +3465,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp2( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) ) );
     }
 
     /// <summary>
@@ -3479,7 +3479,7 @@ namespace Harlinn::Common::Core::Math
     inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) ) );
     }
 
     /// <summary>
@@ -3493,7 +3493,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) ) );
     }
 
 
@@ -3508,7 +3508,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd );
+        return Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd ) );
     }
 
     /// <summary>
@@ -3522,7 +3522,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) );
+        return Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) ) );
     }
 
     
@@ -3667,7 +3667,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Clamp( NumberT v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Clamp( Traits::Fill( v ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
+        return Traits::Clamp( Traits::Fill<Traits::Size>( v ), Traits::Load( lowerBounds.values ), Traits::Load( upperBounds.values ) );
     }
 
     /// <summary>
@@ -3867,7 +3867,7 @@ namespace Harlinn::Common::Core::Math
 
         
         select = Traits::SameValue( controlMax, controlMin );
-        return Simd( Traits::Select( result, v.simd, select ) );
+        return Simd( Traits::Trim( Traits::Select( result, v.simd, select ) ) );
     }
 
     /// <summary>
@@ -4092,7 +4092,7 @@ namespace Harlinn::Common::Core::Math
         using FloatT = typename Traits::Type;
         using Simd = S;
 
-        return ClampLength( v, Simd( Traits::Fill( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill( static_cast< FloatT >( lengthMax ) ) ) );
+        return ClampLength( v, Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMax ) ) ) );
     }
 
     /// <summary>
@@ -4121,7 +4121,7 @@ namespace Harlinn::Common::Core::Math
         using FloatT = typename Traits::Type;
         using Simd = S;
 
-        return ClampLength( Simd( v ), Simd( Traits::Fill( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill( static_cast< FloatT >( lengthMax ) ) ) );
+        return ClampLength( Simd( v ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMax ) ) ) );
     }
 
     /// <summary>
@@ -4669,7 +4669,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
-        return Traits::Div(Traits::Fill(Constants<FloatT>::One), Traits::Sqrt( t.simd ));
+        return Traits::Div(Traits::Fill<Traits::Size>(Constants<FloatT>::One), Traits::Sqrt( t.simd ));
     }
     /// <summary>
     /// Calculates the reciprocal square root of each element in the argument.
@@ -4679,7 +4679,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
-        return Traits::Div( Traits::Fill( Constants<FloatT>::One ), Traits::Sqrt( Traits::Load( t.values ) ) );
+        return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), Traits::Sqrt( Traits::Load( t.values ) ) );
     }
 
     // Reciprocal
@@ -4692,7 +4692,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
-        return Traits::Div( Traits::Fill( Constants<FloatT>::One ), t.simd );
+        return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), t.simd );
     }
 
     /// <summary>
@@ -4703,7 +4703,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
-        return Traits::Div( Traits::Fill( Constants<FloatT>::One ), Traits::Load( t.values ) );
+        return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), Traits::Load( t.values ) );
     }
 
 
@@ -4718,7 +4718,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
     /// <summary>
@@ -4730,7 +4730,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -4742,7 +4742,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
     /// <summary>
@@ -4754,7 +4754,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -4768,7 +4768,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -4780,7 +4780,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -4792,7 +4792,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -4804,7 +4804,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -4904,14 +4904,14 @@ namespace Harlinn::Common::Core::Math
     constexpr inline T EvaluatePolynomial( T t, C c )
     {
         using Traits = typename T::Traits;
-        return Traits::Fill( c );
+        return Traits::Fill<Traits::Size>( c );
     }
 
     template <Internal::SimdType T, typename C, typename... Args>
     constexpr inline T EvaluatePolynomial( T t, C c, Args... remaining )
     {
         using Traits = typename T::Traits;
-        return FMA( t, EvaluatePolynomial( t, remaining... ), T( Traits::Fill( c ) ) );
+        return FMA( t, EvaluatePolynomial( t, remaining... ), T( Traits::Fill<Traits::Size>( c ) ) );
     }
 
 
@@ -4929,7 +4929,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
     /// <summary>
@@ -4944,7 +4944,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -4959,7 +4959,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
     /// <summary>
@@ -4974,7 +4974,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -4991,7 +4991,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5006,7 +5006,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5021,7 +5021,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5036,7 +5036,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5167,7 +5167,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
     /// <summary>
@@ -5182,7 +5182,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5197,7 +5197,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
     /// <summary>
@@ -5212,7 +5212,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5229,7 +5229,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMAddSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5244,7 +5244,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMAddSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5259,7 +5259,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5274,7 +5274,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5407,7 +5407,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
     /// <summary>
@@ -5422,7 +5422,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5437,7 +5437,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
     /// <summary>
@@ -5452,7 +5452,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5469,7 +5469,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMSubAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5484,7 +5484,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMSubAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5499,7 +5499,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5514,7 +5514,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5647,7 +5647,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
     /// <summary>
@@ -5662,7 +5662,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5677,7 +5677,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
     /// <summary>
@@ -5692,7 +5692,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5709,7 +5709,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FNMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5724,7 +5724,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FNMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5739,7 +5739,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5754,7 +5754,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5887,7 +5887,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
     /// <summary>
@@ -5902,7 +5902,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5917,7 +5917,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
     /// <summary>
@@ -5932,7 +5932,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -5949,7 +5949,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FNMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5964,7 +5964,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FNMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     /// <summary>
@@ -5979,7 +5979,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
     }
 
     /// <summary>
@@ -5994,7 +5994,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
     //
@@ -6311,8 +6311,8 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
 
-        auto result = Traits::Round( Traits::Mul( angles.simd, Traits::Fill( Constants<FloatT>::Inv2Pi ) ) );
-        return Traits::FNMAdd( result, Traits::Fill( Constants<FloatT>::PiTimes2 ), angles.simd );
+        auto result = Traits::Round( Traits::Mul( angles.simd, Traits::Fill<Traits::Size>( Constants<FloatT>::Inv2Pi ) ) );
+        return Traits::FNMAdd( result, Traits::Fill<Traits::Size>( Constants<FloatT>::PiTimes2 ), angles.simd );
     }
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ModAngles( const T& v ) noexcept
@@ -6346,7 +6346,7 @@ namespace Harlinn::Common::Core::Math
         offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
         offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
         // Sub 2Pi to all entries greater than Pi
-        return Traits::Sub( result, offset );
+        return Traits::Trim( Traits::Sub( result, offset ) );
     }
 
     /// <summary>
@@ -6414,7 +6414,7 @@ namespace Harlinn::Common::Core::Math
         offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
         offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
         // Sub 2Pi to all entries greater than Pi
-        return Traits::Sub( result, offset );
+        return Traits::Trim( Traits::Sub( result, offset ) );
     }
 
     /// <summary>
@@ -6810,7 +6810,7 @@ namespace Harlinn::Common::Core::Math
             {
                 if constexpr ( n < 0 )
                 {
-                    return Traits::Div( Traits::Fill( Constants<ValueType>::One ), Pow<-n>( v ).simd );
+                    return Traits::Div( Traits::Fill<Traits::Size>( Constants<ValueType>::One ), Pow<-n>( v ).simd );
                 }
                 auto n2 = Pow<n / 2>( v );
                 return n2 * n2 * Pow<n & 1>( v );
@@ -6824,7 +6824,7 @@ namespace Harlinn::Common::Core::Math
             template<>
             static constexpr inline T Pow<0>( const T& v )
             {
-                return Traits::Fill( Constants<ValueType>::One );
+                return Traits::Fill<Traits::Size>( Constants<ValueType>::One );
             }
         };
     }
@@ -6895,7 +6895,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMod( const T& x, const U& y ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::FMod( x.simd, Traits::Fill( static_cast< T::Traits::Type >( y ) ) );
+        return Traits::Trim( Traits::FMod( x.simd, Traits::Fill( static_cast< T::Traits::Type >( y ) ) ) );
     }
 
     template<Internal::TupleType T, typename U>
@@ -6903,7 +6903,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMod( const T& x, const U& y ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::FMod( Traits::Load( x.values ), Traits::Fill( static_cast< T::Traits::Type >( y ) ) );
+        return Traits::Trim( Traits::FMod( Traits::Load( x.values ), Traits::Fill( static_cast< T::Traits::Type >( y ) ) ) );
     }
 
 
@@ -6983,7 +6983,7 @@ namespace Harlinn::Common::Core::Math
         auto result = Traits::Mul( p0, firstPosition.simd );
         result = Traits::FMAdd( firstTangent.simd, t0, result );
         result = Traits::FMAdd( secondPosition.simd, p1, result );
-        return Traits::FMAdd( secondTangent.simd, t1, result );
+        return Traits::Trim( Traits::FMAdd( secondTangent.simd, t1, result ) );
     }
 
     /// <summary>
@@ -7297,7 +7297,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Dot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Fill( ScalarDot( v1, v2 ) );
+        return Traits::Fill<Traits::Size>( ScalarDot( v1, v2 ) );
     }
 
     
@@ -7559,7 +7559,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
         auto length = Length( v );
-        return T( Traits::Div( Traits::Fill( static_cast< Type >(1.) ), length.simd ) );
+        return T( Traits::Div( Traits::Fill<Traits::Size>( static_cast< Type >(1.) ), length.simd ) );
     }
     /// <summary>
     /// Calculates the reciprocal length of v.
@@ -9176,7 +9176,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( p1, p2, p3, Simd(Traits::Fill( f )), Simd(Traits::Fill( g )) );
+        return BaryCentric( p1, p2, p3, Simd(Traits::Fill<Traits::Size>( f )), Simd(Traits::Fill<Traits::Size>( g )) );
     }
 
     /// <summary>
@@ -9205,7 +9205,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( p1, p2, Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+        return BaryCentric( p1, p2, Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
 
     /// <summary>
@@ -9234,7 +9234,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( p1, Simd( p2 ), p3, Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+        return BaryCentric( p1, Simd( p2 ), p3, Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
 
     /// <summary>
@@ -9263,7 +9263,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
 
     /// <summary>
@@ -9292,7 +9292,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( Simd( p1 ), p2, p3, Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+        return BaryCentric( Simd( p1 ), p2, p3, Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
 
     /// <summary>
@@ -9321,7 +9321,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
 
     /// <summary>
@@ -9350,7 +9350,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
 
     /// <summary>
@@ -9379,7 +9379,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
 
-        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
 
 
@@ -10208,7 +10208,7 @@ namespace Harlinn::Common::Core::Math
         P1 = Traits::FMAdd( p1.simd, P1, P2 );
         P4 = Traits::Mul( p4.simd, P4 );
         P3 = Traits::FMAdd( p3.simd, P3, P4 );
-        return Simd(Traits::Add( P1, P3 ));
+        return Simd( Traits::Trim( Traits::Add( P1, P3 ) ));
     }
 
     /// <summary>
@@ -10822,7 +10822,7 @@ namespace Harlinn::Common::Core::Math
     inline S AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Add( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Add( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -10830,7 +10830,7 @@ namespace Harlinn::Common::Core::Math
     inline S AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Add( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Add( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -10838,7 +10838,7 @@ namespace Harlinn::Common::Core::Math
     inline T AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Add( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Add( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -10846,7 +10846,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
 
@@ -10857,7 +10857,7 @@ namespace Harlinn::Common::Core::Math
     inline S AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Add( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Add( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -10865,7 +10865,7 @@ namespace Harlinn::Common::Core::Math
     inline S AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Add( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Add( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -10873,7 +10873,7 @@ namespace Harlinn::Common::Core::Math
     inline T AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Add( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Add( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -10881,7 +10881,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
     // SubAdjustUp
@@ -10891,7 +10891,7 @@ namespace Harlinn::Common::Core::Math
     inline S SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Sub( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Sub( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -10899,7 +10899,7 @@ namespace Harlinn::Common::Core::Math
     inline S SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Sub( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Sub( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -10907,7 +10907,7 @@ namespace Harlinn::Common::Core::Math
     inline T SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Sub( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Sub( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -10915,7 +10915,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
     // SubAdjustDown
@@ -10925,7 +10925,7 @@ namespace Harlinn::Common::Core::Math
     inline S SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Sub( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Sub( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -10933,7 +10933,7 @@ namespace Harlinn::Common::Core::Math
     inline S SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Sub( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Sub( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -10941,7 +10941,7 @@ namespace Harlinn::Common::Core::Math
     inline T SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Sub( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Sub( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -10949,7 +10949,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
     // MulAdjustUp
@@ -10959,7 +10959,7 @@ namespace Harlinn::Common::Core::Math
     inline S MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Mul( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Mul( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -10967,7 +10967,7 @@ namespace Harlinn::Common::Core::Math
     inline S MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Mul( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Mul( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -10975,7 +10975,7 @@ namespace Harlinn::Common::Core::Math
     inline T MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Mul( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Mul( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -10983,7 +10983,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
     // MulAdjustDown
@@ -10993,7 +10993,7 @@ namespace Harlinn::Common::Core::Math
     inline S MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Mul( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Mul( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -11001,7 +11001,7 @@ namespace Harlinn::Common::Core::Math
     inline S MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Mul( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Mul( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -11009,7 +11009,7 @@ namespace Harlinn::Common::Core::Math
     inline T MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Mul( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Mul( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -11017,7 +11017,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
     // DivAdjustUp
@@ -11027,7 +11027,7 @@ namespace Harlinn::Common::Core::Math
     inline S DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Div( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Div( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -11035,7 +11035,7 @@ namespace Harlinn::Common::Core::Math
     inline S DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Div( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Div( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -11043,7 +11043,7 @@ namespace Harlinn::Common::Core::Math
     inline T DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Div( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Div( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -11051,7 +11051,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
     // DivAdjustDown
@@ -11061,7 +11061,7 @@ namespace Harlinn::Common::Core::Math
     inline S DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Div( a.simd, b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Div( a.simd, b.simd ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T >
@@ -11069,7 +11069,7 @@ namespace Harlinn::Common::Core::Math
     inline S DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Div( a.simd, Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Div( a.simd, Traits::Load( b.values ) ) ) );
     }
 
     template<Internal::TupleType S, Internal::SimdType T >
@@ -11077,7 +11077,7 @@ namespace Harlinn::Common::Core::Math
     inline T DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Div( Traits::Load( a.values ), b.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Div( Traits::Load( a.values ), b.simd ) ) );
     }
 
     template<Internal::TupleType S, Internal::TupleType T >
@@ -11085,7 +11085,7 @@ namespace Harlinn::Common::Core::Math
     inline typename S::Simd DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
     
@@ -11095,13 +11095,13 @@ namespace Harlinn::Common::Core::Math
     inline S SqrtAdjustUp( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Sqrt( v.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::Sqrt( v.simd ) ) );
     }
     template<Internal::TupleType S >
     inline typename S::Simd SqrtAdjustUp( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextUp( Traits::Sqrt( Traits::Load( v.values ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::Sqrt( Traits::Load( v.values ) ) ) );
     }
 
     // SqrtAdjustDown
@@ -11110,13 +11110,13 @@ namespace Harlinn::Common::Core::Math
     inline S SqrtAdjustDown( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Sqrt( v.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::Sqrt( v.simd ) ) );
     }
     template<Internal::TupleType S >
     inline typename S::Simd SqrtAdjustDown( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
-        return Traits::NextDown( Traits::Sqrt( Traits::Load( v.values ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::Sqrt( Traits::Load( v.values ) ) ) );
     }
 
     // FMAAdjustUp
@@ -11130,7 +11130,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -11142,7 +11142,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11154,7 +11154,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11166,7 +11166,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     //
@@ -11180,7 +11180,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11192,7 +11192,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11204,7 +11204,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11216,7 +11216,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     //
@@ -11229,7 +11229,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( a.simd, b.simd, c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -11240,7 +11240,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11251,7 +11251,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11262,7 +11262,7 @@ namespace Harlinn::Common::Core::Math
     inline S FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     //
@@ -11275,7 +11275,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -11286,7 +11286,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11297,7 +11297,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11308,7 +11308,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     // FMAAdjustDown
@@ -11322,7 +11322,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -11334,7 +11334,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11346,7 +11346,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11358,7 +11358,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     //
@@ -11372,7 +11372,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11384,7 +11384,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11396,7 +11396,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11408,7 +11408,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     //
@@ -11421,7 +11421,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( a.simd, b.simd, c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -11432,7 +11432,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11443,7 +11443,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11454,7 +11454,7 @@ namespace Harlinn::Common::Core::Math
     inline S FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     //
@@ -11467,7 +11467,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -11478,7 +11478,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
     }
 
     /// <summary>
@@ -11489,7 +11489,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -11500,7 +11500,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
     }
 
     
@@ -11510,9 +11510,11 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Vector<float, 2>, float>;
+        using Base::Base;
         
         using Traits = Base::Traits;
 
+        /*
         Vector( ) noexcept = default;
         explicit Vector( float v ) noexcept
             : Base( v, v )
@@ -11537,6 +11539,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray(  other.simd ) )
         { }
+        */
 
     };
 
@@ -11545,7 +11548,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Vector<Int32, 2>, Int32>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11571,7 +11575,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
-
+        */
     };
 
     
@@ -11583,6 +11587,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Vector<double, 2>, double>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11610,6 +11616,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
+        */
     };
 
     template<>
@@ -11617,7 +11624,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Vector<UInt32, 2>, UInt32>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11648,7 +11656,7 @@ namespace Harlinn::Common::Core::Math
             : Vector( Traits::ToArray( other.simd ) )
         {
         }
-
+        */
     };
 
 
@@ -11657,6 +11665,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Vector<float, 3>, float>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11684,6 +11694,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
+        */
     };
 
     template<>
@@ -11691,6 +11702,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Vector<Int32, 3>, Int32>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11716,6 +11729,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
+        */
     };
 
 
@@ -11724,6 +11738,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Vector<double, 3>, double>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11750,6 +11766,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
+        */
     };
 
     template<>
@@ -11757,6 +11774,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Vector<UInt32, 3>, UInt32>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11787,6 +11806,7 @@ namespace Harlinn::Common::Core::Math
             : Vector( Traits::ToArray( other.simd ) )
         {
         }
+        */
     };
 
 
@@ -11795,7 +11815,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple4<Vector<float, 4>, float>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
         using Base::Size;
         using value_type = Base::value_type;
@@ -11825,6 +11846,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
+        */
     };
 
     template<>
@@ -11832,7 +11854,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple4<Vector<Int32, 4>, Int32>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
         using Base::Size;
         using value_type = Base::value_type;
@@ -11860,6 +11883,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
+        */
     };
 
 
@@ -11869,7 +11893,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple4<Vector<double, 4>, double>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -11897,6 +11922,7 @@ namespace Harlinn::Common::Core::Math
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray( other.simd ) )
         { }
+        */
     };
 
     template<>
@@ -11904,7 +11930,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple4<Vector<UInt32, 4>, UInt32>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
         using Base::Size;
         using value_type = Base::value_type;
@@ -11937,6 +11964,7 @@ namespace Harlinn::Common::Core::Math
             : Vector( Traits::ToArray( other.simd ) )
         {
         }
+        */
     };
 
 
@@ -12025,7 +12053,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Scalar<float, 2>, float>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Scalar( ) noexcept = default;
@@ -12049,6 +12078,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
     template<>
@@ -12056,6 +12086,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Scalar<double, 2>, double>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Scalar( ) noexcept = default;
@@ -12079,6 +12111,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
     template<>
@@ -12086,6 +12119,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Scalar<float, 3>, float>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Scalar( ) noexcept = default;
@@ -12109,6 +12144,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
     template<>
@@ -12116,6 +12152,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Scalar<double, 3>, double>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Scalar( ) noexcept = default;
@@ -12139,6 +12177,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
     template<>
@@ -12146,7 +12185,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple4<Scalar<float, 4>, float>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
         using Base::Size;
         using value_type = Base::value_type;
@@ -12172,6 +12212,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
 
@@ -12181,7 +12222,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple4<Scalar<double, 4>, double>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Scalar( ) noexcept = default;
@@ -12205,6 +12247,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
 
@@ -12235,7 +12278,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Point2i, Int32>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Point2i( ) noexcept = default;
@@ -12250,13 +12294,15 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
     class Point3i : public Tuple3<Point3i, Int32>, public Internal::PointBase
     {
     public:
         using Base = Tuple3<Point3i, Int32>;
-
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Point3i( ) noexcept = default;
@@ -12271,12 +12317,15 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
     class Point2f : public Tuple2<Point2f, float>, public Internal::PointBase
     {
     public:
         using Base = Tuple2<Point2f, float>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Point2f( ) noexcept = default;
@@ -12291,10 +12340,11 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
 
-
+    // Copied from pbrt-v4 https://github.com/mmp/pbrt-v4
     // https://www.iquilezles.org/www/articles/ibilinear/ibilinear.htm,
     // with a fix for perfect quads
     inline Point2f InvertBilinear( const Point2f& p, const std::array<Point2f,4>& vert )
@@ -12349,6 +12399,8 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Point3f, float>;
+        using Base::Base;
+        /*
         using Traits = Base::Traits;
 
         Point3f( ) noexcept = default;
@@ -12363,6 +12415,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
 
@@ -12406,6 +12459,9 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Normal3f, float>;
+        using Base::Base;
+
+        /*
         using Traits = Base::Traits;
 
         Normal3f( ) noexcept = default;
@@ -12420,6 +12476,7 @@ namespace Harlinn::Common::Core::Math
             : Base( other )
         {
         }
+        */
     };
 
 
@@ -12746,9 +12803,23 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
+        QuaternionSimd& operator += ( ValueType value ) noexcept
+        {
+            auto zero = static_cast< ValueType >( 0. );
+            simd = Traits::Add( simd, Traits::Set( value, zero, zero, zero ) );
+            return *this;
+        }
+
         QuaternionSimd& operator += ( const QuaternionType& quaternion ) noexcept;
 
         QuaternionSimd& operator -= ( const QuaternionSimd& other ) noexcept;
+
+        QuaternionSimd& operator -= ( ValueType value ) noexcept
+        {
+            auto zero = static_cast< ValueType >( 0. );
+            simd = Traits::Sub( simd, Traits::Set( value, zero, zero, zero ) );
+            return *this;
+        }
 
         QuaternionSimd& operator -= ( const QuaternionType& quaternion ) noexcept
         {
