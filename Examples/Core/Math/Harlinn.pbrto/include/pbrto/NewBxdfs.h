@@ -836,14 +836,16 @@ namespace pbrto
 
         Float PDF( const Vector3f::Simd& woIn, const Vector3f::Simd& wiIn, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
-            Vector3f wo( woIn );
-            Vector3f wi( wiIn );
+            Vector3f::Simd wo( woIn );
+            Float woz = wo.z( );
+            Vector3f::Simd wi( wiIn );
 
             NCHECK( sampleFlags == BxDFReflTransFlags::All );  // for now
             // Set _wo_ and _wi_ for layered BSDF evaluation
-            if ( twoSided&& wo.z < 0 )
+            if ( twoSided&& woz < 0 )
             {
                 wo = -wo;
+                woz = FastAbs( woz );
                 wi = -wi;
             }
 
@@ -854,7 +856,7 @@ namespace pbrto
                 };
 
             // Update _pdfSum_ for reflection at the entrance layer
-            bool enteredTop = twoSided || wo.z > 0;
+            bool enteredTop = twoSided || woz > 0;
             Float pdfSum = 0;
             if ( SameHemisphere( wo, wi ) )
             {

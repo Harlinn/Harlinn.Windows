@@ -343,18 +343,21 @@ namespace pbrto
         }
     }
 
-    SampledSpectrum HairBxDF::f( const Vector3f::Simd& wo, const Vector3f::Simd& wi, TransportMode mode ) const
+    SampledSpectrum HairBxDF::f( const Vector3f::Simd& woIn, const Vector3f::Simd& wiIn, TransportMode mode ) const
     {
+        Vector3f wo( woIn );
+        Vector3f wi( wiIn );
+
         // Compute hair coordinate system terms related to _wo_
-        Float sinTheta_o = wo.x( );
+        Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = Math::ATan2( wo.z( ), wo.y( ) );
+        Float phi_o = Math::ATan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Compute hair coordinate system terms related to _wi_
-        Float sinTheta_i = wi.x( );
+        Float sinTheta_i = wi.x;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
-        Float phi_i = Math::ATan2( wi.z( ), wi.y( ) );
+        Float phi_i = Math::ATan2( wi.z, wi.y );
 
         // Compute $\cos\,\thetat$ for refracted ray
         Float sinTheta_t = sinTheta_o / eta;
@@ -446,12 +449,14 @@ namespace pbrto
         return apPDF;
     }
 
-    pstdo::optional<BSDFSample> HairBxDF::Sample_f( const Vector3f::Simd& wo, Float uc, const Point2f& u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    pstdo::optional<BSDFSample> HairBxDF::Sample_f( const Vector3f::Simd& woIn, Float uc, const Point2f& u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
     {
+        Vector3f wo( woIn );
+
         // Compute hair coordinate system terms related to _wo_
-        Float sinTheta_o = wo.x( );
+        Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = Math::ATan2( wo.z( ), wo.y( ) );
+        Float phi_o = Math::ATan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Determine which term $p$ to sample for hair scattering
@@ -511,7 +516,7 @@ namespace pbrto
         Float sinPhi_i;
         Float cosPhi_i;
         SinCos( phi_i, &sinPhi_i, &cosPhi_i );
-        Vector3f wi( sinTheta_i, cosTheta_i * cosPhi_i, cosTheta_i * sinPhi_i );
+        Vector3f::Simd wi( sinTheta_i, cosTheta_i * cosPhi_i, cosTheta_i * sinPhi_i );
 
         // Compute PDF for sampled hair scattering direction _wi_
         Float pdf = 0;
@@ -556,20 +561,23 @@ namespace pbrto
         return BSDFSample( f( wo, wi, mode ), wi, pdf, Flags( ) );
     }
 
-    Float HairBxDF::PDF( const Vector3f::Simd& wo, const Vector3f::Simd& wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+    Float HairBxDF::PDF( const Vector3f::Simd& woIn, const Vector3f::Simd& wiIn, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
     {
+        Vector3f wo( woIn );
+        Vector3f wi( wiIn );
+
         // TODO? flags...
 
         // Compute hair coordinate system terms related to _wo_
-        Float sinTheta_o = wo.x( );
+        Float sinTheta_o = wo.x;
         Float cosTheta_o = SafeSqrt( 1 - Sqr( sinTheta_o ) );
-        Float phi_o = Math::ATan2( wo.z( ), wo.y( ) );
+        Float phi_o = Math::ATan2( wo.z, wo.y );
         Float gamma_o = SafeASin( h );
 
         // Compute hair coordinate system terms related to _wi_
-        Float sinTheta_i = wi.x( );
+        Float sinTheta_i = wi.x;
         Float cosTheta_i = SafeSqrt( 1 - Sqr( sinTheta_i ) );
-        Float phi_i = Math::ATan2( wi.z( ), wi.y( ) );
+        Float phi_i = Math::ATan2( wi.z, wi.y );
 
         // Compute $\gammat$ for refracted ray
         Float etap = SafeSqrt( eta * eta - Sqr( sinTheta_o ) ) / cosTheta_o;
