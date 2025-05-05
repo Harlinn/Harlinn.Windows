@@ -727,7 +727,11 @@ namespace Harlinn::Common::Core::Math
     /// <typeparam name="TupleT">
     /// A Tuple2, Tuple3 or Tuple4 derived type.
     /// </typeparam>
-
+    /// <remarks>
+    /// This implementation passes TupleSimd objects by reference,
+    /// since passing the TupleSimd objects by value degraded
+    /// the performance of pbrto by approximately 10 %.
+    /// </remarks>
 
     template<typename TraitsT, typename TupleT>
     class alignas( TraitsT::AlignAs ) TupleSimd : public Internal::TupleSimdBase
@@ -1265,6 +1269,13 @@ namespace Harlinn::Common::Core::Math
     /// <typeparam name="T">
     /// The type of the values.
     /// </typeparam>
+    /// <remarks>
+    /// This implementation passes Tuple2 derived objects by reference,
+    /// since passing the Tuple2 derived objects by value did not make 
+    /// a noticeable difference on the performance of pbrto. This is also
+    /// true for Tuple3 derived objects. Passing Tuple4 derived by
+    /// value degraded the performance of pbrto by approximately 5 %.
+    /// </remarks>
     template<class DerivedT, typename T>
     class Tuple2 : public Internal::TupleBase
     {
@@ -1313,11 +1324,15 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        explicit Tuple2( value_type v ) noexcept
+            : x( v ), y( v )
+        { }
+
         Tuple2( value_type xv, value_type yv) noexcept
             : x( xv ), y(yv)
         { }
 
-        Tuple2( const ArrayType& a ) noexcept
+        Tuple2( const ArrayType a ) noexcept
             : values(a)
         { }
 
@@ -1331,8 +1346,13 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple2( const U& other ) noexcept
             : values( other.values )
-        {
-        }
+        { }
+
+        template<Internal::TupleType U>
+            requires (std::is_same_v<Traits, typename U::Traits> == false )
+        explicit Tuple2( const U& other ) noexcept
+            : x( static_cast< value_type >( other.x ) ), y( static_cast< value_type >( other.y ) )
+        { }
 
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
@@ -1409,7 +1429,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator += ( const value_type& value ) noexcept
+        DerivedType& operator += ( const value_type value ) noexcept
         {
             x += value;
             y += value;
@@ -1431,7 +1451,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator -= ( const value_type& value ) noexcept
+        DerivedType& operator -= ( const value_type value ) noexcept
         {
             x -= value;
             y -= value;
@@ -1454,7 +1474,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator *= ( const value_type& value ) noexcept
+        DerivedType& operator *= ( const value_type value ) noexcept
         {
             x *= value;
             y *= value;
@@ -1477,7 +1497,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator /= ( const value_type& value ) noexcept
+        DerivedType& operator /= ( const value_type value ) noexcept
         {
             x /= value;
             y /= value;
@@ -1654,11 +1674,16 @@ namespace Harlinn::Common::Core::Math
             : x{}, y{}, z{}
         { }
 
+        explicit Tuple3( value_type v ) noexcept
+            : x( v ), y( v ), z( v )
+        {
+        }
+
         Tuple3( value_type xv, value_type yv, value_type zv ) noexcept
             : x( xv ), y( yv ), z( zv )
         { }
 
-        Tuple3( const ArrayType& a ) noexcept
+        Tuple3( const ArrayType a ) noexcept
             : values( a )
         { }
 
@@ -1672,6 +1697,12 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple3( const U& other ) noexcept
             : values( other.values )
+        { }
+
+        template<Internal::TupleType U>
+            requires ( std::is_same_v<Traits, typename U::Traits> == false )
+        explicit Tuple3( const U& other ) noexcept
+            : x( static_cast< value_type >( other.x ) ), y( static_cast< value_type >( other.y ) ), z( static_cast< value_type >( other.z ) )
         { }
 
         template<Internal::SimdType U>
@@ -1749,7 +1780,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator += ( const value_type& value ) noexcept
+        DerivedType& operator += ( const value_type value ) noexcept
         {
             x += value;
             y += value;
@@ -1773,7 +1804,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator -= ( const value_type& value ) noexcept
+        DerivedType& operator -= ( const value_type value ) noexcept
         {
             x -= value;
             y -= value;
@@ -1797,7 +1828,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator *= ( const value_type& value ) noexcept
+        DerivedType& operator *= ( const value_type value ) noexcept
         {
             x *= value;
             y *= value;
@@ -1822,7 +1853,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator /= ( const value_type& value ) noexcept
+        DerivedType& operator /= ( const value_type value ) noexcept
         {
             x /= value;
             y /= value;
@@ -1993,18 +2024,15 @@ namespace Harlinn::Common::Core::Math
 
         Tuple4( ) noexcept
             : x( static_cast<value_type>( 0 ) ), y( static_cast< value_type >( 0 ) ), z( static_cast< value_type >( 0 ) ), w( static_cast< value_type >( 0 ) )
-        {
-        }
+        { }
 
         Tuple4( value_type value ) noexcept
             : x( value ), y( value ), z( value ), w( value )
-        {
-        }
+        { }
 
         Tuple4( value_type xv, value_type yv, value_type zv, value_type wv ) noexcept
             : x( xv ), y( yv ), z( zv ), w( wv )
-        {
-        }
+        { }
 
         Tuple4( const ArrayType& a ) noexcept
             : values( a )
@@ -2021,8 +2049,13 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple4( const U& other ) noexcept
             : values( other.values )
-        {
-        }
+        { }
+
+        template<Internal::TupleType U>
+            requires ( std::is_same_v<Traits, typename U::Traits> == false )
+        explicit Tuple4( const U& other ) noexcept
+            : x( static_cast< value_type >( other.x ) ), y( static_cast< value_type >( other.y ) ), z( static_cast< value_type >( other.z ) ), w( static_cast< value_type >( other.w ) )
+        { }
 
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
@@ -2101,7 +2134,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator += ( const value_type& value ) noexcept
+        DerivedType& operator += ( const value_type value ) noexcept
         {
             x += value;
             y += value;
@@ -2127,7 +2160,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator -= ( const value_type& value ) noexcept
+        DerivedType& operator -= ( const value_type value ) noexcept
         {
             x -= value;
             y -= value;
@@ -2154,7 +2187,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator *= ( const value_type& value ) noexcept
+        DerivedType& operator *= ( const value_type value ) noexcept
         {
             x *= value;
             y *= value;
@@ -2180,7 +2213,7 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator /= ( const value_type& value ) noexcept
+        DerivedType& operator /= ( const value_type value ) noexcept
         {
             x /= value;
             y /= value;
@@ -11513,34 +11546,6 @@ namespace Harlinn::Common::Core::Math
         using Base::Base;
         
         using Traits = Base::Traits;
-
-        /*
-        Vector( ) noexcept = default;
-        explicit Vector( float v ) noexcept
-            : Base( v, v )
-        {
-        }
-        Vector( float xv, float yv ) noexcept
-            : Base( xv, yv )
-        { }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray(  other.simd ) )
-        { }
-        */
-
     };
 
     template<>
@@ -11549,33 +11554,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Vector<Int32, 2>, Int32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( Int32 v ) noexcept
-            : Base( v, v )
-        { }
-        Vector( Int32 xv, Int32 yv ) noexcept
-            : Base( xv, yv )
-        { }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
     
@@ -11588,35 +11566,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Vector<double, 2>, double>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( double v ) noexcept
-            : Base( v, v )
-        {
-        }
-        Vector( double xv, double yv ) noexcept
-            : Base( xv, yv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
     template<>
@@ -11625,38 +11574,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Vector<UInt32, 2>, UInt32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( UInt32 v ) noexcept
-            : Base( v, v )
-        {
-        }
-        Vector( UInt32 xv, UInt32 yv ) noexcept
-            : Base( xv, yv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y )
-        {
-        }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        {
-        }
-        */
     };
 
 
@@ -11666,35 +11583,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Vector<float, 3>, float>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( float v ) noexcept
-            : Base( v, v, v )
-        {
-        }
-        Vector( float xv, float yv, float zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
     template<>
@@ -11703,33 +11591,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Vector<Int32, 3>, Int32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( Int32 v ) noexcept
-            : Base( v, v, v )
-        { }
-        Vector( Int32 xv, Int32 yv, Int32 zv ) noexcept
-            : Base( xv, yv, zv )
-        { }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
 
@@ -11739,34 +11600,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Vector<double, 3>, double>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( double v ) noexcept
-            : Base( v, v, v )
-        {
-        }
-        Vector( double xv, double yv, double zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z )
-        { }
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
     template<>
@@ -11775,38 +11608,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Vector<UInt32, 3>, UInt32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( UInt32 v ) noexcept
-            : Base( v, v, v )
-        {
-        }
-        Vector( UInt32 xv, UInt32 yv, UInt32 zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z )
-        {
-        }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        {
-        }
-        */
     };
 
 
@@ -11816,37 +11617,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Vector<float, 4>, float>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-        using Base::Size;
-        using value_type = Base::value_type;
-
-        Vector( ) noexcept = default;
-        explicit Vector( float v ) noexcept
-            : Base( v, v, v, v )
-        {
-        }
-        Vector( float xv, float yv, float zv, float wv ) noexcept
-            : Base( xv, yv, zv, wv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z, other.w )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
     template<>
@@ -11855,35 +11625,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Vector<Int32, 4>, Int32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-        using Base::Size;
-        using value_type = Base::value_type;
-
-        Vector( ) noexcept = default;
-        explicit Vector( Int32 v ) noexcept
-            : Base( v, v, v, v )
-        { }
-        Vector( Int32 xv, Int32 yv, Int32 zv, Int32 wv ) noexcept
-            : Base( xv, yv, zv, wv )
-        { }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z, other.w )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
 
@@ -11894,35 +11635,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Vector<double, 4>, double>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        explicit Vector( double v ) noexcept
-            : Base( v, v, v, v )
-        {
-        }
-        Vector( double xv, double yv, double zv, double wv ) noexcept
-            : Base( xv, yv, zv, wv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        { }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z, other.w )
-        { }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        { }
-        */
     };
 
     template<>
@@ -11931,40 +11643,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Vector<UInt32, 4>, UInt32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-        using Base::Size;
-        using value_type = Base::value_type;
-
-        Vector( ) noexcept = default;
-        explicit Vector( UInt32 v ) noexcept
-            : Base( v, v, v, v )
-        {
-        }
-        Vector( UInt32 xv, UInt32 yv, UInt32 zv, UInt32 wv ) noexcept
-            : Base( xv, yv, zv, wv )
-        {
-        }
-
-        Vector( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<Internal::TupleType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other.x, other.y, other.z, other.w )
-        {
-        }
-
-        template<Internal::SimdType T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Vector( Traits::ToArray( other.simd ) )
-        {
-        }
-        */
     };
 
 
@@ -12054,31 +11732,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Scalar<float, 2>, float>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Scalar( ) noexcept = default;
-        explicit Scalar( float v ) noexcept
-            : Base( v, v )
-        {
-        }
-        Scalar( float xv, float yv ) noexcept
-            : Base( xv, yv )
-        {
-        }
-
-        Scalar( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Scalar( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
     template<>
@@ -12087,31 +11740,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Scalar<double, 2>, double>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Scalar( ) noexcept = default;
-        explicit Scalar( double v ) noexcept
-            : Base( v, v )
-        {
-        }
-        Scalar( double xv, double yv ) noexcept
-            : Base( xv, yv )
-        {
-        }
-
-        Scalar( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Scalar( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
     template<>
@@ -12120,31 +11748,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Scalar<float, 3>, float>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Scalar( ) noexcept = default;
-        explicit Scalar( float v ) noexcept
-            : Base( v, v, v )
-        {
-        }
-        Scalar( float xv, float yv, float zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        Scalar( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Scalar( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
     template<>
@@ -12153,31 +11756,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Scalar<double, 3>, double>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Scalar( ) noexcept = default;
-        explicit Scalar( double v ) noexcept
-            : Base( v, v, v )
-        {
-        }
-        Scalar( double xv, double yv, double zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        Scalar( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Scalar( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
     template<>
@@ -12186,33 +11764,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Scalar<float, 4>, float>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-        using Base::Size;
-        using value_type = Base::value_type;
-
-        Scalar( ) noexcept = default;
-        explicit Scalar( float v ) noexcept
-            : Base( v, v, v, v )
-        {
-        }
-        Scalar( float xv, float yv, float zv, float wv ) noexcept
-            : Base( xv, yv, zv, wv )
-        {
-        }
-
-        Scalar( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Scalar( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
 
@@ -12223,31 +11774,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Scalar<double, 4>, double>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Scalar( ) noexcept = default;
-        explicit Scalar( double v ) noexcept
-            : Base( v, v, v, v )
-        {
-        }
-        Scalar( double xv, double yv, double zv, double wv ) noexcept
-            : Base( xv, yv, zv, wv )
-        {
-        }
-
-        Scalar( const ArrayType& values ) noexcept
-            : Base( values )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Scalar( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
 
@@ -12279,22 +11805,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Point2i, Int32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Point2i( ) noexcept = default;
-        Point2i( Int32 xv, Int32 yv ) noexcept
-            : Base( xv, yv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Point2i( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
     class Point3i : public Tuple3<Point3i, Int32>, public Internal::PointBase
@@ -12302,22 +11812,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Point3i, Int32>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Point3i( ) noexcept = default;
-        Point3i( Int32 xv, Int32 yv, Int32 zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Point3i( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
     class Point2f : public Tuple2<Point2f, float>, public Internal::PointBase
@@ -12325,22 +11819,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Point2f, float>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Point2f( ) noexcept = default;
-        Point2f( float xv, float yv ) noexcept
-            : Base( xv, yv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Point2f( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
 
@@ -12400,22 +11878,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Point3f, float>;
         using Base::Base;
-        /*
-        using Traits = Base::Traits;
-
-        Point3f( ) noexcept = default;
-        Point3f( float xv, float yv, float zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Point3f( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
 
@@ -12460,23 +11922,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Normal3f, float>;
         using Base::Base;
-
-        /*
-        using Traits = Base::Traits;
-
-        Normal3f( ) noexcept = default;
-        Normal3f( float xv, float yv, float zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Normal3f( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-        */
     };
 
 

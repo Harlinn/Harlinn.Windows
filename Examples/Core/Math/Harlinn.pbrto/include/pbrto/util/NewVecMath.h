@@ -662,20 +662,8 @@ namespace pbrto
     public:
         using Base = Math::Vector<Float, 2>;
         using Base::Base;
-
-        template<typename U>
-        Vector2( const Vector2<U>& other )
-            : Base( static_cast< Float >( other.x ), static_cast< Float >( other.y ) )
-        { }
-
-        
-        template<Math::Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Vector2( const T& other ) noexcept
-            : Base( other )
-        { }
-
     };
+
     template<>
     class Vector3<Float> : public Math::Vector<Float, 3>
     {
@@ -687,21 +675,6 @@ namespace pbrto
             : Base( static_cast< Float >( other.x ), static_cast< Float >( other.y ), static_cast< Float >( other.z ) )
         {
         }
-
-        template<Math::Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Vector3( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-
-        template<Math::Internal::TupleType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Vector3( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-
         template<typename T>
             requires ( T::nDimensions == 3 ) && requires ( T t )
         {
@@ -738,19 +711,6 @@ namespace pbrto
         using Base = Math::Vector<Int32, 2>;
         using Base::Base;
 
-        template<typename U>
-        Vector2( const Vector2<U>& other )
-            : Base( static_cast< Int32 >( other.x ), static_cast< Int32 >( other.y ) )
-        {
-        }
-
-        template<Math::Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Vector2( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-
         explicit operator Vector2<Float>( ) const
         {
             return Vector2<Float>( static_cast<float>( x ), static_cast< float >( y ) );
@@ -785,25 +745,6 @@ namespace pbrto
     public:
         using Base = Math::Vector<Int32, 3>;
         using Base::Base;
-
-        Vector3( const Vector3<Int32>& other )
-            : Base( static_cast< Int32 >( other.x ), static_cast< Int32 >( other.y ), static_cast< Int32 >( other.z ) )
-        {
-        }
-
-        template<Math::Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Vector3( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-
-        template<Math::Internal::TupleType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Vector3( const T& other ) noexcept
-            : Base( other )
-        {
-        }
 
         template<typename T>
             requires ( T::nDimensions == 3 ) && requires ( T t )
@@ -993,28 +934,7 @@ namespace pbrto
     {
     public:
         using Base = Math::Point2f;
-        Point2( ) = default;
-        Point2( Float x, Float y )
-            : Base( x, y )
-        {
-        }
-        template <typename U>
-        Point2( const Point2<U>& v )
-            : Base( v.x, v.y )
-        {
-        }
-        template <typename U>
-        Point2( const Vector2<U>& v )
-            : Base( v.x, v.y )
-        {
-        }
-
-        template<Math::Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Point2( const T& other ) noexcept
-            : Base( other )
-        {
-        }
+        using Base::Base;
 
         template<typename U>
             requires ( std::is_same_v<U, float> == false )
@@ -1035,28 +955,7 @@ namespace pbrto
     {
     public:
         using Base = Math::Point2i;
-        Point2( ) = default;
-        Point2( Int32 x, Int32 y )
-            : Base( x, y )
-        {
-        }
-        template <typename U>
-        Point2( const Point2<U>& v )
-            : Base( v.x, v.y )
-        {
-        }
-        template <typename U>
-        Point2( const Vector2<U>& v )
-            : Base( v.x, v.y )
-        {
-        }
-
-        template<Math::Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Point2( const T& other ) noexcept
-            : Base( other )
-        {
-        }
+        using Base::Base;
 
         template<typename U>
             requires ( std::is_same_v<U, Int32> == false )
@@ -1327,6 +1226,8 @@ namespace pbrto
     {
     public:
         using Base = Math::Point3f;
+        using Base::Base;
+        /*
         Point3( ) = default;
         Point3( Float x, Float y, Float z )
             : Base( x, y, z )
@@ -1347,7 +1248,7 @@ namespace pbrto
             : Base( other )
         {
         }
-
+        */
         template<typename T>
             requires ( T::nDimensions == 3 ) && requires ( T t )
         {
@@ -1378,6 +1279,8 @@ namespace pbrto
     {
     public:
         using Base = Math::Point3i;
+        using Base::Base;
+        /*
         Point3( ) = default;
         Point3( Int32 x, Int32 y, Int32 z )
             : Base( x, y, z )
@@ -1398,7 +1301,7 @@ namespace pbrto
             : Base( other )
         {
         }
-
+        */
         template<typename T>
             requires ( T::nDimensions == 3 ) && requires ( T t )
         {
