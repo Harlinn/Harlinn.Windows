@@ -45,7 +45,7 @@ namespace pbrto
 
         // Ray Public Methods
         Ray( ) = default;
-        Ray( Point3f::Simd o, Vector3f::Simd d, Float time = 0.f, Medium medium = nullptr )
+        Ray( const Point3f::Simd& o, const Vector3f::Simd& d, Float time = 0.f, Medium medium = nullptr )
             : o( o ), d( d ), time( time ), medium( medium )
         { }
 
@@ -77,7 +77,7 @@ namespace pbrto
 
         // RayDifferential Public Methods
         RayDifferential( ) = default;
-        RayDifferential( Point3f::Simd o, Vector3f::Simd d, Float time = 0.f, Medium medium = nullptr )
+        RayDifferential( const Point3f::Simd& o, const Vector3f::Simd& d, Float time = 0.f, Medium medium = nullptr )
             : Ray( o, d, time, medium )
         {
         }
@@ -104,7 +104,7 @@ namespace pbrto
     };
 
     // Ray Inline Functions
-    inline Point3f::Simd OffsetRayOrigin( Point3fi pi, Normal3f::Simd n, Vector3f::Simd w )
+    inline Point3f::Simd OffsetRayOrigin( const Point3fi& pi, const Normal3f::Simd& n, const Vector3f::Simd& w )
     {
         // Find vector _offset_ to corner of error bounds and compute initial _po_
         auto d = Dot( Abs( n ), pi.Error( ) );
@@ -125,18 +125,18 @@ namespace pbrto
         return po;
     }
 
-    PBRT_CPU_GPU inline Ray SpawnRay( Point3fi pi, Normal3f::Simd n, Float time, Vector3f::Simd d )
+    inline Ray SpawnRay( const Point3fi& pi, const Normal3f::Simd& n, Float time, const Vector3f::Simd& d )
     {
         return Ray( OffsetRayOrigin( pi, n, d ), d, time );
     }
 
-    PBRT_CPU_GPU inline Ray SpawnRayTo( Point3fi pFrom, Normal3f::Simd n, Float time, Point3f::Simd pTo )
+    inline Ray SpawnRayTo( const Point3fi& pFrom, const Normal3f::Simd& n, Float time, const Point3f::Simd& pTo )
     {
         Vector3f::Simd d = pTo - Point3f( pFrom );
         return SpawnRay( pFrom, n, time, d );
     }
 
-    PBRT_CPU_GPU inline Ray SpawnRayTo( Point3fi pFrom, Normal3f::Simd nFrom, Float time, Point3fi pTo, Normal3f::Simd nTo )
+    inline Ray SpawnRayTo( const Point3fi& pFrom, const Normal3f::Simd& nFrom, Float time, const Point3fi& pTo, const Normal3f::Simd& nTo )
     {
         Point3f::Simd pf = OffsetRayOrigin( pFrom, nFrom, Point3f( pTo ) - Point3f( pFrom ) );
         Point3f::Simd pt = OffsetRayOrigin( pTo, nTo, pf - Point3f( pTo ) );

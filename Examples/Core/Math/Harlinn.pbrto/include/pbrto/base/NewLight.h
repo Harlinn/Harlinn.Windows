@@ -81,14 +81,14 @@ namespace pbrto
 
         inline LightType Type( ) const;
 
-        inline pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF = false ) const;
+        inline pstdo::optional<LightLiSample> SampleLi( const LightSampleContext& ctx, const Point2f& u, const SampledWavelengths& lambda, bool allowIncompletePDF = false ) const;
 
-        inline Float PDF_Li( LightSampleContext ctx, Vector3f::Simd wi, bool allowIncompletePDF = false ) const;
+        inline Float PDF_Li( const LightSampleContext& ctx, const Vector3f::Simd& wi, bool allowIncompletePDF = false ) const;
 
         std::string ToString( ) const;
 
         // AreaLights only
-        inline SampledSpectrum L( Point3f::Simd p, Normal3f::Simd n, Point2f uv, Vector3f::Simd w, const SampledWavelengths& lambda ) const;
+        inline SampledSpectrum L( const Point3f::Simd& p, const Normal3f::Simd& n, const Point2f& uv, const Vector3f::Simd& w, const SampledWavelengths& lambda ) const;
 
         // InfiniteLights only
         inline SampledSpectrum Le( const Ray& ray, const SampledWavelengths& lambda ) const;
@@ -97,12 +97,12 @@ namespace pbrto
 
         pstdo::optional<LightBounds> Bounds( ) const;
 
-        pstdo::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
+        pstdo::optional<LightLeSample> SampleLe( const Point2f& u1, const Point2f& u2, SampledWavelengths& lambda, Float time ) const;
 
         void PDF_Le( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
 
         // AreaLights only
-        void PDF_Le( const Interaction& intr, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const;
+        void PDF_Le( const Interaction& intr, const Vector3f::Simd& w, Float* pdfPos, Float* pdfDir ) const;
     };
 
 }

@@ -80,8 +80,16 @@ namespace pbrto
     // RayMajorantSegment Definition
     struct RayMajorantSegment
     {
-        Float tMin, tMax;
         SampledSpectrum sigma_maj;
+        Float tMin, tMax;
+        
+
+        RayMajorantSegment( ) = default;
+
+        RayMajorantSegment( Float tMin, Float tMax, const SampledSpectrum& sigma_maj )
+            : tMin( tMin ), tMax( tMax ), sigma_maj( sigma_maj )
+        { }
+
         std::string ToString( ) const;
     };
 
@@ -95,8 +103,7 @@ namespace pbrto
     public:
         using TaggedPointer::TaggedPointer;
 
-        PBRT_CPU_GPU
-            pstdo::optional<RayMajorantSegment> Next( );
+        pstdo::optional<RayMajorantSegment> Next( );
 
         std::string ToString( ) const;
     };
@@ -112,21 +119,16 @@ namespace pbrto
         // Medium Interface
         using TaggedPointer::TaggedPointer;
 
-        static Medium Create( const std::string& name, const ParameterDictionary& parameters,
-            const Transform& renderFromMedium, const FileLoc* loc,
-            Allocator alloc );
+        static Medium Create( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromMedium, const FileLoc* loc, Allocator alloc );
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            bool IsEmissive( ) const;
+        bool IsEmissive( ) const;
 
-        PBRT_CPU_GPU
-            MediumProperties SamplePoint( Point3f p, const SampledWavelengths& lambda ) const;
+        MediumProperties SamplePoint( const Point3f::Simd& p, const SampledWavelengths& lambda ) const;
 
         // Medium Public Methods
-        RayMajorantIterator SampleRay( Ray ray, Float tMax, const SampledWavelengths& lambda,
-            ScratchBuffer& buf ) const;
+        RayMajorantIterator SampleRay( const Ray& ray, Float tMax, const SampledWavelengths& lambda, ScratchBuffer& buf ) const;
     };
 
     // MediumInterface Definition

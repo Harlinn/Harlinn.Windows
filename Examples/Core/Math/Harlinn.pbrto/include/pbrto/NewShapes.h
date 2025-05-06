@@ -77,15 +77,15 @@ namespace pbrto
             return Point3f( pi ); 
         }
 
-        inline Point3f::Simd OffsetRayOrigin( Vector3f::Simd w ) const;
-        Point3f::Simd OffsetRayOrigin( Point3f::Simd pt ) const;
-        Ray SpawnRay( Vector3f::Simd w ) const;
+        inline Point3f::Simd OffsetRayOrigin( const Vector3f::Simd& w ) const;
+        Point3f::Simd OffsetRayOrigin( const Point3f::Simd& pt ) const;
+        Ray SpawnRay( const Vector3f::Simd& w ) const;
 
         
     };
 
     // ShapeSampleContext Inline Methods
-    inline Point3f::Simd ShapeSampleContext::OffsetRayOrigin( Vector3f::Simd w ) const
+    inline Point3f::Simd ShapeSampleContext::OffsetRayOrigin( const Vector3f::Simd& w ) const
     {
         // Find vector _offset_ to corner of error bounds and compute initial _po_
         auto d = Dot( Abs( n ), pi.Error( ) );
@@ -108,12 +108,12 @@ namespace pbrto
     }
 
 
-    inline Point3f::Simd ShapeSampleContext::OffsetRayOrigin( Point3f::Simd pt ) const
+    inline Point3f::Simd ShapeSampleContext::OffsetRayOrigin( const Point3f::Simd& pt ) const
     {
         return OffsetRayOrigin( pt - p( ) );
     }
 
-    inline Ray ShapeSampleContext::SpawnRay( Vector3f::Simd w ) const
+    inline Ray ShapeSampleContext::SpawnRay( const Vector3f::Simd& w ) const
     {
         // Note: doesn't set medium, but that's fine, since this is only
         // used by shapes to see if ray would have intersected them
