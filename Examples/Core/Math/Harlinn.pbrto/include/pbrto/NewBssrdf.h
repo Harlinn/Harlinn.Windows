@@ -44,29 +44,38 @@ namespace pbrto
     struct BSSRDFSample
     {
         SampledSpectrum Sp, pdf;
+        Vector3f::Simd wo;
         BSDF Sw;
-        Vector3f wo;
+
+        BSSRDFSample( ) = default;
+        BSSRDFSample( const SampledSpectrum& Sp, const SampledSpectrum& pdf, const BSDF& Sw, const Vector3f::Simd& wo )
+            : Sp( Sp ), pdf( pdf ), wo( wo ), Sw( Sw )
+        { }
+        
     };
 
     // SubsurfaceInteraction Definition
     struct SubsurfaceInteraction
     {
+        // SubsurfaceInteraction Public Members
+        Point3fi pi;
+        Normal3f::Simd n, ns;
+        Vector3f::Simd dpdu, dpdv, dpdus, dpdvs;
+
         // SubsurfaceInteraction Public Methods
         SubsurfaceInteraction( ) = default;
-        PBRT_CPU_GPU
-            SubsurfaceInteraction( const SurfaceInteraction& si )
+        SubsurfaceInteraction( const SurfaceInteraction& si )
             : pi( si.pi ),
-            n( si.n ),
-            dpdu( si.dpdu ),
-            dpdv( si.dpdv ),
-            ns( si.shading.n ),
-            dpdus( si.shading.dpdu ),
-            dpdvs( si.shading.dpdv )
+              n( si.n ),
+              dpdu( si.dpdu ),
+              dpdv( si.dpdv ),
+              ns( si.shading.n ),
+              dpdus( si.shading.dpdu ),
+              dpdvs( si.shading.dpdv )
         {
         }
 
-        PBRT_CPU_GPU
-            operator SurfaceInteraction( ) const
+        operator SurfaceInteraction( ) const
         {
             SurfaceInteraction si;
             si.pi = pi;
@@ -79,13 +88,9 @@ namespace pbrto
             return si;
         }
 
-        PBRT_CPU_GPU
-            Point3f p( ) const { return Point3f( pi ); }
+        Point3f p( ) const { return Point3f( pi ); }
 
-        // SubsurfaceInteraction Public Members
-        Point3fi pi;
-        Normal3f n, ns;
-        Vector3f dpdu, dpdv, dpdus, dpdvs;
+        
     };
 
     // BSSRDF Function Declarations
@@ -108,8 +113,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Float EvalProfile( int rhoIndex, int radiusIndex ) const
+        Float EvalProfile( int rhoIndex, int radiusIndex ) const
         {
             NCHECK( rhoIndex >= 0 && rhoIndex < rhoSamples.size( ) );
             NCHECK( radiusIndex >= 0 && radiusIndex < radiusSamples.size( ) );
@@ -120,38 +124,46 @@ namespace pbrto
     // BSSRDFProbeSegment Definition
     struct BSSRDFProbeSegment
     {
+        Point3f::Simd p0, p1;
+
         // BSSRDFProbeSegment Public Methods
         BSSRDFProbeSegment( ) = default;
-        PBRT_CPU_GPU
-            BSSRDFProbeSegment( Point3f p0, Point3f p1 ) : p0( p0 ), p1( p1 ) {}
+        BSSRDFProbeSegment( const Point3f::Simd& p0, const Point3f::Simd& p1 )
+            : p0( p0 ), p1( p1 ) 
+        { }
 
-        Point3f p0, p1;
+        
     };
 
     // TabulatedBSSRDF Definition
     class TabulatedBSSRDF
     {
+        // TabulatedBSSRDF Private Members
+        Point3f::Simd po;
+        Vector3f::Simd wo;
+        Normal3f::Simd ns;
+        SampledSpectrum sigma_t, rho;
+        Float eta;
+        const BSSRDFTable* table;
     public:
         // TabulatedBSSRDF Type Definitions
         using BxDF = NormalizedFresnelBxDF;
 
         // TabulatedBSSRDF Public Methods
         TabulatedBSSRDF( ) = default;
-        PBRT_CPU_GPU
-            TabulatedBSSRDF( Point3f po, Normal3f ns, Vector3f wo, Float eta,
-                const SampledSpectrum& sigma_a, const SampledSpectrum& sigma_s,
-                const BSSRDFTable* table )
+        TabulatedBSSRDF( const Point3f::Simd& po, const Normal3f::Simd& ns, const Vector3f::Simd& wo, Float eta, const SampledSpectrum& sigma_a, const SampledSpectrum& sigma_s, const BSSRDFTable* table )
             : po( po ), wo( wo ), eta( eta ), ns( ns ), table( table )
         {
             sigma_t = sigma_a + sigma_s;
             rho = SafeDiv( sigma_s, sigma_t );
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Sp( Point3f pi ) const { return Sr( ScalarDistance( po, pi ) ); }
+        SampledSpectrum Sp( const Point3f::Simd& pi ) const 
+        { 
+            return Sr( ScalarDistance( po, pi ) ); 
+        }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Sr( Float r ) const
+        SampledSpectrum Sr( Float r ) const
         {
             SampledSpectrum Sr( 0.f );
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -163,8 +175,7 @@ namespace pbrto
                 int rhoOffset, radiusOffset;
                 Float rhoWeights[ 4 ], radiusWeights[ 4 ];
                 if ( !CatmullRomWeights( table->rhoSamples, rho[ i ], &rhoOffset, rhoWeights ) ||
-                    !CatmullRomWeights( table->radiusSamples, rOptical, &radiusOffset,
-                        radiusWeights ) )
+                    !CatmullRomWeights( table->radiusSamples, rOptical, &radiusOffset, radiusWeights ) )
                     continue;
 
                 // Set BSSRDF value _Sr[i]_ using tensor spline interpolation
@@ -189,8 +200,7 @@ namespace pbrto
             return ClampZero( Sr );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<Float> SampleSr( Float u ) const
+        pstdo::optional<Float> SampleSr( Float u ) const
         {
             if ( sigma_t[ 0 ] == 0 )
                 return {};
@@ -199,8 +209,7 @@ namespace pbrto
                 sigma_t[ 0 ];
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum PDF_Sr( Float r ) const
+        SampledSpectrum PDF_Sr( Float r ) const
         {
             SampledSpectrum pdf( 0.f );
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -237,8 +246,7 @@ namespace pbrto
             return ClampZero( pdf );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<BSSRDFProbeSegment> SampleSp( Float u1, Point2f u2 ) const
+        pstdo::optional<BSSRDFProbeSegment> SampleSp( Float u1, const Point2f& u2 ) const
         {
             // Choose projection axis for BSSRDF sampling
             Frame f;
@@ -265,17 +273,16 @@ namespace pbrto
             Float sinPhi;
             Float cosPhi;
             SinCos( phi, &sinPhi, &cosPhi );
-            Point3f pStart = po + *r * ( f.x * cosPhi + f.y * sinPhi ) - l * f.z / 2;
-            Point3f pTarget = pStart + l * f.z;
+            Point3f::Simd pStart = po + *r * ( f.x * cosPhi + f.y * sinPhi ) - l * f.z / 2;
+            Point3f::Simd pTarget = pStart + l * f.z;
             return BSSRDFProbeSegment{ pStart, pTarget };
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum PDF_Sp( Point3f pi, Normal3f ni ) const
+        SampledSpectrum PDF_Sp( const Point3f::Simd& pi, const Normal3f::Simd& ni ) const
         {
             // Express $\pti-\pto$ and $\N{}_\roman{i}$ with respect to local coordinates at
             // $\pto$
-            Vector3f d = pi - po;
+            Vector3f::Simd d = pi - po;
             Frame f = Frame::FromZ( ns );
             Vector3f dLocal = f.ToLocal( d );
             Normal3f nLocal = f.ToLocal( ni );
@@ -296,12 +303,10 @@ namespace pbrto
             return pdf;
         }
 
-        PBRT_CPU_GPU
-            BSSRDFSample ProbeIntersectionToSample( const SubsurfaceInteraction& si,
-                NormalizedFresnelBxDF* bxdf ) const
+        BSSRDFSample ProbeIntersectionToSample( const SubsurfaceInteraction& si, NormalizedFresnelBxDF* bxdf ) const
         {
             *bxdf = NormalizedFresnelBxDF( eta );
-            Vector3f wo = Vector3f( si.ns );
+            Vector3f::Simd wo = Vector3f::Simd( si.ns );
             BSDF bsdf( si.ns, si.dpdus, bxdf );
             return BSSRDFSample{ Sp( si.p( ) ), PDF_Sp( si.p( ), si.n ), bsdf, wo };
         }
@@ -310,21 +315,11 @@ namespace pbrto
 
     private:
         friend struct SOA<TabulatedBSSRDF>;
-        // TabulatedBSSRDF Private Members
-        Point3f po;
-        Vector3f wo;
-        Normal3f ns;
-        Float eta;
-        SampledSpectrum sigma_t, rho;
-        const BSSRDFTable* table;
+        
     };
 
     // BSSRDF Inline Functions
-    PBRT_CPU_GPU inline void SubsurfaceFromDiffuse( const BSSRDFTable& t,
-        const SampledSpectrum& rhoEff,
-        const SampledSpectrum& mfp,
-        SampledSpectrum* sigma_a,
-        SampledSpectrum* sigma_s )
+    inline void SubsurfaceFromDiffuse( const BSSRDFTable& t, const SampledSpectrum& rhoEff, const SampledSpectrum& mfp, SampledSpectrum* sigma_a, SampledSpectrum* sigma_s )
     {
         for ( int c = 0; c < NSpectrumSamples; ++c )
         {
@@ -334,14 +329,13 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU inline pstdo::optional<BSSRDFProbeSegment> BSSRDF::SampleSp( Float u1, Point2f u2 ) const
+    inline pstdo::optional<BSSRDFProbeSegment> BSSRDF::SampleSp( Float u1, const Point2f& u2 ) const
     {
         auto sample = [ & ]( auto ptr ) { return ptr->SampleSp( u1, u2 ); };
         return Dispatch( sample );
     }
 
-    inline BSSRDFSample BSSRDF::ProbeIntersectionToSample(
-        const SubsurfaceInteraction& si, ScratchBuffer& scratchBuffer ) const
+    inline BSSRDFSample BSSRDF::ProbeIntersectionToSample( const SubsurfaceInteraction& si, ScratchBuffer& scratchBuffer ) const
     {
         auto pits = [ & ]( auto ptr ) {
             using BxDF = typename std::remove_reference_t<decltype( *ptr )>::BxDF;

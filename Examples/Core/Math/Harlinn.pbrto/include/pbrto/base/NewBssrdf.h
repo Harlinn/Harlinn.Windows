@@ -46,11 +46,9 @@ namespace pbrto
         // BSSRDF Interface
         using TaggedPointer::TaggedPointer;
 
-        PBRT_CPU_GPU inline pstdo::optional<BSSRDFProbeSegment> SampleSp( Float u1,
-            Point2f u2 ) const;
+        inline pstdo::optional<BSSRDFProbeSegment> SampleSp( Float u1, const Point2f& u2 ) const;
 
-        inline BSSRDFSample ProbeIntersectionToSample( const SubsurfaceInteraction& si,
-            ScratchBuffer& scratchBuffer ) const;
+        inline BSSRDFSample ProbeIntersectionToSample( const SubsurfaceInteraction& si, ScratchBuffer& scratchBuffer ) const;
     };
 
 }

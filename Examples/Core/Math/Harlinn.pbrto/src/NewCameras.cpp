@@ -87,8 +87,7 @@ namespace pbrto
     }
 
     // Camera Method Definitions
-    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> Camera::GenerateRayDifferential(
-        CameraSample sample, SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> Camera::GenerateRayDifferential( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         auto gen = [ & ]( auto ptr ) { return ptr->GenerateRayDifferential( sample, lambda ); };
         return Dispatch( gen );
@@ -328,8 +327,7 @@ namespace pbrto
     }
 
     // OrthographicCamera Method Definitions
-    PBRT_CPU_GPU pstdo::optional<CameraRay> OrthographicCamera::GenerateRay(
-        CameraSample sample, SampledWavelengths& lambda ) const
+    pstdo::optional<CameraRay> OrthographicCamera::GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
         Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
@@ -354,8 +352,7 @@ namespace pbrto
         return CameraRay{ RenderFromCamera( ray ) };
     }
 
-    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> OrthographicCamera::GenerateRayDifferential(
-        CameraSample sample, SampledWavelengths& lambda ) const
+    pstdo::optional<CameraRayDifferential> OrthographicCamera::GenerateRayDifferential( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         // Compute main orthographic viewing ray
         // Compute raster and camera sample positions
@@ -467,15 +464,13 @@ namespace pbrto
     }
 
     // PerspectiveCamera Method Definitions
-    PBRT_CPU_GPU pstdo::optional<CameraRay> PerspectiveCamera::GenerateRay(
-        CameraSample sample, SampledWavelengths& lambda ) const
+    pstdo::optional<CameraRay> PerspectiveCamera::GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
-        Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
-        Point3f pCamera = cameraFromRaster( pFilm );
+        Point3f::Simd pFilm = Point3f::Simd( sample.pFilm.x, sample.pFilm.y, 0 );
+        Point3f::Simd pCamera = cameraFromRaster( pFilm );
 
-        Ray ray( Point3f( 0, 0, 0 ), Normalize( Vector3f( pCamera ) ), SampleTime( sample.time ),
-            medium );
+        Ray ray( Point3f::Simd( 0, 0, 0 ), Normalize( Vector3f::Simd( pCamera ) ), SampleTime( sample.time ), medium );
         // Modify ray for depth of field
         if ( lensRadius > 0 )
         {
@@ -484,24 +479,23 @@ namespace pbrto
 
             // Compute point on plane of focus
             Float ft = focalDistance / ray.d.z( );
-            Point3f pFocus = ray( ft );
+            Point3f::Simd pFocus = ray( ft );
 
             // Update ray for effect of lens
-            ray.o = Point3f( pLens.x, pLens.y, 0 );
+            ray.o = Point3f::Simd( pLens.x, pLens.y, 0 );
             ray.d = Normalize( pFocus - ray.o );
         }
 
         return CameraRay{ RenderFromCamera( ray ) };
     }
 
-    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> PerspectiveCamera::GenerateRayDifferential(
-        CameraSample sample, SampledWavelengths& lambda ) const
+    pstdo::optional<CameraRayDifferential> PerspectiveCamera::GenerateRayDifferential( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
-        Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
-        Point3f pCamera = cameraFromRaster( pFilm );
-        Vector3f dir = Normalize( Vector3f( pCamera.x, pCamera.y, pCamera.z ) );
-        RayDifferential ray( Point3f( 0, 0, 0 ), dir, SampleTime( sample.time ), medium );
+        Point3f::Simd pFilm = Point3f::Simd( sample.pFilm.x, sample.pFilm.y, 0 );
+        Point3f::Simd pCamera = cameraFromRaster( pFilm );
+        Vector3f::Simd dir = Normalize( Vector3f::Simd( pCamera ) );
+        RayDifferential ray( Point3f::Simd( 0, 0, 0 ), dir, SampleTime( sample.time ), medium );
         // Modify ray for depth of field
         if ( lensRadius > 0 )
         {
@@ -510,10 +504,10 @@ namespace pbrto
 
             // Compute point on plane of focus
             Float ft = focalDistance / ray.d.z( );
-            Point3f pFocus = ray( ft );
+            Point3f::Simd pFocus = ray( ft );
 
             // Update ray for effect of lens
-            ray.o = Point3f( pLens.x, pLens.y, 0 );
+            ray.o = Point3f::Simd( pLens.x, pLens.y, 0 );
             ray.d = Normalize( pFocus - ray.o );
         }
 
@@ -525,25 +519,25 @@ namespace pbrto
             Point2f pLens = lensRadius * SampleUniformDiskConcentric( sample.pLens );
 
             // Compute $x$ ray differential for _PerspectiveCamera_ with lens
-            Vector3f dx = Normalize( Vector3f( pCamera + dxCamera ) );
-            Float ft = focalDistance / dx.z;
-            Point3f pFocus = Point3f( 0, 0, 0 ) + ( ft * dx );
-            ray.rxOrigin = Point3f( pLens.x, pLens.y, 0 );
+            Vector3f::Simd dx = Normalize( Vector3f::Simd( pCamera + dxCamera ) );
+            Float ft = focalDistance / dx.z( );
+            Point3f::Simd pFocus = Point3f::Simd( ft * dx );
+            ray.rxOrigin = Point3f::Simd( pLens.x, pLens.y, 0 );
             ray.rxDirection = Normalize( pFocus - ray.rxOrigin );
 
             // Compute $y$ ray differential for _PerspectiveCamera_ with lens
-            Vector3f dy = Normalize( Vector3f( pCamera + dyCamera ) );
-            ft = focalDistance / dy.z;
-            pFocus = Point3f( 0, 0, 0 ) + ( ft * dy );
-            ray.ryOrigin = Point3f( pLens.x, pLens.y, 0 );
+            Vector3f::Simd dy = Normalize( Vector3f::Simd( pCamera + dyCamera ) );
+            ft = focalDistance / dy.z( );
+            pFocus = Point3f::Simd( ft * dy );
+            ray.ryOrigin = Point3f::Simd( pLens.x, pLens.y, 0 );
             ray.ryDirection = Normalize( pFocus - ray.ryOrigin );
 
         }
         else
         {
             ray.rxOrigin = ray.ryOrigin = ray.o;
-            ray.rxDirection = Normalize( Vector3f( pCamera ) + dxCamera );
-            ray.ryDirection = Normalize( Vector3f( pCamera ) + dyCamera );
+            ray.rxDirection = Normalize( Vector3f::Simd( pCamera ) + dxCamera );
+            ray.ryDirection = Normalize( Vector3f::Simd( pCamera ) + dyCamera );
         }
 
         ray.hasDifferentials = true;
@@ -616,13 +610,13 @@ namespace pbrto
         Point2f* pRasterOut ) const
     {
         // Check if ray is forward-facing with respect to the camera
-        Float cosTheta = ScalarDot( ray.d, RenderFromCamera( Vector3f( 0, 0, 1 ), ray.time ) );
+        Float cosTheta = ScalarDot( ray.d, RenderFromCamera( Vector3f::Simd( 0, 0, 1 ), ray.time ) );
         if ( cosTheta <= cosTotalWidth )
             return SampledSpectrum( 0. );
 
         // Map ray $(\p{}, \w{})$ onto the raster grid
-        Point3f pFocus = ray( ( lensRadius > 0 ? focalDistance : 1 ) / cosTheta );
-        Point3f pCamera = CameraFromRender( pFocus, ray.time );
+        Point3f::Simd pFocus = ray( ( lensRadius > 0 ? focalDistance : 1 ) / cosTheta );
+        Point3f::Simd pCamera = CameraFromRender( pFocus, ray.time );
         Point3f pRaster = cameraFromRaster.ApplyInverse( pCamera );
 
         // Return raster position if requested
@@ -644,7 +638,7 @@ namespace pbrto
     PBRT_CPU_GPU void PerspectiveCamera::PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
     {
         // Return zero PDF values if ray direction is not front-facing
-        Float cosTheta = ScalarDot( ray.d, RenderFromCamera( Vector3f( 0, 0, 1 ), ray.time ) );
+        Float cosTheta = ScalarDot( ray.d, RenderFromCamera( Vector3f::Simd( 0, 0, 1 ), ray.time ) );
         if ( cosTheta <= cosTotalWidth )
         {
             *pdfPos = *pdfDir = 0;
@@ -652,8 +646,8 @@ namespace pbrto
         }
 
         // Map ray $(\p{}, \w{})$ onto the raster grid
-        Point3f pFocus = ray( ( lensRadius > 0 ? focalDistance : 1 ) / cosTheta );
-        Point3f pCamera = CameraFromRender( pFocus, ray.time );
+        Point3f::Simd pFocus = ray( ( lensRadius > 0 ? focalDistance : 1 ) / cosTheta );
+        Point3f::Simd pCamera = CameraFromRender( pFocus, ray.time );
         Point3f pRaster = cameraFromRaster.ApplyInverse( pCamera );
 
         // Return zero probability for out of bounds points
@@ -670,17 +664,16 @@ namespace pbrto
         *pdfDir = 1 / ( A * FastPow<3>( cosTheta ) );
     }
 
-    PBRT_CPU_GPU pstdo::optional<CameraWiSample> PerspectiveCamera::SampleWi(
-        const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU pstdo::optional<CameraWiSample> PerspectiveCamera::SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
     {
         // Uniformly sample a lens interaction _lensIntr_
         Point2f pLens = lensRadius * SampleUniformDiskConcentric( u );
-        Point3f pLensRender = RenderFromCamera( Point3f( pLens.x, pLens.y, 0 ), ref.time );
-        Normal3f n = Normal3f( RenderFromCamera( Vector3f( 0, 0, 1 ), ref.time ) );
+        Point3f::Simd pLensRender = RenderFromCamera( Point3f::Simd( pLens.x, pLens.y, 0 ), ref.time );
+        Normal3f::Simd n = Normal3f::Simd( RenderFromCamera( Vector3f::Simd( 0, 0, 1 ), ref.time ) );
         Interaction lensIntr( pLensRender, n, ref.time, medium );
 
         // Find incident direction to camera _wi_ at _ref_
-        Vector3f wi = lensIntr.p( ) - ref.p( );
+        Vector3f::Simd wi = lensIntr.p( ) - ref.p( );
         Float dist = ScalarLength( wi );
         wi /= dist;
 
@@ -697,8 +690,7 @@ namespace pbrto
     }
 
     // SphericalCamera Method Definitions
-    PBRT_CPU_GPU pstdo::optional<CameraRay> SphericalCamera::GenerateRay( CameraSample sample,
-        SampledWavelengths& lambda ) const
+    pstdo::optional<CameraRay> SphericalCamera::GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         // Compute spherical camera ray direction
         Point2f uv( sample.pFilm.x / film.FullResolution( ).x,
@@ -1050,8 +1042,7 @@ namespace pbrto
         return ExitPupilSample{ pPupil, pdf };
     }
 
-    PBRT_CPU_GPU pstdo::optional<CameraRay> RealisticCamera::GenerateRay( CameraSample sample,
-        SampledWavelengths& lambda ) const
+    pstdo::optional<CameraRay> RealisticCamera::GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         // Find point on film, _pFilm_, corresponding to _sample.pFilm_
         Point2f s( sample.pFilm.x / film.FullResolution( ).x,

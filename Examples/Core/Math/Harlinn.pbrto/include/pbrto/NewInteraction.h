@@ -58,7 +58,7 @@ namespace pbrto
         // Interaction Public Methods
         Interaction( ) = default;
 
-        Interaction( Point3fi pi, Normal3f::Simd n, Point2f uv, Vector3f::Simd wo, Float time )
+        Interaction( const Point3fi& pi, const Normal3f::Simd& n, const Point2f& uv, const Vector3f::Simd& wo, Float time )
             : pi( pi ), n( n ), uv( uv ), wo( Normalize( wo ) ), time( time )
         {
         }
@@ -90,33 +90,33 @@ namespace pbrto
         }
 
         // used by medium ctor
-        Interaction( Point3f::Simd p, Vector3f::Simd wo, Float time, Medium medium )
+        Interaction( const Point3f::Simd& p, const Vector3f::Simd& wo, Float time, Medium medium )
             : pi( p ), time( time ), wo( wo ), medium( medium )
         { }
-        Interaction( Point3f::Simd p, Normal3f::Simd n, Float time, Medium medium )
+        Interaction( const Point3f::Simd& p, const Normal3f::Simd& n, Float time, Medium medium )
             : pi( p ), n( n ), time( time ), medium( medium )
         { }
-        Interaction( Point3f::Simd p, Point2f uv ) 
+        Interaction( const Point3f::Simd& p, const Point2f& uv )
             : pi( p ), uv( uv ) 
         { }
 
-        Interaction( const Point3fi& pi, Normal3f::Simd n, Float time = 0, Point2f uv = {} )
+        Interaction( const Point3fi& pi, const Normal3f::Simd& n, Float time = 0, Point2f uv = {} )
             : pi( pi ), n( n ), uv( uv ), time( time )
         {
         }
-        Interaction( const Point3fi& pi, Normal3f::Simd n, Point2f uv ) 
+        Interaction( const Point3fi& pi, const Normal3f::Simd& n, Point2f uv )
             : pi( pi ), n( n ), uv( uv ) 
         { }
 
-        Interaction( Point3f::Simd p, Float time, Medium medium )
+        Interaction( const Point3f::Simd& p, Float time, Medium medium )
             : pi( p ), time( time ), medium( medium )
         {
         }
-        Interaction( Point3f::Simd p, const MediumInterface* mediumInterface )
+        Interaction( const Point3f::Simd& p, const MediumInterface* mediumInterface )
             : pi( p ), mediumInterface( mediumInterface )
         {
         }
-        Interaction( Point3f::Simd p, Float time, const MediumInterface* mediumInterface )
+        Interaction( const Point3f::Simd& p, Float time, const MediumInterface* mediumInterface )
             : pi( p ), time( time ), mediumInterface( mediumInterface )
         {
         }
@@ -133,23 +133,23 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        Point3f::Simd OffsetRayOrigin( Vector3f::Simd w ) const 
+        Point3f::Simd OffsetRayOrigin( const Vector3f::Simd& w ) const
         { 
             return pbrto::OffsetRayOrigin( pi, n, w ); 
         }
         
 
-        Point3f::Simd OffsetRayOrigin( Point3f::Simd pt ) const 
+        Point3f::Simd OffsetRayOrigin( const Point3f::Simd& pt ) const
         { 
             return OffsetRayOrigin( pt - p( ) ); 
         }
 
-        RayDifferential SpawnRay( Vector3f::Simd d ) const
+        RayDifferential SpawnRay( const Vector3f::Simd& d ) const
         {
             return RayDifferential( OffsetRayOrigin( d ), d, time, GetMedium( d ) );
         }
 
-        Ray SpawnRayTo( Point3f::Simd p2 ) const
+        Ray SpawnRayTo( const Point3f::Simd& p2 ) const
         {
             Ray r = pbrto::SpawnRayTo( pi, n, time, p2 );
             r.medium = GetMedium( r.d );
@@ -163,7 +163,7 @@ namespace pbrto
             return r;
         }
 
-        Medium GetMedium( Vector3f::Simd w ) const
+        Medium GetMedium( const Vector3f::Simd& w ) const
         {
             if ( mediumInterface )
                 return ScalarDot( w, n ) > 0 ? mediumInterface->outside : mediumInterface->inside;
@@ -191,7 +191,7 @@ namespace pbrto
         MediumInteraction( ) 
             : phase( nullptr ) 
         { }
-        MediumInteraction( Point3f::Simd p, Vector3f::Simd wo, Float time, Medium medium, PhaseFunction phase )
+        MediumInteraction( const Point3f::Simd& p, const Vector3f::Simd& wo, Float time, Medium medium, PhaseFunction phase )
             : Interaction( p, wo, time, medium ), phase( phase )
         {
         }
@@ -225,7 +225,7 @@ namespace pbrto
         // SurfaceInteraction Public Methods
         SurfaceInteraction( ) = default;
 
-        SurfaceInteraction( Point3fi pi, Point2f uv, Vector3f::Simd wo, Vector3f::Simd dpdu, Vector3f::Simd dpdv, Normal3f::Simd dndu, Normal3f::Simd dndv, Float time, bool flipNormal )
+        SurfaceInteraction( const Point3fi& pi, const Point2f& uv, const Vector3f::Simd& wo, const Vector3f::Simd& dpdu, const Vector3f::Simd& dpdv, const Normal3f::Simd& dndu, const Normal3f::Simd& dndv, Float time, bool flipNormal )
             : Interaction( pi, Normal3f( Normalize( Cross( dpdu, dpdv ) ) ), uv, wo, time ),
               dpdu( dpdu ),
               dpdv( dpdv ),
@@ -247,13 +247,13 @@ namespace pbrto
             }
         }
 
-        SurfaceInteraction( Point3fi pi, Point2f uv, Vector3f::Simd wo, Vector3f::Simd dpdu, Vector3f::Simd dpdv, Normal3f::Simd dndu, Normal3f::Simd dndv, Float time, bool flipNormal, int faceIndex )
+        SurfaceInteraction( const Point3fi& pi, const Point2f& uv, const Vector3f::Simd& wo, const Vector3f::Simd& dpdu, const Vector3f::Simd& dpdv, const Normal3f::Simd& dndu, const Normal3f::Simd& dndv, Float time, bool flipNormal, int faceIndex )
             : SurfaceInteraction( pi, uv, wo, dpdu, dpdv, dndu, dndv, time, flipNormal )
         {
             this->faceIndex = faceIndex;
         }
 
-        void SetShadingGeometry( Normal3f::Simd ns, Vector3f::Simd dpdus, Vector3f::Simd dpdvs, Normal3f::Simd dndus, Normal3f::Simd dndvs, bool orientationIsAuthoritative )
+        void SetShadingGeometry( const Normal3f::Simd& ns, const Vector3f::Simd& dpdus, const Vector3f::Simd& dpdvs, const Normal3f::Simd& dndus, const Normal3f::Simd& dndvs, bool orientationIsAuthoritative )
         {
             // Compute _shading.n_ for _SurfaceInteraction_
             shading.n = ns;
@@ -295,12 +295,12 @@ namespace pbrto
         void SkipIntersection( RayDifferential* ray, Float t ) const;
 
         using Interaction::SpawnRay;
-        RayDifferential SpawnRay( const RayDifferential& rayi, const BSDF& bsdf, Vector3f::Simd wi, int /*BxDFFlags*/ flags, Float eta ) const;
+        RayDifferential SpawnRay( const RayDifferential& rayi, const BSDF& bsdf, const Vector3f::Simd& wi, int /*BxDFFlags*/ flags, Float eta ) const;
 
         BSDF GetBSDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer, Sampler sampler );
         BSSRDF GetBSSRDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer );
 
-        SampledSpectrum Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const;
+        SampledSpectrum Le( const Vector3f::Simd& w, const SampledWavelengths& lambda ) const;
 
         
     };

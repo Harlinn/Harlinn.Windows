@@ -158,19 +158,20 @@ namespace pbrto
     // CameraWiSample Definition
     struct CameraWiSample
     {
+        SampledSpectrum Wi;
+        Vector3f::Simd wi;
+        Float pdf;
+        Point2f pRaster;
+        Interaction pRef, pLens;
+
         // CameraWiSample Public Methods
         CameraWiSample( ) = default;
-        CameraWiSample( const SampledSpectrum& Wi, const Vector3f& wi, Float pdf,
-                Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
+        CameraWiSample( const SampledSpectrum& Wi, const Vector3f::Simd& wi, Float pdf, Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
             : Wi( Wi ), wi( wi ), pdf( pdf ), pRaster( pRaster ), pRef( pRef ), pLens( pLens )
         {
         }
 
-        SampledSpectrum Wi;
-        Vector3f wi;
-        Float pdf;
-        Point2f pRaster;
-        Interaction pRef, pLens;
+        
     };
 
     // CameraRay Definition
@@ -207,8 +208,8 @@ namespace pbrto
         Float shutterOpen, shutterClose;
         Film film;
         Medium medium;
-        Vector3f minPosDifferentialX, minPosDifferentialY;
-        Vector3f minDirDifferentialX, minDirDifferentialY;
+        Vector3f::Simd minPosDifferentialX, minPosDifferentialY;
+        Vector3f::Simd minDirDifferentialX, minDirDifferentialY;
     public:
         // CameraBase Public Methods
         Film GetFilm( ) const { return film; }
@@ -222,20 +223,18 @@ namespace pbrto
         void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const
         {
             // Compute tangent plane equation for ray differential intersections
-            Point3f pCamera = CameraFromRender( p, time );
-            Transform DownZFromCamera = RotateFromTo( Normalize( Vector3f( pCamera ) ), Vector3f( 0, 0, 1 ) );
-            Point3f pDownZ = DownZFromCamera( pCamera );
-            Normal3f nDownZ = DownZFromCamera( CameraFromRender( n, time ) );
-            Float d = nDownZ.z * pDownZ.z;
+            Point3f::Simd pCamera = CameraFromRender( p, time );
+            Transform DownZFromCamera = RotateFromTo( Normalize( Vector3f::Simd( pCamera ) ), Vector3f::Simd( 0, 0, 1 ) );
+            Point3f::Simd pDownZ = DownZFromCamera( pCamera );
+            Normal3f::Simd nDownZ = DownZFromCamera( CameraFromRender( n, time ) );
+            Float d = nDownZ.z() * pDownZ.z();
 
             // Find intersection points for approximated camera differential rays
-            Ray xRay( Point3f( 0, 0, 0 ) + minPosDifferentialX,
-                Vector3f( 0, 0, 1 ) + minDirDifferentialX );
-            Float tx = -( ScalarDot( nDownZ, Vector3f( xRay.o ) ) - d ) / ScalarDot( nDownZ, xRay.d );
-            Ray yRay( Point3f( 0, 0, 0 ) + minPosDifferentialY,
-                Vector3f( 0, 0, 1 ) + minDirDifferentialY );
-            Float ty = -( ScalarDot( nDownZ, Vector3f( yRay.o ) ) - d ) / ScalarDot( nDownZ, yRay.d );
-            Point3f px = xRay( tx ), py = yRay( ty );
+            Ray xRay( Point3f::Simd( 0, 0, 0 ) + minPosDifferentialX, Vector3f::Simd( 0, 0, 1 ) + minDirDifferentialX );
+            Float tx = -( ScalarDot( nDownZ, Vector3f::Simd( xRay.o ) ) - d ) / ScalarDot( nDownZ, xRay.d );
+            Ray yRay( Point3f::Simd( 0, 0, 0 ) + minPosDifferentialY, Vector3f::Simd( 0, 0, 1 ) + minDirDifferentialY );
+            Float ty = -( ScalarDot( nDownZ, Vector3f::Simd( yRay.o ) ) - d ) / ScalarDot( nDownZ, yRay.d );
+            Point3f::Simd px = xRay( tx ), py = yRay( ty );
 
             // Estimate $\dpdx$ and $\dpdy$ in tangent plane at intersection point
             Float sppScale =
@@ -383,36 +382,27 @@ namespace pbrto
             minPosDifferentialY = dyCamera;
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
-                SampledWavelengths& lambda ) const;
+        pstdo::optional<CameraRay> GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
-                CameraSample sample, SampledWavelengths& lambda ) const;
+        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( const CameraSample& sample, SampledWavelengths& lambda ) const;
 
         static OrthographicCamera* Create( const ParameterDictionary& parameters,
             const CameraTransform& cameraTransform, Film film,
             Medium medium, const FileLoc* loc,
             Allocator alloc = {} );
 
-        PBRT_CPU_GPU
-            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
-                Point2f* pRaster2 = nullptr ) const
+        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
         {
             NLOG_FATAL( "We() unimplemented for OrthographicCamera" );
             return {};
         }
 
-        PBRT_CPU_GPU
-            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "PDF_We() unimplemented for OrthographicCamera" );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
-                SampledWavelengths& lambda ) const
+        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "SampleWi() unimplemented for OrthographicCamera" );
             return {};
@@ -422,36 +412,36 @@ namespace pbrto
 
     private:
         // OrthographicCamera Private Members
-        Vector3f dxCamera, dyCamera;
+        Vector3f::Simd dxCamera, dyCamera;
     };
 
     // PerspectiveCamera Definition
     class PerspectiveCamera : public ProjectiveCamera
     {
+        // PerspectiveCamera Private Members
+        Vector3f::Simd dxCamera, dyCamera;
+        Float cosTotalWidth;
+        Float A;
     public:
         // PerspectiveCamera Public Methods
-        PerspectiveCamera( CameraBaseParameters baseParameters, Float fov,
-            Bounds2f screenWindow, Float lensRadius, Float focalDist )
-            : ProjectiveCamera( baseParameters, Perspective( fov, 1e-2f, 1000.f ), screenWindow,
-                lensRadius, focalDist )
+        PerspectiveCamera( CameraBaseParameters baseParameters, Float fov, Bounds2f screenWindow, Float lensRadius, Float focalDist )
+            : ProjectiveCamera( baseParameters, Perspective( fov, 1e-2f, 1000.f ), screenWindow, lensRadius, focalDist )
         {
             // Compute differential changes in origin for perspective camera rays
-            dxCamera =
-                cameraFromRaster( Point3f( 1, 0, 0 ) ) - cameraFromRaster( Point3f( 0, 0, 0 ) );
-            dyCamera =
-                cameraFromRaster( Point3f( 0, 1, 0 ) ) - cameraFromRaster( Point3f( 0, 0, 0 ) );
+            dxCamera = cameraFromRaster( Point3f::Simd( 1, 0, 0 ) ) - cameraFromRaster( Point3f::Simd( 0, 0, 0 ) );
+            dyCamera = cameraFromRaster( Point3f::Simd( 0, 1, 0 ) ) - cameraFromRaster( Point3f::Simd( 0, 0, 0 ) );
 
             // Compute _cosTotalWidth_ for perspective camera
-            Point2f radius = Point2f( film.GetFilter( ).Radius( ) );
-            Point3f pCorner( -radius.x, -radius.y, 0.f );
-            Vector3f wCornerCamera = Normalize( Vector3f( cameraFromRaster( pCorner ) ) );
-            cosTotalWidth = wCornerCamera.z;
+            auto radius = film.GetFilter( ).Radius( );
+            Point3f::Simd pCorner( -radius.x, -radius.y, 0.f );
+            Vector3f::Simd wCornerCamera = Normalize( Vector3f::Simd( cameraFromRaster( pCorner ) ) );
+            cosTotalWidth = wCornerCamera.z( );
             NDCHECK_LT( .9999 * cosTotalWidth, Math::Cos( Deg2Rad( fov / 2 ) ) );
 
             // Compute image plane area at $z=1$ for _PerspectiveCamera_
             Point2i res = film.FullResolution( );
-            Point3f pMin = cameraFromRaster( Point3f( 0, 0, 0 ) );
-            Point3f pMax = cameraFromRaster( Point3f( res.x, res.y, 0 ) );
+            Point3f pMin = cameraFromRaster( Point3f::Simd( 0, 0, 0 ) );
+            Point3f pMax = cameraFromRaster( Point3f::Simd( res.x, res.y, 0 ) );
             pMin /= pMin.z;
             pMax /= pMax.z;
             A = Math::FastAbs( ( pMax.x - pMin.x ) * ( pMax.y - pMin.y ) );
@@ -467,30 +457,18 @@ namespace pbrto
             Medium medium, const FileLoc* loc,
             Allocator alloc = {} );
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
-                SampledWavelengths& lambda ) const;
+        pstdo::optional<CameraRay> GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
-                CameraSample sample, SampledWavelengths& lambda ) const;
+        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( const CameraSample& sample, SampledWavelengths& lambda ) const;
 
-        PBRT_CPU_GPU
-            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
-                Point2f* pRaster2 = nullptr ) const;
-        PBRT_CPU_GPU
-            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
-        PBRT_CPU_GPU
-            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
-                SampledWavelengths& lambda ) const;
+        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const;
+        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
+        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const;
 
         std::string ToString( ) const;
 
     private:
-        // PerspectiveCamera Private Members
-        Vector3f dxCamera, dyCamera;
-        Float cosTotalWidth;
-        Float A;
+        
     };
 
     // SphericalCamera Definition
@@ -513,34 +491,25 @@ namespace pbrto
             Medium medium, const FileLoc* loc,
             Allocator alloc = {} );
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
-                SampledWavelengths& lambda ) const;
+        pstdo::optional<CameraRay> GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
-                CameraSample sample, SampledWavelengths& lambda ) const
+        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( const CameraSample& sample, SampledWavelengths& lambda ) const
         {
             return CameraBase::GenerateRayDifferential( this, sample, lambda );
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
-                Point2f* pRaster2 = nullptr ) const
+        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
         {
             NLOG_FATAL( "We() unimplemented for SphericalCamera" );
             return {};
         }
 
-        PBRT_CPU_GPU
-            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "PDF_We() unimplemented for SphericalCamera" );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
-                SampledWavelengths& lambda ) const
+        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "SampleWi() unimplemented for SphericalCamera" );
             return {};
@@ -574,34 +543,25 @@ namespace pbrto
             Medium medium, const FileLoc* loc,
             Allocator alloc = {} );
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRay> GenerateRay( CameraSample sample,
-                SampledWavelengths& lambda ) const;
+        pstdo::optional<CameraRay> GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
-                CameraSample sample, SampledWavelengths& lambda ) const
+        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( const CameraSample& sample, SampledWavelengths& lambda ) const
         {
             return CameraBase::GenerateRayDifferential( this, sample, lambda );
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
-                Point2f* pRaster2 = nullptr ) const
+        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
         {
             NLOG_FATAL( "We() unimplemented for RealisticCamera" );
             return {};
         }
 
-        PBRT_CPU_GPU
-            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
             NLOG_FATAL( "PDF_We() unimplemented for RealisticCamera" );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
-                SampledWavelengths& lambda ) const
+        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "SampleWi() unimplemented for RealisticCamera" );
             return {};
@@ -621,11 +581,9 @@ namespace pbrto
         };
 
         // RealisticCamera Private Methods
-        PBRT_CPU_GPU
-            Float LensRearZ( ) const { return elementInterfaces.back( ).thickness; }
+        Float LensRearZ( ) const { return elementInterfaces.back( ).thickness; }
 
-        PBRT_CPU_GPU
-            Float LensFrontZ( ) const
+        Float LensFrontZ( ) const
         {
             Float zSum = 0;
             for ( const LensElementInterface& element : elementInterfaces )
@@ -633,11 +591,9 @@ namespace pbrto
             return zSum;
         }
 
-        PBRT_CPU_GPU
-            Float RearElementRadius( ) const { return elementInterfaces.back( ).apertureRadius; }
+        Float RearElementRadius( ) const { return elementInterfaces.back( ).apertureRadius; }
 
-        PBRT_CPU_GPU
-            Float TraceLensesFromFilm( const Ray& rCamera, Ray* rOut ) const;
+        Float TraceLensesFromFilm( const Ray& rCamera, Ray* rOut ) const;
 
         static bool IntersectSphericalElement( Float radius, Float zCenter, const Ray& ray, Float* t, Normal3f* nOut )
         {
@@ -664,8 +620,7 @@ namespace pbrto
             return true;
         }
 
-        PBRT_CPU_GPU
-            Float TraceLensesFromScene( const Ray& rCamera, Ray* rOut ) const;
+        Float TraceLensesFromScene( const Ray& rCamera, Ray* rOut ) const;
 
         void DrawLensSystem( ) const;
         void DrawRayPathFromFilm( const Ray& r, bool arrow, bool toOpticalIntercept ) const;
@@ -677,8 +632,7 @@ namespace pbrto
         Bounds2f BoundExitPupil( Float filmX0, Float filmX1 ) const;
         void RenderExitPupil( Float sx, Float sy, const char* filename ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<ExitPupilSample> SampleExitPupil( Point2f pFilm, Point2f uLens ) const;
+        pstdo::optional<ExitPupilSample> SampleExitPupil( Point2f pFilm, Point2f uLens ) const;
 
         void TestExitPupilBounds( ) const;
 
@@ -689,8 +643,7 @@ namespace pbrto
         pstdo::vector<Bounds2f> exitPupilBounds;
     };
 
-    PBRT_CPU_GPU inline pstdo::optional<CameraRay> Camera::GenerateRay( CameraSample sample,
-        SampledWavelengths& lambda ) const
+    inline pstdo::optional<CameraRay> Camera::GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         auto generate = [ & ]( auto ptr ) { return ptr->GenerateRay( sample, lambda ); };
         return Dispatch( generate );
@@ -716,9 +669,7 @@ namespace pbrto
         return Dispatch( gtc );
     }
 
-    PBRT_CPU_GPU inline void Camera::Approximate_dp_dxy( Point3f p, Normal3f n, Float time,
-        int samplesPerPixel, Vector3f* dpdx,
-        Vector3f* dpdy ) const
+    inline void Camera::Approximate_dp_dxy( const Point3f::Simd& p, const Normal3f::Simd& n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const
     {
         if constexpr ( AllInheritFrom<CameraBase>( Camera::Types( ) ) )
         {

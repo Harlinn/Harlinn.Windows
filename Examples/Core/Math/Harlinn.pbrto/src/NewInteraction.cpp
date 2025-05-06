@@ -67,21 +67,24 @@ namespace pbrto
             dpdx = dpdy = Vector3f::Simd( 0, 0, 0 );
             return;
         }
-        if ( ray.hasDifferentials && ScalarDot( n, ray.rxDirection ) != 0 &&
-            ScalarDot( n, ray.ryDirection ) != 0 )
+        auto txd = ScalarDot( n, ray.rxDirection );
+        auto tyd = ScalarDot( n, ray.ryDirection );
+        if ( ray.hasDifferentials && txd != 0 && tyd != 0 )
         {
             // Estimate screen-space change in $\pt{}$ using ray differentials
             // Compute auxiliary intersection points with plane, _px_ and _py_
-            Float d = -ScalarDot( n, Vector3f( p( ) ) );
-            Float tx = ( -ScalarDot( n, ray.rxOrigin ) - d ) / ScalarDot( n, ray.rxDirection );
+            auto pv = p( );
+            Float d = -ScalarDot( n, Vector3f::Simd( pv ) );
+            
+            Float tx = ( -ScalarDot( n, ray.rxOrigin ) - d ) / txd;
             NDCHECK( !IsInf( tx ) && !IsNaN( tx ) );
             Point3f::Simd px = ray.rxOrigin + tx * ray.rxDirection;
-            Float ty = ( -ScalarDot( n, ray.ryOrigin ) - d ) / ScalarDot( n, ray.ryDirection );
+            Float ty = ( -ScalarDot( n, ray.ryOrigin ) - d ) / tyd;
             NDCHECK( !IsInf( ty ) && !IsNaN( ty ) );
             Point3f::Simd py = ray.ryOrigin + ty * ray.ryDirection;
 
-            dpdx = px - p( );
-            dpdy = py - p( );
+            dpdx = px - pv;
+            dpdy = py - pv;
 
         }
         else
@@ -126,7 +129,7 @@ namespace pbrto
         }
     }
 
-    RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi, const BSDF& bsdf, Vector3f::Simd wi, int flags, Float eta ) const
+    RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi, const BSDF& bsdf, const Vector3f::Simd& wi, int flags, Float eta ) const
     {
         RayDifferential rd( SpawnRay( wi ) );
         if ( rayi.hasDifferentials )
@@ -148,10 +151,8 @@ namespace pbrto
                 // Compute differential reflected directions
                 Float dwoDotn_dx = ScalarDot( dwodx, n ) + ScalarDot( wo, dndx );
                 Float dwoDotn_dy = ScalarDot( dwody, n ) + ScalarDot( wo, dndy );
-                rd.rxDirection =
-                    wi - dwodx + 2 * Dot( wo, n ) * dndx + dwoDotn_dx * n;
-                rd.ryDirection =
-                    wi - dwody + 2 * Dot( wo, n ) * dndy + dwoDotn_dy * n;
+                rd.rxDirection = wi - dwodx + 2 * Dot( wo, n ) * dndx + dwoDotn_dx * n;
+                rd.ryDirection = wi - dwody + 2 * Dot( wo, n ) * dndy + dwoDotn_dy * n;
 
             }
             else if ( flags == BxDFFlags::SpecularTransmission )
@@ -245,7 +246,7 @@ namespace pbrto
         return material.GetBSSRDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
     }
 
-    SampledSpectrum SurfaceInteraction::Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const
+    SampledSpectrum SurfaceInteraction::Le( const Vector3f::Simd& w, const SampledWavelengths& lambda ) const
     {
         return areaLight ? SampledSpectrum( areaLight.L( p( ), n, uv, w, lambda ) ) : SampledSpectrum( 0.f );
     }

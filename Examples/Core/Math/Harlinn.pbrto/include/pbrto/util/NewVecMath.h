@@ -3224,11 +3224,21 @@ namespace pbrto
             return Frame( Vector3f( x ), y, z );
         }
 
+        static Frame FromX( const Normal3f::Simd& x )
+        {
+            return FromX( Normal3f( x ) );
+        }
+
         static Frame FromY( const Normal3f& y )
         {
             Vector3f x, z;
             CoordinateSystem( y, &z, &x );
             return Frame( x, Vector3f( y ), z );
+        }
+
+        static Frame FromY( const Normal3f::Simd& y )
+        {
+            return FromY( Normal3f( y ) );
         }
 
         static Frame FromZ( const Normal3f& z )
