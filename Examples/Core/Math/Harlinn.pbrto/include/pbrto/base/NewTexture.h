@@ -110,7 +110,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        inline SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        inline SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const;
     };
 
 }

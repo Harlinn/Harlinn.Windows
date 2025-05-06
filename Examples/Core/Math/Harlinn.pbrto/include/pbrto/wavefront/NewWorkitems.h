@@ -457,7 +457,7 @@ namespace pbrto
         using WorkQueue::WorkQueue;
 
         PBRT_CPU_GPU
-            int Push( Material material, SampledWavelengths lambda, SampledSpectrum beta,
+            int Push( Material material, const SampledWavelengths& lambda, SampledSpectrum beta,
                 SampledSpectrum r_u, Point3f p, Vector3f wo, Normal3f n, Normal3f ns,
                 Vector3f dpdus, Point2f uv, int depth, MediumInterface mediumInterface,
                 Float etaScale, int pixelIndex )
@@ -489,7 +489,7 @@ namespace pbrto
 
         PBRT_CPU_GPU
             int Push( Point3f p0, Point3f p1, int depth, Material material, TabulatedBSSRDF bssrdf,
-                SampledWavelengths lambda, SampledSpectrum beta, SampledSpectrum r_u,
+                const SampledWavelengths& lambda, SampledSpectrum beta, SampledSpectrum r_u,
                 MediumInterface mediumInterface, Float etaScale, int pixelIndex )
         {
             int index = AllocateEntry( );
@@ -517,7 +517,7 @@ namespace pbrto
         using WorkQueue::Push;
 
         PBRT_CPU_GPU
-            int Push( Ray ray, Float tMax, SampledWavelengths lambda, SampledSpectrum beta,
+            int Push( Ray ray, Float tMax, const SampledWavelengths& lambda, SampledSpectrum beta,
                 SampledSpectrum r_u, SampledSpectrum r_l, int pixelIndex,
                 LightSampleContext prevIntrCtx, int specularBounce,
                 int anyNonSpecularBounces, Float etaScale )

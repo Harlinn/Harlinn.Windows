@@ -1024,7 +1024,7 @@ namespace pbrto
         BxDFFlags Flags( ) const { return BxDFFlags::GlossyReflection; }
 
         static RGBUnboundedSpectrum SigmaAFromConcentration( Float ce, Float cp );
-        static SampledSpectrum SigmaAFromReflectance( SampledSpectrum c, Float beta_n, const SampledWavelengths& lambda )
+        static SampledSpectrum SigmaAFromReflectance( const SampledSpectrum& c, Float beta_n, const SampledWavelengths& lambda )
         {
             Float tmp = ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
                 10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
@@ -1046,7 +1046,7 @@ namespace pbrto
             return mp;
         }
 
-        static std::array<SampledSpectrum, pMax + 1> Ap( Float cosTheta_o, Float eta, Float h, SampledSpectrum T )
+        static std::array<SampledSpectrum, pMax + 1> Ap( Float cosTheta_o, Float eta, Float h, const SampledSpectrum& T )
         {
             std::array<SampledSpectrum, pMax + 1> ap;
             // Compute $p=0$ attenuation at initial cylinder intersection

@@ -116,10 +116,9 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            RGB ToSensorRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const
+        RGB ToSensorRGB( const SampledSpectrum& LIn, const SampledWavelengths& lambda ) const
         {
-            L = SafeDiv( L, lambda.PDF( ) );
+            auto L = SafeDiv( LIn, lambda.PDF( ) );
             return imagingRatio * RGB( ScalarAvg( r_bar.Sample( lambda ) * L ),
                 ScalarAvg( g_bar.Sample( lambda ) * L ),
                 ScalarAvg( b_bar.Sample( lambda ) * L ) );
@@ -164,7 +163,7 @@ namespace pbrto
     public:
         // VisibleSurface Public Methods
         PBRT_CPU_GPU
-            VisibleSurface( const SurfaceInteraction& si, SampledSpectrum albedo,
+            VisibleSurface( const SurfaceInteraction& si, const SampledSpectrum& albedo,
                 const SampledWavelengths& lambda );
 
         PBRT_CPU_GPU
@@ -272,7 +271,7 @@ namespace pbrto
             bool UsesVisibleSurface( ) const { return false; }
 
         PBRT_CPU_GPU
-            void AddSample( Point2i pFilm, SampledSpectrum L, const SampledWavelengths& lambda,
+            void AddSample( Point2i pFilm, const SampledSpectrum& L, const SampledWavelengths& lambda,
                 const VisibleSurface*, Float weight )
         {
             // Convert sample radiance to _PixelSensor_ RGB
@@ -320,7 +319,7 @@ namespace pbrto
             const FileLoc* loc, Allocator alloc );
 
         PBRT_CPU_GPU
-            void AddSplat( Point2f p, SampledSpectrum v, const SampledWavelengths& lambda );
+            void AddSplat( Point2f p, const SampledSpectrum& v, const SampledWavelengths& lambda );
 
         void WriteImage( ImageMetadata metadata, Float splatScale = 1 );
         Image GetImage( ImageMetadata* metadata, Float splatScale = 1 );
@@ -328,7 +327,7 @@ namespace pbrto
         std::string ToString( ) const;
 
         PBRT_CPU_GPU
-            RGB ToOutputRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const
+            RGB ToOutputRGB( const SampledSpectrum& L, const SampledWavelengths& lambda ) const
         {
             RGB sensorRGB = sensor->ToSensorRGB( L, lambda );
             return outputRGBFromSensorRGB * sensorRGB;
@@ -371,14 +370,14 @@ namespace pbrto
             Allocator alloc );
 
         PBRT_CPU_GPU
-            void AddSample( Point2i pFilm, SampledSpectrum L, const SampledWavelengths& lambda,
+            void AddSample( Point2i pFilm, const SampledSpectrum& L, const SampledWavelengths& lambda,
                 const VisibleSurface* visibleSurface, Float weight );
 
         PBRT_CPU_GPU
-            void AddSplat( Point2f p, SampledSpectrum v, const SampledWavelengths& lambda );
+            void AddSplat( Point2f p, const SampledSpectrum& v, const SampledWavelengths& lambda );
 
         PBRT_CPU_GPU
-            RGB ToOutputRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const
+            RGB ToOutputRGB( const SampledSpectrum& L, const SampledWavelengths& lambda ) const
         {
             RGB cameraRGB = sensor->ToSensorRGB( L, lambda );
             return outputRGBFromSensorRGB * cameraRGB;
@@ -456,9 +455,10 @@ namespace pbrto
         }
 
         PBRT_CPU_GPU
-            void AddSample( Point2i pFilm, SampledSpectrum L, const SampledWavelengths& lambda,
+            void AddSample( Point2i pFilm, const SampledSpectrum& LIn, const SampledWavelengths& lambda,
                 const VisibleSurface*, Float weight )
         {
+            auto L = LIn;
             // Start by doing more or less what RGBFilm::AddSample() does so
             // that we can maintain accurate RGB values.
 
@@ -514,7 +514,7 @@ namespace pbrto
             const FileLoc* loc, Allocator alloc );
 
         PBRT_CPU_GPU
-            void AddSplat( Point2f p, SampledSpectrum v, const SampledWavelengths& lambda );
+            void AddSplat( Point2f p, const SampledSpectrum& v, const SampledWavelengths& lambda );
 
         void WriteImage( ImageMetadata metadata, Float splatScale = 1 );
 
@@ -526,7 +526,7 @@ namespace pbrto
         std::string ToString( ) const;
 
         PBRT_CPU_GPU
-            RGB ToOutputRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const
+            RGB ToOutputRGB( const SampledSpectrum& L, const SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "ToOutputRGB() is unimplemented. But that's ok since it's only used "
                 "in the SPPM integrator, which is inherently very much based on "
@@ -636,14 +636,14 @@ namespace pbrto
     }
 
     PBRT_CPU_GPU
-        inline RGB Film::ToOutputRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const
+        inline RGB Film::ToOutputRGB( const SampledSpectrum& L, const SampledWavelengths& lambda ) const
     {
         auto out = [ & ]( auto ptr ) { return ptr->ToOutputRGB( L, lambda ); };
         return Dispatch( out );
     }
 
     PBRT_CPU_GPU
-        inline void Film::AddSample( Point2i pFilm, SampledSpectrum L,
+        inline void Film::AddSample( Point2i pFilm, const SampledSpectrum& L,
             const SampledWavelengths& lambda,
             const VisibleSurface* visibleSurface, Float weight )
     {

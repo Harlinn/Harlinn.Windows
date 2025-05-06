@@ -418,7 +418,7 @@ namespace pbrto
     }
 
     // SpectrumImageTexture Method Definitions
-    SampledSpectrum SpectrumImageTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+    SampledSpectrum SpectrumImageTexture::Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
     {
 #ifdef PBRT_IS_GPU_CODE
         assert( !"Should not be called in GPU code" );
@@ -545,7 +545,7 @@ namespace pbrto
     }
 
     // MarbleTexture Method Definitions
-    SampledSpectrum MarbleTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+    SampledSpectrum MarbleTexture::Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
     {
         TexCoord3D c = mapping.Map( ctx );
         c.p *= scale;
@@ -798,7 +798,7 @@ namespace pbrto
 #endif
     }
 
-    SampledSpectrum SpectrumPtexTexture::Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+    SampledSpectrum SpectrumPtexTexture::Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
     {
 #ifdef PBRT_IS_GPU_CODE
         NLOG_FATAL( "Ptex not supported with GPU renderer" );
@@ -1741,7 +1741,7 @@ namespace pbrto
         return tex.Evaluate( ctx );
     }
 
-    SampledSpectrum UniversalTextureEvaluator::operator()( SpectrumTexture tex, TextureEvalContext ctx, SampledWavelengths lambda )
+    SampledSpectrum UniversalTextureEvaluator::operator()( SpectrumTexture tex, TextureEvalContext ctx, const SampledWavelengths& lambda )
     {
         return tex.Evaluate( ctx, lambda );
     }

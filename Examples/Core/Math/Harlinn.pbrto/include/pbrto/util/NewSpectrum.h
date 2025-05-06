@@ -80,8 +80,9 @@ namespace pbrto
         friend struct SOA<SampledSpectrum>;
         
     public:
-        VectorType values;
+        VectorType values{};
         SampledSpectrum( ) = default;
+        
         explicit SampledSpectrum( Float c ) 
         { 
             values.fill( c ); 

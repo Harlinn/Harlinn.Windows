@@ -53,7 +53,7 @@
 namespace pbrto
 {
 
-    PBRT_CPU_GPU void Film::AddSplat( Point2f p, SampledSpectrum v, const SampledWavelengths& lambda )
+    PBRT_CPU_GPU void Film::AddSplat( Point2f p, const SampledSpectrum& v, const SampledWavelengths& lambda )
     {
         auto splat = [ & ]( auto ptr ) { return ptr->AddSplat( p, v, lambda ); };
         return Dispatch( splat );
@@ -231,8 +231,7 @@ namespace pbrto
     }
 
     // VisibleSurface Method Definitions
-    PBRT_CPU_GPU VisibleSurface::VisibleSurface( const SurfaceInteraction& si, SampledSpectrum albedo,
-        const SampledWavelengths& lambda )
+    VisibleSurface::VisibleSurface( const SurfaceInteraction& si, const SampledSpectrum& albedo, const SampledWavelengths& lambda )
         : albedo( albedo )
     {
         set = true;
@@ -547,7 +546,7 @@ namespace pbrto
         outputRGBFromSensorRGB = colorSpace->RGBFromXYZ * sensor->XYZFromSensorRGB;
     }
 
-    PBRT_CPU_GPU void RGBFilm::AddSplat( Point2f p, SampledSpectrum L, const SampledWavelengths& lambda )
+    PBRT_CPU_GPU void RGBFilm::AddSplat( Point2f p, const SampledSpectrum& L, const SampledWavelengths& lambda )
     {
         NCHECK( !L.HasNaNs( ) );
         // Convert sample radiance to _PixelSensor_ RGB
@@ -644,9 +643,7 @@ namespace pbrto
     }
 
     // GBufferFilm Method Definitions
-    PBRT_CPU_GPU void GBufferFilm::AddSample( Point2i pFilm, SampledSpectrum L,
-        const SampledWavelengths& lambda,
-        const VisibleSurface* visibleSurface, Float weight )
+    void GBufferFilm::AddSample( Point2i pFilm, const SampledSpectrum& L, const SampledWavelengths& lambda, const VisibleSurface* visibleSurface, Float weight )
     {
         RGB rgb = sensor->ToSensorRGB( L, lambda );
         Float m = Math::Max( rgb.x, rgb.y, rgb.z );
@@ -721,8 +718,7 @@ namespace pbrto
         outputRGBFromSensorRGB = colorSpace->RGBFromXYZ * sensor->XYZFromSensorRGB;
     }
 
-    PBRT_CPU_GPU void GBufferFilm::AddSplat( Point2f p, SampledSpectrum v,
-        const SampledWavelengths& lambda )
+    void GBufferFilm::AddSplat( Point2f p, const SampledSpectrum& v, const SampledWavelengths& lambda )
     {
         // NOTE: same code as RGBFilm::AddSplat()...
         NCHECK( !v.HasNaNs( ) );
@@ -986,9 +982,9 @@ namespace pbrto
         return rgb;
     }
 
-    PBRT_CPU_GPU void SpectralFilm::AddSplat( Point2f p, SampledSpectrum L,
-        const SampledWavelengths& lambda )
+    void SpectralFilm::AddSplat( Point2f p, const SampledSpectrum& LIn, const SampledWavelengths& lambda )
     {
+        auto L = LIn;
         // This, too, is similar to RGBFilm::AddSplat(), with additions for
         // spectra.
 

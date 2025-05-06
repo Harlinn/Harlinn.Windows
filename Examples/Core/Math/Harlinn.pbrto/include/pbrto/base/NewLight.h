@@ -77,7 +77,7 @@ namespace pbrto
             const MediumInterface& mediumInterface, const Shape shape,
             FloatTexture alpha, const FileLoc* loc, Allocator alloc );
 
-        SampledSpectrum Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum Phi( const SampledWavelengths& lambda ) const;
 
         inline LightType Type( ) const;
 

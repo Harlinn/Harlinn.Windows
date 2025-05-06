@@ -117,8 +117,7 @@ namespace pbrto
         return ( pstdo::norm( r_parl ) + pstdo::norm( r_perp ) ) / 2;
     }
 
-    PBRT_CPU_GPU inline SampledSpectrum FrComplex( Float cosTheta_i, SampledSpectrum eta,
-        SampledSpectrum k )
+    inline SampledSpectrum FrComplex( Float cosTheta_i, const SampledSpectrum& eta, const SampledSpectrum& k )
     {
         SampledSpectrum result;
         for ( int i = 0; i < NSpectrumSamples; ++i )

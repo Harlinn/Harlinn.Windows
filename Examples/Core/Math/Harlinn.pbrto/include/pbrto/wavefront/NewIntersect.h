@@ -246,8 +246,8 @@ namespace pbrto
 #endif
                 SampledSpectrum T_maj = SampleT_maj(
                     ray, tEnd, rng.Uniform<Float>( ), rng, lambda,
-                    [ & ]( Point3f p, MediumProperties mp, SampledSpectrum sigma_maj,
-                        SampledSpectrum T_maj ) {
+                    [ & ]( Point3f p, MediumProperties mp, const SampledSpectrum& sigma_maj,
+                        const SampledSpectrum& T_maj ) {
                             SampledSpectrum sigma_n =
                                 ClampZero( sigma_maj - mp.sigma_a - mp.sigma_s );
 

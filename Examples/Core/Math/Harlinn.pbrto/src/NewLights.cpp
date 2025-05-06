@@ -1554,7 +1554,7 @@ namespace pbrto
             coneangle - conedelta );
     }
 
-    SampledSpectrum Light::Phi( SampledWavelengths lambda ) const
+    SampledSpectrum Light::Phi( const SampledWavelengths& lambda ) const
     {
         auto phi = [ & ]( auto ptr ) { return ptr->Phi( lambda ); };
         return DispatchCPU( phi );

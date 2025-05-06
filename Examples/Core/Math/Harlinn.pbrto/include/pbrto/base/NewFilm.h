@@ -45,7 +45,7 @@ namespace pbrto
     {
     public:
         // Film Interface
-        PBRT_CPU_GPU inline void AddSample( Point2i pFilm, SampledSpectrum L,
+        PBRT_CPU_GPU inline void AddSample( Point2i pFilm, const SampledSpectrum& L,
             const SampledWavelengths& lambda,
             const VisibleSurface* visibleSurface,
             Float weight );
@@ -56,7 +56,7 @@ namespace pbrto
             bool UsesVisibleSurface( ) const;
 
         PBRT_CPU_GPU
-            void AddSplat( Point2f p, SampledSpectrum v, const SampledWavelengths& lambda );
+            void AddSplat( Point2f p, const SampledSpectrum& v, const SampledWavelengths& lambda );
 
         PBRT_CPU_GPU inline SampledWavelengths SampleWavelengths( Float u ) const;
 
@@ -66,7 +66,7 @@ namespace pbrto
 
         void WriteImage( ImageMetadata metadata, Float splatScale = 1 );
 
-        PBRT_CPU_GPU inline RGB ToOutputRGB( SampledSpectrum L,
+        PBRT_CPU_GPU inline RGB ToOutputRGB( const SampledSpectrum& L,
             const SampledWavelengths& lambda ) const;
 
         Image GetImage( ImageMetadata* metadata, Float splatScale = 1 );

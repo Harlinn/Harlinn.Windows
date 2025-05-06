@@ -115,7 +115,7 @@ namespace pbrto
         HomogeneousMajorantIterator( ) 
             : called( true ) 
         { }
-        HomogeneousMajorantIterator( Float tMin, Float tMax, SampledSpectrum sigma_maj )
+        HomogeneousMajorantIterator( Float tMin, Float tMax, const SampledSpectrum& sigma_maj )
             : seg{ tMin, tMax, sigma_maj }, called( false )
         { }
 
