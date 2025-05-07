@@ -52,28 +52,34 @@ namespace pbrto
         // CameraTransform Public Methods
         CameraTransform( ) = default;
         explicit CameraTransform( const AnimatedTransform& worldFromCamera );
-
+        /*
         Point3f RenderFromCamera( Point3f p, Float time ) const
         {
             return renderFromCamera( p, time );
         }
-        Point3f::Simd RenderFromCamera( Point3f::Simd p, Float time ) const
+        */
+        Point3f::Simd RenderFromCamera( const Point3f::Simd& p, Float time ) const
         {
             return renderFromCamera( p, time );
         }
+        /*
         Point3f CameraFromRender( Point3f p, Float time ) const
         {
             return renderFromCamera.ApplyInverse( p, time );
         }
-        Point3f::Simd CameraFromRender( Point3f::Simd p, Float time ) const
+        */
+        Point3f::Simd CameraFromRender( const Point3f::Simd& p, Float time ) const
         {
             return renderFromCamera.ApplyInverse( p, time );
         }
+        /*
         Point3f RenderFromWorld( Point3f p ) const 
         { 
             return worldFromRender.ApplyInverse( p ); 
         }
-        Point3f::Simd RenderFromWorld( Point3f::Simd p ) const
+        */
+
+        Point3f::Simd RenderFromWorld( const Point3f::Simd& p ) const
         {
             return worldFromRender.ApplyInverse( p );
         }
@@ -96,20 +102,24 @@ namespace pbrto
             return renderFromCamera.HasScale( ); 
         }
 
+        /*
         Vector3f RenderFromCamera( Vector3f v, Float time ) const
         {
             return renderFromCamera( v, time );
         }
-        Vector3f::Simd RenderFromCamera( Vector3f::Simd v, Float time ) const
+        */
+        Vector3f::Simd RenderFromCamera( const Vector3f::Simd& v, Float time ) const
         {
             return renderFromCamera( v, time );
         }
 
+        /*
         Normal3f RenderFromCamera( Normal3f n, Float time ) const
         {
             return renderFromCamera( n, time );
         }
-        Normal3f RenderFromCamera( Normal3f::Simd n, Float time ) const
+        */
+        Normal3f RenderFromCamera( const Normal3f::Simd& n, Float time ) const
         {
             return renderFromCamera( n, time );
         }
@@ -120,21 +130,24 @@ namespace pbrto
         {
             return renderFromCamera( r );
         }
-
+        /*
         Vector3f CameraFromRender( Vector3f v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
-        Vector3f::Simd CameraFromRender( Vector3f::Simd v, Float time ) const
+        */
+        Vector3f::Simd CameraFromRender( const Vector3f::Simd& v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
 
+        /*
         Normal3f CameraFromRender( Normal3f v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
-        Normal3f::Simd CameraFromRender( Normal3f::Simd v, Float time ) const
+        */
+        Normal3f::Simd CameraFromRender( const Normal3f::Simd& v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
@@ -373,8 +386,8 @@ namespace pbrto
                 focalDist )
         {
             // Compute differential changes in origin for orthographic camera rays
-            dxCamera = cameraFromRaster( Vector3f( 1, 0, 0 ) );
-            dyCamera = cameraFromRaster( Vector3f( 0, 1, 0 ) );
+            dxCamera = cameraFromRaster( Vector3f::Simd( 1, 0, 0 ) );
+            dyCamera = cameraFromRaster( Vector3f::Simd( 0, 1, 0 ) );
 
             // Compute minimum differentials for orthographic camera
             minDirDifferentialX = minDirDifferentialY = Vector3f( 0, 0, 0 );

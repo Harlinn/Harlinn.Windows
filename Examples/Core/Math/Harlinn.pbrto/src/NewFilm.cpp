@@ -670,11 +670,11 @@ namespace pbrto
                 p.dzdxSum +=
                     weight *
                     outputFromRender.ApplyInverse( visibleSurface->dpdx, visibleSurface->time )
-                    .z;
+                    .z();
                 p.dzdySum +=
                     weight *
                     outputFromRender.ApplyInverse( visibleSurface->dpdy, visibleSurface->time )
-                    .z;
+                    .z( );
             }
             else
             {
@@ -683,9 +683,9 @@ namespace pbrto
                 p.nsSum +=
                     weight * outputFromRender( visibleSurface->ns, visibleSurface->time );
                 p.dzdxSum +=
-                    weight * outputFromRender( visibleSurface->dpdx, visibleSurface->time ).z;
+                    weight * outputFromRender( visibleSurface->dpdx, visibleSurface->time ).z( );
                 p.dzdySum +=
-                    weight * outputFromRender( visibleSurface->dpdy, visibleSurface->time ).z;
+                    weight * outputFromRender( visibleSurface->dpdy, visibleSurface->time ).z( );
             }
             p.uvSum += weight * visibleSurface->uv;
 

@@ -621,8 +621,8 @@ namespace pbrto
             dx = dxTmp;
         }
         Transform rayFromObject = pbrto::LookAt( ray.o, ray.o + ray.d, dx );
-        std::array<Point3f, 4> cp = { rayFromObject( cpObj[ 0 ] ), rayFromObject( cpObj[ 1 ] ),
-                                      rayFromObject( cpObj[ 2 ] ), rayFromObject( cpObj[ 3 ] ) };
+        std::array<Point3f, 4> cp = { rayFromObject( Point3f::Simd( cpObj[ 0 ] ) ), rayFromObject( Point3f::Simd( cpObj[ 1 ] ) ),
+                                      rayFromObject( Point3f::Simd( cpObj[ 2 ] ) ), rayFromObject( Point3f::Simd( cpObj[ 3 ] ) ) };
 
         // Test ray against bound of projected control points
         Float maxWidth = std::max( Lerp2( uMin, common->width[ 0 ], common->width[ 1 ] ),
@@ -1589,7 +1589,7 @@ namespace pbrto
 
                 int origTriCount = plyMesh.triIndices.size( ) / 3;
                 plyMesh = plyMesh.Displace(
-                    [ & ]( Point3f v0, Point3f v1 ) {
+                    [ & ]( Point3f::Simd v0, Point3f::Simd v1 ) {
                         v0 = ( *renderFromObject )( v0 );
                         v1 = ( *renderFromObject )( v1 );
                         return ScalarDistance( v0, v1 );

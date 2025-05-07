@@ -60,7 +60,7 @@ namespace pbrto
 
         // ShapeSampleContext Public Methods
         ShapeSampleContext( ) = default;
-        ShapeSampleContext( Point3fi pi, Normal3f::Simd n, Normal3f::Simd ns, Float time )
+        ShapeSampleContext( const Point3fi& pi, const Normal3f::Simd& n, const Normal3f::Simd& ns, Float time )
             : pi( pi ), n( n ), ns( ns ), time( time )
         {
         }
@@ -131,8 +131,8 @@ namespace pbrto
     // QuadricIntersection Definition
     struct QuadricIntersection
     {
-        Float tHit;
         Point3f::Simd pObj;
+        Float tHit;
         Float phi;
 
         QuadricIntersection( ) = default;

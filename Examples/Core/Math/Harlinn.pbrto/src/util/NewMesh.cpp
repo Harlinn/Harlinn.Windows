@@ -55,7 +55,7 @@ namespace pbrto
 
         // Transform mesh vertices to rendering space and initialize mesh _p_
         for ( Point3f& pt : p )
-            pt = renderFromObject( pt );
+            pt = renderFromObject( Point3f::Simd(pt) );
         this->p = point3BufferCache->LookupOrAdd( p, alloc );
 
         // Remainder of _TriangleMesh_ constructor
@@ -82,7 +82,7 @@ namespace pbrto
         {
             NCHECK_EQ( nVertices, s.size( ) );
             for ( Vector3f& ss : s )
-                ss = renderFromObject( ss );
+                ss = renderFromObject( Vector3f::Simd( ss ) );
             this->s = vector3BufferCache->LookupOrAdd( s, alloc );
         }
 
@@ -242,7 +242,7 @@ namespace pbrto
 
         // Transform mesh vertices to rendering space
         for ( Point3f& p : P )
-            p = renderFromObject( p );
+            p = renderFromObject( Point3f::Simd( p ) );
         p = point3BufferCache->LookupOrAdd( P, alloc );
 
         // Copy _UV_ and _N_ vertex data, if present

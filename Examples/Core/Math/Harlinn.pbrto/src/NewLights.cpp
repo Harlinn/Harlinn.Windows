@@ -240,10 +240,10 @@ namespace pbrto
     pstdo::optional<LightLeSample> DistantLight::SampleLe( const Point2f& u1, const Point2f& u2, SampledWavelengths& lambda, Float time ) const
     {
         // Choose point on disk oriented toward infinite light direction
-        Vector3f w = Normalize( renderFromLight( Vector3f( 0, 0, 1 ) ) );
+        Vector3f::Simd w = Normalize( renderFromLight( Vector3f::Simd( 0, 0, 1 ) ) );
         Frame wFrame = Frame::FromZ( w );
         Point2f cd = SampleUniformDiskConcentric( u1 );
-        Point3f pDisk = sceneCenter + sceneRadius * wFrame.FromLocal( Vector3f( cd.x, cd.y, 0 ) );
+        Point3f pDisk = sceneCenter + sceneRadius * wFrame.FromLocal( Vector3f::Simd( cd.x, cd.y, 0 ) );
 
         // Compute _DistantLight_ light ray
         Ray ray( pDisk + sceneRadius * w, -w, time );
@@ -331,7 +331,7 @@ namespace pbrto
         NCHECK_EQ( 3, channelDesc.size( ) );
         NCHECK( channelDesc.IsIdentity( ) );
         auto dwdA = [ & ]( const Point2f& p ) {
-            Vector3f w = Vector3f( lightFromScreen( Point3f( p.x, p.y, 0 ) ) );
+            Vector3f w = Vector3f( lightFromScreen( Point3f::Simd( p.x, p.y, 0 ) ) );
             return FastPow<3>( CosTheta( Normalize( w ) ) );
             };
         Array2D<Float> d = image.GetSamplingDistribution( dwdA, screenBounds );
@@ -343,7 +343,7 @@ namespace pbrto
     pstdo::optional<LightLiSample> ProjectionLight::SampleLi( const LightSampleContext& ctx, const Point2f& u, const SampledWavelengths& lambda, bool allowIncompletePDF ) const
     {
         // Return sample for incident radiance from _ProjectionLight_
-        Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+        Point3f p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
         Vector3f wi = Normalize( p - ctx.p( ) );
         Vector3f wl = renderFromLight.ApplyInverse( -wi );
         SampledSpectrum Li = I( wl, lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
@@ -370,7 +370,7 @@ namespace pbrto
             return SampledSpectrum( 0.f );
 
         // Project point onto projection plane and compute RGB
-        Point3f ps = screenFromLight( Point3f( w ) );
+        Point3f ps = screenFromLight( Point3f::Simd( w ) );
         if ( !Inside( Point2f( ps.x, ps.y ), screenBounds ) )
             return SampledSpectrum( 0.f );
         Point2f uv = Point2f( screenBounds.Offset( Point2f( ps.x, ps.y ) ) );
@@ -392,7 +392,7 @@ namespace pbrto
                 // Compute change of variables factor _dwdA_ for projection light pixel
                 Point2f ps = screenBounds.Lerp2( Point2f( ( x + 0.5f ) / image.Resolution( ).x,
                     ( y + 0.5f ) / image.Resolution( ).y ) );
-                Vector3f w = Vector3f( lightFromScreen( Point3f( ps.x, ps.y, 0 ) ) );
+                Vector3f::Simd w = Vector3f::Simd( lightFromScreen( Point3f::Simd( ps.x, ps.y, 0 ) ) );
                 w = Normalize( w );
                 Float dwdA = FastPow<3>( CosTheta( w ) );
 
@@ -416,12 +416,12 @@ namespace pbrto
                                  image.GetChannel( {u, v}, 2 ) } );
         Float phi = scale * sum / ( image.Resolution( ).x * image.Resolution( ).y );
 
-        Point3f pCorner( screenBounds.pMax.x, screenBounds.pMax.y, 0 );
-        Vector3f wCorner = Normalize( Vector3f( lightFromScreen( pCorner ) ) );
+        Point3f::Simd pCorner( screenBounds.pMax.x, screenBounds.pMax.y, 0 );
+        Vector3f::Simd wCorner = Normalize( Vector3f::Simd( lightFromScreen( pCorner ) ) );
         Float cosTotalWidth = CosTheta( wCorner );
 
-        Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
-        Vector3f w = Normalize( renderFromLight( Vector3f( 0, 0, 1 ) ) );
+        Point3f p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
+        Vector3f w = Normalize( renderFromLight( Vector3f::Simd( 0, 0, 1 ) ) );
         constexpr Float cosZero = Math::Cos( 0.f );
         return LightBounds( Bounds3f( p, p ), w, phi, cosZero, cosTotalWidth, false );
     }
@@ -433,7 +433,7 @@ namespace pbrto
         Point2f ps = distrib.Sample( u1, &pdf );
         if ( pdf == 0 )
             return {};
-        Vector3f w = Vector3f( lightFromScreen( Point3f( ps.x, ps.y, 0 ) ) );
+        Vector3f::Simd w = Vector3f::Simd( lightFromScreen( Point3f::Simd( ps.x, ps.y, 0 ) ) );
 
         // Compute PDF for sampled projection light direction
         Float cosTheta = CosTheta( Normalize( w ) );
@@ -456,15 +456,15 @@ namespace pbrto
     {
         *pdfPos = 0;
         // Transform ray direction to light space and reject invalid ones
-        Vector3f w = Normalize( renderFromLight.ApplyInverse( ray.d ) );
-        if ( w.z < hither )
+        Vector3f::Simd w = Normalize( renderFromLight.ApplyInverse( ray.d ) );
+        if ( w.z( ) < hither )
         {
             *pdfDir = 0;
             return;
         }
 
         // Compute screen space coordinates for direction and test against bounds
-        Point3f ps = screenFromLight( Point3f( w ) );
+        Point3f ps = screenFromLight( Point3f::Simd( w ) );
         if ( !Inside( Point2f( ps.x, ps.y ), screenBounds ) )
         {
             *pdfDir = 0;
@@ -533,9 +533,9 @@ namespace pbrto
                 {
                     Point2f ps = screenBounds.Lerp2(
                         { ( x + .5f ) / image.Resolution( ).x, ( y + .5f ) / image.Resolution( ).y } );
-                    Vector3f w = Vector3f( lightFromScreen( Point3f( ps.x, ps.y, 0 ) ) );
+                    Vector3f::Simd w = Vector3f::Simd( lightFromScreen( Point3f::Simd( ps.x, ps.y, 0 ) ) );
                     w = Normalize( w );
-                    Float dwdA = FastPow<3>( w.z );
+                    Float dwdA = FastPow<3>( w.z() );
 
                     for ( int c = 0; c < 3; ++c )
                         sum += image.GetChannel( { x, y }, c ) * luminance[ c ] * dwdA;
@@ -571,8 +571,8 @@ namespace pbrto
 
     pstdo::optional<LightLiSample> GoniometricLight::SampleLi( const LightSampleContext& ctx, const Point2f& u, const SampledWavelengths& lambda, bool allowIncompletePDF ) const
     {
-        Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
-        Vector3f wi = Normalize( p - ctx.p( ) );
+        Point3f::Simd p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
+        Vector3f::Simd wi = Normalize( p - ctx.p( ) );
         SampledSpectrum L =
             I( renderFromLight.ApplyInverse( -wi ), lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
         return LightLiSample( L, wi, 1, Interaction( p, &mediumInterface ) );
@@ -602,7 +602,7 @@ namespace pbrto
         Float phi = scale * Iemit->MaxValue( ) * 4 * Pi * sumY /
             ( image.Resolution( ).x * image.Resolution( ).y );
 
-        Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+        Point3f::Simd p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
         // Bound it as an isotropic point light.
         constexpr Float cosPi = Math::Cos( Pi );
         constexpr Float cosPiOver2 = Math::Cos( Pi / 2.f );

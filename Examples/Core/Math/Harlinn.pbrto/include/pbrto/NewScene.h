@@ -94,14 +94,13 @@ namespace pbrto
     // CameraSceneEntity Definition
     struct CameraSceneEntity : public SceneEntity
     {
+        CameraTransform cameraTransform;
+        std::string medium;
+
         // CameraSceneEntity Public Methods
         CameraSceneEntity( ) = default;
-        CameraSceneEntity( const std::string& name, ParameterDictionary parameters,
-            FileLoc loc, const CameraTransform& cameraTransform,
-            const std::string& medium )
-            : SceneEntity( name, parameters, loc ),
-            cameraTransform( cameraTransform ),
-            medium( medium )
+        CameraSceneEntity( const std::string& name, ParameterDictionary parameters, FileLoc loc, const CameraTransform& cameraTransform, const std::string& medium )
+            : SceneEntity( name, parameters, loc ), cameraTransform( cameraTransform ), medium( medium )
         {
         }
 
@@ -112,27 +111,22 @@ namespace pbrto
                 name, parameters, loc, cameraTransform, medium );
         }
 
-        CameraTransform cameraTransform;
-        std::string medium;
+        
     };
 
     struct ShapeSceneEntity : public SceneEntity
     {
         ShapeSceneEntity( ) = default;
-        ShapeSceneEntity( const std::string& name, ParameterDictionary parameters, FileLoc loc,
-            const Transform* renderFromObject, const Transform* objectFromRender,
-            bool reverseOrientation, int materialIndex,
-            const std::string& materialName, int lightIndex,
-            const std::string& insideMedium, const std::string& outsideMedium )
+        ShapeSceneEntity( const std::string& name, ParameterDictionary parameters, FileLoc loc, const Transform* renderFromObject, const Transform* objectFromRender, bool reverseOrientation, int materialIndex, const std::string& materialName, int lightIndex, const std::string& insideMedium, const std::string& outsideMedium )
             : SceneEntity( name, parameters, loc ),
-            renderFromObject( renderFromObject ),
-            objectFromRender( objectFromRender ),
-            reverseOrientation( reverseOrientation ),
-            materialIndex( materialIndex ),
-            materialName( materialName ),
-            lightIndex( lightIndex ),
-            insideMedium( insideMedium ),
-            outsideMedium( outsideMedium )
+              renderFromObject( renderFromObject ),
+              objectFromRender( objectFromRender ),
+              reverseOrientation( reverseOrientation ),
+              materialIndex( materialIndex ),
+              materialName( materialName ),
+              lightIndex( lightIndex ),
+              insideMedium( insideMedium ),
+              outsideMedium( outsideMedium )
         {
         }
 

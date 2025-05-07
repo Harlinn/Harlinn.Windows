@@ -39,7 +39,7 @@ namespace pbrto
     // Transform Function Definitions
     // clang-format off
     PBRTO_EXPORT
-    Transform Translate( const Vector3f::Simd delta )
+    Transform Translate( const Vector3f::Simd& delta )
     {
         using Traits = SquareMatrix<4>::Traits;
         Transform::MatrixSimdType m( Traits::Set( 0.f, 0.f, 0.f, 1.f ), Traits::Set( 0.f, 0.f, 1.f, 0.f ), Traits::Set( 0.f, 1.f, 0.f, 0.f ), Traits::SetW( delta.simd, 1.f ) );
@@ -83,9 +83,9 @@ namespace pbrto
     }
     // clang-format on
 
-
+    /*
     PBRTO_EXPORT
-    Transform LookAt( Point3f::Simd pos, Point3f::Simd look, Vector3f::Simd up )
+    Transform LookAt( const Point3f::Simd& pos, const Point3f::Simd& look, const Vector3f::Simd& up )
     {
         
         auto cameraFromWorld = Math::LookAt( pos, look, up );
@@ -93,6 +93,7 @@ namespace pbrto
         Transform result( cameraFromWorld, worldFromCamera, true );
         return result;
     }
+    */
     PBRTO_EXPORT
     Transform Orthographic( Float zNear, Float zFar )
     {
@@ -957,6 +958,7 @@ namespace pbrto
         }
     }
 
+    /*
     PBRT_CPU_GPU Point3f AnimatedTransform::operator()( Point3f p, Float time ) const
     {
         if ( !actuallyAnimated || time <= startTime )
@@ -966,6 +968,7 @@ namespace pbrto
         Transform t = Interpolate( time );
         return t( p );
     }
+    */
 
     Point3f::Simd AnimatedTransform::operator()( const Point3f::Simd& p, Float time ) const
     {
@@ -977,6 +980,7 @@ namespace pbrto
         return t( p );
     }
 
+    /*
     PBRT_CPU_GPU Vector3f AnimatedTransform::operator()( Vector3f v, Float time ) const
     {
         if ( !actuallyAnimated || time <= startTime )
@@ -986,6 +990,7 @@ namespace pbrto
         Transform t = Interpolate( time );
         return t( v );
     }
+    */
 
     Vector3f::Simd AnimatedTransform::operator()( const Vector3f::Simd& v, Float time ) const
     {
@@ -997,6 +1002,7 @@ namespace pbrto
         return t( v );
     }
 
+    /*
     Normal3f AnimatedTransform::operator()( Normal3f n, Float time ) const
     {
         if ( !actuallyAnimated || time <= startTime )
@@ -1006,6 +1012,7 @@ namespace pbrto
         Transform t = Interpolate( time );
         return t( n );
     }
+    */
     Normal3f::Simd AnimatedTransform::operator()( const Normal3f::Simd& n, Float time ) const
     {
         if ( !actuallyAnimated || time <= startTime )
@@ -1095,7 +1102,7 @@ namespace pbrto
         return bounds;
     }
 
-    PBRT_CPU_GPU Bounds3f AnimatedTransform::BoundPointMotion( Point3f p ) const
+    PBRT_CPU_GPU Bounds3f AnimatedTransform::BoundPointMotion( const Point3f::Simd& p ) const
     {
         if ( !actuallyAnimated )
             return Bounds3f( startTransform( p ) );

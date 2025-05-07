@@ -71,7 +71,7 @@ namespace pbrto
             default:
                 NLOG_FATAL( "Unhandled rendering coordinate space" );
         }
-        NLOG_VERBOSE( "World-space position: %s", worldFromRender( Point3f( 0, 0, 0 ) ) );
+        NLOG_VERBOSE( "World-space position: %s", worldFromRender( Point3f::Simd( 0, 0, 0 ) ) );
         // Compute _renderFromCamera_ transformation
         Transform renderFromWorld = Inverse( worldFromRender );
         Transform rfc[ 2 ] = { renderFromWorld * worldFromCamera.startTransform,
@@ -330,7 +330,7 @@ namespace pbrto
     pstdo::optional<CameraRay> OrthographicCamera::GenerateRay( const CameraSample& sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
-        Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
+        Point3f::Simd pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
         Point3f pCamera = cameraFromRaster( pFilm );
 
         Ray ray( pCamera, Vector3f( 0, 0, 1 ), SampleTime( sample.time ), medium );
@@ -356,7 +356,7 @@ namespace pbrto
     {
         // Compute main orthographic viewing ray
         // Compute raster and camera sample positions
-        Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
+        Point3f::Simd pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
         Point3f pCamera = cameraFromRaster( pFilm );
 
         RayDifferential ray( pCamera, Vector3f( 0, 0, 1 ), SampleTime( sample.time ), medium );

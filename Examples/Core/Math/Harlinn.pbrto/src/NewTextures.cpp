@@ -639,7 +639,7 @@ namespace pbrto
         const Transform& renderFromTexture, const TextureParameterDictionary& parameters,
         const FileLoc* loc, Allocator alloc )
     {
-        Vector3f dir = parameters.GetOneVector3f( "dir", Vector3f( 0, 1, 0 ) );
+        Vector3f::Simd dir = parameters.GetOneVector3f( "dir", Vector3f( 0, 1, 0 ) );
         dir = Normalize( renderFromTexture( dir ) );
         return alloc.new_object<FloatDirectionMixTexture>(
             parameters.GetFloatTexture( "tex1", 0.f, alloc ),
@@ -652,7 +652,7 @@ namespace pbrto
     {
         Spectrum zero = alloc.new_object<ConstantSpectrum>( 0. );
         Spectrum one = alloc.new_object<ConstantSpectrum>( 1. );
-        Vector3f dir = parameters.GetOneVector3f( "dir", Vector3f( 0, 1, 0 ) );
+        Vector3f::Simd dir = parameters.GetOneVector3f( "dir", Vector3f( 0, 1, 0 ) );
         dir = Normalize( renderFromTexture( dir ) );
         return alloc.new_object<SpectrumDirectionMixTexture>(
             parameters.GetSpectrumTexture( "tex1", zero, spectrumType, alloc ),
