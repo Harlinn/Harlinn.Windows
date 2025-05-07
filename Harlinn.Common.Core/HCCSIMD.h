@@ -5341,19 +5341,19 @@ namespace Harlinn::Common::Core::SIMD
             {
                 if constexpr ( N == 5 )
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 31 ) == 31;
+                    return ( _mm256_movemask_ps( v ) & 31 ) == 31;
                 }
                 else if constexpr ( N == 6 )
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 63 ) == 63;
+                    return ( _mm256_movemask_ps( v ) & 63 ) == 63;
                 }
                 else if constexpr ( N == 7 )
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 127 ) == 127;
+                    return ( _mm256_movemask_ps( v ) & 127 ) == 127;
                 }
                 else
                 {
-                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 255 ) == 255;
+                    return ( _mm256_movemask_ps( v ) & 255 ) == 255;
                 }
             }
         }
@@ -6595,6 +6595,48 @@ namespace Harlinn::Common::Core::SIMD
                 }
             }
         }
+
+
+        template<size_t Num>
+        static SIMDType FillDivisor( Type value ) noexcept requires ( Num > 0 && Num <= SIMDTypeCapacity )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Num == 1 )
+                {
+                    return _mm_set_pd( 1.f, value );
+                }
+                else
+                {
+                    return _mm_set1_pd( value );
+                }
+            }
+            else
+            {
+                if constexpr ( Num == 3 )
+                {
+                    return _mm256_set_pd( 1.f, value, value, value );
+                }
+                else
+                {
+                    return _mm256_set1_pd( value );
+                }
+            }
+        }
+
+
+        static SIMDType Trim( SIMDType v ) noexcept
+        {
+            if constexpr ( Size == SIMDTypeCapacity )
+            {
+                return v;
+            }
+            else
+            {
+                return And( v, Mask( ) );
+            }
+        }
+
 
         /// <summary>
         /// Returns a mask suitable for extracting

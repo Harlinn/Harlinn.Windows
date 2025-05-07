@@ -72,12 +72,12 @@ BOOST_AUTO_TEST_CASE( RGBColorSpaceStdIllumWhitesRGBTest1 )
 {
     pbrto::XYZ xyz = pbrto::SpectrumToXYZ( &pbrto::RGBColorSpace::sRGB->illuminant );
     pbrto::RGB rgb = pbrto::RGBColorSpace::sRGB->ToRGB( xyz );
-    BOOST_CHECK_GE( rgb.r, .99 );
-    BOOST_CHECK_LE( rgb.r, 1.01 );
-    BOOST_CHECK_GE( rgb.g, .99 );
-    BOOST_CHECK_LE( rgb.g, 1.01 );
-    BOOST_CHECK_GE( rgb.b, .99 );
-    BOOST_CHECK_LE( rgb.b, 1.01 );
+    BOOST_CHECK_GE( rgb.r(), .99 );
+    BOOST_CHECK_LE( rgb.r( ), 1.01 );
+    BOOST_CHECK_GE( rgb.g( ), .99 );
+    BOOST_CHECK_LE( rgb.g( ), 1.01 );
+    BOOST_CHECK_GE( rgb.b( ), .99 );
+    BOOST_CHECK_LE( rgb.b( ), 1.01 );
 }
 
 // --run_test=NewColorTests/RGBColorSpaceStdIllumWhiteRec2020Test1
@@ -85,12 +85,12 @@ BOOST_AUTO_TEST_CASE( RGBColorSpaceStdIllumWhiteRec2020Test1 )
 {
     pbrto::XYZ xyz = pbrto::SpectrumToXYZ( &pbrto::RGBColorSpace::Rec2020->illuminant );
     pbrto::RGB rgb = pbrto::RGBColorSpace::Rec2020->ToRGB( xyz );
-    BOOST_CHECK_GE( rgb.r, .99 );
-    BOOST_CHECK_LE( rgb.r, 1.01 );
-    BOOST_CHECK_GE( rgb.g, .99 );
-    BOOST_CHECK_LE( rgb.g, 1.01 );
-    BOOST_CHECK_GE( rgb.b, .99 );
-    BOOST_CHECK_LE( rgb.b, 1.01 );
+    BOOST_CHECK_GE( rgb.r( ), .99 );
+    BOOST_CHECK_LE( rgb.r( ), 1.01 );
+    BOOST_CHECK_GE( rgb.g( ), .99 );
+    BOOST_CHECK_LE( rgb.g( ), 1.01 );
+    BOOST_CHECK_GE( rgb.b( ), .99 );
+    BOOST_CHECK_LE( rgb.b( ), 1.01 );
 }
 
 // --run_test=NewColorTests/RGBColorSpaceStdIllumWhiteACES2065_1Test1
@@ -98,12 +98,12 @@ BOOST_AUTO_TEST_CASE( RGBColorSpaceStdIllumWhiteACES2065_1Test1 )
 {
     pbrto::XYZ xyz = pbrto::SpectrumToXYZ( &pbrto::RGBColorSpace::ACES2065_1->illuminant );
     pbrto::RGB rgb = pbrto::RGBColorSpace::ACES2065_1->ToRGB( xyz );
-    BOOST_CHECK_GE( rgb.r, .99 );
-    BOOST_CHECK_LE( rgb.r, 1.01 );
-    BOOST_CHECK_GE( rgb.g, .99 );
-    BOOST_CHECK_LE( rgb.g, 1.01 );
-    BOOST_CHECK_GE( rgb.b, .99 );
-    BOOST_CHECK_LE( rgb.b, 1.01 );
+    BOOST_CHECK_GE( rgb.r(), .99 );
+    BOOST_CHECK_LE( rgb.r(), 1.01 );
+    BOOST_CHECK_GE( rgb.g(), .99 );
+    BOOST_CHECK_LE( rgb.g(), 1.01 );
+    BOOST_CHECK_GE( rgb.b(), .99 );
+    BOOST_CHECK_LE( rgb.b(), 1.01 );
 }
 
 
@@ -169,9 +169,9 @@ BOOST_AUTO_TEST_CASE( RGBAlbedoSpectrumRoundTripsRGBTest1 )
         // linear at 1nm spacing converted to 1nm constant / densely
         // sampled.
         Float eps = .01;
-        BOOST_CHECK_LT( std::abs( rgb.r - rgb2.r ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.g - rgb2.g ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.b - rgb2.b ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.r( ) - rgb2.r( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.g( ) - rgb2.g( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.b( ) - rgb2.b( ) ), eps );
     }
 }
 
@@ -191,9 +191,9 @@ BOOST_AUTO_TEST_CASE( RGBAlbedoSpectrumRoundTripRec2020Test1 )
         pbrto::RGB rgb2 = cs.ToRGB( xyz );
 
         Float eps = .01;
-        BOOST_CHECK_LT( std::abs( rgb.r - rgb2.r ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.g - rgb2.g ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.b - rgb2.b ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.r( ) - rgb2.r( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.g( ) - rgb2.g( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.b( ) - rgb2.b( ) ), eps );
     }
 }
 
@@ -213,9 +213,9 @@ BOOST_AUTO_TEST_CASE( RGBAlbedoSpectrumRoundTripACESTest1 )
         pbrto::RGB rgb2 = cs.ToRGB( xyz );
 
         Float eps = .01;
-        BOOST_CHECK_LT( std::abs( rgb.r - rgb2.r ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.g - rgb2.g ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.b - rgb2.b ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.r( ) - rgb2.r( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.g( ) - rgb2.g( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.b( ) - rgb2.b( ) ), eps );
     }
 }
 
@@ -239,9 +239,9 @@ BOOST_AUTO_TEST_CASE( RGBIlluminantSpectrumRoundTripsRGBTest1 )
         // linear at 1nm spacing converted to 1nm constant / densely
         // sampled.
         Float eps = .01;
-        BOOST_CHECK_LT( std::abs( rgb.r - rgb2.r ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.g - rgb2.g ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.b - rgb2.b ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.r( ) - rgb2.r( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.g( ) - rgb2.g( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.b( ) - rgb2.b( ) ), eps );
     }
 }
 
@@ -261,9 +261,9 @@ BOOST_AUTO_TEST_CASE( RGBIlluminantSpectrumRoundTripRec2020Test1 )
         pbrto::RGB rgb2 = cs.ToRGB( xyz );
 
         Float eps = .01;
-        BOOST_CHECK_LT( std::abs( rgb.r - rgb2.r ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.g - rgb2.g ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.b - rgb2.b ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.r( ) - rgb2.r( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.g( ) - rgb2.g( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.b( ) - rgb2.b( ) ), eps );
     }
 }
 
@@ -283,9 +283,9 @@ BOOST_AUTO_TEST_CASE( RGBIlluminantSpectrumRoundTripACESTest1 )
         pbrto::RGB rgb2 = cs.ToRGB( xyz );
 
         Float eps = .01;
-        BOOST_CHECK_LT( std::abs( rgb.r - rgb2.r ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.g - rgb2.g ), eps );
-        BOOST_CHECK_LT( std::abs( rgb.b - rgb2.b ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.r( ) - rgb2.r( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.g( ) - rgb2.g( ) ), eps );
+        BOOST_CHECK_LT( std::abs( rgb.b( ) - rgb2.b( ) ), eps );
     }
 }
 

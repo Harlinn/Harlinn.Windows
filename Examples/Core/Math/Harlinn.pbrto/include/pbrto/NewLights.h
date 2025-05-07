@@ -351,7 +351,7 @@ namespace pbrto
 
         void Preprocess( const Bounds3f& sceneBounds ) {}
 
-        pstdo::optional<LightLiSample> SampleLi( const LightSampleContext& ctx, const Point2f& u, const SampledWavelengths& lambda, bool allowIncompletePDF ) const;
+        PBRTO_EXPORT pstdo::optional<LightLiSample> SampleLi( const LightSampleContext& ctx, const Point2f& u, const SampledWavelengths& lambda, bool allowIncompletePDF ) const;
 
         SampledSpectrum I( const Vector3f::Simd& w, const SampledWavelengths& lambda ) const;
 

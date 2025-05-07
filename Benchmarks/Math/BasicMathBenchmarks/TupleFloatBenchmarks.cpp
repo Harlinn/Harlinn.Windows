@@ -615,7 +615,7 @@ static void BenchmarkMathVector3Lerp( benchmark::State& state )
         float val = FloatGenerator( );
         Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
         Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
-        benchmark::DoNotOptimize( Math::Lerp( val, v1, v2 ) );
+        benchmark::DoNotOptimize( Math::Lerp2( val, v1, v2 ) );
     }
 }
 BENCHMARK( BenchmarkMathVector3Lerp );

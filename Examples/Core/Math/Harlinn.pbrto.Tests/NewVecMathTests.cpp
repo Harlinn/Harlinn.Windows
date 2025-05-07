@@ -570,7 +570,7 @@ BOOST_AUTO_TEST_CASE( DirectionConeBoundBoundsTest1 )
         else
         {
             Vector3f wx, wy;
-            CoordinateSystem( c.w, &wx, &wy );
+            CoordinateSystem( Vector3f(c.w), &wx, &wy );
             for ( int j = 0; j < 1000; ++j )
             {
                 Point2f u( rng.Uniform<Float>( ), rng.Uniform<Float>( ) );
@@ -670,9 +670,9 @@ BOOST_AUTO_TEST_CASE( SphericalTriangleAreaBasicsTest1 )
         Vector3f axis = pbrto::SampleUniformSphere( { rng.Uniform<Float>( ), rng.Uniform<Float>( ) } );
         Float theta = 2 * Pi * rng.Uniform<Float>( );
         Transform t = Rotate( theta, axis );
-        Vector3f va = t( Vector3f( 1, 0, 0 ) );
-        Vector3f vb = t( Vector3f( 0, 1, 0 ) );
-        Vector3f vc = t( Vector3f( 0, 0, 1 ) );
+        Vector3f va = t( Vector3f::Simd( 1, 0, 0 ) );
+        Vector3f vb = t( Vector3f::Simd( 0, 1, 0 ) );
+        Vector3f vc = t( Vector3f::Simd( 0, 0, 1 ) );
         Float a = pbrto::SphericalTriangleArea( va, vb, vc );
         BOOST_CHECK( a >= .9999 * Pi / 2 && a <= 1.0001 * Pi / 2 );
     }
@@ -682,9 +682,9 @@ BOOST_AUTO_TEST_CASE( SphericalTriangleAreaBasicsTest1 )
         Vector3f axis = pbrto::SampleUniformSphere( { rng.Uniform<Float>( ), rng.Uniform<Float>( ) } );
         Float theta = 2 * Pi * rng.Uniform<Float>( );
         Transform t = Rotate( theta, axis );
-        Vector3f va = t( Vector3f( 1, 0, 0 ) );
-        Vector3f vb = t( Normalize( Vector3f( 1, 1, 0 ) ) );
-        Vector3f vc = t( Vector3f( 0, 0, 1 ) );
+        Vector3f va = t( Vector3f::Simd( 1, 0, 0 ) );
+        Vector3f vb = t( Normalize( Vector3f::Simd( 1, 1, 0 ) ) );
+        Vector3f vc = t( Vector3f::Simd( 0, 0, 1 ) );
         Float a = SphericalTriangleArea( va, vb, vc );
         BOOST_CHECK( a >= .9999 * Pi / 4 && a <= 1.0001 * Pi / 4 );
     }
@@ -748,7 +748,7 @@ BOOST_AUTO_TEST_CASE( OctahedralVectorEncodeDecodeTest1 )
 {
     for ( pbrto::Point2 u : pbrto::Hammersley2D( 65535 ) )
     {
-        Vector3f v = pbrto::SampleUniformSphere( u );
+        Vector3f::Simd v = pbrto::SampleUniformSphere( u );
 
         pbrto::OctahedralVector ov( v );
         pbrto::Vector3f v2 = pbrto::Vector3f( ov );
