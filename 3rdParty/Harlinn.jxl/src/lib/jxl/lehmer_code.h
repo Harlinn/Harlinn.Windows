@@ -13,6 +13,8 @@
 #include "lib/jxl/base/compiler_specific.h"
 #include "lib/jxl/base/status.h"
 
+#include <bit>
+
 namespace jxl {
 
 // Permutation <=> factorial base representation (Lehmer code).
