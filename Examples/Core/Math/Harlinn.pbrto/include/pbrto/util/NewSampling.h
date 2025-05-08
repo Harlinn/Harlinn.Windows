@@ -841,40 +841,39 @@ namespace pbrto
     // PiecewiseConstant2D Definition
     class PiecewiseConstant2D
     {
+        // PiecewiseConstant2D Private Members
+        Bounds2f domain;
+        pstdo::vector<PiecewiseConstant1D> pConditionalV;
+        PiecewiseConstant1D pMarginal;
     public:
         // PiecewiseConstant2D Public Methods
         PiecewiseConstant2D( ) = default;
-        PiecewiseConstant2D( Allocator alloc ) : pConditionalV( alloc ), pMarginal( alloc ) {}
-        PiecewiseConstant2D( pstdo::span<const Float> data, int nx, int ny,
-            Allocator alloc = {} )
-            : PiecewiseConstant2D( data, nx, ny, Bounds2f( Point2f( 0, 0 ), Point2f( 1, 1 ) ),
-                alloc )
+        PiecewiseConstant2D( Allocator alloc ) 
+            : pConditionalV( alloc ), pMarginal( alloc ) 
+        { }
+        PiecewiseConstant2D( pstdo::span<const Float> data, int nx, int ny, Allocator alloc = {} )
+            : PiecewiseConstant2D( data, nx, ny, Bounds2f( Point2f( 0, 0 ), Point2f( 1, 1 ) ), alloc )
         {
         }
         explicit PiecewiseConstant2D( const Array2D<Float>& data, Allocator alloc = {} )
-            : PiecewiseConstant2D( pstdo::span<const Float>( data ), data.XSize( ), data.YSize( ),
-                alloc )
+            : PiecewiseConstant2D( pstdo::span<const Float>( data ), data.XSize( ), data.YSize( ), alloc )
         {
         }
         PiecewiseConstant2D( const Array2D<Float>& data, Bounds2f domain, Allocator alloc = {} )
-            : PiecewiseConstant2D( pstdo::span<const Float>( data ), data.XSize( ), data.YSize( ),
-                domain, alloc )
+            : PiecewiseConstant2D( pstdo::span<const Float>( data ), data.XSize( ), data.YSize( ), domain, alloc )
         {
         }
 
-        PBRT_CPU_GPU
-            size_t BytesUsed( ) const
+        size_t BytesUsed( ) const
         {
             return pConditionalV.size( ) *
                 ( pConditionalV[ 0 ].BytesUsed( ) + sizeof( pConditionalV[ 0 ] ) ) +
                 pMarginal.BytesUsed( );
         }
 
-        PBRT_CPU_GPU
-            Bounds2f Domain( ) const { return domain; }
+        Bounds2f Domain( ) const { return domain; }
 
-        PBRT_CPU_GPU
-            Point2i Resolution( ) const
+        Point2i Resolution( ) const
         {
             return { int( pConditionalV[ 0 ].size( ) ), int( pMarginal.size( ) ) };
         }
@@ -885,11 +884,9 @@ namespace pbrto
                 "pMarginal: %s ]",
                 domain, pConditionalV, pMarginal );
         }
-        static void TestCompareDistributions( const PiecewiseConstant2D& da,
-            const PiecewiseConstant2D& db, Float eps = 1e-5 );
+        static void TestCompareDistributions( const PiecewiseConstant2D& da, const PiecewiseConstant2D& db, Float eps = 1e-5 );
 
-        PiecewiseConstant2D( pstdo::span<const Float> func, int nu, int nv, Bounds2f domain,
-            Allocator alloc = {} )
+        PiecewiseConstant2D( pstdo::span<const Float> func, int nu, int nv, Bounds2f domain, Allocator alloc = {} )
             : domain( domain ), pConditionalV( alloc ), pMarginal( alloc )
         {
             NCHECK_EQ( func.size( ), ( size_t )nu * ( size_t )nv );
@@ -904,12 +901,10 @@ namespace pbrto
             marginalFunc.reserve( nv );
             for ( int v = 0; v < nv; ++v )
                 marginalFunc.push_back( pConditionalV[ v ].Integral( ) );
-            pMarginal =
-                PiecewiseConstant1D( marginalFunc, domain.pMin[ 1 ], domain.pMax[ 1 ], alloc );
+            pMarginal = PiecewiseConstant1D( marginalFunc, domain.pMin[ 1 ], domain.pMax[ 1 ], alloc );
         }
 
-        PBRT_CPU_GPU
-            Float Integral( ) const { return pMarginal.Integral( ); }
+        Float Integral( ) const { return pMarginal.Integral( ); }
 
         PBRT_CPU_GPU
             Point2f Sample( Point2f u, Float* pdf = nullptr, Point2i* offset = nullptr ) const
@@ -952,10 +947,7 @@ namespace pbrto
         }
 
     private:
-        // PiecewiseConstant2D Private Members
-        Bounds2f domain;
-        pstdo::vector<PiecewiseConstant1D> pConditionalV;
-        PiecewiseConstant1D pMarginal;
+        
     };
 
     // AliasTable Definition
@@ -1059,23 +1051,27 @@ namespace pbrto
     // WindowedPiecewiseConstant2D Definition
     class WindowedPiecewiseConstant2D
     {
+        // WindowedPiecewiseConstant2D Private Members
+        SummedAreaTable sat;
+        Array2D<Float> func;
     public:
         // WindowedPiecewiseConstant2D Public Methods
-        WindowedPiecewiseConstant2D( Allocator alloc ) : sat( alloc ), func( alloc ) {}
+        WindowedPiecewiseConstant2D( Allocator alloc ) 
+            : sat( alloc ), func( alloc ) 
+        { }
         WindowedPiecewiseConstant2D( Array2D<Float> f, Allocator alloc = {} )
             : sat( f, alloc ), func( f, alloc )
-        {
-        }
+        { }
 
-        PBRT_CPU_GPU
-            pstdo::optional<Point2f> Sample( Point2f u, Bounds2f b, Float* pdf ) const
+        pstdo::optional<Point2f> Sample( Point2f u, Bounds2f b, Float* pdf ) const
         {
+            Float bInt = sat.Integral( b );
+
             // Handle zero-valued function for windowed sampling
-            if ( sat.Integral( b ) == 0 )
+            if ( bInt == 0 )
                 return {};
 
             // Define lambda function _Px_ for marginal cumulative distribution
-            Float bInt = sat.Integral( b );
             auto Px = [ &, this ]( Float x ) -> Float {
                 Bounds2f bx = b;
                 bx.pMax.x = x;
@@ -1093,11 +1089,13 @@ namespace pbrto
                 Point2f( pstdo::ceil( p.x * nx ) / nx, b.pMax.y ) );
             if ( bCond.pMin.x == bCond.pMax.x )
                 bCond.pMax.x += 1.f / nx;
-            if ( sat.Integral( bCond ) == 0 )
+
+            Float condIntegral = sat.Integral( bCond );
+            if ( condIntegral == 0 )
                 return {};
 
             // Define lambda function for conditional distribution and sample $y$
-            Float condIntegral = sat.Integral( bCond );
+            
             auto Py = [ &, this ]( Float y ) -> Float {
                 Bounds2f by = bCond;
                 by.pMax.y = y;
@@ -1150,19 +1148,20 @@ namespace pbrto
             return func[ pi ];
         }
 
-        // WindowedPiecewiseConstant2D Private Members
-        SummedAreaTable sat;
-        Array2D<Float> func;
+        
     };
 
+    // Not in use
     pstdo::vector<Float> Sample1DFunction( std::function<Float( Float )> f, int nSteps,
         int nSamples, Float min = 0, Float max = 1,
         Allocator alloc = {} );
 
+    // Not in use
     Array2D<Float> Sample2DFunction( std::function<Float( Float, Float )> f, int nu, int nv,
         int nSamples,
         Bounds2f domain = { Point2f( 0, 0 ), Point2f( 1, 1 ) },
         Allocator alloc = {} );
+    
 
     namespace detail
     {

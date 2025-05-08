@@ -163,9 +163,7 @@ namespace pbrto
             infiniteLights.size( ) * sizeof( Light );
     }
 
-    std::pair<int, LightBounds> BVHLightSampler::buildBVH(
-        std::vector<std::pair<int, LightBounds>>& bvhLights, int start, int end,
-        uint32_t bitTrail, int depth )
+    std::pair<int, LightBounds> BVHLightSampler::buildBVH( std::vector<std::pair<int, LightBounds>>& bvhLights, int start, int end, uint32_t bitTrail, int depth )
     {
         NDCHECK_LT( start, end );
         // Initialize leaf node if only a single light remains
@@ -311,11 +309,9 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU pstdo::optional<SampledLight> ExhaustiveLightSampler::Sample( const LightSampleContext& ctx,
-        Float u ) const
+    pstdo::optional<SampledLight> ExhaustiveLightSampler::Sample( const LightSampleContext& ctx, Float u ) const
     {
-        Float pInfinite = Float( infiniteLights.size( ) ) /
-            Float( infiniteLights.size( ) + ( !lightBounds.empty( ) ? 1 : 0 ) );
+        Float pInfinite = Float( infiniteLights.size( ) ) / Float( infiniteLights.size( ) + ( !lightBounds.empty( ) ? 1 : 0 ) );
 
         // Note: shared with BVH light sampler...
         if ( u < pInfinite )
@@ -343,7 +339,7 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU Float ExhaustiveLightSampler::PMF( const LightSampleContext& ctx, Light light ) const
+    Float ExhaustiveLightSampler::PMF( const LightSampleContext& ctx, Light light ) const
     {
         if ( !lightToBoundedIndex.HasKey( light ) )
             return 1.f / ( infiniteLights.size( ) + ( !lightBounds.empty( ) ? 1 : 0 ) );

@@ -51,8 +51,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( Float u ) const
+        pstdo::optional<SampledLight> Sample( Float u ) const
         {
             if ( lights.empty( ) )
                 return {};
@@ -60,22 +59,19 @@ namespace pbrto
             return SampledLight{ lights[ lightIndex ], 1.f / lights.size( ) };
         }
 
-        PBRT_CPU_GPU
-            Float PMF( Light light ) const
+        Float PMF( Light light ) const
         {
             if ( lights.empty( ) )
                 return 0;
             return 1.f / lights.size( );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
+        pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
         {
             return Sample( u );
         }
 
-        PBRT_CPU_GPU
-            Float PMF( const LightSampleContext& ctx, Light light ) const { return PMF( light ); }
+        Float PMF( const LightSampleContext& ctx, Light light ) const { return PMF( light ); }
 
         std::string ToString( ) const { return "UniformLightSampler"; }
 
@@ -91,8 +87,7 @@ namespace pbrto
         // PowerLightSampler Public Methods
         PowerLightSampler( pstdo::span<const Light> lights, Allocator alloc );
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( Float u ) const
+        pstdo::optional<SampledLight> Sample( Float u ) const
         {
             if ( !aliasTable.size( ) )
                 return {};
@@ -101,16 +96,14 @@ namespace pbrto
             return SampledLight{ lights[ lightIndex ], pmf };
         }
 
-        PBRT_CPU_GPU
-            Float PMF( Light light ) const
+        Float PMF( Light light ) const
         {
             if ( !aliasTable.size( ) )
                 return 0;
             return aliasTable.PMF( lightToIndex[ light ] );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
+        pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
         {
             return Sample( u );
         }
@@ -131,7 +124,9 @@ namespace pbrto
     class CompactLightBounds
     {
         // CompactLightBounds Private Members
-        OctahedralVector w;
+        //OctahedralVector w;
+        Vector3f::Simd w;
+        Vector3f::Simd qb[ 2 ];
         Float phi = 0;
         struct
         {
@@ -140,13 +135,13 @@ namespace pbrto
             unsigned int twoSided : 1;
         };
         //uint16_t qb[ 2 ][ 3 ];
-        Vector3f::Simd qb[ 2 ];
+        
     public:
         // CompactLightBounds Public Methods
         CompactLightBounds( ) = default;
 
         CompactLightBounds( const LightBounds& lb, const Bounds3f& allb )
-            : w( Normalize( lb.w ) ),
+            : w( Vector3f(OctahedralVector(  Normalize( lb.w ) )) ),
               phi( lb.phi ),
               qCosTheta_o( QuantizeCos( lb.cosTheta_o ) ),
               qCosTheta_e( QuantizeCos( lb.cosTheta_e ) ),
@@ -229,7 +224,8 @@ namespace pbrto
 
             // Compute sine and cosine of angle to vector _w_, $\theta_\roman{w}$
             Vector3f::Simd wi = Normalize( p - pc );
-            Float cosTheta_w = ScalarDot( Vector3f( w ), wi );
+            //Float cosTheta_w = ScalarDot( Vector3f( w ), wi );
+            Float cosTheta_w = ScalarDot( w, wi );
             if ( twoSided )
                 cosTheta_w = Math::FastAbs( cosTheta_w );
             Float sinTheta_w = SafeSqrt( 1 - Sqr( cosTheta_w ) );
@@ -325,10 +321,9 @@ namespace pbrto
     {
     public:
         // BVHLightSampler Public Methods
-        PBRTO_EXPORT BVHLightSampler( pstdo::span<const Light> lights, Allocator alloc );
+        BVHLightSampler( pstdo::span<const Light> lights, Allocator alloc );
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
+        pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
         {
             // Compute infinite light sampling probability _pInfinite_
             Float pInfinite = Float( infiniteLights.size( ) ) /
@@ -350,8 +345,8 @@ namespace pbrto
                 if ( nodes.empty( ) )
                     return {};
                 // Declare common variables for light BVH traversal
-                Point3f p = ctx.p( );
-                Normal3f n = ctx.ns;
+                Point3f::Simd p = ctx.p( );
+                Normal3f::Simd n = ctx.ns;
                 u = std::min<Float>( ( u - pInfinite ) / ( 1 - pInfinite ), OneMinusEpsilon );
                 int nodeIndex = 0;
                 Float pmf = 1 - pInfinite;
@@ -363,11 +358,12 @@ namespace pbrto
                     if ( !node.isLeaf )
                     {
                         // Compute light BVH child node importances
-                        const LightBVHNode* children[ 2 ] = { &nodes[ nodeIndex + 1 ],
-                                                           &nodes[ node.childOrLightIndex ] };
-                        std::array < Float, 2> ci = {
+                        const LightBVHNode* children[ 2 ] = { &nodes[ nodeIndex + 1 ], &nodes[ node.childOrLightIndex ] };
+                        std::array < Float, 2> ci = 
+                        {
                             children[ 0 ]->lightBounds.Importance( p, n, allLightBounds ),
-                            children[ 1 ]->lightBounds.Importance( p, n, allLightBounds ) };
+                            children[ 1 ]->lightBounds.Importance( p, n, allLightBounds ) 
+                        };
                         if ( ci[ 0 ] == 0 && ci[ 1 ] == 0 )
                             return {};
 
@@ -392,8 +388,7 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            Float PMF( const LightSampleContext& ctx, Light light ) const
+        Float PMF( const LightSampleContext& ctx, Light light ) const
         {
             // Handle infinite _light_ PMF computation
             if ( !lightToBitTrail.HasKey( light ) )
@@ -401,8 +396,8 @@ namespace pbrto
 
             // Initialize local variables for BVH traversal for PMF computation
             uint32_t bitTrail = lightToBitTrail[ light ];
-            Point3f p = ctx.p( );
-            Normal3f n = ctx.ns;
+            Point3f::Simd p = ctx.p( );
+            Normal3f::Simd n = ctx.ns;
             // Compute infinite light sampling probability _pInfinite_
             Float pInfinite = Float( infiniteLights.size( ) ) /
                 Float( infiniteLights.size( ) + ( nodes.empty( ) ? 0 : 1 ) );
@@ -433,8 +428,7 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( Float u ) const
+        pstdo::optional<SampledLight> Sample( Float u ) const
         {
             if ( lights.empty( ) )
                 return {};
@@ -442,8 +436,7 @@ namespace pbrto
             return SampledLight{ lights[ lightIndex ], 1.f / lights.size( ) };
         }
 
-        PBRT_CPU_GPU
-            Float PMF( Light light ) const
+        Float PMF( Light light ) const
         {
             if ( lights.empty( ) )
                 return 0;
@@ -489,14 +482,11 @@ namespace pbrto
     public:
         ExhaustiveLightSampler( pstdo::span<const Light> lights, Allocator alloc );
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const;
+        pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const;
 
-        PBRT_CPU_GPU
-            Float PMF( const LightSampleContext& ctx, Light light ) const;
+        Float PMF( const LightSampleContext& ctx, Light light ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( Float u ) const
+        pstdo::optional<SampledLight> Sample( Float u ) const
         {
             if ( lights.empty( ) )
                 return {};
@@ -505,8 +495,7 @@ namespace pbrto
             return SampledLight{ lights[ lightIndex ], 1.f / lights.size( ) };
         }
 
-        PBRT_CPU_GPU
-            Float PMF( Light light ) const
+        Float PMF( Light light ) const
         {
             if ( lights.empty( ) )
                 return 0;
