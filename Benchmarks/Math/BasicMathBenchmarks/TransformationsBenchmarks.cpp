@@ -17,6 +17,7 @@
 #include "BenchmarkUtils.h"
 #include <HCCTransformations.h>
 #include <pbrto/util/transform.h>
+#include <pbrto/util/NewTransform.h>
 
 namespace
 {
@@ -157,6 +158,53 @@ static void BenchmarkPbrtTransformVector3f( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtTransformVector3f );
+
+
+static void BenchmarkPbrtoRotateFromToVector3f( benchmark::State& state )
+{
+    FloatM10To100Generator.Reset( );
+
+    pbrto::Vector3f::Simd fromVector( 0.f, 1.f, 0.f );
+
+    for ( auto _ : state )
+    {
+        pbrto::Vector3f::Simd toVector( FloatM10To100Generator( ), FloatM10To100Generator( ), FloatM10To100Generator( ) );
+        pbrto::Transform transform( pbrto::RotateFromTo( fromVector, toVector ) );
+        benchmark::DoNotOptimize( transform );
+    }
+}
+BENCHMARK( BenchmarkPbrtoRotateFromToVector3f );
+
+static void BenchmarkPbrtoRotateFromToOVector3f( benchmark::State& state )
+{
+    FloatM10To100Generator.Reset( );
+
+    pbrto::Vector3f fromVector( 0.f, 1.f, 0.f );
+
+    for ( auto _ : state )
+    {
+        pbrto::Vector3f toVector( FloatM10To100Generator( ), FloatM10To100Generator( ), FloatM10To100Generator( ) );
+        pbrto::Transform transform( pbrto::RotateFromToO( fromVector, toVector ) );
+        benchmark::DoNotOptimize( transform );
+    }
+}
+BENCHMARK( BenchmarkPbrtoRotateFromToOVector3f );
+
+
+static void BenchmarkPbrtRotateFromToVector3f( benchmark::State& state )
+{
+    FloatM10To100Generator.Reset( );
+
+    pbrt::Vector3f fromVector( 0.f, 1.f, 0.f );
+
+    for ( auto _ : state )
+    {
+        pbrt::Vector3f toVector( FloatM10To100Generator( ), FloatM10To100Generator( ), FloatM10To100Generator( ) );
+        pbrt::Transform transform( pbrt::RotateFromTo( fromVector, toVector ) );
+        benchmark::DoNotOptimize( transform );
+    }
+}
+BENCHMARK( BenchmarkPbrtRotateFromToVector3f );
 
 
 #endif

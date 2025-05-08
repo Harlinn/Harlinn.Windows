@@ -70,7 +70,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        inline Float Evaluate( TextureEvalContext ctx ) const;
+        inline Float Evaluate( const TextureEvalContext& ctx ) const;
     };
 
     class RGBConstantTexture;
@@ -110,7 +110,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        inline SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const;
+        inline SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const;
     };
 
 }

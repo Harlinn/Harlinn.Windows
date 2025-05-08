@@ -977,7 +977,7 @@ namespace Harlinn::Common::Core::Math
 
         TupleSimd X( ) const
         {
-            return Traits::At<0>( simd );
+            return Traits::Trim( Traits::At<0>( simd ) );
         }
         value_type x( ) const
         {
@@ -1015,7 +1015,7 @@ namespace Harlinn::Common::Core::Math
 
         TupleSimd Y( ) const
         {
-            return Traits::At<1>( simd );
+            return Traits::Trim( Traits::At<1>( simd ) );
         }
         value_type y( ) const
         {
@@ -1069,7 +1069,7 @@ namespace Harlinn::Common::Core::Math
 
         TupleSimd Z( ) const requires (Size > 2)
         {
-            return Traits::At<2>( simd );
+            return Traits::Trim( Traits::At<2>( simd ) );
         }
         value_type z( ) const requires ( Size > 2 )
         {
@@ -1114,7 +1114,7 @@ namespace Harlinn::Common::Core::Math
         }
         TupleSimd W( ) const requires ( Size > 3 )
         {
-            return Traits::At<3>( simd );
+            return Traits::Trim( Traits::At<3>( simd ) );
         }
         value_type w( ) const requires ( Size > 3 )
         {
@@ -2945,8 +2945,31 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Abs( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Abs( Traits::Load( t.values.data() ) );
+        return Traits::Abs( Traits::Load( t.values ) );
     }
+
+    // FastAbs
+
+    /// <summary>
+    /// Computes the absolute value of each element held by the argument.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T FastAbs( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastAbs( t.simd );
+    }
+    /// <summary>
+    /// Computes the absolute value of each element held by the argument.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT FastAbs( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastAbs( Traits::Load( t.values ) );
+    }
+
+
 
     // Min
 
@@ -4933,19 +4956,106 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// Evaluates the provided polynomial using Horner’s method
+    /// </summary>
+
     template <Internal::SimdType T, typename C>
-    constexpr inline T EvaluatePolynomial( T t, C c )
+        requires IsArithmetic<C>
+    constexpr inline T EvaluatePolynomial( const T& t, C c )
     {
         using Traits = typename T::Traits;
         return Traits::Fill<Traits::Size>( c );
     }
+    template <Internal::SimdType T, Internal::SimdType C>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline T EvaluatePolynomial( const T& t, C c )
+    {
+        return c;
+    }
 
     template <Internal::SimdType T, typename C, typename... Args>
-    constexpr inline T EvaluatePolynomial( T t, C c, Args... remaining )
+        requires IsArithmetic<C>
+    constexpr inline T EvaluatePolynomial( const T& t, C c, Args... remaining );
+
+    template <Internal::TupleType T, typename C, typename... Args>
+        requires IsArithmetic<C>
+    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, C c, Args... remaining );
+
+    template <Internal::SimdType T, Internal::SimdType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+
+    template <Internal::TupleType T, Internal::SimdType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+
+    template <Internal::SimdType T, Internal::TupleType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+
+    template <Internal::TupleType T, Internal::TupleType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+
+
+    template <Internal::SimdType T, typename C, typename... Args>
+        requires IsArithmetic<C>
+    constexpr inline T EvaluatePolynomial( const T& t, C c, Args... remaining )
     {
         using Traits = typename T::Traits;
         return FMA( t, EvaluatePolynomial( t, remaining... ), T( Traits::Fill<Traits::Size>( c ) ) );
     }
+
+    template <Internal::TupleType T, typename C, typename... Args>
+        requires IsArithmetic<C>
+    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, C c, Args... remaining )
+    {
+        using Traits = typename T::Traits;
+        using SimdType = typename T::Simd;
+        SimdType tSimd( t );
+        return FMA( tSimd, EvaluatePolynomial( tSimd, remaining... ), SimdType( Traits::Fill<Traits::Size>( c ) ) );
+    }
+
+    template <Internal::SimdType T, Internal::SimdType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    {
+        using Traits = typename T::Traits;
+        return FMA( t, EvaluatePolynomial( t, remaining... ), c );
+    }
+
+    template <Internal::TupleType T, Internal::SimdType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    {
+        using Traits = typename T::Traits;
+        using SimdType = typename T::Simd;
+        SimdType tSimd( t );
+        return FMA( tSimd, EvaluatePolynomial( tSimd, remaining... ), c );
+    }
+
+    template <Internal::SimdType T, Internal::TupleType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    {
+        using Traits = typename T::Traits;
+        using SimdType = typename C::Simd;
+        SimdType cSimd( c );
+        return FMA( t, EvaluatePolynomial( t, remaining... ), cSimd );
+    }
+    template <Internal::TupleType T, Internal::TupleType C, typename... Args>
+        requires Internal::IsCompatible<T, C>
+    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    {
+        using Traits = typename T::Traits;
+        using TSimdType = typename T::Simd;
+        using CSimdType = typename C::Simd;
+        TSimdType tSimd( t );
+        CSimdType cSimd( c );
+        return FMA( tSimd, EvaluatePolynomial( tSimd, remaining... ), cSimd );
+    }
+
 
 
     // FMSub
@@ -11721,6 +11831,10 @@ namespace Harlinn::Common::Core::Math
     using Vector3f = Vector<float,3>;
     using Vector3i = Vector<int, 3>;
 
+    // Vector4* Definitions
+    using Vector4f = Vector<float, 4>;
+    using Vector4i = Vector<int, 4>;
+
     
     template<typename T, size_t N>
     class Scalar;
@@ -14443,7 +14557,12 @@ namespace Harlinn::Common::Core::Math
 
         static SquareMatrixSimd Identity( )
         {
-            return SquareMatrixSimd( IdentityValues );
+            //return SquareMatrixSimd( IdentityValues );
+            return SquareMatrixSimd( 
+                Traits::Set( 0.f, 0.f, 0.f, 1.f ), 
+                Traits::Set( 0.f, 0.f, 1.f, 0.f ),
+                Traits::Set( 0.f, 1.f, 0.f, 0.f ),
+                Traits::Set( 1.f, 0.f, 0.f, 0.f ) );
         }
 
     };

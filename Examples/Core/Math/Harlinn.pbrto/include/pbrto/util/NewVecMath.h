@@ -3077,12 +3077,12 @@ namespace pbrto
         // DirectionCone Public Methods
         DirectionCone( ) = default;
 
-        DirectionCone( const Vector3f::Simd w, Float cosTheta )
+        DirectionCone( const Vector3f::Simd& w, Float cosTheta )
             : w( Normalize( w ) ), cosTheta( cosTheta )
         {
         }
 
-        explicit DirectionCone( const Vector3f::Simd w )
+        explicit DirectionCone( const Vector3f::Simd& w )
             : DirectionCone( w, 1 )
         {
         }
@@ -3097,20 +3097,20 @@ namespace pbrto
             return DirectionCone( Vector3f::Simd( 0, 0, 1 ), -1 );
         }
 
-        Vector3f::Simd ClosestVectorInCone( Vector3f::Simd wp ) const;
+        Vector3f::Simd ClosestVectorInCone( const Vector3f::Simd& wp ) const;
     };
 
     // DirectionCone Inline Functions
-    inline bool Inside( DirectionCone d, const Vector3f::Simd w )
+    inline bool Inside( DirectionCone d, const Vector3f::Simd& w )
     {
         return !d.IsEmpty( ) && Math::ScalarDot( d.w, Normalize( w ) ) >= d.cosTheta;
     }
 
-    inline DirectionCone BoundSubtendedDirections( const Bounds3f& b, const Point3f& p )
+    inline DirectionCone BoundSubtendedDirections( const Bounds3f& b, const Point3f::Simd& p )
     {
         // Compute bounding sphere for _b_ and check if _p_ is inside
         Float radius;
-        Point3f pCenter;
+        Point3f::Simd pCenter;
         b.BoundingSphere( &pCenter, &radius );
         if ( ScalarDistanceSquared( p, pCenter ) < Sqr( radius ) )
         {
@@ -3118,14 +3118,14 @@ namespace pbrto
         }
 
         // Compute and return _DirectionCone_ for bounding sphere
-        Vector3f w = Normalize( pCenter - p );
+        Vector3f::Simd w = Normalize( pCenter - p );
         Float sin2ThetaMax = Sqr( radius ) / ScalarDistanceSquared( pCenter, p );
 
         Float cosThetaMax = Math::SafeSqrt( 1 - sin2ThetaMax );
         return DirectionCone( w, cosThetaMax );
     }
 
-    inline Vector3f::Simd DirectionCone::ClosestVectorInCone( Vector3f::Simd wpv ) const
+    inline Vector3f::Simd DirectionCone::ClosestVectorInCone( const Vector3f::Simd& wpv ) const
     {
         NDCHECK( !IsEmpty( ) );
         Vector3f::Simd wp = Normalize( wpv );

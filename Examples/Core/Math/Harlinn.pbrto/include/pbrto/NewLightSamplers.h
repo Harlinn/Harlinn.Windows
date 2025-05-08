@@ -130,77 +130,105 @@ namespace pbrto
     // CompactLightBounds Definition
     class CompactLightBounds
     {
+        // CompactLightBounds Private Members
+        OctahedralVector w;
+        Float phi = 0;
+        struct
+        {
+            unsigned int qCosTheta_o : 15;
+            unsigned int qCosTheta_e : 15;
+            unsigned int twoSided : 1;
+        };
+        //uint16_t qb[ 2 ][ 3 ];
+        Vector3f::Simd qb[ 2 ];
     public:
         // CompactLightBounds Public Methods
         CompactLightBounds( ) = default;
 
-        PBRT_CPU_GPU
-            CompactLightBounds( const LightBounds& lb, const Bounds3f& allb )
+        CompactLightBounds( const LightBounds& lb, const Bounds3f& allb )
             : w( Normalize( lb.w ) ),
-            phi( lb.phi ),
-            qCosTheta_o( QuantizeCos( lb.cosTheta_o ) ),
-            qCosTheta_e( QuantizeCos( lb.cosTheta_e ) ),
-            twoSided( lb.twoSided )
+              phi( lb.phi ),
+              qCosTheta_o( QuantizeCos( lb.cosTheta_o ) ),
+              qCosTheta_e( QuantizeCos( lb.cosTheta_e ) ),
+              twoSided( lb.twoSided )
         {
             // Quantize bounding box into _qb_
+            /*
             for ( int c = 0; c < 3; ++c )
             {
-                qb[ 0 ][ c ] =
-                    pstdo::floor( QuantizeBounds( lb.bounds[ 0 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
-                qb[ 1 ][ c ] =
-                    pstdo::ceil( QuantizeBounds( lb.bounds[ 1 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
+                qb[ 0 ][ c ] = pstdo::floor( QuantizeBounds( lb.bounds[ 0 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
+                qb[ 1 ][ c ] = pstdo::ceil( QuantizeBounds( lb.bounds[ 1 ][ c ], allb.pMin[ c ], allb.pMax[ c ] ) );
             }
+            */
+
+            qb[ 0 ] = Math::Floor( Vector3f::Simd( QuantizeBounds( lb.bounds[ 0 ][ 0 ], allb.pMin[ 0 ], allb.pMax[ 0 ] ),
+                        QuantizeBounds( lb.bounds[ 0 ][ 1 ], allb.pMin[ 1 ], allb.pMax[ 1 ] ),
+                        QuantizeBounds( lb.bounds[ 0 ][ 2 ], allb.pMin[ 2 ], allb.pMax[ 2 ] ) ) );
+
+            qb[ 1 ] = Math::Ceil( Vector3f::Simd( QuantizeBounds( lb.bounds[ 1 ][ 0 ], allb.pMin[ 0 ], allb.pMax[ 0 ] ),
+                        QuantizeBounds( lb.bounds[ 1 ][ 1 ], allb.pMin[ 1 ], allb.pMax[ 1 ] ),
+                        QuantizeBounds( lb.bounds[ 1 ][ 2 ], allb.pMin[ 2 ], allb.pMax[ 2 ] ) ) );
+
+
         }
 
         std::string ToString( ) const;
         std::string ToString( const Bounds3f& allBounds ) const;
 
-        PBRT_CPU_GPU
-            bool TwoSided( ) const { return twoSided; }
-        PBRT_CPU_GPU
-            Float CosTheta_o( ) const { return 2 * ( qCosTheta_o / 32767.f ) - 1; }
-        PBRT_CPU_GPU
-            Float CosTheta_e( ) const { return 2 * ( qCosTheta_e / 32767.f ) - 1; }
+        bool TwoSided( ) const { return twoSided; }
+        Float CosTheta_o( ) const { return 2 * ( qCosTheta_o / 32767.f ) - 1; }
+        Float CosTheta_e( ) const { return 2 * ( qCosTheta_e / 32767.f ) - 1; }
 
-        PBRT_CPU_GPU
-            Bounds3f Bounds( const Bounds3f& allb ) const
+        Bounds3f Bounds( const Bounds3f& allb ) const
         {
-            return { Point3f( Lerp2( qb[ 0 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
-                            Lerp2( qb[ 0 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
-                            Lerp2( qb[ 0 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ),
-                    Point3f( Lerp2( qb[ 1 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
-                            Lerp2( qb[ 1 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
-                            Lerp2( qb[ 1 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ) };
+            /*
+            return 
+            { 
+                Point3f( 
+                    Lerp2( qb[ 0 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
+                    Lerp2( qb[ 0 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
+                    Lerp2( qb[ 0 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ),
+                Point3f( 
+                    Lerp2( qb[ 1 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
+                    Lerp2( qb[ 1 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
+                    Lerp2( qb[ 1 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ) 
+            };
+            */
+            return
+            {
+                Point3f::Simd( Lerp2( qb[ 0 ] / 65535.f, allb.pMin, allb.pMax ) ),
+                Point3f::Simd( Lerp2( qb[ 1 ] / 65535.f, allb.pMin, allb.pMax ) )
+            };
+
         }
 
-        PBRT_CPU_GPU
-            Float Importance( Point3f p, Normal3f n, const Bounds3f& allb ) const
+        Float Importance( const Point3f::Simd& p, const Normal3f::Simd& n, const Bounds3f& allb ) const
         {
             Bounds3f bounds = Bounds( allb );
             Float cosTheta_o = CosTheta_o( ), cosTheta_e = CosTheta_e( );
             // Return importance for light bounds at reference point
             // Compute clamped squared distance to reference point
-            Point3f pc = ( bounds.pMin + bounds.pMax ) / 2;
+            Point3f::Simd pc = ( bounds.pMin + bounds.pMax ) / 2;
             Float d2 = ScalarDistanceSquared( p, pc );
             d2 = std::max( d2, ScalarLength( bounds.Diagonal( ) ) / 2 );
 
             // Define cosine and sine clamped subtraction lambdas
-            auto cosSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b,
-                Float cosTheta_b ) -> Float {
+            auto cosSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b, Float cosTheta_b ) -> Float 
+                {
                     if ( cosTheta_a > cosTheta_b )
                         return 1;
                     return cosTheta_a * cosTheta_b + sinTheta_a * sinTheta_b;
                 };
 
-            auto sinSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b,
-                Float cosTheta_b ) -> Float {
+            auto sinSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b, Float cosTheta_b ) -> Float 
+                {
                     if ( cosTheta_a > cosTheta_b )
                         return 0;
                     return sinTheta_a * cosTheta_b - cosTheta_a * sinTheta_b;
                 };
 
             // Compute sine and cosine of angle to vector _w_, $\theta_\roman{w}$
-            Vector3f wi = Normalize( p - pc );
+            Vector3f::Simd wi = Normalize( p - pc );
             Float cosTheta_w = ScalarDot( Vector3f( w ), wi );
             if ( twoSided )
                 cosTheta_w = Math::FastAbs( cosTheta_w );
@@ -237,15 +265,13 @@ namespace pbrto
 
     private:
         // CompactLightBounds Private Methods
-        PBRT_CPU_GPU
-            static unsigned int QuantizeCos( Float c )
+        static unsigned int QuantizeCos( Float c )
         {
             NCHECK( c >= -1 && c <= 1 );
             return pstdo::floor( 32767.f * ( ( c + 1 ) / 2 ) );
         }
 
-        PBRT_CPU_GPU
-            static Float QuantizeBounds( Float c, Float min, Float max )
+        static Float QuantizeBounds( Float c, Float min, Float max )
         {
             NCHECK( c >= min && c <= max );
             if ( min == max )
@@ -253,16 +279,7 @@ namespace pbrto
             return 65535.f * Clamp( ( c - min ) / ( max - min ), 0, 1 );
         }
 
-        // CompactLightBounds Private Members
-        OctahedralVector w;
-        Float phi = 0;
-        struct
-        {
-            unsigned int qCosTheta_o : 15;
-            unsigned int qCosTheta_e : 15;
-            unsigned int twoSided : 1;
-        };
-        uint16_t qb[ 2 ][ 3 ];
+        
     };
 
     // LightBVHNode Definition

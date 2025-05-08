@@ -263,7 +263,9 @@ PBRTO_EXPORT Vector3f EqualAreaSquareToSphere( Point2f p )
 PBRTO_EXPORT Point2f EqualAreaSphereToSquare( Vector3f d )
 {
     NDCHECK( ScalarLengthSquared( d ) > .999 && ScalarLengthSquared( d ) < 1.001 );
-    Float x = Math::FastAbs( d.x ), y = Math::FastAbs( d.y ), z = Math::FastAbs( d.z );
+    Float x = Math::FastAbs( d.x ), 
+        y = Math::FastAbs( d.y ), 
+        z = Math::FastAbs( d.z );
 
     // Compute the radius r
     Float r = SafeSqrt( 1 - z );  // r = sqrt(1-|z|)

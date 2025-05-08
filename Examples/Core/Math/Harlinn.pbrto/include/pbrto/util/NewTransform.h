@@ -182,12 +182,22 @@ namespace pbrto
         */
         PointSimdType operator()( const PointSimdType& v ) const;
 
+        PointSimdType operator()( const PointType& v ) const
+        {
+            return ( *this )( PointSimdType( v ) );
+        }
+
         /*
         template <typename T>
         inline Point3<T> ApplyInverse( const Point3<T>& p ) const;
         */
 
         inline PointSimdType ApplyInverse( const PointSimdType& p ) const;
+
+        PointSimdType ApplyInverse( const PointType& v ) const
+        {
+            return ApplyInverse( PointSimdType( v ) );
+        }
 
         /*
         template <typename T>
@@ -196,12 +206,22 @@ namespace pbrto
 
         VectorSimdType operator()( const VectorSimdType& v ) const;
 
+        VectorSimdType operator()( const VectorType& v ) const
+        {
+            return ( *this )( VectorSimdType( v ) );
+        }
+
         /*
         template <typename T>
         inline Vector3<T> ApplyInverse( const Vector3<T>& v ) const;
         */
 
         VectorSimdType ApplyInverse( const VectorSimdType& v ) const;
+
+        VectorSimdType ApplyInverse( const VectorType& v ) const
+        {
+            return ApplyInverse( VectorSimdType( v ) );
+        }
 
         /*
         template <typename T>
@@ -210,12 +230,22 @@ namespace pbrto
 
         NormalSimdType operator()( const NormalSimdType& n ) const;
 
+        NormalSimdType operator()( const NormalType& v ) const
+        {
+            return ( *this )( NormalSimdType( v ) );
+        }
+
         /*
         template <typename T>
         inline Normal3<T> ApplyInverse( const Normal3<T>& n ) const;
         */
 
         NormalSimdType ApplyInverse( const NormalSimdType& n ) const;
+
+        NormalSimdType ApplyInverse( const NormalType& v ) const
+        {
+            return ApplyInverse( NormalSimdType( v ) );
+        }
 
         Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
 
@@ -313,36 +343,85 @@ namespace pbrto
     }
 
 
-    inline Transform RotateFromTo( const Vector3f& from, const Vector3f& to )
+    inline Transform RotateFromTo( const Vector3f::Simd& from, const Vector3f::Simd& to )
+    {
+        // Compute intermediate vector for vector reflection
+        Vector3f::Simd refl;
+
+        Vector3f absFrom = FastAbs( from );
+        Vector3f absTo = FastAbs( to );
+        
+        if ( absFrom.x < 0.72f && absTo.x < 0.72f )
+            refl = Vector3f::Simd( 1, 0, 0 );
+        else if ( absFrom.y < 0.72f && absTo.y < 0.72f )
+            refl = Vector3f::Simd( 0, 1, 0 );
+        else
+            refl = Vector3f::Simd( 0, 0, 1 );
+
+        // Initialize matrix _r_ for rotation
+        Vector3f::Simd u = refl - from;
+        Vector3f::Simd v = refl - to;
+
+        auto uDotU = Dot( u, u );
+        auto vDotV = Dot( v, v );
+        auto uDotV = Dot( u, v );
+
+        Vector3f::Simd f1 = 2.f / uDotU * u;
+        Vector3f::Simd f2 = 2.f / vDotV * v;
+        Vector3f::Simd f3 = 4.f * uDotV / ( uDotU * vDotV ) * u;
+        
+        Vector3f::Simd vn = v.X( );
+        Vector3f::Simd un = u.X( );
+
+        auto r1 = Vector3f::Simd( 1.f, 0.f, 0.f ) - f1 * un - f2 * vn + f3 * vn;
+
+        vn = v.Y( );
+        un = u.Y( );
+
+        auto r2 = Vector3f::Simd( 0.f, 1.f, 0.f ) - f1 * un - f2 * vn + f3 * vn;
+
+        vn = v.Z( );
+        un = u.Z( );
+
+        auto r3 = Vector3f::Simd( 0.f, 0.f, 1.f ) - f1 * un - f2 * vn + f3 * vn;
+
+        Transform::MatrixSimdType r( r1.simd, r2.simd, r3.simd );
+
+        return Transform( Transpose( r ), r, true  );
+    }
+
+
+    inline Transform RotateFromToO( const Vector3f& from, const Vector3f& to )
     {
         // Compute intermediate vector for vector reflection
         Vector3f refl;
+
         if ( Math::FastAbs( from.x ) < 0.72f && Math::FastAbs( to.x ) < 0.72f )
             refl = Vector3f( 1, 0, 0 );
         else if ( Math::FastAbs( from.y ) < 0.72f && Math::FastAbs( to.y ) < 0.72f )
             refl = Vector3f( 0, 1, 0 );
         else
-            refl = Vector3f( 0, 0, 1 );
+            refl = Vector3f::Simd( 0, 0, 1 );
 
         // Initialize matrix _r_ for rotation
-        Vector3f u = refl - from; 
+        Vector3f u = refl - from;
         Vector3f v = refl - to;
+
         auto uDotU = ScalarDot( u, u );
         auto vDotV = ScalarDot( v, v );
         auto uDotV = ScalarDot( u, v );
-
+        
         SquareMatrix<4> r;
         for ( int i = 0; i < 3; ++i )
         {
             for ( int j = 0; j < 3; ++j )
             {
                 // Initialize matrix element _r[i][j]_
-                r[ i ][ j ] = ( ( i == j ) ? 1 : 0 ) - 2 / uDotU * u[ i ] * u[ j ] -
-                    2 / vDotV * v[ i ] * v[ j ] +
-                    4 * uDotV / ( uDotU * vDotV ) * v[ i ] * u[ j ];
+                r[ i ][ j ] = ( ( i == j ) ? 1 : 0 ) - 2 / uDotU * u[ i ] * u[ j ] - 2 / vDotV * v[ i ] * v[ j ] + 4 * uDotV / ( uDotU * vDotV ) * v[ i ] * u[ j ];
             }
         }
-        return Transform( Transpose( r ), r, true  );
+
+        return Transform( Transpose( r ), r, true );
     }
 
     inline Vector3fi Transform::operator()( const Vector3fi& v ) const

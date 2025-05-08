@@ -74,7 +74,7 @@ namespace pbrto
               faceIndex( si.faceIndex )
         {
         }
-        TextureEvalContext( Point3f::Simd p, Vector3f::Simd dpdx, Vector3f::Simd dpdy, Normal3f::Simd n, Point2f uv, Float dudx, Float dudy, Float dvdx, Float dvdy, int faceIndex )
+        TextureEvalContext( const Point3f::Simd& p, const Vector3f::Simd& dpdx, const Vector3f::Simd& dpdy, const Normal3f::Simd& n, const Point2f& uv, Float dudx, Float dudy, Float dvdx, Float dvdy, int faceIndex )
             : p( p ),
               dpdx( dpdx ),
               dpdy( dpdy ),
@@ -104,8 +104,8 @@ namespace pbrto
     // TexCoord3D Definition
     struct TexCoord3D
     {
-        Point3f p;
-        Vector3f dpdx, dpdy;
+        Point3f::Simd p;
+        Vector3f::Simd dpdx, dpdy;
         std::string ToString( ) const;
     };
 
@@ -122,7 +122,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map( const TextureEvalContext& ctx ) const
         {
             // Compute texture differentials for 2D $(u,v)$ mapping
             Float dsdx = su * ctx.dudx, dsdy = su * ctx.dudy;
@@ -146,7 +146,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map( const TextureEvalContext& ctx ) const
         {
             Point3f pt = textureFromRender( ctx.p );
             // Compute $\partial\,s/\partial\,\pt{}$ and $\partial\,t/\partial\,\pt{}$ for
@@ -185,7 +185,7 @@ namespace pbrto
         }
         std::string ToString( ) const;
 
-        TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map(const  TextureEvalContext& ctx ) const
         {
             Point3f pt = textureFromRender( ctx.p );
             // Compute texture coordinate differentials for cylinder $(u,v)$ mapping
@@ -213,11 +213,11 @@ namespace pbrto
         Float ds, dt;
     public:
         // PlanarMapping Public Methods
-        PlanarMapping( const Transform& textureFromRender, Vector3f::Simd vs, Vector3f::Simd vt, Float ds, Float dt )
+        PlanarMapping( const Transform& textureFromRender, const Vector3f::Simd& vs, const Vector3f::Simd& vt, Float ds, Float dt )
             : textureFromRender( textureFromRender ), vs( vs ), vt( vt ), ds( ds ), dt( dt )
         { }
 
-        TexCoord2D Map( TextureEvalContext ctx ) const
+        TexCoord2D Map( const TextureEvalContext& ctx ) const
         {
             Vector3f::Simd vec( textureFromRender( ctx.p ) );
             // Initialize partial derivatives of planar mapping $(s,t)$ coordinates
@@ -252,11 +252,11 @@ namespace pbrto
             const Transform& renderFromTexture, const FileLoc* loc,
             Allocator alloc );
 
-        inline TexCoord2D Map( TextureEvalContext ctx ) const;
+        inline TexCoord2D Map( const TextureEvalContext& ctx ) const;
     };
 
     // TextureMapping2D Inline Functions
-    inline TexCoord2D TextureMapping2D::Map( TextureEvalContext ctx ) const
+    inline TexCoord2D TextureMapping2D::Map( const TextureEvalContext& ctx ) const
     {
         auto map = [ & ]( auto ptr ) { return ptr->Map( ctx ); };
         return Dispatch( map );
@@ -275,10 +275,9 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        TexCoord3D Map( TextureEvalContext ctx ) const
+        TexCoord3D Map( const TextureEvalContext& ctx ) const
         {
-            return TexCoord3D{ textureFromRender( ctx.p ), textureFromRender( ctx.dpdx ),
-                              textureFromRender( ctx.dpdy ) };
+            return TexCoord3D{ textureFromRender( ctx.p ), textureFromRender( ctx.dpdx ), textureFromRender( ctx.dpdy ) };
         }
 
     private:
@@ -291,16 +290,16 @@ namespace pbrto
     public:
         // TextureMapping3D Interface
         using TaggedPointer::TaggedPointer;
-        TextureMapping3D( TaggedPointer<PointTransformMapping> tp ) : TaggedPointer( tp ) {}
+        TextureMapping3D( TaggedPointer<PointTransformMapping> tp ) 
+            :  TaggedPointer( tp ) 
+        { }
 
-        static TextureMapping3D Create( const ParameterDictionary& parameters,
-            const Transform& renderFromTexture, const FileLoc* loc,
-            Allocator alloc );
+        static TextureMapping3D Create( const ParameterDictionary& parameters, const Transform& renderFromTexture, const FileLoc* loc, Allocator alloc );
 
-        TexCoord3D Map( TextureEvalContext ctx ) const;
+        TexCoord3D Map( const TextureEvalContext& ctx ) const;
     };
 
-    inline TexCoord3D TextureMapping3D::Map( TextureEvalContext ctx ) const
+    inline TexCoord3D TextureMapping3D::Map( const TextureEvalContext& ctx ) const
     {
         auto map = [ & ]( auto ptr ) { return ptr->Map( ctx ); };
         return Dispatch( map );
@@ -313,7 +312,7 @@ namespace pbrto
         FloatConstantTexture( Float value ) 
             : value( value ) 
         { }
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         { 
             return value; 
         }
@@ -331,11 +330,12 @@ namespace pbrto
     // SpectrumConstantTexture Definition
     class SpectrumConstantTexture
     {
+        Spectrum value;
     public:
         // SpectrumConstantTexture Public Methods
         SpectrumConstantTexture( Spectrum value ) : value( value ) {}
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             return value.Sample( lambda );
         }
@@ -347,7 +347,7 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-        Spectrum value;
+        
     };
 
     // FloatBilerpTexture Definition
@@ -363,7 +363,7 @@ namespace pbrto
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return ( 1 - c.st[ 0 ] ) * ( 1 - c.st[ 1 ] ) * v00 + c.st[ 0 ] * ( 1 - c.st[ 1 ] ) * v10 +
@@ -387,13 +387,12 @@ namespace pbrto
         TextureMapping2D mapping;
         Spectrum v00, v01, v10, v11;
     public:
-        SpectrumBilerpTexture( TextureMapping2D mapping, Spectrum v00, Spectrum v01,
-            Spectrum v10, Spectrum v11 )
+        SpectrumBilerpTexture( TextureMapping2D mapping, Spectrum v00, Spectrum v01, Spectrum v10, Spectrum v11 )
             : mapping( mapping ), v00( v00 ), v01( v01 ), v10( v10 ), v11( v11 )
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return Bilerp( { c.st[ 0 ], c.st[ 1 ] }, { v00.Sample( lambda ), v10.Sample( lambda ),
@@ -411,7 +410,7 @@ namespace pbrto
         
     };
 
-    Float Checkerboard( TextureEvalContext ctx, TextureMapping2D map2D, TextureMapping3D map3D );
+    Float Checkerboard( const TextureEvalContext& ctx, TextureMapping2D map2D, TextureMapping3D map3D );
 
     class FloatCheckerboardTexture
     {
@@ -419,13 +418,12 @@ namespace pbrto
         TextureMapping3D map3D;
         FloatTexture tex[ 2 ];
     public:
-        FloatCheckerboardTexture( TextureMapping2D map2D, TextureMapping3D map3D,
-            FloatTexture tex1, FloatTexture tex2 )
+        FloatCheckerboardTexture( TextureMapping2D map2D, TextureMapping3D map3D, FloatTexture tex1, FloatTexture tex2 )
             : map2D( map2D ), map3D( map3D ), tex{ tex1, tex2 }
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             Float w = Checkerboard( ctx, map2D, map3D );
             Float t0 = 0, t1 = 0;
@@ -455,8 +453,7 @@ namespace pbrto
         SpectrumTexture tex[ 2 ];
     public:
         // SpectrumCheckerboardTexture Public Methods
-        SpectrumCheckerboardTexture( TextureMapping2D map2D, TextureMapping3D map3D,
-            SpectrumTexture tex1, SpectrumTexture tex2 )
+        SpectrumCheckerboardTexture( TextureMapping2D map2D, TextureMapping3D map3D, SpectrumTexture tex1, SpectrumTexture tex2 )
             : map2D( map2D ), map3D( map3D ), tex{ tex1, tex2 }
         {
         }
@@ -467,7 +464,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             Float w = Checkerboard( ctx, map2D, map3D );
             SampledSpectrum t0, t1;
@@ -497,7 +494,7 @@ namespace pbrto
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return InsidePolkaDot( c.st ) ? insideDot.Evaluate( ctx ) : outsideDot.Evaluate( ctx );
@@ -527,7 +524,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             TexCoord2D c = mapping.Map( ctx );
             return InsidePolkaDot( c.st ) ? insideDot.Evaluate( ctx, lambda )
@@ -558,7 +555,7 @@ namespace pbrto
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             return FBm( c.p, c.dpdx, c.dpdy, omega, octaves );
@@ -659,7 +656,7 @@ namespace pbrto
                 alloc )
         {
         }
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
 #ifdef PBRT_IS_GPU_CODE
             assert( !"Should not be called in GPU code" );
@@ -696,7 +693,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const;
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const;
 
         static SpectrumImageTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -836,7 +833,7 @@ namespace pbrto
     class GPUSpectrumImageTexture
     {
     public:
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             NLOG_FATAL( "GPUSpectrumImageTexture::Evaluate called from CPU" );
             return SampledSpectrum( 0 );
@@ -857,7 +854,7 @@ namespace pbrto
     class GPUFloatImageTexture
     {
     public:
-        Float Evaluate( TextureEvalContext ) const
+        Float Evaluate( const TextureEvalContext& ) const
         {
             NLOG_FATAL( "GPUFloatImageTexture::Evaluate called from CPU" );
             return 0;
@@ -895,7 +892,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const;
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const;
 
         static MarbleTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -919,7 +916,7 @@ namespace pbrto
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             Float amt = amount.Evaluate( ctx );
             Float t1 = 0, t2 = 0;
@@ -953,7 +950,7 @@ namespace pbrto
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             Float amt = ScalarAbsDot( ctx.n, dir );
             Float t1 = 0, t2 = 0;
@@ -985,7 +982,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             Float amt = amount.Evaluate( ctx );
             SampledSpectrum t1, t2;
@@ -1020,7 +1017,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             Float amt = ScalarAbsDot( ctx.n, dir );
             SampledSpectrum t1, t2;
@@ -1070,7 +1067,7 @@ namespace pbrto
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const;
+        Float Evaluate( const TextureEvalContext& ctx ) const;
 
         static FloatPtexTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -1088,7 +1085,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const;
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const;
 
         static SpectrumPtexTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -1108,7 +1105,7 @@ namespace pbrto
         GPUFloatPtexTexture( const std::string& filename, ColorEncoding encoding, Float scale,
             Allocator alloc );
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             NDCHECK( ctx.faceIndex >= 0 && ctx.faceIndex < faceValues.size( ) );
             return faceValues[ ctx.faceIndex ];
@@ -1131,7 +1128,7 @@ namespace pbrto
         GPUSpectrumPtexTexture( const std::string& filename, ColorEncoding encoding,
             Float scale, SpectrumType spectrumType, Allocator alloc );
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             NCHECK( ctx.faceIndex >= 0 && ctx.faceIndex < faceValues.size( ) );
 
@@ -1173,7 +1170,7 @@ namespace pbrto
             const TextureParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             Float sc = scale.Evaluate( ctx );
             if ( sc == 0 )
@@ -1198,7 +1195,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+        SampledSpectrum Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
         {
             Float sc = scale.Evaluate( ctx );
             if ( sc == 0 )
@@ -1225,7 +1222,7 @@ namespace pbrto
         // WindyTexture Public Methods
         WindyTexture( TextureMapping3D mapping ) : mapping( mapping ) {}
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             Float windStrength = FBm( .1f * c.p, .1f * c.dpdx, .1f * c.dpdy, .5, 3 );
@@ -1253,7 +1250,7 @@ namespace pbrto
         {
         }
 
-        Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( const TextureEvalContext& ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             return Turbulence( c.p, c.dpdx, c.dpdy, omega, octaves );
@@ -1272,13 +1269,13 @@ namespace pbrto
         Float omega;
     };
 
-    inline Float FloatTexture::Evaluate( TextureEvalContext ctx ) const
+    inline Float FloatTexture::Evaluate( const TextureEvalContext& ctx ) const
     {
         auto eval = [ & ]( auto ptr ) { return ptr->Evaluate( ctx ); };
         return Dispatch( eval );
     }
 
-    inline SampledSpectrum SpectrumTexture::Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+    inline SampledSpectrum SpectrumTexture::Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
     {
         auto eval = [ & ]( auto ptr ) { return ptr->Evaluate( ctx, lambda ); };
         return Dispatch( eval );
@@ -1296,7 +1293,7 @@ namespace pbrto
 
         Float operator()( FloatTexture tex, TextureEvalContext ctx );
 
-        SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx, const SampledWavelengths& lambda );
+        SampledSpectrum operator()( SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda );
     };
 
     // BasicTextureEvaluator Definition
@@ -1321,7 +1318,7 @@ namespace pbrto
             return true;
         }
 
-        Float operator()( FloatTexture tex, TextureEvalContext ctx )
+        Float operator()( FloatTexture tex, const TextureEvalContext& ctx )
         {
             if ( tex.Is<FloatConstantTexture>( ) )
                 return tex.Cast<FloatConstantTexture>( )->Evaluate( ctx );
@@ -1339,7 +1336,7 @@ namespace pbrto
             }
         }
 
-        SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx, const SampledWavelengths& lambda )
+        SampledSpectrum operator()( SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda )
         {
             if ( tex.Is<SpectrumConstantTexture>( ) )
                 return tex.Cast<SpectrumConstantTexture>( )->Evaluate( ctx, lambda );

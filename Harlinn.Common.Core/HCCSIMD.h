@@ -3215,22 +3215,18 @@ namespace Harlinn::Common::Core::SIMD
             {
                 if constexpr ( index == 0)
                 {
-                    //return _mm_permute_ps( v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
                     return _mm_shuffle_ps( v, v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
                 }
                 else if constexpr ( index == 1 )
                 {
-                    //return _mm_permute_ps( v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
                     return _mm_shuffle_ps( v, v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
                 }
                 else if constexpr ( index == 2 )
                 {
-                    //return _mm_permute_ps( v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
                     return _mm_shuffle_ps( v, v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
                 }
                 else
                 {
-                    //return _mm_permute_ps( v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
                     return _mm_shuffle_ps( v, v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
                 }
             }
@@ -4371,6 +4367,11 @@ namespace Harlinn::Common::Core::SIMD
         {
             auto tmp = IsNaN( v );
             return AnyTrue( tmp );
+        }
+
+        static SIMDType FastAbs( SIMDType v ) noexcept
+        {
+            return And( v, Fill( Constants::AbsMaskValue ) );
         }
 
 

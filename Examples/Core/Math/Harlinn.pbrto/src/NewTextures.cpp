@@ -198,8 +198,7 @@ namespace pbrto
         SpectrumType spectrumType, const FileLoc* loc, Allocator alloc )
     {
         // Initialize 2D texture mapping _map_ from _tp_
-        TextureMapping2D map =
-            TextureMapping2D::Create( parameters, renderFromTexture, loc, alloc );
+        TextureMapping2D map = TextureMapping2D::Create( parameters, renderFromTexture, loc, alloc );
 
         Spectrum zero = alloc.new_object<ConstantSpectrum>( 0. );
         Spectrum one = alloc.new_object<ConstantSpectrum>( 1. );
@@ -219,7 +218,7 @@ namespace pbrto
     }
 
     // CheckerboardTexture Function Definitions
-    Float Checkerboard( TextureEvalContext ctx, TextureMapping2D map2D, TextureMapping3D map3D )
+    Float Checkerboard( const TextureEvalContext& ctx, TextureMapping2D map2D, TextureMapping3D map3D )
     {
         // Define 1D checkerboard filtered integral functions
         auto d = []( Float x ) {
@@ -238,8 +237,8 @@ namespace pbrto
             // Return weights for 2D checkerboard texture
             NCHECK( !map3D );
             TexCoord2D c = map2D.Map( ctx );
-            Float ds = std::max( Math::FastAbs( c.dsdx ), Math::FastAbs( c.dsdy ) );
-            Float dt = std::max( Math::FastAbs( c.dtdx ), Math::FastAbs( c.dtdy ) );
+            Float ds = Math::Max( Math::FastAbs( c.dsdx ), Math::FastAbs( c.dsdy ) );
+            Float dt = Math::Max( Math::FastAbs( c.dtdx ), Math::FastAbs( c.dtdy ) );
             // Integrate product of 2D checkerboard function and triangle filter
             ds *= 1.5f;
             dt *= 1.5f;
@@ -251,10 +250,15 @@ namespace pbrto
             // Return weights for 3D checkerboard texture
             NCHECK( map3D );
             TexCoord3D c = map3D.Map( ctx );
+            Point3f cp = c.p;
+            /*
             Float dx = 1.5f * std::max( Math::FastAbs( c.dpdx.x ), Math::FastAbs( c.dpdy.x ) );
             Float dy = 1.5f * std::max( Math::FastAbs( c.dpdx.y ), Math::FastAbs( c.dpdy.y ) );
             Float dz = 1.5f * std::max( Math::FastAbs( c.dpdx.z ), Math::FastAbs( c.dpdy.z ) );
-            return 0.5f - 0.5f * bf( c.p.x, dx ) * bf( c.p.y, dy ) * bf( c.p.z, dz );
+            */
+            Vector3f d = 1.5f * Math::Max( Math::Abs( c.dpdx ), Math::Abs( c.dpdy ) );
+
+            return 0.5f - 0.5f * bf( cp.x, d.x ) * bf( cp.y, d.y ) * bf( cp.z, d.z );
         }
     }
 
@@ -418,7 +422,7 @@ namespace pbrto
     }
 
     // SpectrumImageTexture Method Definitions
-    SampledSpectrum SpectrumImageTexture::Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+    SampledSpectrum SpectrumImageTexture::Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
     {
 #ifdef PBRT_IS_GPU_CODE
         assert( !"Should not be called in GPU code" );
@@ -545,11 +549,11 @@ namespace pbrto
     }
 
     // MarbleTexture Method Definitions
-    SampledSpectrum MarbleTexture::Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+    SampledSpectrum MarbleTexture::Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
     {
         TexCoord3D c = mapping.Map( ctx );
         c.p *= scale;
-        Float marble = c.p.y + variation * FBm( c.p, scale * c.dpdx, scale * c.dpdy, omega, octaves );
+        Float marble = c.p.y() + variation * FBm( c.p, scale * c.dpdx, scale * c.dpdy, omega, octaves );
         Float t = .5f + .5f * Math::Sin( marble );
         // Evaluate marble spline at $t$ to compute color _rgb_
         const RGB colors[ ] = {
@@ -783,7 +787,7 @@ namespace pbrto
         return StringPrintf( "[ SpectrumPtexTexture %s ]", BaseToString( ) );
     }
 
-    Float FloatPtexTexture::Evaluate( TextureEvalContext ctx ) const
+    Float FloatPtexTexture::Evaluate( const TextureEvalContext& ctx ) const
     {
 #ifdef PBRT_IS_GPU_CODE
         NLOG_FATAL( "Ptex not supported with GPU renderer" );
@@ -798,7 +802,7 @@ namespace pbrto
 #endif
     }
 
-    SampledSpectrum SpectrumPtexTexture::Evaluate( TextureEvalContext ctx, const SampledWavelengths& lambda ) const
+    SampledSpectrum SpectrumPtexTexture::Evaluate( const TextureEvalContext& ctx, const SampledWavelengths& lambda ) const
     {
 #ifdef PBRT_IS_GPU_CODE
         NLOG_FATAL( "Ptex not supported with GPU renderer" );
@@ -1741,7 +1745,7 @@ namespace pbrto
         return tex.Evaluate( ctx );
     }
 
-    SampledSpectrum UniversalTextureEvaluator::operator()( SpectrumTexture tex, TextureEvalContext ctx, const SampledWavelengths& lambda )
+    SampledSpectrum UniversalTextureEvaluator::operator()( SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda )
     {
         return tex.Evaluate( ctx, lambda );
     }
