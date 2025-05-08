@@ -362,6 +362,13 @@ namespace pbrto
     // ThreadPool Definition
     class ThreadPool
     {
+        // ThreadPool Private Members
+        std::vector<std::thread> threads;
+        mutable std::mutex mutex;
+        bool shutdownThreads = false;
+        bool disabled = false;
+        ParallelJob* jobList = nullptr;
+        std::condition_variable jobListCondition;
     public:
         // ThreadPool Public Methods
         explicit ThreadPool( int nThreads );
@@ -387,13 +394,7 @@ namespace pbrto
         // ThreadPool Private Methods
         void Worker( );
 
-        // ThreadPool Private Members
-        std::vector<std::thread> threads;
-        mutable std::mutex mutex;
-        bool shutdownThreads = false;
-        bool disabled = false;
-        ParallelJob* jobList = nullptr;
-        std::condition_variable jobListCondition;
+        
     };
 
     bool DoParallelWork( );
@@ -402,6 +403,13 @@ namespace pbrto
     template <typename T>
     class AsyncJob : public ParallelJob
     {
+    private:
+        // AsyncJob Private Members
+        std::function<T( void )> func;
+        bool started = false;
+        pstdo::optional<T> result;
+        mutable std::mutex mutex;
+        std::condition_variable cv;
     public:
         // AsyncJob Public Methods
         AsyncJob( std::function<T( void )> w ) : func( std::move( w ) ) {}
@@ -470,13 +478,7 @@ namespace pbrto
             return StringPrintf( "[ AsyncJob started: %s ]", started );
         }
 
-    private:
-        // AsyncJob Private Members
-        std::function<T( void )> func;
-        bool started = false;
-        pstdo::optional<T> result;
-        mutable std::mutex mutex;
-        std::condition_variable cv;
+    
     };
 
     PBRTO_EXPORT void ForEachThread( std::function<void( void )> func );

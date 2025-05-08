@@ -63,8 +63,7 @@ namespace pbrto
 
     PBRTO_EXPORT std::string ToString( PixelFormat format );
 
-    PBRT_CPU_GPU
-        int TexelBytes( PixelFormat format );
+    int TexelBytes( PixelFormat format );
 
     // ResampleWeight Definition
     struct ResampleWeight
@@ -77,12 +76,16 @@ namespace pbrto
     enum class WrapMode { Black, Clamp, Repeat, OctahedralSphere };
     struct WrapMode2D
     {
-        PBRT_CPU_GPU
-            WrapMode2D( WrapMode w ) : wrap{ w, w } {}
-        PBRT_CPU_GPU
-            WrapMode2D( WrapMode x, WrapMode y ) : wrap{ x, y } {}
-
         pstdo::array<WrapMode, 2> wrap;
+
+        WrapMode2D( WrapMode w ) 
+            : wrap{ w, w } 
+        { }
+        WrapMode2D( WrapMode x, WrapMode y ) 
+            : wrap{ x, y } 
+        { }
+
+        
     };
 
     inline pstdo::optional<WrapMode> ParseWrapMode( const char* w )
@@ -118,11 +121,9 @@ namespace pbrto
     }
 
     // Image Wrapping Inline Functions
-    PBRT_CPU_GPU inline bool RemapPixelCoords( Point2i* pp, Point2i resolution,
-        WrapMode2D wrapMode );
+    inline bool RemapPixelCoords( Point2i* pp, Point2i resolution, WrapMode2D wrapMode );
 
-    PBRT_CPU_GPU inline bool RemapPixelCoords( Point2i* pp, Point2i resolution,
-        WrapMode2D wrapMode )
+    inline bool RemapPixelCoords( Point2i* pp, Point2i resolution, WrapMode2D wrapMode )
     {
         Point2i& p = *pp;
 
@@ -207,6 +208,8 @@ namespace pbrto
     // ImageChannelDesc Definition
     struct ImageChannelDesc
     {
+        InlinedVector<int, 4> offset;
+
         operator bool( ) const { return size( ) > 0; }
 
         size_t size( ) const { return offset.size( ); }
@@ -219,7 +222,7 @@ namespace pbrto
         }
         std::string ToString( ) const;
 
-        InlinedVector<int, 4> offset;
+        
     };
 
     // ImageChannelValues Definition

@@ -360,6 +360,14 @@ namespace pbrto
     template <typename T, int N, class Allocator = pstdo::pmr::polymorphic_allocator<T>>
     class InlinedVector
     {
+        Allocator alloc;
+        // ptr non-null is discriminator for whether fixed[] is valid...
+        T* ptr = nullptr;
+        union
+        {
+            T fixed[ N ];
+        };
+        size_t nAlloc = 0, nStored = 0;
     public:
         using value_type = T;
         using allocator_type = Allocator;
@@ -727,14 +735,7 @@ namespace pbrto
         }
 
     private:
-        Allocator alloc;
-        // ptr non-null is discriminator for whether fixed[] is valid...
-        T* ptr = nullptr;
-        union
-        {
-            T fixed[ N ];
-        };
-        size_t nAlloc = 0, nStored = 0;
+        
     };
 
     // HashMap Definition
