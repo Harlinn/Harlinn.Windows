@@ -44,7 +44,7 @@ namespace pbrto
 {
 
     // Sampling Function Definitions
-    PBRTO_EXPORT std::array<Float, 3> SampleSphericalTriangle( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Point2f u, Float* pdf )
+    PBRTO_EXPORT std::array<Float, 3> SampleSphericalTriangle( const std::array<Point3f::Simd, 3>& v, const Point3f::Simd& p, const Point2f& u, Float* pdf )
     {
         if ( pdf )
             *pdf = 0;
@@ -135,7 +135,7 @@ namespace pbrto
     }
 
     // Via Jim Arvo's SphTri.C
-    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Vector3f::Simd w )
+    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const std::array<Point3f::Simd, 3>& v, const Point3f::Simd& p, const Vector3f::Simd& w )
     {
         // Compute vectors _a_, _b_, and _c_ to spherical triangle vertices
         Vector3f::Simd a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
@@ -189,7 +189,7 @@ namespace pbrto
         return Point2f( Clamp( u0, 0, 1 ), Clamp( u1, 0, 1 ) );
     }
 
-    PBRTO_EXPORT Point3f SampleSphericalRectangle( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point2f u, Float* pdf )
+    PBRTO_EXPORT Point3f SampleSphericalRectangle( const Point3f::Simd& pRef, const Point3f::Simd& s, const Vector3f::Simd& ex, const Vector3f::Simd& ey, const Point2f& u, Float* pdf )
     {
         // Compute local reference frame and transform rectangle coordinates
         Float exl = ScalarLength( ex ), eyl = ScalarLength( ey );
@@ -253,7 +253,7 @@ namespace pbrto
         return pRef + R.FromLocal( Vector3f( xu, yv, z0 ) );
     }
 
-    PBRTO_EXPORT Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point3f pRect )
+    PBRTO_EXPORT Point2f InvertSphericalRectangleSample( const Point3f::Simd& pRef, const Point3f::Simd& s, const Vector3f::Simd& ex, const Vector3f::Simd& ey, const Point3f::Simd& pRect )
     {
         // TODO: Delete anything unused in the below...
 
@@ -597,6 +597,7 @@ namespace pbrto
             size_t index;
         };
         std::vector<Outcome> under, over;
+        //boost::container::small_vector<Outcome,32> under, over;
         for ( size_t i = 0; i < bins.size( ); ++i )
         {
             // Add outcome _i_ to an alias table work list

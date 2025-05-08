@@ -52,32 +52,14 @@ namespace pbrto
         // CameraTransform Public Methods
         CameraTransform( ) = default;
         explicit CameraTransform( const AnimatedTransform& worldFromCamera );
-        /*
-        Point3f RenderFromCamera( Point3f p, Float time ) const
-        {
-            return renderFromCamera( p, time );
-        }
-        */
         Point3f::Simd RenderFromCamera( const Point3f::Simd& p, Float time ) const
         {
             return renderFromCamera( p, time );
         }
-        /*
-        Point3f CameraFromRender( Point3f p, Float time ) const
-        {
-            return renderFromCamera.ApplyInverse( p, time );
-        }
-        */
         Point3f::Simd CameraFromRender( const Point3f::Simd& p, Float time ) const
         {
             return renderFromCamera.ApplyInverse( p, time );
         }
-        /*
-        Point3f RenderFromWorld( Point3f p ) const 
-        { 
-            return worldFromRender.ApplyInverse( p ); 
-        }
-        */
 
         Point3f::Simd RenderFromWorld( const Point3f::Simd& p ) const
         {
@@ -102,23 +84,11 @@ namespace pbrto
             return renderFromCamera.HasScale( ); 
         }
 
-        /*
-        Vector3f RenderFromCamera( Vector3f v, Float time ) const
-        {
-            return renderFromCamera( v, time );
-        }
-        */
         Vector3f::Simd RenderFromCamera( const Vector3f::Simd& v, Float time ) const
         {
             return renderFromCamera( v, time );
         }
 
-        /*
-        Normal3f RenderFromCamera( Normal3f n, Float time ) const
-        {
-            return renderFromCamera( n, time );
-        }
-        */
         Normal3f RenderFromCamera( const Normal3f::Simd& n, Float time ) const
         {
             return renderFromCamera( n, time );
@@ -130,23 +100,11 @@ namespace pbrto
         {
             return renderFromCamera( r );
         }
-        /*
-        Vector3f CameraFromRender( Vector3f v, Float time ) const
-        {
-            return renderFromCamera.ApplyInverse( v, time );
-        }
-        */
         Vector3f::Simd CameraFromRender( const Vector3f::Simd& v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
 
-        /*
-        Normal3f CameraFromRender( Normal3f v, Float time ) const
-        {
-            return renderFromCamera.ApplyInverse( v, time );
-        }
-        */
         Normal3f::Simd CameraFromRender( const Normal3f::Simd& v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
@@ -218,11 +176,12 @@ namespace pbrto
     protected:
         // CameraBase Protected Members
         CameraTransform cameraTransform;
+        Vector3f::Simd minPosDifferentialX, minPosDifferentialY;
+        Vector3f::Simd minDirDifferentialX, minDirDifferentialY;
         Float shutterOpen, shutterClose;
         Film film;
         Medium medium;
-        Vector3f::Simd minPosDifferentialX, minPosDifferentialY;
-        Vector3f::Simd minDirDifferentialX, minDirDifferentialY;
+        
     public:
         // CameraBase Public Methods
         Film GetFilm( ) const { return film; }
@@ -233,7 +192,7 @@ namespace pbrto
         void InitMetadata( ImageMetadata* metadata ) const;
         std::string ToString( ) const;
 
-        void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const
+        void Approximate_dp_dxy( const Point3f::Simd& p, const Normal3f::Simd& n, Float time, int samplesPerPixel, Vector3f::Simd* dpdx, Vector3f::Simd* dpdy ) const
         {
             // Compute tangent plane equation for ray differential intersections
             Point3f::Simd pCamera = CameraFromRender( p, time );
@@ -682,7 +641,7 @@ namespace pbrto
         return Dispatch( gtc );
     }
 
-    inline void Camera::Approximate_dp_dxy( const Point3f::Simd& p, const Normal3f::Simd& n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const
+    inline void Camera::Approximate_dp_dxy( const Point3f::Simd& p, const Normal3f::Simd& n, Float time, int samplesPerPixel, Vector3f::Simd* dpdx, Vector3f::Simd* dpdy ) const
     {
         if constexpr ( AllInheritFrom<CameraBase>( Camera::Types( ) ) )
         {

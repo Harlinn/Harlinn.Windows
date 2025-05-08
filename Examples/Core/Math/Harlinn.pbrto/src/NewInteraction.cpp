@@ -89,10 +89,10 @@ namespace pbrto
         }
         else
         {
-            Vector3f tmpdpdx, tmpdpdy;
+            //Vector3f tmpdpdx, tmpdpdy;
             // Approximate screen-space change in $\pt{}$ based on camera projection
-            camera.Approximate_dp_dxy( p( ), n, time, samplesPerPixel, &tmpdpdx, &tmpdpdy );
-            dpdx = tmpdpdx, dpdy = tmpdpdy;
+            camera.Approximate_dp_dxy( p( ), n, time, samplesPerPixel, &dpdx, &dpdy );
+            //dpdx = tmpdpdx, dpdy = tmpdpdy;
 
         }
         // Estimate screen-space change in $(u,v)$

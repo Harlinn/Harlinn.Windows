@@ -82,15 +82,15 @@ namespace pbrto
     inline Float SampleLinear( Float u, Float a, Float b );
     inline Float InvertLinearSample( Float x, Float a, Float b );
 
-    PBRTO_EXPORT std::array<Float, 3> SampleSphericalTriangle( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Point2f u, Float* pdf = nullptr );
+    PBRTO_EXPORT std::array<Float, 3> SampleSphericalTriangle( const std::array<Point3f::Simd, 3>& v, const Point3f::Simd& p, const Point2f& u, Float* pdf = nullptr );
 
-    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const std::array<Point3f::Simd, 3>& v, Point3f::Simd p, Vector3f::Simd w );
+    PBRTO_EXPORT Point2f InvertSphericalTriangleSample( const std::array<Point3f::Simd, 3>& v, const Point3f::Simd& p, const Vector3f::Simd& w );
 
-    PBRTO_EXPORT Point3f SampleSphericalRectangle( Point3f p, Point3f v00, Vector3f eu, Vector3f ev, Point2f u, Float* pdf = nullptr );
+    PBRTO_EXPORT Point3f SampleSphericalRectangle( const Point3f::Simd& p, const Point3f::Simd& v00, const Vector3f::Simd& eu, const Vector3f::Simd& ev, const Point2f& u, Float* pdf = nullptr );
 
-    PBRTO_EXPORT Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f v00, Vector3f eu, Vector3f ev, Point3f pRect );
+    PBRTO_EXPORT Point2f InvertSphericalRectangleSample( const Point3f::Simd& pRef, const Point3f::Simd& v00, const Vector3f::Simd& eu, const Vector3f::Simd& ev, const Point3f::Simd& pRect );
 
-    inline Vector3f::Simd SampleHenyeyGreenstein( Vector3f::Simd wo, Float g, Point2f u, Float* pdf = nullptr )
+    inline Vector3f::Simd SampleHenyeyGreenstein( const Vector3f::Simd& wo, Float g, const Point2f& u, Float* pdf = nullptr )
     {
         // When g \approx -1 and u[0] \approx 0 or with g \approx 1 and u[0]
         // \approx 1, the computation of cosTheta below is unstable and can

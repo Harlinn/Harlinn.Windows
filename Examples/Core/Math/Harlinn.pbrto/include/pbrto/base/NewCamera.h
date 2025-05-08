@@ -73,7 +73,7 @@ namespace pbrto
 
         inline const CameraTransform& GetCameraTransform( ) const;
 
-        void Approximate_dp_dxy( const Point3f::Simd& p, const Normal3f::Simd& n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const;
+        void Approximate_dp_dxy( const Point3f::Simd& p, const Normal3f::Simd& n, Float time, int samplesPerPixel, Vector3f::Simd* dpdx, Vector3f::Simd* dpdy ) const;
 
         SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRasterOut = nullptr ) const;
 
