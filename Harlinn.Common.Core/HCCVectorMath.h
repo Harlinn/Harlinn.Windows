@@ -6275,8 +6275,30 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Sin( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sin( Traits::Load( v.values.data( ) ) );
+        return Traits::Sin( Traits::Load( v.values ) );
     }
+
+    // FastSin
+
+    /// <summary>
+    /// Calculates the sine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T FastSin( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastSin( v.simd );
+    }
+    /// <summary>
+    /// Calculates the sine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT FastSin( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastSin( Traits::Load( v.values ) );
+    }
+
 
     // Cos
 
@@ -6296,8 +6318,77 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Cos( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Cos( Traits::Load( v.values.data( ) ) );
+        return Traits::Cos( Traits::Load( v.values ) );
     }
+
+    // FastCos
+
+    /// <summary>
+    /// Calculates the cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T FastCos( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastCos( v.simd );
+    }
+    /// <summary>
+    /// Calculates the cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline typename T::Simd FastCos( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastCos( Traits::Load( v.values ) );
+    }
+
+
+    // SinCos
+
+    /// <summary>
+    /// Calculates the sine and cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T SinCos( const T& v, T* cosines ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::SinCos( v.simd, &cosines->simd );
+    }
+
+    /// <summary>
+    /// Calculates the sine and cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline typename T::Simd SinCos( const T& v, typename T::Simd* cosines ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::SinCos( Traits::Load( v.values ), &cosines->simd );
+    }
+
+    // FastSinCos
+
+    /// <summary>
+    /// Calculates the sine and cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T FastSinCos( const T& v, T* cosines ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastSinCos( v.simd, &cosines->simd );
+    }
+
+    /// <summary>
+    /// Calculates the sine and cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline typename T::Simd FastSinCos( const T& v, typename T::Simd* cosines ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastSinCos( Traits::Load( v.values ), &cosines->simd );
+    }
+
+
+
 
     // Tan
 
@@ -6314,12 +6405,36 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Calculates the tangent of each element in the argument expressed in radians.
     /// </summary>
-    template<Internal::TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Tan( const T& v ) noexcept
+    template<Internal::TupleType T>
+    inline typename T::Simd Tan( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Tan( Traits::Load( v.values.data( ) ) );
+        return Traits::Tan( Traits::Load( v.values ) );
     }
+
+
+    // FastTan
+
+    /// <summary>
+    /// Calculates the tangent of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T FastTan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastTan( v.simd );
+    }
+
+    /// <summary>
+    /// Calculates the tangent of each element in the argument expressed in radians.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline typename T::Simd FastTan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastTan( Traits::Load( v.values ) );
+    }
+
 
     // ASin
 
@@ -6386,6 +6501,29 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    // FastATan
+
+    /// <summary>
+    /// Calculates the inverse tangent of each element in the argument, in radians.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T FastATan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastATan( v.simd );
+    }
+    /// <summary>
+    /// Calculates the inverse tangent of each element in the argument, in radians.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT FastATan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastATan( Traits::Load( v.values.data( ) ) );
+    }
+
+
+
     // ATan2
 
     /// <summary>
@@ -6435,6 +6573,58 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
+
+
+    // FastATan2
+
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T FastATan2( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastATan2( x.simd, y.simd );
+    }
+
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T FastATan2( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastATan2( x.simd, Traits::Load( y.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T FastATan2( const U& x, const T& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastATan2( Traits::Load( x.values.data( ) ), y.simd );
+    }
+
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT FastATan2( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FastATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
+    }
+
 
     /// <summary>
     /// Calculates the angle modulo 2PI.
@@ -7310,6 +7500,55 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename V::Simd;
         return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
     }
+
+
+
+    // AllTrue
+
+    /// <summary>
+    /// Returns true if all the elements of the argument have all their bits set to 1 
+    /// </summary>
+    template<Internal::SimdType T>
+    inline bool AllTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllTrue( v.simd );
+    }
+    /// <summary>
+    /// Returns true if all the elements of the argument have all their bits set to 1 
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT AllTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllTrue( Traits::Load( v.values ) );
+    }
+
+    // AnyTrue
+
+    /// <summary>
+    /// Returns true if any of the elements of the argument have all their bits set to 1 
+    /// </summary>
+    template<Internal::SimdType T>
+    inline bool AnyTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllTrue( v.simd );
+    }
+    /// <summary>
+    /// Returns true if any of the elements of the argument have all their bits set to 1 
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT AnyTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyTrue( Traits::Load( v.values ) );
+    }
+
+
+
+
+
 
     // Dot
 

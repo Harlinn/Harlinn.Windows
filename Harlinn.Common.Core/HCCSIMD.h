@@ -4619,14 +4619,10 @@ namespace Harlinn::Common::Core::SIMD
             if constexpr ( UseShortSIMDType )
             {
                 return _mm_fmadd_ps( Fill<Size>( t ), v2, _mm_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
-
-                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
             else
             {   
                 return _mm256_fmadd_ps( Fill<Size>( t ), v2, _mm256_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
-
-                //return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
         }
 
@@ -4635,14 +4631,10 @@ namespace Harlinn::Common::Core::SIMD
             if constexpr ( UseShortSIMDType )
             {
                 return _mm_fmadd_ps( t, v2, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
-
-                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), t ));
             }
             else
             {
                 return _mm256_fmadd_ps( t, v2, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
-
-                //return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
             }
         }
 
@@ -4651,14 +4643,10 @@ namespace Harlinn::Common::Core::SIMD
             if constexpr ( UseShortSIMDType )
             {
                 return _mm_fmadd_ps( Fill<Size>( t ), v2, _mm_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
-
-                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
             else
             {
                 return _mm256_fmadd_ps( Fill<Size>( t ), v2, _mm256_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
-
-                // return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
         }
 
@@ -4667,13 +4655,10 @@ namespace Harlinn::Common::Core::SIMD
             if constexpr ( UseShortSIMDType )
             {
                 return _mm_fmadd_ps( t, v2, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
-
-                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
             }
             else
             {
                 return _mm256_fmadd_ps( t, v2, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
-                //return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
             }
         }
 
@@ -4754,30 +4739,6 @@ namespace Harlinn::Common::Core::SIMD
             sign = Or( select0, select1 );
 
             auto x2 = Mul( x, x );
-
-            /*
-            auto x2_ = _mm256_insertf128_ps( _mm256_castps128_ps256( x2 ), x2, 1 );
-            auto xsign_ = _mm256_insertf128_ps( _mm256_castps128_ps256( x ), sign, 1 );
-            
-            auto vConstantsB = Constants::SinCosCoefficient1;
-            auto vConstants = Constants::SinCosCoefficient2;
-            auto Result = _mm256_fmadd_ps( vConstantsB, x2_, vConstants );
-
-            vConstants = Constants::SinCosCoefficient3;
-            Result = _mm256_fmadd_ps( Result, x2_, vConstants );
-
-            vConstants = Constants::SinCosCoefficient4;
-            Result = _mm256_fmadd_ps( Result, x2_, vConstants );
-
-            vConstants = Constants::SinCosCoefficient5;
-            Result = _mm256_fmadd_ps( Result, x2_, vConstants );
-
-            Result = _mm256_fmadd_ps( Result, x2_, Constants::One8 );
-            Result = _mm256_mul_ps( Result, xsign_ );
-
-            *cosines = _mm256_extractf128_ps( Result, 1 );
-            return _mm256_castps256_ps128( Result );
-            */
             
             // Cosine
             SIMDType vConstantsB = Constants::CosCoefficient1;
