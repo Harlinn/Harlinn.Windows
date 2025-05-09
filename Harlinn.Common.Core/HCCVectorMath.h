@@ -2792,137 +2792,3889 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    // AllTrue
+
     /// <summary>
-    /// 
+    /// Returns true if all the elements of the argument have all their bits set to 1 
     /// </summary>
+    template<Internal::SimdType T>
+    inline bool AllTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllTrue( v.simd );
+    }
+    /// <summary>
+    /// Returns true if all the elements of the argument have all their bits set to 1 
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT AllTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllTrue( Traits::Load( v.values ) );
+    }
+
+    // AnyTrue
+
+    /// <summary>
+    /// Returns true if any of the elements of the argument have all their bits set to 1 
+    /// </summary>
+    template<Internal::SimdType T>
+    inline bool AnyTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllTrue( v.simd );
+    }
+    /// <summary>
+    /// Returns true if any of the elements of the argument have all their bits set to 1 
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT AnyTrue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyTrue( Traits::Load( v.values ) );
+    }
+
+
+    // Less
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Less( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Less( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd Less( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::TupleType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd Less( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less than value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is less than value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T Less( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less than value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is less than value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline T Less( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is less than the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is less than an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U Less( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is less than the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is less than an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline U Less( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Less( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less than value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is less than value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllLess( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less than value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is less than value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllLess( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is less than all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less than all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AllLess( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is less than all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less than all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AllLess( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLess( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // AnyLess
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less than value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is less than value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyLess( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less than value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is less than value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyLess( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is less than any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less than any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AnyLess( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is less than any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less than any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AnyLess( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLess( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // LessOrEqual
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T LessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less or equal to
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T LessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd LessOrEqual( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is less or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::TupleType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd LessOrEqual( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less or equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is less or equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T LessOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are less or equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is less or equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline T LessOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is less or equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is less or equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U LessOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is less or equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is less or equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline U LessOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::LessOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is less or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllLessOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are less or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is less or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllLessOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is less or equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less or equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AllLessOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is less or equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less or equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AllLessOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllLessOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // AnyLessOrEqual
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is less or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is less or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyLessOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are less or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is less or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyLessOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is less or equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less or equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AnyLessOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is less or equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is less or equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AnyLessOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyLessOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // Equal
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( lhs.simd, rhs.simd, epsilon.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( lhs.simd, rhs.simd, Traits::Load( epsilon.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( lhs.simd, Traits::Load( rhs.values ), epsilon.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( lhs.simd, Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( Traits::Load( lhs.values ), rhs.simd, epsilon.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( Traits::Load( lhs.values ), rhs.simd, Traits::Load( epsilon.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( Traits::Load( lhs.values ), Traits::Load( rhs.values ), epsilon.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T> && IsArithmetic<U>
+    inline S Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( lhs.simd, rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline S Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( lhs.simd, Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline typename S::Simd Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( Traits::Load( lhs.values ), rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// If an element of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline typename S::Simd Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Equal( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+
+    // AllEqual
+
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( lhs.simd, rhs.simd, epsilon.simd );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Load( epsilon.values ) );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), epsilon.simd );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
     }
 
-    //
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, epsilon.simd );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Load( epsilon.values ) );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), epsilon.simd );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
-    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
     template<Internal::SimdType S, Internal::SimdType T, typename U>
-        requires Internal::IsCompatible<S, T> && IsArithmetic<U>
-    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
-
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
     template<Internal::SimdType S, Internal::TupleType T, typename U>
         requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
     template<Internal::TupleType S, Internal::SimdType T, typename U>
         requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
 
+    /// <summary>
+    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
     template<Internal::TupleType S, Internal::TupleType T, typename U>
         requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
     }
 
-    template<Internal::SimdType S, Internal::SimdType T>
-        requires Internal::IsCompatible<S, T>
-    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+
+    ///
+    // AnyEqual
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        using Constants = typename Traits::Constants;
-        return Traits::AllEqual( lhs.simd, rhs.simd, Constants::Epsilon );
+        return Traits::AnyEqual( lhs.simd, rhs.simd, epsilon.simd );
     }
-    template<Internal::SimdType S, Internal::TupleType T>
-        requires Internal::IsCompatible<S, T>
-    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        using Constants = typename Traits::Constants;
-        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Constants::Epsilon );
+        return Traits::AnyEqual( lhs.simd, rhs.simd, Traits::Load( epsilon.values ) );
     }
-    template<Internal::TupleType S, Internal::SimdType T>
-        requires Internal::IsCompatible<S, T>
-    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        using Constants = typename Traits::Constants;
-        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Constants::Epsilon );
+        return Traits::AnyEqual( lhs.simd, Traits::Load( rhs.values ), epsilon.simd );
     }
-    template<Internal::TupleType S, Internal::TupleType T>
-        requires Internal::IsCompatible<S, T>
-    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
-        using Constants = typename Traits::Constants;
-        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Constants::Epsilon );
+        return Traits::AnyEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( Traits::Load( lhs.values ), rhs.simd, epsilon.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Load( epsilon.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), epsilon.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the corresponding element of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The source of the maximum difference between the
+    /// corresponding elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the corresponding element of epsilon, otherwise false.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( lhs.simd, rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
+    /// less or equally apart than the value of epsilon.
+    /// </summary>
+    /// <param name="lhs">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="rhs">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <param name="epsilon">
+    /// The maximum difference between the elements from lhs and rhs.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of lhs and the corresponding elements of rhs are less
+    /// or equally apart than the value of epsilon, otherwise false. 
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AnyEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+
+    // Equal
+
+    /// <summary>
+    /// Determines whether the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Equal( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are equal to
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Equal( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd Equal( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::TupleType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd Equal( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T Equal( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline T Equal( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U Equal( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline U Equal( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Equal( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AllEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AllEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // AnyLess
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AnyEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AnyEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    
+    // NotEqual
+
+    /// <summary>
+    /// Determines whether the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is not equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T NotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are not equal to
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is not equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T NotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is not equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd NotEqual( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is not equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::TupleType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd NotEqual( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are not equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is not equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T NotEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are not equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is not equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline T NotEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is not equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is not equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U NotEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is not equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is not equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline U NotEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NotEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are not equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is not equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllNotEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are not equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is not equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllNotEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is not equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is not equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AllNotEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is not equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is not equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AllNotEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllNotEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // AnyNotEqual
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are not equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is not equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are not equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is not equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyNotEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are not equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is not equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyNotEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is not equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is not equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AnyNotEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is not equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is not equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AnyNotEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyNotEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    // GreaterOrEqual
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T GreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater or equal to
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T GreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd GreaterOrEqual( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater or equal to the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::TupleType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd GreaterOrEqual( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater or equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is greater or equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T GreaterOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater or equal to value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is greater or equal to value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline T GreaterOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater or equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is greater or equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U GreaterOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater or equal to the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is greater or equal to an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline U GreaterOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::GreaterOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is greater or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllGreaterOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is greater or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllGreaterOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater or equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater or equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AllGreaterOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater or equal to all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater or equal to all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AllGreaterOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreaterOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // AnyGreaterOrEqual
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater or equal to 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater or equal to their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is greater or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyGreaterOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater or equal to value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is greater or equal to value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyGreaterOrEqual( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater or equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater or equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AnyGreaterOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater or equal to any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater or equal to any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AnyGreaterOrEqual( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreaterOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // Greater
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Greater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater than
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Greater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd Greater( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// If an element of v1 is greater than the corresponding element of v2,
+    /// the corresponding element in the result will be set to 0xFFFFFFFF,
+    /// otherwise the corresponding element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType U, Internal::TupleType T>
+        requires Internal::IsCompatible<T, U>
+    inline typename T::Simd Greater( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater than value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is greater than value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T Greater( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether the elements of v1 are greater than value.
+    /// </summary>
+    /// <returns>
+    /// If an element of v1 is greater than value, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline T Greater( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater than the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is greater than an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U Greater( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater than the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// If value is greater than an element of v2, the corresponding element 
+    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline U Greater( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Greater( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if all the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater than value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is greater than value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllGreater( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether all the elements of v1 are greater than value.
+    /// </summary>
+    /// <returns>
+    /// true if all the elements of v1 is greater than value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AllGreater( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater than all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater than all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AllGreater( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater than all the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater than all the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AllGreater( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AllGreater( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // AnyGreater
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( v1.simd, v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( v1.simd, Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( Traits::Load( v1.values ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater than 
+    /// the corresponding elements of v2.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source of values for the comparison.
+    /// </param>
+    /// <param name="v2">
+    /// The second source of values for the comparison.
+    /// </param>
+    /// <returns>
+    /// true if any of the elements of v1 is greater than their corresponding 
+    /// element in v2, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( Traits::Load( v1.values ), Traits::Load( v2.values ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater than value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is greater than value, otherwise false.
+    /// </returns>
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyGreater( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( v1.simd, Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether any of the elements of v1 are greater than value.
+    /// </summary>
+    /// <returns>
+    /// true if any of the elements of v1 is greater than value, otherwise false.
+    /// </returns>
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline bool AnyGreater( const T& v1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater than any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater than any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline bool AnyGreater( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( Traits::Fill<Traits::Size>( value ), v2.simd );
+    }
+
+    /// <summary>
+    /// Determines whether value is greater than any of the elements of v2.
+    /// </summary>
+    /// <returns>
+    /// true value is greater than any of the elements of v2, otherwise false.
+    /// </returns>
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline bool AnyGreater( T value, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::AnyGreater( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
+    }
+
+
+    // Select
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U>
+    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( v1.simd, v2.simd, control.simd );
+    }
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( v1.simd, v2.simd, Traits::Load( control.values ) );
+    }
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( v1.simd, Traits::Load( v2.values ), control.simd );
+    }
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( v1.simd, Traits::Load( v2.values ), Traits::Load( control.values ) );
+    }
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( Traits::Load( v1.values ), v2.simd, control.simd );
+    }
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( Traits::Load( v1.values ), v2.simd, Traits::Load( control.values ) );
+    }
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( Traits::Load( v1.values ), Traits::Load( v2.values ), control.simd );
+    }
+
+    /// <summary>
+    /// Performs a per-component selection between two input vectors and returns the resulting vector.
+    /// </summary>
+    /// <param name="v1">
+    /// The first source to select elements from.
+    /// </param>
+    /// <param name="v2">
+    /// The second source to select elements from.
+    /// </param>
+    /// <param name="control">
+    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+    /// the corresponding element in the result will be from v1, if an element control is 
+    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Select( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( control.values ) );
+    }
+
+
+
+
+    template<Internal::SimdType T>
+    inline T IsNaN( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::IsNaN( t.simd );
     }
 
 
@@ -3594,7 +7346,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT Permute( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Permute<shuffleMask>( Traits::Load( t.values.data( ) ) );
+        return Traits::Permute<shuffleMask>( Traits::Load( t.values ) );
     }
 
     // Clamp
@@ -7503,497 +11255,7 @@ namespace Harlinn::Common::Core::Math
 
 
 
-    // AllTrue
-
-    /// <summary>
-    /// Returns true if all the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<Internal::SimdType T>
-    inline bool AllTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllTrue( v.simd );
-    }
-    /// <summary>
-    /// Returns true if all the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<Internal::TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT AllTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllTrue( Traits::Load( v.values ) );
-    }
-
-    // AnyTrue
-
-    /// <summary>
-    /// Returns true if any of the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<Internal::SimdType T>
-    inline bool AnyTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllTrue( v.simd );
-    }
-    /// <summary>
-    /// Returns true if any of the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<Internal::TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT AnyTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyTrue( Traits::Load( v.values ) );
-    }
-
-
-    // Less
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<Internal::SimdType T, Internal::SimdType U>
-        requires Internal::IsCompatible<T, U>
-    inline T Less( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<Internal::SimdType T, Internal::TupleType U>
-        requires Internal::IsCompatible<T, U>
-    inline T Less( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( v1.simd, Traits::Load( v2.values ) );
-    }
     
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<Internal::TupleType U, Internal::SimdType T>
-        requires Internal::IsCompatible<T, U>
-    inline typename T::Simd Less( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<Internal::TupleType U, Internal::TupleType T>
-        requires Internal::IsCompatible<T, U>
-    inline typename T::Simd Less( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is less than value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<Internal::SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T Less( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is less than value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<Internal::TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline T Less( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is less than an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, Internal::SimdType U>
-        requires IsArithmetic<T>
-    inline U Less( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is less than an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, Internal::TupleType U>
-        requires IsArithmetic<T>
-    inline U Less( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::SimdType T, Internal::SimdType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::SimdType T, Internal::TupleType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::TupleType T, Internal::SimdType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::TupleType T, Internal::TupleType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<Internal::SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<Internal::TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, Internal::SimdType U>
-        requires IsArithmetic<T>
-    inline bool AllLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, Internal::TupleType U>
-        requires IsArithmetic<T>
-    inline bool AllLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-
-    // AnyLess
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::SimdType T, Internal::SimdType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::SimdType T, Internal::TupleType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::TupleType T, Internal::SimdType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<Internal::TupleType T, Internal::TupleType U>
-        requires Internal::IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<Internal::SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<Internal::TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, Internal::SimdType U>
-        requires IsArithmetic<T>
-    inline bool AnyLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, Internal::TupleType U>
-        requires IsArithmetic<T>
-    inline bool AnyLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
 
 
     // Dot
