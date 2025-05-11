@@ -840,7 +840,7 @@ namespace Harlinn::Common::Core::Math
 
         bool operator != ( const TupleSimd& other ) const noexcept
         {
-            return Traits::AllEqual( simd, other.simd ) == false;
+            return Traits::AnyNotEqual( simd, other.simd );
         }
 
         bool operator == ( const value_type& value ) const noexcept
@@ -850,7 +850,7 @@ namespace Harlinn::Common::Core::Math
 
         bool operator != ( const value_type& value ) const noexcept
         {
-            return Traits::AllEqual( simd, Traits::Fill( value ) ) == false;
+            return Traits::AnyNotEqual( simd, Traits::Fill( value ) );
         }
 
         bool AnyEqual( const value_type& value ) const noexcept
@@ -1219,6 +1219,97 @@ namespace Harlinn::Common::Core::Math
         }
 
 
+        static DerivedType Zero( ) noexcept requires ( Size == 2 )
+        {
+            return DerivedType( Traits::Zero( ) );
+        }
+        static DerivedType One( ) noexcept requires ( Size == 2 )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+        }
+
+        static DerivedType UnitX( ) noexcept requires ( Size == 2 )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitY( ) noexcept requires ( Size == 2 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+
+
+        static DerivedType Zero( ) noexcept requires (Size == 3)
+        {
+            return DerivedType( Traits::Zero( ) );
+        }
+        static DerivedType One( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+        }
+
+        static DerivedType UnitX( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitY( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitZ( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+        static DerivedType Up( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Down( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Right( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Left( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Forward( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( -1 ) );
+        }
+        static DerivedType Backward( ) noexcept requires ( Size == 3 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+
+        static DerivedType Zero( ) noexcept requires ( Size == 4 )
+        {
+            return DerivedType( Traits::Zero( ) );
+        }
+        static DerivedType One( ) noexcept requires ( Size == 4 )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+        }
+
+        static DerivedType UnitX( ) noexcept requires ( Size == 4 )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitY( ) noexcept requires ( Size == 4 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitZ( ) noexcept requires ( Size == 4 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitW( ) noexcept requires ( Size == 4 )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+
 
         WideString ToString( ) const
         {
@@ -1514,6 +1605,25 @@ namespace Harlinn::Common::Core::Math
             return values[ index ];
         }
 
+        static DerivedType Zero( )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType One( )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+        }
+        static DerivedType UnitX( )
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitY( )
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+
+
+
         const_pointer data( ) const noexcept
         {
             return values.data( );
@@ -1756,7 +1866,7 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator != ( const U& other ) const noexcept
         {
-            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd ) == false;
+            return Traits::AnyNotEqual( Traits::Load( values.data( ) ), other.simd );
         }
 
         Simd operator-( ) const noexcept
@@ -1870,6 +1980,54 @@ namespace Harlinn::Common::Core::Math
         {
             return values[ index ];
         }
+
+
+        static DerivedType Zero( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType One( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+        }
+
+        static DerivedType UnitX( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitY( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitZ( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+        static DerivedType Up( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Down( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Right( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Left( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType Forward( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( -1 ) );
+        }
+        static DerivedType Backward( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+
 
         const_pointer data( ) const noexcept
         {
@@ -2230,6 +2388,32 @@ namespace Harlinn::Common::Core::Math
         reference operator[]( size_t index ) noexcept
         {
             return values[ index ];
+        }
+
+        static DerivedType Zero( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType One( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+        }
+
+        static DerivedType UnitX( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitY( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitZ( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static DerivedType UnitW( ) noexcept
+        {
+            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
 
         const_pointer data( ) const noexcept
@@ -6669,12 +6853,40 @@ namespace Harlinn::Common::Core::Math
 
 
 
-
+    /// <summary>
+    /// Determines which of the elements of t are NaN. 
+    /// </summary>
+    /// <param name="t">
+    /// The first source of values for the test.
+    /// </param>
+    /// <returns>
+    /// If an element of t is NaN, the corresponding element in the 
+    /// result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
     template<Internal::SimdType T>
     inline T IsNaN( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::IsNaN( t.simd );
+    }
+
+    /// <summary>
+    /// Determines which of the elements of t are NaN. 
+    /// </summary>
+    /// <param name="t">
+    /// The first source of values for the test.
+    /// </param>
+    /// <returns>
+    /// If an element of t is NaN, the corresponding element in the 
+    /// result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<Internal::TupleType T>
+    inline T IsNaN( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::IsNaN( Traits::Load(t.values) );
     }
 
 
@@ -16140,7 +16352,9 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static QuaternionSimd FromNormalizedAxisAndAngle( const VectorSimd& normalizedAxis, float angle ) noexcept
+        template<Internal::SimdType T>
+            requires Internal::IsCompatible<T, VectorSimd>
+        static QuaternionSimd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             using Constants = Traits::Constants;
             
@@ -16167,7 +16381,9 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static QuaternionSimd FromNormalizedAxisAndAngle( const Vector& normalizedAxis, float angle ) noexcept
+        template<Internal::TupleType T>
+            requires Internal::IsCompatible<T, Vector>
+        static QuaternionSimd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             return FromNormalizedAxisAndAngle( normalizedAxis.ToSimd( ), angle );
         }
@@ -16184,7 +16400,9 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static QuaternionSimd FromAxisAndAngle( const VectorSimd& axis, float angle ) noexcept
+        template<Internal::SimdType T>
+            requires Internal::IsCompatible<T, Vector>
+        static QuaternionSimd FromAxisAndAngle( const T& axis, float angle ) noexcept
         {
             return FromNormalizedAxisAndAngle( Normalize( axis ), angle );
         }
@@ -16200,6 +16418,8 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
+        template<Internal::TupleType T>
+            requires Internal::IsCompatible<T, Vector>
         static QuaternionSimd FromAxisAndAngle( const Vector& axis, float angle ) noexcept
         {
             return FromNormalizedAxisAndAngle( Normalize( axis ), angle );
@@ -16243,7 +16463,112 @@ namespace Harlinn::Common::Core::Math
         static QuaternionSimd FromMatrix( const Matrix& matrix ) noexcept;
 
 
-        
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::SimdType T, Internal::SimdType U>
+            requires Internal::IsCompatible<T, VectorSimd> && Internal::IsCompatible<T, U>
+        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            const auto fromDirNormalized = Normalize( fromDir );
+            const auto toDirNormalized = Normalize( toDir );
+
+            const auto dot = Traits::Dot<0b0111'1111>( fromDirNormalized.simd, toDirNormalized.simd );
+            const auto dotf = Traits::First( dot );
+            if ( dotf >= 1.f )
+            {
+                return Identity( );
+            }
+            else if ( dotf <= -1.f )
+            {
+                auto axis = Cross( fromDirNormalized, T::Right( ) );
+                if ( AllEqual( LengthSquared( axis ), T::Zero( ), T( T::Traits::Constants::Epsilon ) ) )
+                {
+                    axis = Cross( fromDirNormalized, T::Up( ) );
+                }
+
+                return FromAxisAndAngle( axis, T::Traits::Constants::Base::Pi );
+            }
+            else
+            {
+                QuaternionSimd result( Cross( fromDirNormalized, toDirNormalized ).simd );
+                auto s = Traits::Sqrt( Traits::Mul( Traits::Add( Traits::Fill( 1.f ), dot ) , Traits::Fill( 2.f ) ) );
+                
+                result.simd = Traits::Div( result.simd, s );
+                s = Traits::Mul( s, Traits::Fill( 0.5f ) );
+                result.simd = Traits::Permute<0, 1, 2, 7>( result.simd, s );
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::SimdType T, Internal::TupleType U>
+            requires Internal::IsCompatible<T, VectorSimd>&& Internal::IsCompatible<T, U>
+        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            return ShortestArc( fromDir, toDir.ToSimd( ) );
+        }
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::TupleType T, Internal::SimdType U>
+            requires Internal::IsCompatible<T, VectorSimd>&& Internal::IsCompatible<T, U>
+        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            return ShortestArc( fromDir.ToSimd( ), toDir );
+        }
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::TupleType T, Internal::TupleType U>
+            requires Internal::IsCompatible<T, VectorSimd>&& Internal::IsCompatible<T, U>
+        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            return ShortestArc( fromDir.ToSimd( ), toDir.ToSimd( ) );
+        }
+
+
+
+
+
 
         /// <summary>
         /// Returns the identity quaternion.
@@ -16421,7 +16746,9 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        constexpr Quaternion( const Vector& vv, ValueType wv ) noexcept
+        template<Internal::TupleType T>
+            requires Internal::IsCompatible<T, Vector>
+        constexpr Quaternion( const T& vv, ValueType wv ) noexcept
             : v( vv ), w( wv )
         {
         }
@@ -16492,7 +16819,9 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static Simd FromNormalizedAxisAndAngle( const VectorSimd& normalizedAxis, float angle ) noexcept
+        template<Internal::SimdType T>
+            requires Internal::IsCompatible<T, VectorSimd>
+        static Simd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             return Simd::FromNormalizedAxisAndAngle( normalizedAxis, angle );
         }
@@ -16509,7 +16838,9 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static Simd FromNormalizedAxisAndAngle( const Vector& normalizedAxis, float angle ) noexcept
+        template<Internal::TupleType T>
+            requires Internal::IsCompatible<T, Vector>
+        static Simd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             return Simd::FromNormalizedAxisAndAngle( normalizedAxis, angle );
         }
@@ -16526,7 +16857,9 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static Simd FromAxisAndAngle( const VectorSimd& axis, float angle ) noexcept
+        template<Internal::SimdType T>
+            requires Internal::IsCompatible<T, VectorSimd>
+        static Simd FromAxisAndAngle( const T& axis, float angle ) noexcept
         {
             return Simd::FromAxisAndAngle( axis, angle );
         }
@@ -16543,7 +16876,9 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static Simd FromAxisAndAngle( const Vector& axis, float angle ) noexcept
+        template<Internal::TupleType T>
+            requires Internal::IsCompatible<T, Vector>
+        static Simd FromAxisAndAngle( const T& axis, float angle ) noexcept
         {
             return Simd::FromAxisAndAngle( axis, angle );
         }
@@ -16575,6 +16910,83 @@ namespace Harlinn::Common::Core::Math
             return Simd::FromMatrix( matrix );
         }
         
+
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::SimdType T, Internal::SimdType U>
+            requires Internal::IsCompatible<T, VectorSimd> && Internal::IsCompatible<T, U>
+        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            return Simd::ShortestArc( fromDir, toDir );
+        }
+
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::SimdType T, Internal::TupleType U>
+            requires Internal::IsCompatible<T, VectorSimd>&& Internal::IsCompatible<T, U>
+        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            return Simd::ShortestArc( fromDir, toDir );
+        }
+
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::TupleType T, Internal::SimdType U>
+            requires Internal::IsCompatible<T, VectorSimd>&& Internal::IsCompatible<T, U>
+        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            return Simd::ShortestArc( fromDir, toDir );
+        }
+
+        /// <summary>
+        /// Creates the shortest-arc rotation between two directions
+        /// </summary>
+        /// <param name="fromDir">
+        /// The from direction.
+        /// </param>
+        /// /// <param name="toDir">
+        /// The to direction.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        template<Internal::TupleType T, Internal::TupleType U>
+            requires Internal::IsCompatible<T, VectorSimd> && Internal::IsCompatible<T, U>
+        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        {
+            return Simd::ShortestArc( fromDir, toDir );
+        }
+
         /// <summary>
         /// Returns the identity quaternion.
         /// </summary>
@@ -16628,12 +17040,12 @@ namespace Harlinn::Common::Core::Math
 
         bool operator == ( const Simd& other ) const noexcept
         {
-            return Traits::Equals(Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual(Traits::Load( values.data( ) ), other.simd );
         }
 
         bool operator != ( const Simd& other ) const noexcept
         {
-            return Traits::Equals( Traits::Load( values.data( ) ), other.simd ) == false;
+            return Traits::AnyNotEqual( Traits::Load( values.data( ) ), other.simd );
         }
 
         bool operator == ( const Quaternion& other ) const noexcept
@@ -18001,6 +18413,87 @@ namespace Harlinn::Common::Core::Math
     S InverseRotate( const S& v, const Quaternion<FloatT>& rotationQuaternion )
     {
         return InverseRotate( v.ToSimd( ), rotationQuaternion.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates the shortest-arc rotation between two directions
+    /// </summary>
+    /// <param name="fromDir">
+    /// The from direction.
+    /// </param>
+    /// /// <param name="toDir">
+    /// The to direction.
+    /// </param>
+    /// <returns>
+    /// The rotation quaternion.
+    /// </returns>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U> && ( T::Size == 3)
+    inline typename Quaternion<typename T::value_type>::Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+    {
+        using q = Quaternion<typename T::value_type>::Simd;
+        return q::ShortestArc( fromDir, toDir );
+    }
+
+    /// <summary>
+    /// Creates the shortest-arc rotation between two directions
+    /// </summary>
+    /// <param name="fromDir">
+    /// The from direction.
+    /// </param>
+    /// /// <param name="toDir">
+    /// The to direction.
+    /// </param>
+    /// <returns>
+    /// The rotation quaternion.
+    /// </returns>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U> && ( T::Size == 3 )
+    static typename Quaternion<typename T::value_type>::Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+    {
+        using q = Quaternion<typename T::value_type>::Simd;
+        return q::ShortestArc( fromDir, toDir );
+    }
+
+    /// <summary>
+    /// Creates the shortest-arc rotation between two directions
+    /// </summary>
+    /// <param name="fromDir">
+    /// The from direction.
+    /// </param>
+    /// /// <param name="toDir">
+    /// The to direction.
+    /// </param>
+    /// <returns>
+    /// The rotation quaternion.
+    /// </returns>
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U> && ( T::Size == 3 )
+    static typename Quaternion<typename T::value_type>::Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+    {
+        using q = Quaternion<typename T::value_type>::Simd;
+        return q::ShortestArc( fromDir, toDir );
+    }
+
+    /// <summary>
+    /// Creates the shortest-arc rotation between two directions
+    /// </summary>
+    /// <param name="fromDir">
+    /// The from direction.
+    /// </param>
+    /// /// <param name="toDir">
+    /// The to direction.
+    /// </param>
+    /// <returns>
+    /// The rotation quaternion.
+    /// </returns>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U> && ( T::Size == 3 )
+    static typename Quaternion<typename T::value_type>::Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+    {
+        using q = Quaternion<typename T::value_type>::Simd;
+        return q::ShortestArc( fromDir, toDir );
     }
 
 

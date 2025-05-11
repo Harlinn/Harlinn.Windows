@@ -2474,6 +2474,7 @@ namespace Harlinn::Common::Core::SIMD
             using ValueType = float;
             static constexpr ValueType MinusOne = -1.f;
             static constexpr ValueType MinusZero = -0.f;
+            static constexpr ValueType EpsilonValue = 1.192092896e-7f;
             
             static constexpr ValueType Zero = 0.f;
             static constexpr ValueType One = 1.f;
