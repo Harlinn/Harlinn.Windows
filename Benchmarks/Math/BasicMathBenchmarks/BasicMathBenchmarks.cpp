@@ -3809,7 +3809,7 @@ BENCHMARK( BenchmarkPbrtFloatIntervalSin );
 #endif
 
 
-#endif
+
 
 
 
@@ -4233,6 +4233,8 @@ static void BenchmarkFloatStdATanH( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdATanH );
+
+#endif
 
 
 BENCHMARK_MAIN( );

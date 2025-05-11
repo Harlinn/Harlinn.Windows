@@ -15984,14 +15984,17 @@ namespace Harlinn::Common::Core::Math
 
     // Vector2* Definitions
     using Vector2f = Vector<float,2>;
+    using Vector2d = Vector<double, 2>;
     using Vector2i = Vector<int,2>;
 
     // Vector3* Definitions
     using Vector3f = Vector<float,3>;
+    using Vector3d = Vector<double, 3>;
     using Vector3i = Vector<int, 3>;
 
     // Vector4* Definitions
     using Vector4f = Vector<float, 4>;
+    using Vector4d = Vector<double, 4>;
     using Vector4i = Vector<int, 4>;
 
     
@@ -16238,7 +16241,7 @@ namespace Harlinn::Common::Core::Math
         using NormalSimd = typename Normal::Simd;
 
         using Matrix = SquareMatrix<ValueType, 4>;
-        using MatrixSimd = typename Matrix::Simd;
+        using MatrixSimd = SquareMatrixSimd<Matrix, 4>;
 
         static constexpr size_type Size = 4;
         static constexpr bool Loaded = true;
@@ -16314,6 +16317,18 @@ namespace Harlinn::Common::Core::Math
             : QuaternionSimd( pitchYawRoll.ToSimd() )
         {
         }
+
+
+        template<Internal::SimdType T>
+        QuaternionSimd( const T& xyz, value_type w )
+            : simd(Traits::SetW( xyz.simd, w ))
+        { }
+
+        template<Internal::TupleType T>
+        QuaternionSimd( const T& xyz, value_type w )
+            : simd( Traits::SetW( Traits::Load( xyz.values ), w ) )
+        { }
+
 
 
         /// <summary>
@@ -16420,7 +16435,7 @@ namespace Harlinn::Common::Core::Math
         /// </returns>
         template<Internal::TupleType T>
             requires Internal::IsCompatible<T, Vector>
-        static QuaternionSimd FromAxisAndAngle( const Vector& axis, float angle ) noexcept
+        static QuaternionSimd FromAxisAndAngle( const T& axis, float angle ) noexcept
         {
             return FromNormalizedAxisAndAngle( Normalize( axis ), angle );
         }
@@ -16677,6 +16692,15 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Div( simd, Traits::Fill( value ) );
             return *this;
         }
+
+        /// <summary>
+        /// Computes rotation about y-axis (y), then x-axis (x), then z-axis (z)
+        /// </summary>
+        /// <returns>
+        /// The rotation about y-axis (y), then x-axis (x), then z-axis (z)
+        /// </returns>
+        inline VectorSimd ToEuler( ) const noexcept;
+
     };
 
     /// <summary>
@@ -16720,7 +16744,7 @@ namespace Harlinn::Common::Core::Math
         using NormalSimd = typename Normal::Simd;
 
         using Matrix = SquareMatrix<ValueType, 4>;
-        using MatrixSimd = typename Matrix::Simd;
+        using MatrixSimd = SquareMatrixSimd<Matrix, 4>;
 
         union
         {
@@ -16748,8 +16772,15 @@ namespace Harlinn::Common::Core::Math
 
         template<Internal::TupleType T>
             requires Internal::IsCompatible<T, Vector>
-        constexpr Quaternion( const T& vv, ValueType wv ) noexcept
-            : v( vv ), w( wv )
+        constexpr Quaternion( const T& xyz, ValueType wv ) noexcept
+            : v( xyz ), w( wv )
+        {
+        }
+
+        template<Internal::SimdType T>
+            requires Internal::IsCompatible<T, Vector>
+        constexpr Quaternion( const T& xyz, ValueType wv ) noexcept
+            : v( xyz ), w( wv )
         {
         }
 
@@ -17015,6 +17046,44 @@ namespace Harlinn::Common::Core::Math
         }
 
 
+        /// <summary>
+        /// Computes rotation about y-axis (y), then x-axis (x), then z-axis (z)
+        /// </summary>
+        /// <returns>
+        /// The rotation about y-axis (y), then x-axis (x), then z-axis (z)
+        /// </returns>
+        /// <remarks>
+        /// Adopted from https://github.com/microsoft/DirectXTK12
+        /// </remarks>
+        VectorSimd ToEuler( ) const noexcept
+        {
+            const float xx = Sqr( v.x );
+            const float yy = Sqr( v.y );
+            const float zz = Sqr( v.z );
+
+            const float m31 = 2.f * v.x * v.z + 2.f * v.y * v.w;
+            const float m32 = 2.f * v.y * v.z - 2.f * v.x * v.w;
+            const float m33 = 1.f - 2.f * xx - 2.f * yy;
+
+            const float cy = Sqrt( m33 * m33 + m31 * m31 );
+            const float cx = ATan2( -m32, cy );
+            if ( cy > 16.f * FLT_EPSILON )
+            {
+                const float m12 = 2.f * v.x * v.y + 2.f * v.z * v.w;
+                const float m22 = 1.f - 2.f * xx - 2.f * zz;
+
+                return VectorSimd( cx, ATan2( m31, m33 ), ATan2( m12, m22 ) );
+            }
+            else
+            {
+                const float m11 = 1.f - 2.f * yy - 2.f * zz;
+                const float m21 = 2.f * v.x * v.y - 2.f * v.z * v.w;
+
+                return VectorSimd( cx, 0.f, ATan2( -m21, m11 ) );
+            }
+        }
+
+
         Quaternion& operator = ( const Simd& qsimd ) noexcept
         {
             values = Traits::ToArray( qsimd.simd );
@@ -17148,7 +17217,7 @@ namespace Harlinn::Common::Core::Math
 
     };
 
-    //static_assert( sizeof( Quaternion<float> ) == sizeof(std::array<float,4>));
+    static_assert( sizeof( Quaternion<float> ) == sizeof(std::array<float,4>));
 
     template<typename QuaternionT>
     inline QuaternionSimd<QuaternionT>::QuaternionSimd( const QuaternionType& quaternion ) noexcept
@@ -17193,6 +17262,13 @@ namespace Harlinn::Common::Core::Math
     {
         simd = Traits::QuaternionMultiply( simd, Traits::Load( quaternion.values ) );
         return *this;
+    }
+
+    template<typename QuaternionT>
+    inline typename QuaternionSimd<QuaternionT>::VectorSimd QuaternionSimd<QuaternionT>::ToEuler( ) const noexcept
+    {
+        QuaternionT q( *this );
+        return q.ToEuler( );
     }
 
 
