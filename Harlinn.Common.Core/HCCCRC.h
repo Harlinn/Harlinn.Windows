@@ -18,6 +18,7 @@
 */
 
 #include <HCCDef.h>
+#include <HCCExport.h>
 
 namespace Harlinn::Common::Core
 {

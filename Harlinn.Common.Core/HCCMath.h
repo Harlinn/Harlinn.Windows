@@ -2067,6 +2067,9 @@ namespace Harlinn::Common::Core::Math
         requires IsArithmetic<T> && IsArithmetic<U>
     constexpr inline MakeFloatingPoint<T,U> Lerp( T a, T b, U t ) noexcept
     {
+        using FloatT = MakeFloatingPoint<T, U>;
+        return Internal::LerpImpl( static_cast< FloatT >( a ), static_cast< FloatT >( b ), static_cast< FloatT >( t ) );
+        /*
         if ( std::is_constant_evaluated( ) )
         {
             using FloatT = MakeFloatingPoint<T, U>;
@@ -2076,12 +2079,15 @@ namespace Harlinn::Common::Core::Math
         {
             return std::lerp( a, b, t );
         }
+        */
     }
 
     template<typename T, typename U>
         requires IsArithmetic<T>&& IsArithmetic<U>
     constexpr inline MakeFloatingPoint<T, U> Lerp2( U t, T a, T b ) noexcept
     {
+        //using FloatT = MakeFloatingPoint<T, U>;
+        //return Internal::LerpImpl( static_cast< FloatT >( a ), static_cast< FloatT >( b ), static_cast< FloatT >( t ) );
         return ( 1 - t ) * a + t * b;
     }
 
@@ -4738,11 +4744,6 @@ namespace Harlinn::Common::Core::Math
     };
 }
 
-namespace Harlinn::Common::Core
-{
-    HCC_EXPORT WideString ToWideString( const Math::Half& value );
-    HCC_EXPORT AnsiString ToAnsiString( const Math::Half& value );
-}
 
 namespace std
 {

@@ -321,7 +321,7 @@ namespace pbrto
     {
     public:
         // BVHLightSampler Public Methods
-        BVHLightSampler( pstdo::span<const Light> lights, Allocator alloc );
+        PBRTO_EXPORT BVHLightSampler( pstdo::span<const Light> lights, Allocator alloc );
 
         pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
         {

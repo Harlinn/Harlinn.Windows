@@ -19,6 +19,7 @@
 */
 
 #include <HCCDef.h>
+#include <HCCError.h>
 
 namespace Harlinn::Common::Core::IO
 {

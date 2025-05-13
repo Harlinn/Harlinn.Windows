@@ -459,6 +459,12 @@
     <ClInclude Include="HCCTransformations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCExport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

@@ -20,25 +20,6 @@
 #define HCC_WITH_BASIC_STRING 1
 
 
-#ifdef BUILDING_HARLINN_COMMON_CORE
-#define HCC_EXPORT __declspec(dllexport)
-#define HCC_TEMPLATE_EXPORT __declspec(dllexport)
-#define HCC_TEMPLATE_EXPORT_DECL
-#else
-#define HCC_EXPORT __declspec(dllimport)
-#define HCC_TEMPLATE_EXPORT __declspec(dllimport)
-#define HCC_TEMPLATE_EXPORT_DECL __declspec(dllimport)
-#define FMT_SHARED 1
-#pragma comment(lib,"Harlinn.Common.Core.lib")
-#endif
-
-#ifdef _DEBUG
-#define HCC_INLINE_DECL HCC_EXPORT
-#define HCC_INLINE 
-#else
-#define HCC_INLINE_DECL 
-#define HCC_INLINE inline
-#endif
 
 #pragma warning(disable:4996)
 #pragma warning(disable:4091)
@@ -517,115 +498,7 @@ namespace Harlinn::Common::Core
 #define CURRENT_FUNCTION __FUNCTIONW__
 #define CURRENT_FILE __FILEW__
 
-    HCC_EXPORT void CheckHRESULT( HRESULT hresult );
-    HCC_EXPORT WideString FormatHRESULT( HRESULT hresult );
-    [[noreturn]] HCC_EXPORT void ThrowHRESULT( HRESULT hresult );
-    HCC_EXPORT void CheckHRESULT( HRESULT hresult, IUnknown* itf );
-    HCC_EXPORT void CheckHRESULT( HRESULT hresult, const wchar_t* function, const wchar_t* filename, int lineNumber );
-    HCC_EXPORT void CheckHRESULT( HRESULT hresult, IUnknown* itf, const wchar_t* function, const wchar_t* filename, int lineNumber );
-    HCC_EXPORT WideString FormatError( DWORD errorId );
-    HCC_EXPORT AnsiString FormatErrorA( DWORD errorId );
-    HCC_EXPORT void ThrowLastOSError( );
-    HCC_EXPORT void ThrowOSError( DWORD errorId );
-    [[noreturn]] HCC_EXPORT void ThrowNoInterface( );
-    [[noreturn]] HCC_EXPORT void ThrowPointerIsNULL( );
-    [[noreturn]] HCC_EXPORT void ThrowInvalidHandle( );
-    [[noreturn]] HCC_EXPORT void ThrowNullReferenceException( );
-    [[noreturn]] HCC_EXPORT void ThrowNullReferenceException( const char* message );
-    [[noreturn]] HCC_EXPORT void ThrowNullReferenceException( const wchar_t* message );
-    HCC_EXPORT HRESULT HRESULTFromException( const std::exception& exception );
-
-    template <typename T>
-    inline void CheckPointerNotNull( T* ptr )
-    {
-        if ( !ptr )
-        {
-            ThrowPointerIsNULL( );
-        }
-    }
-    namespace Environment
-    {
-        HCC_EXPORT bool IsComputerDomainJoined( );
-    }
-
-    template<typename T>
-    inline constexpr bool False_v = false;
-
-    template<typename T>
-    inline constexpr bool True_v = true;
-
-    class Exception;
-    HCC_EXPORT void ReportException( const Exception& exception, const wchar_t* function, const wchar_t* filename, int lineNumber );
-    HCC_EXPORT void ReportException( const std::exception& exception, const wchar_t* function, const wchar_t* filename, int lineNumber );
-    HCC_EXPORT void ReportUnknownException( const wchar_t* function, const wchar_t* filename, int lineNumber );
-
-    /// <summary>
-    /// Thrown by Thread::Exit 
-    /// </summary>
-    class ThreadAbortException
-    {
-        DWORD exitCode_;
-    public:
-        ThreadAbortException( DWORD exitCode )
-            : exitCode_( exitCode )
-        {
-        }
-        DWORD ExitCode( ) const
-        {
-            return exitCode_;
-        }
-    };
-
-#define HCC_CATCH_ALL_AND_REPORT_EXCEPTION \
-    catch ( const Harlinn::Common::Core::ThreadAbortException& /*exception*/ ) \
-    { \
-        throw; \
-    } \
-    catch ( const Harlinn::Common::Core::Exception& exception ) \
-    { \
-        Harlinn::Common::Core::ReportException( exception, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-    } \
-    catch ( const std::exception& exception ) \
-    { \
-        Harlinn::Common::Core::ReportException( exception, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-    } \
-    catch ( ... ) \
-    { \
-        Harlinn::Common::Core::ReportUnknownException( CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-    }
-
-#define HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( ) \
-    catch ( const Harlinn::Common::Core::Exception& exception ) \
-    { \
-        Harlinn::Common::Core::ReportException( exception, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-        return exception.GetHRESULT( ); \
-    } \
-    catch ( const std::exception& exception ) \
-    { \
-        Harlinn::Common::Core::ReportException( exception, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-        return E_FAIL; \
-    } \
-    catch ( ... ) \
-    { \
-        Harlinn::Common::Core::ReportUnknownException( CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-        return E_FAIL; \
-    } \
-    return S_OK
-
-#define HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN( ) \
-    catch ( const Harlinn::Common::Core::Exception& exception ) \
-    { \
-        Harlinn::Common::Core::ReportException( exception, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-    } \
-    catch ( const std::exception& exception ) \
-    { \
-        Harlinn::Common::Core::ReportException( exception, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-    } \
-    catch ( ... ) \
-    { \
-        Harlinn::Common::Core::ReportUnknownException( CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); \
-    } \
-    return
+    
 
 
 

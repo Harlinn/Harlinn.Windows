@@ -315,6 +315,26 @@ static void BenchmarkShortestArc2( benchmark::State& state )
 }
 BENCHMARK( BenchmarkShortestArc2 );
 
+
+static void BenchmarkDirectXTK12QuaternionFromToRotation( benchmark::State& state )
+{
+    using namespace DirectX::SimpleMath;
+
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Vector3 v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector3 v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+        auto result = DirectX::SimpleMath::Quaternion::FromToRotation( v1, v2 );
+
+        benchmark::DoNotOptimize( result.w );
+    }
+}
+BENCHMARK( BenchmarkDirectXTK12QuaternionFromToRotation );
+
+
 static void BenchmarkShortestArc( benchmark::State& state )
 {
     using namespace Math;

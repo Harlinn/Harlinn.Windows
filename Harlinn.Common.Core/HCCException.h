@@ -18,7 +18,8 @@
 */
 
 #include <HCCDef.h>
-
+#include <HCCExport.h>
+#include <HCCError.h>
 
 #ifndef _HRESULT_DEFINED
 #define _HRESULT_DEFINED

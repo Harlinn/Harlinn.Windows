@@ -20,6 +20,7 @@
 
 #include <HCCIterator.h>
 #include <HCCLib.h>
+#include <HCCExport.h>
 
 namespace Harlinn::Common::Core
 {
