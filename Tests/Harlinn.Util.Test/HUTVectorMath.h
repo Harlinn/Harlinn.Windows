@@ -214,7 +214,7 @@ namespace Harlinn::Util::Test
     }
 
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const DirectX::XMFLOAT3& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -230,7 +230,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const DirectX::XMFLOAT3& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -262,7 +262,7 @@ namespace Harlinn::Util::Test
     }
 
 #ifndef PBRT_USES_HCCMATH
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrt::Vector2f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -278,7 +278,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Vector2f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -294,7 +294,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrt::Point2f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -310,7 +310,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Point2f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -329,7 +329,7 @@ namespace Harlinn::Util::Test
 
 
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrt::Vector3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -345,7 +345,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Vector3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -361,7 +361,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrt::Point3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -377,7 +377,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Point3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -393,7 +393,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrt::Normal3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -409,7 +409,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Normal3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -425,7 +425,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 #endif
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrto::Vector3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -441,7 +441,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrto::Vector3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -457,7 +457,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrto::Point3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -473,7 +473,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrto::Point3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -489,7 +489,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const pbrto::Normal3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -505,7 +505,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::Internal::TupleType T>
+    template<Common::Core::Math::TupleType T>
     inline bool Equal( const T& v1, const pbrto::Normal3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )

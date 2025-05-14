@@ -1576,7 +1576,7 @@ namespace pbrto
         }
 
         template <typename T>
-            requires ( Math::Internal::SimdType<T> == false && Math::Internal::TupleType<T> == false )
+            requires ( Math::SimdType<T> == false && Math::TupleType<T> == false )
         Point3fi& operator+=( const T& v )
         {
             NDCHECK( !v.HasNaN( ) );
@@ -1586,7 +1586,7 @@ namespace pbrto
             return *this;
         }
 
-        template <Math::Internal::SimdType T>
+        template <Math::SimdType T>
         PBRT_CPU_GPU Point3fi& operator+=( const T& vec )
         {
             Vector3<float> v( vec );
@@ -1596,7 +1596,7 @@ namespace pbrto
             return *this;
         }
 
-        template <Math::Internal::TupleType T>
+        template <Math::TupleType T>
         PBRT_CPU_GPU Point3fi& operator+=( const T& v )
         {
             x += v.x;
@@ -1663,7 +1663,7 @@ namespace pbrto
         {
         }
 
-        template<Math::Internal::SimdType T>
+        template<Math::SimdType T>
             requires std::is_same_v<Traits, typename T::Traits>
         Normal3( const T& other ) noexcept
             : Base( other )

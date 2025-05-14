@@ -1650,7 +1650,7 @@ namespace Harlinn::Common::Core::Math
 #endif
 
     template<typename T, typename ...Args>
-        requires IsFloatingPoint<T> || IsInteger<T>
+        requires IsArithmetic<T>
     constexpr inline T Max( T first, T second, Args... remaining ) noexcept
     {
         return Max( Max( first, second ), remaining... );
@@ -1658,7 +1658,7 @@ namespace Harlinn::Common::Core::Math
 
 
     template<SimpleSpanLike T>
-        requires IsFloatingPoint<typename T::value_type> || IsInteger<typename T::value_type>
+        requires IsArithmetic<typename T::value_type>
     constexpr inline typename T::value_type Multiply( const T & values )
     {
         using ValueType = typename T::value_type;

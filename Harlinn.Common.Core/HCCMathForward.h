@@ -231,7 +231,7 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> Max( T first, T second ) noexcept;
 
     template<typename T, typename ...Args>
-        requires IsFloatingPoint<T> || IsInteger<T>
+        requires IsArithmetic<T>
     constexpr inline T Max( T first, T second, Args... remaining ) noexcept;
 
 

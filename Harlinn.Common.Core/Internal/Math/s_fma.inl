@@ -52,8 +52,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		 * that both a and b are finite, but make no assumptions about their relative
 		 * magnitudes.
 		 */
-		static inline struct dd
-			dd_add( double a, double b )
+		static constexpr inline struct dd dd_add( double a, double b )
 		{
 			struct dd ret;
 			double s;
@@ -75,11 +74,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		 *     J. Coonen.  An Implementation Guide to a Proposed Standard for
 		 *     Floating-Point Arithmetic.  Computer, vol. 13, no. 1, Jan 1980.
 		 */
-		static inline double
-			add_adjusted( double a, double b )
+		static constexpr inline double add_adjusted( double a, double b )
 		{
-			struct dd sum;
-			uint64_t hibits, lobits;
+			struct dd sum {};
+			uint64_t hibits{}, lobits{};
 
 			sum = dd_add( a, b );
 			if ( sum.lo != 0 )
@@ -101,8 +99,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		 * that the result will be subnormal, and care is taken to ensure that
 		 * double rounding does not occur.
 		 */
-		static inline double
-			add_and_denormalize( double a, double b, int scale )
+		static inline double add_and_denormalize( double a, double b, int scale )
 		{
 			struct dd sum;
 			uint64_t hibits, lobits;
@@ -140,10 +137,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		 * that both a and b are normalized, so no underflow or overflow will occur.
 		 * The current rounding mode must be round-to-nearest.
 		 */
-		static inline struct dd
-			dd_mul( double a, double b )
+		static inline struct dd dd_mul( double a, double b )
 		{
-			static const double split = 0x1p27 + 1.0;
+			constexpr double split = 0x1p27 + 1.0;
 			struct dd ret;
 			double ha, hb, la, lb, p, q;
 
@@ -183,8 +179,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	 * Hardware instructions should be used on architectures that support it,
 	 * since this implementation will likely be several times slower.
 	 */
-	constexpr inline double
-		fma( double x, double y, double z )
+	constexpr inline double fma( double x, double y, double z )
 	{
 		using namespace fma_internal;
 		double xs, ys, zs, adj;
@@ -207,9 +202,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( !isfinite( z ) )
 			return ( z );
 
-		xs = frexp( x, &ex );
-		ys = frexp( y, &ey );
-		zs = frexp( z, &ez );
+		xs = Math::FRExp( x, &ex );
+		ys = Math::FRExp( y, &ey );
+		zs = Math::FRExp( z, &ez );
 		oround = std::fegetround( );
 		spread = ex + ey - ez;
 

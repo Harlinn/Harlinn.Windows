@@ -226,6 +226,25 @@ namespace Harlinn::Common::Core
     };
 
 
+    template<typename T>
+    concept BooleanType = std::is_same_v<T, bool>;
+
+    template<typename T>
+    concept FloatingPointType = std::is_floating_point_v<T>;
+
+    template<typename T>
+    concept IntegerType = std::is_integral_v<T> && (std::is_same_v<T, bool> == false);
+
+    template<typename T>
+    concept SignedIntegerType = IntegerType<T> && std::is_signed_v<T>;
+
+    template<typename T>
+    concept UnsignedIntegerType = IntegerType<T> && (std::is_signed_v<T> == false);
+
+    template<typename T>
+    concept ArithmeticType = IntegerType<T> || FloatingPointType<T>;
+
+
 }
 
 
