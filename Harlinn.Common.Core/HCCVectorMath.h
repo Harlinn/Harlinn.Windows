@@ -8322,7 +8322,20 @@ namespace Harlinn::Common::Core::Math
 
 
     // Min
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Makes a comparison between the elements held by the two arguments, and 
+    /// returns a TupleSimd derived object containing the smallest elements.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Min( const T& lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Min( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ) ) );
+    }
+#else
     /// <summary>
     /// Makes a comparison between the elements held by the two arguments, and 
     /// returns a TupleSimd containing the smallest elements.
@@ -8370,9 +8383,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Min( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
-
+#endif
     // Max
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Makes a comparison between the elements held by the two arguments, and 
+    /// returns a TupleSimd containing the largest elements.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Max( const T& lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Max( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ) ) );
+    }
+#else
     /// <summary>
     /// Makes a comparison between the elements held by the two arguments, and 
     /// returns a TupleSimd containing the largest elements.
@@ -8406,10 +8432,31 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Max( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
-
+#endif
 
     // Sqr
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Computes the square value of each element held by the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Sqr( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        if constexpr ( SimdType<T> )
+        {
+            const auto& simd = Internal::ToSimd( t );
+            return ResultType( Traits::Mul( simd, simd ) );
+            
+        }
+        else
+        {
+            const auto simd = Internal::ToSimd( t );
+            return ResultType( Traits::Mul( simd, simd ) );
+        }
+    }
+#else
     /// <summary>
     /// Computes the square value of each element held by the argument.
     /// </summary>
@@ -8428,10 +8475,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Sqr<typename T::Simd>( Traits::Load( t.values.data( ) ) );
     }
-
+#endif
     // Ceil
 
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Computes the ceiling of each element held by the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Ceil( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Ceil( Internal::ToSimd( t ) ) );
+    }
+#else
     /// <summary>
     /// Computes the ceiling of each element held by the argument.
     /// </summary>
@@ -8450,9 +8508,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Ceil( Traits::Load( t.values.data( ) ) );
     }
-
+#endif
     // Floor
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Computes the floor of each element held by the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Floor( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Floor( Internal::ToSimd( t ) ) );
+    }
+#else
     /// <summary>
     /// Computes the floor of each element held by the argument.
     /// </summary>
@@ -8472,9 +8541,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Floor( Traits::Load( t.values.data( ) ) );
     }
+#endif
 
     // Round
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Rounds each element held by the argument towards the nearest even integer.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Round( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Round( Internal::ToSimd( t ) ) );
+    }
+#else
     /// <summary>
     /// Rounds each element held by the argument towards the nearest even integer.
     /// </summary>
@@ -8493,10 +8574,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Round( Traits::Load( t.values.data( ) ) );
     }
+#endif
 
     // Trunc
 
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Rounds each element held by the argument to the nearest integer in the direction of zero.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Trunc( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Truncate( Internal::ToSimd( t ) ) );
+    }
+#else
     /// <summary>
     /// Rounds each element held by the argument to the nearest integer in the direction of zero.
     /// </summary>
@@ -8515,9 +8608,26 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Truncate( Traits::Load( t.values.data( ) ) );
     }
+#endif
 
     // Lerp
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U, ArithmeticType NumberT>
+        requires IsCompatible<T, U>
+    inline auto Lerp( const T& a, const U& b, NumberT t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Trim( Traits::Lerp( Internal::ToSimd( a ), Internal::ToSimd( b ), static_cast< Type >( t ) ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8577,9 +8687,24 @@ namespace Harlinn::Common::Core::Math
         using Type = Traits::Type;
         return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) ) );
     }
-
+#endif
     
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T> && IsCompatible<T, U>
+    inline auto Lerp( const S& a, const T& b, const U& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::Trim( Traits::Lerp( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( t ) ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8693,8 +8818,23 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) ) );
     }
+#endif
 
-    
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the linear interpolation between a and b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<ArithmeticType NumberT1, ArithmeticType NumberT2, SimdOrTupleType T>
+    inline auto Lerp( const NumberT1 a, const NumberT2 b, const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Trim( Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Internal::ToSimd( t ) ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the linear interpolation between a and b, for elements of
     /// t is inside [0,1), or the linear extrapolation for elements
@@ -8722,10 +8862,26 @@ namespace Harlinn::Common::Core::Math
         using Type = Traits::Type;
         return Traits::Trim( Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) ) );
     }
-    
+#endif    
 
     // Lerp2
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Lerp2( const S t,  const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Trim( Traits::Lerp2( Internal::ToSimd( a ), Internal::ToSimd( b ), static_cast< Type >( t ) ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8785,9 +8941,25 @@ namespace Harlinn::Common::Core::Math
         using Type = Traits::Type;
         return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) ) );
     }
+#endif    
 
-
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::Trim( Traits::Lerp2( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( t ) ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8901,8 +9073,23 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) ) );
     }
+#endif    
 
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the linear interpolation between a and b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto Lerp2( const S& t, const T a, const U b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType(Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Internal::ToSimd( t ) ) ));
+    }
+#else
     /// <summary>
     /// Calculates the linear interpolation between a and b, for elements of
     /// t is inside [0,1), or the linear extrapolation for elements
@@ -8930,10 +9117,18 @@ namespace Harlinn::Common::Core::Math
         using Type = Traits::Type;
         return Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) ) );
     }
-
+#endif
     
     // Permute
-
+#ifdef USE_TOSIMD
+    template<int shuffleMask, SimdOrTupleType T>
+    inline T Permute( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Permute<shuffleMask>( Internal::ToSimd( t ) ) );
+    }
+#else
     template<int shuffleMask, SimdType T>
     inline T Permute( const T& t ) noexcept
     {
@@ -8946,9 +9141,39 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Permute<shuffleMask>( Traits::Load( t.values ) );
     }
-
+#endif
     // Clamp
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified by the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T> && IsCompatible<T, U>
+    inline auto Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::Clamp( Internal::ToSimd( v ), Internal::ToSimd( lowerBounds ), Internal::ToSimd( upperBounds ) ) );
+    }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified by lowerBounds and upperBounds, 
+    /// otherwise the value of nearest boundary is returned.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto Clamp( const S& v, const T lowerBounds, const U upperBounds ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::Clamp( Internal::ToSimd( v ), Traits::Fill<S::Size>( static_cast< Type >( lowerBounds ) ), Traits::Fill<S::Size>( static_cast< Type >( upperBounds ) ) ) );
+    }
+
+#else
     /// <summary>
     /// Returns the elements of v, if the elements are between their
     /// respective boundaries specified the elements of lowerBounds
@@ -9103,7 +9328,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         return Traits::Clamp( Traits::Load( v.values ), Traits::Fill( static_cast< typename S::value_type >( lowerBound ) ), Traits::Fill( static_cast< typename S::value_type >( upperBound ) ) );
     }
-
+#endif
 
     template<SimdType S>
     inline S ClampZero( const S& v ) noexcept
