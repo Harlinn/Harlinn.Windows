@@ -4615,6 +4615,9 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        
+
+
         static SIMDType Lerp( SIMDType v1, SIMDType v2, Type t ) noexcept
         {
             if constexpr ( UseShortSIMDType )

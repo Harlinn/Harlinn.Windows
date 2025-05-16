@@ -705,6 +705,9 @@ namespace Harlinn::Common::Core::Math
     template<typename T>
     concept SimdOrTupleType = SimdType<T> || TupleType<T>;
 
+    template<typename T>
+    concept SimdTupleOrArithmeticType = SimdType<T> || TupleType<T> || ArithmeticType<T>;
+
     template<typename T1, typename T2>
     constexpr bool IsCompatible = std::is_same_v<typename T1::Traits, typename T2::Traits>;
 
@@ -741,6 +744,20 @@ namespace Harlinn::Common::Core::Math
             using Traits = typename T::Traits;
             return Traits::Load( v.values );
         }
+
+        template<SimdType T>
+        constexpr const T& ToSimdType( const T& v ) noexcept
+        {
+            return v;
+        }
+
+        template<TupleType T>
+        typename T::Simd ToSimdType( const T& v ) noexcept
+        {
+            using Traits = typename T::Traits;
+            return typename T::Simd( Traits::Load( v.values ) );
+        }
+
 
         template<SimdOrTupleType T>
         using MakeResultType = std::conditional_t< SimdType<T>, T, typename T::Simd >;
@@ -9173,6 +9190,22 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::Clamp( Internal::ToSimd( v ), Traits::Fill<S::Size>( static_cast< Type >( lowerBounds ) ), Traits::Fill<S::Size>( static_cast< Type >( upperBounds ) ) ) );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified by the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Clamp( const S v, const T& lowerBounds, const U& upperBounds ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Clamp( Traits::Fill<T::Size>( static_cast< Type >( v ) ), Internal::ToSimd( lowerBounds ), Internal::ToSimd( upperBounds ) ) );
+    }
+
 #else
     /// <summary>
     /// Returns the elements of v, if the elements are between their
@@ -9330,6 +9363,15 @@ namespace Harlinn::Common::Core::Math
     }
 #endif
 
+#ifdef USE_TOSIMD
+    template<SimdOrTupleType S>
+    inline auto ClampZero( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::Max( Traits::Zero( ), Internal::ToSimd( v ) ) );
+    }
+#else
     template<SimdType S>
     inline S ClampZero( const S& v ) noexcept
     {
@@ -9343,7 +9385,34 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         return Traits::Max( Traits::Zero( ), Traits::Load( v.values ) );
     }
+#endif
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Detects if the elements of a vector are within bounds.
+    /// </summary>
+    /// <param name="v">
+    /// The elements to test against the bounds.
+    /// </param>
+    /// <param name="bounds">
+    /// The bounds
+    /// </param>
+    /// <returns>
+    /// An element in the result will have all bits set if
+    /// the corresponding element of v are greater or
+    /// equal to the corresponding negated value from bounds,
+    /// and less or equal to the corresponding value from bounds,
+    /// otherwise the element will be set to 0.
+    /// </returns>
+    template<SimdOrTupleType S, SimdOrTupleType T>
+        requires IsCompatible<S, T>
+    inline auto InBounds( const S& v, const T& bounds ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::InBounds( Internal::ToSimd( v ), Internal::ToSimd( bounds ) ) );
+    }
+#else
 
     /// <summary>
     /// Detects if the elements of a vector are within bounds.
@@ -9441,10 +9510,103 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return Simd( Traits::InBounds( Traits::Load( v.values ), Traits::Load( v.bounds ) ) );
     }
-
+#endif
 
     // ClampLength
 
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        template<SimdType S, SimdType T, SimdType U>
+            requires IsCompatible<S, T>&& IsCompatible<S, U>
+        inline S ClampLengthImpl( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+        {
+            using Traits = typename S::Traits;
+            using Simd = S;
+
+            auto lengthSquared = LengthSquared( v );
+
+            const auto zero = Traits::Zero( );
+            typename Traits::SIMDType infinity = { { 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000 } };
+
+            auto reciprocalLength = ReciprocalSqrt( lengthSquared );
+
+            auto infiniteLength = Traits::SameValue( lengthSquared.simd, infinity );
+            auto zeroLength = Traits::Equal( lengthSquared.simd, zero );
+
+            auto normal = Traits::Mul( v.simd, reciprocalLength.simd );
+
+            auto length = Traits::Mul( lengthSquared.simd, reciprocalLength.simd );
+
+            auto select = Traits::SameValue( infiniteLength, zeroLength );
+            length = Traits::Select( lengthSquared.simd, length, select );
+            normal = Traits::Select( lengthSquared.simd, normal, select );
+
+            auto controlMax = Traits::Greater( length, lengthMax.simd );
+            auto controlMin = Traits::Less( length, lengthMin.simd );
+
+            auto clampLength = Traits::Select( length, lengthMax.simd, controlMax );
+            clampLength = Traits::Select( clampLength, lengthMin.simd, controlMin );
+
+            auto result = Traits::Mul( normal, clampLength );
+
+
+            select = Traits::SameValue( controlMax, controlMin );
+            return Simd( Traits::Trim( Traits::Select( result, v.simd, select ) ) );
+        }
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T> && IsCompatible<S, U>
+    inline auto ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        return Internal::ClampLengthImpl( Internal::ToSimdType( v ), Internal::ToSimdType( lengthMin ), Internal::ToSimdType( lengthMax ) );
+    }
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// Minimum clamp length.
+    /// </param>
+    /// <param name="lengthMax">
+    /// Maximum clamp length.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto ClampLength( const S& v, const T lengthMin, const U lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = typename Traits::Type;
+        using Simd = typename S::Simd;
+
+        return Internal::ClampLengthImpl( Internal::ToSimdType( v ), Simd( Traits::Fill<Traits::Size>( static_cast< Type >( lengthMin ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast< Type >( lengthMax ) ) ) );
+    }
+
+#else
     /// <summary>
     /// Clamps the length of a vector to a given range.
     /// </summary>
@@ -9754,6 +9916,55 @@ namespace Harlinn::Common::Core::Math
 
         return ClampLength( Simd( v ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMax ) ) ) );
     }
+#endif
+
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Reflects an incident vector across a normal vector.
+        /// </summary>
+        /// <param name="incident">
+        /// Incident vector to reflect.
+        /// </param>
+        /// <param name="normal">
+        /// Normal vector to reflect the incident vector across.
+        /// </param>
+        /// <returns>
+        /// The reflected incident angle.
+        /// </returns>
+        template<SimdType S, SimdType T>
+            requires IsCompatible<S, T>
+        inline S ReflectImpl( const S& incident, const T& normal ) noexcept
+        {
+            using Traits = typename S::Traits;
+            using Simd = S;
+
+            auto result = Traits::Dot( incident.simd, normal.simd );
+            result = Traits::Add( result, result );
+            return Simd( Traits::FNMSub( result, normal.simd, incident.simd ) );
+        }
+    }
+    /// <summary>
+    /// Reflects an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// Incident vector to reflect.
+    /// </param>
+    /// <param name="normal">
+    /// Normal vector to reflect the incident vector across.
+    /// </param>
+    /// <returns>
+    /// The reflected incident angle.
+    /// </returns>
+    template<SimdOrTupleType S, SimdOrTupleType T>
+        requires IsCompatible<S, T>
+    inline auto Reflect( const S& incident, const T& normal ) noexcept
+    {
+        return Internal::ReflectImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ) );
+    }
+
+#else
 
     /// <summary>
     /// Reflects an incident vector across a normal vector.
@@ -9841,7 +10052,114 @@ namespace Harlinn::Common::Core::Math
 
         return Reflect( Simd( incident ), Simd( normal ) );
     }
+#endif
 
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Refracts an incident vector across a normal vector.
+        /// </summary>
+        /// <param name="incident">
+        /// The incident vector to refract.
+        /// </param>
+        /// <param name="normal">
+        /// The normal vector to refract the incident vector through.
+        /// </param>
+        /// <param name="refractionIndex">
+        /// A vector whose elements are equal to the index of refraction.
+        /// </param>
+        /// <returns>
+        /// Returns the refracted incident vector. If the refraction index 
+        /// and the angle between the incident vector and the normal are such 
+        /// that the result is a total internal reflection, the function will 
+        /// return a vector with all elements set to zero.
+        /// </returns>
+        template<SimdType S, SimdType T, SimdType U>
+            requires IsCompatible<S, T>&& IsCompatible<S, U>
+        inline S RefractImpl( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+        {
+            using Traits = typename S::Traits;
+            using FloatT = typename Traits::Type;
+            using SIMDType = typename Traits::SIMDType;
+            using Simd = S;
+
+            constexpr SIMDType zero = { {static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. )} };
+            constexpr SIMDType one = { {static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. )} };
+
+            auto rmm1 = Traits::Dot( incident.simd, normal.simd );
+
+            auto rmm2 = Traits::FNMAdd( rmm1, rmm1, one );
+            auto rmm3 = Traits::Mul( refractionIndex.simd, refractionIndex.simd );
+            rmm2 = Traits::FNMAdd( rmm2, rmm3, one );
+
+            auto zeroSelect = Traits::LessOrEqual( rmm2, zero );
+
+            rmm2 = Traits::Sqrt( rmm2 );
+            rmm2 = Traits::FMAdd( refractionIndex.simd, rmm1, rmm2 );
+
+            auto result = Traits::Mul( refractionIndex.simd, incident.simd );
+            result = Traits::FNMAdd( rmm2, normal.simd, result );
+            return Simd( Traits::Select( result, zero, zeroSelect ) );
+        }
+    }
+    
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        return Internal::RefractImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ), Internal::ToSimdType( refractionIndex ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// The index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = typename Traits::Type;
+        using Simd = typename S::Simd;
+
+        return Internal::RefractImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ), Simd( static_cast< Type >(refractionIndex) ) );
+    }
+
+
+#else
     /// <summary>
     /// Refracts an incident vector across a normal vector.
     /// </summary>
@@ -10184,7 +10502,27 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return Refract( Simd( incident ), Simd( normal ), Simd( Traits::Fill( refractionIndex ) ) );
     }
+#endif
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Computes a vector perpendicular to the argument vector.
+    /// </summary>
+    /// <param name="v">
+    /// The argument vector.
+    /// </param>
+    /// <returns>
+    /// The vector orthogonal to <c>v</c>.
+    /// </returns>
+    template<SimdOrTupleType S>
+    inline auto Orthogonal( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using ResultType = Internal::MakeResultType<S>;
+
+        return ResultType( Traits::Orthogonal( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Computes a vector perpendicular to the argument vector.
     /// </summary>
@@ -10218,10 +10556,21 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return Orthogonal( Simd( v ) );
     }
-
+#endif
 
     // Saturate
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Saturates the elements of v to the range 0.0 to 1.0.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Saturate( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Saturate( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Saturates the elements of v to the range 0.0 to 1.0.
     /// </summary>
@@ -10240,9 +10589,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Saturate( Traits::Load( v.values ) );
     }
-
+#endif
     // Sqrt
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the square root of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Sqrt( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Sqrt( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the square root of each element in the argument.
     /// </summary>
@@ -10262,9 +10622,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Sqrt( Traits::Load( v.values ) );
     }
-
+#endif
     // SafeSqrt
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the square root of each element greater or 
+    /// equal to 0.f in the argument. For elements less than 
+    /// 0.f, the result is 0.f.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto SafeSqrt( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Sqrt( Traits::Max( Traits::Zero( ), Internal::ToSimd( v ) ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the square root of each element greater or 
     /// equal to 0.f in the argument. For elements less than 
@@ -10288,10 +10661,23 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Sqrt( Traits::Max( Traits::Zero( ), Traits::Load( v.values ) ) );
     }
-
+#endif
 
     // ReciprocalSqrt
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the reciprocal square root of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ReciprocalSqrt( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Div( Traits::Fill<Traits::Size>( Constants<Type>::One ), Traits::Sqrt( Internal::ToSimd( v ) ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the reciprocal square root of each element in the argument.
     /// </summary>
@@ -10312,9 +10698,22 @@ namespace Harlinn::Common::Core::Math
         using FloatT = typename Traits::Type;
         return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), Traits::Sqrt( Traits::Load( t.values ) ) );
     }
-
+#endif
     // Reciprocal
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the reciprocal of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Reciprocal( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Div( Traits::Fill<Traits::Size>( Constants<Type>::One ), Internal::ToSimd( t ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the reciprocal of each element in the argument.
     /// </summary>
@@ -10336,10 +10735,101 @@ namespace Harlinn::Common::Core::Math
         using FloatT = typename Traits::Type;
         return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), Traits::Load( t.values ) );
     }
-
+#endif
 
     // FMA
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T> && IsCompatible<S, U>
+    inline auto FMA( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAdd( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
+        requires IsCompatible<S, T>
+    inline auto FMA( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAdd( Internal::ToSimd( a ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
+        requires IsCompatible<S, U>
+    inline auto FMA( const S& a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAdd( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto FMA( const S& a, const T b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAdd( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+    
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FMA( const S a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
+    inline auto FMA( const S a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
+    inline auto FMA( const S a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+
+
+#else
     /// <summary>
     /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
     /// </summary>
@@ -10529,7 +11019,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
-
+#endif
 
     /// <summary>
     /// Evaluates the provided polynomial using Horner’s method
@@ -10634,6 +11124,117 @@ namespace Harlinn::Common::Core::Math
 
 
     // FMSub
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto FMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSub( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
+        requires IsCompatible<S, T>
+    inline auto FMSub( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSub( Internal::ToSimd( a ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
+        requires IsCompatible<S, U>
+    inline auto FMSub( const S& a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSub( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto FMSub( const S& a, const T b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSub( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FMSub( const S a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
+    inline auto FMSub( const S a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
+    inline auto FMSub( const S a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+#else
 
     /// <summary>
     /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
@@ -10872,7 +11473,118 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
+#endif
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAddSub( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
+        requires IsCompatible<S, T>
+    inline auto FMAddSub( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAddSub( Internal::ToSimd( a ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
+        requires IsCompatible<S, U>
+    inline auto FMAddSub( const S& a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAddSub( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto FMAddSub( const S& a, const T b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMAddSub( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FMAddSub( const S a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
+    inline auto FMAddSub( const S a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
+    inline auto FMAddSub( const S a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+#else
     /// <summary>
     /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
     /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
@@ -11110,9 +11822,119 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
+#endif
 
     // FMSubAdd
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSubAdd( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
+        requires IsCompatible<S, T>
+    inline auto FMSubAdd( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSubAdd( Internal::ToSimd( a ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
+        requires IsCompatible<S, U>
+    inline auto FMSubAdd( const S& a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSubAdd( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto FMSubAdd( const S& a, const T b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FMSubAdd( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FMSubAdd( const S a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
+    inline auto FMSubAdd( const S a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
+    inline auto FMSubAdd( const S a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+#else
     /// <summary>
     /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
     /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
@@ -11350,9 +12172,119 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
+#endif
 
     // FNMAdd
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMAdd( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
 
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
+        requires IsCompatible<S, T>
+    inline auto FNMAdd( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMAdd( Internal::ToSimd( a ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
+        requires IsCompatible<S, U>
+    inline auto FNMAdd( const S& a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMAdd( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto FNMAdd( const S& a, const T b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMAdd( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FNMAdd( const S a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
+    inline auto FNMAdd( const S a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
+    inline auto FNMAdd( const S a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+#else
     /// <summary>
     /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
     /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
@@ -11590,9 +12522,120 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
+#endif
+
 
     // FNMSub
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMSub( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
 
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
+        requires IsCompatible<S, T>
+    inline auto FNMSub( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMSub( Internal::ToSimd( a ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
+        requires IsCompatible<S, U>
+    inline auto FNMSub( const S& a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMSub( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
+    inline auto FNMSub( const S& a, const T b, const U c ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<S>;
+        return ResultType( Traits::FNMSub( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FNMSub( const S a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Internal::ToSimd( c ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
+    inline auto FNMSub( const S a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Internal::ToSimd( b ), Traits::Fill<Traits::Size>( static_cast< Type >( c ) ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
+    inline auto FNMSub( const S a, const T b, const U& c ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+    }
+#else
     /// <summary>
     /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
     /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
@@ -11830,10 +12873,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
-
+#endif
 
     // Sin
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the sine of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Sin( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Sin( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the sine of each element in the argument expressed in radians.
     /// </summary>
@@ -11852,9 +12906,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Sin( Traits::Load( v.values ) );
     }
+#endif
 
     // FastSin
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the sine of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto FastSin( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FastSin( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the sine of each element in the argument expressed in radians.
     /// </summary>
@@ -11873,10 +12939,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FastSin( Traits::Load( v.values ) );
     }
-
+#endif
 
     // Cos
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Cos( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Cos( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the cosine of each element in the argument expressed in radians.
     /// </summary>
@@ -11895,9 +12972,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Cos( Traits::Load( v.values ) );
     }
-
+#endif
     // FastCos
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto FastCos( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FastCos( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the cosine of each element in the argument expressed in radians.
     /// </summary>
@@ -11916,7 +13005,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FastCos( Traits::Load( v.values ) );
     }
-
+#endif
 
     // SinCos
 
@@ -11966,7 +13055,18 @@ namespace Harlinn::Common::Core::Math
 
 
     // Tan
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the tangent of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Tan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Tan( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the tangent of each element in the argument expressed in radians.
     /// </summary>
@@ -11986,10 +13086,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Tan( Traits::Load( v.values ) );
     }
-
+#endif
 
     // FastTan
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the tangent of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto FastTan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FastTan( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the tangent of each element in the argument expressed in radians.
     /// </summary>
@@ -12009,10 +13120,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FastTan( Traits::Load( v.values ) );
     }
-
+#endif
 
     // ASin
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse sine of each element in the argument, in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ASin( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ASin( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the inverse sine of each element in the argument, in radians.
     /// </summary>
@@ -12031,9 +13153,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ASin( Traits::Load( v.values.data( ) ) );
     }
+#endif
+
 
     // ACos
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse cosine of each element in the argument, in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ACos( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ACos( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the inverse cosine of each element in the argument, in radians.
     /// </summary>
@@ -12053,9 +13188,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ACos( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // ATan
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse tangent of each element in the argument, in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ATan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ATan( Internal::ToSimd( v ) ) );
+    }
 
+#else
     /// <summary>
     /// Calculates the inverse tangent of each element in the argument, in radians.
     /// </summary>
@@ -12074,10 +13222,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ATan( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
 
     // FastATan
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse tangent of each element in the argument, in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto FastATan( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FastATan( Internal::ToSimd( v ) ) );
+    }
 
+#else
     /// <summary>
     /// Calculates the inverse tangent of each element in the argument, in radians.
     /// </summary>
@@ -12096,11 +13256,25 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FastATan( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
 
 
     // ATan2
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto ATan2( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ATan2( Internal::ToSimd( x ), Internal::ToSimd( y ) ) );
+    }
 
+#else
     /// <summary>
     /// Calculates the inverse tangent of each element in x divided by the
     /// corresponding element in y, in radians.
@@ -12148,9 +13322,25 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
-
+#endif
 
     // FastATan2
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FastATan2( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FastATan2( Internal::ToSimd( x ), Internal::ToSimd( y ) ) );
+    }
+
+#else
+
 
     /// <summary>
     /// Calculates the inverse tangent of each element in x divided by the
@@ -12199,8 +13389,52 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::FastATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
+#endif
 
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Calculates the angle modulo 2PI.
+        /// </summary>
+        /// <typeparam name="T">
+        /// A TupleN SimdType 
+        /// </typeparam>
+        /// <param name="angles">
+        /// The angles in radians
+        /// </param>
+        /// <returns>
+        /// Returns a SimdType holding the angles modulo 2PI.
+        /// </returns>
+        template<SimdType T>
+        inline T ModAnglesImpl( const T& angles )
+        {
+            using Traits = typename T::Traits;
+            using FloatT = typename Traits::Type;
 
+            auto result = Traits::Round( Traits::Mul( angles.simd, Traits::Fill<Traits::Size>( Constants<FloatT>::Inv2Pi ) ) );
+            return Traits::FNMAdd( result, Traits::Fill<Traits::Size>( Constants<FloatT>::PiTimes2 ), angles.simd );
+        }
+    }
+    /// <summary>
+    /// Calculates the angle modulo 2PI.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A TupleN SimdType 
+    /// </typeparam>
+    /// <param name="angles">
+    /// The angles in radians
+    /// </param>
+    /// <returns>
+    /// Returns a SimdType holding the angles modulo 2PI.
+    /// </returns>
+    template<SimdOrTupleType T>
+    inline auto ModAngles( const T& angles )
+    {
+        return Internal::ModAnglesImpl( Internal::ToSimdType( angles ) );
+    }
+
+#else
     /// <summary>
     /// Calculates the angle modulo 2PI.
     /// </summary>
@@ -12229,9 +13463,49 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename T::Simd;
         return Math::ModAngles( Simd( Traits::Load( v.values ) ) );
     }
-
+#endif
     // AddAngles
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Adds the angles in the corresponding elements of v1 and v2.
+        /// The argument angles must be in the range [-PI,PI), and the
+        /// computed angles will be in the range [-PI,PI) 
+        /// </summary>
+        template<SimdType T, SimdType U>
+            requires IsCompatible<T, U>
+        inline T AddAnglesImpl( const T& v1, const U& v2 ) noexcept
+        {
+            using Traits = typename T::Traits;
+            using FloatT = typename Traits::Type;
+            // Adjust the angles
+            auto result = Traits::Add( v1.simd, v2.simd );
+            // Less than Pi?
+            auto offset = Traits::Less( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
+            offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+            // Add 2Pi to all entries less than -Pi
+            result = Traits::Add( result, offset );
+            // Greater than or equal to Pi?
+            offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
+            offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+            // Sub 2Pi to all entries greater than Pi
+            return Traits::Trim( Traits::Sub( result, offset ) );
+        }
+    }
+    /// <summary>
+    /// Adds the angles in the corresponding elements of v1 and v2.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto AddAngles( const T& v1, const U& v2 ) noexcept
+    {
+        return Internal::AddAnglesImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
+    }
 
+#else
     /// <summary>
     /// Adds the angles in the corresponding elements of v1 and v2.
     /// The argument angles must be in the range [-PI,PI), and the
@@ -12297,8 +13571,51 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename T::Simd;
         return Math::AddAngles( Simd(Traits::Load( v1.values )), Simd(Traits::Load( v2.values )) );
     }
+#endif
+
 
     // SubtractAngles
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Subtracts the angles in v2 from the corresponding elements of v1.
+        /// The argument angles must be in the range [-PI,PI), and the
+        /// computed angles will be in the range [-PI,PI) 
+        /// </summary>
+        template<SimdType T, SimdType U>
+            requires IsCompatible<T, U>
+        inline T SubtractAnglesImpl( const T& v1, const U& v2 ) noexcept
+        {
+            using Traits = typename T::Traits;
+            using FloatT = typename Traits::Type;
+            // Adjust the angles
+            auto result = Traits::Sub( v1.simd, v2.simd );
+            // Less than Pi?
+            auto offset = Traits::Less( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
+            offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+            // Add 2Pi to all entries less than -Pi
+            result = Traits::Add( result, offset );
+            // Greater than or equal to Pi?
+            offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
+            offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+            // Sub 2Pi to all entries greater than Pi
+            return Traits::Trim( Traits::Sub( result, offset ) );
+        }
+    }
+    /// <summary>
+    /// Subtracts the angles in v2 from the corresponding elements of v1.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto SubtractAngles( const T& v1, const U& v2 ) noexcept
+    {
+        return Internal::SubtractAnglesImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
+    }
+
+#else
 
     /// <summary>
     /// Subtracts the angles in v2 from the corresponding elements of v1.
@@ -12366,9 +13683,22 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename T::Simd;
         return Math::SubtractAngles( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ) );
     }
-
+#endif
 
     // SinH
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto SinH( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::SinH( Internal::ToSimd( v ) ) );
+    }
+#else
+
 
     /// <summary>
     /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
@@ -12388,9 +13718,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::SinH( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
 
     // CosH
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto CosH( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::CosH( Internal::ToSimd( v ) ) );
+    }
+#else
+
 
     /// <summary>
     /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
@@ -12410,8 +13753,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::CosH( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // TanH
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto TanH( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::TanH( Internal::ToSimd( v ) ) );
+    }
+#else
 
     /// <summary>
     /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
@@ -12431,9 +13787,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::TanH( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // ASinH
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ASinH( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ASinH( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
     /// </summary>
@@ -12452,9 +13820,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ASinH( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // ACosH
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ACosH( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ACosH( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
     /// </summary>
@@ -12473,9 +13853,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ACosH( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // ATanH
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ATanH( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ATanH( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
     /// </summary>
@@ -12494,8 +13886,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ATanH( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // Log
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the natural logarithm of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Log( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Log( Internal::ToSimd( v ) ) );
+    }
+#else
 
     /// <summary>
     /// Calculates the natural logarithm of each element in the argument.
@@ -12516,9 +13921,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Log( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
     // Log1P
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the natural logarithm of 1 + each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Log1P( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Log1P( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the natural logarithm of 1 + each element in the argument.
     /// </summary>
@@ -12534,9 +13951,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Log1P( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
     // Log10
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the base-10 logarithm of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Log10( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Log10( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the base-10 logarithm of each element in the argument.
     /// </summary>
@@ -12555,9 +13983,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Log10( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
     // Log2
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Log2( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Log2( Internal::ToSimd( v ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
     /// </summary>
@@ -12576,8 +14015,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Log2( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
     // Exp
+
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Exp( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Exp( Internal::ToSimd( v ) ) );
+    }
+#else
+
 
     /// <summary>
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
@@ -12597,8 +14050,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Exp( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // Exp10
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the base-10 exponential of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Exp10( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Exp10( Internal::ToSimd( v ) ) );
+    }
+#else
 
     /// <summary>
     /// Calculates the base-10 exponential of each element in the argument.
@@ -12618,8 +14084,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Exp10( Traits::Load( v.values.data( ) ) );
     }
+#endif
 
     // Exp2
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the base-2 exponential of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Exp2( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Exp2( Internal::ToSimd( v ) ) );
+    }
+#else
 
     /// <summary>
     /// Calculates the base-2 exponential of each element in the argument.
@@ -12639,8 +14118,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Exp2( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
     // ExpM1
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ExpM1( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::ExpM1( Internal::ToSimd( v ) ) );
+    }
+#else
 
     /// <summary>
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
@@ -12660,9 +14151,47 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ExpM1( Traits::Load( v.values.data( ) ) );
     }
-
+#endif
 
     // Pow
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the elements in base raised to the corresponding element in exponent.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Pow( const T& base, const U& exponent ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType(Traits::Pow( Internal::ToSimd( base ), Internal::ToSimd( exponent ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the elements in base raised to the value of exponent.
+    /// </summary>
+    template<SimdOrTupleType T, ArithmeticType U>
+    inline auto Pow( const T& base, const U exponent ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Pow( Internal::ToSimd( base ), Traits::Fill<Traits::Size>( static_cast< Type >( exponent ) ) ) );
+    }
+
+    /// <summary>
+    /// Returns the value of base raised to the corresponding elements in exponent.
+    /// </summary>
+    template<ArithmeticType T, SimdOrTupleType U>
+    inline auto Pow( const T& base, const U& exponent ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::Pow( Traits::Fill<Traits::Size>( static_cast< Type >( base ) ), Internal::ToSimd( exponent ) ) );
+    }
+
+#else
 
     /// <summary>
     /// Calculates the elements in base raised to the corresponding element in exponent.
@@ -12705,6 +14234,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Pow( Traits::Load( base.values.data( ) ), Traits::Load( exponent.values.data( ) ) );
     }
+#endif
 
     namespace Internal
     {
@@ -12752,7 +14282,44 @@ namespace Harlinn::Common::Core::Math
 
 
     // FMod
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto FMod( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMod( Internal::ToSimd( x ), Internal::ToSimd( y ) ) );
+    }
 
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<SimdOrTupleType T, ArithmeticType U>
+    inline auto FMod( const T& x, const U y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::FMod( Internal::ToSimd( x ), Traits::FillDivisor<Traits::Size> ( static_cast< Type >( y ) ) ) );
+    }
+
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation $x/y$.
+    /// </summary>
+    template<ArithmeticType T, SimdOrTupleType U>
+    inline auto FMod( const T x, const U& y ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::FMod( Traits::Fill<Traits::Size>( static_cast< Type >( x ) ), Internal::ToSimd( y ) ) );
+    }
+
+#else
     /// <summary>
     /// Computes the floating-point remainder of the division operation $x/y$.
     /// </summary>
@@ -12813,10 +14380,52 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::FMod( Traits::Load( x.values ), Traits::Fill( static_cast< T::Traits::Type >( y ) ) ) );
     }
-
+#endif
 
     // Hypot
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the square root of the sum of the squares of each corresponding 
+    /// element in x and y, without undue overflow or underflow at intermediate 
+    /// stages of the computation.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Hypot( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Hypot( Internal::ToSimd( x ), Internal::ToSimd( y ) ) );
+    }
 
+    /// <summary>
+    /// Calculates the square root of the sum of the squares of each corresponding 
+    /// element in x and y, without undue overflow or underflow at intermediate 
+    /// stages of the computation.
+    /// </summary>
+    template<SimdOrTupleType T, ArithmeticType U>
+    inline auto Hypot( const T& x, const U y ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Hypot( Internal::ToSimd( x ), Traits::FillDivisor<Traits::Size>( static_cast< Type >( y ) ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the square root of the sum of the squares of each corresponding 
+    /// element in x and y, without undue overflow or underflow at intermediate 
+    /// stages of the computation.
+    /// </summary>
+    template<ArithmeticType T, SimdOrTupleType U>
+    inline auto Hypot( const T x, const U& y ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::Hypot( Traits::Fill<Traits::Size>( static_cast< Type >( x ) ), Internal::ToSimd( y ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the square root of the sum of the squares of each corresponding 
     /// element in x and y, without undue overflow or underflow at intermediate 
@@ -12868,9 +14477,48 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Hypot( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
-
+#endif
     // Hermite
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Calculates the Hermite spline interpolation, using the specified arguments.
+        /// </summary>
+        template<SimdType T, SimdType U, SimdType V, SimdType W>
+            requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
+        inline T HermiteImpl( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+        {
+            using Traits = typename T::Traits;
+            using FloatT = typename T::value_type;
+            auto t2 = t * t;
+            auto t3 = t * t2;
 
+            auto p0 = Traits::Fill( static_cast< FloatT >( 2.0 ) * t3 - static_cast< FloatT >( 3.0 ) * t2 + static_cast< FloatT >( 1.0 ) );
+            auto t0 = Traits::Fill( t3 - static_cast< FloatT >( 2.0 ) * t2 + t );
+            auto p1 = Traits::Fill( static_cast< FloatT >( -2.0 ) * t3 + static_cast< FloatT >( 3.0 ) * t2 );
+            auto t1 = Traits::Fill( t3 - t2 );
+
+            auto result = Traits::Mul( p0, firstPosition.simd );
+            result = Traits::FMAdd( firstTangent.simd, t0, result );
+            result = Traits::FMAdd( secondPosition.simd, p1, result );
+            return Traits::Trim( Traits::FMAdd( secondTangent.simd, t1, result ) );
+        }
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W, ArithmeticType X>
+        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
+    inline auto Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, const X t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Internal::HermiteImpl( Internal::ToSimdType( firstPosition ), Internal::ToSimdType( firstTangent ), Internal::ToSimdType( secondPosition ), Internal::ToSimdType( secondTangent ), static_cast< Type >( t ) );
+    }
+
+#else
     /// <summary>
     /// Calculates the Hermite spline interpolation, using the specified arguments.
     /// </summary>
@@ -13075,14 +14723,46 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename V::Simd;
         return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
     }
-
-
-
-    
-
+#endif
 
     // Dot
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Dot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Dot( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) ) );
+    }
 
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<SimdOrTupleType T, ArithmeticType U>
+    inline auto Dot( const T& v1, const U v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Dot( Internal::ToSimd( v1 ), Traits::FillDivisor<Traits::Size>( static_cast< Type >( v2 ) ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<ArithmeticType T, SimdOrTupleType U>
+    inline auto Dot( const T v1, const U& v2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::Dot( Traits::Fill<Traits::Size>( static_cast< Type >( v1 ) ), Internal::ToSimd( v2 ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the dot product between v1 and v2.
     /// </summary>
@@ -13115,6 +14795,45 @@ namespace Harlinn::Common::Core::Math
         return Traits::Dot( Traits::Load( v1.values ), v2.simd );
     }
 
+    
+#endif
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<int mask, SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Dot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Dot<mask>( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<int mask, SimdOrTupleType T, ArithmeticType U>
+    inline auto Dot( const T& v1, const U v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Dot<mask>( Internal::ToSimd( v1 ), Traits::FillDivisor<Traits::Size>( static_cast< Type >( v2 ) ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
+    template<int mask, ArithmeticType T, SimdOrTupleType U>
+    inline auto Dot( const T v1, const U& v2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Type = typename Traits::Type;
+        using ResultType = Internal::MakeResultType<U>;
+        return ResultType( Traits::Dot<mask>( Traits::Fill<Traits::Size>( static_cast< Type >( v1 ) ), Internal::ToSimd( v2 ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the dot product between v1 and v2.
     /// </summary>
@@ -13157,6 +14876,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Dot<mask>( Traits::Load( v1.values ), Traits::Load( v2.values ) );
     }
+#endif
 
     // ScalarDot
 
@@ -13202,6 +14922,7 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+#ifndef USE_TOSIMD
     /// <summary>
     /// Calculates the dot product between v1 and v2.
     /// </summary>
@@ -13212,11 +14933,24 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Fill<Traits::Size>( ScalarDot( v1, v2 ) );
     }
-
+#endif
     
 
     // AbsDot
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto AbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Abs( Math::Dot( v1, v2 ).simd ) );
+    }
+#else
     /// <summary>
     /// Calculates the absolute value of the dot product between v1 and v2.
     /// </summary>
@@ -13260,9 +14994,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Abs( Math::Dot( v1, v2 ).simd );
     }
+#endif
 
     // ScalarAbsDot
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        return Math::Abs( ScalarDot( v1, v2 ) );
+    }
+#else
     /// <summary>
     /// Calculates the absolute value of the dot product between v1 and v2.
     /// </summary>
@@ -13302,11 +15047,23 @@ namespace Harlinn::Common::Core::Math
     {
         return Math::Abs( ScalarDot( v1, v2 ) );
     }
-
+#endif
 
 
     // Cross
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the cross product between v1 and v2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Cross( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Cross( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the cross product between v1 and v2.
     /// </summary>
@@ -13349,11 +15106,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Cross( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
     }
-
+#endif
 
     // LengthSquared
-
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the squared length of v.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto LengthSquared( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        auto simd = Internal::ToSimd( v );
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::HSum( Traits::Mul( simd, simd ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the squared length of v.
     /// </summary>
@@ -13372,10 +15140,17 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Math::LengthSquared( typename T::Simd(Traits::Load( v.values )) );
     }
-
+#endif
 
     // ScalarLengthSquared
-
+#ifdef USE_TOSIMD
+    template<SimdOrTupleType T>
+    inline auto ScalarLengthSquared( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::LengthSquared( v ).simd );
+    }
+#else
     /// <summary>
     /// Calculates the squared length of v.
     /// </summary>
@@ -13395,9 +15170,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( Math::LengthSquared( v ).simd );
     }
-
+#endif
     // Length
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the length of v.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Length( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Sqrt( Math::LengthSquared( v ).simd ) );
+    }
+#else
     /// <summary>
     /// Calculates the length of v.
     /// </summary>
@@ -13416,9 +15202,20 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Sqrt( Math::LengthSquared( v ).simd );
     }
-
+#endif
     // ScalarLength
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the length of v.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ScalarLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::Length( v ).simd );
+    }
+#else
     /// <summary>
     /// Calculates the length of v.
     /// </summary>
@@ -13437,10 +15234,19 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( Math::Length( v ).simd );
     }
-
+#endif
 
     // Normalize
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Normalizes v.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Normalize( const T& v ) noexcept
+    {
+        return v / Length( v );
+    }
+#else
     /// <summary>
     /// Normalizes v.
     /// </summary>
@@ -13460,9 +15266,23 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename T::Simd;
         return Normalize( Simd(Traits::Load( v.values )) );
     }
-
+#endif
     // ReciprocalLength
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the reciprocal length of v.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ReciprocalLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        auto length = Length( v );
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Div( Traits::Fill<Traits::Size>( static_cast< Type >( 1. ) ), length.simd ) );
+    }
+#else
     /// <summary>
     /// Calculates the reciprocal length of v.
     /// </summary>
@@ -13484,12 +15304,23 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename T::Simd;
         return ReciprocalLength( Simd(Traits::Load( v.values )) );
     }
-
+#endif
     // ScalarReciprocalLength
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the reciprocal length of v.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto ScalarReciprocalLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::ReciprocalLength( v ).simd );
+    }
+#else
     /// <summary>
     /// Calculates the squared length of v.
     /// </summary>
+    /// 
     template<SimdType T>
     inline auto ScalarReciprocalLength( const T& v ) noexcept
     {
@@ -13507,8 +15338,23 @@ namespace Harlinn::Common::Core::Math
         return Traits::First( Math::ReciprocalLength( v ).simd );
     }
 
+#endif
     // DistanceSquared
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto DistanceSquared( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        auto diff = Traits::Sub( Internal::ToSimd( p1 ), Internal::ToSimd( p2 ) );
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::HSum( Traits::Mul( diff, diff ) ) );
+    }
+#else
     /// <summary>
     /// Calculates the squared distance between p1 and p2.
     /// </summary>
@@ -13556,9 +15402,21 @@ namespace Harlinn::Common::Core::Math
         auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), Traits::Load( p2.values.data( ) ) );
         return Traits::HSum( Traits::Mul( diff, diff ) );
     }
-
+#endif
     // ScalarDistanceSquared
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( DistanceSquared( p1, p2 ).simd );
+    }
+#else
     /// <summary>
     /// Calculates the squared distance between p1 and p2.
     /// </summary>
@@ -13600,9 +15458,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( DistanceSquared( p1, p2 ).simd );
     }
-
+#endif
     // Distance
 
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto Distance( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::Sqrt( DistanceSquared( p1, p2 ).simd ) );
+    }
+#else
     /// <summary>
     /// Calculates the distance between p1 and p2.
     /// </summary>
@@ -13646,9 +15517,18 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
     }
-
+#endif
     // ScalarDistance
 
+#ifdef USE_TOSIMD
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Distance( p1, p2 ).simd );
+    }
+#else
     /// <summary>
     /// Calculates the distance between p1 and p2.
     /// </summary>
@@ -13690,10 +15570,22 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( Distance( p1, p2 ).simd );
     }
-
+#endif
 
     // DifferenceOfProducts
-
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
+    template<SimdTupleOrArithmeticType S, SimdOrTupleType T, SimdTupleOrArithmeticType U, SimdTupleOrArithmeticType V>
+        //requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
+    inline auto DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        auto v34 = v3 * v4;
+        return FMA( v1, v2, -v34 );
+    }
+#else
     /// <summary>
     /// Calculates the difference between the product of the first and the second argument, 
     /// and the product of the third and fourth argument.
@@ -13954,11 +15846,22 @@ namespace Harlinn::Common::Core::Math
         auto v34 = static_cast< ValueType >( v3 ) * v4;
         return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
     }
-
+#endif
 
     // SumOfProducts
-
-    
+#ifdef USE_TOSIMD
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
+    template<SimdTupleOrArithmeticType S, SimdOrTupleType T, SimdTupleOrArithmeticType U, SimdTupleOrArithmeticType V>
+        //requires IsCompatible<S, T> && IsCompatible<S, U> && IsCompatible<S, V>
+    inline auto SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        auto v34 = v3 * v4;
+        return FMA( v1, v2, v34 );
+    }
+#else    
     /// <summary>
     /// Calculates the sum of the product of the first and the second argument, 
     /// and the product of the third and fourth argument.
@@ -14159,9 +16062,101 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
-
+#endif
     // BaryCentric
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Calculates a point in Barycentric coordinates, using the specified triangle.
+        /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+        /// </summary>
+        /// <param name="p1">
+        /// The first position.
+        /// </param>
+        /// <param name="p2">
+        /// The second position.
+        /// </param>
+        /// <param name="p3">
+        /// The third position.
+        /// </param>
+        /// <param name="f">
+        /// Weighting factor.
+        /// </param>
+        /// <param name="g">
+        /// Weighting factor.
+        /// </param>
+        template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
+            requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
+        inline S BaryCentricImpl( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
+        {
+            using Traits = typename S::Traits;
+            using Simd = S;
 
+            auto rmm1 = Traits::Sub( p2.simd, p1.simd );
+            auto rmm2 = Traits::Sub( p3.simd, p1.simd );
+            rmm1 = Traits::FMAdd( rmm1.simd, f.simd, p1.simd );
+            return Simd( Traits::FMAdd( rmm2.simd, g.simd, rmm1.simd ) );
+        }
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
+    inline auto BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
+    {
+        return Internal::BaryCentricImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( f ), Internal::ToSimdType( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, ArithmeticType V, ArithmeticType W>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>
+    inline auto BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = typename Traits::Type;
+        using Simd = typename S::Simd;
+
+        return Internal::BaryCentricImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Simd( Traits::Fill<Traits::Size>( static_cast< Type >( f ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast<Type>( g ) ) ) );
+    }
+
+#else
     /// <summary>
     /// Calculates a point in Barycentric coordinates, using the specified triangle.
     /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
@@ -15294,10 +17289,96 @@ namespace Harlinn::Common::Core::Math
 
         return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
     }
-
+#endif
 
     // CatmullRom
 
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Calculates the Catmull-Rom interpolation, using the specified positions.
+        /// </summary>
+        /// <param name="p1">
+        /// The first position.
+        /// </param>
+        /// <param name="p2">
+        /// The second position.
+        /// </param>
+        /// <param name="p3">
+        /// The third position.
+        /// </param>
+        /// <param name="p4">
+        /// The fourth position.
+        /// </param>
+        /// <param name="t">
+        /// The interpolation control factors.
+        /// </param>
+        template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
+            requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
+        inline S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+        {
+            using Traits = typename S::Traits;
+            using FloatT = typename Traits::Type;
+            using Simd = S;
+
+            static constexpr Traits::SIMDType catmul2 = { { static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ) } };
+            static constexpr Traits::SIMDType catmul3 = { { static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ) } };
+            static constexpr Traits::SIMDType catmul4 = { { static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ) } };
+            static constexpr Traits::SIMDType catmul5 = { { static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ) } };
+            static constexpr Traits::SIMDType oneHalf = { { static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ) } };
+
+            auto t2 = Traits::Mul( t.simd, t.simd );
+            auto t3 = Traits::Mul( t.simd, t2 );
+            // For p1:
+            auto result = Traits::Add( t2, t2 );
+            result = Traits::Sub( result, t.simd );
+            result = Traits::Sub( result, t3 );
+            result = Traits::Mul( result, p1.simd );
+            // For p2:
+            auto temp = Traits::Mul( t3, catmul3 );
+            temp = Traits::FNMAdd( t2, catmul5, temp );
+            temp = Traits::Add( temp, catmul2 );
+            result = Traits::FMAdd( temp, p2.simd, result );
+            // For p3:
+            temp = Traits::Mul( t2, catmul4 );
+            temp = Traits::FNMAdd( t3, catmul3, temp );
+            temp = Traits::Add( temp, t.simd );
+            result = Traits::FMAdd( temp, p3.simd, result );
+            // For p4:
+            t3 = Traits::Sub( t3, t2 );
+            result = Traits::FMAdd( t3, p4.simd, result );
+            // Divide by 2 
+            return Simd( Traits::Mul( result, oneHalf ) );
+        }
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        return Internal::CatmullRomImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( p4 ), Internal::ToSimdType( t ) );
+    }
+
+#else
     /// <summary>
     /// Calculates the Catmull-Rom interpolation, using the specified positions.
     /// </summary>
@@ -16082,7 +18163,82 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( p4 ), Simd( t ) );
     }
+#endif
 
+#ifdef USE_TOSIMD
+    namespace Internal
+    {
+        /// <summary>
+        /// Calculates the Catmull-Rom interpolation, using the specified positions.
+        /// </summary>
+        /// <param name="p1">
+        /// The first position.
+        /// </param>
+        /// <param name="p2">
+        /// The second position.
+        /// </param>
+        /// <param name="p3">
+        /// The third position.
+        /// </param>
+        /// <param name="p4">
+        /// The fourth position.
+        /// </param>
+        /// <param name="t">
+        /// The interpolation control factors.
+        /// </param>
+        template<SimdType S, SimdType T, SimdType U, SimdType V>
+            requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
+        inline S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const typename S::value_type t ) noexcept
+        {
+            using Traits = typename S::Traits;
+            using FloatT = typename Traits::Type;
+            using Simd = S;
+
+            FloatT t2 = t * t;
+            FloatT t3 = t * t2;
+
+            auto P1 = Traits::Fill( ( -t3 + static_cast< FloatT >( 2.0 ) * t2 - t ) * static_cast< FloatT >( 0.5 ) );
+            auto P2 = Traits::Fill( ( static_cast< FloatT >( 3.0 ) * t3 - static_cast< FloatT >( 5.0 ) * t2 + static_cast< FloatT >( 2.0 ) ) * static_cast< FloatT >( 0.5 ) );
+            auto P3 = Traits::Fill( ( static_cast< FloatT >( -3.0 ) * t3 + static_cast< FloatT >( 4.0 ) * t2 + t ) * static_cast< FloatT >( 0.5 ) );
+            auto P4 = Traits::Fill( ( t3 - t2 ) * static_cast< FloatT >( 0.5 ) );
+
+            P2 = Traits::Mul( p2.simd, P2 );
+            P1 = Traits::FMAdd( p1.simd, P1, P2 );
+            P4 = Traits::Mul( p4.simd, P4 );
+            P3 = Traits::FMAdd( p3.simd, P3, P4 );
+            return Simd( Traits::Trim( Traits::Add( P1, P3 ) ) );
+        }
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, ArithmeticType W>
+        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
+    inline auto CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Type = typename Traits::Type;
+        using SimdType = Internal::MakeResultType<T>;
+        return Internal::CatmullRomImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( p4 ), SimdType( Traits::Fill<Traits::Size>( static_cast< Type >( t ) ) ) );
+    }
+
+#else
     /// <summary>
     /// Calculates the Catmull-Rom interpolation, using the specified positions.
     /// </summary>
@@ -16528,7 +18684,7 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( p4 ), t );
     }
-
+#endif
 
 
     /// <summary>
@@ -16541,8 +18697,8 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The lowest value held by the argument.
     /// </returns>
-    template<SimdType T, typename ResultT = typename T::value_type >
-    inline ResultT MinComponentValue( const T& v ) noexcept
+    template<SimdType T>
+    inline typename T::value_type MinComponentValue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HorizontalMin( v.simd );
@@ -16588,8 +18744,8 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The highest value held by the argument.
     /// </returns>
-    template<SimdType T, typename ResultT = typename T::value_type >
-    inline ResultT MaxComponentValue( const T& v ) noexcept
+    template<SimdType T>
+    inline typename T::value_type MaxComponentValue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HorizontalMax( v.simd );
