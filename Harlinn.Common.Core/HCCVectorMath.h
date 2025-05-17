@@ -54,10 +54,16 @@ namespace Harlinn::Common::Core::Math
     concept VectorSimdType = std::is_base_of_v<Internal::VectorBase, typename T::TupleType>;
 
     template<typename T>
+    concept VectorOrVectorSimdType = VectorType<T> || VectorSimdType<T>;
+
+    template<typename T>
     concept ScalarType = std::is_base_of_v<Internal::ScalarBase, T>;
 
     template<typename T>
     concept ScalarSimdType = std::is_base_of_v<Internal::ScalarBase, typename T::TupleType>;
+
+    template<typename T>
+    concept ScalarOrScalarSimdType = ScalarType<T> || ScalarSimdType<T>;
 
 
 
@@ -723,20 +729,28 @@ namespace Harlinn::Common::Core::Math
         operator -(...), brought the time required to render kroken\camera-1.pbrt down to
         381.4 seconds.
 
+        After reducing the number of overloads required to make things work, returning 
+        v.simd by value is suddenly good for performance, rendering kroken\camera-1.pbrt
+        took 367.5 seconds - down from 374.9 seconds.
+
+
+        */
+
         template<SimdType T>
         constexpr typename T::SIMDType ToSimd( const T& v ) noexcept
         {
             return v.simd;
         }
-        */
+        
 
 
-
+        /*
         template<SimdType T>
         constexpr const typename T::SIMDType& ToSimd( const T& v ) noexcept
         {
             return v.simd;
         }
+        */
 
         template<TupleType T>
         typename T::SIMDType ToSimd( const T& v ) noexcept
@@ -2610,7 +2624,6 @@ namespace Harlinn::Common::Core::Math
 
 
     // Addition
-#ifdef USE_TOSIMD
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
     inline auto operator + ( const T& lhs, const U& rhs ) noexcept
@@ -2636,72 +2649,7 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::Add( Internal::ToSimd( lhs ), Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) ) );
     }
 
-#else
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T,U>
-    inline T operator + ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Add( lhs.simd, rhs.simd );
-    }
-    
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T operator + ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Add( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T operator + ( const U& lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Add( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT operator + ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Add( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
 
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T operator + ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Add( lhs.simd, Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) );
-    }
-
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline typename T::Simd operator + ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Add( Traits::Load( lhs.values ), Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) );
-    }
-
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U operator + ( const T lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename U::Traits;
-        return Traits::Add( Traits::Fill<Traits::Size>( static_cast< typename U::value_type >( lhs ) ), rhs.simd );
-    }
-
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline typename U::Simd operator + ( const T lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Add( Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( lhs ) ), Traits::Load( rhs.values ) );
-    }
-#endif
-
-
-#ifdef USE_TOSIMD
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
     inline auto operator - ( const T& lhs, const U& rhs ) noexcept
@@ -2726,76 +2674,8 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Sub( Internal::ToSimd( lhs ), Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) ) );
     }
-#else
-    // Subtraction
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T operator - ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sub( lhs.simd, rhs.simd );
-    }
-
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T operator - ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sub( lhs.simd, Traits::Load( rhs.values ) );
-    }
-
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T operator - ( const U& lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Load( lhs.values ), rhs.simd );
-    }
-
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT operator - ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Load( lhs.values ), Traits::Load( rhs.values ) );
-    }
-
-
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T operator - ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sub( lhs.simd, Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) );
-    }
-
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline typename T::Simd operator - ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Load( lhs.values ), Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) );
-    }
-
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U operator - ( const T lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename U::Traits;
-        return Traits::Sub( Traits::Fill<Traits::Size>( static_cast< typename U::value_type >( lhs ) ), rhs.simd );
-    }
-
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline typename U::Simd operator - ( const T lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( lhs ) ), Traits::Load( rhs.values ) );
-    }
-#endif
 
     // Multiplication
-#ifdef USE_TOSIMD
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
     inline auto operator * ( const T& lhs, const U& rhs ) noexcept
@@ -2820,75 +2700,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Mul( Internal::ToSimd( lhs ), Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) ) );
     }
-#else
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T operator * ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Mul( lhs.simd, rhs.simd );
-    }
-
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T operator * ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Mul( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T operator * ( const U& lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Mul( Traits::Load( lhs.values ), rhs.simd );
-    }
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT operator * ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T operator * ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Mul( lhs.simd, Traits::Fill<Traits::Size>( static_cast< Type >( rhs ) ) );
-    }
-    template<typename U, SimdType T>
-        requires IsArithmetic<U>
-    inline T operator * ( const U lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Mul( Traits::Fill<Traits::Size>( static_cast< Type >( lhs ) ), rhs.simd );
-    }
-
-    template<TupleType T, typename U, typename ResultT = typename T::Simd>
-        requires IsArithmetic<U>
-    inline ResultT operator * ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( rhs ) ) );
-    }
-    template<typename U, TupleType T, typename ResultT = typename T::Simd>
-        requires IsArithmetic<U>
-    inline ResultT operator * ( const U lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Mul( Traits::Fill<Traits::Size>( static_cast< Type >( lhs ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-#endif
 
     // Division
 
-#ifdef USE_TOSIMD
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
     inline auto operator / ( const T& lhs, const U& rhs ) noexcept
@@ -2913,77 +2727,8 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Div( Internal::ToSimd( lhs ), Traits::FillDivisor<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) ) );
     }
-#else
-
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T operator / ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Div( lhs.simd, rhs.simd );
-    }
-
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T operator / ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Div( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T operator / ( const U& lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), lhs.simd );
-    }
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT operator / ( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T operator / ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Div( lhs.simd, Traits::FillDivisor<Traits::Size>( static_cast< Type >( rhs ) ) );
-    }
-    template<typename U, SimdType T>
-        requires IsArithmetic<U>
-    inline T operator / ( const U lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Div( Traits::Fill<Traits::Size>( static_cast< Type >( lhs ) ), rhs.simd );
-    }
-
-    template<TupleType T, typename U, typename ResultT = typename T::Simd>
-        requires IsArithmetic<U>
-    inline ResultT operator / ( const T& lhs, const U rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::FillDivisor<Traits::Size>( static_cast< Type >( rhs ) ) );
-    }
-    template<typename U, TupleType T, typename ResultT = typename T::Simd>
-        requires IsArithmetic<U>
-    inline ResultT operator / ( const U lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        return Traits::Div( Traits::Fill<Traits::Size>( static_cast< Type >( lhs ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-#endif
 
     // Operations
-    
-    
-
 
     /// <summary>
     /// Retrieves the lowest element of v 
@@ -3063,8 +2808,6 @@ namespace Harlinn::Common::Core::Math
     }
 
     // Avg
-
-#ifdef USE_TOSIMD
     template<SimdOrTupleType T>
     inline auto Avg( const T& t ) noexcept
     {
@@ -3082,51 +2825,6 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return ScalarHSum( t ) / static_cast< typename Traits::Type >( Traits::Size );
     }
-
-#else
-
-    /// <summary>
-    /// Calculates the average value of the elements in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Avg( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Div( Traits::HSum( t.simd ), Traits::FillDivisor<Traits::Size>( static_cast<typename Traits::Type>( Traits::Size ) ));
-    }
-
-    /// <summary>
-    /// Calculates the average value of the elements in the argument.
-    /// </summary>
-    template<TupleType T>
-    inline typename T::Simd Avg( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Div( Traits::HSum( Traits::Load( t.values ) ), Traits::FillDivisor<Traits::Size>( static_cast< typename Traits::Type >( Traits::Size ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the average value of the elements in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline typename T::value_type ScalarAvg( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return ScalarHSum( t ) / static_cast< typename Traits::Type >( Traits::Size );
-    }
-
-    /// <summary>
-    /// Calculates the average value of the elements in the argument.
-    /// </summary>
-    template<TupleType T>
-    inline typename T::value_type ScalarAvg( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return ScalarHSum( t ) / static_cast< typename Traits::Type >( Traits::Size );
-    }
-#endif
-
-
 
     /// <summary>
     /// Calculates the horizontal product of the elements in the vector.
@@ -3185,7 +2883,7 @@ namespace Harlinn::Common::Core::Math
 
 
     // AllTrue
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Returns true if all the elements of the argument have all their bits set to 1 
     /// </summary>
@@ -3195,31 +2893,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::AllTrue( Internal::ToSimd( v ) );
     }
-#else
-
-    /// <summary>
-    /// Returns true if all the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<SimdType T>
-    inline bool AllTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllTrue( v.simd );
-    }
-    /// <summary>
-    /// Returns true if all the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT AllTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllTrue( Traits::Load( v.values ) );
-    }
-#endif
 
     // AnyTrue
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Returns true if any of the elements of the argument have all their bits set to 1 
     /// </summary>
@@ -3229,31 +2905,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::AllTrue( Internal::ToSimd( v ) );
     }
-#else
-
-    /// <summary>
-    /// Returns true if any of the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<SimdType T>
-    inline bool AnyTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllTrue( v.simd );
-    }
-    /// <summary>
-    /// Returns true if any of the elements of the argument have all their bits set to 1 
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT AnyTrue( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyTrue( Traits::Load( v.values ) );
-    }
-#endif
-
 
     // Less
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Determines whether the elements of v1 are less than 
     /// the corresponding elements of v2.
@@ -3407,459 +3061,7 @@ namespace Harlinn::Common::Core::Math
         return Traits::AnyLess( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
     }
 
-
-#else
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Less( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Less( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Less( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, TupleType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Less( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is less than value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T Less( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is less than value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline T Less( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is less than an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U Less( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is less than an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline U Less( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Less( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AllLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AllLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLess( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-
-    // AnyLess
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less than value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is less than value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyLess( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AnyLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less than any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less than any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AnyLess( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLess( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-#endif
-
     // LessOrEqual
-
-#ifdef USE_TOSIMD
 
     /// <summary>
     /// Determines whether the elements of v1 are less than, or equal to, 
@@ -4014,457 +3216,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::AnyLessOrEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
     }
 
-#else
-    /// <summary>
-    /// Determines whether the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T LessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less or equal to
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T LessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd LessOrEqual( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is less or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, TupleType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd LessOrEqual( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less or equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is less or equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T LessOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are less or equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is less or equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline T LessOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less or equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is less or equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U LessOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less or equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is less or equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline U LessOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::LessOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is less or equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllLessOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are less or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is less or equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllLessOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less or equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less or equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AllLessOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less or equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less or equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AllLessOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllLessOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-
-    // AnyLessOrEqual
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is less or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is less or equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyLessOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are less or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is less or equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyLessOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is less or equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less or equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AnyLessOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is less or equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is less or equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AnyLessOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyLessOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-#endif
 
     // Equal
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Determines whether the elements of lhs and the corresponding elements of rhs are 
     /// less or equally apart than the corresponding element of epsilon.
@@ -4788,1413 +3542,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::AnyEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
     }
-
-#else
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
-    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( lhs.simd, rhs.simd, epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( lhs.simd, rhs.simd, Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( lhs.simd, Traits::Load( rhs.values ), epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( lhs.simd, Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( Traits::Load( lhs.values ), rhs.simd, epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( Traits::Load( lhs.values ), rhs.simd, Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( Traits::Load( lhs.values ), Traits::Load( rhs.values ), epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType S, SimdType T, typename U>
-        requires IsCompatible<S, T> && IsArithmetic<U>
-    inline S Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( lhs.simd, rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline S Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( lhs.simd, Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType S, SimdType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline typename S::Simd Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( Traits::Load( lhs.values ), rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of lhs and the corresponding elements of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// If an element of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline typename S::Simd Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Equal( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-
-    // AllEqual
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, rhs.simd, epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<SimdType S, SimdType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<SimdType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<TupleType S, SimdType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<TupleType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AllEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-
-    ///
-    // AnyEqual
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( lhs.simd, rhs.simd, epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( lhs.simd, rhs.simd, Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( lhs.simd, Traits::Load( rhs.values ), epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( Traits::Load( lhs.values ), rhs.simd, epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), epsilon.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the corresponding element of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The source of the maximum difference between the
-    /// corresponding elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the corresponding element of epsilon, otherwise false.
-    /// </returns>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<SimdType S, SimdType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( lhs.simd, rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<SimdType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<TupleType S, SimdType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of lhs and their corresponding element of rhs are 
-    /// less or equally apart than the value of epsilon.
-    /// </summary>
-    /// <param name="lhs">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="rhs">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <param name="epsilon">
-    /// The maximum difference between the elements from lhs and rhs.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of lhs and the corresponding elements of rhs are less
-    /// or equally apart than the value of epsilon, otherwise false. 
-    /// </returns>
-    template<TupleType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsArithmetic<U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::AnyEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
-    }
-
-
-    // Equal
-
-    /// <summary>
-    /// Determines whether the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Equal( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are equal to
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Equal( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Equal( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, TupleType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Equal( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T Equal( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline T Equal( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U Equal( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline U Equal( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Equal( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AllEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AllEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-
-    // AnyEqual
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AnyEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AnyEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-#endif
     
     // NotEqual
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Determines whether the elements of v1 are not equal to 
     /// the corresponding elements of v2.
@@ -6349,459 +3699,10 @@ namespace Harlinn::Common::Core::Math
         return Traits::AnyNotEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
     }
 
-#else
-    /// <summary>
-    /// Determines whether the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is not equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T NotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are not equal to
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is not equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T NotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is not equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd NotEqual( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is not equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, TupleType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd NotEqual( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are not equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is not equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T NotEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are not equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is not equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline T NotEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is not equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is not equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U NotEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is not equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is not equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline U NotEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::NotEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are not equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is not equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllNotEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are not equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is not equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllNotEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is not equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is not equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AllNotEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is not equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is not equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AllNotEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllNotEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-
-    // AnyNotEqual
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are not equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is not equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are not equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is not equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyNotEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are not equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is not equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyNotEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is not equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is not equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AnyNotEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is not equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is not equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AnyNotEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyNotEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-#endif
 
 
 
     // GreaterOrEqual
-#ifdef USE_TOSIMD
 
     /// <summary>
     /// Determines whether the elements of v1 are greater than, or equal to, 
@@ -6956,457 +3857,10 @@ namespace Harlinn::Common::Core::Math
         return Traits::AnyGreaterOrEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
     }
 
-#else
-    /// <summary>
-    /// Determines whether the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T GreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( v1.simd, v2.simd );
-    }
 
-    /// <summary>
-    /// Determines whether the elements of v1 are greater or equal to
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T GreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd GreaterOrEqual( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater or equal to the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, TupleType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd GreaterOrEqual( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater or equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is greater or equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T GreaterOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater or equal to value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is greater or equal to value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline T GreaterOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater or equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is greater or equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U GreaterOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater or equal to the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is greater or equal to an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline U GreaterOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::GreaterOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is greater or equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllGreaterOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is greater or equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllGreaterOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater or equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater or equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AllGreaterOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater or equal to all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater or equal to all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AllGreaterOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreaterOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-
-    // AnyGreaterOrEqual
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater or equal to 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater or equal to their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is greater or equal to value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyGreaterOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater or equal to value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is greater or equal to value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyGreaterOrEqual( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater or equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater or equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AnyGreaterOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater or equal to any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater or equal to any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AnyGreaterOrEqual( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreaterOrEqual( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-#endif
 
     // Greater
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Determines whether the elements of v1 are greater than 
     /// the corresponding elements of v2.
@@ -7561,457 +4015,8 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-#else
-    /// <summary>
-    /// Determines whether the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Greater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater than
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Greater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Greater( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// If an element of v1 is greater than the corresponding element of v2,
-    /// the corresponding element in the result will be set to 0xFFFFFFFF,
-    /// otherwise the corresponding element in the result will be set to 0.
-    /// </returns>
-    template<TupleType U, TupleType T>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Greater( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater than value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is greater than value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline T Greater( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether the elements of v1 are greater than value.
-    /// </summary>
-    /// <returns>
-    /// If an element of v1 is greater than value, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline T Greater( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater than the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is greater than an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline U Greater( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater than the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// If value is greater than an element of v2, the corresponding element 
-    /// in the result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline U Greater( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Greater( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if all the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater than value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is greater than value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllGreater( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether all the elements of v1 are greater than value.
-    /// </summary>
-    /// <returns>
-    /// true if all the elements of v1 is greater than value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AllGreater( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater than all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater than all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AllGreater( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater than all the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater than all the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AllGreater( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AllGreater( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-
-
-    // AnyGreater
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( v1.simd, Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( Traits::Load( v1.values ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater than 
-    /// the corresponding elements of v2.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source of values for the comparison.
-    /// </param>
-    /// <param name="v2">
-    /// The second source of values for the comparison.
-    /// </param>
-    /// <returns>
-    /// true if any of the elements of v1 is greater than their corresponding 
-    /// element in v2, otherwise false.
-    /// </returns>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater than value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is greater than value, otherwise false.
-    /// </returns>
-    template<SimdType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyGreater( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( v1.simd, Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether any of the elements of v1 are greater than value.
-    /// </summary>
-    /// <returns>
-    /// true if any of the elements of v1 is greater than value, otherwise false.
-    /// </returns>
-    template<TupleType T, typename U>
-        requires IsArithmetic<U>
-    inline bool AnyGreater( const T& v1, U value ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( Traits::Load( v1.values ), Traits::Fill<Traits::Size>( value ) );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater than any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater than any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, SimdType U>
-        requires IsArithmetic<T>
-    inline bool AnyGreater( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( Traits::Fill<Traits::Size>( value ), v2.simd );
-    }
-
-    /// <summary>
-    /// Determines whether value is greater than any of the elements of v2.
-    /// </summary>
-    /// <returns>
-    /// true value is greater than any of the elements of v2, otherwise false.
-    /// </returns>
-    template< typename T, TupleType U>
-        requires IsArithmetic<T>
-    inline bool AnyGreater( T value, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::AnyGreater( Traits::Fill<Traits::Size>( value ), Traits::Load( v2.values ) );
-    }
-#endif
-
     // Select
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Performs a per-component selection between two input vectors and returns the resulting vector.
     /// </summary>
@@ -8034,185 +4039,8 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Select( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ), Internal::ToSimd( control ) ) );
     }
-#else
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
-    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( v1.simd, v2.simd, control.simd );
-    }
 
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( v1.simd, v2.simd, Traits::Load( control.values ) );
-    }
 
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( v1.simd, Traits::Load( v2.values ), control.simd );
-    }
-
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( v1.simd, Traits::Load( v2.values ), Traits::Load( control.values ) );
-    }
-
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( Traits::Load( v1.values ), v2.simd, control.simd );
-    }
-
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( Traits::Load( v1.values ), v2.simd, Traits::Load( control.values ) );
-    }
-
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( Traits::Load( v1.values ), Traits::Load( v2.values ), control.simd );
-    }
-
-    /// <summary>
-    /// Performs a per-component selection between two input vectors and returns the resulting vector.
-    /// </summary>
-    /// <param name="v1">
-    /// The first source to select elements from.
-    /// </param>
-    /// <param name="v2">
-    /// The second source to select elements from.
-    /// </param>
-    /// <param name="control">
-    /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
-    /// the corresponding element in the result will be from v1, if an element control is 
-    /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Select( const S& v1, const T& v2, const U& control ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Select( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( control.values ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     /// <summary>
     /// Determines which of the elements of t are NaN. 
     /// </summary>
@@ -8231,47 +4059,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::IsNaN( Internal::ToSimd( t ) ) );
     }
-#else
-    /// <summary>
-    /// Determines which of the elements of t are NaN. 
-    /// </summary>
-    /// <param name="t">
-    /// The first source of values for the test.
-    /// </param>
-    /// <returns>
-    /// If an element of t is NaN, the corresponding element in the 
-    /// result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<SimdType T>
-    inline T IsNaN( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::IsNaN( t.simd );
-    }
-
-    /// <summary>
-    /// Determines which of the elements of t are NaN. 
-    /// </summary>
-    /// <param name="t">
-    /// The first source of values for the test.
-    /// </param>
-    /// <returns>
-    /// If an element of t is NaN, the corresponding element in the 
-    /// result will be set to 0xFFFFFFFF, otherwise the corresponding 
-    /// element in the result will be set to 0.
-    /// </returns>
-    template<TupleType T>
-    inline T IsNaN( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::IsNaN( Traits::Load(t.values) );
-    }
-#endif
 
 
     // Abs
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Computes the absolute value of each element held by the argument.
     /// </summary>
@@ -8282,29 +4073,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Abs( Internal::ToSimd( t ) ) );
     }
-#else
-    /// <summary>
-    /// Computes the absolute value of each element held by the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Abs( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Abs( t.simd );
-    }
-    /// <summary>
-    /// Computes the absolute value of each element held by the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Abs( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Abs( Traits::Load( t.values ) );
-    }
-#endif
+
     // FastAbs
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Computes the absolute value of each element held by the argument.
     /// </summary>
@@ -8315,31 +4086,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::FastAbs( Internal::ToSimd( t ) ) );
     }
-#else
-
-    /// <summary>
-    /// Computes the absolute value of each element held by the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T FastAbs( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastAbs( t.simd );
-    }
-    /// <summary>
-    /// Computes the absolute value of each element held by the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT FastAbs( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastAbs( Traits::Load( t.values ) );
-    }
-#endif
 
 
     // Min
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Makes a comparison between the elements held by the two arguments, and 
     /// returns a TupleSimd derived object containing the smallest elements.
@@ -8352,57 +4102,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Min( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ) ) );
     }
-#else
-    /// <summary>
-    /// Makes a comparison between the elements held by the two arguments, and 
-    /// returns a TupleSimd containing the smallest elements.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Min( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Min( lhs.simd, rhs.simd );
-    }
 
-    /// <summary>
-    /// Makes a comparison between the elements held by the two arguments, and 
-    /// returns a TupleSimd containing the smallest elements.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Min( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Min( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Makes a comparison between the elements held by the two arguments, and 
-    /// returns a TupleSimd containing the smallest elements.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T Min( const U& lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Min( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-
-    /// <summary>
-    /// Makes a comparison between the elements held by the two arguments, and 
-    /// returns a TupleSimd containing the smallest elements.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT Min( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Min( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-#endif
     // Max
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Makes a comparison between the elements held by the two arguments, and 
     /// returns a TupleSimd containing the largest elements.
@@ -8415,44 +4117,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Max( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ) ) );
     }
-#else
-    /// <summary>
-    /// Makes a comparison between the elements held by the two arguments, and 
-    /// returns a TupleSimd containing the largest elements.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Max( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Max( lhs.simd, rhs.simd );
-    }
-
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Max( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Max( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T Max( const U& lhs, const T& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Max( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT Max( const T& lhs, const U& rhs ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Max( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-#endif
 
     // Sqr
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Computes the square value of each element held by the argument.
     /// </summary>
@@ -8473,29 +4140,10 @@ namespace Harlinn::Common::Core::Math
             return ResultType( Traits::Mul( simd, simd ) );
         }
     }
-#else
-    /// <summary>
-    /// Computes the square value of each element held by the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Sqr( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Mul( t.simd, t.simd );
-    }
-    /// <summary>
-    /// Computes the square value of each element held by the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Sqr( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Sqr<typename T::Simd>( Traits::Load( t.values.data( ) ) );
-    }
-#endif
+
     // Ceil
 
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Computes the ceiling of each element held by the argument.
     /// </summary>
@@ -8506,28 +4154,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Ceil( Internal::ToSimd( t ) ) );
     }
-#else
-    /// <summary>
-    /// Computes the ceiling of each element held by the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Ceil( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Ceil( t.simd );
-    }
-    /// <summary>
-    /// Computes the ceiling of each element held by the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Ceil( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Ceil( Traits::Load( t.values.data( ) ) );
-    }
-#endif
+
     // Floor
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Computes the floor of each element held by the argument.
     /// </summary>
@@ -8538,30 +4167,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Floor( Internal::ToSimd( t ) ) );
     }
-#else
-    /// <summary>
-    /// Computes the floor of each element held by the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Floor( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Floor( t.simd );
-    }
 
-    /// <summary>
-    /// Computes the floor of each element held by the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Floor( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Floor( Traits::Load( t.values.data( ) ) );
-    }
-#endif
 
     // Round
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Rounds each element held by the argument towards the nearest even integer.
     /// </summary>
@@ -8572,30 +4181,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Round( Internal::ToSimd( t ) ) );
     }
-#else
-    /// <summary>
-    /// Rounds each element held by the argument towards the nearest even integer.
-    /// </summary>
-    template<SimdType T>
-    inline T Round( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Round( t.simd );
-    }
-    /// <summary>
-    /// Rounds each element held by the argument towards the nearest even integer.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Round( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Round( Traits::Load( t.values.data( ) ) );
-    }
-#endif
 
     // Trunc
 
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Rounds each element held by the argument to the nearest integer in the direction of zero.
     /// </summary>
@@ -8606,29 +4195,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Truncate( Internal::ToSimd( t ) ) );
     }
-#else
-    /// <summary>
-    /// Rounds each element held by the argument to the nearest integer in the direction of zero.
-    /// </summary>
-    template<SimdType T>
-    inline T Trunc( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Truncate( t.simd );
-    }
-    /// <summary>
-    /// Rounds each element held by the argument to the nearest integer in the direction of zero.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Trunc( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Truncate( Traits::Load( t.values.data( ) ) );
-    }
-#endif
 
     // Lerp
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8644,69 +4213,7 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Trim( Traits::Lerp( Internal::ToSimd( a ), Internal::ToSimd( b ), static_cast< Type >( t ) ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType T, SimdType U, typename NumberT>
-        requires std::is_arithmetic_v<NumberT> && IsCompatible<T, U> 
-    inline T Lerp( const T& a, const U& b, NumberT t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp( a.simd, b.simd, static_cast< Type >( t ) ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType T, TupleType U, typename NumberT>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T Lerp( const T& a, const U& b, NumberT t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType T, SimdType U, typename NumberT>
-        requires std::is_arithmetic_v<NumberT> && IsCompatible<T, U>
-    inline U Lerp( const T& a, const U& b, NumberT t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT Lerp( const T& a, const U& b, NumberT t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) ) );
-    }
-#endif
-    
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8721,123 +4228,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<S>;
         return ResultType( Traits::Trim( Traits::Lerp( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( t ) ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( a.simd, b.simd, t.simd ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( a.simd, b.simd, Traits::Load( t.values ) ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( a.simd, Traits::Load( b.values ), t.simd ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), b.simd, t.simd ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), t.simd ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT Lerp( const S& a, const T& b, const U& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the linear interpolation between a and b, for elements of
     /// t is inside [0,1), or the linear extrapolation for elements
@@ -8851,38 +4244,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Trim( Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Internal::ToSimd( t ) ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the linear interpolation between a and b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<typename NumberT1, typename NumberT2, SimdType T>
-        requires std::is_arithmetic_v<NumberT1> && std::is_arithmetic_v<NumberT2>
-    inline T Lerp( NumberT1 a, NumberT2 b, const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between a and b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<typename NumberT1, typename NumberT2, TupleType T>
-        requires std::is_arithmetic_v<NumberT1>&& std::is_arithmetic_v<NumberT2>
-    inline typename T::Simd Lerp( NumberT1 a, NumberT2 b, const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) ) );
-    }
-#endif    
 
     // Lerp2
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8898,69 +4262,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Trim( Traits::Lerp2( Internal::ToSimd( a ), Internal::ToSimd( b ), static_cast< Type >( t ) ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType T, SimdType U, typename NumberT>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T Lerp2( NumberT t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp2( a.simd, b.simd, static_cast< Type >( t ) ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType T, TupleType U, typename NumberT>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T Lerp2( NumberT t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp2( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType T, SimdType U, typename NumberT>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U Lerp2( NumberT t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT Lerp2( NumberT t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) ) );
-    }
-#endif    
-
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
@@ -8976,123 +4280,8 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<S>;
         return ResultType( Traits::Trim( Traits::Lerp2( Internal::ToSimd( a ), Internal::ToSimd( b ), Internal::ToSimd( t ) ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( a.simd, b.simd, t.simd ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( a.simd, Traits::Load( b.values ), t.simd ) );
-    }
 
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), b.simd, t.simd ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), t.simd ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( a.simd, b.simd, Traits::Load( t.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between the
-    /// the elements of a and the elements of b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT Lerp2( const S& t, const T& a, const U& b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) ) );
-    }
-#endif    
-
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the linear interpolation between a and b, for elements of
     /// t is inside [0,1), or the linear extrapolation for elements
@@ -9106,38 +4295,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<S>;
         return ResultType(Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Internal::ToSimd( t ) ) ));
     }
-#else
-    /// <summary>
-    /// Calculates the linear interpolation between a and b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<SimdType T, typename NumberT1, typename NumberT2>
-        requires std::is_arithmetic_v<NumberT1>&& std::is_arithmetic_v<NumberT2>
-    inline T Lerp2( const T& t, NumberT1 a, NumberT2 b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd ) );
-    }
-
-    /// <summary>
-    /// Calculates the linear interpolation between a and b, for elements of
-    /// t is inside [0,1), or the linear extrapolation for elements
-    /// in t outside [0,1).
-    /// </summary>
-    template<TupleType T, typename NumberT1, typename NumberT2>
-        requires std::is_arithmetic_v<NumberT1>&& std::is_arithmetic_v<NumberT2>
-    inline typename T::Simd Lerp2( const T& t, NumberT1 a, NumberT2 b ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) ) );
-    }
-#endif
     
     // Permute
-#ifdef USE_TOSIMD
+
     template<int shuffleMask, SimdOrTupleType T>
     inline T Permute( const T& t ) noexcept
     {
@@ -9145,22 +4305,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Permute<shuffleMask>( Internal::ToSimd( t ) ) );
     }
-#else
-    template<int shuffleMask, SimdType T>
-    inline T Permute( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Permute<shuffleMask>( t.simd );
-    }
-    template<int shuffleMask, TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Permute( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Permute<shuffleMask>( Traits::Load( t.values ) );
-    }
-#endif
+
     // Clamp
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Returns the elements of v, if the elements are between their
     /// respective boundaries specified by the elements of lowerBounds
@@ -9206,164 +4353,7 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::Clamp( Traits::Fill<T::Size>( static_cast< Type >( v ) ), Internal::ToSimd( lowerBounds ), Internal::ToSimd( upperBounds ) ) );
     }
 
-#else
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( v.simd, lowerBounds.simd, upperBounds.simd );
-    }
 
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( v.simd, lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    //
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, upperBounds.simd );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename S::Simd>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified the elements of lowerBounds
-    /// and the elements of upperBounds, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT> && IsCompatible<T, U>
-    inline ResultT Clamp( NumberT v, const T& lowerBounds, const U& upperBounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Clamp( Traits::Fill<Traits::Size>( v ), Traits::Load( lowerBounds.values ), Traits::Load( upperBounds.values ) );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified by lowerBound
-    /// and upperBound, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<SimdType S, typename T, typename U>
-        requires IsArithmetic<T> && IsArithmetic<U>
-    inline S Clamp( const S& v, const T& lowerBound, const U& upperBound ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Clamp( v.simd, Traits::Fill( static_cast<typename S::value_type>( lowerBound ) ), Traits::Fill( static_cast< typename S::value_type >( upperBound ) ) );
-    }
-
-    /// <summary>
-    /// Returns the elements of v, if the elements are between their
-    /// respective boundaries specified by lowerBound
-    /// and upperBound, otherwise the value of nearest
-    /// boundary is returned.
-    /// </summary>
-    template<TupleType S, typename T, typename U>
-        requires IsArithmetic<T>&& IsArithmetic<U>
-    inline typename S::Simd Clamp( const S& v, const T& lowerBound, const U& upperBound ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Clamp( Traits::Load( v.values ), Traits::Fill( static_cast< typename S::value_type >( lowerBound ) ), Traits::Fill( static_cast< typename S::value_type >( upperBound ) ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     template<SimdOrTupleType S>
     inline auto ClampZero( const S& v ) noexcept
     {
@@ -9371,23 +4361,8 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<S>;
         return ResultType( Traits::Max( Traits::Zero( ), Internal::ToSimd( v ) ) );
     }
-#else
-    template<SimdType S>
-    inline S ClampZero( const S& v ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Max( Traits::Zero(), v.simd );
-    }
 
-    template<TupleType S>
-    inline typename S::Simd ClampZero( const S& v ) noexcept
-    {
-        using Traits = typename S::Traits;
-        return Traits::Max( Traits::Zero( ), Traits::Load( v.values ) );
-    }
-#endif
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Detects if the elements of a vector are within bounds.
     /// </summary>
@@ -9412,109 +4387,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<S>;
         return ResultType( Traits::InBounds( Internal::ToSimd( v ), Internal::ToSimd( bounds ) ) );
     }
-#else
 
-    /// <summary>
-    /// Detects if the elements of a vector are within bounds.
-    /// </summary>
-    /// <param name="v">
-    /// The elements to test against the bounds.
-    /// </param>
-    /// <param name="bounds">
-    /// The bounds
-    /// </param>
-    /// <returns>
-    /// An element in the result will have all bits set if
-    /// the corresponding element of v are greater or
-    /// equal to the corresponding negated value from bounds,
-    /// and less or equal to the corresponding value from bounds,
-    /// otherwise the element will be set to 0.
-    /// </returns>
-    template<SimdType S, SimdType T>
-        requires IsCompatible<S, T>
-    inline S InBounds( const S& v, const T& bounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return S( Traits::InBounds( v.simd, bounds.simd ) );
-    }
-
-    /// <summary>
-    /// Detects if the elements of a vector are within bounds.
-    /// </summary>
-    /// <param name="v">
-    /// The elements to test against the bounds.
-    /// </param>
-    /// <param name="bounds">
-    /// The bounds
-    /// </param>
-    /// <returns>
-    /// An element in the result will have all bits set if
-    /// the corresponding element of v are greater or
-    /// equal to the corresponding negated value from bounds,
-    /// and less or equal to the corresponding value from bounds,
-    /// otherwise the element will be set to 0.
-    /// </returns>
-    template<SimdType S, TupleType T>
-        requires IsCompatible<S, T>
-    inline S InBounds( const S& v, const T& bounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return S( Traits::InBounds( v.simd, Traits::Load( bounds.values ) ) );
-    }
-
-    /// <summary>
-    /// Detects if the elements of a vector are within bounds.
-    /// </summary>
-    /// <param name="v">
-    /// The elements to test against the bounds.
-    /// </param>
-    /// <param name="bounds">
-    /// The bounds
-    /// </param>
-    /// <returns>
-    /// An element in the result will have all bits set if
-    /// the corresponding element of v are greater or
-    /// equal to the corresponding negated value from bounds,
-    /// and less or equal to the corresponding value from bounds,
-    /// otherwise the element will be set to 0.
-    /// </returns>
-    template<TupleType S, SimdType T>
-        requires IsCompatible<S, T>
-    inline T InBounds( const S& v, const T& bounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return T( Traits::InBounds( Traits::Load( v.values ), bounds.simd ) );
-    }
-
-    /// <summary>
-    /// Detects if the elements of a vector are within bounds.
-    /// </summary>
-    /// <param name="v">
-    /// The elements to test against the bounds.
-    /// </param>
-    /// <param name="bounds">
-    /// The bounds
-    /// </param>
-    /// <returns>
-    /// An element in the result will have all bits set if
-    /// the corresponding element of v are greater or
-    /// equal to the corresponding negated value from bounds,
-    /// and less or equal to the corresponding value from bounds,
-    /// otherwise the element will be set to 0.
-    /// </returns>
-    template<TupleType S, TupleType T>
-        requires IsCompatible<S, T>
-    inline typename S::Simd InBounds( const S& v, const T& bounds ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename S::Simd;
-        return Simd( Traits::InBounds( Traits::Load( v.values ), Traits::Load( v.bounds ) ) );
-    }
-#endif
 
     // ClampLength
 
-#ifdef USE_TOSIMD
     namespace Internal
     {
         template<SimdType S, SimdType T, SimdType U>
@@ -9606,319 +4482,6 @@ namespace Harlinn::Common::Core::Math
         return Internal::ClampLengthImpl( Internal::ToSimdType( v ), Simd( Traits::Fill<Traits::Size>( static_cast< Type >( lengthMin ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast< Type >( lengthMax ) ) ) );
     }
 
-#else
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
-    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-
-        auto lengthSquared = LengthSquared( v );
-
-        const auto zero = Traits::Zero( );
-        typename Traits::SIMDType infinity = { { 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000 } };
-
-        auto reciprocalLength = ReciprocalSqrt( lengthSquared );
-
-        auto infiniteLength = Traits::SameValue( lengthSquared.simd, infinity );
-        auto zeroLength = Traits::Equal( lengthSquared.simd, zero );
-
-        auto normal = Traits::Mul( v.simd, reciprocalLength.simd );
-
-        auto length = Traits::Mul( lengthSquared.simd, reciprocalLength.simd );
-
-        auto select = Traits::SameValue( infiniteLength, zeroLength );
-        length = Traits::Select( lengthSquared.simd, length, select );
-        normal = Traits::Select( lengthSquared.simd, normal, select );
-
-        auto controlMax = Traits::Greater( length, lengthMax.simd );
-        auto controlMin = Traits::Less( length, lengthMin.simd );
-
-        auto clampLength = Traits::Select( length, lengthMax.simd, controlMax );
-        clampLength = Traits::Select( clampLength, lengthMin.simd, controlMin );
-
-        auto result = Traits::Mul( normal, clampLength );
-
-        
-        select = Traits::SameValue( controlMax, controlMin );
-        return Simd( Traits::Trim( Traits::Select( result, v.simd, select ) ) );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-
-        return ClampLength( v, lengthMin, Simd( lengthMax ) );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-
-        return ClampLength( v, Simd( lengthMin ), lengthMax );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-
-        return ClampLength( v, Simd( lengthMin ), Simd( lengthMax ) );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return ClampLength( Simd( v ), lengthMin, lengthMax );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return ClampLength( Simd( v ), lengthMin, Simd( lengthMax ) );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return ClampLength( Simd( v ), Simd( lengthMin ), lengthMax );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return ClampLength( Simd( v ), Simd( lengthMin ), Simd( lengthMax ) );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<SimdType S, typename T, typename U>
-        requires IsFloatingPoint<T> && IsFloatingPoint<U>
-    inline S ClampLength( const S& v, const T lengthMin, const U lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using FloatT = typename Traits::Type;
-        using Simd = S;
-
-        return ClampLength( v, Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMax ) ) ) );
-    }
-
-    /// <summary>
-    /// Clamps the length of a vector to a given range.
-    /// </summary>
-    /// <param name="v">
-    /// vector to clamp.
-    /// </param>
-    /// <param name="lengthMin">
-    /// A vector whose elements are equal to the minimum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <param name="lengthMax">
-    /// A vector whose elements are equal to the maximum clamp length. 
-    /// The elements must be greater-than-or-equal to zero.
-    /// </param>
-    /// <returns>
-    /// Returns a vector whose length is clamped to the specified 
-    /// minimum and maximum.
-    /// </returns>
-    template<TupleType S, typename T, typename U>
-        requires IsFloatingPoint<T>&& IsFloatingPoint<U>
-    inline S ClampLength( const S& v, const T lengthMin, const U lengthMax ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using FloatT = typename Traits::Type;
-        using Simd = S;
-
-        return ClampLength( Simd( v ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast< FloatT >( lengthMax ) ) ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     namespace Internal
     {
         /// <summary>
@@ -9964,97 +4527,6 @@ namespace Harlinn::Common::Core::Math
         return Internal::ReflectImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ) );
     }
 
-#else
-
-    /// <summary>
-    /// Reflects an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// Incident vector to reflect.
-    /// </param>
-    /// <param name="normal">
-    /// Normal vector to reflect the incident vector across.
-    /// </param>
-    /// <returns>
-    /// The reflected incident angle.
-    /// </returns>
-    template<SimdType S, SimdType T>
-        requires IsCompatible<S, T>
-    inline S Reflect( const S& incident, const T& normal ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-
-        auto result = Traits::Dot( incident.simd, normal.simd );
-        result = Traits::Add( result, result );
-        return Simd( Traits::FNMSub( result, normal.simd, incident.simd ) );
-    }
-
-    /// <summary>
-    /// Reflects an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// Incident vector to reflect.
-    /// </param>
-    /// <param name="normal">
-    /// Normal vector to reflect the incident vector across.
-    /// </param>
-    /// <returns>
-    /// The reflected incident angle.
-    /// </returns>
-    template<SimdType S, TupleType T>
-        requires IsCompatible<S, T>
-    inline S Reflect( const S& incident, const T& normal ) noexcept
-    {
-        using Simd = S;
-
-        return Reflect( incident, Simd( normal ) );
-    }
-
-    /// <summary>
-    /// Reflects an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// Incident vector to reflect.
-    /// </param>
-    /// <param name="normal">
-    /// Normal vector to reflect the incident vector across.
-    /// </param>
-    /// <returns>
-    /// The reflected incident angle.
-    /// </returns>
-    template<TupleType S, SimdType T>
-        requires IsCompatible<S, T>
-    inline T Reflect( const S& incident, const T& normal ) noexcept
-    {
-        using Simd = T;
-
-        return Reflect( Simd( incident ), normal );
-    }
-
-    /// <summary>
-    /// Reflects an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// Incident vector to reflect.
-    /// </param>
-    /// <param name="normal">
-    /// Normal vector to reflect the incident vector across.
-    /// </param>
-    /// <returns>
-    /// The reflected incident angle.
-    /// </returns>
-    template<TupleType S, TupleType T>
-        requires IsCompatible<S, T>
-    inline typename S::Simd Reflect( const S& incident, const T& normal ) noexcept
-    {
-        using Simd = typename S::Simd;
-
-        return Reflect( Simd( incident ), Simd( normal ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     namespace Internal
     {
         /// <summary>
@@ -10158,353 +4630,6 @@ namespace Harlinn::Common::Core::Math
         return Internal::RefractImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ), Simd( static_cast< Type >(refractionIndex) ) );
     }
 
-
-#else
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
-    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using FloatT = typename Traits::Type;
-        using SIMDType = typename Traits::SIMDType;
-        using Simd = S;
-
-        constexpr SIMDType zero = { {static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. )} };
-        constexpr SIMDType one = { {static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. )} };
-
-        auto rmm1 = Traits::Dot( incident.simd, normal.simd );
-        
-        auto rmm2 = Traits::FNMAdd( rmm1, rmm1, one );
-        auto rmm3 = Traits::Mul( refractionIndex.simd, refractionIndex.simd );
-        rmm2 = Traits::FNMAdd( rmm2, rmm3, one );
-
-        auto zeroSelect = Traits::LessOrEqual( rmm2, zero );
-
-        rmm2 = Traits::Sqrt( rmm2 );
-        rmm2 = Traits::FMAdd( refractionIndex.simd, rmm1, rmm2 );
-        
-        auto result = Traits::Mul( refractionIndex.simd, incident.simd );
-        result = Traits::FNMAdd( rmm2, normal.simd, result );
-        return Simd( Traits::Select( result, zero, zeroSelect ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return Refract( incident, normal, Simd( refractionIndex ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return Refract( incident, Simd( normal ), refractionIndex );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return Refract( incident, Simd( normal ), Simd( refractionIndex ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return Refract( Simd( incident ), normal, refractionIndex );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return Refract( Simd( incident ), normal, Simd( refractionIndex ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return Refract( Simd( incident ), Simd( normal ), refractionIndex );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return Refract( Simd( incident ), Simd( normal ), Simd( refractionIndex ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<SimdType S, SimdType T, typename U>
-        requires IsCompatible<S, T>&& IsFloatingPoint<U>
-    inline S Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return Refract( incident, normal, Simd( Traits::Fill( refractionIndex ) ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<SimdType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsFloatingPoint<U>
-    inline S Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return Refract( incident, Simd( normal ), Simd( Traits::Fill( refractionIndex ) ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<TupleType S, SimdType T, typename U>
-        requires IsCompatible<S, T>&& IsFloatingPoint<U>
-    inline typename S::Simd Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return Refract( Simd( incident ), normal, Simd( Traits::Fill( refractionIndex ) ) );
-    }
-
-    /// <summary>
-    /// Refracts an incident vector across a normal vector.
-    /// </summary>
-    /// <param name="incident">
-    /// The incident vector to refract.
-    /// </param>
-    /// <param name="normal">
-    /// The normal vector to refract the incident vector through.
-    /// </param>
-    /// <param name="refractionIndex">
-    /// A vector whose elements are equal to the index of refraction.
-    /// </param>
-    /// <returns>
-    /// Returns the refracted incident vector. If the refraction index 
-    /// and the angle between the incident vector and the normal are such 
-    /// that the result is a total internal reflection, the function will 
-    /// return a vector with all elements set to zero.
-    /// </returns>
-    template<TupleType S, TupleType T, typename U>
-        requires IsCompatible<S, T>&& IsFloatingPoint<U>
-    inline typename S::Simd Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return Refract( Simd( incident ), Simd( normal ), Simd( Traits::Fill( refractionIndex ) ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     /// <summary>
     /// Computes a vector perpendicular to the argument vector.
     /// </summary>
@@ -10522,44 +4647,9 @@ namespace Harlinn::Common::Core::Math
 
         return ResultType( Traits::Orthogonal( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Computes a vector perpendicular to the argument vector.
-    /// </summary>
-    /// <param name="v">
-    /// The argument vector.
-    /// </param>
-    /// <returns>
-    /// The vector orthogonal to <c>v</c>.
-    /// </returns>
-    template<SimdType S>
-    inline S Orthogonal( const S& v ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-
-        return Simd( Traits::Orthogonal( v.simd ) );
-    }
-
-    /// <summary>
-    /// Computes a vector perpendicular to the argument vector.
-    /// </summary>
-    /// <param name="v">
-    /// The argument vector.
-    /// </param>
-    /// <returns>
-    /// The vector orthogonal to <c>v</c>.
-    /// </returns>
-    template<TupleType S>
-    inline typename S::Simd Orthogonal( const S& v ) noexcept
-    {
-        using Simd = typename S::Simd;
-        return Orthogonal( Simd( v ) );
-    }
-#endif
 
     // Saturate
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Saturates the elements of v to the range 0.0 to 1.0.
     /// </summary>
@@ -10570,28 +4660,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Saturate( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Saturates the elements of v to the range 0.0 to 1.0.
-    /// </summary>
-    template<SimdType T>
-    inline T Saturate( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Saturate( v.simd );
-    }
-    /// <summary>
-    /// Saturates the elements of v to the range 0.0 to 1.0.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Saturate( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Saturate( Traits::Load( v.values ) );
-    }
-#endif
+
     // Sqrt
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the square root of each element in the argument.
     /// </summary>
@@ -10602,29 +4673,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Sqrt( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the square root of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Sqrt( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( v.simd );
-    }
 
-    /// <summary>
-    /// Calculates the square root of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Sqrt( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( Traits::Load( v.values ) );
-    }
-#endif
     // SafeSqrt
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the square root of each element greater or 
     /// equal to 0.f in the argument. For elements less than 
@@ -10637,35 +4688,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Sqrt( Traits::Max( Traits::Zero( ), Internal::ToSimd( v ) ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the square root of each element greater or 
-    /// equal to 0.f in the argument. For elements less than 
-    /// 0.f, the result is 0.f.
-    /// </summary>
-    template<SimdType T>
-    inline T SafeSqrt( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( Traits::Max( Traits::Zero(), v.simd ) );
-    }
-
-    /// <summary>
-    /// Calculates the square root of each element greater or 
-    /// equal to 0.f in the argument. For elements less than 
-    /// 0.f, the result is 0.f.
-    /// </summary>
-    template<TupleType T>
-    inline typename T::Simd SafeSqrt( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( Traits::Max( Traits::Zero( ), Traits::Load( v.values ) ) );
-    }
-#endif
 
     // ReciprocalSqrt
 
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the reciprocal square root of each element in the argument.
     /// </summary>
@@ -10677,31 +4703,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Div( Traits::Fill<Traits::Size>( Constants<Type>::One ), Traits::Sqrt( Internal::ToSimd( v ) ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the reciprocal square root of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T ReciprocalSqrt( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        return Traits::Div(Traits::Fill<Traits::Size>(Constants<FloatT>::One), Traits::Sqrt( t.simd ));
-    }
-    /// <summary>
-    /// Calculates the reciprocal square root of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ReciprocalSqrt( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), Traits::Sqrt( Traits::Load( t.values ) ) );
-    }
-#endif
+
     // Reciprocal
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the reciprocal of each element in the argument.
     /// </summary>
@@ -10713,32 +4717,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Div( Traits::Fill<Traits::Size>( Constants<Type>::One ), Internal::ToSimd( t ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the reciprocal of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Reciprocal( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), t.simd );
-    }
-
-    /// <summary>
-    /// Calculates the reciprocal of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Reciprocal( const T& t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        return Traits::Div( Traits::Fill<Traits::Size>( Constants<FloatT>::One ), Traits::Load( t.values ) );
-    }
-#endif
 
     // FMA
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
     /// </summary>
@@ -10826,200 +4807,6 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
     }
-
-
-
-#else
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMA( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMA( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMA( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMA( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMA( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMA( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMA( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMA( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( a.simd, b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FMA( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-#endif
 
     /// <summary>
     /// Evaluates the provided polynomial using Horner’s method
@@ -11124,7 +4911,7 @@ namespace Harlinn::Common::Core::Math
 
 
     // FMSub
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
     /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
@@ -11234,248 +5021,7 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
     }
 
-#else
 
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( a.simd, b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
-    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     /// <summary>
     /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
     /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
@@ -11584,248 +5130,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
     }
-#else
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAddSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
-    }
 
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAddSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMAddSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMAddSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAddSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAddSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMAddSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMAddSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( a.simd, b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
-    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
-    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
-    /// are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FMAddSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-#endif
 
     // FMSubAdd
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
     /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
@@ -11934,248 +5242,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
     }
-#else
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( a.simd, b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
-    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
-    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
-    /// The final results are rounded to the nearest floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FMSubAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-#endif
 
     // FNMAdd
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
     /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
@@ -12284,249 +5353,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
     }
-#else
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FNMAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FNMAdd( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FNMAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FNMAdd( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( a.simd, b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
-    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
-    /// the values in the third operand, c, after which the final results are rounded to the nearest 
-    /// floating point values.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FNMAdd( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-#endif
-
 
     // FNMSub
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
     /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
@@ -12635,248 +5464,10 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
     }
-#else
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, c.simd );
-    }
 
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FNMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FNMSub( NumberT a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Fill<Traits::Size>( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, SimdType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, SimdType T, TupleType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FNMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( a.simd, Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, TupleType T, SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FNMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FNMSub( const T& a, NumberT b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = Traits::Type;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( a.simd, b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    //
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    /// <summary>
-    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
-    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
-    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
-    /// to the nearest floating point value.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FNMSub( const S& a, const T& b, const U& c ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-#endif
 
     // Sin
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the sine of each element in the argument expressed in radians.
     /// </summary>
@@ -12887,29 +5478,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Sin( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the sine of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T Sin( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sin( v.simd );
-    }
-    /// <summary>
-    /// Calculates the sine of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Sin( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sin( Traits::Load( v.values ) );
-    }
-#endif
 
     // FastSin
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the sine of each element in the argument expressed in radians.
     /// </summary>
@@ -12920,29 +5491,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::FastSin( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the sine of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T FastSin( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastSin( v.simd );
-    }
-    /// <summary>
-    /// Calculates the sine of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT FastSin( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastSin( Traits::Load( v.values ) );
-    }
-#endif
 
     // Cos
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the cosine of each element in the argument expressed in radians.
     /// </summary>
@@ -12953,29 +5504,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Cos( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the cosine of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T Cos( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Cos( v.simd );
-    }
-    /// <summary>
-    /// Calculates the cosine of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Cos( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Cos( Traits::Load( v.values ) );
-    }
-#endif
+
     // FastCos
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the cosine of each element in the argument expressed in radians.
     /// </summary>
@@ -12986,26 +5517,6 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::FastCos( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the cosine of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T FastCos( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastCos( v.simd );
-    }
-    /// <summary>
-    /// Calculates the cosine of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T>
-    inline typename T::Simd FastCos( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastCos( Traits::Load( v.values ) );
-    }
-#endif
 
     // SinCos
 
@@ -13051,11 +5562,8 @@ namespace Harlinn::Common::Core::Math
         return Traits::FastSinCos( Traits::Load( v.values ), &cosines->simd );
     }
 
-
-
-
     // Tan
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the tangent of each element in the argument expressed in radians.
     /// </summary>
@@ -13066,30 +5574,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Tan( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the tangent of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T Tan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Tan( v.simd );
-    }
-
-    /// <summary>
-    /// Calculates the tangent of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T>
-    inline typename T::Simd Tan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Tan( Traits::Load( v.values ) );
-    }
-#endif
 
     // FastTan
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the tangent of each element in the argument expressed in radians.
     /// </summary>
@@ -13100,30 +5587,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::FastTan( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the tangent of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T FastTan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastTan( v.simd );
-    }
-
-    /// <summary>
-    /// Calculates the tangent of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T>
-    inline typename T::Simd FastTan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastTan( Traits::Load( v.values ) );
-    }
-#endif
 
     // ASin
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse sine of each element in the argument, in radians.
     /// </summary>
@@ -13134,30 +5600,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::ASin( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the inverse sine of each element in the argument, in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T ASin( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ASin( v.simd );
-    }
-    /// <summary>
-    /// Calculates the inverse sine of each element in the argument, in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ASin( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ASin( Traits::Load( v.values.data( ) ) );
-    }
-#endif
-
 
     // ACos
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse cosine of each element in the argument, in radians.
     /// </summary>
@@ -13168,30 +5613,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::ACos( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the inverse cosine of each element in the argument, in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T ACos( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ACos( v.simd );
-    }
-
-    /// <summary>
-    /// Calculates the inverse cosine of each element in the argument, in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ACos( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ACos( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // ATan
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse tangent of each element in the argument, in radians.
     /// </summary>
@@ -13203,29 +5627,8 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::ATan( Internal::ToSimd( v ) ) );
     }
 
-#else
-    /// <summary>
-    /// Calculates the inverse tangent of each element in the argument, in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T ATan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATan( v.simd );
-    }
-    /// <summary>
-    /// Calculates the inverse tangent of each element in the argument, in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ATan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATan( Traits::Load( v.values.data( ) ) );
-    }
-#endif
-
     // FastATan
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse tangent of each element in the argument, in radians.
     /// </summary>
@@ -13237,30 +5640,8 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::FastATan( Internal::ToSimd( v ) ) );
     }
 
-#else
-    /// <summary>
-    /// Calculates the inverse tangent of each element in the argument, in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T FastATan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastATan( v.simd );
-    }
-    /// <summary>
-    /// Calculates the inverse tangent of each element in the argument, in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT FastATan( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastATan( Traits::Load( v.values.data( ) ) );
-    }
-#endif
-
-
     // ATan2
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse tangent of each element in x divided by the
     /// corresponding element in y, in radians.
@@ -13274,58 +5655,8 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::ATan2( Internal::ToSimd( x ), Internal::ToSimd( y ) ) );
     }
 
-#else
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T ATan2( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATan2( x.simd, y.simd );
-    }
-
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T ATan2( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATan2( x.simd, Traits::Load( y.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T ATan2( const U& x, const T& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATan2( Traits::Load( x.values.data( ) ), y.simd );
-    }
-
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT ATan2( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
-    }
-#endif
-
     // FastATan2
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse tangent of each element in x divided by the
     /// corresponding element in y, in radians.
@@ -13339,59 +5670,7 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::FastATan2( Internal::ToSimd( x ), Internal::ToSimd( y ) ) );
     }
 
-#else
 
-
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T FastATan2( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastATan2( x.simd, y.simd );
-    }
-
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T FastATan2( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastATan2( x.simd, Traits::Load( y.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T FastATan2( const U& x, const T& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastATan2( Traits::Load( x.values.data( ) ), y.simd );
-    }
-
-    /// <summary>
-    /// Calculates the inverse tangent of each element in x divided by the
-    /// corresponding element in y, in radians.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT FastATan2( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FastATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     namespace Internal
     {
         /// <summary>
@@ -13434,38 +5713,8 @@ namespace Harlinn::Common::Core::Math
         return Internal::ModAnglesImpl( Internal::ToSimdType( angles ) );
     }
 
-#else
-    /// <summary>
-    /// Calculates the angle modulo 2PI.
-    /// </summary>
-    /// <typeparam name="T">
-    /// A TupleN SimdType 
-    /// </typeparam>
-    /// <param name="angles">
-    /// The angles in radians
-    /// </param>
-    /// <returns>
-    /// Returns a SimdType holding the angles modulo 2PI.
-    /// </returns>
-    template<SimdType T>
-    inline T ModAngles( const T& angles )
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-
-        auto result = Traits::Round( Traits::Mul( angles.simd, Traits::Fill<Traits::Size>( Constants<FloatT>::Inv2Pi ) ) );
-        return Traits::FNMAdd( result, Traits::Fill<Traits::Size>( Constants<FloatT>::PiTimes2 ), angles.simd );
-    }
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ModAngles( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::ModAngles( Simd( Traits::Load( v.values ) ) );
-    }
-#endif
     // AddAngles
-#ifdef USE_TOSIMD
+
     namespace Internal
     {
         /// <summary>
@@ -13505,77 +5754,8 @@ namespace Harlinn::Common::Core::Math
         return Internal::AddAnglesImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
     }
 
-#else
-    /// <summary>
-    /// Adds the angles in the corresponding elements of v1 and v2.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T AddAngles( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        // Adjust the angles
-        auto result = Traits::Add( v1.simd, v2.simd );
-        // Less than Pi?
-        auto offset = Traits::Less( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
-        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
-        // Add 2Pi to all entries less than -Pi
-        result = Traits::Add( result, offset );
-        // Greater than or equal to Pi?
-        offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
-        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
-        // Sub 2Pi to all entries greater than Pi
-        return Traits::Trim( Traits::Sub( result, offset ) );
-    }
-
-    /// <summary>
-    /// Adds the angles in the corresponding elements of v1 and v2.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T AddAngles( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::AddAngles( v1, Simd(Traits::Load( v2.values )) );
-    }
-
-    /// <summary>
-    /// Adds the angles in the corresponding elements of v1 and v2.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T AddAngles( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::AddAngles( Simd(Traits::Load( v1.values )), v2 );
-    }
-    /// <summary>
-    /// Adds the angles in the corresponding elements of v1 and v2.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT AddAngles( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::AddAngles( Simd(Traits::Load( v1.values )), Simd(Traits::Load( v2.values )) );
-    }
-#endif
-
-
     // SubtractAngles
-#ifdef USE_TOSIMD
+
     namespace Internal
     {
         /// <summary>
@@ -13615,78 +5795,9 @@ namespace Harlinn::Common::Core::Math
         return Internal::SubtractAnglesImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
     }
 
-#else
-
-    /// <summary>
-    /// Subtracts the angles in v2 from the corresponding elements of v1.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T SubtractAngles( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        // Adjust the angles
-        auto result = Traits::Sub( v1.simd, v2.simd );
-        // Less than Pi?
-        auto offset = Traits::Less( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
-        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
-        // Add 2Pi to all entries less than -Pi
-        result = Traits::Add( result, offset );
-        // Greater than or equal to Pi?
-        offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
-        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
-        // Sub 2Pi to all entries greater than Pi
-        return Traits::Trim( Traits::Sub( result, offset ) );
-    }
-
-    /// <summary>
-    /// Subtracts the angles in v2 from the corresponding elements of v1.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T SubtractAngles( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::SubtractAngles( v1, Simd( Traits::Load( v2.values ) ) );
-    }
-
-    /// <summary>
-    /// Subtracts the angles in v2 from the corresponding elements of v1.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T SubtractAngles( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::SubtractAngles( Simd( Traits::Load( v1.values ) ), v2 );
-    }
-
-    /// <summary>
-    /// Subtracts the angles in v2 from the corresponding elements of v1.
-    /// The argument angles must be in the range [-PI,PI), and the
-    /// computed angles will be in the range [-PI,PI) 
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT SubtractAngles( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::SubtractAngles( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ) );
-    }
-#endif
 
     // SinH
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
     /// </summary>
@@ -13697,31 +5808,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::SinH( Internal::ToSimd( v ) ) );
     }
-#else
-
-
-    /// <summary>
-    /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T SinH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::SinH( v.simd );
-    }
-    /// <summary>
-    /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT SinH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::SinH( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // CosH
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
     /// </summary>
@@ -13732,31 +5821,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::CosH( Internal::ToSimd( v ) ) );
     }
-#else
-
-
-    /// <summary>
-    /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T CosH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::CosH( v.simd );
-    }
-    /// <summary>
-    /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT CosH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::CosH( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // TanH
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
     /// </summary>
@@ -13767,30 +5834,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::TanH( Internal::ToSimd( v ) ) );
     }
-#else
-
-    /// <summary>
-    /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T TanH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::TanH( v.simd );
-    }
-    /// <summary>
-    /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT TanH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::TanH( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // ASinH
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
     /// </summary>
@@ -13801,29 +5847,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::ASinH( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T ASinH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ASinH( v.simd );
-    }
-    /// <summary>
-    /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ASinH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ASinH( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // ACosH
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
     /// </summary>
@@ -13834,29 +5860,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::ACosH( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T ACosH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ACosH( v.simd );
-    }
-    /// <summary>
-    /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ACosH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ACosH( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // ATanH
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
     /// </summary>
@@ -13867,29 +5873,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::ATanH( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
-    /// </summary>
-    template<SimdType T>
-    inline T ATanH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATanH( v.simd );
-    }
-    /// <summary>
-    /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ATanH( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ATanH( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // Log
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the natural logarithm of each element in the argument.
     /// </summary>
@@ -13900,31 +5886,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Log( Internal::ToSimd( v ) ) );
     }
-#else
-
-    /// <summary>
-    /// Calculates the natural logarithm of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Log( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log( v.simd );
-    }
-
-    /// <summary>
-    /// Calculates the natural logarithm of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Log( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log( Traits::Load( v.values.data( ) ) );
-    }
-#endif
     // Log1P
 
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the natural logarithm of 1 + each element in the argument.
     /// </summary>
@@ -13935,25 +5899,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Log1P( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the natural logarithm of 1 + each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Log1P( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log1P( v.simd );
-    }
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Log1P( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log1P( Traits::Load( v.values.data( ) ) );
-    }
-#endif
+
     // Log10
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the base-10 logarithm of each element in the argument.
     /// </summary>
@@ -13964,28 +5912,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Log10( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the base-10 logarithm of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Log10( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log10( v.simd );
-    }
-    /// <summary>
-    /// Calculates the base-10 logarithm of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Log10( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log10( Traits::Load( v.values.data( ) ) );
-    }
-#endif
+
     // Log2
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
     /// </summary>
@@ -13996,29 +5925,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Log2( Internal::ToSimd( v ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Log2( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log2( v.simd );
-    }
-    /// <summary>
-    /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Log2( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Log2( Traits::Load( v.values.data( ) ) );
-    }
-#endif
+
     // Exp
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
     /// </summary>
@@ -14029,31 +5938,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Exp( Internal::ToSimd( v ) ) );
     }
-#else
-
-
-    /// <summary>
-    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Exp( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Exp( v.simd );
-    }
-    /// <summary>
-    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Exp( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Exp( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // Exp10
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the base-10 exponential of each element in the argument.
     /// </summary>
@@ -14064,30 +5951,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Exp10( Internal::ToSimd( v ) ) );
     }
-#else
-
-    /// <summary>
-    /// Calculates the base-10 exponential of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Exp10( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Exp10( v.simd );
-    }
-    /// <summary>
-    /// Calculates the base-10 exponential of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Exp10( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Exp10( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // Exp2
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the base-2 exponential of each element in the argument.
     /// </summary>
@@ -14098,29 +5964,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Exp2( Internal::ToSimd( v ) ) );
     }
-#else
 
-    /// <summary>
-    /// Calculates the base-2 exponential of each element in the argument.
-    /// </summary>
-    template<SimdType T>
-    inline T Exp2( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Exp2( v.simd );
-    }
-    /// <summary>
-    /// Calculates the base-2 exponential of each element in the argument.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Exp2( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Exp2( Traits::Load( v.values.data( ) ) );
-    }
-#endif
     // ExpM1
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
     /// </summary>
@@ -14131,30 +5977,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::ExpM1( Internal::ToSimd( v ) ) );
     }
-#else
-
-    /// <summary>
-    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
-    /// </summary>
-    template<SimdType T>
-    inline T ExpM1( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ExpM1( v.simd );
-    }
-    /// <summary>
-    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ExpM1( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::ExpM1( Traits::Load( v.values.data( ) ) );
-    }
-#endif
 
     // Pow
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the elements in base raised to the corresponding element in exponent.
     /// </summary>
@@ -14190,51 +6015,6 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::Pow( Traits::Fill<Traits::Size>( static_cast< Type >( base ) ), Internal::ToSimd( exponent ) ) );
     }
-
-#else
-
-    /// <summary>
-    /// Calculates the elements in base raised to the corresponding element in exponent.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Pow( const T& base, const U& exponent ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Pow( base.simd, exponent.simd );
-    }
-
-    /// <summary>
-    /// Calculates the elements in base raised to the corresponding element in exponent.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Pow( const T& base, const U& exponent ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Pow( base.simd, Traits::Load( exponent.values.data( ) ) );
-    }
-    /// <summary>
-    /// Calculates the elements in base raised to the corresponding element in exponent.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T Pow( const U& base, const T& exponent ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Pow( Traits::Load( base.values.data( ) ), exponent.simd );
-    }
-    /// <summary>
-    /// Calculates the elements in base raised to the corresponding element in exponent.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT Pow( const T& base, const U& exponent ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Pow( Traits::Load( base.values.data( ) ), Traits::Load( exponent.values.data( ) ) );
-    }
-#endif
 
     namespace Internal
     {
@@ -14282,7 +6062,7 @@ namespace Harlinn::Common::Core::Math
 
 
     // FMod
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Computes the floating-point remainder of the division operation $x/y$.
     /// </summary>
@@ -14319,71 +6099,8 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::FMod( Traits::Fill<Traits::Size>( static_cast< Type >( x ) ), Internal::ToSimd( y ) ) );
     }
 
-#else
-    /// <summary>
-    /// Computes the floating-point remainder of the division operation $x/y$.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T FMod( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMod( x.simd, y.simd );
-    }
-
-    /// <summary>
-    /// Computes the floating-point remainder of the division operation $x/y$.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T FMod( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMod( x.simd, Traits::Load( y.values ) );
-    }
-    /// <summary>
-    /// Computes the floating-point remainder of the division operation $x/y$.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T FMod( const U& x, const T& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMod( Traits::Load( x.values ), y.simd );
-    }
-    /// <summary>
-    /// Computes the floating-point remainder of the division operation $x/y$.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT FMod( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::FMod( Traits::Load( x.values ), Traits::Load( y.values ) );
-    }
-
-    /// <summary>
-    /// Computes the floating-point remainder of the division operation $x/y$.
-    /// </summary>
-    template<SimdType T, typename U>
-        requires std::is_convertible_v<U,typename T::Traits::Type>
-    inline T FMod( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::FMod( x.simd, Traits::Fill( static_cast< T::Traits::Type >( y ) ) ) );
-    }
-
-    template<TupleType T, typename U>
-        requires std::is_convertible_v<U, typename T::Traits::Type>
-    inline T FMod( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Trim( Traits::FMod( Traits::Load( x.values ), Traits::Fill( static_cast< T::Traits::Type >( y ) ) ) );
-    }
-#endif
-
     // Hypot
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the square root of the sum of the squares of each corresponding 
     /// element in x and y, without undue overflow or underflow at intermediate 
@@ -14425,61 +6142,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::Hypot( Traits::Fill<Traits::Size>( static_cast< Type >( x ) ), Internal::ToSimd( y ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the square root of the sum of the squares of each corresponding 
-    /// element in x and y, without undue overflow or underflow at intermediate 
-    /// stages of the computation.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Hypot( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Hypot( x.simd, y.simd );
-    }
 
-    /// <summary>
-    /// Calculates the square root of the sum of the squares of each corresponding 
-    /// element in x and y, without undue overflow or underflow at intermediate 
-    /// stages of the computation.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Hypot( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Hypot( x.simd, Traits::Load( y.values.data( ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the square root of the sum of the squares of each corresponding 
-    /// element in x and y, without undue overflow or underflow at intermediate 
-    /// stages of the computation.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T Hypot( const U& x, const T& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Hypot( Traits::Load( x.values.data( ) ), y.simd );
-    }
-
-    /// <summary>
-    /// Calculates the square root of the sum of the squares of each corresponding 
-    /// element in x and y, without undue overflow or underflow at intermediate 
-    /// stages of the computation.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT Hypot( const T& x, const U& y ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Hypot( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
-    }
-#endif
     // Hermite
-#ifdef USE_TOSIMD
+
     namespace Internal
     {
         /// <summary>
@@ -14518,215 +6183,8 @@ namespace Harlinn::Common::Core::Math
         return Internal::HermiteImpl( Internal::ToSimdType( firstPosition ), Internal::ToSimdType( firstTangent ), Internal::ToSimdType( secondPosition ), Internal::ToSimdType( secondTangent ), static_cast< Type >( t ) );
     }
 
-#else
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<T, U> && IsCompatible<T, V> && IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using FloatT = typename T::value_type;
-        auto t2 = t * t;
-        auto t3 = t * t2;
-
-        auto p0 = Traits::Fill( static_cast<FloatT>(2.0) * t3 - static_cast< FloatT >( 3.0 ) * t2 + static_cast< FloatT >( 1.0 ) );
-        auto t0 = Traits::Fill( t3 - static_cast< FloatT >( 2.0 ) * t2 + t );
-        auto p1 = Traits::Fill( static_cast< FloatT >( -2.0 ) * t3 + static_cast< FloatT >( 3.0 ) * t2 );
-        auto t1 = Traits::Fill( t3 - t2 );
-
-        auto result = Traits::Mul( p0, firstPosition.simd );
-        result = Traits::FMAdd( firstTangent.simd, t0, result );
-        result = Traits::FMAdd( secondPosition.simd, p1, result );
-        return Traits::Trim( Traits::FMAdd( secondTangent.simd, t1, result ) );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename W::Simd;
-        return Math::Hermite( firstPosition, firstTangent, secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( firstPosition, firstTangent, Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( firstPosition, firstTangent, Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename U::Simd;
-        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), secondPosition, secondTangent, t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename W::Simd;
-        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, TupleType U, TupleType V, SimdType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<SimdType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, secondPosition, secondTangent, t );
-    }
-
-    ///
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename W::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename U::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), secondPosition, secondTangent, t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename W::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, TupleType U, TupleType V, SimdType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
-    }
-
-    /// <summary>
-    /// Calculates the Hermite spline interpolation, using the specified arguments.
-    /// </summary>
-    template<TupleType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
-    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename V::Simd;
-        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
-    }
-#endif
-
     // Dot
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the dot product between v1 and v2.
     /// </summary>
@@ -14762,42 +6220,8 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::Dot( Traits::Fill<Traits::Size>( static_cast< Type >( v1 ) ), Internal::ToSimd( v2 ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Dot( v1.simd, v2.simd );
-    }
 
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Dot( v1.simd, Traits::Load( v2.values ) );
-    }
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Dot( Traits::Load( v1.values ), v2.simd );
-    }
 
-    
-#endif
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the dot product between v1 and v2.
     /// </summary>
@@ -14833,50 +6257,6 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::Dot<mask>( Traits::Fill<Traits::Size>( static_cast< Type >( v1 ) ), Internal::ToSimd( v2 ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<int mask, SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Dot<mask>( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<int mask, SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Dot<mask>( v1.simd, Traits::Load( v2.values.data( ) ) );
-    }
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<int mask, TupleType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Dot<mask>( Traits::Load( v1.values.data( ) ), v2.simd );
-    }
-
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<int mask, TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline typename T::Simd Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Dot<mask>( Traits::Load( v1.values ), Traits::Load( v2.values ) );
-    }
-#endif
 
     // ScalarDot
 
@@ -14922,23 +6302,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
-#ifndef USE_TOSIMD
-    /// <summary>
-    /// Calculates the dot product between v1 and v2.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT Dot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Fill<Traits::Size>( ScalarDot( v1, v2 ) );
-    }
-#endif
-    
 
     // AbsDot
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the absolute value of the dot product between v1 and v2.
     /// </summary>
@@ -14950,54 +6316,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Abs( Math::Dot( v1, v2 ).simd ) );
     }
-#else
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T AbsDot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Abs( Math::Dot( v1, v2 ).simd );
-    }
-
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T AbsDot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Abs( Math::Dot( v1, v2 ).simd );
-    }
-
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T AbsDot( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Abs( Math::Dot( v1, v2 ).simd );
-    }
-
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline typename T::Simd AbsDot( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Abs( Math::Dot( v1, v2 ).simd );
-    }
-#endif
 
     // ScalarAbsDot
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the absolute value of the dot product between v1 and v2.
     /// </summary>
@@ -15007,51 +6328,9 @@ namespace Harlinn::Common::Core::Math
     {
         return Math::Abs( ScalarDot( v1, v2 ) );
     }
-#else
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
-    {
-        return Math::Abs( ScalarDot( v1, v2 ) );
-    }
-
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
-    {
-        return Math::Abs( ScalarDot( v1, v2 ) );
-    }
-
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline auto ScalarAbsDot( const U& v1, const T& v2 ) noexcept
-    {
-        return Math::Abs( ScalarDot( v1, v2 ) );
-    }
-
-    /// <summary>
-    /// Calculates the absolute value of the dot product between v1 and v2.
-    /// </summary>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
-    {
-        return Math::Abs( ScalarDot( v1, v2 ) );
-    }
-#endif
-
 
     // Cross
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the cross product between v1 and v2.
     /// </summary>
@@ -15063,53 +6342,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Cross( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the cross product between v1 and v2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Cross( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Cross( v1.simd, v2.simd );
-    }
-
-    /// <summary>
-    /// Calculates the cross product between v1 and v2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Cross( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Cross( v1.simd, Traits::Load( v2.values.data( ) ) );
-    }
-    /// <summary>
-    /// Calculates the cross product between v1 and v2.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T Cross( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Cross( Traits::Load( v1.values.data( ) ), v2.simd );
-    }
-
-    /// <summary>
-    /// Calculates the cross product between v1 and v2.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT Cross( const T& v1, const U& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Cross( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
-    }
-#endif
 
     // LengthSquared
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the squared length of v.
     /// </summary>
@@ -15121,58 +6356,18 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::HSum( Traits::Mul( simd, simd ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the squared length of v.
-    /// </summary>
-    template<SimdType T>
-    inline T LengthSquared( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::HSum( Traits::Mul( v.simd, v.simd ) );
-    }
-    /// <summary>
-    /// Calculates the squared length of v.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT LengthSquared( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Math::LengthSquared( typename T::Simd(Traits::Load( v.values )) );
-    }
-#endif
 
     // ScalarLengthSquared
-#ifdef USE_TOSIMD
+
     template<SimdOrTupleType T>
     inline auto ScalarLengthSquared( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Math::LengthSquared( v ).simd );
     }
-#else
-    /// <summary>
-    /// Calculates the squared length of v.
-    /// </summary>
-    template<SimdType T>
-    inline auto ScalarLengthSquared( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Math::LengthSquared( v ).simd );
-    }
 
-    /// <summary>
-    /// Calculates the squared length of v.
-    /// </summary>
-    template<TupleType T>
-    inline auto ScalarLengthSquared( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Math::LengthSquared( v ).simd );
-    }
-#endif
     // Length
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the length of v.
     /// </summary>
@@ -15183,29 +6378,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Sqrt( Math::LengthSquared( v ).simd ) );
     }
-#else
-    /// <summary>
-    /// Calculates the length of v.
-    /// </summary>
-    template<SimdType T>
-    inline T Length( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( Math::LengthSquared( v ).simd );
-    }
-    /// <summary>
-    /// Calculates the length of v.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Length( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( Math::LengthSquared( v ).simd );
-    }
-#endif
+
     // ScalarLength
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the length of v.
     /// </summary>
@@ -15215,29 +6390,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( Math::Length( v ).simd );
     }
-#else
-    /// <summary>
-    /// Calculates the length of v.
-    /// </summary>
-    template<SimdType T>
-    inline auto ScalarLength( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Math::Length( v ).simd );
-    }
-    /// <summary>
-    /// Calculates the length of v.
-    /// </summary>
-    template<TupleType T>
-    inline auto ScalarLength( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Math::Length( v ).simd );
-    }
-#endif
 
     // Normalize
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Normalizes v.
     /// </summary>
@@ -15246,30 +6401,9 @@ namespace Harlinn::Common::Core::Math
     {
         return v / Length( v );
     }
-#else
-    /// <summary>
-    /// Normalizes v.
-    /// </summary>
-    template<SimdType T>
-    inline T Normalize( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return v / Length( v );
-    }
-    /// <summary>
-    /// Normalizes v.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Normalize( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return Normalize( Simd(Traits::Load( v.values )) );
-    }
-#endif
+
     // ReciprocalLength
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the reciprocal length of v.
     /// </summary>
@@ -15282,31 +6416,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Div( Traits::Fill<Traits::Size>( static_cast< Type >( 1. ) ), length.simd ) );
     }
-#else
-    /// <summary>
-    /// Calculates the reciprocal length of v.
-    /// </summary>
-    template<SimdType T>
-    inline T ReciprocalLength( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Type = typename Traits::Type;
-        auto length = Length( v );
-        return T( Traits::Div( Traits::Fill<Traits::Size>( static_cast< Type >(1.) ), length.simd ) );
-    }
-    /// <summary>
-    /// Calculates the reciprocal length of v.
-    /// </summary>
-    template<TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT ReciprocalLength( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using Simd = typename T::Simd;
-        return ReciprocalLength( Simd(Traits::Load( v.values )) );
-    }
-#endif
+
     // ScalarReciprocalLength
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the reciprocal length of v.
     /// </summary>
@@ -15316,32 +6428,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( Math::ReciprocalLength( v ).simd );
     }
-#else
-    /// <summary>
-    /// Calculates the squared length of v.
-    /// </summary>
-    /// 
-    template<SimdType T>
-    inline auto ScalarReciprocalLength( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Math::ReciprocalLength( v ).simd );
-    }
 
-    /// <summary>
-    /// Calculates the squared length of v.
-    /// </summary>
-    template<TupleType T>
-    inline auto ScalarReciprocalLength( const T& v ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Math::ReciprocalLength( v ).simd );
-    }
-
-#endif
     // DistanceSquared
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the squared distance between p1 and p2.
     /// </summary>
@@ -15354,58 +6443,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::HSum( Traits::Mul( diff, diff ) ) );
     }
-#else
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T DistanceSquared( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        auto diff = Traits::Sub( p1.simd, p2.simd );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
 
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T DistanceSquared( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        auto diff = Traits::Sub( p1.simd, Traits::Load( p2.values.data( ) ) );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T DistanceSquared( const U& p1, const T& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), p2.simd );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT DistanceSquared( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), Traits::Load( p2.values.data( ) ) );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-#endif
     // ScalarDistanceSquared
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the squared distance between p1 and p2.
     /// </summary>
@@ -15416,52 +6456,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( DistanceSquared( p1, p2 ).simd );
     }
-#else
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( DistanceSquared(p1, p2).simd );
-    }
 
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( DistanceSquared( p1, p2 ).simd );
-    }
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistanceSquared( const U& p1, const T& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( DistanceSquared( p1, p2 ).simd );
-    }
-    /// <summary>
-    /// Calculates the squared distance between p1 and p2.
-    /// </summary>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( DistanceSquared( p1, p2 ).simd );
-    }
-#endif
     // Distance
 
-#ifdef USE_TOSIMD
     /// <summary>
     /// Calculates the distance between p1 and p2.
     /// </summary>
@@ -15473,54 +6470,9 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Sqrt( DistanceSquared( p1, p2 ).simd ) );
     }
-#else
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline T Distance( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
 
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline T Distance( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline T Distance( const U& p1, const T& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<TupleType T, TupleType U, typename ResultT = typename T::Simd>
-        requires IsCompatible<T, U>
-    inline ResultT Distance( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-#endif
     // ScalarDistance
 
-#ifdef USE_TOSIMD
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
     inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
@@ -15528,52 +6480,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::First( Distance( p1, p2 ).simd );
     }
-#else
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, SimdType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Distance( p1, p2 ).simd );
-    }
-
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<SimdType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Distance( p1, p2 ).simd );
-    }
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<TupleType U, SimdType T>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistance( const U& p1, const T& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Distance( p1, p2 ).simd );
-    }
-    /// <summary>
-    /// Calculates the distance between p1 and p2.
-    /// </summary>
-    template<TupleType T, TupleType U>
-        requires IsCompatible<T, U>
-    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::First( Distance( p1, p2 ).simd );
-    }
-#endif
 
     // DifferenceOfProducts
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the difference between the product of the first and the second argument, 
     /// and the product of the third and fourth argument.
@@ -15585,271 +6494,9 @@ namespace Harlinn::Common::Core::Math
         auto v34 = v3 * v4;
         return FMA( v1, v2, -v34 );
     }
-#else
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U, SimdType V>
-        requires IsCompatible<S, T> && IsCompatible<S, U> && IsCompatible<S, V>
-    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        auto v34 = v3 * v4;
-        return FMA( v1, v2, -v34 );
-        /*
-        auto v34 = v3 * v4;
-        auto differenceOfProducts = FMA( v1, v2, -v34 );
-        auto error = FMA( -v3, v4, v34 );
-        return differenceOfProducts + error;
-        */
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename V::Simd;
-        return DifferenceOfProducts( v1, v2, v3, Simd( Traits::Load( v4.values) ) );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename U::Simd;
-        return DifferenceOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), v4  );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename U::Simd;
-        return DifferenceOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, v4 );
-    }
-    
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
-    }
-    //
-    
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, v3, Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), v4 );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, v4 );
-    }
-    
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline V DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline typename S::Simd DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return DifferenceOfProducts( Simd(Traits::Load( v1.values )), Simd( Traits::Load( v2.values )), Simd( Traits::Load( v3.values )), Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<typename S, SimdType T, typename U, SimdType V>
-        requires IsCompatible<T,V> && IsArithmetic<S> && IsArithmetic<U>
-    inline T DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using ValueType = typename Traits::Type;
-        
-        auto v34 = static_cast< ValueType >(v3) * v4;
-        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<typename S, SimdType T, typename U, TupleType V>
-        requires IsCompatible<T, V>&& IsArithmetic<S>&& IsArithmetic<U>
-    inline T DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using ValueType = typename Traits::Type;
-
-        auto v34 = static_cast< ValueType >( v3 ) * v4;
-        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<typename S, TupleType T, typename U, SimdType V>
-        requires IsCompatible<T, V>&& IsArithmetic<S>&& IsArithmetic<U>
-    inline typename T::Simd DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using ValueType = typename Traits::Type;
-
-        auto v34 = static_cast< ValueType >( v3 ) * v4;
-        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
-    }
-
-    /// <summary>
-    /// Calculates the difference between the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<typename S, TupleType T, typename U, TupleType V>
-        requires IsCompatible<T, V>&& IsArithmetic<S>&& IsArithmetic<U>
-    inline typename T::Simd DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        using ValueType = typename Traits::Type;
-
-        auto v34 = static_cast< ValueType >( v3 ) * v4;
-        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
-    }
-#endif
 
     // SumOfProducts
-#ifdef USE_TOSIMD
+
     /// <summary>
     /// Calculates the sum of the product of the first and the second argument, 
     /// and the product of the third and fourth argument.
@@ -15861,210 +6508,9 @@ namespace Harlinn::Common::Core::Math
         auto v34 = v3 * v4;
         return FMA( v1, v2, v34 );
     }
-#else    
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U, SimdType V >
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        auto v34 = v3 * v4;
-        return FMA( v1, v2, v34 );
-        /*
-        auto v34 = v3 * v4;
-        auto sumOfProducts = FMA( v1, v2, v34 );
-        auto error = FMA( v3, v4, -v34 );
-        return sumOfProducts + error;
-        */
-    }
 
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename V::Simd;
-        return SumOfProducts( v1, v2, v3, Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename U::Simd;
-        return SumOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), v4 );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, SimdType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename U::Simd;
-        return SumOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, v4 );
-    }
-    
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<SimdType S, TupleType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename T::Simd;
-        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
-    }
-    //
-    
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, SimdType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, v3, Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), v4 );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, SimdType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, v4 );
-    }
-    
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, SimdType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, SimdType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline V SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
-    }
-
-    /// <summary>
-    /// Calculates the sum of the product of the first and the second argument, 
-    /// and the product of the third and fourth argument.
-    /// </summary>
-    template<TupleType S, TupleType T, TupleType U, TupleType V>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline typename S::Simd SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
-    }
-#endif
     // BaryCentric
-#ifdef USE_TOSIMD
+
     namespace Internal
     {
         /// <summary>
@@ -16156,1144 +6602,8 @@ namespace Harlinn::Common::Core::Math
         return Internal::BaryCentricImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Simd( Traits::Fill<Traits::Size>( static_cast< Type >( f ) ) ), Simd( Traits::Fill<Traits::Size>( static_cast<Type>( g ) ) ) );
     }
 
-#else
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-
-        auto rmm1 = Traits::Sub( p2.simd, p1.simd );
-        auto rmm2 = Traits::Sub( p3.simd, p1.simd );
-        rmm1 = Traits::FMAdd( rmm1.simd, f.simd, p1.simd );
-        return Simd(Traits::FMAdd( rmm2.simd, g.simd, rmm1.simd ));
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, p2, p3, f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, p2, p3, Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, p2, p3, Simd( f ), Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, p2, Simd( p3 ), f, g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, p2, Simd( p3 ), f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, p2, Simd( p3 ), Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, p2, Simd( p3 ), Simd( f ), Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), p3, f, g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), p3, f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), p3, Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), p3, Simd( f ), Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), f, g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( f ), Simd( g ) );
-    }
-
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, p3, f, g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, p3, f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, p3, Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, p3, Simd( f ), Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), f, g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( f ), Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, f, g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept   
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( f ), Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), f, g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), f, Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( f ), g );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( f ), Simd( g ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, typename V, typename W>
-        requires IsCompatible<S, T> && IsCompatible<S, U> && IsFloatingPoint<V> && IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( p1, p2, p3, Simd(Traits::Fill<Traits::Size>( f )), Simd(Traits::Fill<Traits::Size>( g )) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, typename V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( p1, p2, Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, typename V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( p1, Simd( p2 ), p3, Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, typename V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, typename V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( Simd( p1 ), p2, p3, Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, typename V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, typename V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
-    }
-
-    /// <summary>
-    /// Calculates a point in Barycentric coordinates, using the specified triangle.
-    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="f">
-    /// Weighting factor.
-    /// </param>
-    /// <param name="g">
-    /// Weighting factor.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, typename V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-
-        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( Traits::Fill<Traits::Size>( f ) ), Simd( Traits::Fill<Traits::Size>( g ) ) );
-    }
-#endif
-
     // CatmullRom
 
-#ifdef USE_TOSIMD
     namespace Internal
     {
         /// <summary>
@@ -17378,794 +6688,6 @@ namespace Harlinn::Common::Core::Math
         return Internal::CatmullRomImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( p4 ), Internal::ToSimdType( t ) );
     }
 
-#else
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using FloatT = typename Traits::Type;
-        using Simd = S;
-
-        static constexpr Traits::SIMDType catmul2 = { { static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ) } };
-        static constexpr Traits::SIMDType catmul3 = { { static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ) } };
-        static constexpr Traits::SIMDType catmul4 = { { static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ) } };
-        static constexpr Traits::SIMDType catmul5 = { { static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ) } };
-        static constexpr Traits::SIMDType oneHalf = { { static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ) } };
-        
-        auto t2 = Traits::Mul( t.simd, t.simd );
-        auto t3 = Traits::Mul( t.simd, t2 );
-        // For p1:
-        auto result = Traits::Add( t2, t2 );
-        result = Traits::Sub( result, t.simd );
-        result = Traits::Sub( result, t3 );
-        result = Traits::Mul( result, p1.simd );
-        // For p2:
-        auto temp = Traits::Mul( t3, catmul3 );
-        temp = Traits::FNMAdd( t2, catmul5, temp );
-        temp = Traits::Add( temp, catmul2 );
-        result = Traits::FMAdd( temp, p2.simd, result );
-        // For p3:
-        temp = Traits::Mul( t2, catmul4 );
-        temp = Traits::FNMAdd( t3, catmul3, temp );
-        temp = Traits::Add( temp, t.simd );
-        result = Traits::FMAdd( temp, p3.simd, result );
-        // For p4:
-        t3 = Traits::Sub( t3, t2 );
-        result = Traits::FMAdd( t3, p4.simd, result );
-        // Divide by 2 
-        return Simd( Traits::Mul( result, oneHalf ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, p3, p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, p3, Simd( p4 ), Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, Simd( p3 ), p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, Simd( p3 ), Simd( p4 ), Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), p3, p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), p3, p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), p3, Simd( p4 ), Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), Simd( p4 ), Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, p3, p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, p3, p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, p3, Simd( p4 ), Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), Simd( p4 ), Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, TupleType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, Simd( p4 ), Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, SimdType V, SimdType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, SimdType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), p4, Simd( t ) );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, TupleType V, TupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( p4 ), Simd( t ) );
-    }
-#endif
-
-#ifdef USE_TOSIMD
     namespace Internal
     {
         /// <summary>
@@ -18237,454 +6759,6 @@ namespace Harlinn::Common::Core::Math
         using SimdType = Internal::MakeResultType<T>;
         return Internal::CatmullRomImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( p4 ), SimdType( Traits::Fill<Traits::Size>( static_cast< Type >( t ) ) ) );
     }
-
-#else
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using FloatT = typename Traits::Type;
-        using Simd = S;
-
-        FloatT t2 = t * t;
-        FloatT t3 = t * t2;
-
-        auto P1 = Traits::Fill( ( -t3 + static_cast<FloatT>(2.0) * t2 - t ) * static_cast< FloatT >( 0.5 ) );
-        auto P2 = Traits::Fill( ( static_cast< FloatT >( 3.0 ) * t3 - static_cast< FloatT >( 5.0 ) * t2 + static_cast< FloatT >( 2.0 ) ) * static_cast< FloatT >( 0.5 ) );
-        auto P3 = Traits::Fill( ( static_cast< FloatT >( -3.0 ) * t3 + static_cast< FloatT >( 4.0 ) * t2 + t ) * static_cast< FloatT >( 0.5 ) );
-        auto P4 = Traits::Fill( ( t3 - t2 ) * static_cast< FloatT >( 0.5 ) );
-
-        P2 = Traits::Mul( p2.simd, P2 );
-        P1 = Traits::FMAdd( p1.simd, P1, P2 );
-        P4 = Traits::Mul( p4.simd, P4 );
-        P3 = Traits::FMAdd( p3.simd, P3, P4 );
-        return Simd( Traits::Trim( Traits::Add( P1, P3 ) ));
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, SimdType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, SimdType T, TupleType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, p2, Simd( p3 ), Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), p3, p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, SimdType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<SimdType S, TupleType T, TupleType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = S;
-        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, p3, p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, SimdType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, SimdType T, TupleType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, SimdType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, Simd( p4 ), t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, SimdType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), p4, t );
-    }
-
-    /// <summary>
-    /// Calculates the Catmull-Rom interpolation, using the specified positions.
-    /// </summary>
-    /// <param name="p1">
-    /// The first position.
-    /// </param>
-    /// <param name="p2">
-    /// The second position.
-    /// </param>
-    /// <param name="p3">
-    /// The third position.
-    /// </param>
-    /// <param name="p4">
-    /// The fourth position.
-    /// </param>
-    /// <param name="t">
-    /// The interpolation control factors.
-    /// </param>
-    template<TupleType S, TupleType T, TupleType U, TupleType V, typename W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsFloatingPoint<W>
-    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
-    {
-        using Traits = typename S::Traits;
-        using Simd = typename S::Simd;
-        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( p4 ), t );
-    }
-#endif
 
 
     /// <summary>
@@ -19580,8 +7654,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Vector<float, 2>, float>;
         using Base::Base;
-        
-        using Traits = Base::Traits;
     };
 
     template<>
@@ -19978,16 +8050,48 @@ namespace Harlinn::Common::Core::Math
         { };
         struct QuaternionBase
         { };
+    }
 
-        template<typename T>
-        concept QuaternionSimdType = std::is_base_of_v<QuaternionSimdBase, T> && IsFloatingPoint<typename T::value_type>;
+    template<typename T>
+    concept QuaternionSimdType = std::is_base_of_v<Internal::QuaternionSimdBase, T>;
 
-        template<typename T>
-        concept QuaternionType = std::is_base_of_v<QuaternionBase, T> && IsFloatingPoint<typename T::value_type>;
+    template<typename T>
+    concept QuaternionType = std::is_base_of_v<Internal::QuaternionBase, T>;
 
-        template<typename T1, typename T2>
-        constexpr bool IsCompatibleQuaternion =
-            std::is_same_v<typename T1::Traits, typename T2::Traits>;
+    template<typename T>
+    concept QuaternionOrQuaternionSimdType = QuaternionType<T> || QuaternionSimdType<T>;
+
+
+    template<typename T1, typename T2>
+    constexpr bool IsCompatibleQuaternion = std::is_same_v<typename T1::Traits, typename T2::Traits>;
+
+    namespace Internal
+    {
+        template<QuaternionSimdType T>
+        inline constexpr const typename T::SIMDType& ToSimd( const T& q ) noexcept
+        {
+            return q.simd;
+        }
+
+        template<QuaternionType T>
+        inline typename T::SIMDType ToSimd( const T& q ) noexcept
+        {
+            using Traits = typename T::Traits;
+            return Traits::Load( q.values );
+        }
+
+        template<QuaternionSimdType T>
+        inline constexpr const T& ToSimdType( const T& q ) noexcept
+        {
+            return q;
+        }
+
+        template<QuaternionType T>
+        inline const typename T::Simd ToSimdType( const T& q ) noexcept
+        {
+            return typename T::Simd( q );
+        }
+
 
     }
 
@@ -20006,6 +8110,8 @@ namespace Harlinn::Common::Core::Math
         using VectorSimd = typename Vector::Simd;
         using Normal = Normal3f;
         using NormalSimd = typename Normal::Simd;
+
+        using Simd = QuaternionSimd<QuaternionT>;
 
         using Matrix = SquareMatrix<ValueType, 4>;
         using MatrixSimd = SquareMatrixSimd<Matrix, 4>;
@@ -21040,40 +9146,49 @@ namespace Harlinn::Common::Core::Math
 
 
     // Addition
-
-    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T,U>
+#ifdef USE_TOSIMD
+    template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U>
+        requires IsCompatibleQuaternion<T, U>
+    auto operator + ( const T& q1, const U& q2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = typename T::Simd;
+        return ResultType( Traits::Add( Internal::ToSimd( q1 ), Internal::ToSimd( q2 ) ) );
+    }
+#else
+    template<QuaternionSimdType T, QuaternionSimdType U>
+        requires IsCompatibleQuaternion<T,U>
     T operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return T(Traits::Add( q1.simd, q2.simd ));
     }
-    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionType T, QuaternionSimdType U>
+        requires IsCompatibleQuaternion<T, U>
     U operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return U(Traits::Add( Traits::Load( q1.values ), q2.simd ));
     }
-    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionSimdType T, QuaternionType U>
+        requires IsCompatibleQuaternion<T, U>
     T operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return T(Traits::Add( q1.simd, Traits::Load( q2.values ) ));
     }
-    template<Internal::QuaternionType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionType T, QuaternionType U>
+        requires IsCompatibleQuaternion<T, U>
     typename T::Simd operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return typename T::Simd(Traits::Add( Traits::Load( q1.values ), Traits::Load( q2.values ) ));
     }
-
+#endif
 
     // Scalar Addition
 
-    template<Internal::QuaternionSimdType T, typename U>
+    template<QuaternionSimdType T, typename U>
         requires std::is_arithmetic_v<U>
     T operator + ( const T& q1, const U value ) noexcept
     {
@@ -21084,7 +9199,7 @@ namespace Harlinn::Common::Core::Math
         return T( Traits::Add( q1.simd, Traits::Set( v, zero, zero, zero ) ) );
     }
 
-    template<typename T, Internal::QuaternionSimdType U>
+    template<typename T, QuaternionSimdType U>
         requires std::is_arithmetic_v<T>
     U operator + ( const T& value, const U& q2 ) noexcept
     {
@@ -21095,7 +9210,7 @@ namespace Harlinn::Common::Core::Math
         return U( Traits::Add( Traits::Set( v, zero, zero, zero ), q2.simd ) );
     }
 
-    template<Internal::QuaternionType T, typename U>
+    template<QuaternionType T, typename U>
         requires std::is_arithmetic_v<U>
     typename T::Simd operator + ( const T& q1, const U value ) noexcept
     {
@@ -21107,7 +9222,7 @@ namespace Harlinn::Common::Core::Math
 
         return Simd( Traits::Add( Traits::Load( q1.values ), Traits::Set( v, zero, zero, zero ) ) );
     }
-    template<typename T, Internal::QuaternionType U>
+    template<typename T, QuaternionType U>
         requires std::is_arithmetic_v<T>
     typename U::Simd operator + ( const T value, const U& q2 ) noexcept
     {
@@ -21123,29 +9238,29 @@ namespace Harlinn::Common::Core::Math
 
     // Subtraction
 
-    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionSimdType T, QuaternionSimdType U>
+        requires IsCompatibleQuaternion<T, U>
     T operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return T(Traits::Sub( q1.simd, q2.simd ));
     }
-    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionType T, QuaternionSimdType U>
+        requires IsCompatibleQuaternion<T, U>
     U operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return U(Traits::Sub( Traits::Load( q1.values ), q2.simd ));
     }
-    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionSimdType T, QuaternionType U>
+        requires IsCompatibleQuaternion<T, U>
     T operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return T(Traits::Sub( q1.simd, Traits::Load( q2.values ) ));
     }
-    template<Internal::QuaternionType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionType T, QuaternionType U>
+        requires IsCompatibleQuaternion<T, U>
     typename T::Simd operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
@@ -21155,7 +9270,7 @@ namespace Harlinn::Common::Core::Math
 
     // Scalar Subtraction
 
-    template<Internal::QuaternionSimdType T, typename U>
+    template<QuaternionSimdType T, typename U>
         requires std::is_arithmetic_v<U>
     T operator - ( const T& q1, const U value ) noexcept
     {
@@ -21166,7 +9281,7 @@ namespace Harlinn::Common::Core::Math
         return T( Traits::Sub( q1.simd, Traits::Set( v, zero, zero, zero ) ) );
     }
 
-    template<typename T, Internal::QuaternionSimdType U>
+    template<typename T, QuaternionSimdType U>
         requires std::is_arithmetic_v<T>
     U operator - ( const T value, const U& q2 ) noexcept
     {
@@ -21178,7 +9293,7 @@ namespace Harlinn::Common::Core::Math
         return U( Traits::Permute<4, 5, 6, 3>( tmp, q2.simd ) );
     }
 
-    template<Internal::QuaternionType T, typename U>
+    template<QuaternionType T, typename U>
         requires std::is_arithmetic_v<U>
     typename T::Simd operator - ( const T& q1, const U value ) noexcept
     {
@@ -21190,7 +9305,7 @@ namespace Harlinn::Common::Core::Math
 
         return Simd( Traits::Sub( Traits::Load( q1.values ), Traits::Set( v, zero, zero, zero ) ) );
     }
-    template<typename T, Internal::QuaternionType U>
+    template<typename T, QuaternionType U>
         requires std::is_arithmetic_v<T>
     typename U::Simd operator - ( const T value, const U& q2 ) noexcept
     {
@@ -21208,29 +9323,29 @@ namespace Harlinn::Common::Core::Math
 
     // Multiplication
 
-    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionSimdType T, QuaternionSimdType U>
+        requires IsCompatibleQuaternion<T, U>
     T operator * ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return T( Traits::QuaternionMultiply( q1.simd, q2.simd ));
     }
-    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionType T, QuaternionSimdType U>
+        requires IsCompatibleQuaternion<T, U>
     U operator *( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return U( Traits::QuaternionMultiply( Traits::Load( q1.values )), q2.simd );
     }
-    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionSimdType T, QuaternionType U>
+        requires IsCompatibleQuaternion<T, U>
     T operator * ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
         return T( Traits::QuaternionMultiply( q1.simd, Traits::Load( q2.values ) ));
     }
-    template<Internal::QuaternionType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
+    template<QuaternionType T, QuaternionType U>
+        requires IsCompatibleQuaternion<T, U>
     typename T::Simd operator * ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
@@ -21241,14 +9356,14 @@ namespace Harlinn::Common::Core::Math
 
     // Scalar Multiplication
 
-    template<typename T, Internal::QuaternionSimdType U>
+    template<typename T, QuaternionSimdType U>
         requires IsFloatingPoint<T>
     U operator * ( T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
         return U(Traits::Mul( Traits::Fill( value ), q2.simd ));
     }
-    template<Internal::QuaternionSimdType T, typename U>
+    template<QuaternionSimdType T, typename U>
         requires IsFloatingPoint<U>
     T operator * ( const T& q1, U value ) noexcept
     {
@@ -21256,14 +9371,14 @@ namespace Harlinn::Common::Core::Math
         return T(Traits::Mul( q1.simd, Traits::Fill( value ) ));
     }
 
-    template<typename T, Internal::QuaternionType U>
+    template<typename T, QuaternionType U>
         requires IsFloatingPoint<T>
     typename U::Simd operator * ( T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
         return typename U::Simd(Traits::Mul( Traits::Fill( value ), Traits::Load( q2.values ) ));
     }
-    template<Internal::QuaternionType T, typename U>
+    template<QuaternionType T, typename U>
         requires IsFloatingPoint<U>
     typename T::Simd operator * ( const T& q1, U value ) noexcept
     {
@@ -21274,7 +9389,7 @@ namespace Harlinn::Common::Core::Math
     // Scalar Division
 
 
-    template<Internal::QuaternionSimdType T, typename U>
+    template<QuaternionSimdType T, typename U>
         requires IsFloatingPoint<U>
     T operator / ( const T& q1, U value ) noexcept
     {
@@ -21282,7 +9397,7 @@ namespace Harlinn::Common::Core::Math
         return T( Traits::Div( q1.simd, Traits::Fill( value ) ) );
     }
 
-    template<typename T, Internal::QuaternionSimdType U>
+    template<typename T, QuaternionSimdType U>
         requires IsFloatingPoint<T>
     U operator / ( const T value, const U& q2 ) noexcept
     {
@@ -21290,7 +9405,7 @@ namespace Harlinn::Common::Core::Math
         return U( Traits::Div( Traits::Fill( value ), q2.simd ) );
     }
 
-    template<Internal::QuaternionType T, typename U>
+    template<QuaternionType T, typename U>
         requires IsFloatingPoint<U>
     typename T::Simd operator / ( const T& q1, U value ) noexcept
     {
@@ -21299,7 +9414,7 @@ namespace Harlinn::Common::Core::Math
         return Simd(Traits::Div( Traits::Load( q1.values ), Traits::Fill( value ) ));
     }
 
-    template<typename T, Internal::QuaternionType U>
+    template<typename T, QuaternionType U>
         requires IsFloatingPoint<T>
     typename U::Simd operator / ( const T value, const U& q2 ) noexcept
     {
