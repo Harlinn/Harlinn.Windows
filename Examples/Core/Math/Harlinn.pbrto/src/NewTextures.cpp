@@ -1739,15 +1739,6 @@ namespace pbrto
         return tex;
     }
 
-    // UniversalTextureEvaluator Method Definitions
-    Float UniversalTextureEvaluator::operator()( FloatTexture tex, TextureEvalContext ctx )
-    {
-        return tex.Evaluate( ctx );
-    }
-
-    SampledSpectrum UniversalTextureEvaluator::operator()( SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda )
-    {
-        return tex.Evaluate( ctx, lambda );
-    }
+    
 
 }

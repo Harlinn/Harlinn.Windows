@@ -4265,6 +4265,25 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::IsNaN( Internal::ToSimd( t ) ) );
     }
 
+    /// <summary>
+    /// Determines which of the elements of t are Inf. 
+    /// </summary>
+    /// <param name="t">
+    /// The source of the values for the test.
+    /// </param>
+    /// <returns>
+    /// If an element of t is Inf, the corresponding element in the 
+    /// result will be set to 0xFFFFFFFF, otherwise the corresponding 
+    /// element in the result will be set to 0.
+    /// </returns>
+    template<SimdOrTupleType T>
+    inline auto IsInf( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::IsInf( Internal::ToSimd( t ) ) );
+    }
+
 
     // Abs
 
@@ -6864,7 +6883,7 @@ namespace Harlinn::Common::Core::Math
         requires IsCompatible<T, U>
     inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
     {
-        return Math::Abs( ScalarDot( v1, v2 ) );
+        return Math::FastAbs( ScalarDot( v1, v2 ) );
     }
 
     // Cross
@@ -7596,6 +7615,27 @@ namespace Harlinn::Common::Core::Math
         return MinComponentIndex( tmp );
     }
 
+    // NextUp
+
+    template<SimdOrTupleType T>
+    inline auto NextUp( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::NextUp( Internal::ToSimd( t ) ) );
+    }
+
+
+    // NextDown
+
+    template<SimdOrTupleType T>
+    inline auto NextDown( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        return ResultType( Traits::NextDown( Internal::ToSimd( t ) ) );
+    }
+
 
     // AddAdjustUp
 
@@ -7631,6 +7671,8 @@ namespace Harlinn::Common::Core::Math
         return Traits::Trim( Traits::NextUp( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
     }
 
+
+    
 
     // AddAdjustDown
 

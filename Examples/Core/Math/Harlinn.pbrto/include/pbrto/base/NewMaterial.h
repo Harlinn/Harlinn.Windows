@@ -71,10 +71,10 @@ namespace pbrto
         std::string ToString( ) const;
 
         template <typename TextureEvaluator>
-        inline BSDF GetBSDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
+        inline BSDF GetBSDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
 
         template <typename TextureEvaluator>
-        inline BSSRDF GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
+        inline BSSRDF GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
 
         template <typename TextureEvaluator>
         inline bool CanEvaluateTextures( TextureEvaluator texEval ) const;

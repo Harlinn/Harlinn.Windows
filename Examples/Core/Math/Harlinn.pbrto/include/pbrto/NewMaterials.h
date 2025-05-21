@@ -159,12 +159,6 @@ namespace pbrto
     }
     */
 
-    struct ShadeMapping
-    {
-        Vector3f::Simd dpdu; 
-        Vector3f::Simd dpdv;
-    };
-
     // Normal Mapping Function Definitions
     inline Normal3f::Simd NormalMap( const Image& normalMap, const NormalBumpEvalContext& ctx )
     {
@@ -270,13 +264,13 @@ namespace pbrto
         std::string ToString( ) const;
 
         template <typename TextureEvaluator>
-        void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         { }
 
         static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         template <typename TextureEvaluator>
-        DielectricBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda ) const
+        DielectricBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             // Compute index of refraction for dielectric material
             Float sampledEta = eta( lambda[ 0 ] );
@@ -317,7 +311,7 @@ namespace pbrto
         }
 
         template <typename TextureEvaluator>
-        ThinDielectricBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda ) const
+        ThinDielectricBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             // Compute index of refraction for dielectric material
             Float sampledEta = eta( lambda[ 0 ] );
@@ -339,22 +333,17 @@ namespace pbrto
 
         static const char* Name( ) { return "ThinDielectricMaterial"; }
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
-        static ThinDielectricMaterial* Create( const TextureParameterDictionary& parameters,
-            Image* normalMap, const FileLoc* loc,
-            Allocator alloc );
+        static ThinDielectricMaterial* Create( const TextureParameterDictionary& parameters, Image* normalMap, const FileLoc* loc, Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
         }
 
-        PBRT_CPU_GPU static constexpr bool HasSubsurfaceScattering( ) { return false; }
+        static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         std::string ToString( ) const;
 
@@ -381,8 +370,7 @@ namespace pbrto
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU Material ChooseMaterial( TextureEvaluator texEval,
-            MaterialEvalContext ctx ) const
+        Material ChooseMaterial( TextureEvaluator texEval, const MaterialEvalContext& ctx ) const
         {
             Float amt = texEval( amount, ctx );
             if ( amt <= 0 )
@@ -393,13 +381,11 @@ namespace pbrto
             return ( amt < u ) ? materials[ 0 ] : materials[ 1 ];
         }
 
-        PBRT_CPU_GPU
-            Material GetMaterial( int i ) const { return materials[ i ]; }
+        Material GetMaterial( int i ) const { return materials[ i ]; }
 
         static const char* Name( ) { return "MixMaterial"; }
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const
+        FloatTexture GetDisplacement( ) const
         {
 #ifndef PBRT_IS_GPU_CODE
             NLOG_FATAL( "Shouldn't be called" );
@@ -407,8 +393,7 @@ namespace pbrto
             return nullptr;
         }
 
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const
+        const Image* GetNormalMap( ) const
         {
 #ifndef PBRT_IS_GPU_CODE
             NLOG_FATAL( "Shouldn't be called" );
@@ -421,27 +406,25 @@ namespace pbrto
             const FileLoc* loc, Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
 #ifndef PBRT_IS_GPU_CODE
             NLOG_FATAL( "Shouldn't be called" );
 #endif
         }
 
-        PBRT_CPU_GPU static constexpr bool HasSubsurfaceScattering( ) { return false; }
+        static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         std::string ToString( ) const;
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU bool CanEvaluateTextures( TextureEvaluator texEval ) const
+        bool CanEvaluateTextures( TextureEvaluator texEval ) const
         {
             return texEval.CanEvaluate( { amount }, {} );
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        void GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
 #ifndef PBRT_IS_GPU_CODE
             NLOG_FATAL( "MixMaterial::GetBxDF() shouldn't be called" );
@@ -479,15 +462,14 @@ namespace pbrto
         static const char* Name( ) { return "HairMaterial"; }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU bool CanEvaluateTextures( TextureEvaluator texEval ) const
+        bool CanEvaluateTextures( TextureEvaluator texEval ) const
         {
             return texEval.CanEvaluate( { eumelanin, pheomelanin, eta, beta_m, beta_n, alpha },
                 { sigma_a, color } );
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU HairBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        HairBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             Float bm = std::max<Float>( 1e-2, std::min<Float>( 1.0, texEval( beta_m, ctx ) ) );
             Float bn = std::max<Float>( 1e-2, std::min<Float>( 1.0, texEval( beta_n, ctx ) ) );
@@ -516,17 +498,13 @@ namespace pbrto
             return HairBxDF( h, e, sig_a, bm, bn, a );
         }
 
-        static HairMaterial* Create( const TextureParameterDictionary& parameters,
-            const FileLoc* loc, Allocator alloc );
+        static HairMaterial* Create( const TextureParameterDictionary& parameters, const FileLoc* loc, Allocator alloc );
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return nullptr; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return nullptr; }
+        FloatTexture GetDisplacement( ) const { return nullptr; }
+        const Image* GetNormalMap( ) const { return nullptr; }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
         }
 
@@ -552,26 +530,21 @@ namespace pbrto
         // DiffuseMaterial Public Methods
         static const char* Name( ) { return "DiffuseMaterial"; }
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
-        static DiffuseMaterial* Create( const TextureParameterDictionary& parameters,
-            Image* normalMap, const FileLoc* loc, Allocator alloc );
+        static DiffuseMaterial* Create( const TextureParameterDictionary& parameters, Image* normalMap, const FileLoc* loc, Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda, void* ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda, void* ) const
         {
         }
 
-        PBRT_CPU_GPU static constexpr bool HasSubsurfaceScattering( ) { return false; }
+        static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         std::string ToString( ) const;
 
-        DiffuseMaterial( SpectrumTexture reflectance, FloatTexture displacement,
-            Image* normalMap )
+        DiffuseMaterial( SpectrumTexture reflectance, FloatTexture displacement, Image* normalMap )
             : normalMap( normalMap ), displacement( displacement ), reflectance( reflectance )
         {
         }
@@ -583,8 +556,7 @@ namespace pbrto
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU DiffuseBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        DiffuseBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             SampledSpectrum r = Clamp( texEval( reflectance, ctx, lambda ), 0, 1 );
             return DiffuseBxDF( r );
@@ -606,14 +578,13 @@ namespace pbrto
 
         // ConductorMaterial Public Methods
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU bool CanEvaluateTextures( TextureEvaluator texEval ) const
+        bool CanEvaluateTextures( TextureEvaluator texEval ) const
         {
             return texEval.CanEvaluate( { uRoughness, vRoughness }, { eta, k, reflectance } );
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU ConductorBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        ConductorBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             // Return BSDF for _ConductorMaterial_
             Float uRough = texEval( uRoughness, ctx ), vRough = texEval( vRoughness, ctx );
@@ -655,22 +626,17 @@ namespace pbrto
 
         static const char* Name( ) { return "ConductorMaterial"; }
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
-        static ConductorMaterial* Create( const TextureParameterDictionary& parameters,
-            Image* normalMap, const FileLoc* loc,
-            Allocator alloc );
+        static ConductorMaterial* Create( const TextureParameterDictionary& parameters, Image* normalMap, const FileLoc* loc, Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
         }
 
-        PBRT_CPU_GPU static constexpr bool HasSubsurfaceScattering( ) { return false; }
+        static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         std::string ToString( ) const;
 
@@ -713,33 +679,26 @@ namespace pbrto
         static const char* Name( ) { return "CoatedDiffuseMaterial"; }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU bool CanEvaluateTextures( TextureEvaluator texEval ) const
+        bool CanEvaluateTextures( TextureEvaluator texEval ) const
         {
             return texEval.CanEvaluate( { uRoughness, vRoughness, thickness, g },
                 { reflectance, albedo } );
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU CoatedDiffuseBxDF GetBxDF( TextureEvaluator texEval,
-            const MaterialEvalContext& ctx,
-            SampledWavelengths& lambda ) const;
+        CoatedDiffuseBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const;
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
-        static CoatedDiffuseMaterial* Create( const TextureParameterDictionary& parameters,
-            Image* normalMap, const FileLoc* loc,
-            Allocator alloc );
+        static CoatedDiffuseMaterial* Create( const TextureParameterDictionary& parameters, Image* normalMap, const FileLoc* loc, Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx,
-            SampledWavelengths& lambda ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
         }
 
-        PBRT_CPU_GPU static constexpr bool HasSubsurfaceScattering( ) { return false; }
+        static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         std::string ToString( ) const;
 
@@ -792,7 +751,7 @@ namespace pbrto
         static const char* Name( ) { return "CoatedConductorMaterial"; }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU bool CanEvaluateTextures( TextureEvaluator texEval ) const
+        bool CanEvaluateTextures( TextureEvaluator texEval ) const
         {
             return texEval.CanEvaluate( { interfaceURoughness, interfaceVRoughness, thickness,
                                         g, conductorURoughness, conductorVRoughness },
@@ -800,26 +759,19 @@ namespace pbrto
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU CoatedConductorBxDF GetBxDF( TextureEvaluator texEval,
-            const MaterialEvalContext& ctx,
-            SampledWavelengths& lambda ) const;
+        CoatedConductorBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const;
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
-        static CoatedConductorMaterial* Create( const TextureParameterDictionary& parameters,
-            Image* normalMap, const FileLoc* loc,
-            Allocator alloc );
+        static CoatedConductorMaterial* Create( const TextureParameterDictionary& parameters, Image* normalMap, const FileLoc* loc, Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx,
-            SampledWavelengths& lambda, void* ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda, void* ) const
         {
         }
 
-        PBRT_CPU_GPU static constexpr bool HasSubsurfaceScattering( ) { return false; }
+        static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         std::string ToString( ) const;
 
@@ -870,15 +822,13 @@ namespace pbrto
         static const char* Name( ) { return "SubsurfaceMaterial"; }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU bool CanEvaluateTextures( TextureEvaluator texEval ) const
+        bool CanEvaluateTextures( TextureEvaluator texEval ) const
         {
             return texEval.CanEvaluate( { uRoughness, vRoughness }, { sigma_a, sigma_s } );
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU DielectricBxDF GetBxDF( TextureEvaluator texEval,
-            const MaterialEvalContext& ctx,
-            SampledWavelengths& lambda ) const
+        DielectricBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             // Initialize BSDF for _SubsurfaceMaterial_
 
@@ -895,9 +845,7 @@ namespace pbrto
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU TabulatedBSSRDF GetBSSRDF( TextureEvaluator texEval,
-            const MaterialEvalContext& ctx,
-            SampledWavelengths& lambda ) const
+        TabulatedBSSRDF GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             SampledSpectrum sig_a, sig_s;
             if ( sigma_a && sigma_s )
@@ -918,10 +866,8 @@ namespace pbrto
             return TabulatedBSSRDF( ctx.p, ctx.ns, ctx.wo, eta, sig_a, sig_s, &table );
         }
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
         PBRT_CPU_GPU
             static constexpr bool HasSubsurfaceScattering( ) { return true; }
@@ -950,51 +896,44 @@ namespace pbrto
         using BxDF = DiffuseTransmissionBxDF;
         using BSSRDF = void;
         // DiffuseTransmissionMaterial Public Methods
-        DiffuseTransmissionMaterial( SpectrumTexture reflectance,
-            SpectrumTexture transmittance, FloatTexture displacement,
-            Image* normalMap, Float scale )
+        DiffuseTransmissionMaterial( SpectrumTexture reflectance, SpectrumTexture transmittance, FloatTexture displacement, Image* normalMap, Float scale )
             : displacement( displacement ),
-            normalMap( normalMap ),
-            reflectance( reflectance ),
-            transmittance( transmittance ),
-            scale( scale )
+              normalMap( normalMap ),
+              reflectance( reflectance ),
+              transmittance( transmittance ),
+             scale( scale )
         {
         }
 
         static const char* Name( ) { return "DiffuseTransmissionMaterial"; }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU bool CanEvaluateTextures( TextureEvaluator texEval ) const
+        bool CanEvaluateTextures( TextureEvaluator texEval ) const
         {
             return texEval.CanEvaluate( {}, { reflectance, transmittance } );
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU DiffuseTransmissionBxDF GetBxDF( TextureEvaluator texEval,
-            MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        DiffuseTransmissionBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             SampledSpectrum r = Clamp( scale * texEval( reflectance, ctx, lambda ), 0, 1 );
             SampledSpectrum t = Clamp( scale * texEval( transmittance, ctx, lambda ), 0, 1 );
             return DiffuseTransmissionBxDF( r, t );
         }
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
         static DiffuseTransmissionMaterial* Create(
             const TextureParameterDictionary& parameters, Image* normalMap,
             const FileLoc* loc, Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
         }
 
-        PBRT_CPU_GPU static constexpr bool HasSubsurfaceScattering( ) { return false; }
+        static constexpr bool HasSubsurfaceScattering( ) { return false; }
 
         std::string ToString( ) const;
 
@@ -1014,8 +953,7 @@ namespace pbrto
         using BSSRDF = void;
         // MeasuredMaterial Public Methods
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU MeasuredBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU MeasuredBxDF GetBxDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda ) const
         {
             return MeasuredBxDF( brdf, lambda );
         }
@@ -1031,18 +969,15 @@ namespace pbrto
             return true;
         }
 
-        PBRT_CPU_GPU
-            FloatTexture GetDisplacement( ) const { return displacement; }
-        PBRT_CPU_GPU
-            const Image* GetNormalMap( ) const { return normalMap; }
+        FloatTexture GetDisplacement( ) const { return displacement; }
+        const Image* GetNormalMap( ) const { return normalMap; }
 
         static MeasuredMaterial* Create( const TextureParameterDictionary& parameters,
             Image* normalMap, const FileLoc* loc,
             Allocator alloc );
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU void GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda, void* ) const
+        void GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda, void* ) const
         {
         }
 
@@ -1059,39 +994,36 @@ namespace pbrto
 
     // Material Inline Method Definitions
     template <typename TextureEvaluator>
-    inline BSDF Material::GetBSDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-        SampledWavelengths& lambda,
-        ScratchBuffer& scratchBuffer ) const
+    inline BSDF Material::GetBSDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda, ScratchBuffer& scratchBuffer ) const
     {
         // Define _getBSDF_ lambda function for _Material::GetBSDF()_
-        auto getBSDF = [ & ]( auto mtl ) -> BSDF {
-            using ConcreteMtl = typename std::remove_reference_t<decltype( *mtl )>;
-            using ConcreteBxDF = typename ConcreteMtl::BxDF;
-            if constexpr ( std::is_same_v<ConcreteBxDF, void> )
-                return BSDF( );
-            else
+        auto getBSDF = [ & ]( auto mtl ) -> BSDF 
             {
-                // Allocate memory for _ConcreteBxDF_ and return _BSDF_ for material
-                ConcreteBxDF* bxdf = scratchBuffer.Alloc<ConcreteBxDF>( );
-                *bxdf = mtl->GetBxDF( texEval, ctx, lambda );
-                return BSDF( ctx.ns, ctx.dpdus, bxdf );
-            }
+                using ConcreteMtl = typename std::remove_reference_t<decltype( *mtl )>;
+                using ConcreteBxDF = typename ConcreteMtl::BxDF;
+                if constexpr ( std::is_same_v<ConcreteBxDF, void> )
+                    return BSDF( );
+                else
+                {
+                    // Allocate memory for _ConcreteBxDF_ and return _BSDF_ for material
+                    ConcreteBxDF* bxdf = scratchBuffer.Alloc<ConcreteBxDF>( );
+                    *bxdf = mtl->GetBxDF( texEval, ctx, lambda );
+                    return BSDF( ctx.ns, ctx.dpdus, bxdf );
+                }
             };
 
         return DispatchCPU( getBSDF );
     }
 
     template <typename TextureEvaluator>
-    PBRT_CPU_GPU inline bool Material::CanEvaluateTextures( TextureEvaluator texEval ) const
+    inline bool Material::CanEvaluateTextures( TextureEvaluator texEval ) const
     {
         auto eval = [ & ]( auto ptr ) { return ptr->CanEvaluateTextures( texEval ); };
         return Dispatch( eval );
     }
 
     template <typename TextureEvaluator>
-    inline BSSRDF Material::GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-        SampledWavelengths& lambda,
-        ScratchBuffer& scratchBuffer ) const
+    inline BSSRDF Material::GetBSSRDF( TextureEvaluator texEval, const MaterialEvalContext& ctx, SampledWavelengths& lambda, ScratchBuffer& scratchBuffer ) const
     {
         auto get = [ & ]( auto mtl ) -> BSSRDF {
             using Material = typename std::remove_reference_t<decltype( *mtl )>;
@@ -1108,19 +1040,19 @@ namespace pbrto
         return DispatchCPU( get );
     }
 
-    PBRT_CPU_GPU inline bool Material::HasSubsurfaceScattering( ) const
+    inline bool Material::HasSubsurfaceScattering( ) const
     {
         auto has = [ & ]( auto ptr ) { return ptr->HasSubsurfaceScattering( ); };
         return Dispatch( has );
     }
 
-    PBRT_CPU_GPU inline FloatTexture Material::GetDisplacement( ) const
+    inline FloatTexture Material::GetDisplacement( ) const
     {
         auto disp = [ & ]( auto ptr ) { return ptr->GetDisplacement( ); };
         return Dispatch( disp );
     }
 
-    PBRT_CPU_GPU inline const Image* Material::GetNormalMap( ) const
+    inline const Image* Material::GetNormalMap( ) const
     {
         auto nmap = [ & ]( auto ptr ) { return ptr->GetNormalMap( ); };
         return Dispatch( nmap );

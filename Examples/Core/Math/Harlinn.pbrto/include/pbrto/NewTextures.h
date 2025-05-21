@@ -1293,10 +1293,16 @@ namespace pbrto
         {
             return true;
         }
+        
+        Float operator()( const FloatTexture tex, const TextureEvalContext& ctx )
+        {
+            return tex.Evaluate( ctx );
+        }
 
-        Float operator()( FloatTexture tex, TextureEvalContext ctx );
-
-        SampledSpectrum operator()( SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda );
+        SampledSpectrum operator()( const SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda )
+        {
+            return tex.Evaluate( ctx, lambda );
+        }
     };
 
     // BasicTextureEvaluator Definition
@@ -1321,7 +1327,7 @@ namespace pbrto
             return true;
         }
 
-        Float operator()( FloatTexture tex, const TextureEvalContext& ctx )
+        Float operator()( const FloatTexture tex, const TextureEvalContext& ctx )
         {
             if ( tex.Is<FloatConstantTexture>( ) )
                 return tex.Cast<FloatConstantTexture>( )->Evaluate( ctx );
@@ -1339,7 +1345,7 @@ namespace pbrto
             }
         }
 
-        SampledSpectrum operator()( SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda )
+        SampledSpectrum operator()( const SpectrumTexture tex, const TextureEvalContext& ctx, const SampledWavelengths& lambda )
         {
             if ( tex.Is<SpectrumConstantTexture>( ) )
                 return tex.Cast<SpectrumConstantTexture>( )->Evaluate( ctx, lambda );
