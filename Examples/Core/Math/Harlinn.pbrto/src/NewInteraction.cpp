@@ -213,13 +213,16 @@ namespace pbrto
         if ( displacement || normalMap )
         {
             // Get shading $\dpdu$ and $\dpdv$ using normal or bump map
-            Vector3f dpdu, dpdv;
+            /*
+            Vector3f::Simd dpdu, dpdv;
             if ( normalMap )
                 NormalMap( *normalMap, *this, &dpdu, &dpdv );
             else
                 BumpMap( UniversalTextureEvaluator( ), displacement, *this, &dpdu, &dpdv );
+            */
+            auto ns = normalMap ? NormalMap( *normalMap, *this ) : BumpMap( UniversalTextureEvaluator( ), displacement, *this );
 
-            Normal3f::Simd ns( Normalize( Cross( dpdu, dpdv ) ) );
+            //Normal3f::Simd ns( Normalize( Cross( dpdu, dpdv ) ) );
             SetShadingGeometry( ns, dpdu, dpdv, shading.dndu, shading.dndv, false );
         }
 

@@ -23,8 +23,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // A 3-vector with an unspecified fourth component.  Depending on the context, the W can be 0 or 1, but both are implicit.
         // The actual value of the fourth component is undefined for performance reasons.
 #ifdef HDMC_USES_HCC_MATH
-        using Vector3 = m::Vector<float, 3>::Simd;
-        using Vector4 = m::Vector<float, 4>::Simd;
+        using Vector3 = m::Vector3f::Simd;
+        using Vector4 = m::Vector4f::Simd;
 
 
         inline Vector3 ToVector3( const Vector4& v )

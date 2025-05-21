@@ -159,8 +159,11 @@ namespace pbrto
             // Compute texture coordinate differentials for spherical mapping
             Vector3f::Simd dpdx = textureFromRender( ctx.dpdx );
             Vector3f::Simd dpdy = textureFromRender( ctx.dpdy );
-            Float dsdx = ScalarDot( dsdp, dpdx ), dsdy = ScalarDot( dsdp, dpdy );
-            Float dtdx = ScalarDot( dtdp, dpdx ), dtdy = ScalarDot( dtdp, dpdy );
+
+            Float dsdx = ScalarDot( dsdp, dpdx ); 
+            Float dsdy = ScalarDot( dsdp, dpdy );
+            Float dtdx = ScalarDot( dtdp, dpdx ); 
+            Float dtdy = ScalarDot( dtdp, dpdy );
 
             // Return $(s,t)$ texture coordinates and differentials based on spherical mapping
             Vector3f vec = Normalize( pt - Point3f( 0, 0, 0 ) );
@@ -223,8 +226,11 @@ namespace pbrto
             // Initialize partial derivatives of planar mapping $(s,t)$ coordinates
             Vector3f::Simd dpdx = textureFromRender( ctx.dpdx );
             Vector3f::Simd dpdy = textureFromRender( ctx.dpdy );
-            Float dsdx = ScalarDot( vs, dpdx ), dsdy = ScalarDot( vs, dpdy );
-            Float dtdx = ScalarDot( vt, dpdx ), dtdy = ScalarDot( vt, dpdy );
+
+            Float dsdx = ScalarDot( vs, dpdx ); 
+            Float dsdy = ScalarDot( vs, dpdy );
+            Float dtdx = ScalarDot( vt, dpdx ); 
+            Float dtdy = ScalarDot( vt, dpdy );
 
             Point2f st( ds + ScalarDot( vec, vs ), dt + ScalarDot( vec, vt ) );
             return TexCoord2D{ st, dsdx, dsdy, dtdx, dtdy };
@@ -237,8 +243,7 @@ namespace pbrto
     };
 
     // TextureMapping2D Definition
-    class TextureMapping2D : public TaggedPointer<UVMapping, SphericalMapping,
-        CylindricalMapping, PlanarMapping>
+    class TextureMapping2D : public TaggedPointer<UVMapping, SphericalMapping, CylindricalMapping, PlanarMapping>
     {
     public:
         // TextureMapping2D Interface
@@ -248,9 +253,7 @@ namespace pbrto
         {
         }
 
-        static TextureMapping2D Create( const ParameterDictionary& parameters,
-            const Transform& renderFromTexture, const FileLoc* loc,
-            Allocator alloc );
+        static TextureMapping2D Create( const ParameterDictionary& parameters, const Transform& renderFromTexture, const FileLoc* loc, Allocator alloc );
 
         inline TexCoord2D Map( const TextureEvalContext& ctx ) const;
     };

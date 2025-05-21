@@ -38,6 +38,7 @@ namespace pbrto
 
     // Transform Function Definitions
     // clang-format off
+    /*
     PBRTO_EXPORT
     Transform Translate( const Vector3f::Simd& delta )
     {
@@ -46,9 +47,11 @@ namespace pbrto
         Transform::MatrixSimdType mInv( Traits::Set( 0.f, 0.f, 0.f, 1.f ), Traits::Set( 0.f, 0.f, 1.f, 0.f ), Traits::Set( 0.f, 1.f, 0.f, 0.f ), Traits::SetW( Traits::Negate( delta.simd ), 1.f ) );
         return Transform( m, mInv, true );
     }
+    */
     // clang-format on
 
     // clang-format off
+    /*
     PBRTO_EXPORT
     Transform Scale( Float x, Float y, Float z )
     {
@@ -57,30 +60,37 @@ namespace pbrto
         Transform::MatrixSimdType mInv( Traits::Set( 0.f, 0.f, 0.f, 1.f / x ), Traits::Set( 0.f, 0.f, 1.f / y, 0.f ), Traits::Set( 0.f, 1.f / z, 0.f, 0.f ), Traits::Set( 1.f, 0.f, 0.f, 0.f ) );
         return Transform( m, mInv, true );
     }
+    */
     // clang-format on
 
     // clang-format off
+    /*
     PBRTO_EXPORT
     Transform RotateX( Float theta )
     {
         auto m = Math::RotationX( Deg2Rad( theta ) );
         return Transform( m, Transpose( m ), true );
     }
+    */
     // clang-format on
 
     // clang-format off
+    /*
     PBRTO_EXPORT
     Transform RotateY( Float theta )
     {
         auto m = Math::RotationY( Deg2Rad( theta ) );
         return Transform( m, Transpose( m ), true );
     }
+    */
+    /*
     PBRTO_EXPORT
     Transform RotateZ( Float theta )
     {
         auto m = Math::RotationZ( Deg2Rad( theta ) );
         return Transform( m, Transpose( m ), true );
     }
+    */
     // clang-format on
 
     /*
@@ -327,25 +337,36 @@ namespace pbrto
     }
 
     // AnimatedTransform Method Definitions
-    AnimatedTransform::AnimatedTransform( const Transform& startTransform, Float startTime,
-        const Transform& endTransform, Float endTime )
+    AnimatedTransform::AnimatedTransform( const Transform& startTransform, Float startTime, const Transform& endTransform, Float endTime )
         : startTransform( startTransform ),
-        endTransform( endTransform ),
-        startTime( startTime ),
-        endTime( endTime ),
-        actuallyAnimated( startTransform != endTransform )
+          endTransform( endTransform ),
+          startTime( startTime ),
+          endTime( endTime ),
+          actuallyAnimated( startTransform != endTransform )
     {
         if ( !actuallyAnimated )
             return;
         // Decompose start and end transformations
         SquareMatrix<4> Rm;
-        startTransform.Decompose( &T[ 0 ], &Rm, &S[ 0 ] );
+        SquareMatrix<4> s[ 2 ];
+        Vector3f t[ 2 ];
+        startTransform.Decompose( &t[ 0 ], &Rm, &s[ 0 ] );
         R[ 0 ] = Quaternion( Transform( Rm ) );
-        endTransform.Decompose( &T[ 1 ], &Rm, &S[ 1 ] );
+        T[ 0 ] = t[ 0 ];
+        S[ 0 ] = s[ 0 ];
+
+        endTransform.Decompose( &t[ 1 ], &Rm, &s[ 1 ] );
         R[ 1 ] = Quaternion( Transform( Rm ) );
+        T[ 1 ] = t[ 1 ];
+        S[ 1 ] = s[ 1 ];
+
         // Flip _R[1]_ if needed to select shortest path
         if ( ScalarDot( R[ 0 ], R[ 1 ] ) < 0 )
+        {
             R[ 1 ] = -R[ 1 ];
+        }
+        Quaternion r = R[ 0 ];
+
 
         hasRotation = ScalarDot( R[ 0 ], R[ 1 ] ) < 0.9995f;
         // Compute terms of motion derivative function
@@ -355,38 +376,38 @@ namespace pbrto
             Float theta = SafeACos( cosTheta );
             Quaternion qperp = Normalize( R[ 1 ] - R[ 0 ] * cosTheta );
 
-            Float t0x = T[ 0 ].x;
-            Float t0y = T[ 0 ].y;
-            Float t0z = T[ 0 ].z;
-            Float t1x = T[ 1 ].x;
-            Float t1y = T[ 1 ].y;
-            Float t1z = T[ 1 ].z;
-            Float q0x = R[ 0 ].v.x;
-            Float q0y = R[ 0 ].v.y;
-            Float q0z = R[ 0 ].v.z;
-            Float q0w = R[ 0 ].w;
+            Float t0x = t[ 0 ].x;
+            Float t0y = t[ 0 ].y;
+            Float t0z = t[ 0 ].z;
+            Float t1x = t[ 1 ].x;
+            Float t1y = t[ 1 ].y;
+            Float t1z = t[ 1 ].z;
+            Float q0x = r.v.x;
+            Float q0y = r.v.y;
+            Float q0z = r.v.z;
+            Float q0w = r.w;
             Float qperpx = qperp.v.x;
             Float qperpy = qperp.v.y;
             Float qperpz = qperp.v.z;
             Float qperpw = qperp.w;
-            Float s000 = S[ 0 ][ 0 ][ 0 ];
-            Float s001 = S[ 0 ][ 0 ][ 1 ];
-            Float s002 = S[ 0 ][ 0 ][ 2 ];
-            Float s010 = S[ 0 ][ 1 ][ 0 ];
-            Float s011 = S[ 0 ][ 1 ][ 1 ];
-            Float s012 = S[ 0 ][ 1 ][ 2 ];
-            Float s020 = S[ 0 ][ 2 ][ 0 ];
-            Float s021 = S[ 0 ][ 2 ][ 1 ];
-            Float s022 = S[ 0 ][ 2 ][ 2 ];
-            Float s100 = S[ 1 ][ 0 ][ 0 ];
-            Float s101 = S[ 1 ][ 0 ][ 1 ];
-            Float s102 = S[ 1 ][ 0 ][ 2 ];
-            Float s110 = S[ 1 ][ 1 ][ 0 ];
-            Float s111 = S[ 1 ][ 1 ][ 1 ];
-            Float s112 = S[ 1 ][ 1 ][ 2 ];
-            Float s120 = S[ 1 ][ 2 ][ 0 ];
-            Float s121 = S[ 1 ][ 2 ][ 1 ];
-            Float s122 = S[ 1 ][ 2 ][ 2 ];
+            Float s000 = s[ 0 ][ 0 ][ 0 ];
+            Float s001 = s[ 0 ][ 0 ][ 1 ];
+            Float s002 = s[ 0 ][ 0 ][ 2 ];
+            Float s010 = s[ 0 ][ 1 ][ 0 ];
+            Float s011 = s[ 0 ][ 1 ][ 1 ];
+            Float s012 = s[ 0 ][ 1 ][ 2 ];
+            Float s020 = s[ 0 ][ 2 ][ 0 ];
+            Float s021 = s[ 0 ][ 2 ][ 1 ];
+            Float s022 = s[ 0 ][ 2 ][ 2 ];
+            Float s100 = s[ 1 ][ 0 ][ 0 ];
+            Float s101 = s[ 1 ][ 0 ][ 1 ];
+            Float s102 = s[ 1 ][ 0 ][ 2 ];
+            Float s110 = s[ 1 ][ 1 ][ 0 ];
+            Float s111 = s[ 1 ][ 1 ][ 1 ];
+            Float s112 = s[ 1 ][ 1 ][ 2 ];
+            Float s120 = s[ 1 ][ 2 ][ 0 ];
+            Float s121 = s[ 1 ][ 2 ][ 1 ];
+            Float s122 = s[ 1 ][ 2 ][ 2 ];
 
             c1[ 0 ] = DerivativeTerm(
                 -t0x + t1x,
@@ -1057,14 +1078,17 @@ namespace pbrto
 
     std::string AnimatedTransform::ToString( ) const
     {
+        Quaternion r0( R[ 0 ] );
+        Quaternion r1( R[ 1 ] );
         return StringPrintf( "[ AnimatedTransform startTransform: %s endTransform: %s "
             "startTime: %f endTime: %f actuallyAnimated: %s T: [ %s %s ] "
             "R: [ %s %s ] S: [ %s %s ] hasRotation: %s ]",
             startTransform, endTransform, startTime, endTime,
-            actuallyAnimated, T[ 0 ], T[ 1 ], R[ 0 ], R[ 1 ], S[ 0 ], S[ 1 ],
+            actuallyAnimated, T[ 0 ], T[ 1 ], r0, r1, S[ 0 ], S[ 1 ],
             hasRotation );
     }
 
+    /*
     PBRT_CPU_GPU Transform AnimatedTransform::Interpolate( Float time ) const
     {
         // Handle boundary conditions for matrix interpolation
@@ -1075,17 +1099,20 @@ namespace pbrto
 
         Float dt = ( time - startTime ) / ( endTime - startTime );
         // Interpolate translation at _dt_
-        Vector3f trans = ( 1 - dt ) * T[ 0 ] + dt * T[ 1 ];
+        Vector3f::Simd trans = ( 1 - dt ) * T[ 0 ] + dt * T[ 1 ];
 
         // Interpolate rotation at _dt_
-        Quaternion rotate = Slerp( dt, R[ 0 ], R[ 1 ] );
+        //Quaternion::Simd rotate = Slerp( dt, R[ 0 ], R[ 1 ] );
+        Quaternion::Simd rotate = Math::Slerp( R[ 0 ], R[ 1 ], dt );
 
         // Interpolate scale at _dt_
-        SquareMatrix<4> scale = ( 1 - dt ) * S[ 0 ] + dt * S[ 1 ];
+        SquareMatrix<4>::Simd scale = ( 1 - dt ) * S[ 0 ] + dt * S[ 1 ];
 
         // Return interpolated matrix as product of interpolated components
         return Translate( trans ) * Transform( rotate ) * Transform( scale );
+
     }
+    */
 
     PBRT_CPU_GPU Bounds3f AnimatedTransform::MotionBounds( const Bounds3f& b ) const
     {

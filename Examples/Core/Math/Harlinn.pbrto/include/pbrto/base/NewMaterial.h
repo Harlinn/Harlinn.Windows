@@ -71,21 +71,19 @@ namespace pbrto
         std::string ToString( ) const;
 
         template <typename TextureEvaluator>
-        inline BSDF GetBSDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda, ScratchBuffer& buf ) const;
+        inline BSDF GetBSDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
 
         template <typename TextureEvaluator>
-        inline BSSRDF GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda, ScratchBuffer& buf ) const;
+        inline BSSRDF GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU inline bool CanEvaluateTextures( TextureEvaluator texEval ) const;
+        inline bool CanEvaluateTextures( TextureEvaluator texEval ) const;
 
-        PBRT_CPU_GPU inline const Image* GetNormalMap( ) const;
+        inline const Image* GetNormalMap( ) const;
 
-        PBRT_CPU_GPU inline FloatTexture GetDisplacement( ) const;
+        inline FloatTexture GetDisplacement( ) const;
 
-        PBRT_CPU_GPU inline bool HasSubsurfaceScattering( ) const;
+        inline bool HasSubsurfaceScattering( ) const;
     };
 
 }

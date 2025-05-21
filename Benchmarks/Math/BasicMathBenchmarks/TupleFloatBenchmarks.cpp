@@ -417,7 +417,7 @@ static void BenchmarkMathVector3AngleBetween( benchmark::State& state )
     {
         Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
         Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
-        benchmark::DoNotOptimize( AngleBetween( v1, v2 ) );
+        benchmark::DoNotOptimize( ScalarAngleBetween( v1, v2 ) );
     }
 }
 BENCHMARK( BenchmarkMathVector3AngleBetween );

@@ -258,10 +258,17 @@ namespace pbrto
         PBRTO_EXPORT
         Bounds3f operator()( const Bounds3f& b ) const;
 
+        /*
         Transform operator*( const Transform& t2 ) const
         {
             return Transform( Transpose( Transpose( m_ ) * Transpose( t2.m_ ) ),
                 Transpose( Transpose( t2.mInv_ ) * Transpose( mInv_ ) ), true );
+        }
+        */
+
+        Transform operator*( const Transform& t2 ) const
+        {
+            return Transform( t2.m_ * m_, mInv_ * t2.mInv_, true );
         }
 
         PBRTO_EXPORT
@@ -290,18 +297,39 @@ namespace pbrto
     };
 
     // Transform Function Declarations
-    PBRTO_EXPORT
-    Transform Translate( const Vector3f::Simd& delta );
+    
+    inline Transform Translate( const Vector3f::Simd& delta )
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        Transform::MatrixSimdType m( Traits::Set( 0.f, 0.f, 0.f, 1.f ), Traits::Set( 0.f, 0.f, 1.f, 0.f ), Traits::Set( 0.f, 1.f, 0.f, 0.f ), Traits::SetW( delta.simd, 1.f ) );
+        Transform::MatrixSimdType mInv( Traits::Set( 0.f, 0.f, 0.f, 1.f ), Traits::Set( 0.f, 0.f, 1.f, 0.f ), Traits::Set( 0.f, 1.f, 0.f, 0.f ), Traits::SetW( Traits::Negate( delta.simd ), 1.f ) );
+        return Transform( m, mInv, true );
+    }
 
-    PBRTO_EXPORT
-    Transform Scale( Float x, Float y, Float z );
+    inline Transform Scale( Float x, Float y, Float z )
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        Transform::MatrixSimdType m( Traits::Set( 0.f, 0.f, 0.f, x ), Traits::Set( 0.f, 0.f, y, 0.f ), Traits::Set( 0.f, z, 0.f, 0.f ), Traits::Set( 1.f, 0.f, 0.f, 0.f ) );
+        Transform::MatrixSimdType mInv( Traits::Set( 0.f, 0.f, 0.f, 1.f / x ), Traits::Set( 0.f, 0.f, 1.f / y, 0.f ), Traits::Set( 0.f, 1.f / z, 0.f, 0.f ), Traits::Set( 1.f, 0.f, 0.f, 0.f ) );
+        return Transform( m, mInv, true );
+    }
 
-    PBRTO_EXPORT
-    Transform RotateX( Float theta );
-    PBRTO_EXPORT
-    Transform RotateY( Float theta );
-    PBRTO_EXPORT
-    Transform RotateZ( Float theta );
+    inline Transform RotateX( Float theta )
+    {
+        auto m = Math::RotationX( Deg2Rad( theta ) );
+        return Transform( m, Transpose( m ), true );
+    }
+    inline Transform RotateY( Float theta )
+    {
+        auto m = Math::RotationY( Deg2Rad( theta ) );
+        return Transform( m, Transpose( m ), true );
+    }
+    
+    inline Transform RotateZ( Float theta )
+    {
+        auto m = Math::RotationZ( Deg2Rad( theta ) );
+        return Transform( m, Transpose( m ), true );
+    }
 
     
     inline Transform LookAt( const Point3f::Simd& pos, const Point3f::Simd& look, const Vector3f::Simd& up )
@@ -789,8 +817,29 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRTO_EXPORT
-        Transform Interpolate( Float time ) const;
+        Transform Interpolate( Float time ) const
+        {
+            // Handle boundary conditions for matrix interpolation
+            if ( !actuallyAnimated || time <= startTime )
+                return startTransform;
+            if ( time >= endTime )
+                return endTransform;
+
+            Float dt = ( time - startTime ) / ( endTime - startTime );
+            // Interpolate translation at _dt_
+            Vector3f::Simd trans = ( 1 - dt ) * T[ 0 ] + dt * T[ 1 ];
+
+            // Interpolate rotation at _dt_
+            //Quaternion::Simd rotate = Slerp( dt, R[ 0 ], R[ 1 ] );
+            Quaternion::Simd rotate = Math::Slerp( R[ 0 ], R[ 1 ], dt );
+
+            // Interpolate scale at _dt_
+            SquareMatrix<4>::Simd scale = ( 1 - dt ) * S[ 0 ] + dt * S[ 1 ];
+
+            // Return interpolated matrix as product of interpolated components
+            return Translate( trans ) * Transform( rotate ) * Transform( scale );
+
+        }
 
         PBRTO_EXPORT
         Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
@@ -828,9 +877,9 @@ namespace pbrto
 
         // AnimatedTransform Private Members
         bool actuallyAnimated = false;
-        Vector3f T[ 2 ];
-        Quaternion R[ 2 ];
-        SquareMatrix<4> S[ 2 ];
+        Vector3f::Simd T[ 2 ];
+        Quaternion::Simd R[ 2 ];
+        SquareMatrix<4>::Simd S[ 2 ];
         bool hasRotation;
         struct DerivativeTerm
         {

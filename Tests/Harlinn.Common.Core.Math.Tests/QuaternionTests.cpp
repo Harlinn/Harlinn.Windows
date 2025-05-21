@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE( DotTest1 )
 
     Math::Vector<float, 4> expected( 70.f, 70.f, 70.f, 70.f );
 
-    Math::Vector<float, 4> result = Dot( q1, q2 );
+    Math::Vector<float, 4> result = Math::Vector<float, 4>::Simd(Dot( q1, q2 ).simd);
 
     auto equal = Equal( result, expected );
 
@@ -256,7 +256,7 @@ BOOST_AUTO_TEST_CASE( LengthSquaredTest1 )
 
     Math::Vector<float, 4> expected( 30.f, 30.f, 30.f, 30.f );
 
-    Math::Vector<float, 4> result = LengthSquared( q1 );
+    Math::Vector<float, 4> result = Math::Vector<float, 4>::Simd( LengthSquared( q1 ).simd);
 
     auto equal = Equal( result, expected );
 
@@ -271,7 +271,7 @@ BOOST_AUTO_TEST_CASE( LengthTest1 )
 
     Math::Vector<float, 4> expected( 5.47722578f, 5.47722578f, 5.47722578f, 5.47722578f );
 
-    Math::Vector<float, 4> result = Length( q1 );
+    Math::Vector<float, 4> result = Math::Vector<float, 4>::Simd( Length( q1 ).simd );
 
     auto equal = Equal( result, expected );
 
@@ -285,7 +285,7 @@ BOOST_AUTO_TEST_CASE( ReciprocalLengthTest1 )
 
     Math::Vector<float, 4> expected( 0.182574183f, 0.182574183f, 0.182574183f, 0.182574183f );
 
-    Math::Vector<float, 4> result = ReciprocalLength( q1 );
+    Math::Vector<float, 4> result = Math::Vector<float, 4>::Simd( ReciprocalLength( q1 ).simd );
 
     auto equal = Equal( result, expected );
 

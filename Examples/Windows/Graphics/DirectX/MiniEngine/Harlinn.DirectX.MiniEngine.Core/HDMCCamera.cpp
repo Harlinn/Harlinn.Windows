@@ -33,7 +33,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         Vector3 right = Cross( forward, up );
 #ifdef HDMC_USES_HCC_MATH
         auto rightLenSq = LengthSquared( right );
-        right = m::Traits::Select( (right * m::ReciprocalSqrt( rightLenSq )).simd, Rotate( forward, Quaternion::FromAxisAndAngle( Vector3( m::Traits::Constants::IdentityR2 ).simd, -::DirectX::XM_PIDIV2 ) ).simd, m::Traits::Less(rightLenSq.simd, Scalar( 0.000001f ).simd ) );
+        right = m::Traits::Select( (right * m::ReciprocalSqrt( rightLenSq )).simd, 
+            Rotate( forward, Quaternion::FromAxisAndAngle( m::Vector3f::Simd( m::Traits::Constants::IdentityR2 ).simd, -::DirectX::XM_PIDIV2 ) ).simd, 
+            m::Traits::Less(rightLenSq.simd, Scalar( 0.000001f ).simd ) );
 #else
         Scalar rightLenSq = LengthSquare( right );
         right = Select( right * RecipSqrt( rightLenSq ), Quaternion( Vector3( kYUnitVector ), -::DirectX::XM_PIDIV2 ) * forward, rightLenSq < Scalar( 0.000001f ) );

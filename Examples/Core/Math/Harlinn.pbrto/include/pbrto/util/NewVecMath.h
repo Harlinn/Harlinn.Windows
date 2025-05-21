@@ -1708,10 +1708,20 @@ namespace pbrto
         return Vector2i( static_cast< int >( tmp.x ), static_cast< int >( tmp.y ) );
     }
 
+    inline Vector2i ToVector2i( const Point2<float>& other )
+    {
+        return Vector2i( static_cast< int >( other.x ), static_cast< int >( other.y ) );
+    }
+
     inline Vector2i ToVector2i( const Point2<Int32>::Simd& other )
     {
         Point2<Int32> tmp( other );
-        return Point2i( tmp.x, tmp.y );
+        return Vector2i( tmp.x, tmp.y );
+    }
+
+    inline Vector2i ToVector2i( const Point2<Int32>& other )
+    {
+        return Vector2i( other.x, other.y );
     }
 
 
