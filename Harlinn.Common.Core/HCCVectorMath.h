@@ -5081,7 +5081,7 @@ namespace Harlinn::Common::Core::Math
     /// return a vector with all elements set to zero.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T>
     inline auto Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
     {
         using Traits = typename S::Traits;
