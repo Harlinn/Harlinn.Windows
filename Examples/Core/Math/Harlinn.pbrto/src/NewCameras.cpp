@@ -914,13 +914,15 @@ namespace pbrto
                 Float eta_t = ( i > 0 && elementInterfaces[ i - 1 ].eta != 0 )
                     ? elementInterfaces[ i - 1 ].eta
                     : 1;
-                //if ( !Refract( Normalize( -rLens.d ), n, eta_t / eta_i, nullptr, &w ) )
-                //    return 0;
+                if ( !Refract( Normalize( -rLens.d ), n, eta_t / eta_i, nullptr, &w ) )
+                    return 0;
+                /*
                 w = Math::Refract( Normalize( -rLens.d ), n, eta_t / eta_i );
                 if ( w == 0 )
                 {
                     return 0;
                 }
+                */
                 rLens.d = w;
             }
         }
@@ -1134,13 +1136,13 @@ namespace pbrto
                     ? 1
                     : elementInterfaces[ i - 1 ].eta;
                 Float eta_t = ( elementInterfaces[ i ].eta != 0 ) ? elementInterfaces[ i ].eta : 1;
-                //if ( !Refract( Normalize( -rLens.d ), n, eta_t / eta_i, nullptr, &wt ) )
-                //    return 0;
-                wt = Math::Refract( Normalize( -rLens.d ), n, eta_t / eta_i );
-                if ( wt == 0 )
-                {
+                if ( !Refract( Normalize( -rLens.d ), n, eta_t / eta_i, nullptr, &wt ) )
                     return 0;
-                }
+                //wt = Math::Refract( Normalize( -rLens.d ), n, eta_t / eta_i );
+                //if ( wt == 0 )
+                //{
+                //    return 0;
+                //}
                 rLens.d = wt;
             }
             elementZ += element.thickness;
@@ -1300,13 +1302,13 @@ namespace pbrto
                 Float eta_t = ( i > 0 && elementInterfaces[ i - 1 ].eta != 0 )
                     ? elementInterfaces[ i - 1 ].eta
                     : 1;
-                //if ( !Refract( Normalize( -ray.d ), n, eta_t / eta_i, nullptr, &wt ) )
-                //    goto done;
-                wt = Math::Refract( Normalize( -ray.d ), n, eta_t / eta_i );
-                if ( wt == 0 )
-                {
+                if ( !Refract( Normalize( -ray.d ), n, eta_t / eta_i, nullptr, &wt ) )
                     goto done;
-                }
+                //wt = Math::Refract( Normalize( -ray.d ), n, eta_t / eta_i );
+                //if ( wt == 0 )
+                //{
+                //    goto done;
+                //}
                 ray.d = wt;
                 rayD = ray.d;
             }
@@ -1381,13 +1383,13 @@ namespace pbrto
                     : elementInterfaces[ i - 1 ].eta;
                 Float eta_t =
                     ( elementInterfaces[ i ].eta != 0.f ) ? elementInterfaces[ i ].eta : 1.f;
-                //if ( !Refract( Normalize( -ray.d ), n, eta_t / eta_i, nullptr, &wt ) )
-                //    return;
-                wt = Math::Refract( Normalize( -ray.d ), n, eta_t / eta_i );
-                if ( wt == 0 )
-                {
+                if ( !Refract( Normalize( -ray.d ), n, eta_t / eta_i, nullptr, &wt ) )
                     return;
-                }
+                //wt = Math::Refract( Normalize( -ray.d ), n, eta_t / eta_i );
+                //if ( wt == 0 )
+                //{
+                //    return;
+                //}
                 ray.d = wt;
                 rayD = ray.d;
             }

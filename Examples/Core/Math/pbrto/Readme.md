@@ -6,7 +6,8 @@ This app runs my modified version of [pbrt](https://github.com/mmp/pbrt-v4) when
 executed with the `--new` command line option. Without the `--new` option, the app 
 executes the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery.
 
-The modified rendering machinery is approximately 65 % faster than the original Visual Studio 2022 build of pbrt.
+The modified rendering machinery renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt) 
+91 % faster than the original Visual Studio 2022 build of pbrt.
 
 Rolling the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery, and my modified version of this machinery,
 into a single app; makes it easier to verify that my modifications works as expected while exercising functionality provided by
@@ -28,7 +29,7 @@ Creating the final result:
 <img src="./Images/Kroken1.png" width="640"/>
 
 Building `pbrto.exe`, `Harlinn.pbrto.dll` and `imgtool.exe`, requires that the [CUDA toolkit](https://developer.nvidia.com/cuda-toolkit)
-and [OptiX](https://developer.nvidia.com/rtx/ray-tracing/optix) is installed. Their projects 
+and [OptiX](https://developer.nvidia.com/rtx/ray-tracing/optix) is installed. The projects 
 expect that the environment variables:
 
 - `CUDA_PATH` points to your CUDA installation folder.
@@ -63,14 +64,14 @@ improved the performance of pbrt, rendering
 pbrto renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt) in 478.7 
 seconds without the `--new` command line option, demonstrating that significant performance gains can be achieved using
 appropriate build options, including `/std:c++latest`. Just switching to the most up-to-date C++ version 
-gives a significant boost to the performance of the program.
+gives a significant boost to the performance of the original code.
 
 ### With `--new`:
 
 This executes my modified version of the pbrt CPU based rendering machinery.
 
 With the `--new` command line option pbrto renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt)
-in 379.4 seconds. 
+in 328.5 seconds. 
 
 ### Notes about the new rendering machinery.
 

@@ -45,7 +45,11 @@ using namespace Harlinn::Common::Core::Math;
 
 namespace pstdo
 {
+    using std::swap;
+    using std::bit_cast;
+    using std::array;
 
+    /*
     template <typename T>
     PBRT_CPU_GPU inline void swap( T& a, T& b )
     {
@@ -53,7 +57,8 @@ namespace pstdo
         a = std::move( b );
         b = std::move( tmp );
     }
-
+    */
+    /*
     template <class To, class From>
     PBRT_CPU_GPU typename std::enable_if_t<sizeof( To ) == sizeof( From ) &&
         std::is_trivially_copyable_v<From>&&
@@ -68,7 +73,9 @@ namespace pstdo
         std::memcpy( &dst, &src, sizeof( To ) );
         return dst;
     }
+    */
 
+    /*
     template <typename T, int N>
     class array;
 
@@ -185,6 +192,7 @@ namespace pstdo
     private:
         T values[ N ] = {};
     };
+    */
 
     template <typename T>
     class optional
@@ -551,8 +559,7 @@ namespace pstdo
             static constexpr size_t max_align = alignof( std::max_align_t );
 
         public:
-            PBRTO_EXPORT
-                virtual ~memory_resource( );
+            PBRTO_EXPORT virtual ~memory_resource( );
             void* allocate( size_t bytes, size_t alignment = max_align )
             {
                 if ( bytes == 0 )
@@ -596,13 +603,10 @@ namespace pstdo
         class unsynchronized_pool_resource;
 
         // global memory resources
-        PBRTO_EXPORT
-            memory_resource* new_delete_resource( ) noexcept;
+        PBRTO_EXPORT memory_resource* new_delete_resource( ) noexcept;
         // TODO: memory_resource* null_memory_resource() noexcept;
-        PBRTO_EXPORT
-            memory_resource* set_default_resource( memory_resource* r ) noexcept;
-        PBRTO_EXPORT
-            memory_resource* get_default_resource( ) noexcept;
+        PBRTO_EXPORT memory_resource* set_default_resource( memory_resource* r ) noexcept;
+        PBRTO_EXPORT memory_resource* get_default_resource( ) noexcept;
 
         class alignas( 64 ) monotonic_buffer_resource : public memory_resource
         {
@@ -712,17 +716,22 @@ namespace pstdo
         template <class Tp = std::byte>
         class polymorphic_allocator
         {
+            memory_resource* memoryResource;
         public:
             using value_type = Tp;
 
-            polymorphic_allocator( ) noexcept { memoryResource = new_delete_resource( ); }
-            polymorphic_allocator( memory_resource* r ) : memoryResource( r ) {}
+            polymorphic_allocator( ) noexcept 
+            {
+                memoryResource = new_delete_resource( ); 
+            }
+            polymorphic_allocator( memory_resource* r ) : memoryResource( r ) 
+            { }
             polymorphic_allocator( const polymorphic_allocator& other ) = default;
+
             template <class U>
             polymorphic_allocator( const polymorphic_allocator<U>& other ) noexcept
                 : memoryResource( other.resource( ) )
-            {
-            }
+            { }
 
             polymorphic_allocator& operator=( const polymorphic_allocator& rhs ) = delete;
 
@@ -784,7 +793,7 @@ namespace pstdo
             memory_resource* resource( ) const { return memoryResource; }
 
         private:
-            memory_resource* memoryResource;
+            
         };
 
         template <class T1, class T2>

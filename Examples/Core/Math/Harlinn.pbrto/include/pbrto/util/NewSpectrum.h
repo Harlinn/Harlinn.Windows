@@ -890,6 +890,7 @@ namespace pbrto
         static SampledWavelengths SampleVisible( Float u )
         {
             SampledWavelengths swl;
+
             for ( int i = 0; i < NSpectrumSamples; ++i )
             {
                 // Compute _up_ for $i$th wavelength sample
@@ -897,8 +898,9 @@ namespace pbrto
                 if ( up > 1 )
                     up -= 1;
 
-                swl.lambda[ i ] = SampleVisibleWavelengths( up );
-                swl.pdf[ i ] = VisibleWavelengthsPDF( swl.lambda[ i ] );
+                auto sample = SampleVisibleWavelengths( up );
+                swl.lambda[ i ] = sample;
+                swl.pdf[ i ] = VisibleWavelengthsPDF( sample );
             }
             return swl;
         }
@@ -936,13 +938,14 @@ namespace pbrto
 
     class DenselySampledSpectrum
     {
+        friend struct std::hash<pbrto::DenselySampledSpectrum>;
+        // DenselySampledSpectrum Private Members
+        int lambda_min, lambda_max;
+        pstdo::vector<Float> values;
     public:
         // DenselySampledSpectrum Public Methods
-        DenselySampledSpectrum( int lambda_min = Lambda_min, int lambda_max = Lambda_max,
-            Allocator alloc = {} )
-            : lambda_min( lambda_min ),
-            lambda_max( lambda_max ),
-            values( lambda_max - lambda_min + 1, alloc )
+        DenselySampledSpectrum( int lambda_min = Lambda_min, int lambda_max = Lambda_max, Allocator alloc = {} )
+            : lambda_min( lambda_min ), lambda_max( lambda_max ), values( lambda_max - lambda_min + 1, alloc )
         {
         }
         DenselySampledSpectrum( Spectrum s, Allocator alloc )
@@ -1024,10 +1027,7 @@ namespace pbrto
         }
 
     private:
-        friend struct std::hash<pbrto::DenselySampledSpectrum>;
-        // DenselySampledSpectrum Private Members
-        int lambda_min, lambda_max;
-        pstdo::vector<Float> values;
+        
     };
 
     class PiecewiseLinearSpectrum

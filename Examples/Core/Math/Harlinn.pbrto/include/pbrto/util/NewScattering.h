@@ -103,7 +103,8 @@ namespace pbrto
         return ( Sqr( r_parl ) + Sqr( r_perp ) ) / 2;
     }
 
-    PBRT_CPU_GPU inline Float FrComplex( Float cosTheta_i, pstdo::complex<Float> eta )
+    /*
+    inline Float FrComplex( Float cosTheta_i, pstdo::complex<Float> eta )
     {
         using Complex = pstdo::complex<Float>;
         cosTheta_i = Clamp( cosTheta_i, 0, 1 );
@@ -124,12 +125,34 @@ namespace pbrto
             result[ i ] = FrComplex( cosTheta_i, pstdo::complex<Float>( eta[ i ], k[ i ] ) );
         return result;
     }
+    */
+
+    inline Float FrComplex( Float cosTheta_i, std::complex<Float> eta )
+    {
+        using Complex = std::complex<Float>;
+        cosTheta_i = Clamp( cosTheta_i, 0, 1 );
+        // Compute complex $\cos\,\theta_\roman{t}$ for Fresnel equations using Snell's law
+        Float sin2Theta_i = 1 - Sqr( cosTheta_i );
+        Complex sin2Theta_t = sin2Theta_i / Sqr( eta );
+        Complex cosTheta_t = std::sqrt( Complex(1) - sin2Theta_t );
+
+        Complex r_parl = ( eta * cosTheta_i - cosTheta_t ) / ( eta * cosTheta_i + cosTheta_t );
+        Complex r_perp = ( cosTheta_i - eta * cosTheta_t ) / ( cosTheta_i + eta * cosTheta_t );
+        return ( std::norm( r_parl ) + std::norm( r_perp ) ) / 2;
+    }
+
+    inline SampledSpectrum FrComplex( Float cosTheta_i, const SampledSpectrum& eta, const SampledSpectrum& k )
+    {
+        SampledSpectrum result;
+        for ( int i = 0; i < NSpectrumSamples; ++i )
+            result[ i ] = FrComplex( cosTheta_i, std::complex<Float>( eta[ i ], k[ i ] ) );
+        return result;
+    }
 
     // BSSRDF Utility Declarations
-    PBRT_CPU_GPU
-        Float FresnelMoment1( Float invEta );
-    PBRT_CPU_GPU
-        Float FresnelMoment2( Float invEta );
+    Float FresnelMoment1( Float invEta );
+    
+    Float FresnelMoment2( Float invEta );
 
     // TrowbridgeReitzDistribution Definition
     class TrowbridgeReitzDistribution

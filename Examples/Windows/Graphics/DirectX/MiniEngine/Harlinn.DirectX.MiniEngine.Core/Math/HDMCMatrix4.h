@@ -46,8 +46,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         INLINE Matrix4( ) {}
         INLINE Matrix4( Vector3 x, Vector3 y, Vector3 z, Vector3 w )
         {
-            m_mat.r[ 0 ] = SetWToZero( x ); m_mat.r[ 1 ] = SetWToZero( y );
-            m_mat.r[ 2 ] = SetWToZero( z ); m_mat.r[ 3 ] = SetWToOne( w );
+            m_mat.r[ 0 ] = SetWToZero( x ); 
+            m_mat.r[ 1 ] = SetWToZero( y );
+            m_mat.r[ 2 ] = SetWToZero( z ); 
+            m_mat.r[ 3 ] = SetWToOne( w );
         }
 
         INLINE Matrix4( const float* data )
