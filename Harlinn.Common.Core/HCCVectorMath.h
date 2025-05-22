@@ -4610,8 +4610,17 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        using ResultType = Internal::MakeResultType<T>;
-        return ResultType( Traits::Trim( Traits::Lerp2( Internal::ToSimd( a ), Internal::ToSimd( b ), static_cast< Type >( t ) ) ) );
+
+        if constexpr ( TupleType<T> && TupleType<U> && T::Size < 3 )
+        {
+            return T( Lerp2( static_cast< Type >( t ), a.x, b.x ),
+                Lerp2( static_cast< Type >( t ), a.y, b.y ) );
+        }
+        else
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Traits::Trim( Traits::Lerp2( Internal::ToSimd( a ), Internal::ToSimd( b ), static_cast< Type >( t ) ) ) );
+        }
     }
 
 
@@ -4668,7 +4677,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Type = Traits::Type;
         using ResultType = Internal::MakeResultType<S>;
-        return ResultType(Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd ) ));
+        return ResultType(Traits::Trim( Traits::Lerp2( Traits::Fill<S::Size>( static_cast< Type >( a ) ), Traits::Fill<S::Size>( static_cast< Type >( b ) ), t.simd ) ));
     }
 
     /// <summary>
@@ -4688,27 +4697,10 @@ namespace Harlinn::Common::Core::Math
                 Lerp2( t.x, static_cast< Type >( a ), static_cast< Type >( b ) ),
                 Lerp2( t.y, static_cast< Type >( a ), static_cast< Type >( b ) ) );
         }
-        /*
-        else if constexpr ( S::Size == 3 )
-        {
-            return S(
-                Lerp2( t.x, static_cast< Type >( a ), static_cast< Type >( b ) ),
-                Lerp2( t.y, static_cast< Type >( a ), static_cast< Type >( b ) ),
-                Lerp2( t.z, static_cast< Type >( a ), static_cast< Type >( b ) ) );
-        }
-        else if constexpr ( S::Size == 4 )
-        {
-            return S(
-                Lerp2( t.x, static_cast< Type >( a ), static_cast< Type >( b ) ),
-                Lerp2( t.y, static_cast< Type >( a ), static_cast< Type >( b ) ),
-                Lerp2( t.z, static_cast< Type >( a ), static_cast< Type >( b ) ),
-                Lerp2( t.w, static_cast< Type >( a ), static_cast< Type >( b ) ) );
-        }
-        */
         else
         {
             using ResultType = Internal::MakeResultType<S>;
-            return ResultType( Traits::Trim( Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Internal::ToSimd( t ) ) ) );
+            return ResultType( Traits::Trim( Traits::Lerp2( Traits::Fill<S::Size>( static_cast< Type >( a ) ), Traits::Fill<S::Size>( static_cast< Type >( b ) ), Internal::ToSimd( t ) ) ) );
         }
     }
     

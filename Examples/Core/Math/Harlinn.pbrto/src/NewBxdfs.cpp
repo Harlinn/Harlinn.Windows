@@ -162,7 +162,7 @@ namespace pbrto
             if ( uc < pr / ( pr + pt ) )
             {
                 // Sample reflection at rough dielectric interface
-                Vector3f::Simd wi = Reflect( wo, wm );
+                Vector3f::Simd wi = Math::Reflect( wo, wm );
                 if ( !SameHemisphere( wo, wi ) )
                     return {};
                 // Compute PDF of rough dielectric reflection
@@ -1182,7 +1182,7 @@ namespace pbrto
         SinCos( theta_m, &sinTheta_m, &cosTheta_m );
         
         Vector3f::Simd wm = SphericalDirection( sinTheta_m, cosTheta_m, phi_m );
-        Vector3f::Simd wi = Reflect( wo, wm );
+        Vector3f::Simd wi = Math::Reflect( wo, wm );
         if ( wi.z( ) <= 0 )
             return {};
 
