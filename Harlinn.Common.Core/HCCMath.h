@@ -498,7 +498,8 @@ namespace Harlinn::Common::Core::Math
             FloatType result;
             if constexpr ( std::is_same_v<FloatType, float> )
             {
-                _mm_store_ss( &result, _mm_sqrt_ps( _mm_set_ss( x ) ) );
+                return sqrtf( x );
+                //_mm_store_ss( &result, _mm_sqrt_ps( _mm_set_ss( x ) ) );
             }
             else
             {
@@ -1403,7 +1404,7 @@ namespace Harlinn::Common::Core::Math
     /// of the result and second holds the fractional part.
     /// </returns>
     template<typename ValueT>
-        requires IsFloatingPoint<std::remove_cvref_t<ValueT>> 
+        requires IsFloatingPoint<ValueT> 
     constexpr inline std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> ModF( ValueT val ) noexcept
     {
         using FloatT = std::remove_cvref_t<ValueT>;
@@ -1442,7 +1443,7 @@ namespace Harlinn::Common::Core::Math
     /// The fractional part of val.
     /// </returns>
     template<typename ValueT>
-        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+        requires IsFloatingPoint<ValueT>
     constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT* integerPart ) noexcept
     {
         using FloatT = std::remove_cvref_t<ValueT>;
@@ -1480,7 +1481,7 @@ namespace Harlinn::Common::Core::Math
     /// The fractional part of val.
     /// </returns>
     template<typename ValueT>
-        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+        requires IsFloatingPoint<ValueT>
     constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT& integerPart ) noexcept
     {
         using FloatT = std::remove_cvref_t<ValueT>;
@@ -2067,8 +2068,9 @@ namespace Harlinn::Common::Core::Math
         requires IsArithmetic<T> && IsArithmetic<U>
     constexpr inline MakeFloatingPoint<T,U> Lerp( T a, T b, U t ) noexcept
     {
-        using FloatT = MakeFloatingPoint<T, U>;
-        return Internal::LerpImpl( static_cast< FloatT >( a ), static_cast< FloatT >( b ), static_cast< FloatT >( t ) );
+        return ( 1 - t ) * a + t * b;
+        //using FloatT = MakeFloatingPoint<T, U>;
+        //return Internal::LerpImpl( static_cast< FloatT >( a ), static_cast< FloatT >( b ), static_cast< FloatT >( t ) );
         /*
         if ( std::is_constant_evaluated( ) )
         {
@@ -2114,8 +2116,23 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> CopySign( T magnitude, T signValue ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
-        return Math::Internal::CopySignImpl<FloatT>( magnitude, signValue );
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Math::Internal::CopySignImpl<FloatType>( magnitude, signValue );
+        }
+        else
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Internal::OpenLibM::copysignf( magnitude, signValue );
+            }
+            else
+            {
+                return Math::Internal::CopySignImpl<FloatType>( magnitude, signValue );
+            }
+        }
+
     }
     /// <summary>
     /// <para>
@@ -2765,14 +2782,21 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ATan( T x ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
-        if constexpr ( std::is_same_v<FloatT, float> )
+        if ( std::is_constant_evaluated( ) )
         {
-            return Math::Internal::OpenLibM::atanf( x );
+            using FloatT = std::remove_cvref_t<T>;
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return Math::Internal::OpenLibM::atanf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::atan( x );
+            }
         }
         else
         {
-            return Math::Internal::OpenLibM::atan( x );
+            return std::atan( x );
         }
     }
 

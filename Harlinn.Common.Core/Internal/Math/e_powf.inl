@@ -123,7 +123,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				return __ieee754_sqrtf( x );
 		}
 
-		ax = fabsf( x );
+		ax = FastAbs( x );
 		/* special value of x */
 		if ( ix == 0x7f800000 || ix == 0 || ix == 0x3f800000 )
 		{

@@ -1170,11 +1170,11 @@ namespace pbrto
 
         // Sample visible normal distribution of measured BRDF
         s = brdf->vndf.Sample( u, phi_o, theta_o );
-        Point2f::Simd u_wm = s.p;
+        Point2f u_wm = s.p;
         Float pdf = s.pdf;
 
         // Map from microfacet normal to incident direction
-        Float phi_m = u2phi( u_wm.y( ) ), theta_m = u2theta( u_wm.x( ) );
+        Float phi_m = u2phi( u_wm.y ), theta_m = u2theta( u_wm.x );
         if ( brdf->isotropic )
             phi_m += phi_o;
         Float sinTheta_m;
@@ -1193,7 +1193,7 @@ namespace pbrto
 
         Point2f u_wo( theta2u( theta_o ), phi2u( phi_o ) );
         fr *= brdf->ndf.Evaluate( u_wm ) / ( 4 * brdf->sigma.Evaluate( u_wo ) * AbsCosTheta( wi ) );
-        pdf /= 4 * ScalarDot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x( ) * sinTheta_m, 1e-6f );
+        pdf /= 4 * ScalarDot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
 
         // Handle interactions in lower hemisphere
         if ( flipWi )

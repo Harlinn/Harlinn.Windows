@@ -71,7 +71,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			return x + x * w;
 		}
 		/* 1> |x|>= 0.5 */
-		w = one - fabsf( x );
+		w = one - FastAbs( x );
 		t = w * ( float )0.5;
 		p = t * ( pS0 + t * ( pS1 + t * pS2 ) );
 		q = one + t * qS1;
@@ -115,7 +115,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		/* 1> |x|>= 0.5 */
 		//w = one - fabsf( x );
-		w = one - Abs( x );
+		w = one - FastAbs( x );
 		t = w * 0.5f;
 		p = t * ( pS0 + t * ( pS1 + t * pS2 ) );
 		q = one + t * qS1;

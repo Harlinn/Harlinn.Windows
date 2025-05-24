@@ -101,7 +101,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			m &= 1;
 		}
 		else if ( k < -26 && hx < 0 ) z = 0.0; 	/* 0 > |y|/x > -2**-26 */
-		else z = atanf( fabsf( y / x ) );	/* safe to do y/x */
+		else z = atanf( FastAbs( y / x ) );	/* safe to do y/x */
 		switch ( m )
 		{
 			case 0: return       z;	/* atan(+,+) */

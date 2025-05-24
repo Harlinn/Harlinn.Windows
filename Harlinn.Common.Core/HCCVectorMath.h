@@ -719,31 +719,37 @@ namespace Harlinn::Common::Core::Math
 
     namespace Internal
     {
+        
+        template<typename ...Args>
+        constexpr bool HasSimdType = (SimdType<Args> || ...);
+
+        template<typename ...Args>
+        constexpr bool AllAreSimdType = ( SimdType<Args> && ... );
+
+        template<typename ...Args>
+        constexpr bool HasTupleType = ( TupleType<Args> || ... ); 
+
+        template<typename ...Args>
+        constexpr bool AllAreTupleType = ( TupleType<Args> && ... );
+
+        template<typename ...Args>
+        constexpr bool HasSimdOrTupleType = ( SimdOrTupleType<Args> || ... );
+
+        template<typename ...Args>
+        constexpr bool AllAreSimdOrTupleType = ( SimdOrTupleType<Args> && ... );
+
+        /*
         template<SimdTupleOrArithmeticType T1, SimdTupleOrArithmeticType T2>
         constexpr bool HasSimdType = SimdType<T1> || SimdType<T2>;
+        
 
         template<SimdTupleOrArithmeticType T1, SimdTupleOrArithmeticType T2>
         constexpr bool HasTupleType = TupleType<T1> || TupleType<T2>;
+        */
     }
 
     namespace Internal
     {
-        /*
-         
-        Returning v.simd by value is bad for performance, rendering kroken\camera-1.pbrt
-        took 432.0 seconds. This was just for the implementations of operator +(...) and 
-        operator -(...).
-
-        Swiching to returning v.simd by const reference, just for the implementations of operator +(...) and 
-        operator -(...), brought the time required to render kroken\camera-1.pbrt down to
-        381.4 seconds.
-
-        After reducing the number of overloads required to make things work, returning 
-        v.simd by value is suddenly good for performance, rendering kroken\camera-1.pbrt
-        took 367.5 seconds - down from 374.9 seconds.
-
-
-        */
 
         
         template<SimdType T>
@@ -785,30 +791,8 @@ namespace Harlinn::Common::Core::Math
         template<SimdOrTupleType T>
         using MakeResultType = std::conditional_t< SimdType<T>, T, typename T::Simd >;
 
-
-        /*
-        template<SimdType T>
-        struct MakeResultTypeHelper
-        {
-            using type = T;
-        };
-
-        template<TupleType T>
-        struct MakeResultTypeHelper
-        {
-            using type = typename T::Simd;
-        };
-        */
     }
 
-    /*
-    template<SimdOrTupleType T>
-    using MakeResultType = typename Internal::MakeResultTypeHelper<T>::type;
-    */
-
-
-
-#define USE_TOSIMD 1
 
     /// <summary>
     /// <para>
@@ -2648,7 +2632,7 @@ namespace Harlinn::Common::Core::Math
     inline auto operator + ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        if constexpr ( Internal::HasSimdType<T, U> == false && T::Size < 3 )
+        if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
         {
             return T( lhs.x + rhs.x, lhs.y + rhs.y );
         }
@@ -2721,7 +2705,7 @@ namespace Harlinn::Common::Core::Math
     inline auto operator - ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        if constexpr ( Internal::HasSimdType<T, U> == false && T::Size < 3 )
+        if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
         {
             return T( lhs.x - rhs.x, lhs.y - rhs.y );
         }
@@ -2794,7 +2778,7 @@ namespace Harlinn::Common::Core::Math
     inline auto operator * ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        if constexpr ( Internal::HasSimdType<T, U> == false && T::Size < 3 )
+        if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
         {
             return T( lhs.x * rhs.x, lhs.y * rhs.y );
         }
@@ -2868,7 +2852,7 @@ namespace Harlinn::Common::Core::Math
     inline auto operator / ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        if constexpr ( Internal::HasSimdType<T, U> == false && T::Size < 3 )
+        if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
         {
             return T( lhs.x / rhs.x, lhs.y / rhs.y );
         }
@@ -5263,6 +5247,7 @@ namespace Harlinn::Common::Core::Math
         using Type = Traits::Type;
         using ResultType = Internal::MakeResultType<S>;
         return ResultType( Traits::FMAdd( Internal::ToSimd( a ), Traits::Fill<Traits::Size>( static_cast< Type >( b ) ), Internal::ToSimd( c ) ) );
+        
     }
 
     /// <summary>

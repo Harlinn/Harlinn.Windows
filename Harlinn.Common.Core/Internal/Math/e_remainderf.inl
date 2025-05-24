@@ -51,8 +51,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 
 		if ( hp <= 0x7effffff ) x = __ieee754_fmodf( x, p + p );	/* now x < 2p */
 		if ( ( hx - hp ) == 0 ) return zero * x;
-		x = fabsf( x );
-		p = fabsf( p );
+		x = FastAbs( x );
+		p = FastAbs( p );
 		if ( hp < 0x01000000 )
 		{
 			if ( x + x > p )

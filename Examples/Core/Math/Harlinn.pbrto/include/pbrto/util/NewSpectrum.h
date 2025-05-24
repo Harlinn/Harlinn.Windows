@@ -686,11 +686,26 @@ namespace pbrto
 
     inline SampledSpectrum FastExp( const SampledSpectrum& s )
     {
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
+        using Traits = SampledSpectrum::Traits;
+        SampledSpectrum result;
+
+        for ( size_t i = 0; i < SampledSpectrum::IterationCount; i++ )
+        {
+            auto v = s.Load( i );
+            auto r = Traits::Exp( v );
+            result.Store( i, r );
+        }
+
+        return result;
+
+#else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
             ret[ i ] = FastExp( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
+#endif
     }
 
     inline SampledSpectrum Log( const SampledSpectrum& s )
@@ -735,8 +750,14 @@ namespace pbrto
 
     inline SampledSpectrum Bilerp( pstdo::array<Float, 2> p, pstdo::span<const SampledSpectrum> v )
     {
-        return ( ( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * ( 1 - p[ 1 ] ) * v[ 1 ] +
-            ( 1 - p[ 0 ] ) * p[ 1 ] * v[ 2 ] + p[ 0 ] * p[ 1 ] * v[ 3 ] );
+        return ( 
+            (( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] )) * v[ 0 ] + 
+            (p[ 0 ] * ( 1 - p[ 1 ] )) * v[ 1 ] +
+            (( 1 - p[ 0 ] ) * p[ 1 ]) * v[ 2 ] + 
+            (p[ 0 ] * p[ 1 ]) * v[ 3 ] );
+
+        //return ( ( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * ( 1 - p[ 1 ] ) * v[ 1 ] +
+        //    ( 1 - p[ 0 ] ) * p[ 1 ] * v[ 2 ] + p[ 0 ] * p[ 1 ] * v[ 3 ] );
     }
 
     inline SampledSpectrum Lerp2( Float t, const SampledSpectrum& s1, const SampledSpectrum& s2 )

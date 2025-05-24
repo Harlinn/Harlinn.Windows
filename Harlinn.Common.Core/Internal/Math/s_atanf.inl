@@ -64,8 +64,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		{	/* if |x| >= 2**26 */
 			if ( ix > 0x7f800000 )
 				return x + x;		/* NaN */
-			if ( hx > 0 ) return  atanhi[ 3 ] + *( volatile float* )&atanlo[ 3 ];
-			else     return -atanhi[ 3 ] - *( volatile float* )&atanlo[ 3 ];
+			//if ( hx > 0 ) return  atanhi[ 3 ] + *( volatile float* )&atanlo[ 3 ];
+			//else     return -atanhi[ 3 ] - *( volatile float* )&atanlo[ 3 ];
+			if ( hx > 0 ) return  atanhi[ 3 ] + atanlo[ 3 ];
+			else     return -atanhi[ 3 ] - atanlo[ 3 ];
 		} if ( ix < 0x3ee00000 )
 		{	/* |x| < 0.4375 */
 			if ( ix < 0x39800000 )
@@ -76,7 +78,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		else
 		{
-			x = fabsf( x );
+			x = FastAbs( x );
 			if ( ix < 0x3f980000 )
 			{		/* |x| < 1.1875 */
 				if ( ix < 0x3f300000 )

@@ -85,8 +85,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		// Worst approximation of sin and cos NA
 		*s = x;
 		*c = x;
-
-		double y;
+		
 		float k_c, k_s;
 		int32_t n, hx, ix;
 
@@ -180,6 +179,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		else
 		{
+			double y;
 			/* general argument reduction needed */
 			n = __ieee754_rem_pio2f( x, &y );
 

@@ -861,7 +861,7 @@ namespace pbrto
                 {
                     // Call callback function for sample within segment
                     PBRT_DBG( "t < seg->tMax\n" );
-                    T_maj *= FastExp( -( t - tMin ) * seg->sigma_maj );
+                    T_maj *= FastExp( ( -( t - tMin ) ) * seg->sigma_maj );
                     MediumProperties mp = medium->SamplePoint( ray( t ), lambda );
                     if ( !callback( ray( t ), mp, seg->sigma_maj, T_maj ) )
                     {

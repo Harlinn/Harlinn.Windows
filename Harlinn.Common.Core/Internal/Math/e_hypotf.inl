@@ -34,8 +34,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		hb &= 0x7fffffff;
 		if ( hb > ha ) { a = y; b = x; j = ha; ha = hb; hb = j; }
 		else { a = x; b = y; }
-		a = fabsf( a );
-		b = fabsf( b );
+		a = FastAbs( a );
+		b = FastAbs( b );
 		if ( ( ha - hb ) > 0xf000000 ) { return a + b; } /* x/y > 2**30 */
 		k = 0;
 		if ( ha > 0x58800000 )
@@ -113,8 +113,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 
 		if ( hb > ha ) { a = y; b = x; j = ha; ha = hb; hb = j; }
 		else { a = x; b = y; }
-		a = fabsf( a );
-		b = fabsf( b );
+		a = FastAbs( a );
+		b = FastAbs( b );
 		if ( ( ha - hb ) > 0xf000000 ) { return a + b; } /* x/y > 2**30 */
 		k = 0;
 		if ( ha > 0x58800000 )
