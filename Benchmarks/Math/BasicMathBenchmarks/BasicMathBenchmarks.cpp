@@ -2398,6 +2398,74 @@ static void BenchmarkMathFloatExp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathFloatExp );
 
+static void BenchmarkMathVector2fExp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f v( FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::Exp( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fExp );
+
+static void BenchmarkMathVector2SimdfExp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd v( FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::Exp( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2SimdfExp );
+
+static void BenchmarkMathVector3fExp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f v( FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::Exp( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fExp );
+
+static void BenchmarkMathVector3SimdfExp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd v( FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::Exp( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3SimdfExp );
+
+static void BenchmarkMathVector4fExp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f v( FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::Exp( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fExp );
+
+static void BenchmarkMathVector4SimdfExp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd v( FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::Exp( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4SimdfExp );
+
+
+
 static void BenchmarkMathFloatFastExp( benchmark::State& state )
 {
     FloatGenerator.Reset( );

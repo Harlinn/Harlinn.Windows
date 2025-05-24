@@ -204,13 +204,13 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int& exp ) noexcept;
 
     template<typename ValueT>
-        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+        requires IsFloatingPoint<ValueT>
     constexpr inline std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> ModF( ValueT val ) noexcept;
     template<typename ValueT>
-        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+        requires IsFloatingPoint<ValueT>
     constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT* integerPart ) noexcept;
     template<typename ValueT>
-        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+        requires IsFloatingPoint<ValueT>
     constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT& integerPart ) noexcept;
 
     template<typename T>
