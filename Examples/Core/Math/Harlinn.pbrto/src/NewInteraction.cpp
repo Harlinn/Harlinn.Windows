@@ -97,14 +97,17 @@ namespace pbrto
         }
         // Estimate screen-space change in $(u,v)$
         // Compute $\transpose{\XFORM{A}} \XFORM{A}$ and its determinant
-        Float ata00 = ScalarDot( dpdu, dpdu ), ata01 = ScalarDot( dpdu, dpdv );
+        Float ata00 = ScalarDot( dpdu, dpdu ); 
+        Float ata01 = ScalarDot( dpdu, dpdv );
         Float ata11 = ScalarDot( dpdv, dpdv );
         Float invDet = 1 / DifferenceOfProducts( ata00, ata11, ata01, ata01 );
         invDet = IsFinite( invDet ) ? invDet : 0.f;
 
         // Compute $\transpose{\XFORM{A}} \VEC{b}$ for $x$ and $y$
-        Float atb0x = ScalarDot( dpdu, dpdx ), atb1x = ScalarDot( dpdv, dpdx );
-        Float atb0y = ScalarDot( dpdu, dpdy ), atb1y = ScalarDot( dpdv, dpdy );
+        Float atb0x = ScalarDot( dpdu, dpdx ); 
+        Float atb1x = ScalarDot( dpdv, dpdx );
+        Float atb0y = ScalarDot( dpdu, dpdy ); 
+        Float atb1y = ScalarDot( dpdv, dpdy );
 
         // Compute $u$ and $v$ derivatives with respect to $x$ and $y$
         dudx = DifferenceOfProducts( ata11, atb0x, ata01, atb1x ) * invDet;
@@ -140,17 +143,24 @@ namespace pbrto
             Normal3f::Simd dndx = shading.dndu * dudx + shading.dndv * dvdx;
             Normal3f::Simd dndy = shading.dndu * dudy + shading.dndv * dvdy;
             Vector3f::Simd dwodx = -rayi.rxDirection - wo, dwody = -rayi.ryDirection - wo;
-
+            auto pt = p( );
             if ( flags == BxDFFlags::SpecularReflection )
             {
                 // Initialize origins of specular differential rays
                 rd.hasDifferentials = true;
-                rd.rxOrigin = p( ) + dpdx;
-                rd.ryOrigin = p( ) + dpdy;
+                rd.rxOrigin = pt + dpdx;
+                rd.ryOrigin = pt + dpdy;
 
                 // Compute differential reflected directions
+                /*
                 Float dwoDotn_dx = ScalarDot( dwodx, n ) + ScalarDot( wo, dndx );
                 Float dwoDotn_dy = ScalarDot( dwody, n ) + ScalarDot( wo, dndy );
+                rd.rxDirection = wi - dwodx + 2 * Dot( wo, n ) * dndx + dwoDotn_dx * n;
+                rd.ryDirection = wi - dwody + 2 * Dot( wo, n ) * dndy + dwoDotn_dy * n;
+                */
+
+                auto dwoDotn_dx = Dot( dwodx, n ) + Dot( wo, dndx );
+                auto dwoDotn_dy = Dot( dwody, n ) + Dot( wo, dndy );
                 rd.rxDirection = wi - dwodx + 2 * Dot( wo, n ) * dndx + dwoDotn_dx * n;
                 rd.ryDirection = wi - dwody + 2 * Dot( wo, n ) * dndy + dwoDotn_dy * n;
 
@@ -159,8 +169,8 @@ namespace pbrto
             {
                 // Initialize origins of specular differential rays
                 rd.hasDifferentials = true;
-                rd.rxOrigin = p( ) + dpdx;
-                rd.ryOrigin = p( ) + dpdy;
+                rd.rxOrigin = pt + dpdx;
+                rd.ryOrigin = pt + dpdy;
 
                 // Compute differential transmitted directions
                 // Find oriented surface normal for transmission
@@ -174,11 +184,22 @@ namespace pbrto
                 // Compute partial derivatives of $\mu$
                 Float dwoDotn_dx = ScalarDot( dwodx, n ) + ScalarDot( wo, dndx );
                 Float dwoDotn_dy = ScalarDot( dwody, n ) + ScalarDot( wo, dndy );
+                /*
                 Float mu = ScalarDot( wo, n ) / eta - ScalarAbsDot( wi, n );
                 Float dmudx = dwoDotn_dx * ( 1 / eta + 1 / Sqr( eta ) * ScalarDot( wo, n ) / ScalarDot( wi, n ) );
                 Float dmudy = dwoDotn_dy * ( 1 / eta + 1 / Sqr( eta ) * ScalarDot( wo, n ) / ScalarDot( wi, n ) );
+                */
 
-                rd.rxDirection = wi - eta * dwodx + Vector3f::Simd ( mu * dndx + dmudx * n );
+                Float dwon = ScalarDot( wo, n );
+                Float dwin = ScalarDot( wi, n );
+                Float adwin = FastAbs( dwin );
+
+                Float mu = dwon / eta - adwin;
+                Float scale = 1 / eta + 1 / Sqr( eta ) * dwon / dwin;
+                Float dmudx = dwoDotn_dx * scale;
+                Float dmudy = dwoDotn_dy * scale;
+
+                rd.rxDirection = wi - eta * dwodx + Vector3f::Simd( mu * dndx + dmudx * n );
                 rd.ryDirection = wi - eta * dwody + Vector3f::Simd( mu * dndy + dmudy * n );
             }
         }

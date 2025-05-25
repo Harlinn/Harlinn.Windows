@@ -6486,6 +6486,28 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
+        /*
+        using Tuple = typename T::TupleType;
+        if constexpr ( T::Size == 2 )
+        {
+            Tuple t( v );
+            return ResultType( Exp( t.x ), Exp( t.y ) );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            Tuple t( v );
+            return ResultType( Exp( t.x ), Exp( t.y ), Exp( t.z ) );
+        }
+        else if constexpr ( T::Size == 4 )
+        {
+            Tuple t( v );
+            return ResultType( Exp( t.x ), Exp( t.y ), Exp( t.z ), Exp( t.w ) );
+        }
+        else
+        {
+            return ResultType( Traits::Exp( v.simd ) );
+        }
+        */
         return ResultType( Traits::Exp( v.simd ) );
     }
 
