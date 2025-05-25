@@ -720,7 +720,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Set( Type value8, Type value7, Type value6, Type value5, 
+        static SIMDType Set( Type value8, Type value7, Type value6, Type value5,
                                 Type value4, Type value3, Type value2, Type value1 ) noexcept
             requires (Size > 7)
         {
@@ -814,7 +814,7 @@ namespace Harlinn::Common::Core::SIMD
                                     std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
             }
         }
-        static SIMDType Set( Type value12, Type value11, Type value10, Type value9, 
+        static SIMDType Set( Type value12, Type value11, Type value10, Type value9,
                                 Type value8, Type value7, Type value6, Type value5,
                                 Type value4, Type value3, Type value2, Type value1 ) noexcept
             requires (Size > 11)
@@ -910,7 +910,7 @@ namespace Harlinn::Common::Core::SIMD
                                     std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
             }
         }
-        static SIMDType Set( Type value16, Type value15, Type value14, Type value13, 
+        static SIMDType Set( Type value16, Type value15, Type value14, Type value13,
                                 Type value12, Type value11, Type value10, Type value9,
                                 Type value8, Type value7, Type value6, Type value5,
                                 Type value4, Type value3, Type value2, Type value1 ) noexcept
@@ -980,7 +980,7 @@ namespace Harlinn::Common::Core::SIMD
                                     std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
                                     std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
         }
-        static SIMDType Set( Type value20, Type value19, Type value18, Type value17, 
+        static SIMDType Set( Type value20, Type value19, Type value18, Type value17,
                                 Type value16, Type value15, Type value14, Type value13,
                                 Type value12, Type value11, Type value10, Type value9,
                                 Type value8, Type value7, Type value6, Type value5,
@@ -1044,7 +1044,7 @@ namespace Harlinn::Common::Core::SIMD
                                     std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
                                     std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
         }
-        static SIMDType Set( Type value24, Type value23, Type value22, Type value21, 
+        static SIMDType Set( Type value24, Type value23, Type value22, Type value21,
                                 Type value20, Type value19, Type value18, Type value17,
                                 Type value16, Type value15, Type value14, Type value13,
                                 Type value12, Type value11, Type value10, Type value9,
@@ -1112,7 +1112,7 @@ namespace Harlinn::Common::Core::SIMD
                                     std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
                                     std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
         }
-        static SIMDType Set( Type value28, Type value27, Type value26, Type value25, 
+        static SIMDType Set( Type value28, Type value27, Type value26, Type value25,
                                 Type value24, Type value23, Type value22, Type value21,
                                 Type value20, Type value19, Type value18, Type value17,
                                 Type value16, Type value15, Type value14, Type value13,
@@ -1184,7 +1184,7 @@ namespace Harlinn::Common::Core::SIMD
                                     std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
                                     std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
         }
-        static SIMDType Set( Type value32, Type value31, Type value30, Type value29, 
+        static SIMDType Set( Type value32, Type value31, Type value30, Type value29,
                                 Type value28, Type value27, Type value26, Type value25,
                                 Type value24, Type value23, Type value22, Type value21,
                                 Type value20, Type value19, Type value18, Type value17,
@@ -1886,19 +1886,19 @@ namespace Harlinn::Common::Core::SIMD
             {
                 if constexpr ( index == 0 )
                 {
-                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+                    return _mm_shuffle_epi32( v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
                 }
                 else if constexpr ( index == 1 )
                 {
-                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+                    return _mm_shuffle_epi32( v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
                 }
                 else if constexpr ( index == 2 )
                 {
-                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+                    return _mm_shuffle_epi32( v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
                 }
                 else
                 {
-                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
+                    return _mm_shuffle_epi32( v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
                 }
             }
             else
@@ -1912,15 +1912,15 @@ namespace Harlinn::Common::Core::SIMD
                     }
                     else if constexpr ( index == 1 )
                     {
-                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
                     }
                     else if constexpr ( index == 2 )
                     {
-                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
                     }
                     else
                     {
-                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
                     }
                 }
                 else
@@ -1932,15 +1932,15 @@ namespace Harlinn::Common::Core::SIMD
                     }
                     else if constexpr ( index == 5 )
                     {
-                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
                     }
                     else if constexpr ( index == 6 )
                     {
-                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
                     }
                     else
                     {
-                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
                     }
                 }
             }
@@ -2154,7 +2154,7 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else if constexpr ( N == 2 )
                 {
-                    return _mm_add_epi32( _mm_shuffle_epi32( v, v, 0b01'00'01'00 ), _mm_permute_epi32( v, v, 0b00'01'00'01 ) );
+                    return _mm_add_epi32( _mm_shuffle_epi32( v, 0b01'00'01'00 ), _mm_permute_epi32( v, v, 0b00'01'00'01 ) );
                 }
                 else if constexpr ( N == 3 )
                 {
@@ -2900,7 +2900,7 @@ namespace Harlinn::Common::Core::SIMD
             return Mask( 0xFFFFFFFF );
         }
 
-        static SIMDType Set( Type value1 ) noexcept 
+        static SIMDType Set( Type value1 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2968,7 +2968,7 @@ namespace Harlinn::Common::Core::SIMD
             return _mm256_set_ps( value8, value7, value6, value5, value4, value3, value2, value1 );
         }
 
-        static SIMDType SetX( SIMDType v, Type value ) 
+        static SIMDType SetX( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3174,13 +3174,7 @@ namespace Harlinn::Common::Core::SIMD
         /// </returns>
         static ArrayType ToArray( SIMDType src ) noexcept
         {
-            if constexpr ( N == SIMDTypeCapacity )
-            {
-                alignas(AlignAs) ArrayType result;
-                Store( result.data( ), src );
-                return result;
-            }
-            else if constexpr ( N == 1 )
+            if constexpr ( N == 1 )
             {
                 ArrayType result;
                 result[ 0 ] = _mm_cvtss_f32( src );
@@ -3188,37 +3182,29 @@ namespace Harlinn::Common::Core::SIMD
             }
             else if constexpr ( N == 2 )
             {
-                alignas( AlignAs ) ArrayType result;
+                ArrayType result;
                 _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
+
                 return result;
             }
             else if constexpr ( N == 3 )
             {
-                /*
-                struct
-                {
-                    alignas( AlignAs ) ArrayType result;
-                    Type ignored;
-                } r;
-                _mm_store_ps( r.result.data( ), src );
-                return r.result;
-                */
                 ArrayType result;
                 _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
-                result[2] = std::bit_cast<Type>(_mm_extract_ps( src, 2 ));
+                result[ 2 ] = std::bit_cast< Type >( _mm_extract_ps( src, 2 ) );
                 return result;
                 
             }
             else if constexpr ( N == 4 )
             {
-                alignas( AlignAs ) ArrayType result;
-                _mm_store_ps( result.data( ), src );
+                ArrayType result;
+                _mm_storeu_ps( result.data( ), src );
                 return result;
             }
             else if constexpr ( N == 8 )
             {
-                alignas( AlignAs ) ArrayType result;
-                Store( result.data( ), src );
+                ArrayType result;
+                _mm256_storeu_ps( result.data( ), src );
                 return result;
             }
             else
@@ -3791,7 +3777,7 @@ namespace Harlinn::Common::Core::SIMD
             static_assert( false, "No matching overload" );
         }
 
-        static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept 
+        static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept
             requires( UseShortSIMDType )
         {
             alignas( AlignAs ) std::array<UInt32, 4> selection{ selection1, selection2, selection3, selection4 };
@@ -3799,7 +3785,7 @@ namespace Harlinn::Common::Core::SIMD
             return _mm_permutevar_ps( v, selectionControl );
         }
 
-        static SIMDType Swizzle( SIMDType v, UInt32 selection8, UInt32 selection7, UInt32 selection6, UInt32 selection5, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept 
+        static SIMDType Swizzle( SIMDType v, UInt32 selection8, UInt32 selection7, UInt32 selection6, UInt32 selection5, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept
             requires( UseShortSIMDType == false )
         {
             alignas(AlignAs) std::array<UInt32, 8> selection{ selection1, selection2, selection3, selection4, selection5, selection6, selection7, selection8 };
@@ -4101,7 +4087,7 @@ namespace Harlinn::Common::Core::SIMD
         /// the corresponding element from the second vector will 
         /// be selected.
         /// </param>
-        static SIMDType SelectControl( UInt32 index0 = 0, UInt32 index1 = 0, UInt32 index2 = 0, UInt32 index3 = 0 ) noexcept 
+        static SIMDType SelectControl( UInt32 index0 = 0, UInt32 index1 = 0, UInt32 index2 = 0, UInt32 index3 = 0 ) noexcept
             requires( UseShortSIMDType )
         {
             auto tmp = _mm_set_epi32( static_cast< int >( index3 ), static_cast< int >( index2 ), static_cast< int >( index1 ), static_cast< int >( index0 ) );

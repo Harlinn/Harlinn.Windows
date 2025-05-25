@@ -47,6 +47,10 @@ namespace pbrto
     // MaterialEvalContext Definition
     struct MaterialEvalContext : public TextureEvalContext
     {
+        Vector3f::Simd wo;
+        Normal3f::Simd ns;
+        Vector3f::Simd dpdus;
+
         // MaterialEvalContext Public Methods
         MaterialEvalContext( ) = default;
         MaterialEvalContext( const SurfaceInteraction& si )
@@ -54,9 +58,7 @@ namespace pbrto
         { }
         std::string ToString( ) const;
 
-        Vector3f::Simd wo;
-        Normal3f::Simd ns;
-        Vector3f::Simd dpdus;
+        
     };
 
     // NormalBumpEvalContext Definition

@@ -31,12 +31,13 @@ namespace Harlinn::Common::Core::Math
 
 
 
-
+    /*
     template<typename T>
     constexpr bool IsLoadedType = T::Loaded;
 
     template<typename T>
     constexpr bool IsUnloadedType = T::Unloaded;
+    */
 
     namespace Internal
     {
@@ -1533,6 +1534,7 @@ namespace Harlinn::Common::Core::Math
             : x( static_cast< value_type >( other.x ) ), y( static_cast< value_type >( other.y ) )
         { }
 
+        
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         DerivedType& operator = ( const U& other ) noexcept
@@ -1540,6 +1542,8 @@ namespace Harlinn::Common::Core::Math
             values = Traits::ToArray( other.simd );
             return static_cast< DerivedType& >( *this );
         }
+        
+
 
         Simd ToSimd( ) const noexcept
         {
@@ -1885,11 +1889,15 @@ namespace Harlinn::Common::Core::Math
             : values( a )
         { }
 
+        
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple3( const U& other ) noexcept
             : values( Traits::ToArray( other.simd ) )
         { }
+        
+
+        
 
         template<TupleType U>
             requires std::is_same_v<Traits, typename U::Traits>
@@ -1903,6 +1911,7 @@ namespace Harlinn::Common::Core::Math
             : x( static_cast< value_type >( other.x ) ), y( static_cast< value_type >( other.y ) ), z( static_cast< value_type >( other.z ) )
         { }
 
+        
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         DerivedType& operator = ( const U& other ) noexcept
@@ -1910,6 +1919,9 @@ namespace Harlinn::Common::Core::Math
             values = Traits::ToArray( other.simd );
             return static_cast< DerivedType& >( *this );
         }
+        
+
+        
 
         Simd ToSimd( ) const noexcept
         {

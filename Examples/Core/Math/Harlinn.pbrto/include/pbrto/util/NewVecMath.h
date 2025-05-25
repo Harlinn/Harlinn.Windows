@@ -2307,7 +2307,8 @@ namespace pbrto
                     return Point( pMin.x, pMax.y, pMax.z );
                 }
                 break;
-                case 7:
+                //case 7:
+                default:
                 {
                     return pMax;
                 }
@@ -2823,12 +2824,12 @@ namespace pbrto
     }
 
     // Spherical Geometry Inline Functions
-    inline Float SphericalTriangleArea( Vector3f::Simd a, Vector3f::Simd b, Vector3f::Simd c )
+    inline Float SphericalTriangleArea( const Vector3f::Simd a, const Vector3f::Simd b, const Vector3f::Simd c )
     {
         return Math::FastAbs( 2.f * Math::ATan2( ScalarDot( a, Cross( b, c ) ), 1.f + ScalarDot( a, b ) + ScalarDot( a, c ) + ScalarDot( b, c ) ) );
     }
 
-    inline Float SphericalQuadArea( Vector3f::Simd a, Vector3f::Simd b, Vector3f::Simd c, Vector3f::Simd d )
+    inline Float SphericalQuadArea( const Vector3f::Simd a, const Vector3f::Simd b, const Vector3f::Simd c, const Vector3f::Simd d )
     {
         using Traits = typename Vector3f::Traits;
         auto axb = Math::Cross( a, b );
@@ -2874,7 +2875,7 @@ namespace pbrto
     {
         return SafeACos( v.z );
     }
-    inline Float SphericalTheta( Vector3f::Simd v )
+    inline Float SphericalTheta( const Vector3f::Simd v )
     {
         return SafeACos( v.z( ) );
     }
@@ -2884,9 +2885,9 @@ namespace pbrto
         Float p = Math::ATan2( v.y, v.x );
         return ( p < 0 ) ? ( p + 2.f * Pi ) : p;
     }
-    inline Float SphericalPhi( Vector3f::Simd v )
+    inline Float SphericalPhi( const Vector3f::Simd v )
     {
-        Float p = Math::ATan2( v.y(), v.x( ) );
+        Float p = Math::ATan2( v.y( ), v.x( ) );
         return ( p < 0 ) ? ( p + 2.f * Pi ) : p;
     }
 
@@ -2894,7 +2895,7 @@ namespace pbrto
     {
         return w.z;
     }
-    inline Float CosTheta( Vector3f::Simd w )
+    inline Float CosTheta( const Vector3f::Simd w )
     {
         return w.z( );
     }
@@ -2903,7 +2904,7 @@ namespace pbrto
     {
         return Sqr( w.z );
     }
-    inline Float Cos2Theta( Vector3f::Simd w )
+    inline Float Cos2Theta( const Vector3f::Simd w )
     {
         return Sqr( w.z( ) );
     }
@@ -2912,7 +2913,7 @@ namespace pbrto
     {
         return Math::FastAbs( w.z );
     }
-    inline Float AbsCosTheta( Vector3f::Simd w )
+    inline Float AbsCosTheta( const Vector3f::Simd w )
     {
         return Math::FastAbs( w.z( ) );
     }
@@ -2921,7 +2922,7 @@ namespace pbrto
     {
         return std::max<Float>( 0.f, 1.f - Cos2Theta( w ) );
     }
-    inline Float Sin2Theta( Vector3f::Simd w )
+    inline Float Sin2Theta( const Vector3f::Simd w )
     {
         return std::max<Float>( 0.f, 1.f - Cos2Theta( w ) );
     }
@@ -2929,7 +2930,7 @@ namespace pbrto
     {
         return Math::Sqrt( Sin2Theta( w ) );
     }
-    inline Float SinTheta( Vector3f::Simd w )
+    inline Float SinTheta( const Vector3f::Simd w )
     {
         return Math::Sqrt( Sin2Theta( w ) );
     }
@@ -2938,7 +2939,7 @@ namespace pbrto
     {
         return SinTheta( w ) / CosTheta( w );
     }
-    inline Float TanTheta( Vector3f::Simd w )
+    inline Float TanTheta( const Vector3f::Simd w )
     {
         return SinTheta( w ) / CosTheta( w );
     }
@@ -2946,7 +2947,7 @@ namespace pbrto
     {
         return Sin2Theta( w ) / Cos2Theta( w );
     }
-    inline Float Tan2Theta( Vector3f::Simd w )
+    inline Float Tan2Theta( const Vector3f::Simd w )
     {
         return Sin2Theta( w ) / Cos2Theta( w );
     }
@@ -2956,7 +2957,7 @@ namespace pbrto
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 1 : Math::Clamp( w.x / sinTheta, -1.f, 1.f );
     }
-    inline Float CosPhi( Vector3f::Simd w )
+    inline Float CosPhi( const Vector3f::Simd w )
     {
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 1 : Math::Clamp( w.x( ) / sinTheta, -1.f, 1.f );
@@ -2967,7 +2968,7 @@ namespace pbrto
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 0 : Math::Clamp( w.y / sinTheta, -1.f, 1.f );
     }
-    inline Float SinPhi( Vector3f::Simd w )
+    inline Float SinPhi( const Vector3f::Simd w )
     {
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 0 : Math::Clamp( w.y() / sinTheta, -1.f, 1.f );
@@ -2982,7 +2983,7 @@ namespace pbrto
             return 1.f;
         return Math::Clamp( ( wa.x * wb.x + wa.y * wb.y ) / Math::Sqrt( waxy * wbxy ), -1.f, 1.f );
     }
-    inline Float CosDPhi( Vector3f::Simd wa, Vector3f::Simd wb )
+    inline Float CosDPhi( const Vector3f::Simd wa, const Vector3f::Simd wb )
     {
         Float wax = wa.x( );
         Float way = wa.y( );
@@ -3000,7 +3001,7 @@ namespace pbrto
     {
         return w.z * wp.z > 0;
     }
-    inline bool SameHemisphere( Vector3f::Simd w, Vector3f::Simd wp )
+    inline bool SameHemisphere( const Vector3f::Simd w, const Vector3f::Simd wp )
     {
         return w.z() * wp.z() > 0;
     }
@@ -3010,7 +3011,7 @@ namespace pbrto
     {
         return w.z * wp.z > 0;
     }
-    inline bool SameHemisphere( Vector3f::Simd w, Normal3f::Simd wp )
+    inline bool SameHemisphere( const Vector3f::Simd w, const Normal3f::Simd wp )
     {
         return w.z( ) * wp.z( ) > 0;
     }
@@ -3023,9 +3024,10 @@ namespace pbrto
     public:
         // OctahedralVector Public Methods
         OctahedralVector( ) = default;
-        OctahedralVector( const Vector3f& vec )
+        OctahedralVector( const Vector3f vec )
         {
-            Vector3f v = vec / ( Math::FastAbs( vec.x ) + Math::FastAbs( vec.y ) + Math::FastAbs( vec.z ) );
+            //Vector3f v = vec / ( Math::FastAbs( vec.x ) + Math::FastAbs( vec.y ) + Math::FastAbs( vec.z ) );
+            Vector3f v = vec / Math::HSum( Math::FastAbs( vec ) );
 
             if ( v.z >= 0 )
             {
@@ -3035,10 +3037,28 @@ namespace pbrto
             else
             {
                 // Encode octahedral vector with $z < 0$
-                x = Encode( ( 1 - Math::FastAbs( v.y ) ) * Sign( v.x ) );
-                y = Encode( ( 1 - Math::FastAbs( v.x ) ) * Sign( v.y ) );
+                x = Encode( Math::CopySign( 1 - Math::FastAbs( v.y ), v.x ) );
+                y = Encode( Math::CopySign( 1 - Math::FastAbs( v.x ), v.y ) );
             }
         }
+
+        OctahedralVector( const Vector3f::Simd vec )
+        {
+            Vector3f v = vec / Math::HSum( Math::FastAbs( vec ) );
+
+            if ( v.z >= 0 )
+            {
+                x = Encode( v.x );
+                y = Encode( v.y );
+            }
+            else
+            {
+                // Encode octahedral vector with $z < 0$
+                x = Encode( Math::CopySign( 1 - Math::FastAbs( v.y ), v.x ) );
+                y = Encode( Math::CopySign( 1 - Math::FastAbs( v.x ), v.y ) );
+            }
+        }
+
 
         explicit operator Vector3f( ) const
         {
@@ -3050,8 +3070,10 @@ namespace pbrto
             if ( v.z < 0 )
             {
                 Float xo = v.x;
-                v.x = ( 1 - Math::FastAbs( v.y ) ) * Sign( xo );
-                v.y = ( 1 - Math::FastAbs( xo ) ) * Sign( v.y );
+                //v.x = ( 1 - Math::FastAbs( v.y ) ) * Sign( xo );
+                //v.y = ( 1 - Math::FastAbs( xo ) ) * Sign( v.y );
+                v.x = Math::CopySign( 1 - Math::FastAbs( v.y ), xo );
+                v.y = Math::CopySign( 1 - Math::FastAbs( xo ), v.y );
             }
 
             return Normalize( v );
@@ -3111,7 +3133,7 @@ namespace pbrto
     };
 
     // DirectionCone Inline Functions
-    inline bool Inside( DirectionCone d, const Vector3f::Simd& w )
+    inline bool Inside( const DirectionCone& d, const Vector3f::Simd& w )
     {
         return !d.IsEmpty( ) && Math::ScalarDot( d.w, Normalize( w ) ) >= d.cosTheta;
     }

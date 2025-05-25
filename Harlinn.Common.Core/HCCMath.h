@@ -3208,7 +3208,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
-
+    /// <summary>
+    /// Computes the error function of x
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Erf( T x ) noexcept
@@ -3224,8 +3226,124 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Computes the complementary error function of x,
+    /// </summary>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ErfC( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::erfcf( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::erfc( x );
+        }
+    }
+
+    /// <summary>
+    /// Computes the gamma function of x.
+    /// </summary>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> TGamma( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::tgammaf( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::tgamma( x );
+        }
+    }
+
+    /// <summary>
+    /// Computes the natural logarithm of the absolute value of the gamma function of x.
+    /// </summary>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> LGamma( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::lgammaf( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::lgamma( x );
+        }
+    }
 
 
+
+    /// <summary>
+    /// Computes the IEEE remainder of the floating point division operation x / y
+    /// </summary>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Remainder( T x, T y ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::remainderf( x, y );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::remainder( x, y );
+        }
+    }
+
+    
+    /// <summary>
+    /// Computes the floating-point remainder of the division operation x / y like Remainder. 
+    /// Additionally, the sign and at least the three of the last bits of x / y will be 
+    /// stored in quo, sufficient to determine the octant of the result within a period.
+    /// </summary>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> RemQuo( T x, T y, int* quo ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::remquof( x, y, quo );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::remquo( x, y, quo );
+        }
+    }
+
+    /// <summary>
+    /// Returns the positive difference between x and y, that is, if x > y, returns x - y, otherwise (i.e. if x <= y) returns +0.
+    /// </summary>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> FDim( T x, T y ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::fdimf( x, y );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::fdim( x, y );
+        }
+    }
+
+
+
+    /// <summary>
+    /// Computes x * y + z as if to infinite precision and rounded only once to fit the result type.
+    /// </summary>
     template<typename T>
         requires IsInteger<T>
     inline constexpr T FMA( T a, T b, T c ) noexcept
@@ -3233,6 +3351,9 @@ namespace Harlinn::Common::Core::Math
         return a * b + c;
     }
 
+    /// <summary>
+    /// Computes x * y + z as if to infinite precision and rounded only once to fit the result type.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     inline constexpr T FMA( T a, T b, T c ) noexcept

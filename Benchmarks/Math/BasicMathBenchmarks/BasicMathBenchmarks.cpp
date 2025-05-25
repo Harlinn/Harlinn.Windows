@@ -4364,6 +4364,71 @@ static void BenchmarkMathFloatSin( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathFloatSin );
 
+static void BenchmarkMathVector2fSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Sin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSin );
+
+static void BenchmarkMathVector2fSimdSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Sin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdSin );
+
+static void BenchmarkMathVector3fSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Sin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSin );
+
+static void BenchmarkMathVector3fSimdSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Sin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdSin );
+
+static void BenchmarkMathVector4fSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Sin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSin );
+
+static void BenchmarkMathVector4fSimdSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Sin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdSin );
 
 static void BenchmarkOpenLibMFloatSin( benchmark::State& state )
 {
@@ -4425,6 +4490,73 @@ static void BenchmarkMathFloatCos( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkMathFloatCos );
+
+static void BenchmarkMathVector2fCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Cos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fCos );
+
+static void BenchmarkMathVector2fSimdCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Cos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdCos );
+
+static void BenchmarkMathVector3fCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Cos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fCos );
+
+static void BenchmarkMathVector3fSimdCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Cos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdCos );
+
+static void BenchmarkMathVector4fCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Cos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fCos );
+
+static void BenchmarkMathVector4fSimdCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Cos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdCos );
+
 
 
 static void BenchmarkOpenLibMFloatCos( benchmark::State& state )
@@ -4556,6 +4688,73 @@ static void BenchmarkMathFloatTan( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkMathFloatTan );
+
+static void BenchmarkMathVector2fTan( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Tan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fTan );
+
+static void BenchmarkMathVector2fSimdTan( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Tan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdTan );
+
+static void BenchmarkMathVector3fTan( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Tan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fTan );
+
+static void BenchmarkMathVector3fSimdTan( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Tan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdTan );
+
+static void BenchmarkMathVector4fTan( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Tan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fTan );
+
+static void BenchmarkMathVector4fSimdTan( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd v( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        benchmark::DoNotOptimize( Math::Tan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdTan );
+
 
 static void BenchmarkOpenLibMFloatTan( benchmark::State& state )
 {
