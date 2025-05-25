@@ -291,7 +291,7 @@ namespace pbrto
 
     inline Float InvertNormalSample( Float x, Float mu = 0, Float sigma = 1 )
     {
-        return 0.5f * ( 1 + std::erf( ( x - mu ) / ( sigma * Sqrt2 ) ) );
+        return 0.5f * ( 1 + Math::Erf( ( x - mu ) / ( sigma * Sqrt2 ) ) );
     }
 
     inline Point2f SampleTwoNormal( Point2f u, Float mu = 0, Float sigma = 1 )

@@ -3649,7 +3649,7 @@ namespace pbrto
             auto GaussianIntegral = []( double x0, double x1, double mu = 0, double sigma = 1 ) {
                 double sigmaRoot2 = sigma * double( 1.414213562373095 );
                 return 0.5f *
-                    ( std::erf( ( mu - x0 ) / sigmaRoot2 ) - std::erf( ( mu - x1 ) / sigmaRoot2 ) );
+                    ( Math::Erf( ( mu - x0 ) / sigmaRoot2 ) - std::erf( ( mu - x1 ) / sigmaRoot2 ) );
                 };
 
             double mu = 0.5, sigma = 0.25;

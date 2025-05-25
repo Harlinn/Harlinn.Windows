@@ -3209,6 +3209,21 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Erf( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::erff( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::erf( x );
+        }
+    }
+
 
 
     template<typename T>

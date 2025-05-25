@@ -3066,13 +3066,45 @@ namespace Harlinn::Common::Core::SIMD
                 }
             }
         }
+        
+        /*
+        struct alignas( AlignAs ) Loadable
+        {
+            std::array<Type, 4> data;
 
+            Loadable( const std::array<Type, 1>& d )
+                : data{ d[ 0 ],{},{},{} }
+            { }
+            Loadable( const std::array<Type, 2>& d )
+                : data{ d[ 0 ],d[ 1 ],{},{} }
+            {
+            }
+            Loadable( const std::array<Type, 3>& d )
+                : data{ d[ 0 ],d[ 1 ],d[ 2 ],{} }
+            { }
+            Loadable( const std::array<Type, 4>& d )
+                : data{ d[ 0 ],d[ 1 ],d[ 2 ],d[ 3 ] }
+            { }                   
+
+        };
+        
+
+
+        static SIMDType Load( const Loadable src ) noexcept
+        {
+            return _mm_load_ps( src.data.data() );
+        }
+        */
+        
+        
         template<size_t NA>
             requires (NA >= N)
         static SIMDType Load( const std::array<Type, NA>& src ) noexcept
         {
             return Load( src.data( ) );
         }
+        
+        
 
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
@@ -3162,15 +3194,25 @@ namespace Harlinn::Common::Core::SIMD
             }
             else if constexpr ( N == 3 )
             {
-                alignas( AlignAs ) ArrayType result;
+                /*
+                struct
+                {
+                    alignas( AlignAs ) ArrayType result;
+                    Type ignored;
+                } r;
+                _mm_store_ps( r.result.data( ), src );
+                return r.result;
+                */
+                ArrayType result;
                 _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
                 result[2] = std::bit_cast<Type>(_mm_extract_ps( src, 2 ));
                 return result;
+                
             }
             else if constexpr ( N == 4 )
             {
                 alignas( AlignAs ) ArrayType result;
-                _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
+                _mm_store_ps( result.data( ), src );
                 return result;
             }
             else if constexpr ( N == 8 )

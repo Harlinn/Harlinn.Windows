@@ -662,7 +662,7 @@ namespace pbrto
 
     inline SampledSpectrum Exp( const SampledSpectrum& s )
     {
-#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST_
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
 
@@ -678,7 +678,7 @@ namespace pbrto
 #else
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = Math::Exp( s[ i ] );
+            ret[ i ] = Math::FastExp( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
 #endif
@@ -686,7 +686,7 @@ namespace pbrto
 
     inline SampledSpectrum FastExp( const SampledSpectrum& s )
     {
-#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST_
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
 
@@ -710,7 +710,7 @@ namespace pbrto
 
     inline SampledSpectrum Log( const SampledSpectrum& s )
     {
-#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST
+#ifdef USE_MODIFIED_SAMPLEDSPECTRUM_TEST_
         using Traits = SampledSpectrum::Traits;
         SampledSpectrum result;
 

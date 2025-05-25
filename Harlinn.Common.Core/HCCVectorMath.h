@@ -876,7 +876,7 @@ namespace Harlinn::Common::Core::Math
 
 
         TupleSimd( const TupleType& other ) noexcept
-            : simd( Traits::Load( other.values.data( ) ) )
+            : simd( Traits::Load( other.values ) )
         {
         }
 
@@ -974,7 +974,7 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator += ( const T& other ) noexcept
         {
-            simd = Traits::Add( simd, Traits::Load( other.values.data( ) ) );
+            simd = Traits::Add( simd, Traits::Load( other.values ) );
             return *this;
         }
         TupleSimd& operator += ( const TupleSimd& other ) noexcept
@@ -992,7 +992,7 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator -= ( const T& other ) noexcept
         {
-            simd = Traits::Sub( simd, Traits::Load( other.values.data( ) ) );
+            simd = Traits::Sub( simd, Traits::Load( other.values ) );
             return *this;
         }
         TupleSimd& operator -= ( const TupleSimd& other ) noexcept
@@ -1012,7 +1012,7 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator *= ( const T& other ) noexcept
         {
-            simd = Traits::Mul( simd, Traits::Load( other.values.data( ) ) );
+            simd = Traits::Mul( simd, Traits::Load( other.values ) );
             return *this;
         }
         TupleSimd& operator *= ( const TupleSimd& other ) noexcept
@@ -1031,7 +1031,7 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator /= ( const T& other ) noexcept
         {
-            simd = Traits::Div( simd, Traits::Load( other.values.data( ) ) );
+            simd = Traits::Div( simd, Traits::Load( other.values ) );
             return *this;
         }
         TupleSimd& operator /= ( const TupleSimd& other ) noexcept
@@ -1050,7 +1050,7 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename T::Traits>
         void Assign( const T& other ) noexcept
         {
-            simd = Traits::Load( other.values.data( ) );
+            simd = Traits::Load( other.values );
         }
 
         void Assign( SIMDType other ) noexcept
@@ -1578,19 +1578,19 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator == ( const U& other ) const noexcept
         {
-            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual( Traits::Load( values ), other.simd );
         }
 
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator != ( const U& other ) const noexcept
         {
-            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd ) == false;
+            return Traits::AllEqual( Traits::Load( values ), other.simd ) == false;
         }
 
         Simd operator-( ) const noexcept
         {
-            return Traits::Negate( Traits::Load( values.data( ) ) );
+            return Traits::Negate( Traits::Load( values ) );
         }
 
         DerivedType& operator += ( const Simd& other ) noexcept
@@ -1947,19 +1947,19 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator == ( const U& other ) const noexcept
         {
-            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual( Traits::Load( values ), other.simd );
         }
 
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator != ( const U& other ) const noexcept
         {
-            return Traits::AnyNotEqual( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AnyNotEqual( Traits::Load( values ), other.simd );
         }
 
         Simd operator-( ) const noexcept
         {
-            return Traits::Negate( Traits::Load( values.data( ) ) );
+            return Traits::Negate( Traits::Load( values ) );
         }
 
         DerivedType& operator += ( const Simd& other ) noexcept
@@ -2348,19 +2348,19 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator == ( const U& other ) const noexcept
         {
-            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual( Traits::Load( values ), other.simd );
         }
 
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator != ( const U& other ) const noexcept
         {
-            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd ) == false;
+            return Traits::AllEqual( Traits::Load( values ), other.simd ) == false;
         }
 
         Simd operator-( ) const noexcept
         {
-            return Traits::Negate( Traits::Load( values.data( ) ) );
+            return Traits::Negate( Traits::Load( values ) );
         }
 
         DerivedType& operator += ( const Simd& other ) noexcept
@@ -6370,26 +6370,85 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Calculates the natural logarithm of each element in the argument.
     /// </summary>
-    template<SimdOrTupleType T>
+    template<SimdType T>
     inline auto Log( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Log( Internal::ToSimd( v ) ) );
     }
+
+    /// <summary>
+    /// Calculates the natural logarithm of each element in the argument.
+    /// </summary>
+    template<TupleType T>
+    inline auto Log( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        if constexpr ( T::Size == 2 )
+        {
+            return T( Log( v.x ), Log( v.y ) );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Log( v.x ), Log( v.y ), Log( v.z ) );
+        }
+        else if constexpr ( T::Size == 4 )
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Log( v.x ), Log( v.y ), Log( v.z ), Log( v.w ) );
+        }
+        else
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Traits::Log( Internal::ToSimd( v ) ) );
+        }
+    }
+
+
     // Log1P
 
 
     /// <summary>
     /// Calculates the natural logarithm of 1 + each element in the argument.
     /// </summary>
-    template<SimdOrTupleType T>
+    template<SimdType T>
     inline auto Log1P( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Log1P( Internal::ToSimd( v ) ) );
     }
+
+    /// <summary>
+    /// Calculates the natural logarithm of 1 + each element in the argument.
+    /// </summary>
+    template<TupleType T>
+    inline auto Log1P( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        if constexpr ( T::Size == 2 )
+        {
+            return T( Log1P( v.x ), Log1P( v.y ) );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Log1P( v.x ), Log1P( v.y ), Log1P( v.z ) );
+        }
+        else if constexpr ( T::Size == 4 )
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Log1P( v.x ), Log1P( v.y ), Log1P( v.z ), Log1P( v.w ) );
+        }
+        else
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Traits::Log1P( Internal::ToSimd( v ) ) );
+        }
+    }
+
 
     // Log10
 
@@ -6422,12 +6481,38 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
     /// </summary>
-    template<SimdOrTupleType T>
+    template<SimdType T>
     inline auto Exp( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
-        return ResultType( Traits::Exp( Internal::ToSimd( v ) ) );
+        return ResultType( Traits::Exp( v.simd ) );
+    }
+
+    /// <summary>
+    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
+    /// </summary>
+    template<TupleType T>
+    inline auto Exp( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ResultType = Internal::MakeResultType<T>;
+        if constexpr ( T::Size == 2 )
+        {
+            return T(Exp(v.x), Exp( v.y ) );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return ResultType( Exp( v.x ), Exp( v.y ), Exp( v.z ) );
+        }
+        else if constexpr ( T::Size == 4 )
+        {
+            return ResultType( Exp( v.x ), Exp( v.y ), Exp( v.z ), Exp( v.w ) );
+        }
+        else
+        {
+            return ResultType( Traits::Exp( Internal::ToSimd( v ) ) );
+        }
     }
 
     // Exp10
@@ -6988,6 +7073,7 @@ namespace Harlinn::Common::Core::Math
     {
         return v / Length( v );
     }
+
 
     // ReciprocalLength
 
@@ -7943,7 +8029,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -7955,7 +8041,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values ), c.simd ) ) );
     }
 
     /// <summary>
@@ -7967,7 +8053,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
     }
 
     //
@@ -7993,7 +8079,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -8005,7 +8091,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -8017,7 +8103,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values ) ) ) );
     }
 
     //
@@ -8041,7 +8127,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -8052,7 +8138,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values ), c.simd ) ) );
     }
 
     /// <summary>
@@ -8063,7 +8149,7 @@ namespace Harlinn::Common::Core::Math
     inline S FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
     }
 
     //
@@ -8076,7 +8162,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -8087,7 +8173,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), b.simd, Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -8098,7 +8184,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), c.simd ) ) );
     }
 
     /// <summary>
@@ -8109,7 +8195,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
     }
 
     // FMAAdjustDown
@@ -8135,7 +8221,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -8147,7 +8233,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values ), c.simd ) ) );
     }
 
     /// <summary>
@@ -8159,7 +8245,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
     }
 
     //
@@ -8185,7 +8271,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -8197,7 +8283,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) ) );
     }
 
     /// <summary>
@@ -8209,7 +8295,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values ) ) ) );
     }
 
     //
@@ -8233,7 +8319,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -8244,7 +8330,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values ), c.simd ) ) );
     }
 
     /// <summary>
@@ -8255,7 +8341,7 @@ namespace Harlinn::Common::Core::Math
     inline S FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
     }
 
     //
@@ -8268,7 +8354,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), b.simd, c.simd ) ) );
     }
 
     /// <summary>
@@ -8279,7 +8365,7 @@ namespace Harlinn::Common::Core::Math
     inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), b.simd, Traits::Load( c.values ) ) ) );
     }
 
     /// <summary>
@@ -8290,7 +8376,7 @@ namespace Harlinn::Common::Core::Math
     inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), c.simd ) ) );
     }
 
     /// <summary>
@@ -8301,7 +8387,7 @@ namespace Harlinn::Common::Core::Math
     inline ResultT FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) ) );
+        return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
     }
 
     
@@ -9732,12 +9818,12 @@ namespace Harlinn::Common::Core::Math
 
         bool operator == ( const Simd& other ) const noexcept
         {
-            return Traits::AllEqual(Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual(Traits::Load( values ), other.simd );
         }
 
         bool operator != ( const Simd& other ) const noexcept
         {
-            return Traits::AnyNotEqual( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AnyNotEqual( Traits::Load( values ), other.simd );
         }
 
         bool operator == ( const Quaternion& other ) const noexcept
