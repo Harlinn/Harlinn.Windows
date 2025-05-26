@@ -590,6 +590,136 @@ static void BenchmarkPbrtFloatSqrt( benchmark::State& state )
 BENCHMARK( BenchmarkPbrtFloatSqrt );
 
 
+static void BenchmarkMathDoubleCbrt( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathDoubleCbrt );
+
+
+static void BenchmarkOpenLibMDoubleCbrt( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::cbrt( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkOpenLibMDoubleCbrt );
+
+
+static void BenchmarkStdDoubleCbrt( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::cbrt( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkStdDoubleCbrt );
+
+
+static void BenchmarkMathFloatCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathFloatCbrt );
+
+
+static void BenchmarkMathVector2fCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( Math::Vector2f( FloatGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fCbrt );
+
+static void BenchmarkMathVector2fSimdCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( Math::Vector2f::Simd( FloatGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdCbrt );
+
+
+static void BenchmarkMathVector3fCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( Math::Vector3f( FloatGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fCbrt );
+
+static void BenchmarkMathVector3fSimdCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( Math::Vector3f::Simd( FloatGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdCbrt );
+
+
+static void BenchmarkMathVector4fCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( Math::Vector4f( FloatGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fCbrt );
+
+static void BenchmarkMathVector4fSimdCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cbrt( Math::Vector4f::Simd( FloatGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdCbrt );
+
+static void BenchmarkOpenLibMFloatCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::cbrt( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkOpenLibMFloatCbrt );
+
+
+static void BenchmarkStdFloatCbrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::cbrt( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkStdFloatCbrt );
+
+
+
+
 static void BenchmarkMathDoubleNextDown( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -4822,6 +4952,73 @@ static void BenchmarkMathFloatATan( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathFloatATan );
 
+static void BenchmarkMathVector2fATan( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fATan );
+
+static void BenchmarkMathVector2fSimdATan( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdATan );
+
+static void BenchmarkMathVector3fATan( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fATan );
+
+static void BenchmarkMathVector3fSimdATan( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdATan );
+
+static void BenchmarkMathVector4fATan( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fATan );
+
+static void BenchmarkMathVector4fSimdATan( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdATan );
+
+
 static void BenchmarkOpenLibMFloatATan( benchmark::State& state )
 {
 
@@ -4900,6 +5097,73 @@ static void BenchmarkMathFloatASin( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkMathFloatASin );
+
+static void BenchmarkMathVector2fASin( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ASin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fASin );
+
+static void BenchmarkMathVector2fSimdASin( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ASin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdASin );
+
+static void BenchmarkMathVector3fASin( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ASin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fASin );
+
+static void BenchmarkMathVector3fSimdASin( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ASin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdASin );
+
+static void BenchmarkMathVector4fASin( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ASin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fASin );
+
+static void BenchmarkMathVector4fSimdASin( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ASin( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdASin );
+
 
 static void BenchmarkOpenLibMFloatASin( benchmark::State& state )
 {
@@ -4990,6 +5254,73 @@ static void BenchmarkMathFloatACos( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkMathFloatACos );
+
+static void BenchmarkMathVector2fACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ACos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fACos );
+
+static void BenchmarkMathVector2fSimdACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ACos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdACos );
+
+static void BenchmarkMathVector3fACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ACos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fACos );
+
+static void BenchmarkMathVector3fSimdACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ACos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdACos );
+
+static void BenchmarkMathVector4fACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ACos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fACos );
+
+static void BenchmarkMathVector4fSimdACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd v( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ACos( v ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdACos );
+
 
 static void BenchmarkOpenLibMFloatACos( benchmark::State& state )
 {
@@ -5091,6 +5422,77 @@ static void BenchmarkStdFloatATan2( benchmark::State& state )
 }
 BENCHMARK( BenchmarkStdFloatATan2 );
 
+static void BenchmarkMathVector2fATan2( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f y( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        Math::Vector2f x( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan2( y, x ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fATan2 );
+
+static void BenchmarkMathVector2fSimdATan2( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector2f::Simd y( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        Math::Vector2f::Simd x( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan2( y, x ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector2fSimdATan2 );
+
+static void BenchmarkMathVector3fATan2( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f y( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        Math::Vector3f x( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan2( y, x ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fATan2 );
+
+static void BenchmarkMathVector3fSimdATan2( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector3f::Simd y( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        Math::Vector3f::Simd x( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan2( y, x ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3fSimdATan2 );
+
+static void BenchmarkMathVector4fATan2( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f y( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        Math::Vector4f x( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan2( y, x ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fATan2 );
+
+static void BenchmarkMathVector4fSimdATan2( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Math::Vector4f::Simd y( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        Math::Vector4f::Simd x( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) );
+        benchmark::DoNotOptimize( Math::ATan2( y, x ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4fSimdATan2 );
 
 
 

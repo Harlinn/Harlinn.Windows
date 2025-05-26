@@ -5139,6 +5139,28 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    // Cbrt
+
+    /// <summary>
+    /// Calculates the cube root of each element in the argument.
+    /// </summary>
+    template<SimdOrTupleType T>
+    inline auto Cbrt( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        if constexpr ( TupleType<T> && T::Size < 3 )
+        {
+            using ResultType = T;
+            return ResultType( Traits::ToArray( Traits::Cbrt( Internal::ToSimd( v ) ) ) );
+        }
+        else
+        {
+            using ResultType = Internal::MakeResultType<T>;
+            return ResultType( Traits::Cbrt( Internal::ToSimd( v ) ) );
+        }
+    }
+
+
     // SafeSqrt
 
     /// <summary>

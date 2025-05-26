@@ -118,7 +118,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		{
 			if ( ( ( ix0 & ( ~sign ) ) | ix1 ) == 0 ) return x;/* sqrt(+-0) = +-0 */
 			else if ( ix0 < 0 )
-				return ( x - x ) / ( x - x );		/* sqrt(-ve) = sNaN */
+			{
+				return std::numeric_limits<double>::signaling_NaN( );
+				//return ( x - x ) / ( x - x );		/* sqrt(-ve) = sNaN */
+			}
 		}
 		/* normalize x */
 		m = ( ix0 >> 20 );

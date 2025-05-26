@@ -52,10 +52,18 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType PiOver4 = static_cast< ValueType >( 0.78539816339744830961 );
         static constexpr ValueType Sqrt2 = static_cast< ValueType >( 1.41421356237309504880 );
         static constexpr ValueType Infinity = std::numeric_limits<ValueType >::infinity( );
+        static constexpr ValueType NegativeInfinity = -std::numeric_limits<ValueType >::infinity( );
+        static constexpr ValueType NaN = std::numeric_limits<ValueType >::quiet_NaN( );
+        static constexpr ValueType NegativeNaN = -std::numeric_limits<ValueType >::quiet_NaN( );
 
         static constexpr ValueType MachineEpsilon = std::numeric_limits<ValueType>::epsilon( ) * 0.5f;
         
         static constexpr ValueType OneMinusEpsilon = 0x1.fffffep-1f;
+
+        static constexpr ValueType Max = std::numeric_limits<ValueType>::max( );
+        static constexpr ValueType Min = std::numeric_limits<ValueType>::min( );
+        static constexpr ValueType Lowest = std::numeric_limits<ValueType>::lowest( );
+
 
 
     };
@@ -82,9 +90,16 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType Sqrt2 = 1.41421356237309504880;
                                                                    
         static constexpr ValueType Infinity = std::numeric_limits<ValueType>::infinity( );
+        static constexpr ValueType NegativeInfinity = -std::numeric_limits<ValueType >::infinity( );
+        static constexpr ValueType NaN = std::numeric_limits<ValueType >::quiet_NaN( );
+        static constexpr ValueType NegativeNaN = -std::numeric_limits<ValueType >::quiet_NaN( );
 
         static constexpr ValueType MachineEpsilon = std::numeric_limits<ValueType>::epsilon( ) * 0.5;
         static constexpr double OneMinusEpsilon = 0x1.fffffffffffffp-1;
+
+        static constexpr ValueType Max = std::numeric_limits<ValueType>::max( );
+        static constexpr ValueType Min = std::numeric_limits<ValueType>::min( );
+        static constexpr ValueType Lowest = std::numeric_limits<ValueType>::lowest( );
 
     };
 
@@ -368,15 +383,15 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     inline constexpr float NextAfter( float x, float y ) noexcept
     {
-        volatile float t;
-        int32_t hx, hy, ix, iy;
+        //float t;
+        
 
-        hx = std::bit_cast<Int32>( x );
-        hy = std::bit_cast<Int32>( y );
+        int32_t hx = std::bit_cast<Int32>( x );
+        int32_t hy = std::bit_cast<Int32>( y );
         // |x| 
-        ix = hx & 0x7fffffff;
+        int32_t ix = hx & 0x7fffffff;
         // |y| 
-        iy = hy & 0x7fffffff;
+        int32_t iy = hy & 0x7fffffff;
 
         // Are x or y NaN?
         if ( ( ix > 0x7f800000 ) || ( iy > 0x7f800000 ) )
@@ -393,7 +408,7 @@ namespace Harlinn::Common::Core::Math
             // x == 0 
             // return +-minsubnormal 
             x = std::bit_cast<float>( ( hy & 0x80000000 ) | 1 );
-            t = x * x;
+            float t = x * x;
             if ( t == x )
             {
                 return t;
@@ -435,13 +450,14 @@ namespace Harlinn::Common::Core::Math
         hy = hx & 0x7f800000;
         if ( hy >= 0x7f800000 )
         {
-            // overflow  
-            return x + x;
+            // overflow
+            return CopySign( std::numeric_limits<float>::infinity( ), y );
+            //return x + x;
         }
         if ( hy < 0x00800000 )
         {
             // underflow 
-            t = x * x;
+            float t = x * x;
             if ( t != x )
             {
                 // raise underflow flag 
@@ -521,26 +537,35 @@ namespace Harlinn::Common::Core::Math
             constexpr FloatType one = static_cast< FloatType >( 1. );
             if constexpr ( std::is_same_v<FloatType, float> )
             {
+                if ( x == 0.f )
+                {
+                    return CopySign( std::numeric_limits<float>::infinity( ), x );
+                }
                 return one / Math::Internal::OpenLibM::sqrtf( x );
             }
             else
             {
+                if ( x == 0. )
+                {
+                    return CopySign( std::numeric_limits<double>::infinity( ), x );
+                }
                 return one / Math::Internal::OpenLibM::sqrt( x );
             }
         }
         else
         {
-
-            FloatType result;
             if constexpr ( std::is_same_v<FloatType, float> )
             {
+                FloatType result;
                 _mm_store_ss( &result, _mm_rsqrt_ps( _mm_set_ss( x ) ) );
+                return result;
             }
             else
             {
-                _mm_store_sd( &result, _mm_rsqrt_ps( _mm_set_sd( x ) ) );
+                constexpr FloatType one = static_cast< FloatType >( 1. );
+                return one / Sqrt( x );
+                
             }
-            return result;
         }
     }
 

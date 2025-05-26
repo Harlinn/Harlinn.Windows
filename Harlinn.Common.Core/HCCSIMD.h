@@ -5897,7 +5897,7 @@ namespace Harlinn::Common::Core::SIMD
         /// Square Root of Single-Precision Floating-Point Values
         /// </summary>
         /// <param name="v"></param>
-        /// <returns></returns>
+        
         static SIMDType Sqrt( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -5907,6 +5907,22 @@ namespace Harlinn::Common::Core::SIMD
             else
             {
                 return _mm256_sqrt_ps( v );
+            }
+        }
+
+        /// <summary>
+        /// Cube Root of Single-Precision Floating-Point Values
+        /// </summary>
+        /// <param name="v"></param>
+        static SIMDType Cbrt( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cbrt_ps( v );
+            }
+            else
+            {
+                return _mm256_cbrt_ps( v );
             }
         }
         
@@ -8126,6 +8142,23 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_sqrt_pd( v );
             }
         }
+
+        /// <summary>
+        /// Cube Root of float64 vector
+        /// </summary>
+        /// <param name="v"></param>
+        static SIMDType Cbrt( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cbrt_pd( v );
+            }
+            else
+            {
+                return _mm256_cbrt_pd( v );
+            }
+        }
+
 
         /// <summary>
         /// Multiply-adds packed double-precision floating-point values using three float64 vectors
