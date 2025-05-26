@@ -195,7 +195,7 @@ namespace Harlinn::Common::Core::Math
 
     template<typename T>
         requires IsFloatingPoint<T>
-    constexpr inline std::pair<double, int> FRExp( T val ) noexcept;
+    constexpr inline std::pair<std::remove_cvref_t<T>, int> FRExp( T val ) noexcept;
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int* exp ) noexcept;

@@ -34,22 +34,16 @@
 
 namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 {
-	constexpr inline int
-		__isfinite( double d )
+	constexpr inline int __isfinite( double d )
 	{
-		union IEEEd2bits u;
-
-		u.d = d;
-		return ( u.bits.exp != 2047 );
+		
+		return (( std::bit_cast< uint64_t >( d ) >> 52 ) & 0x7FFULL ) != 0x7FFULL;
 	}
 
-	constexpr inline int
-		__isfinitef( float f )
+	constexpr inline int __isfinitef( float f )
 	{
-		union IEEEf2bits u;
-
-		u.f = f;
-		return ( u.bits.exp != 255 );
+		return ( ( std::bit_cast< uint32_t >( f ) >> 23 ) & 0xFFU ) != 0xFFU;
+		
 	}
 
 #ifdef OLM_LONG_DOUBLE

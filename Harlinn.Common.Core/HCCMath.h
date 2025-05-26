@@ -56,12 +56,18 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType NaN = std::numeric_limits<ValueType >::quiet_NaN( );
         static constexpr ValueType NegativeNaN = -std::numeric_limits<ValueType >::quiet_NaN( );
 
+        static constexpr ValueType sNaN = std::numeric_limits<ValueType >::quiet_NaN( );
+        static constexpr ValueType sNegativeNaN = -std::numeric_limits<ValueType >::signaling_NaN( );
+
         static constexpr ValueType MachineEpsilon = std::numeric_limits<ValueType>::epsilon( ) * 0.5f;
         
         static constexpr ValueType OneMinusEpsilon = 0x1.fffffep-1f;
 
         static constexpr ValueType Max = std::numeric_limits<ValueType>::max( );
         static constexpr ValueType Min = std::numeric_limits<ValueType>::min( );
+
+        static constexpr ValueType DenormalMin = std::numeric_limits<ValueType>::denorm_min( );
+
         static constexpr ValueType Lowest = std::numeric_limits<ValueType>::lowest( );
 
 
@@ -94,11 +100,17 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType NaN = std::numeric_limits<ValueType >::quiet_NaN( );
         static constexpr ValueType NegativeNaN = -std::numeric_limits<ValueType >::quiet_NaN( );
 
+        static constexpr ValueType sNaN = std::numeric_limits<ValueType >::quiet_NaN( );
+        static constexpr ValueType sNegativeNaN = -std::numeric_limits<ValueType >::signaling_NaN( );
+
         static constexpr ValueType MachineEpsilon = std::numeric_limits<ValueType>::epsilon( ) * 0.5;
         static constexpr double OneMinusEpsilon = 0x1.fffffffffffffp-1;
 
         static constexpr ValueType Max = std::numeric_limits<ValueType>::max( );
         static constexpr ValueType Min = std::numeric_limits<ValueType>::min( );
+
+        static constexpr ValueType DenormalMin = std::numeric_limits<ValueType>::denorm_min( );
+
         static constexpr ValueType Lowest = std::numeric_limits<ValueType>::lowest( );
 
     };
