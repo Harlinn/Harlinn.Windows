@@ -51,6 +51,11 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType PiOver2 = static_cast< ValueType >( 1.57079632679489661923 );
         static constexpr ValueType PiOver4 = static_cast< ValueType >( 0.78539816339744830961 );
         static constexpr ValueType Sqrt2 = static_cast< ValueType >( 1.41421356237309504880 );
+
+        static constexpr ValueType E = static_cast< ValueType >( M_E );
+        static constexpr ValueType E2 = static_cast< ValueType >( M_E * M_E );
+        static constexpr ValueType E3 = static_cast< ValueType >( M_E * M_E * M_E );
+
         static constexpr ValueType Infinity = std::numeric_limits<ValueType >::infinity( );
         static constexpr ValueType NegativeInfinity = -std::numeric_limits<ValueType >::infinity( );
         static constexpr ValueType NaN = std::numeric_limits<ValueType >::quiet_NaN( );
@@ -94,7 +99,11 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType PiOver2 = 1.57079632679489661923;
         static constexpr ValueType PiOver4 = 0.78539816339744830961;
         static constexpr ValueType Sqrt2 = 1.41421356237309504880;
-                                                                   
+        
+        static constexpr ValueType E = M_E;
+        static constexpr ValueType E2 = M_E * M_E;
+        static constexpr ValueType E3 = M_E * M_E * M_E;
+
         static constexpr ValueType Infinity = std::numeric_limits<ValueType>::infinity( );
         static constexpr ValueType NegativeInfinity = -std::numeric_limits<ValueType >::infinity( );
         static constexpr ValueType NaN = std::numeric_limits<ValueType >::quiet_NaN( );
@@ -1534,7 +1543,6 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-#ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
     /// <summary>
     /// Returns the smaller of the given values.
     /// </summary>
@@ -1570,11 +1578,6 @@ namespace Harlinn::Common::Core::Math
             else
             {
                 return std::min( first, second );
-                /*
-                FloatT result;
-                _mm_store_sd( &result, _mm_min_sd( _mm_set_sd( first ), _mm_set_sd( second ) ) );
-                return result;
-                */
             }
         }
     }
@@ -1599,13 +1602,7 @@ namespace Harlinn::Common::Core::Math
     {
         return std::min( first, second );
     }
-#else
-    template<typename T>
-    constexpr inline std::remove_cvref_t<T> Min( T first, T second ) noexcept
-    {
-        return std::min( first, second );
-    }
-#endif
+
     template<typename T, typename ...Args>
         requires IsFloatingPoint<T> || IsInteger<T>
     constexpr inline T Min( T first, T second, Args... remaining ) noexcept
@@ -1614,7 +1611,7 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-#ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
+
     /// <summary>
     /// Returns the larger of the given values.
     /// </summary>
@@ -1679,13 +1676,6 @@ namespace Harlinn::Common::Core::Math
     {
         return std::max( first, second );
     }
-#else
-    template<typename T>
-    constexpr inline std::remove_cvref_t<T> Max( T first, T second ) noexcept
-    {
-        return std::max( first, second );
-    }
-#endif
 
     template<typename T, typename ...Args>
         requires IsArithmetic<T>
@@ -1738,7 +1728,6 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-#ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
             if constexpr ( std::is_same_v<double, FloatT> )
             {
                 alignas( 16 ) double result;
@@ -1754,16 +1743,6 @@ namespace Harlinn::Common::Core::Math
                 return result;
                 
             }
-#else
-            if constexpr ( std::is_same_v<FloatT, float> )
-            {
-                return __truncf( value );
-            }
-            else
-            {
-                return __trunc( value );
-            }
-#endif
         }
     }
 
@@ -1813,7 +1792,6 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-#ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
             if constexpr ( std::is_same_v<FloatT, float> )
             {
                 return __floorf( value );
@@ -1822,31 +1800,6 @@ namespace Harlinn::Common::Core::Math
             {
                 return __floor( value );
             }
-            /*
-            if constexpr ( std::is_same_v<double, T> )
-            {
-                double result;
-                _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC ) );
-                return result;
-            }
-            else
-            {
-                float result;
-                _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC ) );
-                return result;
-            }
-            */
-#else
-            if constexpr ( std::is_same_v<FloatT, float> )
-            {
-                return __floorf( value );
-            }
-            else
-            {
-                return __floor( value );
-            }
-
-#endif
         }
     }
 
@@ -1896,7 +1849,6 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-#ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
             if constexpr ( std::is_same_v<FloatT, float> )
             {
                 return __ceilf( value );
@@ -1905,30 +1857,6 @@ namespace Harlinn::Common::Core::Math
             {
                 return __ceil( value );
             }
-            /*
-            if constexpr ( std::is_same_v<double, T> )
-            {
-                double result;
-                _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC ) );
-                return result;
-            }
-            else
-            {
-                float result;
-                _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC ) );
-                return result;
-            }
-            */
-#else
-            if constexpr ( std::is_same_v<FloatT, float> )
-            {
-                return __ceilf( value );
-            }
-            else
-            {
-                return __ceil( value );
-            }
-#endif
         }
     }
 
@@ -1953,7 +1881,6 @@ namespace Harlinn::Common::Core::Math
 
 
     
-#ifdef HCCLIB_IMPLEMENTS_ROUND 
     /// <summary>
     /// <para>
     /// Computes the nearest integer to value, in floating-point format, 
@@ -1981,7 +1908,6 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-#ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
             if constexpr ( std::is_same_v<FloatT, float> )
             {
                 return __roundf( value );
@@ -1992,30 +1918,6 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
                 return result;
             }
-            /*
-            if constexpr ( std::is_same_v<double, T> )
-            {
-                double result;
-                _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
-                return result;
-            }
-            else
-            {
-                float result;
-                _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
-                return result;
-            }
-            */
-#else
-            if constexpr ( std::is_same_v<FloatT, float> )
-            {
-                return __roundf( value );
-            }
-            else
-            {
-                return __round( value );
-            }
-#endif
         }
     }
 
@@ -2037,13 +1939,6 @@ namespace Harlinn::Common::Core::Math
     {
         return value;
     }
-#else
-    template<typename T>
-    constexpr inline std::remove_cvref_t<T> Round( T value ) noexcept
-    {
-        return std::round( value );
-    }
-#endif
 
 
     /// <summary>
@@ -2106,19 +2001,6 @@ namespace Harlinn::Common::Core::Math
     constexpr inline MakeFloatingPoint<T,U> Lerp( T a, T b, U t ) noexcept
     {
         return ( 1 - t ) * a + t * b;
-        //using FloatT = MakeFloatingPoint<T, U>;
-        //return Internal::LerpImpl( static_cast< FloatT >( a ), static_cast< FloatT >( b ), static_cast< FloatT >( t ) );
-        /*
-        if ( std::is_constant_evaluated( ) )
-        {
-            using FloatT = MakeFloatingPoint<T, U>;
-            return Internal::LerpImpl( static_cast< FloatT >( a ), static_cast< FloatT >( b ), static_cast< FloatT >( t ) );
-        }
-        else
-        {
-            return std::lerp( a, b, t );
-        }
-        */
     }
 
     template<typename T, typename U>
@@ -2228,7 +2110,8 @@ namespace Harlinn::Common::Core::Math
         if ( k > 0x7fe )
         {
             // overflow  
-            return huge * CopySign( huge, x );
+            return CopySign( std::numeric_limits<double>::infinity( ), x );
+            //return huge * CopySign( huge, x );
         }
         if ( k > 0 )
         {
@@ -2311,7 +2194,8 @@ namespace Harlinn::Common::Core::Math
         if ( k > 0xfe )
         {
             // overflow  
-            return huge * CopySign( huge, x ); 
+            return CopySign( std::numeric_limits<float>::infinity( ),  x );
+            //return huge * CopySign( huge, x ); 
         }
         if ( k > 0 )
         {
@@ -2444,6 +2328,85 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Exp2( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::exp2f( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::exp2( x );
+            }
+        }
+        else
+        {
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_exp2_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_exp2_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+    namespace Internal
+    {
+        constexpr double Exp10Impl( double x ) noexcept
+        {
+            return Pow( 10.0, x );
+        }
+
+        constexpr float Exp10Impl( float x ) noexcept
+        {
+            return Pow( 10.0f, x );
+        }
+
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Exp10( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::Exp10Impl( x );
+            }
+            else
+            {
+                return Math::Internal::Exp10Impl( x );
+            }
+        }
+        else
+        {
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_exp10_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_exp10_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+    
+
+
 
     /// <summary>
     /// <para>
@@ -2471,7 +2434,6 @@ namespace Harlinn::Common::Core::Math
         if ( std::is_constant_evaluated( ) )
         {
             return Math::Internal::OpenLibM::FastHypot( x, y );
-            //return Sqrt( x * x + y * y );
         }
         else
         {   

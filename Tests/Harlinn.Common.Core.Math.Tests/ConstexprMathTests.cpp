@@ -1203,7 +1203,6 @@ BOOST_AUTO_TEST_CASE( DoubleMinTest1 )
 }
 
 
-
 // --run_test=MathTests/FloatMaxTest1
 BOOST_AUTO_TEST_CASE( FloatMaxTest1 )
 {
@@ -1221,8 +1220,32 @@ BOOST_AUTO_TEST_CASE( DoubleMaxTest1 )
 }
 
 
-// --run_test=MathTests/FloorDoubleTest1
-BOOST_AUTO_TEST_CASE( FloorDoubleTest1 )
+// --run_test=MathTests/FloatFloorTest1
+BOOST_AUTO_TEST_CASE( FloatFloorTest1 )
+{
+    constexpr float value1 = -1.5f;
+    constexpr float value2 = -0.5f;
+    constexpr float value3 = -0.0f;
+    constexpr float value4 = 0.0f;
+    constexpr float value5 = 0.5f;
+    constexpr float value6 = 1.5f;
+
+    constexpr double result1 = Floor( value1 );
+    BOOST_CHECK( result1 == -2.f );
+    constexpr double result2 = Floor( value2 );
+    BOOST_CHECK( result2 == -1.f );
+    constexpr double result3 = Floor( value3 );
+    BOOST_CHECK( result3 == -0.f );
+    constexpr double result4 = Floor( value4 );
+    BOOST_CHECK( result4 == 0.f );
+    constexpr double result5 = Floor( value5 );
+    BOOST_CHECK( result5 == 0.f );
+    constexpr double result6 = Floor( value6 );
+    BOOST_CHECK( result6 == 1.f );
+}
+
+// --run_test=MathTests/DoubleFloorTest1
+BOOST_AUTO_TEST_CASE( DoubleFloorTest1 )
 {
     constexpr double value1 = -1.5;
     constexpr double value2 = -0.5;
@@ -1270,8 +1293,33 @@ BOOST_AUTO_TEST_CASE( OpenLibMFloorDoubleTest1 )
     BOOST_CHECK( result6 == 1. );
 }
 
-// --run_test=MathTests/CeilDoubleTest1
-BOOST_AUTO_TEST_CASE( CeilDoubleTest1 )
+// --run_test=MathTests/FloatCeilTest1
+BOOST_AUTO_TEST_CASE( FloatCeilTest1 )
+{
+    constexpr float value1 = -1.5f;
+    constexpr float value2 = -0.5f;
+    constexpr float value3 = -0.0f;
+    constexpr float value4 = 0.0f;
+    constexpr float value5 = 0.5f;
+    constexpr float value6 = 1.5f;
+
+    constexpr double result1 = Ceil( value1 );
+    BOOST_CHECK( result1 == -1.f );
+    constexpr double result2 = Ceil( value2 );
+    BOOST_CHECK( result2 == -0.f );
+    constexpr double result3 = Ceil( value3 );
+    BOOST_CHECK( result3 == -0.f );
+    constexpr double result4 = Ceil( value4 );
+    BOOST_CHECK( result4 == 0.f );
+    constexpr double result5 = Ceil( value5 );
+    BOOST_CHECK( result5 == 1.f );
+    constexpr double result6 = Ceil( value6 );
+    BOOST_CHECK( result6 == 2.f );
+}
+
+
+// --run_test=MathTests/DoubleCeilTest1
+BOOST_AUTO_TEST_CASE( DoubleCeilTest1 )
 {
     constexpr double value1 = -1.5;
     constexpr double value2 = -0.5;
@@ -1292,7 +1340,6 @@ BOOST_AUTO_TEST_CASE( CeilDoubleTest1 )
     BOOST_CHECK( result5 == 1. );
     constexpr double result6 = Ceil( value6 );
     BOOST_CHECK( result6 == 2. );
-
 }
 
 // --run_test=MathTests/OpenLibMCeilDoubleTest1
@@ -1319,6 +1366,744 @@ BOOST_AUTO_TEST_CASE( OpenLibMCeilDoubleTest1 )
     BOOST_CHECK( result6 == 2. );
 
 }
+
+// --run_test=MathTests/FloatTruncTest1
+BOOST_AUTO_TEST_CASE( FloatTruncTest1 )
+{
+    constexpr float value1 = -1.5f;
+    constexpr float value2 = -0.5f;
+    constexpr float value3 = -0.0f;
+    constexpr float value4 = 0.0f;
+    constexpr float value5 = 0.5f;
+    constexpr float value6 = 1.5f;
+
+    constexpr double result1 = Trunc( value1 );
+    BOOST_CHECK( result1 == -1.f );
+    constexpr double result2 = Trunc( value2 );
+    BOOST_CHECK( result2 == -0.f );
+    constexpr double result3 = Trunc( value3 );
+    BOOST_CHECK( result3 == -0.f );
+    constexpr double result4 = Trunc( value4 );
+    BOOST_CHECK( result4 == 0.f );
+    constexpr double result5 = Trunc( value5 );
+    BOOST_CHECK( result5 == 0.f );
+    constexpr double result6 = Trunc( value6 );
+    BOOST_CHECK( result6 == 1.f );
+}
+
+// --run_test=MathTests/DoubleTruncTest1
+BOOST_AUTO_TEST_CASE( DoubleTruncTest1 )
+{
+    constexpr double value1 = -1.5;
+    constexpr double value2 = -0.5;
+    constexpr double value3 = -0.0;
+    constexpr double value4 = 0.0;
+    constexpr double value5 = 0.5;
+    constexpr double value6 = 1.5;
+
+    constexpr double result1 = Trunc( value1 );
+    BOOST_CHECK( result1 == -1. );
+    constexpr double result2 = Trunc( value2 );
+    BOOST_CHECK( result2 == -0. );
+    constexpr double result3 = Trunc( value3 );
+    BOOST_CHECK( result3 == -0. );
+    constexpr double result4 = Trunc( value4 );
+    BOOST_CHECK( result4 == 0. );
+    constexpr double result5 = Trunc( value5 );
+    BOOST_CHECK( result5 == 0. );
+    constexpr double result6 = Trunc( value6 );
+    BOOST_CHECK( result6 == 1. );
+}
+
+// --run_test=MathTests/FloatRoundTest1
+BOOST_AUTO_TEST_CASE( FloatRoundTest1 )
+{
+    constexpr float value1 = -1.5f;
+    constexpr float value2 = -0.5f;
+    constexpr float value3 = -0.0f;
+    constexpr float value4 = 0.0f;
+    constexpr float value5 = 0.5f;
+    constexpr float value6 = 1.5f;
+
+    constexpr double result1 = Round( value1 );
+    BOOST_CHECK( result1 == -2.f );
+    constexpr double result2 = Round( value2 );
+    BOOST_CHECK( result2 == -1.f );
+    constexpr double result3 = Round( value3 );
+    BOOST_CHECK( result3 == -0.f );
+    constexpr double result4 = Round( value4 );
+    BOOST_CHECK( result4 == 0.f );
+    constexpr double result5 = Round( value5 );
+    BOOST_CHECK( result5 == 1.f );
+    constexpr double result6 = Round( value6 );
+    BOOST_CHECK( result6 == 2.f );
+}
+
+// --run_test=MathTests/DoubleRoundTest1
+BOOST_AUTO_TEST_CASE( DoubleRoundTest1 )
+{
+    constexpr double value1 = -1.5;
+    constexpr double value2 = -0.5;
+    constexpr double value3 = -0.0;
+    constexpr double value4 = 0.0;
+    constexpr double value5 = 0.5;
+    constexpr double value6 = 1.5;
+
+    constexpr double result1 = Round( value1 );
+    BOOST_CHECK( result1 == -2. );
+    constexpr double result2 = Round( value2 );
+    BOOST_CHECK( result2 == -1. );
+    constexpr double result3 = Round( value3 );
+    BOOST_CHECK( result3 == -0. );
+    constexpr double result4 = Round( value4 );
+    BOOST_CHECK( result4 == 0. );
+    constexpr double result5 = Round( value5 );
+    BOOST_CHECK( result5 == 1. );
+    constexpr double result6 = Round( value6 );
+    BOOST_CHECK( result6 == 2. );
+}
+
+// --run_test=MathTests/FloatClampTest1
+BOOST_AUTO_TEST_CASE( FloatClampTest1 )
+{
+    constexpr float result1 = Clamp( -1.f, 0.f, 10.f );
+    BOOST_CHECK( result1 == 0.f );
+    constexpr float result2 = Clamp( 11.f, 0.f, 10.f );
+    BOOST_CHECK( result2 == 10.f );
+    constexpr float result3 = Clamp( 5.f, 0.f, 10.f );
+    BOOST_CHECK( result3 == 5.f );
+}
+
+// --run_test=MathTests/DoubleClampTest1
+BOOST_AUTO_TEST_CASE( DoublelampTest1 )
+{
+    constexpr double result1 = Clamp( -1., 0., 10. );
+    BOOST_CHECK( result1 == 0. );
+    constexpr double result2 = Clamp( 11., 0., 10. );
+    BOOST_CHECK( result2 == 10. );
+    constexpr double result3 = Clamp( 5., 0., 10. );
+    BOOST_CHECK( result3 == 5. );
+}
+
+// --run_test=MathTests/FloatLerpTest1
+BOOST_AUTO_TEST_CASE( FloatLerpTest1 )
+{
+    constexpr auto result1 = Lerp( 3.f, 5.f, 0.5f );
+    BOOST_CHECK( result1 == 4.f );
+    constexpr auto result2 = Lerp( 3.f, 5.f, -0.5f );
+    BOOST_CHECK( result2 == 2.f );
+    constexpr auto result3 = Lerp( 3.f, 5.f, 1.5f );
+    BOOST_CHECK( result3 == 6.f );
+    constexpr auto result4 = Lerp( 3.f, 5.f, 0.f );
+    BOOST_CHECK( result4 == 3.f );
+    constexpr auto result5 = Lerp( 3.f, 5.f, 1.f );
+    BOOST_CHECK( result5 == 5.f );
+}
+
+// --run_test=MathTests/DoubleLerpTest1
+BOOST_AUTO_TEST_CASE( DoubleLerpTest1 )
+{
+    constexpr auto result1 = Lerp( 3., 5., 0.5 );
+    BOOST_CHECK( result1 == 4.f );
+    constexpr auto result2 = Lerp( 3., 5., -0.5 );
+    BOOST_CHECK( result2 == 2.f );
+    constexpr auto result3 = Lerp( 3., 5., 1.5 );
+    BOOST_CHECK( result3 == 6.f );
+    constexpr auto result4 = Lerp( 3., 5., 0. );
+    BOOST_CHECK( result4 == 3.f );
+    constexpr auto result5 = Lerp( 3., 5., 1. );
+    BOOST_CHECK( result5 == 5.f );
+}
+
+// --run_test=MathTests/FloatCopySignTest1
+BOOST_AUTO_TEST_CASE( FloatCopySignTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = CopySign( C::One, C::sNegativeNaN );
+    BOOST_CHECK( result1 == -C::One );
+
+    constexpr auto result2 = CopySign( C::One, C::NegativeNaN );
+    BOOST_CHECK( result2 == -C::One );
+
+    constexpr auto result3 = CopySign( C::One, C::NegativeInfinity );
+    BOOST_CHECK( result3 == -C::One );
+
+    constexpr auto result4 = CopySign( C::sNegativeNaN, C::One );
+    BOOST_CHECK( IsNaN( result4 ) );
+
+    constexpr auto result5 = CopySign( C::NegativeNaN, C::One );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = CopySign( C::NegativeInfinity, C::One );
+    BOOST_CHECK( result6 == C::Infinity );
+
+    constexpr auto result7 = CopySign( C::Infinity, -C::One );
+    BOOST_CHECK( result7 == C::NegativeInfinity );
+
+    constexpr auto result8 = CopySign( C::Max, -C::One );
+    BOOST_CHECK( result8 == C::Lowest );
+
+    constexpr auto result9 = CopySign( C::Lowest, C::One );
+    BOOST_CHECK( result9 == C::Max );
+
+    constexpr auto result10 = CopySign( C::DenormalMin, -C::One );
+    BOOST_CHECK( result10 == -C::DenormalMin );
+
+    constexpr auto result11 = CopySign( -C::DenormalMin, C::One );
+    BOOST_CHECK( result11 == C::DenormalMin );
+
+    
+}
+
+
+// --run_test=MathTests/DoubleCopySignTest1
+BOOST_AUTO_TEST_CASE( DoubleCopySignTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = CopySign( C::One, C::sNegativeNaN );
+    BOOST_CHECK( result1 == -C::One );
+
+    constexpr auto result2 = CopySign( C::One, C::NegativeNaN );
+    BOOST_CHECK( result2 == -C::One );
+
+    constexpr auto result3 = CopySign( C::One, C::NegativeInfinity );
+    BOOST_CHECK( result3 == -C::One );
+
+    constexpr auto result4 = CopySign( C::sNegativeNaN, C::One );
+    BOOST_CHECK( IsNaN( result4 ) );
+
+    constexpr auto result5 = CopySign( C::NegativeNaN, C::One );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = CopySign( C::NegativeInfinity, C::One );
+    BOOST_CHECK( result6 == C::Infinity );
+
+    constexpr auto result7 = CopySign( C::Infinity, -C::One );
+    BOOST_CHECK( result7 == C::NegativeInfinity );
+
+    constexpr auto result8 = CopySign( C::Max, -C::One );
+    BOOST_CHECK( result8 == C::Lowest );
+
+    constexpr auto result9 = CopySign( C::Lowest, C::One );
+    BOOST_CHECK( result9 == C::Max );
+
+    constexpr auto result10 = CopySign( C::DenormalMin, -C::One );
+    BOOST_CHECK( result10 == -C::DenormalMin );
+
+    constexpr auto result11 = CopySign( -C::DenormalMin, C::One );
+    BOOST_CHECK( result11 == C::DenormalMin );
+}
+
+// --run_test=MathTests/FloatScaleByNTest1
+BOOST_AUTO_TEST_CASE( FloatScaleByNTest1 )
+{
+    using C = Constants<float>;
+    
+    constexpr auto result1 = ScaleByN( C::NaN, C::Two );
+    BOOST_CHECK( IsNaN( result1 ) );
+
+    constexpr auto result2 = ScaleByN( C::Infinity, C::Two );
+    BOOST_CHECK( IsInf( result2 ) );
+
+    constexpr auto result3 = ScaleByN( C::Max, C::Two );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = ScaleByN( -C::Max, C::Two );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    auto result5 = std::scalbn( -C::Max, C::Two );
+    BOOST_CHECK( IsInf( result5 ) );
+    BOOST_CHECK( result4 == result5 );
+
+    constexpr auto result6 = ScaleByN( -C::Max, C::Three );
+    BOOST_CHECK( IsInf( result6 ) );
+
+    auto result7 = std::scalbn( -C::Max, C::Three );
+    BOOST_CHECK( IsInf( result7 ) );
+    BOOST_CHECK( result6 == result7 );
+
+    constexpr auto result8 = ScaleByN( C::Two, C::Two );
+    BOOST_CHECK( result8 == 8.f );
+
+    constexpr auto result9 = ScaleByN( -C::Two, C::Two );
+    BOOST_CHECK( result9 == -8.f );
+}
+
+// --run_test=MathTests/DoubleScaleByNTest1
+BOOST_AUTO_TEST_CASE( DoubleScaleByNTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = ScaleByN( C::NaN, C::Two );
+    BOOST_CHECK( IsNaN( result1 ) );
+
+    constexpr auto result2 = ScaleByN( C::Infinity, C::Two );
+    BOOST_CHECK( IsInf( result2 ) );
+
+    constexpr auto result3 = ScaleByN( C::Max, C::Two );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = ScaleByN( -C::Max, C::Two );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    auto result5 = std::scalbn( -C::Max, C::Two );
+    BOOST_CHECK( IsInf( result5 ) );
+    BOOST_CHECK( result4 == result5 );
+
+    constexpr auto result6 = ScaleByN( -C::Max, C::Three );
+    BOOST_CHECK( IsInf( result6 ) );
+
+    auto result7 = std::scalbn( -C::Max, C::Three );
+    BOOST_CHECK( IsInf( result7 ) );
+    BOOST_CHECK( result6 == result7 );
+
+    constexpr auto result8 = ScaleByN( C::Two, C::Two );
+    BOOST_CHECK( result8 == 8. );
+
+    constexpr auto result9 = ScaleByN( -C::Two, C::Two );
+    BOOST_CHECK( result9 == -8. );
+}
+
+
+// --run_test=MathTests/FloatFModTest1
+BOOST_AUTO_TEST_CASE( FloatFModTest1 )
+{
+    using C = Constants<float>;
+    
+    constexpr auto result1 = FMod( C::NaN, C::Two );
+    BOOST_CHECK( IsNaN( result1 ) );
+
+    constexpr auto result2 = FMod( C::sNaN, C::Two );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = FMod( C::NegativeNaN, C::Two );
+    BOOST_CHECK( IsNaN( result3 ) );
+
+    constexpr auto result4 = FMod( C::sNegativeNaN, C::Two );
+    BOOST_CHECK( IsNaN( result4 ) );
+
+    constexpr auto result5 = FMod( C::Two, C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = FMod( C::Two, C::Infinity );
+    BOOST_CHECK( result6 == C::Two );
+
+    constexpr auto result7 = FMod( C::Two, C::Max );
+    BOOST_CHECK( result7 == C::Two );
+
+    constexpr auto result8 = FMod( C::Two, C::Three );
+    BOOST_CHECK( result8 == C::Two );
+
+    constexpr auto result9 = FMod( C::Three, C::Two );
+    BOOST_CHECK( result9 == C::One );
+
+    constexpr auto result10 = FMod( C::Three + .5f, C::Two );
+    BOOST_CHECK( result10 == 1.5f );
+
+    constexpr auto result11 = FMod( (C::Pi * 3)+C::PiOver4, C::Pi );
+    constexpr auto equal11 = AreNearlyEqual( result11, C::PiOver4 );
+    BOOST_CHECK( equal11 );
+}
+
+// --run_test=MathTests/DoubleFModTest1
+BOOST_AUTO_TEST_CASE( DoubleFModTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = FMod( C::NaN, C::Two );
+    BOOST_CHECK( IsNaN( result1 ) );
+
+    constexpr auto result2 = FMod( C::sNaN, C::Two );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = FMod( C::NegativeNaN, C::Two );
+    BOOST_CHECK( IsNaN( result3 ) );
+
+    constexpr auto result4 = FMod( C::sNegativeNaN, C::Two );
+    BOOST_CHECK( IsNaN( result4 ) );
+
+    constexpr auto result5 = FMod( C::Two, C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = FMod( C::Two, C::Infinity );
+    BOOST_CHECK( result6 == C::Two );
+
+    constexpr auto result7 = FMod( C::Two, C::Max );
+    BOOST_CHECK( result7 == C::Two );
+
+    constexpr auto result8 = FMod( C::Two, C::Three );
+    BOOST_CHECK( result8 == C::Two );
+
+    constexpr auto result9 = FMod( C::Three, C::Two );
+    BOOST_CHECK( result9 == C::One );
+
+    constexpr auto result10 = FMod( C::Three + .5, C::Two );
+    BOOST_CHECK( result10 == 1.5 );
+
+    constexpr auto result11 = FMod( ( C::Pi * 3 ) + C::PiOver4, C::Pi );
+    constexpr auto equal11 = AreNearlyEqual( result11, C::PiOver4 );
+    BOOST_CHECK( equal11 );
+}
+
+// --run_test=MathTests/FloatExpTest1
+BOOST_AUTO_TEST_CASE( FloatExpTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = Exp( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Exp( C::NegativeInfinity );
+    BOOST_CHECK( result2 == 0 );
+
+    constexpr auto result3 = Exp( C::Zero );
+    BOOST_CHECK( result3 == 1 );
+
+    constexpr auto result4 = Exp( -C::Zero );
+    BOOST_CHECK( result4 == 1 );
+
+    constexpr auto result5 = Exp( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Exp( C::One );
+    BOOST_CHECK( result6 == C::E );
+
+    constexpr auto result7 = Exp( C::Two );
+    BOOST_CHECK( result7 == C::E2 );
+
+    constexpr auto result8 = Exp( C::Three );
+    BOOST_CHECK( result8 == C::E3 );
+
+    constexpr auto result9 = Exp( .7f );
+    constexpr auto equal9 = AreNearlyEqual( result9, 2.0137527074704765216f );
+    BOOST_CHECK( equal9 );
+
+    constexpr auto result10 = Exp( 50.f );
+    BOOST_CHECK( result10 == 5184705528587072464087.45332293348538f );
+}
+
+// --run_test=MathTests/DoubleExpTest1
+BOOST_AUTO_TEST_CASE( DoubleExpTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = Exp( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Exp( C::NegativeInfinity );
+    BOOST_CHECK( result2 == 0 );
+
+    constexpr auto result3 = Exp( C::Zero );
+    BOOST_CHECK( result3 == 1 );
+
+    constexpr auto result4 = Exp( -C::Zero );
+    BOOST_CHECK( result4 == 1 );
+
+    constexpr auto result5 = Exp( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Exp( C::One );
+    BOOST_CHECK( result6 == C::E );
+
+    constexpr auto result7 = Exp( C::Two );
+    constexpr auto equal7 = AreNearlyEqual( result7, C::E2 );
+    BOOST_CHECK( equal7 );
+
+    constexpr auto result8 = Exp( C::Three );
+    constexpr auto equal8 = AreNearlyEqual( result8, C::E3 );
+    BOOST_CHECK( equal8 );
+
+    constexpr auto result9 = Exp( .7 );
+    constexpr auto equal9 = AreNearlyEqual( result9, 2.0137527074704765216 );
+    BOOST_CHECK( equal9 );
+
+    constexpr auto result10 = Exp( 50. );
+    constexpr auto equal10 = AreNearlyEqual( result10, 5184705528587072464087.45332293348538 );
+    BOOST_CHECK( equal10 );
+}
+
+// --run_test=MathTests/FloatExp2Test1
+BOOST_AUTO_TEST_CASE( FloatExp2Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = Exp2( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Exp2( C::NegativeInfinity );
+    BOOST_CHECK( result2 == 0 );
+
+    constexpr auto result3 = Exp2( C::Zero );
+    BOOST_CHECK( result3 == 1 );
+
+    constexpr auto result4 = Exp2( -C::Zero );
+    BOOST_CHECK( result4 == 1 );
+
+    constexpr auto result5 = Exp2( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Exp2( C::One );
+    constexpr auto equal6 = AreNearlyEqual( result6, 2.f );
+    BOOST_CHECK( equal6 );
+
+    constexpr auto result7 = Exp2( C::Two );
+    constexpr auto equal7 = AreNearlyEqual( result7, 4.f );
+    BOOST_CHECK( equal7 );
+
+    constexpr auto result8 = Exp2( C::Three );
+    constexpr auto equal8 = AreNearlyEqual( result8, 8.f );
+    BOOST_CHECK( equal8 );
+
+    constexpr auto result9 = Exp2( .7f );
+    constexpr auto equal9 = AreNearlyEqual( result9, 1.6245047927124710452f );
+    BOOST_CHECK( equal9 );
+}
+
+// --run_test=MathTests/DoubleExp2Test1
+BOOST_AUTO_TEST_CASE( DoubleExp2Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = Exp2( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Exp2( C::NegativeInfinity );
+    BOOST_CHECK( result2 == 0 );
+
+    constexpr auto result3 = Exp2( C::Zero );
+    BOOST_CHECK( result3 == 1 );
+
+    constexpr auto result4 = Exp2( -C::Zero );
+    BOOST_CHECK( result4 == 1 );
+
+    constexpr auto result5 = Exp2( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Exp2( C::One );
+    constexpr auto equal6 = AreNearlyEqual( result6, 2. );
+    BOOST_CHECK( equal6 );
+
+    constexpr auto result7 = Exp2( C::Two );
+    constexpr auto equal7 = AreNearlyEqual( result7, 4. );
+    BOOST_CHECK( equal7 );
+
+    constexpr auto result8 = Exp2( C::Three );
+    constexpr auto equal8 = AreNearlyEqual( result8, 8. );
+    BOOST_CHECK( equal8 );
+
+    constexpr auto result9 = Exp2( .7 );
+    constexpr auto equal9 = AreNearlyEqual( result9, 1.6245047927124710452 );
+    BOOST_CHECK( equal9 );
+}
+
+
+
+
+// --run_test=MathTests/FloatExp10Test1
+BOOST_AUTO_TEST_CASE( FloatExp10Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = Exp10( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Exp10( C::NegativeInfinity );
+    BOOST_CHECK( result2 == 0 );
+
+    constexpr auto result3 = Exp10( C::Zero );
+    BOOST_CHECK( result3 == 1 );
+
+    constexpr auto result4 = Exp10( -C::Zero );
+    BOOST_CHECK( result4 == 1 );
+
+    constexpr auto result5 = Exp10( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Exp10( C::One );
+    constexpr auto equal6 = AreNearlyEqual( result6, 10.f );
+    BOOST_CHECK( equal6 );
+
+    constexpr auto result7 = Exp10( C::Two );
+    constexpr auto equal7 = AreNearlyEqual( result7, 100.f );
+    BOOST_CHECK( equal7 );
+
+    constexpr auto result8 = Exp10( C::Three );
+    constexpr auto equal8 = AreNearlyEqual( result8, 1000.f, 1.e-3f );
+    BOOST_CHECK( equal8 );
+
+    
+    
+    constexpr auto result9 = Exp10( .7f );
+    constexpr auto equal9 = AreNearlyEqual( result9, 5.0118723362727228500155418688494574f );
+    BOOST_CHECK( equal9 );
+}
+
+// --run_test=MathTests/DoubleExp10Test1
+BOOST_AUTO_TEST_CASE( DoubleExp10Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = Exp10( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Exp10( C::NegativeInfinity );
+    BOOST_CHECK( result2 == 0 );
+
+    constexpr auto result3 = Exp10( C::Zero );
+    BOOST_CHECK( result3 == 1 );
+
+    constexpr auto result4 = Exp10( -C::Zero );
+    BOOST_CHECK( result4 == 1 );
+
+    constexpr auto result5 = Exp10( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Exp10( C::One );
+    constexpr auto equal6 = AreNearlyEqual( result6, 10. );
+    BOOST_CHECK( equal6 );
+
+    constexpr auto result7 = Exp10( C::Two );
+    constexpr auto equal7 = AreNearlyEqual( result7, 100. );
+    BOOST_CHECK( equal7 );
+
+    constexpr auto result8 = Exp10( C::Three );
+    constexpr auto equal8 = AreNearlyEqual( result8, 1000. );
+    BOOST_CHECK( equal8 );
+
+    constexpr auto result9 = Exp10( 0.7 );
+    constexpr auto equal9 = AreNearlyEqual( result9, 5.0118723362727228500155418688494574 );
+    BOOST_CHECK( equal9 );
+}
+
+
+
+
+
+// --run_test=MathTests/FloatExpM1Test1
+BOOST_AUTO_TEST_CASE( FloatExpM1Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = ExpM1( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = ExpM1( C::NegativeInfinity );
+    BOOST_CHECK( result2 == -1 );
+
+    constexpr auto result3 = ExpM1( C::Zero );
+    BOOST_CHECK( result3 == 0 );
+
+    constexpr auto result4 = ExpM1( -C::Zero );
+    BOOST_CHECK( result4 == 0 );
+
+    constexpr auto result5 = ExpM1( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = ExpM1( C::One );
+    BOOST_CHECK( result6 == (C::E - 1) );
+
+    constexpr auto result7 = ExpM1( C::Two );
+    BOOST_CHECK( result7 == (C::E2 - 1 ) );
+
+    constexpr auto result8 = ExpM1( C::Three );
+    BOOST_CHECK( result8 == ( C::E3 - 1 ) );
+
+    constexpr auto result9 = ExpM1( .7f );
+    constexpr auto equal9 = AreNearlyEqual( result9, 1.0137527074704765216f );
+    BOOST_CHECK( equal9 );
+
+    constexpr auto result10 = ExpM1( 50.f );
+    BOOST_CHECK( result10 == 5184705528587072464081.45332293348538f );
+}
+
+// --run_test=MathTests/DoubleExpM1Test1
+BOOST_AUTO_TEST_CASE( DoubleExpM1Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = ExpM1( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = ExpM1( C::NegativeInfinity );
+    BOOST_CHECK( result2 == -1 );
+
+    constexpr auto result3 = ExpM1( C::Zero );
+    BOOST_CHECK( result3 == 0 );
+
+    constexpr auto result4 = ExpM1( -C::Zero );
+    BOOST_CHECK( result4 == 0 );
+
+    constexpr auto result5 = ExpM1( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = ExpM1( C::One );
+    BOOST_CHECK( result6 == ( C::E - 1 ) );
+
+    constexpr auto result7 = ExpM1( C::Two );
+    constexpr auto equal7 = AreNearlyEqual( result7, ( C::E2 - 1 ) );
+    BOOST_CHECK( equal7 );
+
+    constexpr auto result8 = ExpM1( C::Three );
+    constexpr auto equal8 = AreNearlyEqual( result8, ( C::E3 - 1 ) );
+    BOOST_CHECK( equal8 );
+
+    constexpr auto result9 = ExpM1( .7 );
+    constexpr auto equal9 = AreNearlyEqual( result9, 1.0137527074704765216 );
+    BOOST_CHECK( equal9 );
+
+    constexpr auto result10 = ExpM1( 50. );
+    constexpr auto equal10 = AreNearlyEqual( result10, 5184705528587072464086.45332293348538 );
+    BOOST_CHECK( equal10 );
+}
+
+// --run_test=MathTests/FloatHypotTest1
+BOOST_AUTO_TEST_CASE( FloatHypotTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result = Hypot( C::Two, C::Two );
+    constexpr auto expected = Sqrt( C::Two * C::Two + C::Two * C::Two );
+    constexpr auto equal = result == expected;
+    BOOST_CHECK( result );
+}
+
+// --run_test=MathTests/DoubleHypotTest1
+BOOST_AUTO_TEST_CASE( DoubleHypotTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result = Hypot( C::Two, C::Two );
+    constexpr auto expected = Sqrt( C::Two * C::Two + C::Two * C::Two );
+    constexpr auto equal = result == expected;
+    BOOST_CHECK( result );
+}
+
+
+// --run_test=MathTests/FloatHypot3Test1
+BOOST_AUTO_TEST_CASE( FloatHypot3Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result = Hypot( C::Two, C::Two, C::Two );
+    constexpr auto expected = Sqrt( C::Two * C::Two + C::Two * C::Two + C::Two * C::Two );
+    constexpr auto equal = result == expected;
+    BOOST_CHECK( result );
+}
+
+// --run_test=MathTests/DoubleHypot3Test1
+BOOST_AUTO_TEST_CASE( DoubleHypot3Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result = Hypot( C::Two, C::Two, C::Two );
+    constexpr auto expected = Sqrt( C::Two * C::Two + C::Two * C::Two + C::Two * C::Two );
+    constexpr auto equal = result == expected;
+    BOOST_CHECK( result );
+}
+
+
 
 // --run_test=MathTests/Deg2RadDoubleTest1
 BOOST_AUTO_TEST_CASE( Deg2RadDoubleTest1 )

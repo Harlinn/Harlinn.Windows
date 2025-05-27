@@ -361,7 +361,7 @@ do {								\
 
 template<typename T>
 	requires std::is_floating_point_v<T>
-T nan_mix( T x, T y )
+constexpr T nan_mix( T x, T y )
 {
 	return ( ( x )+static_cast< T >( 0.0 ) ) + ( ( y ) + static_cast< T >( 0.0 ) );
 }

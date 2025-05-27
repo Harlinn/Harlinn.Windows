@@ -38,7 +38,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 
 	namespace exp2f_internal
 	{
-		static const float
+		static constexpr float
 			huge = 0x1p100f,
 			redux = 0x1.8p23f / TBLSIZE,
 			P1 = 0x1.62e430p-1f,
@@ -48,7 +48,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 
 		static volatile float twom100 = 0x1p-100f;
 
-		static const double exp2ft[ TBLSIZE ] = {
+		static constexpr double exp2ft[ TBLSIZE ] = {
 			0x1.6a09e667f3bcdp-1,
 			0x1.7a11473eb0187p-1,
 			0x1.8ace5422aa0dbp-1,
