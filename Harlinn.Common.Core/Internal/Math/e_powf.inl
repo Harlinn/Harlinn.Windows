@@ -75,16 +75,21 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		ix = hx & 0x7fffffff;  iy = hy & 0x7fffffff;
 
 		/* y==zero: x**0 = 1 */
-		if ( iy == 0 ) return one;
-
+		if ( iy == 0 )
+		{
+			return one;
+		}
 		/* x==1: 1**y = 1, even if y is NaN */
-		if ( hx == 0x3f800000 ) return one;
+		if ( hx == 0x3f800000 )
+		{
+			return one;
+		}
 
 		/* y!=zero: result is NaN if either arg is NaN */
-		if ( ix > 0x7f800000 ||
-			iy > 0x7f800000 )
+		if ( ix > 0x7f800000 || iy > 0x7f800000 )
+		{
 			return nan_mix( x, y );
-
+		}
 		/* determine if y is an odd int when x < 0
 		 * yisint = 0	... y is not an integer
 		 * yisint = 1	... y is an odd int
@@ -93,24 +98,42 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		yisint = 0;
 		if ( hx < 0 )
 		{
-			if ( iy >= 0x4b800000 ) yisint = 2; /* even integer y */
+			if ( iy >= 0x4b800000 )
+			{
+				/* even integer y */
+				yisint = 2; 
+			}
 			else if ( iy >= 0x3f800000 )
 			{
-				k = ( iy >> 23 ) - 0x7f;	   /* exponent */
+				/* exponent */
+				k = ( iy >> 23 ) - 0x7f;
 				j = iy >> ( 23 - k );
-				if ( ( j << ( 23 - k ) ) == iy ) yisint = 2 - ( j & 1 );
+				if ( ( j << ( 23 - k ) ) == iy )
+				{
+					yisint = 2 - ( j & 1 );
+				}
 			}
 		}
 
 		/* special value of y */
 		if ( iy == 0x7f800000 )
-		{	/* y is +-inf */
+		{	
+			/* y is +-inf */
 			if ( ix == 0x3f800000 )
-				return  one;	/* (-1)**+-inf is NaN */
-			else if ( ix > 0x3f800000 )/* (|x|>1)**+-inf = inf,0 */
+			{
+				/* (-1)**+-inf is NaN */
+				return  one;
+			}
+			else if ( ix > 0x3f800000 )
+			{
+				/* (|x|>1)**+-inf = inf,0 */
 				return ( hy >= 0 ) ? y : 0.f;
-			else			/* (|x|<1)**-,+inf = inf,0 */
+			}
+			else
+			{
+				/* (|x|<1)**-,+inf = inf,0 */
 				return ( hy < 0 ) ? -y : 0.f;
+			}
 		}
 		if ( iy == 0x3f800000 )
 		{	/* y is  +-1 */

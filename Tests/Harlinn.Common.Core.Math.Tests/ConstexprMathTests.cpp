@@ -2442,21 +2442,25 @@ BOOST_AUTO_TEST_CASE( FloatPowTest1 )
     using C = Constants<float>;
     constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
         {
-            return IsSameValue( Pow( x, y ), expected );
+            auto r = Pow( x, y );
+            return IsSameValue( r, expected );
         };
     constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
         {
-            return IsNaN( Pow( x, y ) );
+            auto r = Pow( x, y );
+            return IsNaN( r );
         };
 
     constexpr auto CheckIsInf = []( C::ValueType x, C::ValueType y ) -> bool
         {
-            return IsInf( Pow( x, y ) );
+            auto r = Pow( x, y );
+            return IsInf( r );
         };
 
     constexpr auto CheckIsPosInf = []( C::ValueType x, C::ValueType y ) -> bool
         {
-            return IsSameValue( Pow( x, y ), C::Infinity );
+            auto r = Pow( x, y );
+            return IsSameValue( r, C::Infinity );
         };
 
     constexpr auto CheckIsNegInf = []( C::ValueType x, C::ValueType y ) -> bool
@@ -2549,13 +2553,258 @@ BOOST_AUTO_TEST_CASE( FloatPowTest1 )
         CheckIsNegInf( -0.f, -11.f );
     BOOST_CHECK( check17 );
 
+    constexpr auto check18 = CheckIsPosInf( 0., -2. ) &&
+        CheckIsPosInf( 0, -11.1 ) &&
+        CheckIsPosInf( -0.f, -2 ) &&
+        CheckIsPosInf( -0.f, -11.1 );
+    BOOST_CHECK( check18 );
 
+    constexpr auto check19 = Check( 0.f, 1.f, 0.f ) &&
+        Check( 0.f, 11.f, 0.f ) &&
+        Check( -0.f, 1.f, -0.f ) &&
+        Check( -0.f, 11.f, -0.f ) &&
+        Check( 0.f, 2.f, 0.f )&&
+        Check( 0.f, 11.1f, 0.f ) &&
+        Check( -0.f, 2.f, 0.f ) &&
+        Check( -0.f, 11.1f, 0.f );
+    BOOST_CHECK( check19 );
 
+    constexpr auto check20 = CheckIsPosInf( 1.5, C::Infinity ) &&
+        Check( 0.5, C::Infinity, 0. ) &&
+        Check( 1.5, -C::Infinity, 0. ) &&
+        CheckIsPosInf( 0.5, -C::Infinity );
+    BOOST_CHECK( check20 );
 
+    // pow (inf, 2) == inf
+    constexpr auto check21 = CheckIsPosInf( C::Infinity, 2.f );
+    BOOST_CHECK( check21 );
 
+    // pow (inf, -1) == 0.0
+    constexpr auto check22 = Check( C::Infinity, -1.f, 0.f );
+    BOOST_CHECK( check22 );
+
+    // pow (-inf, 27) == -inf
+    constexpr auto check23 = CheckIsNegInf( -C::Infinity, 27.f );
+    BOOST_CHECK( check23 );
+
+    // pow (-inf, 28) == inf
+    constexpr auto check24 = CheckIsPosInf( -C::Infinity, 28.f );
+    BOOST_CHECK( check24 );
+
+    // pow (-inf, -3) == -0
+    constexpr auto check25 = Check( -C::Infinity, -3.f, -0.f );
+    BOOST_CHECK( check25 );
+
+    // pow (-inf, -2.0) == 0.0
+    constexpr auto check26 = Check( -C::Infinity, -2.f, 0.f );
+    BOOST_CHECK( check26 );
+
+    // pow (0.0, 27) == 0.0
+    constexpr auto check27 = Check( 0., 27.f, 0.f );
+    BOOST_CHECK( check27 );
+
+    // pow (-0, 27) == -0
+    constexpr auto check28 = Check( -0., 27.f, -0.f );
+    BOOST_CHECK( check28 );
+
+    // pow (0.0, 4) == 0.0
+    constexpr auto check29 = Check( 0., 4.f, 0.f );
+    BOOST_CHECK( check29 );
+
+    // pow (-0, 4) == 0.0
+    constexpr auto check30 = Check( -0., 4.f, 0.f );
+    BOOST_CHECK( check30 );
+
+    // pow (0.7, 1.2) == 0.65180494056638638188
+    constexpr auto check31 = Check( 0.7f, 1.2f, 0.65180494056638638188f );
+    BOOST_CHECK( check31 );
 
 }
 
+// --run_test=MathTests/DoublePowTest1
+BOOST_AUTO_TEST_CASE( DoublePowTest1 )
+{
+    using C = Constants<double>;
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
+        {
+            auto r = Pow( x, y );
+            return IsSameValue( r, expected );
+        };
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = Pow( x, y );
+            return IsNaN( r );
+        };
+
+    constexpr auto CheckIsInf = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = Pow( x, y );
+            return IsInf( r );
+        };
+
+    constexpr auto CheckIsPosInf = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = Pow( x, y );
+            return IsSameValue( r, C::Infinity );
+        };
+
+    constexpr auto CheckIsNegInf = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = Pow( x, y );
+            return IsSameValue( r, C::NegativeInfinity );
+        };
+
+
+    constexpr auto check1 = Check( 0., 0., 1 ) && Check( -0., 0., 1 ) && Check( 0., -0., 1 ) && Check( -0., -0., 1 );
+    BOOST_CHECK( check1 );
+    constexpr auto check2 = Check( 10., 0., 1 ) && Check( -10., 0., 1 ) && Check( 10., -0., 1 ) && Check( -10., -0., 1 );
+    BOOST_CHECK( check2 );
+    constexpr auto check3 = Check( C::NaN, 0., 1 ) && Check( C::NaN, -0., 1 );
+    BOOST_CHECK( check3 );
+
+    constexpr auto check4 = CheckIsInf( 1.1, C::Infinity ) &&
+        CheckIsInf( C::Infinity, C::Infinity ) &&
+        CheckIsInf( -1.1f, C::Infinity ) &&
+        CheckIsInf( -C::Infinity, C::Infinity );
+    BOOST_CHECK( check4 );
+
+    constexpr auto check5 = Check( 0.9, C::Infinity, 0.f ) &&
+        Check( 1e-7, C::Infinity, 0 ) &&
+        Check( -0.9, C::Infinity, 0 ) &&
+        Check( -1e-7, C::Infinity, 0 );
+    BOOST_CHECK( check5 );
+
+    constexpr auto check6 = Check( 1.1, -C::Infinity, 0 ) && Check( C::Infinity, -C::Infinity, 0 ) && Check( -1.1, -C::Infinity, 0 ) && Check( -C::Infinity, -C::Infinity, 0 );
+    BOOST_CHECK( check6 );
+
+    constexpr auto check7 = CheckIsInf( 0.9, -C::Infinity ) && CheckIsInf( 1e-7, -C::Infinity ) && CheckIsInf( -0.9, -C::Infinity ) && CheckIsInf( -1e-7, -C::Infinity );
+    BOOST_CHECK( check7 );
+
+    constexpr auto check8 = CheckIsInf( C::Infinity, 1e-7 ) && CheckIsInf( C::Infinity, 1 ) && CheckIsInf( C::Infinity, 1e7 );
+    BOOST_CHECK( check8 );
+
+    constexpr auto check9 = Check( C::Infinity, -1e-7, 0 ) && Check( C::Infinity, -1, 0 ) && Check( C::Infinity, -1e7, 0 );
+    BOOST_CHECK( check9 );
+
+    constexpr auto check10 = CheckIsNegInf( -C::Infinity, 1 ) && CheckIsNegInf( -C::Infinity, 11 ) && CheckIsNegInf( -C::Infinity, 1001 );
+    BOOST_CHECK( check10 );
+
+    constexpr auto check11 = CheckIsPosInf( -C::Infinity, 2 ) &&
+        CheckIsPosInf( -C::Infinity, 12 ) &&
+        CheckIsPosInf( -C::Infinity, 1002 ) &&
+        CheckIsPosInf( -C::Infinity, 0.1 ) &&
+        CheckIsPosInf( -C::Infinity, 1.1 ) &&
+        CheckIsPosInf( -C::Infinity, 11.1 ) &&
+        CheckIsPosInf( -C::Infinity, 1001.1 );
+    BOOST_CHECK( check11 );
+
+    constexpr auto check12 = Check( -C::Infinity, -1., -0. ) && Check( -C::Infinity, -11, -0. ) && Check( -C::Infinity, -1001, -0. );
+    BOOST_CHECK( check12 );
+
+    constexpr auto check13 = Check( -C::Infinity, -2, 0. ) &&
+        Check( -C::Infinity, -12, 0. ) &&
+        Check( -C::Infinity, -1002, 0. ) &&
+        Check( -C::Infinity, -0.1, 0. ) &&
+        Check( -C::Infinity, -1.1, 0. ) &&
+        Check( -C::Infinity, -11.1, 0. ) &&
+        Check( -C::Infinity, -1001.1, 0. );
+    BOOST_CHECK( check13 );
+
+    constexpr auto check14 = CheckIsNaN( C::NaN, C::NaN ) &&
+        CheckIsNaN( 0., C::NaN ) &&
+        Check( 1., C::NaN, 1. ) &&
+        CheckIsNaN( -1., C::NaN ) &&
+        CheckIsNaN( C::NaN, 1. ) &&
+        CheckIsNaN( C::NaN, -1. ) &&
+        CheckIsNaN( 3., C::NaN );
+    BOOST_CHECK( check14 );
+
+    constexpr auto check15 = Check( 1., C::Infinity, 1. ) &&
+        Check( -1., C::Infinity, 1. ) &&
+        Check( 1., -C::Infinity, 1. ) &&
+        Check( -1., -C::Infinity, 1. );
+    BOOST_CHECK( check15 );
+
+    constexpr auto check16 = CheckIsNaN( -0.1, 1.1 ) &&
+        CheckIsNaN( -0.1, -1.1 ) &&
+        CheckIsNaN( -10.1, 1.1 ) &&
+        CheckIsNaN( -10.1, -1.1 );
+    BOOST_CHECK( check16 );
+
+
+    constexpr auto check17 = CheckIsPosInf( 0., -1. ) &&
+        CheckIsPosInf( 0., -11. ) &&
+        CheckIsNegInf( -0., -1. ) &&
+        CheckIsNegInf( -0., -11. );
+    BOOST_CHECK( check17 );
+
+    constexpr auto check18 = CheckIsPosInf( 0., -2. ) &&
+        CheckIsPosInf( 0, -11.1 ) &&
+        CheckIsPosInf( -0., -2 ) &&
+        CheckIsPosInf( -0., -11.1 );
+    BOOST_CHECK( check18 );
+
+    constexpr auto check19 = Check( 0., 1., 0. ) &&
+        Check( 0., 11., 0. ) &&
+        Check( -0., 1., -0. ) &&
+        Check( -0., 11., -0. ) &&
+        Check( 0., 2., 0. ) &&
+        Check( 0., 11.1, 0. ) &&
+        Check( -0., 2., 0.f ) &&
+        Check( -0., 11.1, 0.f );
+    BOOST_CHECK( check19 );
+
+    constexpr auto check20 = CheckIsPosInf( 1.5, C::Infinity ) &&
+        Check( 0.5, C::Infinity, 0. ) &&
+        Check( 1.5, -C::Infinity, 0. ) &&
+        CheckIsPosInf( 0.5, -C::Infinity );
+    BOOST_CHECK( check20 );
+
+    // pow (inf, 2) == inf
+    constexpr auto check21 = CheckIsPosInf( C::Infinity, 2. );
+    BOOST_CHECK( check21 );
+
+    // pow (inf, -1) == 0.0
+    constexpr auto check22 = Check( C::Infinity, -1., 0. );
+    BOOST_CHECK( check22 );
+
+    // pow (-inf, 27) == -inf
+    constexpr auto check23 = CheckIsNegInf( -C::Infinity, 27. );
+    BOOST_CHECK( check23 );
+
+    // pow (-inf, 28) == inf
+    constexpr auto check24 = CheckIsPosInf( -C::Infinity, 28. );
+    BOOST_CHECK( check24 );
+
+    // pow (-inf, -3) == -0
+    constexpr auto check25 = Check( -C::Infinity, -3., -0. );
+    BOOST_CHECK( check25 );
+
+    // pow (-inf, -2.0) == 0.0
+    constexpr auto check26 = Check( -C::Infinity, -2., 0. );
+    BOOST_CHECK( check26 );
+
+    // pow (0.0, 27) == 0.0
+    constexpr auto check27 = Check( 0., 27., 0. );
+    BOOST_CHECK( check27 );
+
+    // pow (-0, 27) == -0
+    constexpr auto check28 = Check( -0., 27., -0. );
+    BOOST_CHECK( check28 );
+
+    // pow (0.0, 4) == 0.0
+    constexpr auto check29 = Check( 0., 4., 0. );
+    BOOST_CHECK( check29 );
+
+    // pow (-0, 4) == 0.0
+    constexpr auto check30 = Check( -0., 4., 0. );
+    BOOST_CHECK( check30 );
+
+    // pow (0.7, 1.2) == 0.65180494056638638188
+    constexpr auto check31 = Check( 0.7, 1.2, 0.65180494056638638188 );
+    BOOST_CHECK( check31 );
+
+}
 
 
 // --run_test=MathTests/Deg2RadDoubleTest1
