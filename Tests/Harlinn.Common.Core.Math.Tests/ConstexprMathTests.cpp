@@ -2806,6 +2806,251 @@ BOOST_AUTO_TEST_CASE( DoublePowTest1 )
 
 }
 
+// --run_test=MathTests/FloatRemainderTest1
+BOOST_AUTO_TEST_CASE( FloatRemainderTest1 )
+{
+    using C = Constants<float>;
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
+        {
+            auto r = Remainder( x, y );
+            return IsSameValue( r, expected );
+        };
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = Remainder( x, y );
+            return IsNaN( r );
+        };
+
+    // remainder (1, 0) == NaN
+    constexpr auto check1 = CheckIsNaN( 1., 0. );
+    BOOST_CHECK( check1 );
+
+    // remainder (1, -0) == NaN
+    constexpr auto check2 = CheckIsNaN( 1., -0. );
+    BOOST_CHECK( check2 );
+
+    // remainder (inf, 1) == NaN
+    constexpr auto check3 = CheckIsNaN( C::Infinity, 1. );
+    BOOST_CHECK( check3 );
+
+    // remainder (-inf, 1) == NaN
+    constexpr auto check4 = CheckIsNaN( C::NegativeInfinity, 1. );
+    BOOST_CHECK( check4 );
+
+    // remainder (NaN, NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN, C::NaN );
+    BOOST_CHECK( check5 );
+
+    // remainder (1.625, 1.0) == -0.375
+    constexpr auto check6 = Check( 1.625, 1.0, -0.375 );
+    BOOST_CHECK( check6 );
+
+    // remainder (-1.625, 1.0) == 0.375
+    constexpr auto check7 = Check( -1.625, 1.0, 0.375 );
+    BOOST_CHECK( check7 );
+
+    // remainder (1.625, -1.0) == -0.375
+    constexpr auto check8 = Check( 1.625, -1.0, -0.375 );
+    BOOST_CHECK( check8 );
+
+    // remainder (-1.625, -1.0) == 0.375
+    constexpr auto check9 = Check( -1.625, -1.0, 0.375 );
+    BOOST_CHECK( check9 );
+
+    // remainder (5.0, 2.0) == 1.0
+    constexpr auto check10 = Check( 5.0, 2.0, 1.0 );
+    BOOST_CHECK( check10 );
+
+    // remainder (3.0, 2.0) == -1.0
+    constexpr auto check11 = Check( 3.0, 2.0, -1.0 );
+    BOOST_CHECK( check11 );
+}
+
+// --run_test=MathTests/DoubleRemainderTest1
+BOOST_AUTO_TEST_CASE( DoubleRemainderTest1 )
+{
+    using C = Constants<double>;
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
+        {
+            auto r = Remainder( x, y );
+            return IsSameValue( r, expected );
+        };
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = Remainder( x, y );
+            return IsNaN( r );
+        };
+
+    // remainder (1, 0) == NaN
+    constexpr auto check1 = CheckIsNaN( 1., 0. );
+    BOOST_CHECK( check1 );
+
+    // remainder (1, -0) == NaN
+    constexpr auto check2 = CheckIsNaN( 1., -0. );
+    BOOST_CHECK( check2 );
+
+    // remainder (inf, 1) == NaN
+    constexpr auto check3 = CheckIsNaN( C::Infinity, 1. );
+    BOOST_CHECK( check3 );
+
+    // remainder (-inf, 1) == NaN
+    constexpr auto check4 = CheckIsNaN( C::NegativeInfinity, 1. );
+    BOOST_CHECK( check4 );
+
+    // remainder (NaN, NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN, C::NaN );
+    BOOST_CHECK( check5 );
+
+    // remainder (1.625, 1.0) == -0.375
+    constexpr auto check6 = Check( 1.625, 1.0, -0.375 );
+    BOOST_CHECK( check6 );
+
+    // remainder (-1.625, 1.0) == 0.375
+    constexpr auto check7 = Check( -1.625, 1.0, 0.375 );
+    BOOST_CHECK( check7 );
+
+    // remainder (1.625, -1.0) == -0.375
+    constexpr auto check8 = Check( 1.625, -1.0, -0.375 );
+    BOOST_CHECK( check8 );
+
+    // remainder (-1.625, -1.0) == 0.375
+    constexpr auto check9 = Check( -1.625, -1.0, 0.375 );
+    BOOST_CHECK( check9 );
+
+    // remainder (5.0, 2.0) == 1.0
+    constexpr auto check10 = Check( 5.0, 2.0, 1.0 );
+    BOOST_CHECK( check10 );
+
+    // remainder (3.0, 2.0) == -1.0
+    constexpr auto check11 = Check( 3.0, 2.0, -1.0 );
+    BOOST_CHECK( check11 );
+}
+
+// --run_test=MathTests/FloatRemQuoTest1
+BOOST_AUTO_TEST_CASE( FloatRemQuoTest1 )
+{
+    using C = Constants<float>;
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected, int expectedQuo ) -> bool
+        {
+            int quo{};
+            auto r = RemQuo( x, y, &quo );
+            return IsSameValue( r, expected ) && expectedQuo == quo;
+        };
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            int quo{};
+            auto r = RemQuo( x, y, &quo );
+            return IsNaN( r );
+        };
+
+    // remquo (1, 0, &x) == NaN
+    constexpr auto check1 = CheckIsNaN( 1., 0. );
+    BOOST_CHECK( check1 );
+
+    // remquo (1, -0, &x) == NaN
+    constexpr auto check2 = CheckIsNaN( 1., -0. );
+    BOOST_CHECK( check2 );
+
+    // remquo (inf, 1, &x) == NaN
+    constexpr auto check3 = CheckIsNaN( C::Infinity, 1. );
+    BOOST_CHECK( check3 );
+
+    // remquo (-inf, 1, &x) == NaN
+    constexpr auto check4 = CheckIsNaN( -C::Infinity, 1. );
+    BOOST_CHECK( check4 );
+
+    // remquo (NaN, NaN, &x) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN, C::NaN );
+    BOOST_CHECK( check5 );
+
+    // remquo (1.625, 1.0, &x) == -0.375, x == 2
+    constexpr auto check6 = Check( 1.625, 1.0, -0.375, 2 );
+    BOOST_CHECK( check6 );
+
+    // remquo (-1.625, 1.0, &x) == 0.375, x == -2
+    constexpr auto check7 = Check( -1.625, 1.0, 0.375, -2 );
+    BOOST_CHECK( check7 );
+
+    // remquo (1.625, -1.0, &x) == -0.375, x == -2
+    constexpr auto check8 = Check( 1.625, -1.0, -0.375, -2 );
+    BOOST_CHECK( check8 );
+
+    // remquo (-1.625, -1.0, &x) == 0.375, x == 2
+    constexpr auto check9 = Check( -1.625, -1.0, 0.375, 2 );
+    BOOST_CHECK( check9 );
+
+    // remquo (5, 2, &x) == 1, x == 2
+    constexpr auto check10 = Check( 5, 2, 1., 2 );
+    BOOST_CHECK( check10 );
+
+    // remquo (3, 2, &x) == -1, x == 2
+    constexpr auto check11 = Check( 3, 2, -1., 2 );
+    BOOST_CHECK( check11 );
+}
+
+// --run_test=MathTests/DoubleRemQuoTest1
+BOOST_AUTO_TEST_CASE( DoubleRemQuoTest1 )
+{
+    using C = Constants<double>;
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected, int expectedQuo ) -> bool
+        {
+            int quo{};
+            auto r = RemQuo( x, y, &quo );
+            return IsSameValue( r, expected ) && expectedQuo == quo;
+        };
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            int quo{};
+            auto r = RemQuo( x, y, &quo );
+            return IsNaN( r );
+        };
+
+    // remquo (1, 0, &x) == NaN
+    constexpr auto check1 = CheckIsNaN( 1., 0. );
+    BOOST_CHECK( check1 );
+
+    // remquo (1, -0, &x) == NaN
+    constexpr auto check2 = CheckIsNaN( 1., -0. );
+    BOOST_CHECK( check2 );
+
+    // remquo (inf, 1, &x) == NaN
+    constexpr auto check3 = CheckIsNaN( C::Infinity, 1. );
+    BOOST_CHECK( check3 );
+
+    // remquo (-inf, 1, &x) == NaN
+    constexpr auto check4 = CheckIsNaN( -C::Infinity, 1. );
+    BOOST_CHECK( check4 );
+
+    // remquo (NaN, NaN, &x) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN, C::NaN );
+    BOOST_CHECK( check5 );
+
+    // remquo (1.625, 1.0, &x) == -0.375, x == 2
+    constexpr auto check6 = Check( 1.625, 1.0, -0.375, 2 );
+    BOOST_CHECK( check6 );
+
+    // remquo (-1.625, 1.0, &x) == 0.375, x == -2
+    constexpr auto check7 = Check( -1.625, 1.0, 0.375, -2 );
+    BOOST_CHECK( check7 );
+
+    // remquo (1.625, -1.0, &x) == -0.375, x == -2
+    constexpr auto check8 = Check( 1.625, -1.0, -0.375, -2 );
+    BOOST_CHECK( check8 );
+
+    // remquo (-1.625, -1.0, &x) == 0.375, x == 2
+    constexpr auto check9 = Check( -1.625, -1.0, 0.375, 2 );
+    BOOST_CHECK( check9 );
+
+    // remquo (5, 2, &x) == 1, x == 2
+    constexpr auto check10 = Check( 5, 2, 1., 2 );
+    BOOST_CHECK( check10 );
+
+    // remquo (3, 2, &x) == -1, x == 2
+    constexpr auto check11 = Check( 3, 2, -1., 2 );
+    BOOST_CHECK( check11 );
+}
+
+
 
 // --run_test=MathTests/Deg2RadDoubleTest1
 BOOST_AUTO_TEST_CASE( Deg2RadDoubleTest1 )

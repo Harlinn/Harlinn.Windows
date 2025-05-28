@@ -43,14 +43,19 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		hx &= 0x7fffffff;
 
 		/* purge off exception values */
-		if ( hp == 0 ) return ( x * p ) / ( x * p );	 	/* p = 0 */
+		if ( hp == 0 )
+		{
+			/* p = 0 */
+			return std::numeric_limits<float>::signaling_NaN( );
+			//return ( x * p ) / ( x * p );
+		}
 		if ( ( hx >= 0x7f800000 ) ||			/* x not finite */
 			( ( hp > 0x7f800000 ) ) )			/* p is NaN */
 			return static_cast<float>(( ( long double )x * p ) / ( ( long double )x * p ));
 
 
 		if ( hp <= 0x7effffff ) x = __ieee754_fmodf( x, p + p );	/* now x < 2p */
-		if ( ( hx - hp ) == 0 ) return zero * x;
+		if ( ( hx - hp ) == 0 ) return 0.f * x;
 		x = FastAbs( x );
 		p = FastAbs( p );
 		if ( hp < 0x01000000 )
