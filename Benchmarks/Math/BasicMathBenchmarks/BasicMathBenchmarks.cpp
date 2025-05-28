@@ -1842,6 +1842,23 @@ static void BenchmarkStdDoubleTrunc( benchmark::State& state )
 }
 BENCHMARK( BenchmarkStdDoubleTrunc );
 
+static double NaiveTrunc( double val )
+{
+    return static_cast< double >( static_cast< Int64 >( val ) );
+}
+
+static void BenchmarkNaiveDoubleTrunc( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( NaiveTrunc( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkNaiveDoubleTrunc );
+
+
+
 static void BenchmarkMathFloatTrunc( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -1945,6 +1962,23 @@ static void BenchmarkStdFloatTrunc( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkStdFloatTrunc );
+
+static float NaiveTrunc( float val )
+{
+    return static_cast< float >( static_cast< Int32 >( val ) );
+}
+
+static void BenchmarkNaiveFloatTrunc( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( NaiveTrunc( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkNaiveFloatTrunc );
+
+
 
 static void BenchmarkMathDoubleFloor( benchmark::State& state )
 {

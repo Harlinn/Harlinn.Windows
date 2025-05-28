@@ -3809,6 +3809,531 @@ BOOST_AUTO_TEST_CASE( DoubleACosTest1 )
 
 }
 
+// --run_test=ConstexprMathTests/FloatATanTest1
+BOOST_AUTO_TEST_CASE( FloatATanTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ATan( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ATan( x );
+            return IsNaN( r );
+        };
+
+    // atan (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // atan (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // atan (inf) == pi/2
+    constexpr auto check3 = Check( C::Infinity, C::PiOver2 );
+    BOOST_CHECK( check3 );
+
+    // atan (-inf) == -pi/2
+    constexpr auto check4 = Check( -C::Infinity, -C::PiOver2 );
+    BOOST_CHECK( check4 );
+
+    // atan (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // atan (1) == pi/4
+    constexpr auto check6 = Check( C::One, C::PiOver4 );
+    BOOST_CHECK( check6 );
+
+    // atan (-1) == -pi/4
+    constexpr auto check7 = Check( -C::One, -C::PiOver4 );
+    BOOST_CHECK( check7 );
+
+    // atan (0.7) == 0.61072596438920861654375887649023613
+    constexpr auto check8 = Check( 0.7, 0.61072596438920861654375887649023613f );
+    BOOST_CHECK( check8 );
+}
+
+// --run_test=ConstexprMathTests/DoubleATanTest1
+BOOST_AUTO_TEST_CASE( DoubleATanTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ATan( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ATan( x );
+            return IsNaN( r );
+        };
+
+    // atan (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // atan (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // atan (inf) == pi/2
+    constexpr auto check3 = Check( C::Infinity, C::PiOver2 );
+    BOOST_CHECK( check3 );
+
+    // atan (-inf) == -pi/2
+    constexpr auto check4 = Check( -C::Infinity, -C::PiOver2 );
+    BOOST_CHECK( check4 );
+
+    // atan (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // atan (1) == pi/4
+    constexpr auto check6 = Check( C::One, C::PiOver4 );
+    BOOST_CHECK( check6 );
+
+    // atan (-1) == -pi/4
+    constexpr auto check7 = Check( -C::One, -C::PiOver4 );
+    BOOST_CHECK( check7 );
+
+    // atan (0.7) == 0.61072596438920861654375887649023613
+    constexpr auto check8 = Check( 0.7, 0.61072596438920861654375887649023613 );
+    BOOST_CHECK( check8 );
+}
+
+// --run_test=ConstexprMathTests/FloatATan2Test1
+BOOST_AUTO_TEST_CASE( FloatATan2Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
+        {
+            auto r = ATan2( x, y );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType y, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ATan2( x, y );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = ATan2( x, y );
+            return IsNaN( r );
+        };
+
+    // atan2 (0,x) == 0 for x > 0
+    // atan2 (0, 1) == 0
+    constexpr auto check1 = Check( 0, 1., 0 );
+    BOOST_CHECK( check1 );
+
+    // atan2 (-0,x) == -0 for x > 0
+    // atan2 (-0, 1) == -0
+    constexpr auto check2 = Check( -0, 1., -0 );
+    BOOST_CHECK( check2 );
+
+    // atan2 (0, 0) == 0
+    constexpr auto check3 = Check( 0, 0., 0 );
+    BOOST_CHECK( check3 );
+
+    // atan2 (-0, 0) == -0
+    constexpr auto check4 = Check( -0., 0., -0. );
+    BOOST_CHECK( check4 );
+
+    // atan2 (+0,x) == +pi for x < 0
+    // atan2 (0, -1) == pi
+    constexpr auto check5 = Check( 0., -1., C::Pi );
+    BOOST_CHECK( check5 );
+
+
+    // atan2 (-0,x) == -pi for x < 0
+    // atan2 (-0, -1) == -pi
+    constexpr auto check6 = Check( -0., -1., -C::Pi );
+    BOOST_CHECK( check6 );
+
+
+    // atan2 (0, -0) == pi
+    constexpr auto check7 = Check( 0., -0., C::Pi );
+    BOOST_CHECK( check7 );
+
+    // atan2 (-0, -0) == -pi
+    constexpr auto check8 = Check( -0., -0., -C::Pi );
+    BOOST_CHECK( check8 );
+
+    // atan2 (y,+0) == pi/2 for y > 0
+    // atan2 (1, 0) == pi/2
+    constexpr auto check9 = Check( 1., 0., C::PiOver2 );
+    BOOST_CHECK( check9 );
+
+    // atan2 (y,-0) == pi/2 for y > 0
+    // atan2 (1, -0) == pi/2
+    constexpr auto check10 = Check( 1., -0., C::PiOver2 );
+    BOOST_CHECK( check10 );
+
+    // atan2 (y,+0) == -pi/2 for y < 0
+    // atan2 (-1, 0) == -pi/2
+    constexpr auto check11 = Check( -1., 0., -C::PiOver2 );
+    BOOST_CHECK( check11 );
+
+    // atan2 (y,-0) == -pi/2 for y < 0
+    // atan2 (-1, -0) == -pi/2
+    constexpr auto check12 = Check( -1., -0., -C::PiOver2 );
+    BOOST_CHECK( check12 );
+
+    // atan2 (y,inf) == +0 for finite y > 0
+    // atan2 (1, inf) == 0
+    constexpr auto check13 = Check( 1., C::Infinity, C::Zero );
+    BOOST_CHECK( check13 );
+
+    // atan2 (y,inf) == -0 for finite y < 0
+    // atan2 (-1, inf) == -0
+    constexpr auto check14 = Check( -1., C::Infinity, -C::Zero );
+    BOOST_CHECK( check14 );
+
+    // atan2(+inf, x) == pi/2 for finite x
+    // atan2 (inf, -1) == pi/2
+    constexpr auto check15 = Check( C::Infinity, -1., C::PiOver2 );
+    BOOST_CHECK( check15 );
+
+    // atan2(-inf, x) == -pi/2 for finite x
+    // atan2 (-inf, 1) == -pi/2
+    constexpr auto check16 = Check( -C::Infinity, 1., -C::PiOver2 );
+    BOOST_CHECK( check16 );
+
+    // atan2 (y,-inf) == +pi for finite y > 0
+    // atan2 (1, -inf) == pi
+    constexpr auto check17 = Check( 1., -C::Infinity, C::Pi );
+    BOOST_CHECK( check17 );
+
+    // atan2 (y,-inf) == -pi for finite y < 0
+    // atan2 (-1, -inf) == -pi
+    constexpr auto check18 = Check( -1., -C::Infinity, -C::Pi );
+    BOOST_CHECK( check18 );
+
+    // atan2 (inf, inf) == pi/4
+    constexpr auto check19 = Check( C::Infinity, C::Infinity, C::PiOver4 );
+    BOOST_CHECK( check19 );
+
+    // atan2 (-inf, inf) == -pi/4
+    constexpr auto check20 = Check( -C::Infinity, C::Infinity, -C::PiOver4 );
+    BOOST_CHECK( check20 );
+
+    // atan2 (inf, -inf) == 3/4 pi
+    constexpr auto check21 = Check( C::Infinity, -C::Infinity, 3.*C::PiOver4 );
+    BOOST_CHECK( check21 );
+
+
+    // atan2 (-inf, -inf) == -3/4 pi
+    constexpr auto check22 = Check( -C::Infinity, -C::Infinity, -3. * C::PiOver4 );
+    BOOST_CHECK( check22 );
+
+    // atan2 (NaN, NaN) == NaN
+    constexpr auto check23 = CheckIsNaN( C::NaN, C::NaN );
+    BOOST_CHECK( check23 );
+
+    // atan2 (0.7, 1) == 0.61072596438920861654375887649023613
+    constexpr auto check24 = Check( 0.7, 1, 0.61072596438920861654375887649023613f );
+    BOOST_CHECK( check24 );
+
+    // atan2 (-0.7, 1.0) == -0.61072596438920861654375887649023613
+    constexpr auto check25 = Check( -0.7, 1, -0.61072596438920861654375887649023613f );
+    BOOST_CHECK( check25 );
+
+    // atan2 (0.7, -1.0) == 2.530866689200584621918884506789267
+    constexpr auto check26 = Check( 0.7, -1, 2.530866689200584621918884506789267f );
+    BOOST_CHECK( check26 );
+
+    // atan2 (-0.7, -1.0) == -2.530866689200584621918884506789267
+    constexpr auto check27 = Check( -0.7, -1, -2.530866689200584621918884506789267f );
+    BOOST_CHECK( check27 );
+
+    // atan2 (0.4, 0.0003) == 1.5700463269355215717704032607580829
+    constexpr auto check28 = Check( 0.4, 0.0003, 1.5700463269355215717704032607580829f );
+    BOOST_CHECK( check28 );
+
+    // atan2 (1.4, -0.93) == 2.1571487668237843754887415992772736
+    constexpr auto check29 = Check( 1.4, -0.93, 2.1571487668237843754887415992772736f );
+    BOOST_CHECK( check29 );
+}
+
+// --run_test=ConstexprMathTests/DoubleATan2Test1
+BOOST_AUTO_TEST_CASE( DoubleATan2Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
+        {
+            auto r = ATan2( x, y );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType y, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ATan2( x, y );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = ATan2( x, y );
+            return IsNaN( r );
+        };
+
+    // atan2 (0,x) == 0 for x > 0
+    // atan2 (0, 1) == 0
+    constexpr auto check1 = Check( 0, 1., 0 );
+    BOOST_CHECK( check1 );
+
+    // atan2 (-0,x) == -0 for x > 0
+    // atan2 (-0, 1) == -0
+    constexpr auto check2 = Check( -0, 1., -0 );
+    BOOST_CHECK( check2 );
+
+    // atan2 (0, 0) == 0
+    constexpr auto check3 = Check( 0, 0., 0 );
+    BOOST_CHECK( check3 );
+
+    // atan2 (-0, 0) == -0
+    constexpr auto check4 = Check( -0., 0., -0. );
+    BOOST_CHECK( check4 );
+
+    // atan2 (+0,x) == +pi for x < 0
+    // atan2 (0, -1) == pi
+    constexpr auto check5 = Check( 0., -1., C::Pi );
+    BOOST_CHECK( check5 );
+
+
+    // atan2 (-0,x) == -pi for x < 0
+    // atan2 (-0, -1) == -pi
+    constexpr auto check6 = Check( -0., -1., -C::Pi );
+    BOOST_CHECK( check6 );
+
+
+    // atan2 (0, -0) == pi
+    constexpr auto check7 = Check( 0., -0., C::Pi );
+    BOOST_CHECK( check7 );
+
+    // atan2 (-0, -0) == -pi
+    constexpr auto check8 = Check( -0., -0., -C::Pi );
+    BOOST_CHECK( check8 );
+
+    // atan2 (y,+0) == pi/2 for y > 0
+    // atan2 (1, 0) == pi/2
+    constexpr auto check9 = Check( 1., 0., C::PiOver2 );
+    BOOST_CHECK( check9 );
+
+    // atan2 (y,-0) == pi/2 for y > 0
+    // atan2 (1, -0) == pi/2
+    constexpr auto check10 = Check( 1., -0., C::PiOver2 );
+    BOOST_CHECK( check10 );
+
+    // atan2 (y,+0) == -pi/2 for y < 0
+    // atan2 (-1, 0) == -pi/2
+    constexpr auto check11 = Check( -1., 0., -C::PiOver2 );
+    BOOST_CHECK( check11 );
+
+    // atan2 (y,-0) == -pi/2 for y < 0
+    // atan2 (-1, -0) == -pi/2
+    constexpr auto check12 = Check( -1., -0., -C::PiOver2 );
+    BOOST_CHECK( check12 );
+
+    // atan2 (y,inf) == +0 for finite y > 0
+    // atan2 (1, inf) == 0
+    constexpr auto check13 = Check( 1., C::Infinity, C::Zero );
+    BOOST_CHECK( check13 );
+
+    // atan2 (y,inf) == -0 for finite y < 0
+    // atan2 (-1, inf) == -0
+    constexpr auto check14 = Check( -1., C::Infinity, -C::Zero );
+    BOOST_CHECK( check14 );
+
+    // atan2(+inf, x) == pi/2 for finite x
+    // atan2 (inf, -1) == pi/2
+    constexpr auto check15 = Check( C::Infinity, -1., C::PiOver2 );
+    BOOST_CHECK( check15 );
+
+    // atan2(-inf, x) == -pi/2 for finite x
+    // atan2 (-inf, 1) == -pi/2
+    constexpr auto check16 = Check( -C::Infinity, 1., -C::PiOver2 );
+    BOOST_CHECK( check16 );
+
+    // atan2 (y,-inf) == +pi for finite y > 0
+    // atan2 (1, -inf) == pi
+    constexpr auto check17 = Check( 1., -C::Infinity, C::Pi );
+    BOOST_CHECK( check17 );
+
+    // atan2 (y,-inf) == -pi for finite y < 0
+    // atan2 (-1, -inf) == -pi
+    constexpr auto check18 = Check( -1., -C::Infinity, -C::Pi );
+    BOOST_CHECK( check18 );
+
+    // atan2 (inf, inf) == pi/4
+    constexpr auto check19 = Check( C::Infinity, C::Infinity, C::PiOver4 );
+    BOOST_CHECK( check19 );
+
+    // atan2 (-inf, inf) == -pi/4
+    constexpr auto check20 = Check( -C::Infinity, C::Infinity, -C::PiOver4 );
+    BOOST_CHECK( check20 );
+
+    // atan2 (inf, -inf) == 3/4 pi
+    constexpr auto check21 = Check( C::Infinity, -C::Infinity, 3. * C::PiOver4 );
+    BOOST_CHECK( check21 );
+
+
+    // atan2 (-inf, -inf) == -3/4 pi
+    constexpr auto check22 = Check( -C::Infinity, -C::Infinity, -3. * C::PiOver4 );
+    BOOST_CHECK( check22 );
+
+    // atan2 (NaN, NaN) == NaN
+    constexpr auto check23 = CheckIsNaN( C::NaN, C::NaN );
+    BOOST_CHECK( check23 );
+
+    // atan2 (0.7, 1) == 0.61072596438920861654375887649023613
+    constexpr auto check24 = Check( 0.7, 1, 0.61072596438920861654375887649023613 );
+    BOOST_CHECK( check24 );
+
+    // atan2 (-0.7, 1.0) == -0.61072596438920861654375887649023613
+    constexpr auto check25 = Check( -0.7, 1, -0.61072596438920861654375887649023613 );
+    BOOST_CHECK( check25 );
+
+    // atan2 (0.7, -1.0) == 2.530866689200584621918884506789267
+    constexpr auto check26 = Check( 0.7, -1, 2.530866689200584621918884506789267 );
+    BOOST_CHECK( check26 );
+
+    // atan2 (-0.7, -1.0) == -2.530866689200584621918884506789267
+    constexpr auto check27 = Check( -0.7, -1, -2.530866689200584621918884506789267 );
+    BOOST_CHECK( check27 );
+
+    // atan2 (0.4, 0.0003) == 1.5700463269355215717704032607580829
+    constexpr auto check28 = Check( 0.4, 0.0003, 1.5700463269355215717704032607580829 );
+    BOOST_CHECK( check28 );
+
+    // atan2 (1.4, -0.93) == 2.1571487668237843754887415992772736
+    constexpr auto check29 = Check( 1.4, -0.93, 2.1571487668237843754887415992772736 );
+    BOOST_CHECK( check29 );
+}
+
+// --run_test=ConstexprMathTests/FloatSinCosTest1
+BOOST_AUTO_TEST_CASE( FloatSinCosTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine ) -> bool
+        {
+            C::ValueType sine, cosine;
+            SinCos( x, &sine, &cosine );
+            return IsSameValue( sine, expectedSine ) && IsSameValue( cosine, expectedCosine );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            C::ValueType sine, cosine;
+            SinCos( x, &sine, &cosine );
+            return AreNearlyEqual( sine, expectedSine, epsilon ) && AreNearlyEqual( cosine, expectedCosine, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            C::ValueType sine, cosine;
+            SinCos( x, &sine, &cosine );
+            return IsNaN( sine ) && IsNaN( cosine );
+        };
+
+    constexpr auto check1 = Check( 0, 0, 1 );
+    BOOST_CHECK( check1 );
+
+    constexpr auto check2 = Check( -0., -0., 1 );
+    BOOST_CHECK( check2 );
+
+
+    constexpr auto check3 = CheckIsNaN( C::Infinity );
+    BOOST_CHECK( check3 );
+
+    constexpr auto check4 = CheckIsNaN( C::NegativeInfinity );
+    BOOST_CHECK( check4 );
+
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    constexpr auto check6 = CheckClose( C::PiOver2, 1., 0. );
+    BOOST_CHECK( check6 );
+
+    constexpr auto check7 = Check( C::PiOver6, 0.5, 0.86602540378443864676372317075293616f );
+    BOOST_CHECK( check7 );
+
+    constexpr auto check8 = CheckClose( 2* C::PiOver6, 0.86602540378443864676372317075293616f, 0.5f );
+    BOOST_CHECK( check8 );
+
+    constexpr auto check9 = Check( 0.7, 0.64421768723769105367261435139872014f, 0.76484218728448842625585999019186495f );
+    BOOST_CHECK( check9 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleSinCosTest1
+BOOST_AUTO_TEST_CASE( DoubleSinCosTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine ) -> bool
+        {
+            C::ValueType sine, cosine;
+            SinCos( x, &sine, &cosine );
+            return IsSameValue( sine, expectedSine ) && IsSameValue( cosine, expectedCosine );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            C::ValueType sine, cosine;
+            SinCos( x, &sine, &cosine );
+            return AreNearlyEqual( sine, expectedSine, epsilon ) && AreNearlyEqual( cosine, expectedCosine, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            C::ValueType sine, cosine;
+            SinCos( x, &sine, &cosine );
+            return IsNaN( sine ) && IsNaN( cosine );
+        };
+
+    constexpr auto check1 = Check( 0, 0, 1 );
+    BOOST_CHECK( check1 );
+
+    constexpr auto check2 = Check( -0., -0., 1 );
+    BOOST_CHECK( check2 );
+
+
+    constexpr auto check3 = CheckIsNaN( C::Infinity );
+    BOOST_CHECK( check3 );
+
+    constexpr auto check4 = CheckIsNaN( C::NegativeInfinity );
+    BOOST_CHECK( check4 );
+
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    constexpr auto check6 = CheckClose( C::PiOver2, 1., 0. );
+    BOOST_CHECK( check6 );
+
+    constexpr auto check7 = CheckClose( C::PiOver6, 0.5, 0.86602540378443864676372317075293616 );
+    BOOST_CHECK( check7 );
+
+    constexpr auto check8 = CheckClose( 2 * C::PiOver6, 0.86602540378443864676372317075293616, 0.5 );
+    BOOST_CHECK( check8 );
+
+    constexpr auto check9 = CheckClose( 0.7, 0.64421768723769105367261435139872014, 0.76484218728448842625585999019186495 );
+    BOOST_CHECK( check9 );
+
+}
 
 
 
