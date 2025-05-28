@@ -140,9 +140,13 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			//GET_LOW_WORD( lx, x );
 			uint32_t lx = hx = GetLow32Bits<int32_t>( x );
 			if ( ( ( ix - 0x3ff00000 ) | lx ) == 0 )
+			{
 				/* asin(1)=+-pi/2 with inexact */
 				return x * pio2_hi + x * pio2_lo;
-			return ( x - x ) / ( x - x );		/* asin(|x|>1) is NaN */
+			}
+			/* asin(|x|>1) is NaN */
+			return std::numeric_limits<double>::signaling_NaN( );
+			//return ( x - x ) / ( x - x );
 		}
 		else if ( ix < 0x3fe00000 )
 		{	/* |x|<0.5 */

@@ -49,7 +49,9 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType Inv2Pi = static_cast< ValueType >( 0.15915494309189533577 );
         static constexpr ValueType Inv4Pi = static_cast< ValueType >( 0.07957747154594766788 );
         static constexpr ValueType PiOver2 = static_cast< ValueType >( 1.57079632679489661923 );
+        static constexpr ValueType PiOver3 = static_cast< ValueType >( M_PI/3. );
         static constexpr ValueType PiOver4 = static_cast< ValueType >( 0.78539816339744830961 );
+        static constexpr ValueType PiOver6 = static_cast< ValueType >( M_PI / 6. );
         static constexpr ValueType Sqrt2 = static_cast< ValueType >( 1.41421356237309504880 );
 
         static constexpr ValueType E = static_cast< ValueType >( M_E );
@@ -97,7 +99,9 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType Inv2Pi = 0.15915494309189533577;
         static constexpr ValueType Inv4Pi = 0.07957747154594766788;
         static constexpr ValueType PiOver2 = 1.57079632679489661923;
+        static constexpr ValueType PiOver3 = M_PI / 3.;
         static constexpr ValueType PiOver4 = 0.78539816339744830961;
+        static constexpr ValueType PiOver6 = M_PI / 6.;
         static constexpr ValueType Sqrt2 = 1.41421356237309504880;
         
         static constexpr ValueType E = M_E;

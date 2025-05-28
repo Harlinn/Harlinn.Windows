@@ -56,7 +56,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			{
 				return x * pio2f;		/* asin(+-1) = +-pi/2 with inexact */
 			}
-			return ( x - x ) / ( x - x );		/* asin(|x|>1) is NaN */
+			/* asin(|x|>1) is NaN */
+			return std::numeric_limits<float>::signaling_NaN( );
+			//return ( x - x ) / ( x - x );
 		}
 		else if ( ix < 0x3f000000 )
 		{	/* |x|<0.5 */

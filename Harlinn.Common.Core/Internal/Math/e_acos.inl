@@ -138,7 +138,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				if ( hx > 0 ) return 0.0;		/* acos(1) = 0  */
 				else return pi + 2.0 * pio2_lo;	/* acos(-1)= pi */
 			}
-			return ( x - x ) / ( x - x );		/* acos(|x|>1) is NaN */
+			/* acos(|x|>1) is NaN */
+			return std::numeric_limits<double>::signaling_NaN( );
+			//return ( x - x ) / ( x - x );
 		}
 		if ( ix < 0x3fe00000 )
 		{	/* |x| < 0.5 */

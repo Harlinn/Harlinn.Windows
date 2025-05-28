@@ -1186,7 +1186,7 @@ BOOST_AUTO_TEST_CASE( DoubleModFTest1 )
 
 
 
-// --run_test=MathTests/FloatMinTest1
+// --run_test=ConstexprMathTests/FloatMinTest1
 BOOST_AUTO_TEST_CASE( FloatMinTest1 )
 {
     constexpr auto minValue = Math::Min( 5.f, 4.f, 3.f, 4.f, 4.f );
@@ -1194,7 +1194,7 @@ BOOST_AUTO_TEST_CASE( FloatMinTest1 )
     BOOST_CHECK( equal );
 }
 
-// --run_test=MathTests/DoubleMinTest1
+// --run_test=ConstexprMathTests/DoubleMinTest1
 BOOST_AUTO_TEST_CASE( DoubleMinTest1 )
 {
     constexpr auto minValue = Math::Min( 5., 4., 3., 4., 4. );
@@ -1203,7 +1203,7 @@ BOOST_AUTO_TEST_CASE( DoubleMinTest1 )
 }
 
 
-// --run_test=MathTests/FloatMaxTest1
+// --run_test=ConstexprMathTests/FloatMaxTest1
 BOOST_AUTO_TEST_CASE( FloatMaxTest1 )
 {
     constexpr auto minValue = Math::Max( 5.f, 4.f, 3.f, 4.f, 4.f );
@@ -1211,7 +1211,7 @@ BOOST_AUTO_TEST_CASE( FloatMaxTest1 )
     BOOST_CHECK( equal );
 }
 
-// --run_test=MathTests/DoubleMaxTest1
+// --run_test=ConstexprMathTests/DoubleMaxTest1
 BOOST_AUTO_TEST_CASE( DoubleMaxTest1 )
 {
     constexpr auto minValue = Math::Max( 5., 4., 3., 4., 4. );
@@ -1220,7 +1220,7 @@ BOOST_AUTO_TEST_CASE( DoubleMaxTest1 )
 }
 
 
-// --run_test=MathTests/FloatFloorTest1
+// --run_test=ConstexprMathTests/FloatFloorTest1
 BOOST_AUTO_TEST_CASE( FloatFloorTest1 )
 {
     constexpr float value1 = -1.5f;
@@ -1244,7 +1244,7 @@ BOOST_AUTO_TEST_CASE( FloatFloorTest1 )
     BOOST_CHECK( result6 == 1.f );
 }
 
-// --run_test=MathTests/DoubleFloorTest1
+// --run_test=ConstexprMathTests/DoubleFloorTest1
 BOOST_AUTO_TEST_CASE( DoubleFloorTest1 )
 {
     constexpr double value1 = -1.5;
@@ -1269,7 +1269,7 @@ BOOST_AUTO_TEST_CASE( DoubleFloorTest1 )
 
 }
 
-// --run_test=MathTests/OpenLibMFloorDoubleTest1
+// --run_test=ConstexprMathTests/OpenLibMFloorDoubleTest1
 BOOST_AUTO_TEST_CASE( OpenLibMFloorDoubleTest1 )
 {
     constexpr double value1 = -1.5;
@@ -1293,7 +1293,7 @@ BOOST_AUTO_TEST_CASE( OpenLibMFloorDoubleTest1 )
     BOOST_CHECK( result6 == 1. );
 }
 
-// --run_test=MathTests/FloatCeilTest1
+// --run_test=ConstexprMathTests/FloatCeilTest1
 BOOST_AUTO_TEST_CASE( FloatCeilTest1 )
 {
     constexpr float value1 = -1.5f;
@@ -1318,7 +1318,7 @@ BOOST_AUTO_TEST_CASE( FloatCeilTest1 )
 }
 
 
-// --run_test=MathTests/DoubleCeilTest1
+// --run_test=ConstexprMathTests/DoubleCeilTest1
 BOOST_AUTO_TEST_CASE( DoubleCeilTest1 )
 {
     constexpr double value1 = -1.5;
@@ -1342,7 +1342,7 @@ BOOST_AUTO_TEST_CASE( DoubleCeilTest1 )
     BOOST_CHECK( result6 == 2. );
 }
 
-// --run_test=MathTests/OpenLibMCeilDoubleTest1
+// --run_test=ConstexprMathTests/OpenLibMCeilDoubleTest1
 BOOST_AUTO_TEST_CASE( OpenLibMCeilDoubleTest1 )
 {
     constexpr double value1 = -1.5;
@@ -1367,7 +1367,7 @@ BOOST_AUTO_TEST_CASE( OpenLibMCeilDoubleTest1 )
 
 }
 
-// --run_test=MathTests/FloatTruncTest1
+// --run_test=ConstexprMathTests/FloatTruncTest1
 BOOST_AUTO_TEST_CASE( FloatTruncTest1 )
 {
     constexpr float value1 = -1.5f;
@@ -1391,7 +1391,7 @@ BOOST_AUTO_TEST_CASE( FloatTruncTest1 )
     BOOST_CHECK( result6 == 1.f );
 }
 
-// --run_test=MathTests/DoubleTruncTest1
+// --run_test=ConstexprMathTests/DoubleTruncTest1
 BOOST_AUTO_TEST_CASE( DoubleTruncTest1 )
 {
     constexpr double value1 = -1.5;
@@ -1415,7 +1415,7 @@ BOOST_AUTO_TEST_CASE( DoubleTruncTest1 )
     BOOST_CHECK( result6 == 1. );
 }
 
-// --run_test=MathTests/FloatRoundTest1
+// --run_test=ConstexprMathTests/FloatRoundTest1
 BOOST_AUTO_TEST_CASE( FloatRoundTest1 )
 {
     constexpr float value1 = -1.5f;
@@ -1439,7 +1439,7 @@ BOOST_AUTO_TEST_CASE( FloatRoundTest1 )
     BOOST_CHECK( result6 == 2.f );
 }
 
-// --run_test=MathTests/DoubleRoundTest1
+// --run_test=ConstexprMathTests/DoubleRoundTest1
 BOOST_AUTO_TEST_CASE( DoubleRoundTest1 )
 {
     constexpr double value1 = -1.5;
@@ -1463,7 +1463,7 @@ BOOST_AUTO_TEST_CASE( DoubleRoundTest1 )
     BOOST_CHECK( result6 == 2. );
 }
 
-// --run_test=MathTests/FloatClampTest1
+// --run_test=ConstexprMathTests/FloatClampTest1
 BOOST_AUTO_TEST_CASE( FloatClampTest1 )
 {
     constexpr float result1 = Clamp( -1.f, 0.f, 10.f );
@@ -1474,7 +1474,7 @@ BOOST_AUTO_TEST_CASE( FloatClampTest1 )
     BOOST_CHECK( result3 == 5.f );
 }
 
-// --run_test=MathTests/DoubleClampTest1
+// --run_test=ConstexprMathTests/DoubleClampTest1
 BOOST_AUTO_TEST_CASE( DoublelampTest1 )
 {
     constexpr double result1 = Clamp( -1., 0., 10. );
@@ -1485,7 +1485,7 @@ BOOST_AUTO_TEST_CASE( DoublelampTest1 )
     BOOST_CHECK( result3 == 5. );
 }
 
-// --run_test=MathTests/FloatLerpTest1
+// --run_test=ConstexprMathTests/FloatLerpTest1
 BOOST_AUTO_TEST_CASE( FloatLerpTest1 )
 {
     constexpr auto result1 = Lerp( 3.f, 5.f, 0.5f );
@@ -1500,7 +1500,7 @@ BOOST_AUTO_TEST_CASE( FloatLerpTest1 )
     BOOST_CHECK( result5 == 5.f );
 }
 
-// --run_test=MathTests/DoubleLerpTest1
+// --run_test=ConstexprMathTests/DoubleLerpTest1
 BOOST_AUTO_TEST_CASE( DoubleLerpTest1 )
 {
     constexpr auto result1 = Lerp( 3., 5., 0.5 );
@@ -1515,7 +1515,7 @@ BOOST_AUTO_TEST_CASE( DoubleLerpTest1 )
     BOOST_CHECK( result5 == 5.f );
 }
 
-// --run_test=MathTests/FloatCopySignTest1
+// --run_test=ConstexprMathTests/FloatCopySignTest1
 BOOST_AUTO_TEST_CASE( FloatCopySignTest1 )
 {
     using C = Constants<float>;
@@ -1557,7 +1557,7 @@ BOOST_AUTO_TEST_CASE( FloatCopySignTest1 )
 }
 
 
-// --run_test=MathTests/DoubleCopySignTest1
+// --run_test=ConstexprMathTests/DoubleCopySignTest1
 BOOST_AUTO_TEST_CASE( DoubleCopySignTest1 )
 {
     using C = Constants<double>;
@@ -1596,7 +1596,7 @@ BOOST_AUTO_TEST_CASE( DoubleCopySignTest1 )
     BOOST_CHECK( result11 == C::DenormalMin );
 }
 
-// --run_test=MathTests/FloatScaleByNTest1
+// --run_test=ConstexprMathTests/FloatScaleByNTest1
 BOOST_AUTO_TEST_CASE( FloatScaleByNTest1 )
 {
     using C = Constants<float>;
@@ -1631,7 +1631,7 @@ BOOST_AUTO_TEST_CASE( FloatScaleByNTest1 )
     BOOST_CHECK( result9 == -8.f );
 }
 
-// --run_test=MathTests/DoubleScaleByNTest1
+// --run_test=ConstexprMathTests/DoubleScaleByNTest1
 BOOST_AUTO_TEST_CASE( DoubleScaleByNTest1 )
 {
     using C = Constants<double>;
@@ -1667,7 +1667,7 @@ BOOST_AUTO_TEST_CASE( DoubleScaleByNTest1 )
 }
 
 
-// --run_test=MathTests/FloatFModTest1
+// --run_test=ConstexprMathTests/FloatFModTest1
 BOOST_AUTO_TEST_CASE( FloatFModTest1 )
 {
     using C = Constants<float>;
@@ -1707,7 +1707,7 @@ BOOST_AUTO_TEST_CASE( FloatFModTest1 )
     BOOST_CHECK( equal11 );
 }
 
-// --run_test=MathTests/DoubleFModTest1
+// --run_test=ConstexprMathTests/DoubleFModTest1
 BOOST_AUTO_TEST_CASE( DoubleFModTest1 )
 {
     using C = Constants<double>;
@@ -1747,7 +1747,7 @@ BOOST_AUTO_TEST_CASE( DoubleFModTest1 )
     BOOST_CHECK( equal11 );
 }
 
-// --run_test=MathTests/FloatExpTest1
+// --run_test=ConstexprMathTests/FloatExpTest1
 BOOST_AUTO_TEST_CASE( FloatExpTest1 )
 {
     using C = Constants<float>;
@@ -1784,7 +1784,7 @@ BOOST_AUTO_TEST_CASE( FloatExpTest1 )
     BOOST_CHECK( result10 == 5184705528587072464087.45332293348538f );
 }
 
-// --run_test=MathTests/DoubleExpTest1
+// --run_test=ConstexprMathTests/DoubleExpTest1
 BOOST_AUTO_TEST_CASE( DoubleExpTest1 )
 {
     using C = Constants<double>;
@@ -1824,7 +1824,7 @@ BOOST_AUTO_TEST_CASE( DoubleExpTest1 )
     BOOST_CHECK( equal10 );
 }
 
-// --run_test=MathTests/FloatExp2Test1
+// --run_test=ConstexprMathTests/FloatExp2Test1
 BOOST_AUTO_TEST_CASE( FloatExp2Test1 )
 {
     using C = Constants<float>;
@@ -1861,7 +1861,7 @@ BOOST_AUTO_TEST_CASE( FloatExp2Test1 )
     BOOST_CHECK( equal9 );
 }
 
-// --run_test=MathTests/DoubleExp2Test1
+// --run_test=ConstexprMathTests/DoubleExp2Test1
 BOOST_AUTO_TEST_CASE( DoubleExp2Test1 )
 {
     using C = Constants<double>;
@@ -1901,7 +1901,7 @@ BOOST_AUTO_TEST_CASE( DoubleExp2Test1 )
 
 
 
-// --run_test=MathTests/FloatExp10Test1
+// --run_test=ConstexprMathTests/FloatExp10Test1
 BOOST_AUTO_TEST_CASE( FloatExp10Test1 )
 {
     using C = Constants<float>;
@@ -1940,7 +1940,7 @@ BOOST_AUTO_TEST_CASE( FloatExp10Test1 )
     BOOST_CHECK( equal9 );
 }
 
-// --run_test=MathTests/DoubleExp10Test1
+// --run_test=ConstexprMathTests/DoubleExp10Test1
 BOOST_AUTO_TEST_CASE( DoubleExp10Test1 )
 {
     using C = Constants<double>;
@@ -1981,7 +1981,7 @@ BOOST_AUTO_TEST_CASE( DoubleExp10Test1 )
 
 
 
-// --run_test=MathTests/FloatExpM1Test1
+// --run_test=ConstexprMathTests/FloatExpM1Test1
 BOOST_AUTO_TEST_CASE( FloatExpM1Test1 )
 {
     using C = Constants<float>;
@@ -2018,7 +2018,7 @@ BOOST_AUTO_TEST_CASE( FloatExpM1Test1 )
     BOOST_CHECK( result10 == 5184705528587072464081.45332293348538f );
 }
 
-// --run_test=MathTests/DoubleExpM1Test1
+// --run_test=ConstexprMathTests/DoubleExpM1Test1
 BOOST_AUTO_TEST_CASE( DoubleExpM1Test1 )
 {
     using C = Constants<double>;
@@ -2058,7 +2058,7 @@ BOOST_AUTO_TEST_CASE( DoubleExpM1Test1 )
     BOOST_CHECK( equal10 );
 }
 
-// --run_test=MathTests/FloatHypotTest1
+// --run_test=ConstexprMathTests/FloatHypotTest1
 BOOST_AUTO_TEST_CASE( FloatHypotTest1 )
 {
     using C = Constants<float>;
@@ -2069,7 +2069,7 @@ BOOST_AUTO_TEST_CASE( FloatHypotTest1 )
     BOOST_CHECK( result );
 }
 
-// --run_test=MathTests/DoubleHypotTest1
+// --run_test=ConstexprMathTests/DoubleHypotTest1
 BOOST_AUTO_TEST_CASE( DoubleHypotTest1 )
 {
     using C = Constants<double>;
@@ -2081,7 +2081,7 @@ BOOST_AUTO_TEST_CASE( DoubleHypotTest1 )
 }
 
 
-// --run_test=MathTests/FloatHypot3Test1
+// --run_test=ConstexprMathTests/FloatHypot3Test1
 BOOST_AUTO_TEST_CASE( FloatHypot3Test1 )
 {
     using C = Constants<float>;
@@ -2092,7 +2092,7 @@ BOOST_AUTO_TEST_CASE( FloatHypot3Test1 )
     BOOST_CHECK( result );
 }
 
-// --run_test=MathTests/DoubleHypot3Test1
+// --run_test=ConstexprMathTests/DoubleHypot3Test1
 BOOST_AUTO_TEST_CASE( DoubleHypot3Test1 )
 {
     using C = Constants<double>;
@@ -2104,7 +2104,7 @@ BOOST_AUTO_TEST_CASE( DoubleHypot3Test1 )
 }
 
 
-// --run_test=MathTests/FloatLogTest1
+// --run_test=ConstexprMathTests/FloatLogTest1
 BOOST_AUTO_TEST_CASE( FloatLogTest1 )
 {
     using C = Constants<float>;
@@ -2145,7 +2145,7 @@ BOOST_AUTO_TEST_CASE( FloatLogTest1 )
     BOOST_CHECK( equal11 );
 }
 
-// --run_test=MathTests/DoubleLogTest1
+// --run_test=ConstexprMathTests/DoubleLogTest1
 BOOST_AUTO_TEST_CASE( DoubleLogTest1 )
 {
     using C = Constants<double>;
@@ -2187,7 +2187,7 @@ BOOST_AUTO_TEST_CASE( DoubleLogTest1 )
 }
 
 
-// --run_test=MathTests/FloatLog2Test1
+// --run_test=ConstexprMathTests/FloatLog2Test1
 BOOST_AUTO_TEST_CASE( FloatLog2Test1 )
 {
     using C = Constants<float>;
@@ -2228,7 +2228,7 @@ BOOST_AUTO_TEST_CASE( FloatLog2Test1 )
     BOOST_CHECK( equal11 );
 }
 
-// --run_test=MathTests/DoubleLog2Test1
+// --run_test=ConstexprMathTests/DoubleLog2Test1
 BOOST_AUTO_TEST_CASE( DoubleLog2Test1 )
 {
     using C = Constants<double>;
@@ -2270,7 +2270,7 @@ BOOST_AUTO_TEST_CASE( DoubleLog2Test1 )
 }
 
 
-// --run_test=MathTests/FloatLog10Test1
+// --run_test=ConstexprMathTests/FloatLog10Test1
 BOOST_AUTO_TEST_CASE( FloatLog10Test1 )
 {
     using C = Constants<float>;
@@ -2311,7 +2311,7 @@ BOOST_AUTO_TEST_CASE( FloatLog10Test1 )
     BOOST_CHECK( equal11 );
 }
 
-// --run_test=MathTests/DoubleLog10Test1
+// --run_test=ConstexprMathTests/DoubleLog10Test1
 BOOST_AUTO_TEST_CASE( DoubleLog10Test1 )
 {
     using C = Constants<double>;
@@ -2353,7 +2353,7 @@ BOOST_AUTO_TEST_CASE( DoubleLog10Test1 )
 }
 
 
-// --run_test=MathTests/FloatLog1PTest1
+// --run_test=ConstexprMathTests/FloatLog1PTest1
 BOOST_AUTO_TEST_CASE( FloatLog1PTest1 )
 {
     using C = Constants<float>;
@@ -2394,7 +2394,7 @@ BOOST_AUTO_TEST_CASE( FloatLog1PTest1 )
     BOOST_CHECK( equal11 );
 }
 
-// --run_test=MathTests/DoubleLog1PTest1
+// --run_test=ConstexprMathTests/DoubleLog1PTest1
 BOOST_AUTO_TEST_CASE( DoubleLog1PTest1 )
 {
     using C = Constants<double>;
@@ -2436,7 +2436,7 @@ BOOST_AUTO_TEST_CASE( DoubleLog1PTest1 )
 }
 
 
-// --run_test=MathTests/FloatPowTest1
+// --run_test=ConstexprMathTests/FloatPowTest1
 BOOST_AUTO_TEST_CASE( FloatPowTest1 )
 {
     using C = Constants<float>;
@@ -2621,7 +2621,7 @@ BOOST_AUTO_TEST_CASE( FloatPowTest1 )
 
 }
 
-// --run_test=MathTests/DoublePowTest1
+// --run_test=ConstexprMathTests/DoublePowTest1
 BOOST_AUTO_TEST_CASE( DoublePowTest1 )
 {
     using C = Constants<double>;
@@ -2806,7 +2806,7 @@ BOOST_AUTO_TEST_CASE( DoublePowTest1 )
 
 }
 
-// --run_test=MathTests/FloatRemainderTest1
+// --run_test=ConstexprMathTests/FloatRemainderTest1
 BOOST_AUTO_TEST_CASE( FloatRemainderTest1 )
 {
     using C = Constants<float>;
@@ -2866,7 +2866,7 @@ BOOST_AUTO_TEST_CASE( FloatRemainderTest1 )
     BOOST_CHECK( check11 );
 }
 
-// --run_test=MathTests/DoubleRemainderTest1
+// --run_test=ConstexprMathTests/DoubleRemainderTest1
 BOOST_AUTO_TEST_CASE( DoubleRemainderTest1 )
 {
     using C = Constants<double>;
@@ -2926,7 +2926,7 @@ BOOST_AUTO_TEST_CASE( DoubleRemainderTest1 )
     BOOST_CHECK( check11 );
 }
 
-// --run_test=MathTests/FloatRemQuoTest1
+// --run_test=ConstexprMathTests/FloatRemQuoTest1
 BOOST_AUTO_TEST_CASE( FloatRemQuoTest1 )
 {
     using C = Constants<float>;
@@ -2988,7 +2988,7 @@ BOOST_AUTO_TEST_CASE( FloatRemQuoTest1 )
     BOOST_CHECK( check11 );
 }
 
-// --run_test=MathTests/DoubleRemQuoTest1
+// --run_test=ConstexprMathTests/DoubleRemQuoTest1
 BOOST_AUTO_TEST_CASE( DoubleRemQuoTest1 )
 {
     using C = Constants<double>;
@@ -3052,16 +3052,92 @@ BOOST_AUTO_TEST_CASE( DoubleRemQuoTest1 )
 
 
 
-// --run_test=MathTests/Deg2RadDoubleTest1
+// --run_test=ConstexprMathTests/Deg2RadDoubleTest1
 BOOST_AUTO_TEST_CASE( Deg2RadDoubleTest1 )
 {
     constexpr auto result1 = Deg2Rad( 0.001 );
     BOOST_CHECK( result1 == 1.7453292519943296e-5 );
 }
 
+// --run_test=ConstexprMathTests/FloatSinTest1
+BOOST_AUTO_TEST_CASE( FloatSinTest1 )
+{
+    constexpr auto rM20000 = Deg2Rad( -20000.f );
+    constexpr auto rM720 = Deg2Rad( -720.f );
+    constexpr auto rM360 = Deg2Rad( -360.f );
+    constexpr auto rM180 = Deg2Rad( -180.f );
+    constexpr auto rM135 = Deg2Rad( 135.f );
+    constexpr auto rM90 = Deg2Rad( -90.f );
+    constexpr auto rM45 = Deg2Rad( -45.f );
+    constexpr auto r0 = Deg2Rad( 0.f );
+    constexpr auto r45 = Deg2Rad( 45.f );
+    constexpr auto r90 = Deg2Rad( 90.f );
+    constexpr auto r135 = Deg2Rad( 135.f );
+    constexpr auto r180 = Deg2Rad( 180.f );
+    constexpr auto r360 = Deg2Rad( 360.f );
+    constexpr auto r720 = Deg2Rad( 720.f );
+    constexpr auto r20000 = Deg2Rad( 20000.f );
 
-// --run_test=MathTests/SinDoubleTest1
-BOOST_AUTO_TEST_CASE( SinDoubleTest1 )
+    constexpr auto sineRM20000 = Sin( rM20000 );
+    constexpr auto sineRM720 = Sin( rM720 );
+    constexpr auto sineRM360 = Sin( rM360 );
+    constexpr auto sineRM180 = Sin( rM180 );
+    constexpr auto sineRM135 = Sin( rM135 );
+    constexpr auto sineRM90 = Sin( rM90 );
+    constexpr auto sineRM45 = Sin( rM45 );
+    constexpr auto sineR0 = Sin( r0 );
+    constexpr auto sineR45 = Sin( r45 );
+    constexpr auto sineR90 = Sin( r90 );
+    constexpr auto sineR135 = Sin( r135 );
+    constexpr auto sineR180 = Sin( r180 );
+    constexpr auto sineR360 = Sin( r360 );
+    constexpr auto sineR720 = Sin( r720 );
+    constexpr auto sineR20000 = Sin( r20000 );
+
+    auto expectedSineRM20000 = std::sin( rM20000 );
+    auto expectedSineRM720 = std::sin( rM720 );
+    auto expectedSineRM360 = std::sin( rM360 );
+    auto expectedSineRM180 = std::sin( rM180 );
+    auto expectedSineRM135 = std::sin( rM135 );
+    auto expectedSineRM90 = std::sin( rM90 );
+    auto expectedSineRM45 = std::sin( rM45 );
+    auto expectedSineR0 = std::sin( r0 );
+    auto expectedSineR45 = std::sin( r45 );
+    auto expectedSineR90 = std::sin( r90 );
+    auto expectedSineR135 = std::sin( r135 );
+    auto expectedSineR180 = std::sin( r180 );
+    auto expectedSineR360 = std::sin( r360 );
+    auto expectedSineR720 = std::sin( r720 );
+    auto expectedSineR20000 = std::sin( r20000 );
+
+    BOOST_CHECK( expectedSineRM20000 == sineRM20000 );
+    BOOST_CHECK( expectedSineRM720 == sineRM720 );
+    BOOST_CHECK( expectedSineRM360 == sineRM360 );
+    BOOST_CHECK( expectedSineRM180 == sineRM180 );
+    BOOST_CHECK( expectedSineRM135 == sineRM135 );
+    BOOST_CHECK( expectedSineRM90 == sineRM90 );
+    BOOST_CHECK_CLOSE( expectedSineRM45, sineRM45, 0.0000000000001 );
+    BOOST_CHECK( expectedSineR0 == sineR0 );
+    BOOST_CHECK_CLOSE( expectedSineR45, sineR45, 0.0000000000001 );
+    BOOST_CHECK( expectedSineR90 == sineR90 );
+    BOOST_CHECK( expectedSineR135 == sineR135 );
+    BOOST_CHECK( expectedSineR180 == sineR180 );
+    BOOST_CHECK( expectedSineR360 == sineR360 );
+    BOOST_CHECK( expectedSineR720 == sineR720 );
+    BOOST_CHECK( expectedSineR20000 == sineR20000 );
+
+
+    constexpr auto radians = Deg2Rad( 0.001f );
+    constexpr auto result1a = Sin( radians );
+    auto result1b = std::sin( radians );
+    auto result1Diff = result1a - result1b;
+    BOOST_CHECK( result1a == result1b );
+    BOOST_CHECK( result1a == 1.7453292519057202e-5f );
+    BOOST_CHECK( result1b == 1.7453292519057202e-5f );
+}
+
+// --run_test=ConstexprMathTests/DoubleSinTest1
+BOOST_AUTO_TEST_CASE( DoubleSinTest1 )
 {
     constexpr auto rM20000 = Deg2Rad( -20000. );
     constexpr auto rM720 = Deg2Rad( -720. );
@@ -3137,17 +3213,603 @@ BOOST_AUTO_TEST_CASE( SinDoubleTest1 )
     BOOST_CHECK( result1b == 1.7453292519057202e-5 );
 }
 
-// --run_test=MathTests/OpenLibMSinDoubleTest1
-BOOST_AUTO_TEST_CASE( OpenLibMSinDoubleTest1 )
+// --run_test=ConstexprMathTests/FloatCosTest1
+BOOST_AUTO_TEST_CASE( FloatCosTest1 )
 {
-    constexpr auto radians = Deg2Rad( 0.001 );
-    constexpr auto result1a = OpenLibM::sin( radians );
-    auto result1b = std::sin( radians );
+    constexpr auto rM20000 = Deg2Rad( -20000.f );
+    constexpr auto rM720 = Deg2Rad( -720.f );
+    constexpr auto rM360 = Deg2Rad( -360.f );
+    constexpr auto rM180 = Deg2Rad( -180.f );
+    constexpr auto rM135 = Deg2Rad( 135.f );
+    constexpr auto rM90 = Deg2Rad( -90.f );
+    constexpr auto rM45 = Deg2Rad( -45.f );
+    constexpr auto r0 = Deg2Rad( 0.f );
+    constexpr auto r45 = Deg2Rad( 45.f );
+    constexpr auto r90 = Deg2Rad( 90.f );
+    constexpr auto r135 = Deg2Rad( 135.f );
+    constexpr auto r180 = Deg2Rad( 180.f );
+    constexpr auto r360 = Deg2Rad( 360.f );
+    constexpr auto r720 = Deg2Rad( 720.f );
+    constexpr auto r20000 = Deg2Rad( 20000.f );
+
+    constexpr auto cosineRM20000 = Cos( rM20000 );
+    constexpr auto cosineRM720 = Cos( rM720 );
+    constexpr auto cosineRM360 = Cos( rM360 );
+    constexpr auto cosineRM180 = Cos( rM180 );
+    constexpr auto cosineRM135 = Cos( rM135 );
+    constexpr auto cosineRM90 = Cos( rM90 );
+    constexpr auto cosineRM45 = Cos( rM45 );
+    constexpr auto cosineR0 = Cos( r0 );
+    constexpr auto cosineR45 = Cos( r45 );
+    constexpr auto cosineR90 = Cos( r90 );
+    constexpr auto cosineR135 = Cos( r135 );
+    constexpr auto cosineR180 = Cos( r180 );
+    constexpr auto cosineR360 = Cos( r360 );
+    constexpr auto cosineR720 = Cos( r720 );
+    constexpr auto cosineR20000 = Cos( r20000 );
+
+    auto expectedCosineRM20000 = std::cos( rM20000 );
+    auto expectedCosineRM720 = std::cos( rM720 );
+    auto expectedCosineRM360 = std::cos( rM360 );
+    auto expectedCosineRM180 = std::cos( rM180 );
+    auto expectedCosineRM135 = std::cos( rM135 );
+    auto expectedCosineRM90 = std::cos( rM90 );
+    auto expectedCosineRM45 = std::cos( rM45 );
+    auto expectedCosineR0 = std::cos( r0 );
+    auto expectedCosineR45 = std::cos( r45 );
+    auto expectedCosineR90 = std::cos( r90 );
+    auto expectedCosineR135 = std::cos( r135 );
+    auto expectedCosineR180 = std::cos( r180 );
+    auto expectedCosineR360 = std::cos( r360 );
+    auto expectedCosineR720 = std::cos( r720 );
+    auto expectedCosineR20000 = std::cos( r20000 );
+
+    BOOST_CHECK( expectedCosineRM20000 == cosineRM20000 );
+    BOOST_CHECK( expectedCosineRM720 == cosineRM720 );
+    BOOST_CHECK( expectedCosineRM360 == cosineRM360 );
+    BOOST_CHECK( expectedCosineRM180 == cosineRM180 );
+    BOOST_CHECK( expectedCosineRM135 == cosineRM135 );
+    BOOST_CHECK( expectedCosineRM90 == cosineRM90 );
+    BOOST_CHECK_CLOSE( expectedCosineRM45, cosineRM45, 0.0000000000001 );
+    BOOST_CHECK( expectedCosineR0 == cosineR0 );
+    BOOST_CHECK_CLOSE( expectedCosineR45, cosineR45, 0.0000000000001 );
+    BOOST_CHECK( expectedCosineR90 == cosineR90 );
+    BOOST_CHECK( expectedCosineR135 == cosineR135 );
+    BOOST_CHECK( expectedCosineR180 == cosineR180 );
+    BOOST_CHECK( expectedCosineR360 == cosineR360 );
+    BOOST_CHECK( expectedCosineR720 == cosineR720 );
+    BOOST_CHECK( expectedCosineR20000 == cosineR20000 );
+
+
+    constexpr auto radians = Deg2Rad( 0.001f );
+    constexpr auto result1a = Cos( radians );
+    auto result1b = std::cos( radians );
     auto result1Diff = result1a - result1b;
     BOOST_CHECK( result1a == result1b );
-    BOOST_CHECK( result1a == 1.7453292519057202e-5 );
-    BOOST_CHECK( result1b == 1.7453292519057202e-5 );
+    BOOST_CHECK( result1a == 1.f );
+    BOOST_CHECK( result1b == 1.f );
 }
+
+// --run_test=ConstexprMathTests/DoubleCosTest1
+BOOST_AUTO_TEST_CASE( DoubleCosTest1 )
+{
+    constexpr auto rM20000 = Deg2Rad( -20000. );
+    constexpr auto rM720 = Deg2Rad( -720. );
+    constexpr auto rM360 = Deg2Rad( -360. );
+    constexpr auto rM180 = Deg2Rad( -180. );
+    constexpr auto rM135 = Deg2Rad( 135. );
+    constexpr auto rM90 = Deg2Rad( -90. );
+    constexpr auto rM45 = Deg2Rad( -45. );
+    constexpr auto r0 = Deg2Rad( 0. );
+    constexpr auto r45 = Deg2Rad( 45. );
+    constexpr auto r90 = Deg2Rad( 90. );
+    constexpr auto r135 = Deg2Rad( 135. );
+    constexpr auto r180 = Deg2Rad( 180. );
+    constexpr auto r360 = Deg2Rad( 360. );
+    constexpr auto r720 = Deg2Rad( 720. );
+    constexpr auto r20000 = Deg2Rad( 20000. );
+
+    constexpr auto cosineRM20000 = Cos( rM20000 );
+    constexpr auto cosineRM720 = Cos( rM720 );
+    constexpr auto cosineRM360 = Cos( rM360 );
+    constexpr auto cosineRM180 = Cos( rM180 );
+    constexpr auto cosineRM135 = Cos( rM135 );
+    constexpr auto cosineRM90 = Cos( rM90 );
+    constexpr auto cosineRM45 = Cos( rM45 );
+    constexpr auto cosineR0 = Cos( r0 );
+    constexpr auto cosineR45 = Cos( r45 );
+    constexpr auto cosineR90 = Cos( r90 );
+    constexpr auto cosineR135 = Cos( r135 );
+    constexpr auto cosineR180 = Cos( r180 );
+    constexpr auto cosineR360 = Cos( r360 );
+    constexpr auto cosineR720 = Cos( r720 );
+    constexpr auto cosineR20000 = Cos( r20000 );
+
+    auto expectedCosineRM20000 = std::cos( rM20000 );
+    auto expectedCosineRM720 = std::cos( rM720 );
+    auto expectedCosineRM360 = std::cos( rM360 );
+    auto expectedCosineRM180 = std::cos( rM180 );
+    auto expectedCosineRM135 = std::cos( rM135 );
+    auto expectedCosineRM90 = std::cos( rM90 );
+    auto expectedCosineRM45 = std::cos( rM45 );
+    auto expectedCosineR0 = std::cos( r0 );
+    auto expectedCosineR45 = std::cos( r45 );
+    auto expectedCosineR90 = std::cos( r90 );
+    auto expectedCosineR135 = std::cos( r135 );
+    auto expectedCosineR180 = std::cos( r180 );
+    auto expectedCosineR360 = std::cos( r360 );
+    auto expectedCosineR720 = std::cos( r720 );
+    auto expectedCosineR20000 = std::cos( r20000 );
+
+    BOOST_CHECK( expectedCosineRM20000 == cosineRM20000 );
+    BOOST_CHECK( expectedCosineRM720 == cosineRM720 );
+    BOOST_CHECK( expectedCosineRM360 == cosineRM360 );
+    BOOST_CHECK( expectedCosineRM180 == cosineRM180 );
+    BOOST_CHECK( expectedCosineRM135 == cosineRM135 );
+    BOOST_CHECK( expectedCosineRM90 == cosineRM90 );
+    BOOST_CHECK_CLOSE( expectedCosineRM45, cosineRM45, 0.0000000000001 );
+    BOOST_CHECK( expectedCosineR0 == cosineR0 );
+    BOOST_CHECK_CLOSE( expectedCosineR45, cosineR45, 0.0000000000001 );
+    BOOST_CHECK( expectedCosineR90 == cosineR90 );
+    BOOST_CHECK( expectedCosineR135 == cosineR135 );
+    BOOST_CHECK( expectedCosineR180 == cosineR180 );
+    BOOST_CHECK( expectedCosineR360 == cosineR360 );
+    BOOST_CHECK( expectedCosineR720 == cosineR720 );
+    BOOST_CHECK( expectedCosineR20000 == cosineR20000 );
+
+
+    constexpr auto radians = Deg2Rad( 0.001 );
+    constexpr auto result1a = Cos( radians );
+    auto result1b = std::cos( radians );
+    auto result1Diff = result1a - result1b;
+    BOOST_CHECK( result1a == result1b );
+    BOOST_CHECK( result1a == 0.99999999984769128 );
+    BOOST_CHECK( result1b == 0.99999999984769128 );
+}
+
+// --run_test=ConstexprMathTests/FloatTanTest1
+BOOST_AUTO_TEST_CASE( FloatTanTest1 )
+{
+    constexpr auto rM20000 = Deg2Rad( -20000.f );
+    constexpr auto rM720 = Deg2Rad( -720.f );
+    constexpr auto rM360 = Deg2Rad( -360.f );
+    constexpr auto rM180 = Deg2Rad( -180.f );
+    constexpr auto rM135 = Deg2Rad( 135.f );
+    constexpr auto rM90 = Deg2Rad( -90.f );
+    constexpr auto rM45 = Deg2Rad( -45.f );
+    constexpr auto r0 = Deg2Rad( 0.f );
+    constexpr auto r45 = Deg2Rad( 45.f );
+    constexpr auto r90 = Deg2Rad( 90.f );
+    constexpr auto r135 = Deg2Rad( 135.f );
+    constexpr auto r180 = Deg2Rad( 180.f );
+    constexpr auto r360 = Deg2Rad( 360.f );
+    constexpr auto r720 = Deg2Rad( 720.f );
+    constexpr auto r20000 = Deg2Rad( 20000.f );
+
+    constexpr auto tanRM20000 = Tan( rM20000 );
+    constexpr auto tanRM720 = Tan( rM720 );
+    constexpr auto tanRM360 = Tan( rM360 );
+    constexpr auto tanRM180 = Tan( rM180 );
+    constexpr auto tanRM135 = Tan( rM135 );
+    constexpr auto tanRM90 = Tan( rM90 );
+    constexpr auto tanRM45 = Tan( rM45 );
+    constexpr auto tanR0 = Tan( r0 );
+    constexpr auto tanR45 = Tan( r45 );
+    constexpr auto tanR90 = Tan( r90 );
+    constexpr auto tanR135 = Tan( r135 );
+    constexpr auto tanR180 = Tan( r180 );
+    constexpr auto tanR360 = Tan( r360 );
+    constexpr auto tanR720 = Tan( r720 );
+    constexpr auto tanR20000 = Tan( r20000 );
+
+    auto expectedTanRM20000 = std::tan( rM20000 );
+    auto expectedTanRM720 = std::tan( rM720 );
+    auto expectedTanRM360 = std::tan( rM360 );
+    auto expectedTanRM180 = std::tan( rM180 );
+    auto expectedTanRM135 = std::tan( rM135 );
+    auto expectedTanRM90 = std::tan( rM90 );
+    auto expectedTanRM45 = std::tan( rM45 );
+    auto expectedTanR0 = std::tan( r0 );
+    auto expectedTanR45 = std::tan( r45 );
+    auto expectedTanR90 = std::tan( r90 );
+    auto expectedTanR135 = std::tan( r135 );
+    auto expectedTanR180 = std::tan( r180 );
+    auto expectedTanR360 = std::tan( r360 );
+    auto expectedTanR720 = std::tan( r720 );
+    auto expectedTanR20000 = std::tan( r20000 );
+
+    BOOST_CHECK( expectedTanRM20000 == tanRM20000 );
+    BOOST_CHECK( expectedTanRM720 == tanRM720 );
+    BOOST_CHECK_CLOSE( expectedTanRM360, tanRM360, 0.00001f );
+    BOOST_CHECK_CLOSE( expectedTanRM180, tanRM180, 0.00001f );
+    BOOST_CHECK( expectedTanRM135 == tanRM135 );
+    BOOST_CHECK( expectedTanRM90 == tanRM90 );
+    BOOST_CHECK( expectedTanRM45 == tanRM45 );
+    BOOST_CHECK( expectedTanR0 == tanR0 );
+    BOOST_CHECK( expectedTanR45 == tanR45 );
+    BOOST_CHECK( expectedTanR90 == tanR90 );
+    BOOST_CHECK( expectedTanR135 == tanR135 );
+    BOOST_CHECK_CLOSE( expectedTanR180, tanR180, 0.00001f );
+    BOOST_CHECK_CLOSE( expectedTanR360, tanR360, 0.00001f );
+    BOOST_CHECK( expectedTanR720 == tanR720 );
+    BOOST_CHECK( expectedTanR20000 == tanR20000 );
+
+
+    constexpr auto radians = Deg2Rad( 0.001f );
+    constexpr auto result1a = Tan( radians );
+    auto result1b = std::tan( radians );
+    auto result1Diff = result1a - result1b;
+    BOOST_CHECK( result1a == result1b );
+    BOOST_CHECK( result1a == 1.74532925e-05f );
+    BOOST_CHECK( result1b == 1.74532925e-05f );
+}
+
+// --run_test=ConstexprMathTests/DoubleTanTest1
+BOOST_AUTO_TEST_CASE( DoubleTanTest1 )
+{
+    constexpr auto rM20000 = Deg2Rad( -20000. );
+    constexpr auto rM720 = Deg2Rad( -720. );
+    constexpr auto rM360 = Deg2Rad( -360. );
+    constexpr auto rM180 = Deg2Rad( -180. );
+    constexpr auto rM135 = Deg2Rad( 135. );
+    constexpr auto rM90 = Deg2Rad( -90. );
+    constexpr auto rM45 = Deg2Rad( -45. );
+    constexpr auto r0 = Deg2Rad( 0. );
+    constexpr auto r45 = Deg2Rad( 45. );
+    constexpr auto r90 = Deg2Rad( 90. );
+    constexpr auto r135 = Deg2Rad( 135. );
+    constexpr auto r180 = Deg2Rad( 180. );
+    constexpr auto r360 = Deg2Rad( 360. );
+    constexpr auto r720 = Deg2Rad( 720. );
+    constexpr auto r20000 = Deg2Rad( 20000. );
+
+    constexpr auto tanRM20000 = Tan( rM20000 );
+    constexpr auto tanRM720 = Tan( rM720 );
+    constexpr auto tanRM360 = Tan( rM360 );
+    constexpr auto tanRM180 = Tan( rM180 );
+    constexpr auto tanRM135 = Tan( rM135 );
+    constexpr auto tanRM90 = Tan( rM90 );
+    constexpr auto tanRM45 = Tan( rM45 );
+    constexpr auto tanR0 = Tan( r0 );
+    constexpr auto tanR45 = Tan( r45 );
+    constexpr auto tanR90 = Tan( r90 );
+    constexpr auto tanR135 = Tan( r135 );
+    constexpr auto tanR180 = Tan( r180 );
+    constexpr auto tanR360 = Tan( r360 );
+    constexpr auto tanR720 = Tan( r720 );
+    constexpr auto tanR20000 = Tan( r20000 );
+
+    auto expectedTanRM20000 = std::tan( rM20000 );
+    auto expectedTanRM720 = std::tan( rM720 );
+    auto expectedTanRM360 = std::tan( rM360 );
+    auto expectedTanRM180 = std::tan( rM180 );
+    auto expectedTanRM135 = std::tan( rM135 );
+    auto expectedTanRM90 = std::tan( rM90 );
+    auto expectedTanRM45 = std::tan( rM45 );
+    auto expectedTanR0 = std::tan( r0 );
+    auto expectedTanR45 = std::tan( r45 );
+    auto expectedTanR90 = std::tan( r90 );
+    auto expectedTanR135 = std::tan( r135 );
+    auto expectedTanR180 = std::tan( r180 );
+    auto expectedTanR360 = std::tan( r360 );
+    auto expectedTanR720 = std::tan( r720 );
+    auto expectedTanR20000 = std::tan( r20000 );
+
+    BOOST_CHECK( expectedTanRM20000 == tanRM20000 );
+    BOOST_CHECK( expectedTanRM720 == tanRM720 );
+    BOOST_CHECK_CLOSE( expectedTanRM360, tanRM360, 0.00001f );
+    BOOST_CHECK_CLOSE( expectedTanRM180, tanRM180, 0.00001f );
+    BOOST_CHECK( expectedTanRM135 == tanRM135 );
+    BOOST_CHECK( expectedTanRM90 == tanRM90 );
+    BOOST_CHECK( expectedTanRM45 == tanRM45 );
+    BOOST_CHECK( expectedTanR0 == tanR0 );
+    BOOST_CHECK( expectedTanR45 == tanR45 );
+    BOOST_CHECK( expectedTanR90 == tanR90 );
+    BOOST_CHECK( expectedTanR135 == tanR135 );
+    BOOST_CHECK_CLOSE( expectedTanR180, tanR180, 0.00001f );
+    BOOST_CHECK_CLOSE( expectedTanR360, tanR360, 0.00001f );
+    BOOST_CHECK( expectedTanR720 == tanR720 );
+    BOOST_CHECK( expectedTanR20000 == tanR20000 );
+
+
+    constexpr auto radians = Deg2Rad( 0.001 );
+    constexpr auto result1a = Tan( radians );
+    auto result1b = std::tan( radians );
+    auto result1Diff = result1a - result1b;
+    BOOST_CHECK( result1a == result1b );
+    BOOST_CHECK( result1a == 1.7453292521715489e-05 );
+    BOOST_CHECK( result1b == 1.7453292521715489e-05 );
+}
+
+// --run_test=ConstexprMathTests/FloatASinTest1
+BOOST_AUTO_TEST_CASE( FloatASinTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ASin( x );
+            return IsSameValue( r, expected );
+        };
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ASin( x );
+            return IsNaN( r );
+        };
+
+    // asin( inf ) == NaN
+    constexpr auto check1 = CheckIsNaN( C::Infinity );
+    BOOST_CHECK( check1 );
+
+    // asin (-inf) == NaN
+    constexpr auto check2 = CheckIsNaN( -C::Infinity );
+    BOOST_CHECK( check2 );
+
+    // asin (NaN) == NaN
+    constexpr auto check3 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check3 );
+
+    // asin (1.1) == NaN
+    constexpr auto check4 = CheckIsNaN( 1.1 );
+    BOOST_CHECK( check4 );
+
+    // asin (-1.1) == NaN
+    constexpr auto check5 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check5 );
+
+    // asin (0) == 0
+    constexpr auto check6 = Check( 0., 0. );
+    BOOST_CHECK( check6 );
+
+    // asin (-0) == -0
+    constexpr auto check7 = Check( -0., -0. );
+    BOOST_CHECK( check7 );
+
+    // asin (0.5) == pi/6
+    constexpr auto check8 = Check( 0.5, C::Pi/6.f );
+    BOOST_CHECK( check8 );
+
+    // asin (-0.5) == -pi/6
+    constexpr auto check9 = Check( -0.5, -C::Pi / 6.f );
+    BOOST_CHECK( check9 );
+
+    // asin (1.0) == pi/2
+    constexpr auto check10 = Check( 1.0, C::Pi / 2.f );
+    BOOST_CHECK( check10 );
+
+    // asin (-1.0) == -pi/2
+    constexpr auto check11 = Check( -1.0, -C::Pi / 2.f );
+    BOOST_CHECK( check11 );
+
+    // asin (0.7) == 0.77539749661075306374035335271498708
+    
+    constexpr auto check12 = Check( 0.7, 0.775397539f );
+    BOOST_CHECK( check12 );
+}
+
+// --run_test=ConstexprMathTests/DoubleASinTest1
+BOOST_AUTO_TEST_CASE( DoubleASinTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ASin( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon() * 10 ) -> bool
+        {
+            auto r = ASin( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ASin( x );
+            return IsNaN( r );
+        };
+
+    // asin( inf ) == NaN
+    constexpr auto check1 = CheckIsNaN( C::Infinity );
+    BOOST_CHECK( check1 );
+
+    // asin (-inf) == NaN
+    constexpr auto check2 = CheckIsNaN( -C::Infinity );
+    BOOST_CHECK( check2 );
+
+    // asin (NaN) == NaN
+    constexpr auto check3 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check3 );
+
+    // asin (1.1) == NaN
+    constexpr auto check4 = CheckIsNaN( 1.1 );
+    BOOST_CHECK( check4 );
+
+    // asin (-1.1) == NaN
+    constexpr auto check5 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check5 );
+
+    // asin (0) == 0
+    constexpr auto check6 = Check( 0., 0. );
+    BOOST_CHECK( check6 );
+
+    // asin (-0) == -0
+    constexpr auto check7 = Check( -0., -0. );
+    BOOST_CHECK( check7 );
+
+    // asin (0.5) == pi/6
+
+    auto res = ASin( 0.5 );
+    constexpr auto check8 = CheckClose( 0.5, C::PiOver6 );
+    BOOST_CHECK( check8 );
+
+    // asin (-0.5) == -pi/6
+    constexpr auto check9 = CheckClose( -0.5, -C::PiOver6 );
+    BOOST_CHECK( check9 );
+
+    // asin (1.0) == pi/2
+    constexpr auto check10 = CheckClose( 1.0, C::PiOver2 );
+    BOOST_CHECK( check10 );
+
+    // asin (-1.0) == -pi/2
+    constexpr auto check11 = CheckClose( -1.0, -C::PiOver2 );
+    BOOST_CHECK( check11 );
+
+    // asin (0.7) == 0.77539749661075306374035335271498708
+    constexpr auto check12 = Check( 0.7, 0.77539749661075306374035335271498708 );
+    BOOST_CHECK( check12 );
+
+
+}
+
+// --run_test=ConstexprMathTests/FloatACosTest1
+BOOST_AUTO_TEST_CASE( FloatACosTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ACos( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ACos( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ACos( x );
+            return IsNaN( r );
+        };
+
+    // acos (inf) == NaN
+    constexpr auto check1 = CheckIsNaN( C::Infinity );
+    BOOST_CHECK( check1 );
+
+    // acos (-inf) == NaN
+    constexpr auto check2 = CheckIsNaN( C::NegativeInfinity );
+    BOOST_CHECK( check2 );
+
+    // acos (NaN) == NaN
+    constexpr auto check3 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check3 );
+
+    // acos (1.1) == NaN
+    constexpr auto check4 = CheckIsNaN( 1.1 );
+    BOOST_CHECK( check4 );
+
+    // acos (-1.1) == NaN
+    constexpr auto check5 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check5 );
+
+    // acos (0) == pi/2
+    constexpr auto check6 = Check( 0., C::PiOver2 );
+    BOOST_CHECK( check6 );
+
+    // acos (-0) == pi/2
+    constexpr auto check7 = Check( -0., C::PiOver2 );
+    BOOST_CHECK( check7 );
+
+    // acos (1) == 0
+    constexpr auto check8 = Check( 1., C::Zero );
+    BOOST_CHECK( check8 );
+
+    // acos (-1) == pi
+    constexpr auto check9 = Check( -1., C::Pi );
+    BOOST_CHECK( check9 );
+
+    // acos (0.5) == M_PI_6l*2.0
+    constexpr auto check10 = CheckClose( 0.5, C::PiOver6 * 2. );
+    BOOST_CHECK( check10 );
+
+    // acos (-0.5) == M_PI_6l*4.0
+    constexpr auto check11 = CheckClose( -0.5, C::PiOver6 * 4. );
+    BOOST_CHECK( check11 );
+
+    // acos (0.7) == 0.79539883018414355549096833892476432
+    constexpr auto check12 = Check( 0.7, 0.795398831f );
+    BOOST_CHECK( check12 );
+}
+
+// --run_test=ConstexprMathTests/DoubleACosTest1
+BOOST_AUTO_TEST_CASE( DoubleACosTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ACos( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ACos( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ACos( x );
+            return IsNaN( r );
+        };
+
+    // acos (inf) == NaN
+    constexpr auto check1 = CheckIsNaN( C::Infinity );
+    BOOST_CHECK( check1 );
+
+    // acos (-inf) == NaN
+    constexpr auto check2 = CheckIsNaN( C::NegativeInfinity );
+    BOOST_CHECK( check2 );
+
+    // acos (NaN) == NaN
+    constexpr auto check3 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check3 );
+
+    // acos (1.1) == NaN
+    constexpr auto check4 = CheckIsNaN( 1.1 );
+    BOOST_CHECK( check4 );
+
+    // acos (-1.1) == NaN
+    constexpr auto check5 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check5 );
+
+    // acos (0) == pi/2
+    constexpr auto check6 = Check( 0., C::PiOver2 );
+    BOOST_CHECK( check6 );
+
+    // acos (-0) == pi/2
+    constexpr auto check7 = Check( -0., C::PiOver2 );
+    BOOST_CHECK( check7 );
+
+    // acos (1) == 0
+    constexpr auto check8 = Check( 1., C::Zero );
+    BOOST_CHECK( check8 );
+
+    // acos (-1) == pi
+    constexpr auto check9 = Check( -1., C::Pi );
+    BOOST_CHECK( check9 );
+
+    // acos (0.5) == M_PI_6l*2.0
+    constexpr auto check10 = CheckClose( 0.5, C::PiOver6 * 2. );
+    BOOST_CHECK( check10 );
+
+    // acos (-0.5) == M_PI_6l*4.0
+    constexpr auto check11 = CheckClose( -0.5, C::PiOver6 * 4. );
+    BOOST_CHECK( check11 );
+
+    // acos (0.7) == 0.79539883018414355549096833892476432
+    constexpr auto check12 = Check( 0.7, 0.79539883018414355549096833892476432 );
+    BOOST_CHECK( check12 );
+
+
+}
+
+
 
 
 
