@@ -108,13 +108,22 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			if ( ix == 0x3f800000 )
 				return  one;	/* (-1)**+-inf is NaN */
 			else if ( ix > 0x3f800000 )/* (|x|>1)**+-inf = inf,0 */
-				return ( hy >= 0 ) ? y : zero;
+				return ( hy >= 0 ) ? y : 0.f;
 			else			/* (|x|<1)**-,+inf = inf,0 */
-				return ( hy < 0 ) ? -y : zero;
+				return ( hy < 0 ) ? -y : 0.f;
 		}
 		if ( iy == 0x3f800000 )
 		{	/* y is  +-1 */
-			if ( hy < 0 ) return one / x; else return x;
+			if ( hy < 0 )
+			{
+				if ( x == 0.f )
+				{
+					return CopySign( std::numeric_limits<float>::infinity( ), x );
+				}
+				return one / x;
+			}
+			else 
+				return x;
 		}
 		if ( hy == 0x40000000 ) return x * x; /* y is  2 */
 		if ( hy == 0x3f000000 )
@@ -128,15 +137,32 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( ix == 0x7f800000 || ix == 0 || ix == 0x3f800000 )
 		{
 			z = ax;			/*x is +-0,+-inf,+-1*/
-			if ( hy < 0 ) z = one / z;	/* z = (1/|x|) */
+			if ( hy < 0 )
+			{
+				/* z = (1/|x|) */
+				if ( z == 0 )
+				{
+					z = std::numeric_limits<float>::infinity( );
+				}
+				else
+				{
+					z = one / z;
+				}
+			}
 			if ( hx < 0 )
 			{
 				if ( ( ( ix - 0x3f800000 ) | yisint ) == 0 )
 				{
-					z = ( z - z ) / ( z - z ); /* (-1)**non-int is NaN */
+					/* (-1)**non-int is NaN */
+					z = std::numeric_limits<float>::quiet_NaN( );
+					//z = ( z - z ) / ( z - z ); 
 				}
 				else if ( yisint == 1 )
-					z = -z;		/* (x<0)**odd = -(|x|**odd) */
+				{
+					/* (x<0)**odd = -(|x|**odd) */
+					//z = -z;		
+					z = std::bit_cast< float >( std::bit_cast< uint32_t >( z ) | 0x8000'0000 );
+				}
 			}
 			return z;
 		}
@@ -144,7 +170,11 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		n = ( ( uint32_t )hx >> 31 ) - 1;
 
 		/* (x<0)**(non-int) is NaN */
-		if ( ( n | yisint ) == 0 ) return ( x - x ) / ( x - x );
+		if ( ( n | yisint ) == 0 )
+		{
+			return CopySign( std::numeric_limits<float>::quiet_NaN( ), x );
+			//return ( x - x ) / ( x - x );
+		}
 
 		sn = one; /* s (sign of result -ve**odd) = -1 else = 1 */
 		if ( ( n | ( yisint - 1 ) ) == 0 ) sn = -one;/* (-ve)**(odd int) */

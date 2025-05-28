@@ -2104,6 +2104,459 @@ BOOST_AUTO_TEST_CASE( DoubleHypot3Test1 )
 }
 
 
+// --run_test=MathTests/FloatLogTest1
+BOOST_AUTO_TEST_CASE( FloatLogTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = Log( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log( C::Zero );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = Log( -C::Zero );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    constexpr auto result5 = Log( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log( C::One );
+    BOOST_CHECK( result6 == C::Zero );
+
+    constexpr auto result7 = Log( -C::One );
+    BOOST_CHECK( IsNaN( result7 ) );
+
+    constexpr auto result8 = Log( C::E );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log( C::E2 );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log( C::E3 );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log( .7f );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.35667494393873237891263871124118447f );
+    BOOST_CHECK( equal11 );
+}
+
+// --run_test=MathTests/DoubleLogTest1
+BOOST_AUTO_TEST_CASE( DoubleLogTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = Log( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log( C::Zero );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = Log( -C::Zero );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    constexpr auto result5 = Log( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log( C::One );
+    BOOST_CHECK( result6 == C::Zero );
+
+    constexpr auto result7 = Log( -C::One );
+    BOOST_CHECK( IsNaN( result7 ) );
+
+    constexpr auto result8 = Log( C::E );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log( C::E2 );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log( C::E3 );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log( .7 );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.35667494393873237891263871124118447 );
+    BOOST_CHECK( equal11 );
+}
+
+
+// --run_test=MathTests/FloatLog2Test1
+BOOST_AUTO_TEST_CASE( FloatLog2Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = Log2( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log2( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log2( C::Zero );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = Log2( -C::Zero );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    constexpr auto result5 = Log2( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log2( C::One );
+    BOOST_CHECK( result6 == C::Zero );
+
+    constexpr auto result7 = Log2( -C::One );
+    BOOST_CHECK( IsNaN( result7 ) );
+
+    constexpr auto result8 = Log2( C::Two );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log2( C::Two* C::Two );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log2( C::Two * C::Two * C::Two );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log2( .7f );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.51457317282975824043f );
+    BOOST_CHECK( equal11 );
+}
+
+// --run_test=MathTests/DoubleLog2Test1
+BOOST_AUTO_TEST_CASE( DoubleLog2Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = Log2( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log2( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log2( C::Zero );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = Log2( -C::Zero );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    constexpr auto result5 = Log2( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log2( C::One );
+    BOOST_CHECK( result6 == C::Zero );
+
+    constexpr auto result7 = Log2( -C::One );
+    BOOST_CHECK( IsNaN( result7 ) );
+
+    constexpr auto result8 = Log2( C::Two );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log2( C::Two * C::Two );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log2( C::Two * C::Two * C::Two );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log2( .7 );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.51457317282975824043 );
+    BOOST_CHECK( equal11 );
+}
+
+
+// --run_test=MathTests/FloatLog10Test1
+BOOST_AUTO_TEST_CASE( FloatLog10Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = Log10( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log10( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log10( C::Zero );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = Log10( -C::Zero );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    constexpr auto result5 = Log10( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log10( C::One );
+    BOOST_CHECK( result6 == C::Zero );
+
+    constexpr auto result7 = Log10( -C::One );
+    BOOST_CHECK( IsNaN( result7 ) );
+
+    constexpr auto result8 = Log10( 10.f );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log10( 100.f );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log10( 1000.f );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log10( .7f );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.15490195998574316929f );
+    BOOST_CHECK( equal11 );
+}
+
+// --run_test=MathTests/DoubleLog10Test1
+BOOST_AUTO_TEST_CASE( DoubleLog10Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = Log10( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log10( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log10( C::Zero );
+    BOOST_CHECK( IsInf( result3 ) );
+
+    constexpr auto result4 = Log10( -C::Zero );
+    BOOST_CHECK( IsInf( result4 ) );
+
+    constexpr auto result5 = Log10( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log10( C::One );
+    BOOST_CHECK( result6 == C::Zero );
+
+    constexpr auto result7 = Log10( -C::One );
+    BOOST_CHECK( IsNaN( result7 ) );
+
+    constexpr auto result8 = Log10( 10. );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log10( 100. );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log10( 1000. );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log10( .7 );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.15490195998574316929 );
+    BOOST_CHECK( equal11 );
+}
+
+
+// --run_test=MathTests/FloatLog1PTest1
+BOOST_AUTO_TEST_CASE( FloatLog1PTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto result1 = Log1P( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log1P( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log1P( C::Zero );
+    BOOST_CHECK( result3 == C::Zero );
+
+    constexpr auto result4 = Log1P( -C::Zero );
+    BOOST_CHECK( result4 == C::Zero );
+
+    constexpr auto result5 = Log1P( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log1P( C::One );
+    BOOST_CHECK( result6 == 0.693147182f );
+
+    constexpr auto result7 = Log1P( -C::One );
+    BOOST_CHECK( IsInf( result7 ) );
+
+    constexpr auto result8 = Log1P( C::E - 1 );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log1P( C::E2 - 1 );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log1P( C::E3 - 1 );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log1P( -0.3f );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.35667494393873237891263871124118447f );
+    BOOST_CHECK( equal11 );
+}
+
+// --run_test=MathTests/DoubleLog1PTest1
+BOOST_AUTO_TEST_CASE( DoubleLog1PTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto result1 = Log1P( C::Infinity );
+    BOOST_CHECK( IsInf( result1 ) );
+
+    constexpr auto result2 = Log1P( C::NegativeInfinity );
+    BOOST_CHECK( IsNaN( result2 ) );
+
+    constexpr auto result3 = Log1P( C::Zero );
+    BOOST_CHECK( result3 == C::Zero );
+
+    constexpr auto result4 = Log1P( -C::Zero );
+    BOOST_CHECK( result4 == C::Zero );
+
+    constexpr auto result5 = Log1P( C::NaN );
+    BOOST_CHECK( IsNaN( result5 ) );
+
+    constexpr auto result6 = Log1P( C::One );
+    BOOST_CHECK( result6 == 0.69314718055994529 );
+
+    constexpr auto result7 = Log1P( -C::One );
+    BOOST_CHECK( IsInf( result7 ) );
+
+    constexpr auto result8 = Log1P( C::E - 1 );
+    BOOST_CHECK( result8 == C::One );
+
+    constexpr auto result9 = Log1P( C::E2 - 1 );
+    BOOST_CHECK( result9 == C::Two );
+
+    constexpr auto result10 = Log1P( C::E3 - 1 );
+    BOOST_CHECK( result10 == C::Three );
+
+
+    constexpr auto result11 = Log1P( -0.3 );
+    constexpr auto equal11 = AreNearlyEqual( result11, -0.35667494393873237891263871124118447 );
+    BOOST_CHECK( equal11 );
+}
+
+
+// --run_test=MathTests/FloatPowTest1
+BOOST_AUTO_TEST_CASE( FloatPowTest1 )
+{
+    using C = Constants<float>;
+    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
+        {
+            return IsSameValue( Pow( x, y ), expected );
+        };
+    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            return IsNaN( Pow( x, y ) );
+        };
+
+    constexpr auto CheckIsInf = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            return IsInf( Pow( x, y ) );
+        };
+
+    constexpr auto CheckIsPosInf = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            return IsSameValue( Pow( x, y ), C::Infinity );
+        };
+
+    constexpr auto CheckIsNegInf = []( C::ValueType x, C::ValueType y ) -> bool
+        {
+            auto r = Pow( x, y );
+            return IsSameValue( r, C::NegativeInfinity );
+        };
+
+
+    constexpr auto check1 = Check( 0., 0., 1 ) && Check( -0., 0., 1 ) && Check( 0., -0., 1 ) && Check( -0., -0., 1 );
+    BOOST_CHECK( check1 );
+    constexpr auto check2 = Check( 10., 0., 1 ) && Check( -10., 0., 1 ) && Check( 10., -0., 1 ) && Check( -10., -0., 1 );
+    BOOST_CHECK( check2 );
+    constexpr auto check3 = Check( C::NaN, 0., 1 ) && Check( C::NaN, -0., 1 );
+    BOOST_CHECK( check3 );
+
+    constexpr auto check4 = CheckIsInf( 1.1f, C::Infinity ) && 
+        CheckIsInf( C::Infinity, C::Infinity ) && 
+        CheckIsInf( -1.1f, C::Infinity ) &&
+        CheckIsInf( -C::Infinity, C::Infinity );
+    BOOST_CHECK( check4 );
+
+    constexpr auto check5 = Check( 0.9f, C::Infinity, 0.f ) && 
+        Check( 1e-7, C::Infinity, 0 ) && 
+        Check( -0.9, C::Infinity, 0 ) && 
+        Check( -1e-7, C::Infinity, 0 );
+    BOOST_CHECK( check5 );
+
+    constexpr auto check6 = Check( 1.1, -C::Infinity, 0 ) && Check( C::Infinity, -C::Infinity, 0 ) && Check( -1.1, -C::Infinity, 0 ) && Check( -C::Infinity, -C::Infinity, 0 );
+    BOOST_CHECK( check6 );
+
+    constexpr auto check7 = CheckIsInf( 0.9, -C::Infinity ) && CheckIsInf( 1e-7, -C::Infinity ) && CheckIsInf( -0.9, -C::Infinity ) && CheckIsInf( -1e-7, -C::Infinity );
+    BOOST_CHECK( check7 );
+
+    constexpr auto check8 = CheckIsInf( C::Infinity, 1e-7 ) && CheckIsInf( C::Infinity, 1 ) && CheckIsInf( C::Infinity, 1e7 );
+    BOOST_CHECK( check8 );
+
+    constexpr auto check9 = Check( C::Infinity, -1e-7, 0 ) && Check( C::Infinity, -1, 0 ) && Check( C::Infinity, -1e7, 0 );
+    BOOST_CHECK( check9 );
+
+    constexpr auto check10 = CheckIsNegInf( -C::Infinity, 1 ) && CheckIsNegInf( -C::Infinity, 11 ) && CheckIsNegInf( -C::Infinity, 1001 );
+    BOOST_CHECK( check10 );
+
+    constexpr auto check11 = CheckIsPosInf( -C::Infinity, 2 ) &&
+        CheckIsPosInf( -C::Infinity, 12 ) &&
+        CheckIsPosInf( -C::Infinity, 1002 ) &&
+        CheckIsPosInf( -C::Infinity, 0.1 ) &&
+        CheckIsPosInf( -C::Infinity, 1.1 ) &&
+        CheckIsPosInf( -C::Infinity, 11.1 ) &&
+        CheckIsPosInf( -C::Infinity, 1001.1 );
+    BOOST_CHECK( check11 );
+
+    constexpr auto check12 = Check( -C::Infinity, -1, -0.f ) && Check( -C::Infinity, -11, -0.f ) && Check( -C::Infinity, -1001, -0.f );
+    BOOST_CHECK( check12 );
+
+    constexpr auto check13 = Check( -C::Infinity, -2, 0. ) &&
+        Check( -C::Infinity, -12, 0. ) &&
+        Check( -C::Infinity, -1002, 0. ) &&
+        Check( -C::Infinity, -0.1, 0. ) &&
+        Check( -C::Infinity, -1.1, 0. ) &&
+        Check( -C::Infinity, -11.1, 0. ) &&
+        Check( -C::Infinity, -1001.1, 0. );
+    BOOST_CHECK( check13 );
+
+    constexpr auto check14 = CheckIsNaN( C::NaN, C::NaN ) &&
+        CheckIsNaN( 0.f, C::NaN ) &&
+        Check( 1.f, C::NaN, 1.f ) &&
+        CheckIsNaN( -1.f, C::NaN ) &&
+        CheckIsNaN( C::NaN, 1.f ) &&
+        CheckIsNaN( C::NaN, -1.f ) &&
+        CheckIsNaN( 3.f, C::NaN );
+    BOOST_CHECK( check14 );
+
+    constexpr auto check15 = Check( 1.f, C::Infinity, 1.f ) &&
+        Check( -1.f, C::Infinity, 1.f ) &&
+        Check( 1.f, -C::Infinity, 1.f ) &&
+        Check( -1.f, -C::Infinity, 1.f );
+    BOOST_CHECK( check15 );
+
+    constexpr auto check16 = CheckIsNaN( -0.1f, 1.1f ) &&
+        CheckIsNaN( -0.1f, -1.1f ) &&
+        CheckIsNaN( -10.1f, 1.1f ) &&
+        CheckIsNaN( -10.1f, -1.1f );
+    BOOST_CHECK( check16 );
+
+
+    constexpr auto check17 = CheckIsPosInf( 0.f, -1.f ) &&
+        CheckIsPosInf( 0.f, -11.f ) &&
+        CheckIsNegInf( -0.f, -1.f )&&
+        CheckIsNegInf( -0.f, -11.f );
+    BOOST_CHECK( check17 );
+
+
+
+
+
+
+}
+
+
 
 // --run_test=MathTests/Deg2RadDoubleTest1
 BOOST_AUTO_TEST_CASE( Deg2RadDoubleTest1 )
