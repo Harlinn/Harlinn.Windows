@@ -11563,57 +11563,6 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    /*
-    inline typename SquareMatrix<float, 4>::Simd Multiply( const typename SquareMatrix<float, 4>::Simd& matrix1, const typename SquareMatrix<float, 4>::Simd& matrix2 )
-    {
-        using Traits = typename SquareMatrix<float, 4>::Traits;
-        using Simd = typename SquareMatrix<float, 4>::Simd;
-
-        auto rmm1 = _mm256_castps128_ps256( matrix1.simd[ 0 ] );
-        rmm1 = _mm256_insertf128_ps( rmm1, matrix1.simd[ 1 ], 1 );
-        auto rmm2 = _mm256_castps128_ps256( matrix1.simd[ 2 ] );
-        rmm2 = _mm256_insertf128_ps( rmm2, matrix1.simd[ 3 ], 1 );
-
-        auto rmm3 = _mm256_castps128_ps256( matrix2.simd[ 0 ] );
-        rmm3 = _mm256_insertf128_ps( rmm3, matrix2.simd[ 1 ], 1 );
-        auto rmm4 = _mm256_castps128_ps256( matrix2.simd[ 2 ] );
-        rmm4 = _mm256_insertf128_ps( rmm4, matrix2.simd[ 3 ], 1 );
-
-        auto rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 0, 0, 0, 0 ) );
-        auto rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 0, 0, 0, 0 ) );
-        auto rmm7 = _mm256_permute2f128_ps( rmm3, rmm3, 0x00 );
-        auto rmm8 = _mm256_mul_ps( rmm5, rmm7 );
-        auto rmm9 = _mm256_mul_ps( rmm6, rmm7 );
-
-        rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 1, 1, 1, 1 ) );
-        rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 1, 1, 1, 1 ) );
-        rmm7 = _mm256_permute2f128_ps( rmm3, rmm3, 0x11 );
-        auto rmm10 = _mm256_fmadd_ps( rmm5, rmm7, rmm8 );
-        auto rmm11 = _mm256_fmadd_ps( rmm6, rmm7, rmm9 );
-
-        rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 2, 2, 2, 2 ) );
-        rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 2, 2, 2, 2 ) );
-        auto rmm12 = _mm256_permute2f128_ps( rmm4, rmm4, 0x00 );
-        auto rmm13 = _mm256_mul_ps( rmm5, rmm12 );
-        auto rmm14 = _mm256_mul_ps( rmm6, rmm12 );
-
-        rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 3, 3, 3, 3 ) );
-        rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 3, 3, 3, 3 ) );
-        rmm12 = _mm256_permute2f128_ps( rmm4, rmm4, 0x11 );
-        auto rmm15 = _mm256_fmadd_ps( rmm5, rmm12, rmm13 );
-        auto rmm16 = _mm256_fmadd_ps( rmm6, rmm12, rmm14 );
-
-        rmm1 = _mm256_add_ps( rmm10, rmm15 );
-        rmm2 = _mm256_add_ps( rmm11, rmm16 );
-
-        Simd result;
-        result.simd[ 0 ] = _mm256_castps256_ps128( rmm1 );
-        result.simd[ 1 ] = _mm256_extractf128_ps( rmm1, 1 );
-        result.simd[ 2 ] = _mm256_castps256_ps128( rmm2 );
-        result.simd[ 3 ] = _mm256_extractf128_ps( rmm2, 1 );
-        return result;
-    }
-    */
 
     inline typename SquareMatrix<float, 4>::Simd Multiply( const typename SquareMatrix<float, 4>::Simd& matrix1, const typename SquareMatrix<float, 4>::Simd& matrix2 )
     {
@@ -12967,7 +12916,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const QuaternionSimd<Quaternion<float>>& q ) noexcept
+    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>::Simd& q ) noexcept
     {
         return Rotation( q );
     }

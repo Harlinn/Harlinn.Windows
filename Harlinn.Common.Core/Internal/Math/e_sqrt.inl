@@ -119,7 +119,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			if ( ( ( ix0 & ( ~sign ) ) | ix1 ) == 0 ) return x;/* sqrt(+-0) = +-0 */
 			else if ( ix0 < 0 )
 			{
-				return std::numeric_limits<double>::signaling_NaN( );
+				return std::numeric_limits<double>::quiet_NaN( );
 				//return ( x - x ) / ( x - x );		/* sqrt(-ve) = sNaN */
 			}
 		}

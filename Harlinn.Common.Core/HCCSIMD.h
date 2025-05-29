@@ -4350,33 +4350,6 @@ namespace Harlinn::Common::Core::SIMD
 
         static SIMDType IsNaN( SIMDType v ) noexcept
         {
-            /*
-            using FloatType = Math::FloatingPoint<Type>;
-            //return ( ( value_ & ExponentMask ) == MaxExponent ) && ( ( value_ & FractionMask ) != 0 );
-
-            if constexpr ( UseShortSIMDType )
-            {
-                auto exponent = _mm_castps_si128( And( v, Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) ) );
-                auto maxExponent = _mm_castps_si128( Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) );
-                auto exponentEqual = _mm_cmpeq_epi32( exponent, maxExponent );
-
-                auto fraction = _mm_castps_si128( And( v, Fill( std::bit_cast< Type >( FloatType::FractionMask ) ) ) );
-                auto zeros = _mm_castps_si128( Zero( ) );
-                auto fractionEqualZero = _mm_cmpeq_epi32( fraction, zeros );
-                return AndNot( _mm_castsi128_ps( fractionEqualZero ), _mm_castsi128_ps( exponentEqual ) );
-            }
-            else
-            { 
-                auto exponent = _mm256_castps_si256( And( v, Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) ) );
-                auto maxExponent = _mm256_castps_si256( Fill( std::bit_cast< Type >( FloatType::ExponentMask ) ) );
-                auto exponentEqual = _mm256_cmpeq_epi32( exponent, maxExponent );
-
-                auto fraction = _mm256_castps_si256( And( v, Fill( std::bit_cast< Type >( FloatType::FractionMask ) ) ) );
-                auto zeros = _mm256_castps_si256( Zero( ) );
-                auto fractionEqualZero = _mm256_cmpeq_epi32( fraction, zeros );
-                return AndNot( _mm256_castsi256_ps( fractionEqualZero ), _mm256_castsi256_ps( exponentEqual ) );
-            }
-            */
             return NotEqual( v, v );
         }
 

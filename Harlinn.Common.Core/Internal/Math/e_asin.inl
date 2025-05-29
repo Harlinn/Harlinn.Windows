@@ -145,7 +145,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				return x * pio2_hi + x * pio2_lo;
 			}
 			/* asin(|x|>1) is NaN */
-			return std::numeric_limits<double>::signaling_NaN( );
+			return std::numeric_limits<double>::quiet_NaN( );
 			//return ( x - x ) / ( x - x );
 		}
 		else if ( ix < 0x3fe00000 )

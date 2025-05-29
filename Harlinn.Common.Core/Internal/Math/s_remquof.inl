@@ -75,7 +75,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* purge off exception values */
 		if ( hy == 0 || hx >= 0x7f800000 || hy > 0x7f800000 ) /* y=0,NaN;or x not finite */
 		{
-			return std::numeric_limits<float>::signaling_NaN( );
+			return std::numeric_limits<float>::quiet_NaN( );
 			//return ( x * y ) / ( x * y );
 		}
 		if ( hx < hy )

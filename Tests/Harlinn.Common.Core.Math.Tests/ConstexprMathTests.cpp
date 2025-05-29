@@ -831,6 +831,77 @@ BOOST_AUTO_TEST_CASE( DoubleIsFiniteTest1 )
     BOOST_CHECK( result14 );
 }
 
+// --run_test=ConstexprMathTests/FloatIsNormalTest1
+BOOST_AUTO_TEST_CASE( FloatIsNormalTest1 )
+{
+    using C = Constants<float>;
+
+    auto constexpr result1 = IsNormal( C::NaN ) == false;
+    BOOST_CHECK( result1 );
+    auto constexpr result2 = IsNormal( C::NegativeNaN ) == false;
+    BOOST_CHECK( result2 );
+    auto constexpr result3 = IsNormal( C::sNaN ) == false;
+    BOOST_CHECK( result3 );
+    auto constexpr result4 = IsNormal( C::sNegativeNaN ) == false;
+    BOOST_CHECK( result4 );
+    auto constexpr result5 = IsNormal( C::NegativeInfinity ) == false;
+    BOOST_CHECK( result5 );
+    auto constexpr result6 = IsNormal( C::Lowest );
+    BOOST_CHECK( result6 );
+    auto constexpr result7 = IsNormal( -C::Min );
+    BOOST_CHECK( result7 );
+    auto constexpr result8 = IsNormal( -C::DenormalMin ) == false;
+    BOOST_CHECK( result8 );
+    auto constexpr result9 = IsNormal( -C::Zero ) == false;
+    BOOST_CHECK( result9 );
+    auto constexpr result10 = IsNormal( C::Zero ) == false;
+    BOOST_CHECK( result10 );
+    auto constexpr result11 = IsNormal( C::DenormalMin ) == false;
+    BOOST_CHECK( result11 );
+    auto constexpr result12 = IsNormal( C::Min );
+    BOOST_CHECK( result12 );
+    auto constexpr result13 = IsNormal( C::Max );
+    BOOST_CHECK( result13 );
+    auto constexpr result14 = IsNormal( C::Infinity ) == false;
+    BOOST_CHECK( result14 );
+}
+
+// --run_test=ConstexprMathTests/DoubleIsNormalTest1
+BOOST_AUTO_TEST_CASE( DoubleIsNormalTest1 )
+{
+    using C = Constants<double>;
+
+    auto constexpr result1 = IsNormal( C::NaN ) == false;
+    BOOST_CHECK( result1 );
+    auto constexpr result2 = IsNormal( C::NegativeNaN ) == false;
+    BOOST_CHECK( result2 );
+    auto constexpr result3 = IsNormal( C::sNaN ) == false;
+    BOOST_CHECK( result3 );
+    auto constexpr result4 = IsNormal( C::sNegativeNaN ) == false;
+    BOOST_CHECK( result4 );
+    auto constexpr result5 = IsNormal( C::NegativeInfinity ) == false;
+    BOOST_CHECK( result5 );
+    auto constexpr result6 = IsNormal( C::Lowest );
+    BOOST_CHECK( result6 );
+    auto constexpr result7 = IsNormal( -C::Min );
+    BOOST_CHECK( result7 );
+    auto constexpr result8 = IsNormal( -C::DenormalMin ) == false;
+    BOOST_CHECK( result8 );
+    auto constexpr result9 = IsNormal( -C::Zero ) == false;
+    BOOST_CHECK( result9 );
+    auto constexpr result10 = IsNormal( C::Zero ) == false;
+    BOOST_CHECK( result10 );
+    auto constexpr result11 = IsNormal( C::DenormalMin ) == false;
+    BOOST_CHECK( result11 );
+    auto constexpr result12 = IsNormal( C::Min );
+    BOOST_CHECK( result12 );
+    auto constexpr result13 = IsNormal( C::Max );
+    BOOST_CHECK( result13 );
+    auto constexpr result14 = IsNormal( C::Infinity ) == false;
+    BOOST_CHECK( result14 );
+}
+
+
 // --run_test=ConstexprMathTests/FloatAbsTest1
 BOOST_AUTO_TEST_CASE( FloatAbsTest1 )
 {

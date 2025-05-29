@@ -1068,6 +1068,9 @@ namespace Harlinn::Common::Core::Math
         return IsInf( args ... );
     }
 
+    /// <summary>
+    /// All integers have finite values.
+    /// </summary>
     template<typename T>
         requires IsInteger<T>
     constexpr inline bool IsFinite( T val ) noexcept
@@ -1075,6 +1078,10 @@ namespace Harlinn::Common::Core::Math
         return true;
     }
 
+    /// <summary>
+    /// Determines if the given floating point number val has finite 
+    /// value i.e. it is normal, subnormal or zero, but not infinite or NaN.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline bool IsFinite( T val ) noexcept
@@ -1082,12 +1089,48 @@ namespace Harlinn::Common::Core::Math
         return Internal::OpenLibM::isfinite( val );
     }
 
+    /// <summary>
+    /// Determines if all the arguments are finite.
+    /// </summary>
     template<typename T, typename ... Args>
         requires IsArithmetic<T> && ( IsArithmetic<Args> && ... )
     constexpr inline bool IsFinite( Args&& ... args ) noexcept
     {
         return (IsFinite( args ) && ...);
     }
+
+
+    /// <summary>
+    /// All integers are <q>normal</q>.
+    /// </summary>
+    template<typename T>
+        requires IsInteger<T>
+    constexpr inline bool IsNormal( T val ) noexcept
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Determines if the given floating point number val is normal, 
+    /// i.e. is neither zero, subnormal, infinite, nor NaN.
+    /// </summary>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline bool IsNormal( T val ) noexcept
+    {
+        return Internal::OpenLibM::isnormal( val );
+    }
+
+    /// <summary>
+    /// Determines if all the arguments are normal.
+    /// </summary>
+    template<typename T, typename ... Args>
+        requires IsArithmetic<T> && ( IsArithmetic<Args> && ... )
+    constexpr inline bool IsNormal( Args&& ... args ) noexcept
+    {
+        return ( IsNormal( args ) && ... );
+    }
+
 
 
     /// <summary>

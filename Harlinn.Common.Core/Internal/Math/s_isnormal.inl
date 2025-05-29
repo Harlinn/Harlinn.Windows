@@ -36,19 +36,23 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline int
 		__isnormal( double d )
 	{
-		union IEEEd2bits u;
+		//union IEEEd2bits u;
 
-		u.d = d;
-		return ( u.bits.exp != 0 && u.bits.exp != 2047 );
+		//u.d = d;
+		uint64_t exponent = ( std::bit_cast< uint64_t >( d ) >> 52 ) & 0x7FFULL;
+
+		return exponent != 0 && exponent != 2047;
 	}
 
 	constexpr inline int
 		__isnormalf( float f )
 	{
-		union IEEEf2bits u;
+		//union IEEEf2bits u;
 
-		u.f = f;
-		return ( u.bits.exp != 0 && u.bits.exp != 255 );
+		//u.f = f;
+		uint32_t exponent = ( std::bit_cast< uint32_t >( f ) >> 23 ) & 0xFFU;
+
+		return exponent != 0 && exponent != 255;
 	}
 
 #ifdef OLM_LONG_DOUBLE

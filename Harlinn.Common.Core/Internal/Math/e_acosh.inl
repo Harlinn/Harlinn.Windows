@@ -54,7 +54,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( hx < 0x3ff00000 )
 		{		
 			/* x < 1 */
-			return std::numeric_limits<double>::signaling_NaN( );
+			return std::numeric_limits<double>::quiet_NaN( );
 			//return ( x - x ) / ( x - x );
 		}
 		else if ( hx >= 0x41b00000 )

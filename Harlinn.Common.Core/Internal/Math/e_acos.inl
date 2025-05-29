@@ -139,7 +139,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				else return pi + 2.0 * pio2_lo;	/* acos(-1)= pi */
 			}
 			/* acos(|x|>1) is NaN */
-			return std::numeric_limits<double>::signaling_NaN( );
+			return std::numeric_limits<double>::quiet_NaN( );
 			//return ( x - x ) / ( x - x );
 		}
 		if ( ix < 0x3fe00000 )

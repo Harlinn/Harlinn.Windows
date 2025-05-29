@@ -61,8 +61,8 @@ improved the performance of pbrt, rendering
 
 ### Without `--new`:
 
-pbrto renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt) in 478.7 
-seconds without the `--new` command line option, demonstrating that significant performance gains can be achieved using
+pbrto renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt) in 457.3 
+seconds without the `--new` command line option, demonstrating the significant performance gains achieved by using
 appropriate build options, including `/std:c++latest`. Just switching to the most up-to-date C++ version 
 gives a significant boost to the performance of the original code.
 
@@ -71,7 +71,7 @@ gives a significant boost to the performance of the original code.
 This executes my modified version of the pbrt CPU based rendering machinery.
 
 With the `--new` command line option pbrto renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt)
-in 328.5 seconds. 
+in 320.8 seconds. 
 
 ### Notes about the new rendering machinery.
 

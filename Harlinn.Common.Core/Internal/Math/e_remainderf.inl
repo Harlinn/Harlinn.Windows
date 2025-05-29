@@ -46,7 +46,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( hp == 0 )
 		{
 			/* p = 0 */
-			return std::numeric_limits<float>::signaling_NaN( );
+			return std::numeric_limits<float>::quiet_NaN( );
 			//return ( x * p ) / ( x * p );
 		}
 		if ( ( hx >= 0x7f800000 ) ||			/* x not finite */

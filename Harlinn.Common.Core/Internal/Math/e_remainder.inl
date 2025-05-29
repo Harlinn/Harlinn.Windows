@@ -53,7 +53,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( ( hp | lp ) == 0 )
 		{
 			/* p = 0 */
-			return std::numeric_limits<double>::signaling_NaN( );
+			return std::numeric_limits<double>::quiet_NaN( );
 			//return ( x * p ) / ( x * p );
 		}
 		if ( ( hx >= 0x7ff00000 ) ||			/* x not finite */
