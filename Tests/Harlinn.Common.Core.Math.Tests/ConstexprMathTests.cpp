@@ -4335,7 +4335,619 @@ BOOST_AUTO_TEST_CASE( DoubleSinCosTest1 )
 
 }
 
+// --run_test=ConstexprMathTests/FloatSinHTest1
+BOOST_AUTO_TEST_CASE( FloatSinHTest1 )
+{
+    using C = Constants<float>;
 
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = SinH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = SinH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = SinH( x );
+            return IsNaN( r );
+        };
+
+    // sinh (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // sinh (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // sinh (inf) == inf
+    constexpr auto check3 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // sinh (-inf) == -inf
+    constexpr auto check4 = Check( -C::Infinity, -C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // sinh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // sinh (0.7) == 0.75858370183953350346
+    constexpr auto check6 = CheckClose( 0.7, 0.75858370183953350346f );
+    BOOST_CHECK( check6 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleSinHTest1
+BOOST_AUTO_TEST_CASE( DoubleSinHTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = SinH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = SinH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = SinH( x );
+            return IsNaN( r );
+        };
+
+    // sinh (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // sinh (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // sinh (inf) == inf
+    constexpr auto check3 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // sinh (-inf) == -inf
+    constexpr auto check4 = Check( -C::Infinity, -C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // sinh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // sinh (0.7) == 0.75858370183953350346
+    constexpr auto check6 = CheckClose( 0.7, 0.75858370183953350346 );
+    BOOST_CHECK( check6 );
+
+}
+
+
+// --run_test=ConstexprMathTests/FloatASinHTest1
+BOOST_AUTO_TEST_CASE( FloatASinHTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ASinH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ASinH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ASinH( x );
+            return IsNaN( r );
+        };
+
+    // asinh (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // asinh (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // asinh (inf) == inf
+    constexpr auto check3 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // asinh (-inf) == -inf
+    constexpr auto check4 = Check( -C::Infinity, -C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // asinh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // asinh (0.7) == 0.652666566082355786
+    constexpr auto check6 = Check( 0.7, 0.652666566082355786 );
+    BOOST_CHECK( check6 );
+}
+
+// --run_test=ConstexprMathTests/DoubleASinHTest1
+BOOST_AUTO_TEST_CASE( DoubleASinHTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ASinH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ASinH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ASinH( x );
+            return IsNaN( r );
+        };
+
+    // asinh (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // asinh (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // asinh (inf) == inf
+    constexpr auto check3 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // asinh (-inf) == -inf
+    constexpr auto check4 = Check( -C::Infinity, -C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // asinh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // asinh (0.7) == 0.652666566082355786
+    constexpr auto check6 = Check( 0.7, 0.652666566082355786 );
+    BOOST_CHECK( check6 );
+}
+
+// --run_test=ConstexprMathTests/FloatCosHTest1
+BOOST_AUTO_TEST_CASE( FloatCosHTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = CosH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = CosH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = CosH( x );
+            return IsNaN( r );
+        };
+
+    // cosh (0) == 1
+    constexpr auto check1 = Check( 0., 1. );
+    BOOST_CHECK( check1 );
+
+    // cosh (-0) == 1
+    constexpr auto check2 = Check( -0., 1. );
+    BOOST_CHECK( check2 );
+
+    // cosh (inf) == inf
+    constexpr auto check3 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // cosh (-inf) == inf
+    constexpr auto check4 = Check( -C::Infinity, C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // cosh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // cosh (0.7) == 1.255169005630943018
+    constexpr auto check6 = Check( 0.7, 1.255169005630943018 );
+    BOOST_CHECK( check6 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleCosHTest1
+BOOST_AUTO_TEST_CASE( DoubleCosHTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = CosH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = CosH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = CosH( x );
+            return IsNaN( r );
+        };
+
+    // cosh (0) == 1
+    constexpr auto check1 = Check( 0., 1. );
+    BOOST_CHECK( check1 );
+
+    // cosh (-0) == 1
+    constexpr auto check2 = Check( -0., 1. );
+    BOOST_CHECK( check2 );
+
+    // cosh (inf) == inf
+    constexpr auto check3 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // cosh (-inf) == inf
+    constexpr auto check4 = Check( -C::Infinity, C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // cosh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // cosh (0.7) == 1.255169005630943018
+    constexpr auto check6 = Check( 0.7, 1.255169005630943018 );
+    BOOST_CHECK( check6 );
+
+}
+
+// --run_test=ConstexprMathTests/FloatACosHTest1
+BOOST_AUTO_TEST_CASE( FloatACosHTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ACosH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ACosH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ACosH( x );
+            return IsNaN( r );
+        };
+
+    // acosh (inf) == inf
+    constexpr auto check1 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check1 );
+
+    // acosh (-inf) == NaN
+    constexpr auto check2 = CheckIsNaN( -C::Infinity );
+    BOOST_CHECK( check2 );
+
+    // acosh (-1.1) == NaN
+    constexpr auto check3 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check3 );
+
+    // acosh (1) == 0
+    constexpr auto check4 = Check( C::One, C::Zero );
+    BOOST_CHECK( check4 );
+
+    // acosh (7) == 2.633915793849633417250092694615937
+    constexpr auto check5 = Check( 7., 2.633915793849633417250092694615937f );
+    BOOST_CHECK( check5 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleACosHTest1
+BOOST_AUTO_TEST_CASE( DoubleACosHTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ACosH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ACosH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ACosH( x );
+            return IsNaN( r );
+        };
+
+    // acosh (inf) == inf
+    constexpr auto check1 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check1 );
+
+    // acosh (-inf) == NaN
+    constexpr auto check2 = CheckIsNaN( -C::Infinity );
+    BOOST_CHECK( check2 );
+
+    // acosh (-1.1) == NaN
+    constexpr auto check3 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check3 );
+
+    // acosh (1) == 0
+    constexpr auto check4 = Check( C::One, C::Zero );
+    BOOST_CHECK( check4 );
+
+    // acosh (7) == 2.633915793849633417250092694615937
+    constexpr auto check5 = Check( 7., 2.633915793849633417250092694615937 );
+    BOOST_CHECK( check5 );
+
+}
+
+
+// --run_test=ConstexprMathTests/FloatTanHTest1
+BOOST_AUTO_TEST_CASE( FloatTanHTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = TanH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = TanH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = TanH( x );
+            return IsNaN( r );
+        };
+
+    // tanh (0) == 0
+    constexpr auto check1 = Check( C::Zero, C::Zero );
+    BOOST_CHECK( check1 );
+
+    // tanh (-0) == -0
+    constexpr auto check2 = Check( -C::Zero, -C::Zero );
+    BOOST_CHECK( check2 );
+
+    // tanh (inf) == 1
+    constexpr auto check3 = Check( C::Infinity, C::One );
+    BOOST_CHECK( check3 );
+
+    // tanh (NaN) == NaN
+    constexpr auto check4 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check4 );
+
+    // tanh (0.7) == 0.60436777711716349631
+    constexpr auto check5 = CheckClose( 0.7, 0.60436777711716349631 );
+    BOOST_CHECK( check5 );
+
+    // tanh (-0.7) == -0.60436777711716349631
+    constexpr auto check6 = CheckClose( -0.7, -0.60436777711716349631 );
+    BOOST_CHECK( check6 );
+
+    // tanh (1.0) == 0.7615941559557648881194582826047935904
+    constexpr auto check7 = Check( 1., 0.7615941559557648881194582826047935904 );
+    BOOST_CHECK( check7 );
+
+    // tanh (-1.0) == -0.7615941559557648881194582826047935904
+    constexpr auto check8 = Check( -1., -0.7615941559557648881194582826047935904 );
+    BOOST_CHECK( check8 );
+
+    // tanh (6.938893903907228377647697925567626953125e-18) == 6.938893903907228377647697925567626953125e-18
+    constexpr auto check9 = Check( 6.938893903907228377647697925567626953125e-18, 6.938893903907228377647697925567626953125e-18 );
+    BOOST_CHECK( check9 );
+}
+
+// --run_test=ConstexprMathTests/DoubleTanHTest1
+BOOST_AUTO_TEST_CASE( DoubleTanHTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = TanH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = TanH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = TanH( x );
+            return IsNaN( r );
+        };
+
+    // tanh (0) == 0
+    constexpr auto check1 = Check( C::Zero, C::Zero );
+    BOOST_CHECK( check1 );
+
+    // tanh (-0) == -0
+    constexpr auto check2 = Check( -C::Zero, -C::Zero );
+    BOOST_CHECK( check2 );
+
+    // tanh (inf) == 1
+    constexpr auto check3 = Check( C::Infinity, C::One );
+    BOOST_CHECK( check3 );
+
+    // tanh (NaN) == NaN
+    constexpr auto check4 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check4 );
+
+    // tanh (0.7) == 0.60436777711716349631
+    constexpr auto check5 = CheckClose( 0.7, 0.60436777711716349631 );
+    BOOST_CHECK( check5 );
+
+    // tanh (-0.7) == -0.60436777711716349631
+    constexpr auto check6 = CheckClose( -0.7, -0.60436777711716349631 );
+    BOOST_CHECK( check6 );
+
+    // tanh (1.0) == 0.7615941559557648881194582826047935904
+    constexpr auto check7 = Check( 1., 0.7615941559557648881194582826047935904 );
+    BOOST_CHECK( check7 );
+
+    // tanh (-1.0) == -0.7615941559557648881194582826047935904
+    constexpr auto check8 = Check( -1., -0.7615941559557648881194582826047935904 );
+    BOOST_CHECK( check8 );
+
+    // tanh (6.938893903907228377647697925567626953125e-18) == 6.938893903907228377647697925567626953125e-18
+    constexpr auto check9 = Check( 6.938893903907228377647697925567626953125e-18, 6.938893903907228377647697925567626953125e-18 );
+    BOOST_CHECK( check9 );
+}
+
+// --run_test=ConstexprMathTests/FloatATanHTest1
+BOOST_AUTO_TEST_CASE( FloatATanHTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ATanH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ATanH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ATanH( x );
+            return IsNaN( r );
+        };
+
+    // atanh (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // atanh (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // atanh (1) == inf
+    constexpr auto check3 = Check( 1., C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // atanh (-1) == -inf
+    constexpr auto check4 = Check( -1., -C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // atanh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+    // atanh (1.1) == NaN
+    constexpr auto check6 = CheckIsNaN( 1.1 );
+    BOOST_CHECK( check6 );
+
+    // atanh (-1.1) == NaN
+    constexpr auto check7 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check7 );
+
+    // atanh (0.7) == 0.8673005276940531944
+    constexpr auto check8 = Check( 0.7, 0.8673005276940531944f );
+    BOOST_CHECK( check8 );
+}
+
+// --run_test=ConstexprMathTests/DoubleATanHTest1
+BOOST_AUTO_TEST_CASE( DoubleATanHTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ATanH( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = ATanH( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ATanH( x );
+            return IsNaN( r );
+        };
+
+    // atanh (0) == 0
+    constexpr auto check1 = Check( 0., 0. );
+    BOOST_CHECK( check1 );
+
+    // atanh (-0) == -0
+    constexpr auto check2 = Check( -0., -0. );
+    BOOST_CHECK( check2 );
+
+    // atanh (1) == inf
+    constexpr auto check3 = Check( 1., C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // atanh (-1) == -inf
+    constexpr auto check4 = Check( -1., -C::Infinity );
+    BOOST_CHECK( check4 );
+
+    // atanh (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+    // atanh (1.1) == NaN
+    constexpr auto check6 = CheckIsNaN( 1.1 );
+    BOOST_CHECK( check6 );
+
+    // atanh (-1.1) == NaN
+    constexpr auto check7 = CheckIsNaN( -1.1 );
+    BOOST_CHECK( check7 );
+
+    // atanh (0.7) == 0.8673005276940531944
+    constexpr auto check8 = CheckClose( 0.7, 0.8673005276940531944 );
+    BOOST_CHECK( check8 );
+}
 
 
 BOOST_AUTO_TEST_SUITE_END( )

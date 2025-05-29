@@ -55,10 +55,17 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		uint32_t lx;
 		EXTRACT_WORDS( hx, lx, x );
 		ix = hx & 0x7fffffff;
-		if ( ( ix | ( ( lx | ( Negate( lx ) ) ) >> 31 ) ) > 0x3ff00000 ) /* |x|>1 */
-			return ( x - x ) / ( x - x );
+		if ( ( ix | ( ( lx | ( Negate( lx ) ) ) >> 31 ) ) > 0x3ff00000 )
+		{
+			/* |x|>1 */
+			return std::numeric_limits<double>::quiet_NaN( );
+			//return ( x - x ) / ( x - x );
+		}
 		if ( ix == 0x3ff00000 )
-			return x / zero;
+		{
+			return CopySign( std::numeric_limits<double>::infinity( ), x );
+			//return x / zero;
+		}
 		if ( ix<0x3e300000 && ( huge + x )>zero ) return x;	/* x<2**-28 */
 		SET_HIGH_WORD( x, ix );
 		if ( ix < 0x3fe00000 )

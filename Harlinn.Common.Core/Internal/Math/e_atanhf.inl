@@ -37,10 +37,17 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		int32_t hx, ix;
 		GET_FLOAT_WORD( hx, x );
 		ix = hx & 0x7fffffff;
-		if ( ix > 0x3f800000 ) 		/* |x|>1 */
-			return ( x - x ) / ( x - x );
+		if ( ix > 0x3f800000 )
+		{
+			/* |x|>1 */
+			return std::numeric_limits<float>::quiet_NaN( );
+			//return ( x - x ) / ( x - x );
+		}
 		if ( ix == 0x3f800000 )
-			return x / zero;
+		{
+			return CopySign( std::numeric_limits<float>::infinity( ), x );
+			//return x / zero;
+		}
 		if ( ix<0x31800000 && ( huge + x )>zero ) return x;	/* x<2**-28 */
 		SET_FLOAT_WORD( x, ix );
 		if ( ix < 0x3f000000 )

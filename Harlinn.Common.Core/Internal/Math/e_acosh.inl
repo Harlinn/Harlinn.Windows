@@ -52,8 +52,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		uint32_t lx;
 		EXTRACT_WORDS( hx, lx, x );
 		if ( hx < 0x3ff00000 )
-		{		/* x < 1 */
-			return ( x - x ) / ( x - x );
+		{		
+			/* x < 1 */
+			return std::numeric_limits<double>::signaling_NaN( );
+			//return ( x - x ) / ( x - x );
 		}
 		else if ( hx >= 0x41b00000 )
 		{	/* x > 2**28 */

@@ -37,8 +37,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		int32_t hx;
 		GET_FLOAT_WORD( hx, x );
 		if ( hx < 0x3f800000 )
-		{		/* x < 1 */
-			return ( x - x ) / ( x - x );
+		{	
+			/* x < 1 */
+			return std::numeric_limits<float>::signaling_NaN( );
+			//return ( x - x ) / ( x - x );
 		}
 		else if ( hx >= 0x4d800000 )
 		{	/* x > 2**28 */
