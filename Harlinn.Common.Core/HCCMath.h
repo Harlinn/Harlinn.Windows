@@ -2965,6 +2965,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the hyperbolic sine of x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> SinH( T x ) noexcept
@@ -2998,6 +3001,9 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// Calculates the inverse hyperbolic sine of x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ASinH( T x ) noexcept
@@ -3030,6 +3036,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the hyperbolic cosine of x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> CosH( T x ) noexcept
@@ -3062,6 +3071,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the inverse hyperbolic cosine of x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ACosH( T x ) noexcept
@@ -3094,6 +3106,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the hyperbolic tangent of x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> TanH( T x ) noexcept
@@ -3126,6 +3141,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the inverse hyperbolic tangent of x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ATanH( T x ) noexcept
@@ -3162,7 +3180,9 @@ namespace Harlinn::Common::Core::Math
 
 
 
-
+    /// <summary>
+    /// Calculates the Bessel function of the first kind of order 0 for x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> J0( T x ) noexcept
@@ -3178,6 +3198,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the Bessel function of the first kind of order 1 for x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> J1( T x ) noexcept
@@ -3193,6 +3216,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the Bessel function of the first kind of order n for x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> JN(int n, T x ) noexcept
@@ -3208,7 +3234,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
-
+    /// <summary>
+    /// Calculates the Bessel function of the second kind of order 0 for x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Y0( T x ) noexcept
@@ -3224,6 +3252,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the Bessel function of the second kind of order 1 for x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Y1( T x ) noexcept
@@ -3239,6 +3270,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Calculates the Bessel function of the second kind of order n for x.
+    /// </summary>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> YN( int n, T x ) noexcept

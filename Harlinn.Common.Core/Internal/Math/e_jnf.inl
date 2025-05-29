@@ -207,7 +207,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( hx < 0 )
 		{
-			return std::numeric_limits<float>::infinity( );
+			return std::numeric_limits<float>::quiet_NaN( );
 			//return zero / zero;
 		}
 		sign = 1;

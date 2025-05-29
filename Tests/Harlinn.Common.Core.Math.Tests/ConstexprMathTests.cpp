@@ -5020,5 +5020,797 @@ BOOST_AUTO_TEST_CASE( DoubleATanHTest1 )
     BOOST_CHECK( check8 );
 }
 
+// --run_test=ConstexprMathTests/FloatJ0Test1
+BOOST_AUTO_TEST_CASE( FloatJ0Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = J0( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = J0( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = J0( x );
+            return IsNaN( r );
+        };
+
+    // j0 (NaN) == NaN
+    constexpr auto check1 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check1 );
+
+    // j0 (inf) == 0
+    constexpr auto check2 = Check( C::Infinity, 0. );
+    BOOST_CHECK( check2 );
+
+    // j0 (-1.0) == 0.76519768655796655145
+    constexpr auto check3 = Check( -C::One, 0.76519768655796655145 );
+    BOOST_CHECK( check3 );
+
+    // j0 (0.0) == 1.0
+    constexpr auto check4 = Check( C::Zero, 1.0 );
+    BOOST_CHECK( check4 );
+
+    // j0( 0.1 ) == 0.99750156206604003228
+    constexpr auto check5 = Check( 0.1, 0.99750156206604003228 );
+    BOOST_CHECK( check5 );
+    
+    // j0( 0.7 ) == 0.88120088860740528084
+    constexpr auto check6 = Check( 0.7, 0.88120088860740528084 );
+    BOOST_CHECK( check6 );
+
+    // j0( 1.0 ) == 0.76519768655796655145
+    constexpr auto check7 = Check( C::One, 0.76519768655796655145 );
+    BOOST_CHECK( check7 );
+
+    // j0( 1.5 ) == 0.51182767173591812875
+    constexpr auto check8 = Check( 1.5, 0.51182767173591812875 );
+    BOOST_CHECK( check8 );
+
+    // j0( 2.0 ) == 0.22389077914123566805
+    constexpr auto check9 = CheckClose( 2.0, 0.22389077914123566805 );
+    BOOST_CHECK( check9 );
+
+    // j0( 8.0 ) == 0.17165080713755390609
+    constexpr auto check10 = CheckClose( 8.0, 0.17165080713755390609 );
+    BOOST_CHECK( check10 );
+
+    // j0 (10.0) == -0.24593576445134833520
+    constexpr auto check11 = CheckClose( 10.0, -0.24593576445134833520 );
+    BOOST_CHECK( check11 );
+}
+
+// --run_test=ConstexprMathTests/DoubleJ0Test1
+BOOST_AUTO_TEST_CASE( DoubleJ0Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = J0( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = J0( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = J0( x );
+            return IsNaN( r );
+        };
+
+    // j0 (NaN) == NaN
+    constexpr auto check1 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check1 );
+
+    // j0 (inf) == 0
+    constexpr auto check2 = Check( C::Infinity, 0. );
+    BOOST_CHECK( check2 );
+
+    // j0 (-1.0) == 0.76519768655796655145
+    constexpr auto check3 = Check( -C::One, 0.76519768655796655145 );
+    BOOST_CHECK( check3 );
+
+    // j0 (0.0) == 1.0
+    constexpr auto check4 = Check( C::Zero, 1.0 );
+    BOOST_CHECK( check4 );
+
+    // j0( 0.1 ) == 0.99750156206604003228
+    constexpr auto check5 = Check( 0.1, 0.99750156206604003228 );
+    BOOST_CHECK( check5 );
+
+    // j0( 0.7 ) == 0.88120088860740528084
+    constexpr auto check6 = Check( 0.7, 0.88120088860740528084 );
+    BOOST_CHECK( check6 );
+
+    // j0( 1.0 ) == 0.76519768655796655145
+    constexpr auto check7 = Check( C::One, 0.76519768655796655145 );
+    BOOST_CHECK( check7 );
+
+    // j0( 1.5 ) == 0.51182767173591812875
+    constexpr auto check8 = Check( 1.5, 0.51182767173591812875 );
+    BOOST_CHECK( check8 );
+
+    // j0( 2.0 ) == 0.22389077914123566805
+    constexpr auto check9 = Check( 2.0, 0.22389077914123566805 );
+    BOOST_CHECK( check9 );
+
+    // j0( 8.0 ) == 0.17165080713755390609
+    constexpr auto check10 = Check( 8.0, 0.17165080713755390609 );
+    BOOST_CHECK( check10 );
+
+    // j0 (10.0) == -0.24593576445134833520
+    constexpr auto check11 = CheckClose( 10.0, -0.24593576445134833520 );
+    BOOST_CHECK( check11 );
+}
+
+// --run_test=ConstexprMathTests/FloatJ1Test1
+BOOST_AUTO_TEST_CASE( FloatJ1Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = J1( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = J1( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = J1( x );
+            return IsNaN( r );
+        };
+
+    // j1 (NaN) == NaN
+    constexpr auto check1 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check1 );
+
+    // j1 (inf) == 0
+    constexpr auto check2 = Check( C::Infinity, 0. );
+    BOOST_CHECK( check2 );
+
+    // j1 (-1.0) == -0.44005058574493351596
+    constexpr auto check3 = Check( -1.0, -0.44005058574493351596 );
+    BOOST_CHECK( check3 );
+    
+    // j1 (0.0) == 0.0
+    constexpr auto check4 = Check( 0.0, 0.0 );
+    BOOST_CHECK( check4 );
+
+    // j1 (0.1) == 0.049937526036241997556
+    constexpr auto check5 = Check( 0.1, 0.049937526036241997556 );
+    BOOST_CHECK( check5 );
+
+    // j1 (0.7) == 0.32899574154005894785
+    constexpr auto check6 = Check( 0.7, 0.32899574154005894785 );
+    BOOST_CHECK( check6 );
+
+    // j1 (1.0) == 0.44005058574493351596
+    constexpr auto check7 = Check( 1.0, 0.44005058574493351596 );
+    BOOST_CHECK( check7 );
+
+    // j1 (1.5) == 0.55793650791009964199
+    constexpr auto check8 = Check( 1.5, 0.55793650791009964199 );
+    BOOST_CHECK( check8 );
+
+    // j1 (2.0) == 0.57672480775687338720
+    constexpr auto check9 = Check( 2.0, 0.57672480775687338720 );
+    BOOST_CHECK( check9 );
+
+    // j1 (8.0) == 0.23463634685391462438
+    constexpr auto check10 = Check( 8.0, 0.23463634685391462438 );
+    BOOST_CHECK( check10 );
+
+    // j1 (10.0) == 0.043472746168861436670
+    constexpr auto check11 = CheckClose( 10.0, 0.043472746168861436670 );
+    BOOST_CHECK( check11 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleJ1Test1
+BOOST_AUTO_TEST_CASE( DoubleJ1Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = J1( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = J1( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = J1( x );
+            return IsNaN( r );
+        };
+
+    // j1 (NaN) == NaN
+    constexpr auto check1 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check1 );
+
+    // j1 (inf) == 0
+    constexpr auto check2 = Check( C::Infinity, 0. );
+    BOOST_CHECK( check2 );
+
+    // j1 (-1.0) == -0.44005058574493351596
+    constexpr auto check3 = Check( -1.0, -0.44005058574493351596 );
+    BOOST_CHECK( check3 );
+
+    // j1 (0.0) == 0.0
+    constexpr auto check4 = Check( 0.0, 0.0 );
+    BOOST_CHECK( check4 );
+
+    // j1 (0.1) == 0.049937526036241997556
+    constexpr auto check5 = Check( 0.1, 0.049937526036241997556 );
+    BOOST_CHECK( check5 );
+
+    // j1 (0.7) == 0.32899574154005894785
+    constexpr auto check6 = Check( 0.7, 0.32899574154005894785 );
+    BOOST_CHECK( check6 );
+
+    // j1 (1.0) == 0.44005058574493351596
+    constexpr auto check7 = Check( 1.0, 0.44005058574493351596 );
+    BOOST_CHECK( check7 );
+
+    // j1 (1.5) == 0.55793650791009964199
+    constexpr auto check8 = Check( 1.5, 0.55793650791009964199 );
+    BOOST_CHECK( check8 );
+
+    // j1 (2.0) == 0.57672480775687338720
+    constexpr auto check9 = CheckClose( 2.0, 0.57672480775687338720 );
+    BOOST_CHECK( check9 );
+
+    // j1 (8.0) == 0.23463634685391462438
+    constexpr auto check10 = CheckClose( 8.0, 0.23463634685391462438 );
+    BOOST_CHECK( check10 );
+
+    // j1 (10.0) == 0.043472746168861436670
+    constexpr auto check11 = Check( 10.0, 0.043472746168861436670 );
+    BOOST_CHECK( check11 );
+
+}
+
+
+// --run_test=ConstexprMathTests/FloatJNTest1
+BOOST_AUTO_TEST_CASE( FloatJNTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( int n, C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = JN( n, x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( int n, C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = JN( n, x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( int n, C::ValueType x ) -> bool
+        {
+            auto r = JN( n, x );
+            return IsNaN( r );
+        };
+
+    // jn (0, x) == j0 (x)  
+    // jn (0, NaN) == NaN
+    constexpr auto check1 = CheckIsNaN( 0, C::NaN );
+    BOOST_CHECK( check1 );
+
+    // jn (0, inf) == 0
+    constexpr auto check2 = Check( 0, C::Infinity, 0. );
+    BOOST_CHECK( check2 );
+
+    // jn (0, -1.0) == 0.76519768655796655145
+    constexpr auto check3 = Check( 0, -1.0, 0.76519768655796655145 );
+    BOOST_CHECK( check3 );
+
+    // jn (0, 0.0) == 1.0
+    constexpr auto check4 = Check( 0, 0.0, 1.0 );
+    BOOST_CHECK( check4 );
+
+    // jn (0, 0.1) == 0.99750156206604003228
+    constexpr auto check5 = Check( 0, 0.1, 0.99750156206604003228 );
+    BOOST_CHECK( check5 );
+
+    // jn (0, 0.7) == 0.88120088860740528084
+    constexpr auto check6 = Check( 0, 0.7, 0.88120088860740528084 );
+    BOOST_CHECK( check6 );
+
+    // jn (0, 1.0) == 0.76519768655796655145
+    constexpr auto check7 = Check( 0, 1.0, 0.76519768655796655145 );
+    BOOST_CHECK( check7 );
+
+    // jn (0, 1.5) == 0.51182767173591812875
+    constexpr auto check8 = Check( 0, 1.5, 0.51182767173591812875 );
+    BOOST_CHECK( check8 );
+
+    // jn (0, 2.0) == 0.22389077914123566805
+    constexpr auto check9 = CheckClose( 0, 2.0, 0.22389077914123566805 );
+    BOOST_CHECK( check9 );
+
+    // jn (0, 8.0) == 0.17165080713755390609
+    constexpr auto check10 = CheckClose( 0, 8.0, 0.17165080713755390609 );
+    BOOST_CHECK( check10 );
+
+    // jn (0, 10.0) == -0.24593576445134833520
+    constexpr auto check11 = CheckClose( 0, 10.0, -0.24593576445134833520 );
+    BOOST_CHECK( check11 );
+
+    // jn (1, x) == j1 (x)  
+    // jn (1, NaN) == NaN
+    constexpr auto check12 = CheckIsNaN( 1, C::NaN );
+    BOOST_CHECK( check12 );
+
+    // jn (1, inf) == 0
+    constexpr auto check13 = Check( 1, C::Infinity, 0. );
+    BOOST_CHECK( check13 );
+
+    // jn (1, -1.0) == -0.44005058574493351596
+    constexpr auto check14 = Check( 1, -1.0, -0.44005058574493351596 );
+    BOOST_CHECK( check14 );
+
+    // jn (1, 0.0) == 0.0
+    constexpr auto check15 = Check( 1, 0.0, 0.0 );
+    BOOST_CHECK( check15 );
+
+    // jn (1, 0.1) == 0.049937526036241997556
+    constexpr auto check16 = Check( 1, 0.1, 0.049937526036241997556 );
+    BOOST_CHECK( check16 );
+
+    // jn (1, 0.7) == 0.32899574154005894785
+    constexpr auto check17 = Check( 1, 0.7, 0.32899574154005894785 );
+    BOOST_CHECK( check17 );
+
+    // jn (1, 1.0) == 0.44005058574493351596
+    constexpr auto check18 = Check( 1, 1.0, 0.44005058574493351596 );
+    BOOST_CHECK( check18 );
+    
+    // jn (1, 1.5) == 0.55793650791009964199
+    constexpr auto check19 = Check( 1, 1.5, 0.55793650791009964199 );
+    BOOST_CHECK( check19 );
+
+    // jn (1, 2.0) == 0.57672480775687338720
+    constexpr auto check20 = Check( 1, 2.0, 0.57672480775687338720 );
+    BOOST_CHECK( check20 );
+
+    // jn (1, 8.0) == 0.23463634685391462438
+    constexpr auto check21 = Check( 1, 8.0, 0.23463634685391462438 );
+    BOOST_CHECK( check21 );
+
+    // jn (1, 10.0) == 0.043472746168861436670
+    constexpr auto check22 = CheckClose( 1, 10.0, 0.043472746168861436670 );
+    BOOST_CHECK( check22 );
+
+    // jn (3, x)  
+    // jn (3, NaN) == NaN
+    constexpr auto check23 = CheckIsNaN( 3, C::NaN );
+    BOOST_CHECK( check23 );
+
+    // jn (3, inf) == 0
+    constexpr auto check24 = Check( 3, C::Infinity, 0.0 );
+    BOOST_CHECK( check24 );
+
+    // jn (3, -1.0) == -0.019563353982668405919
+    constexpr auto check25 = Check( 3, -1.0, -0.019563353982668405919 );
+    BOOST_CHECK( check25 );
+
+    // jn (3, 0.0) == 0.0
+    constexpr auto check26 = Check( 3, 0.0, 0.0 );
+    BOOST_CHECK( check26 );
+
+    // jn (3, 0.1) == 0.000020820315754756261429
+    constexpr auto check27 = Check( 3, 0.1, 0.000020820315754756261429 );
+    BOOST_CHECK( check27 );
+
+    // jn (3, 0.7) == 0.0069296548267508408077
+    constexpr auto check28 = CheckClose( 3, 0.7, 0.0069296548267508408077 );
+    BOOST_CHECK( check28 );
+
+    // jn (3, 1.0) == 0.019563353982668405919
+    constexpr auto check29 = Check( 3, 1.0, 0.019563353982668405919 );
+    BOOST_CHECK( check29 );
+
+    // jn (3, 2.0) == 0.12894324947440205110
+    constexpr auto check30 = CheckClose( 3, 2.0, 0.12894324947440205110 );
+    BOOST_CHECK( check30 );
+
+    // jn (3, 10.0) == 0.058379379305186812343
+    constexpr auto check31 = CheckClose( 3, 10.0, 0.058379379305186812343 );
+    BOOST_CHECK( check31 );
+
+    //  jn (10, x)  
+    // jn (10, NaN) == NaN
+    constexpr auto check32 = CheckIsNaN( 10, C::NaN );
+    BOOST_CHECK( check32 );
+
+    // jn (10, inf) == 0
+    constexpr auto check33 = Check( 10, C::Infinity, 0.0 );
+    BOOST_CHECK( check33 );
+
+    // jn (10, -1.0) == 0.26306151236874532070e-9
+    constexpr auto check34 = Check( 10, -1.0, 0.26306151236874532070e-9 );
+    BOOST_CHECK( check34 );
+
+    // jn (10, 0.0) == 0.0
+    constexpr auto check35 = Check( 10, 0.0, 0.0 );
+    BOOST_CHECK( check35 );
+
+    // jn (10, 0.1) == 0.26905328954342155795e-19
+    constexpr auto check36 = CheckClose( 10, 0.1, 0.26905328954342155795e-19 );
+    BOOST_CHECK( check36 );
+
+    // jn (10, 0.7) == 0.75175911502153953928e-11
+    constexpr auto check37 = CheckClose( 10, 0.7, 0.75175911502153953928e-11 );
+    BOOST_CHECK( check37 );
+
+    // jn (10, 1.0) == 0.26306151236874532070e-9
+    constexpr auto check38 = Check( 10, 1.0, 0.26306151236874532070e-9 );
+    BOOST_CHECK( check38 );
+
+    // jn (10, 2.0) == 0.25153862827167367096e-6
+    constexpr auto check39 = CheckClose( 10, 2.0, 0.25153862827167367096e-6 );
+    BOOST_CHECK( check39 );
+
+    // jn (10, 10.0) == 0.20748610663335885770
+    constexpr auto check40 = CheckClose( 10, 10.0, 0.20748610663335885770 );
+    BOOST_CHECK( check40 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleJNTest1
+BOOST_AUTO_TEST_CASE( DoubleJNTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( int n, C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = JN( n, x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( int n, C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = JN( n, x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( int n, C::ValueType x ) -> bool
+        {
+            auto r = JN( n, x );
+            return IsNaN( r );
+        };
+
+    // jn (0, x) == j0 (x)  
+    // jn (0, NaN) == NaN
+    constexpr auto check1 = CheckIsNaN( 0, C::NaN );
+    BOOST_CHECK( check1 );
+
+    // jn (0, inf) == 0
+    constexpr auto check2 = Check( 0, C::Infinity, 0. );
+    BOOST_CHECK( check2 );
+
+    // jn (0, -1.0) == 0.76519768655796655145
+    constexpr auto check3 = Check( 0, -1.0, 0.76519768655796655145 );
+    BOOST_CHECK( check3 );
+
+    // jn (0, 0.0) == 1.0
+    constexpr auto check4 = Check( 0, 0.0, 1.0 );
+    BOOST_CHECK( check4 );
+
+    // jn (0, 0.1) == 0.99750156206604003228
+    constexpr auto check5 = Check( 0, 0.1, 0.99750156206604003228 );
+    BOOST_CHECK( check5 );
+
+    // jn (0, 0.7) == 0.88120088860740528084
+    constexpr auto check6 = Check( 0, 0.7, 0.88120088860740528084 );
+    BOOST_CHECK( check6 );
+
+    // jn (0, 1.0) == 0.76519768655796655145
+    constexpr auto check7 = Check( 0, 1.0, 0.76519768655796655145 );
+    BOOST_CHECK( check7 );
+
+    // jn (0, 1.5) == 0.51182767173591812875
+    constexpr auto check8 = Check( 0, 1.5, 0.51182767173591812875 );
+    BOOST_CHECK( check8 );
+
+    // jn (0, 2.0) == 0.22389077914123566805
+    constexpr auto check9 = Check( 0, 2.0, 0.22389077914123566805 );
+    BOOST_CHECK( check9 );
+
+    // jn (0, 8.0) == 0.17165080713755390609
+    constexpr auto check10 = Check( 0, 8.0, 0.17165080713755390609 );
+    BOOST_CHECK( check10 );
+
+    // jn (0, 10.0) == -0.24593576445134833520
+    constexpr auto check11 = CheckClose( 0, 10.0, -0.24593576445134833520 );
+    BOOST_CHECK( check11 );
+
+    // jn (1, x) == j1 (x)  
+    // jn (1, NaN) == NaN
+    constexpr auto check12 = CheckIsNaN( 1, C::NaN );
+    BOOST_CHECK( check12 );
+
+    // jn (1, inf) == 0
+    constexpr auto check13 = Check( 1, C::Infinity, 0. );
+    BOOST_CHECK( check13 );
+
+    // jn (1, -1.0) == -0.44005058574493351596
+    constexpr auto check14 = Check( 1, -1.0, -0.44005058574493351596 );
+    BOOST_CHECK( check14 );
+
+    // jn (1, 0.0) == 0.0
+    constexpr auto check15 = Check( 1, 0.0, 0.0 );
+    BOOST_CHECK( check15 );
+
+    // jn (1, 0.1) == 0.049937526036241997556
+    constexpr auto check16 = Check( 1, 0.1, 0.049937526036241997556 );
+    BOOST_CHECK( check16 );
+
+    // jn (1, 0.7) == 0.32899574154005894785
+    constexpr auto check17 = Check( 1, 0.7, 0.32899574154005894785 );
+    BOOST_CHECK( check17 );
+
+    // jn (1, 1.0) == 0.44005058574493351596
+    constexpr auto check18 = Check( 1, 1.0, 0.44005058574493351596 );
+    BOOST_CHECK( check18 );
+
+    // jn (1, 1.5) == 0.55793650791009964199
+    constexpr auto check19 = Check( 1, 1.5, 0.55793650791009964199 );
+    BOOST_CHECK( check19 );
+
+    // jn (1, 2.0) == 0.57672480775687338720
+    constexpr auto check20 = CheckClose( 1, 2.0, 0.57672480775687338720 );
+    BOOST_CHECK( check20 );
+
+    // jn (1, 8.0) == 0.23463634685391462438
+    constexpr auto check21 = CheckClose( 1, 8.0, 0.23463634685391462438 );
+    BOOST_CHECK( check21 );
+
+    // jn (1, 10.0) == 0.043472746168861436670
+    constexpr auto check22 = Check( 1, 10.0, 0.043472746168861436670 );
+    BOOST_CHECK( check22 );
+
+    // jn (3, x)  
+    // jn (3, NaN) == NaN
+    constexpr auto check23 = CheckIsNaN( 3, C::NaN );
+    BOOST_CHECK( check23 );
+
+    // jn (3, inf) == 0
+    constexpr auto check24 = Check( 3, C::Infinity, 0.0 );
+    BOOST_CHECK( check24 );
+
+    // jn (3, -1.0) == -0.019563353982668405919
+    constexpr auto check25 = Check( 3, -1.0, -0.019563353982668405919 );
+    BOOST_CHECK( check25 );
+
+    // jn (3, 0.0) == 0.0
+    constexpr auto check26 = Check( 3, 0.0, 0.0 );
+    BOOST_CHECK( check26 );
+
+    // jn (3, 0.1) == 0.000020820315754756261429
+    constexpr auto check27 = CheckClose( 3, 0.1, 0.000020820315754756261429 );
+    BOOST_CHECK( check27 );
+
+    // jn (3, 0.7) == 0.0069296548267508408077
+    constexpr auto check28 = Check( 3, 0.7, 0.0069296548267508408077 );
+    BOOST_CHECK( check28 );
+
+    // jn (3, 1.0) == 0.019563353982668405919
+    constexpr auto check29 = Check( 3, 1.0, 0.019563353982668405919 );
+    BOOST_CHECK( check29 );
+
+    // jn (3, 2.0) == 0.12894324947440205110
+    constexpr auto check30 = Check( 3, 2.0, 0.12894324947440205110 );
+    BOOST_CHECK( check30 );
+
+    // jn (3, 10.0) == 0.058379379305186812343
+    constexpr auto check31 = CheckClose( 3, 10.0, 0.058379379305186812343 );
+    BOOST_CHECK( check31 );
+
+    //  jn (10, x)  
+    // jn (10, NaN) == NaN
+    constexpr auto check32 = CheckIsNaN( 10, C::NaN );
+    BOOST_CHECK( check32 );
+
+    // jn (10, inf) == 0
+    constexpr auto check33 = Check( 10, C::Infinity, 0.0 );
+    BOOST_CHECK( check33 );
+
+    // jn (10, -1.0) == 0.26306151236874532070e-9
+    constexpr auto check34 = Check( 10, -1.0, 0.26306151236874532070e-9 );
+    BOOST_CHECK( check34 );
+
+    // jn (10, 0.0) == 0.0
+    constexpr auto check35 = Check( 10, 0.0, 0.0 );
+    BOOST_CHECK( check35 );
+
+    // jn (10, 0.1) == 0.26905328954342155795e-19
+    constexpr auto check36 = CheckClose( 10, 0.1, 0.26905328954342155795e-19 );
+    BOOST_CHECK( check36 );
+
+    // jn (10, 0.7) == 0.75175911502153953928e-11
+    constexpr auto check37 = CheckClose( 10, 0.7, 0.75175911502153953928e-11 );
+    BOOST_CHECK( check37 );
+
+    // jn (10, 1.0) == 0.26306151236874532070e-9
+    constexpr auto check38 = Check( 10, 1.0, 0.26306151236874532070e-9 );
+    BOOST_CHECK( check38 );
+
+    // jn (10, 2.0) == 0.25153862827167367096e-6
+    constexpr auto check39 = CheckClose( 10, 2.0, 0.25153862827167367096e-6 );
+    BOOST_CHECK( check39 );
+
+    // jn (10, 10.0) == 0.20748610663335885770
+    constexpr auto check40 = CheckClose( 10, 10.0, 0.20748610663335885770 );
+    BOOST_CHECK( check40 );
+
+}
+
+// --run_test=ConstexprMathTests/FloatY0Test1
+BOOST_AUTO_TEST_CASE( FloatY0Test1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = Y0( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = Y0( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = Y0( x );
+            return IsNaN( r );
+        };
+
+    // y0 (-1.0) == NaN
+    constexpr auto check1 = CheckIsNaN( -1.0 );
+    BOOST_CHECK( check1 );
+
+    // y0 (0.0) == -inf
+    constexpr auto check2 = Check( 0.0, -C::Infinity );
+    BOOST_CHECK( check2 );
+
+    // y0 (NaN) == NaN
+    constexpr auto check3 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check3 );
+
+    // y0 (inf) == 0
+    constexpr auto check4 = Check( C::Infinity, 0.0 );
+    BOOST_CHECK( check4 );
+
+    // y0 (0.1) == -1.5342386513503668441
+    constexpr auto check5 = Check( 0.1, -1.5342386513503668441 );
+    BOOST_CHECK( check5 );
+    
+    // y0 (0.7) == -0.19066492933739506743
+    constexpr auto check6 = CheckClose( 0.7, -0.19066492933739506743 );
+    BOOST_CHECK( check6 );
+
+    // y0 (1.0) == 0.088256964215676957983
+    constexpr auto check7 = CheckClose( 1.0, 0.088256964215676957983f );
+    BOOST_CHECK( check7 );
+    
+    // y0 (1.5) == 0.38244892379775884396
+    constexpr auto check8 = CheckClose( 1.5, 0.38244892379775884396 );
+    BOOST_CHECK( check8 );
+
+    // y0 (2.0) == 0.51037567264974511960
+    constexpr auto check9 = Check( 2.0, 0.51037567264974511960 );
+    BOOST_CHECK( check9 );
+
+    // y0 (8.0) == 0.22352148938756622053
+    constexpr auto check10 = CheckClose( 8.0, 0.22352148938756622053 );
+    BOOST_CHECK( check10 );
+
+    // y0 (10.0) == 0.055671167283599391424
+    constexpr auto check11 = CheckClose( 10.0, 0.055671167283599391424 );
+    BOOST_CHECK( check11 );
+}
+
+// --run_test=ConstexprMathTests/DoubleY0Test1
+BOOST_AUTO_TEST_CASE( DoubleY0Test1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = Y0( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+        {
+            auto r = Y0( x );
+            return AreNearlyEqual( r, expected, epsilon );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = Y0( x );
+            return IsNaN( r );
+        };
+
+    // y0 (-1.0) == NaN
+    constexpr auto check1 = CheckIsNaN( -1.0 );
+    BOOST_CHECK( check1 );
+
+    // y0 (0.0) == -inf
+    constexpr auto check2 = Check( 0.0, -C::Infinity );
+    BOOST_CHECK( check2 );
+
+    // y0 (NaN) == NaN
+    constexpr auto check3 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check3 );
+
+    // y0 (inf) == 0
+    constexpr auto check4 = Check( C::Infinity, 0.0 );
+    BOOST_CHECK( check4 );
+
+    // y0 (0.1) == -1.5342386513503668441
+    constexpr auto check5 = Check( 0.1, -1.5342386513503668441 );
+    BOOST_CHECK( check5 );
+
+    // y0 (0.7) == -0.19066492933739506743
+    constexpr auto check6 = CheckClose( 0.7, -0.19066492933739506743 );
+    BOOST_CHECK( check6 );
+
+    // y0 (1.0) == 0.088256964215676957983
+    constexpr auto check7 = CheckClose( 1.0, 0.088256964215676957983 );
+    BOOST_CHECK( check7 );
+
+    // y0 (1.5) == 0.38244892379775884396
+    constexpr auto check8 = CheckClose( 1.5, 0.38244892379775884396 );
+    BOOST_CHECK( check8 );
+
+    // y0 (2.0) == 0.51037567264974511960
+    constexpr auto check9 = Check( 2.0, 0.51037567264974511960 );
+    BOOST_CHECK( check9 );
+
+    // y0 (8.0) == 0.22352148938756622053
+    constexpr auto check10 = CheckClose( 8.0, 0.22352148938756622053 );
+    BOOST_CHECK( check10 );
+
+    // y0 (10.0) == 0.055671167283599391424
+    constexpr auto check11 = Check( 10.0, 0.055671167283599391424 );
+    BOOST_CHECK( check11 );
+
+
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

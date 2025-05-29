@@ -255,12 +255,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( ( ix | ( ( uint32_t )( lx | -lx ) ) >> 31 ) > 0x7ff00000 ) return x + x;
 		if ( ( ix | lx ) == 0 )
 		{
-			return -std::numeric_limits<float>::infinity( );
+			return -std::numeric_limits<double>::infinity( );
 			//return -one / zero;
 		}
 		if ( hx < 0 )
 		{
-			return std::numeric_limits<float>::infinity( );
+			return std::numeric_limits<double>::quiet_NaN( );
 			//return zero / zero;
 		}
 		sign = 1;
