@@ -12843,7 +12843,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Rotation( const QuaternionSimd<Quaternion<float>>& q ) noexcept
+    inline SquareMatrix<float, 4>::Simd Rotation( const Quaternion<float>::Simd& q ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;

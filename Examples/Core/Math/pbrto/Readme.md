@@ -40,6 +40,87 @@ Unlike [pbrt](https://github.com/mmp/pbrt-v4), pbrto does not offer the option t
 [OptiX](https://developer.nvidia.com/rtx/ray-tracing/optix) is only used to implement the `denoise-optix` 
 command for `imgtool.exe`.
  
+Currently, even minor changes to `HCCMath.h`, `HCCSIMD.h` and `HCCVectorMath.h` tends to have a significant impact on the performance of `pbrto.exe`.
+
+Like changing:
+
+```C++
+template<SimdType T>
+constexpr typename T::SIMDType ToSimd( const T& v ) noexcept
+{
+    return v.simd;
+}
+```
+into:
+
+```C++
+template<SimdType T>
+constexpr typename T::SIMDType& ToSimd( const T& v ) noexcept
+{
+    return v.simd;
+}
+```
+
+which may look inconspicuous, but actually increases the time it takes to render [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt)
+by more than 10 seconds. 
+
+The effort I've put into `pbrto.exe` and `Harlinn.pbrto.dll` is significant, and it has become
+the tool I rely on to really determine when something actually improves the performance of my code or not.
+This is why `Math::Exp` is implemented as:
+
+```C++
+template<SimdType T>
+inline auto Exp( const T& v ) noexcept
+{
+    using Traits = typename T::Traits;
+    using ResultType = Internal::MakeResultType<T>;
+    return ResultType( Traits::Exp( v.simd ) );
+}
+```
+and not:
+```C++
+template<SimdType T>
+inline auto Exp( const T& v ) noexcept
+{
+    using Traits = typename T::Traits;
+    using ResultType = Internal::MakeResultType<T>;
+    using Tuple = typename T::TupleType;
+    if constexpr ( T::Size == 2 )
+    {
+        Tuple t( v );
+        return ResultType( Exp( t.x ), Exp( t.y ) );
+    }
+    else if constexpr ( T::Size == 3 )
+    {
+        Tuple t( v );
+        return ResultType( Exp( t.x ), Exp( t.y ), Exp( t.z ) );
+    }
+    else if constexpr ( T::Size == 4 )
+    {
+        Tuple t( v );
+        return ResultType( Exp( t.x ), Exp( t.y ), Exp( t.z ), Exp( t.w ) );
+    }
+    else
+    {
+        return ResultType( Traits::Exp( v.simd ) );
+    }
+}
+```
+
+even if the benchmarks:
+
+```
+BenchmarkMathVector3fExp                             3.62 ns         3.57 ns    179200000
+BenchmarkMathVector3fSimdExp                         10.3 ns         10.5 ns     74666667
+```
+clearly indicates that the first implementation is significantly slower than the second one,
+but using the second implementation slows down the rendering of [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt)
+by 13 seconds. I'm fairly certain that the second implementation
+will outperform the first in many apps, but for `pbrto` the first is clearly the winner. 
+
+I've performed similar experiments with most of the vectorized math functions in `HCCVectorMath.h`,
+and for `pbrto` the current mix of vectorized and scalar implementations seems to be the most 
+performant one.
 
 ## PBRT
 
