@@ -50,111 +50,119 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline std::decay_t<T> FMod( T x, T y ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Exp( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Exp( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ExpM1( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Exp2( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Hypot( T x, T y ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Exp10( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Hypot( T x, T y, T z ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T ExpM1( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Log( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Hypot( T x, T y ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Log1P( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Hypot( T x, T y, T z ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Log2( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Log( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Log10( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Log1P( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Pow( T x, T y ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Log2( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Sin( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Log10( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ASin( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Pow( T x, T y ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Cos( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Sin( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ACos( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T ASin( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Tan( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Cos( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ATan( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T ACos( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ATan( T y, T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Tan( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ATan2( T y, T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T ATan( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
+    constexpr inline T ATan( T y, T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T ATan2( T y, T x ) noexcept;
+
+    template<FloatingPointType T>
     inline constexpr void SinCos( T x, T& sinResult, T& cosResult ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
     inline constexpr void SinCos( T x, T* sinResult, T* cosResult ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> J0( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T SinH( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> J1( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T ASinH( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> JN( int n, T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T CosH( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Y0( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T ACosH( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Y1( T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T TanH( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> YN( int n, T x ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T ATanH( T x ) noexcept;
 
+    template<FloatingPointType T>
+    constexpr inline T J0( T x ) noexcept;
 
+    template<FloatingPointType T>
+    constexpr inline T J1( T x ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> CopySign( T magnitude, T signValue ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T JN( int n, T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T Y0( T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T Y1( T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T YN( int n, T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T Erf( T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T ErfC( T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T TGamma( T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T LGamma( T x ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T CopySign( T magnitude, T signValue ) noexcept;
 
 
     template<IntegerType T>
@@ -247,39 +255,26 @@ namespace Harlinn::Common::Core::Math
     template<IntegerType T>
     constexpr inline T Trunc( T value ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Floor( T value ) noexcept;
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::remove_cvref_t<T> Floor( T value ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Floor( T value ) noexcept;
+    template<IntegerType T>
+    constexpr inline T Floor( T value ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Ceil( T value ) noexcept;
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::remove_cvref_t<T> Ceil( T value ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Ceil( T value ) noexcept;
+    template<IntegerType T>
+    constexpr inline T Ceil( T value ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Round( T value ) noexcept;
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::remove_cvref_t<T> Round( T value ) noexcept;
+    template<FloatingPointType T>
+    constexpr inline T Round( T value ) noexcept;
+    template<IntegerType T>
+    constexpr inline T Round( T value ) noexcept;
 
-    template<typename T1, typename T2, typename T3>
-        requires IsArithmetic<T1>&& IsArithmetic<T2>&& IsArithmetic<T3>
-    constexpr inline T1 Clamp( T1 value, T2 minimumValue, T3 maximumValue );
+    template<ArithmeticType T1, ArithmeticType T2, ArithmeticType T3>
+    constexpr inline T1 Clamp( T1 value, T2 minimumValue, T3 maximumValue ) noexcept;
 
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ATan( T x ) noexcept;
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ATan2( T x, T y ) noexcept;
+    template<ArithmeticType T, ArithmeticType U>
+    constexpr inline auto Lerp( T a, T b, U t ) noexcept;
 
     template<FloatingPointType T>
     inline constexpr T NextDown( T x ) noexcept;
@@ -306,10 +301,19 @@ namespace Harlinn::Common::Core::Math
 
 
     template<FloatingPointType T>
-    constexpr inline std::decay_t<T> Remainder( T x, T y ) noexcept;
+    constexpr inline T Remainder( T x, T y ) noexcept;
 
     template<FloatingPointType T>
-    constexpr inline std::decay_t<T> RemQuo( T x, T y, int* quo ) noexcept;
+    constexpr inline T RemQuo( T x, T y, int* quo ) noexcept;
+
+    template<FloatingPointType T>
+    constexpr inline T FDim( T x, T y ) noexcept;
+
+    template<IntegerType T>
+    inline constexpr T FMA( T a, T b, T c ) noexcept;
+
+    template<FloatingPointType T>
+    inline constexpr T FMA( T a, T b, T c ) noexcept;
 
 
 

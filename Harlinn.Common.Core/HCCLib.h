@@ -729,36 +729,21 @@ namespace Harlinn::Common::Core
         return std::bit_cast< UInt64 >( value ) & ( ( 1ULL << 52 ) - 1 );
     }
 
-    constexpr inline int Significand( float v ) noexcept
+    constexpr inline UInt32 Significand( float v ) noexcept
     {
         return std::bit_cast< UInt32 >( v ) & ( ( 1 << 23 ) - 1 );
     }
 
 
-    constexpr inline UInt64 SignBit( double value )
+    constexpr inline UInt64 FastSignBit( double value )
     {
         return std::bit_cast< UInt64 >( value ) & 0x8000000000000000;
     }
 
-    constexpr uint32_t SignBit( float v )
+    constexpr UInt32 FastSignBit( float v )
     {
         return std::bit_cast< UInt32 >( v ) & 0x80000000;
     }
-
-
-    constexpr inline double FlipSign( double a, double b )
-    {
-        return std::bit_cast<double>( std::bit_cast< UInt64 >( a ) ^ SignBit( b ) );
-    }
-    constexpr inline float FlipSign( float a, float b )
-    {
-        return std::bit_cast< float >( std::bit_cast< UInt32 >( a ) ^ SignBit( b ) );
-    }
-
-
-
-
-
 
 
 
