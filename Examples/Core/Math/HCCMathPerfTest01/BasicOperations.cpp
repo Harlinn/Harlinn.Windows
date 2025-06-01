@@ -531,7 +531,7 @@ void CopySignFloatTest( Int64 outerIterationCount )
 }
 
 template<typename FloatT>
-void ScaleByNTest( Int64 outerIterationCount, const char* testName )
+void ScaleBNTest( Int64 outerIterationCount, const char* testName )
 {
     constexpr Int64 ValueIterationCount = 10'000'000;
     constexpr Int64 ExpIterationCount = 100;
@@ -552,7 +552,7 @@ void ScaleByNTest( Int64 outerIterationCount, const char* testName )
         {
             for ( Int32 j = 0; j < ExpIterationCount; ++j )
             {
-                accumulated1 += ScaleByN( value, j + 1 );
+                accumulated1 += ScaleBN( value, j + 1 );
             }
             value += increment;
         }
@@ -582,13 +582,13 @@ void ScaleByNTest( Int64 outerIterationCount, const char* testName )
     }
 }
 
-void ScaleByNDoubleTest( Int64 outerIterationCount )
+void ScaleBNDoubleTest( Int64 outerIterationCount )
 {
-    ScaleByNTest<double>( outerIterationCount, __FUNCTION__ );
+    ScaleBNTest<double>( outerIterationCount, __FUNCTION__ );
 }
-void ScaleByNFloatTest( Int64 outerIterationCount )
+void ScaleBNFloatTest( Int64 outerIterationCount )
 {
-    ScaleByNTest<float>( outerIterationCount, __FUNCTION__ );
+    ScaleBNTest<float>( outerIterationCount, __FUNCTION__ );
 }
 
 
@@ -1076,8 +1076,8 @@ void RunBasicOperations( )
     CopySignDoubleTest( OuterIterationCount );
     CopySignFloatTest( OuterIterationCount );
 
-    ScaleByNDoubleTest( OuterIterationCount );
-    ScaleByNFloatTest( OuterIterationCount );
+    ScaleBNDoubleTest( OuterIterationCount );
+    ScaleBNFloatTest( OuterIterationCount );
 
 
     SinDoubleTest( OuterIterationCount );

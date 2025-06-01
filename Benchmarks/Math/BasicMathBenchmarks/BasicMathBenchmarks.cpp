@@ -3201,7 +3201,7 @@ static void BenchmarkMathDoubleScaleByN( benchmark::State& state )
     DoubleGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::ScaleByN( DoubleGenerator( ), 42 ) );
+        benchmark::DoNotOptimize( Math::ScaleBN( DoubleGenerator( ), 42 ) );
     }
 }
 BENCHMARK( BenchmarkMathDoubleScaleByN );
@@ -3231,7 +3231,7 @@ static void BenchmarkMathFloatScaleByN( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::ScaleByN( FloatGenerator( ), 42 ) );
+        benchmark::DoNotOptimize( Math::ScaleBN( FloatGenerator( ), 42 ) );
     }
 }
 BENCHMARK( BenchmarkMathFloatScaleByN );

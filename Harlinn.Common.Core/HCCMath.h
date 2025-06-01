@@ -1650,7 +1650,8 @@ namespace Harlinn::Common::Core::Math
         {
             if constexpr ( std::is_same_v<double, T> )
             {
-                alignas( 16 ) double result;
+                //alignas( 16 ) double result;
+                double result;
                 _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC ) );
                 return result;
             }
@@ -1658,7 +1659,8 @@ namespace Harlinn::Common::Core::Math
             {
                 //return __truncf( value );
                 
-                alignas(16) float result;
+                //alignas(16) float result;
+                float result;
                 _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC ) );
                 return result;
                 
