@@ -242,6 +242,10 @@ namespace Harlinn::Common::Core
     concept UnsignedIntegerType = IntegerType<T> && (std::is_signed_v<T> == false);
 
     template<typename T>
+    concept UnsignedIntegerOrBooleanType = UnsignedIntegerType<T> || BooleanType<T>;
+
+
+    template<typename T>
     concept ArithmeticType = IntegerType<T> || FloatingPointType<T>;
 
 

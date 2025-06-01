@@ -131,101 +131,66 @@ namespace Harlinn::Common::Core::Math
 
 
     /// <summary>
-    /// Tests whether two double precision floating
-    /// point values holds the same value. This function
+    /// Tests whether two floating point values holds the same value. This function
     /// returns true if both hold the same NaN value.
     /// </summary>
     /// <param name="first">
-    /// A double precision floating point value.
+    /// A floating point value.
     /// </param>
     /// <param name="second">
-    /// A double precision floating point value.
+    /// A floating point value.
     /// </param>
     /// <returns>
     /// true if both arguments are binary equivalent, otherwise false.
     /// </returns>
-    constexpr inline bool IsSameValue( double first, double second ) noexcept
+    template<FloatingPointType T>
+    constexpr inline bool IsSameValue( T first, T second ) noexcept
     {
-        return std::bit_cast<Int64>( first ) == std::bit_cast<Int64>( second );
+        if constexpr ( std::is_same_v<float, T> )
+        {
+            return std::bit_cast< Int32 >( first ) == std::bit_cast< Int32 >( second );
+        }
+        else
+        {
+            return std::bit_cast< Int64 >( first ) == std::bit_cast< Int64 >( second );
+        }
     }
-    /// <summary>
-    /// Tests whether two single precision floating
-    /// point values holds the same value. This function
-    /// returns true if both hold the same NaN value.
-    /// </summary>
-    /// <param name="first">
-    /// A single precision floating point value.
-    /// </param>
-    /// <param name="second">
-    /// A single precision floating point value.
-    /// </param>
-    /// <returns>
-    /// true if both arguments are binary equivalent, otherwise false.
-    /// </returns>
-    constexpr inline bool IsSameValue( float x, float y ) noexcept
+    
+    template<IntegerType T>
+    constexpr inline bool IsSameValue( T first, T second ) noexcept
     {
-        return std::bit_cast<Int32>( x ) == std::bit_cast<Int32>( y );
-    }
-
-    constexpr inline bool IsSameValue( Int32 x, Int32 y ) noexcept
-    {
-        return x == y;
-    }
-    constexpr inline bool IsSameValue( UInt32 x, UInt32 y ) noexcept
-    {
-        return x == y;
-    }
-    constexpr inline bool IsSameValue( Int64 x, Int64 y ) noexcept
-    {
-        return x == y;
-    }
-    constexpr inline bool IsSameValue( UInt64 x, UInt64 y ) noexcept
-    {
-        return x == y;
+        return first == second;
     }
     
     /// <summary>
-    /// Tests if a double precision floating value is zero.
+    /// Tests if a floating point value is zero.
     /// </summary>
     /// <param name="x">
-    /// A double precision floating point value.
+    /// A floating point value.
     /// </param>
     /// <returns>
     /// true if the argument is zero, otherwise false.
     /// </returns>
-    constexpr inline bool IsZero( double x ) noexcept
+    template<FloatingPointType T>
+    constexpr inline bool IsZero( T x ) noexcept
     {
-        return ( std::bit_cast<Int64>( x ) & 0x7FFFFFFFFFFFFFFF ) == 0;
-    }
-    /// <summary>
-    /// Tests if a double precision floating value is zero.
-    /// </summary>
-    /// <param name="x">
-    /// A double precision floating point value.
-    /// </param>
-    /// <returns>
-    /// true if the argument is zero, otherwise false.
-    /// </returns>
-    constexpr inline bool IsZero( float x ) noexcept
-    {
-        return ( std::bit_cast<Int32>( x ) & 0x7FFFFFFF ) == 0;
+        if constexpr ( std::is_same_v<float, T> )
+        {
+            return ( std::bit_cast< Int32 >( x ) & 0x7FFFFFFF ) == 0;
+        }
+        else
+        {
+            return ( std::bit_cast< Int64 >( x ) & 0x7FFFFFFFFFFFFFFF ) == 0;
+        }
     }
 
-    constexpr inline bool IsZero( Int32 x ) noexcept
+    /// <summary>
+    /// Tests if an integral value is zero.
+    /// </summary>
+    template<IntegerType T>
+    constexpr inline bool IsZero( T x ) noexcept
     {
-        return x == 0L;
-    }
-    constexpr inline bool IsZero( UInt32 x ) noexcept
-    {
-        return x == 0UL;
-    }
-    constexpr inline bool IsZero( Int64 x ) noexcept
-    {
-        return x == 0LL;
-    }
-    constexpr inline bool IsZero( UInt64 x ) noexcept
-    {
-        return x == 0ULL;
+        return x == static_cast< T >( 0 );
     }
 
     /// <summary>
@@ -250,12 +215,11 @@ namespace Harlinn::Common::Core::Math
     /// If invoked with an unsigned integer type this function returns 1 if the value is greater than 0, otherwise 0.
     /// </para>
     /// </returns>
-    template< typename T>
-        requires IsUnsignedInteger<std::remove_cvref_t<T>> || IsBoolean<std::remove_cvref_t<T>>
+    template<UnsignedIntegerOrBooleanType T>
     constexpr inline T signum( T val ) noexcept
     {
-        constexpr T zero = static_cast<T>( 0 );
-        return static_cast<T>( val > zero ? 1 : 0 );
+        constexpr auto zero = static_cast< T >( 0 );
+        return static_cast< T >( val != zero ? 1 : 0 );
     }
 
     /// <summary>
@@ -275,8 +239,7 @@ namespace Harlinn::Common::Core::Math
     /// <item>1 if val is greater than zero.</item>
     /// </list>
     /// </returns>
-    template< typename T>
-        requires IsSignedInteger<std::remove_cvref_t<T>>
+    template<SignedIntegerType T>
     constexpr inline T signum( T val ) noexcept
     {
         constexpr T zero = static_cast< T >( 0 );
@@ -302,14 +265,14 @@ namespace Harlinn::Common::Core::Math
     /// <item>1.0 if val is greater than zero.</item>
     /// </list>
     /// </returns>
-    template< typename T>
-        requires IsFloatingPoint<std::remove_cvref_t<T>>
+    template< FloatingPointType T>
     constexpr inline T signum( T val ) noexcept
     {
-        constexpr T zero = static_cast<T>( 0 );
-        constexpr T one = static_cast<T>( 1 );
-        constexpr T minusOne = static_cast<T>( -1 );
-        if constexpr ( sizeof( std::remove_cvref_t<T> ) == 4 )
+        constexpr T zero = static_cast< T >( 0 );
+        constexpr T one = static_cast< T >( 1 );
+        constexpr T minusOne = static_cast< T >( -1 );
+
+        if constexpr ( std::is_same_v<T,float> )
         {
             UInt32 bits = std::bit_cast<UInt32, T>( val );
             return bits & 0x7FFFFFFF ? bits & 0x80000000 ? minusOne : one : zero;
@@ -336,12 +299,10 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The angle in radians.
     /// </returns>
-    template< typename T>
-        requires IsFloatingPoint<std::remove_cvref_t<T>>
-    constexpr inline std::remove_cvref_t<T> Deg2Rad( T angleInDegrees ) noexcept
+    template< FloatingPointType T>
+    constexpr inline T Deg2Rad( T angleInDegrees ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
-        constexpr FloatT factor = static_cast<FloatT>( M_PI/180.0 );
+        constexpr T factor = static_cast<T>( M_PI/180.0 );
         return angleInDegrees * factor;
     }
     /// <summary>
@@ -357,12 +318,10 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The angle in degrees.
     /// </returns>
-    template< typename T>
-        requires IsFloatingPoint<std::remove_cvref_t<T>>
-    constexpr inline std::remove_cvref_t<T> Rad2Deg( T angleInRadians ) noexcept
+    template< FloatingPointType T>
+    constexpr inline T Rad2Deg( T angleInRadians ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
-        constexpr FloatT factor = static_cast<FloatT>( 180.0/M_PI );
+        constexpr T factor = static_cast<T>( 180.0/M_PI );
         return angleInRadians * factor;
     }
 
@@ -517,14 +476,12 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// Returns the square root of x.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Sqrt( T x ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T Sqrt( T x ) noexcept
     {
-        using FloatType = std::remove_cvref_t<T>;
         if ( std::is_constant_evaluated( ) )
         {
-            if constexpr ( std::is_same_v<FloatType, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
                 return Math::Internal::OpenLibM::sqrtf( x );
             }
@@ -536,8 +493,8 @@ namespace Harlinn::Common::Core::Math
         else
         {
             
-            FloatType result;
-            if constexpr ( std::is_same_v<FloatType, float> )
+            T result;
+            if constexpr ( std::is_same_v<T, float> )
             {
                 return sqrtf( x );
                 //_mm_store_ss( &result, _mm_sqrt_ps( _mm_set_ss( x ) ) );
@@ -552,15 +509,13 @@ namespace Harlinn::Common::Core::Math
     }
     static_assert( Sqrt(2.0) > 0.0 );
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ReciprocalSqrt( T x ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T ReciprocalSqrt( T x ) noexcept
     {
-        using FloatType = std::remove_cvref_t<T>;
         if ( std::is_constant_evaluated( ) )
         {
-            constexpr FloatType one = static_cast< FloatType >( 1. );
-            if constexpr ( std::is_same_v<FloatType, float> )
+            constexpr T one = static_cast< T >( 1. );
+            if constexpr ( std::is_same_v<T, float> )
             {
                 if ( x == 0.f )
                 {
@@ -579,29 +534,27 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            if constexpr ( std::is_same_v<FloatType, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
-                FloatType result;
+                T result;
                 _mm_store_ss( &result, _mm_rsqrt_ps( _mm_set_ss( x ) ) );
                 return result;
             }
             else
             {
-                constexpr FloatType one = static_cast< FloatType >( 1. );
+                constexpr T one = static_cast< T >( 1. );
                 return one / Sqrt( x );
                 
             }
         }
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Cbrt( T x ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T Cbrt( T x ) noexcept
     {
-        using FloatType = std::remove_cvref_t<T>;
         if ( std::is_constant_evaluated( ) )
         {
-            if constexpr ( std::is_same_v<FloatType, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
                 return Math::Internal::OpenLibM::cbrtf( x );
             }
@@ -613,8 +566,8 @@ namespace Harlinn::Common::Core::Math
         else
         {
 
-            FloatType result;
-            if constexpr ( std::is_same_v<FloatType, float> )
+            T result;
+            if constexpr ( std::is_same_v<T, float> )
             {
                 _mm_store_ss( &result, _mm_cbrt_ps( _mm_set_ss( x ) ) );
             }
@@ -629,14 +582,12 @@ namespace Harlinn::Common::Core::Math
 
     namespace Internal
     {
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
+        template<FloatingPointType T>
         inline constexpr bool IsNaNImpl( T val ) noexcept
         {
-            using FloatType = std::remove_cvref_t<T>;
-            using UnsignedType = MakeUnsigned<FloatType>;
-            constexpr UnsignedType fractionMask = FractionMask<FloatType>;
-            constexpr UnsignedType exponentMask = ExponentMask<FloatType>;
+            using UnsignedType = MakeUnsigned<T>;
+            constexpr UnsignedType fractionMask = FractionMask<T>;
+            constexpr UnsignedType exponentMask = ExponentMask<T>;
 
             UnsignedType value = std::bit_cast<UnsignedType>( val );
 
@@ -651,31 +602,27 @@ namespace Harlinn::Common::Core::Math
         }
 
 
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
+        template<FloatingPointType T>
         inline constexpr bool IsInfImpl( T val ) noexcept
         {
-            using FloatType = std::remove_cvref_t<T>;
-            using UnsignedType = MakeUnsigned<FloatType>;
-            constexpr UnsignedType fractionMask = FractionMask<FloatType>;
-            constexpr UnsignedType exponentMask = ExponentMask<FloatType>;
+            using UnsignedType = MakeUnsigned<T>;
+            constexpr UnsignedType fractionMask = FractionMask<T>;
+            constexpr UnsignedType exponentMask = ExponentMask<T>;
 
-            constexpr UnsignedType MaxExponent = FloatingPoint<FloatType>::MaxExponent;
+            constexpr UnsignedType MaxExponent = FloatingPoint<T>::MaxExponent;
             UnsignedType value = std::bit_cast<UnsignedType>( val );
             return ( value & ( fractionMask | exponentMask ) ) == MaxExponent;
         }
 
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> AbsImpl( T val ) noexcept
+        template<FloatingPointType T>
+        inline constexpr T AbsImpl( T val ) noexcept
         {
-            using FloatType = std::remove_cvref_t<T>;
-            using UnsignedType = MakeUnsigned<FloatType>;
+            using UnsignedType = MakeUnsigned<T>;
 
-            constexpr UnsignedType FractionMask = FloatingPoint<FloatType>::FractionMask;
-            constexpr UnsignedType ExponentMask = FloatingPoint<FloatType>::ExponentMask;
-            constexpr UnsignedType MaxExponent = FloatingPoint<FloatType>::MaxExponent;
-            constexpr UnsignedType SignMask = FloatingPoint<FloatType>::SignMask;
+            constexpr UnsignedType FractionMask = FloatingPoint<T>::FractionMask;
+            constexpr UnsignedType ExponentMask = FloatingPoint<T>::ExponentMask;
+            constexpr UnsignedType MaxExponent = FloatingPoint<T>::MaxExponent;
+            constexpr UnsignedType SignMask = FloatingPoint<T>::SignMask;
 
             UnsignedType bits = std::bit_cast<UnsignedType>( val );
             // Test for neither NaN nor +/- infinity
@@ -692,16 +639,14 @@ namespace Harlinn::Common::Core::Math
                     bits &= ~SignMask;
                 }
             }
-            return std::bit_cast<FloatType>( bits );
+            return std::bit_cast< T >( bits );
         }
 
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
+        template<FloatingPointType T>
         inline constexpr bool SignBitImpl( T val ) noexcept
         {
-            using FloatType = std::remove_cvref_t<T>;
-            using UnsignedType = MakeUnsigned<FloatType>;
-            constexpr UnsignedType SignMask = FloatingPoint<FloatType>::SignMask;
+            using UnsignedType = MakeUnsigned<T>;
+            constexpr UnsignedType SignMask = FloatingPoint<T>::SignMask;
 
             UnsignedType value = std::bit_cast<UnsignedType>( val );
             return value & SignMask;
@@ -721,12 +666,10 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The value with the magnitude of magnitudeVal and the sign of signVal.
         /// </returns>
-        template<typename T>
-            requires IsFloatingPoint<T>
-        inline constexpr std::remove_cvref_t<T> CopySignImpl( T magnitudeVal, T signVal ) noexcept
+        template<FloatingPointType T>
+        inline constexpr T CopySignImpl( T magnitudeVal, T signVal ) noexcept
         {
-            using ValueType = std::remove_cvref_t<T>;
-            using FPType = FloatingPoint<ValueType>;
+            using FPType = FloatingPoint<T>;
 
             FPType fpMagnitude( magnitudeVal );
             FPType fpSign( signVal );
@@ -736,8 +679,7 @@ namespace Harlinn::Common::Core::Math
 
 
 
-        template<typename T>
-            requires IsFloatingPoint<T>
+        template<FloatingPointType T>
         constexpr T LerpImpl( T a, T b, T t ) noexcept
         {
             constexpr T zero = static_cast< T >( 0.0 );
@@ -779,19 +721,17 @@ namespace Harlinn::Common::Core::Math
     /// The largest floating point number y of the same type 
     /// as x such that y < x.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    inline constexpr std::remove_cvref_t<T> NextDown( T x ) noexcept
+    template<FloatingPointType T>
+    inline constexpr T NextDown( T x ) noexcept
     {
-        using FloatType = std::remove_cvref_t<T>;
-        using FloatingPointType = Math::FloatingPoint<FloatType>;
+        using FloatingPointType = Math::FloatingPoint<T>;
         using UIntType = FloatingPointType::UIntType;
         constexpr UIntType SignMask = FloatingPointType::SignMask;
         constexpr UIntType FractionMask = FloatingPointType::FractionMask;
         constexpr UIntType ExponentMask = FloatingPointType::ExponentMask;
         constexpr UIntType ExponentAndFractionMask = ExponentMask | FractionMask;
-        constexpr UIntType MinusEpsilon = std::bit_cast<UIntType>( -std::numeric_limits<FloatType>::epsilon( ) );
-        constexpr UIntType Highest = std::bit_cast<UIntType>( std::numeric_limits<FloatType>::max( ) );
+        constexpr UIntType MinusEpsilon = std::bit_cast<UIntType>( -std::numeric_limits<T>::epsilon( ) );
+        constexpr UIntType Highest = std::bit_cast<UIntType>( std::numeric_limits<T>::max( ) );
 
         UIntType bits = std::bit_cast<UIntType>( x );
 
@@ -827,7 +767,7 @@ namespace Harlinn::Common::Core::Math
                 }
             }
         }
-        return std::bit_cast<FloatType>( bits );
+        return std::bit_cast< T >( bits );
     }
 
     /// <summary>
@@ -847,19 +787,17 @@ namespace Harlinn::Common::Core::Math
     /// The smallest floating point number y of the same 
     /// type as x such that x < y.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    inline constexpr std::remove_cvref_t<T> NextUp( T x ) noexcept
+    template<FloatingPointType T>
+    inline constexpr T NextUp( T x ) noexcept
     {
-        using FloatType = std::remove_cvref_t<T>;
-        using FloatingPointType = Math::FloatingPoint<FloatType>;
+        using FloatingPointType = Math::FloatingPoint<T>;
         using UIntType = FloatingPointType::UIntType;
         constexpr UIntType SignMask = FloatingPointType::SignMask;
         constexpr UIntType FractionMask = FloatingPointType::FractionMask;
         constexpr UIntType ExponentMask = FloatingPointType::ExponentMask;
         constexpr UIntType ExponentAndFractionMask = ExponentMask | FractionMask;
-        constexpr UIntType Epsilon = std::bit_cast<UIntType>( std::numeric_limits<FloatType>::epsilon( ) );
-        constexpr UIntType Lowest = std::bit_cast<UIntType>( std::numeric_limits<FloatType>::lowest( ) );
+        constexpr UIntType Epsilon = std::bit_cast<UIntType>( std::numeric_limits<T>::epsilon( ) );
+        constexpr UIntType Lowest = std::bit_cast<UIntType>( std::numeric_limits<T>::lowest( ) );
 
         UIntType bits = std::bit_cast<UIntType>( x );
         if ( bits & SignMask )
@@ -893,7 +831,7 @@ namespace Harlinn::Common::Core::Math
                 bits += 1;
             }
         }
-        return std::bit_cast<FloatType>( bits );
+        return std::bit_cast<T>( bits );
     }
 
     /// <summary>
@@ -908,8 +846,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// false
     /// </returns>
-    template<typename T>
-        requires IsInteger<T>
+    template<IntegerType T>
     constexpr inline bool IsNaN( T val ) noexcept
     { 
         return false;
@@ -933,8 +870,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// true if val is a not-a-number (NaN) value.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
     constexpr inline bool IsNaN( T val ) noexcept
     {
         if ( std::is_constant_evaluated( ) )
@@ -967,15 +903,10 @@ namespace Harlinn::Common::Core::Math
     /// <c>true</c> if any of the given integral or floating point values 
     /// is a not-a-number (NaN) value, otherwise <c>false</c>.
     /// </returns>
-    template<typename T, typename ... Args>
-        requires IsArithmetic<T> && (IsArithmetic<Args> && ...)
+    template<ArithmeticType T, ArithmeticType ... Args>
     constexpr inline bool IsNaN( T val, Args&& ... args ) noexcept
     {
-        if ( IsNaN( val ) )
-        {
-            return true;
-        }
-        return IsNaN( args ... );
+        return IsNaN( val ) || ( IsNaN( args ) || ... );
     }
 
 
@@ -993,8 +924,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// false
     /// </returns>
-    template<typename T>
-        requires IsInteger<T>
+    template<IntegerType T>
     constexpr inline bool IsInf( T val ) noexcept
     { 
         return false;
@@ -1014,8 +944,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// true if val has an infinite value, otherwise false.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
     constexpr inline bool IsInf( T val ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
@@ -1057,22 +986,16 @@ namespace Harlinn::Common::Core::Math
     /// <c>true</c> if any of the given integral or floating point numbers
     /// is positive or negative infinity, otherwise <c>false</c>. 
     /// </returns>
-    template<typename T, typename ... Args>
-        requires IsArithmetic<T> && ( IsArithmetic<Args> && ... )
+    template<ArithmeticType T, ArithmeticType ... Args>
     constexpr inline bool IsInf( T val, Args&& ... args ) noexcept
     {
-        if ( IsInf( val ) )
-        {
-            return true;
-        }
-        return IsInf( args ... );
+        return IsInf( val ) || ( IsInf( args ) || ... );
     }
 
     /// <summary>
     /// All integers have finite values.
     /// </summary>
-    template<typename T>
-        requires IsInteger<T>
+    template<IntegerType T>
     constexpr inline bool IsFinite( T val ) noexcept
     {
         return true;
@@ -1082,8 +1005,7 @@ namespace Harlinn::Common::Core::Math
     /// Determines if the given floating point number val has finite 
     /// value i.e. it is normal, subnormal or zero, but not infinite or NaN.
     /// </summary>
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
     constexpr inline bool IsFinite( T val ) noexcept
     {
         return Internal::OpenLibM::isfinite( val );
@@ -1092,19 +1014,17 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Determines if all the arguments are finite.
     /// </summary>
-    template<typename T, typename ... Args>
-        requires IsArithmetic<T> && ( IsArithmetic<Args> && ... )
-    constexpr inline bool IsFinite( Args&& ... args ) noexcept
+    template<ArithmeticType T, ArithmeticType ... Args>
+    constexpr inline bool IsFinite( T val, Args&& ... args ) noexcept
     {
-        return (IsFinite( args ) && ...);
+        return IsFinite( val ) && (IsFinite( args ) && ...);
     }
 
 
     /// <summary>
     /// All integers are <q>normal</q>.
     /// </summary>
-    template<typename T>
-        requires IsInteger<T>
+    template<IntegerType T>
     constexpr inline bool IsNormal( T val ) noexcept
     {
         return true;
@@ -1114,8 +1034,7 @@ namespace Harlinn::Common::Core::Math
     /// Determines if the given floating point number val is normal, 
     /// i.e. is neither zero, subnormal, infinite, nor NaN.
     /// </summary>
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
     constexpr inline bool IsNormal( T val ) noexcept
     {
         return Internal::OpenLibM::isnormal( val );
@@ -1124,11 +1043,10 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Determines if all the arguments are normal.
     /// </summary>
-    template<typename T, typename ... Args>
-        requires IsArithmetic<T> && ( IsArithmetic<Args> && ... )
-    constexpr inline bool IsNormal( Args&& ... args ) noexcept
+    template<ArithmeticType T, ArithmeticType ... Args>
+    constexpr inline bool IsNormal( T val, Args&& ... args ) noexcept
     {
-        return ( IsNormal( args ) && ... );
+        return IsNormal( val ) && ( IsNormal( args ) && ... );
     }
 
 
@@ -1153,9 +1071,8 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The absolute value of val.
     /// </returns>
-    template<typename T>
-        requires IsSignedInteger<T>
-    constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept
+    template<SignedIntegerType T>
+    constexpr inline T Abs( T val ) noexcept
     { 
         if ( std::is_constant_evaluated( ) )
         {
@@ -1181,9 +1098,8 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// val without any modification.
     /// </returns>
-    template<typename T>
-        requires IsUnsignedInteger<T>
-    constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept
+    template<UnsignedIntegerType T>
+    constexpr inline T Abs( T val ) noexcept
     {
         return val;
     }
@@ -1202,9 +1118,8 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The absolute value of val.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T> 
-    constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T Abs( T val ) noexcept
     {
         if ( std::is_constant_evaluated( ) )
         {
@@ -1212,8 +1127,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            using FloatT = std::remove_cvref_t<T>;
-            if constexpr ( std::is_same_v<FloatT, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
                 return std::fabsf( val );
             }
@@ -1226,43 +1140,27 @@ namespace Harlinn::Common::Core::Math
     static_assert( Abs( -1.0 ) == 1.0 );
 
 
-    template<typename T>
-        requires IsUnsignedInteger<T>
-    constexpr inline std::remove_cvref_t<T> FastAbs( T val ) noexcept
+    template<UnsignedIntegerType T>
+    constexpr inline T FastAbs( T val ) noexcept
     {
         return val;
     }
 
-    template<typename T>
-        requires IsSignedInteger<T>
-    constexpr inline std::remove_cvref_t<T> FastAbs( T val ) noexcept
+    template<SignedIntegerType T>
+    constexpr inline T FastAbs( T val ) noexcept
     {
-        using IntT = std::remove_cvref_t<T>;
-        
-        if constexpr ( sizeof( IntT ) == 1 )
-        {
-            return std::bit_cast< IntT >( std::bit_cast< UInt8 >( val ) & static_cast< UInt8 >(0x7FU) );
-        }
-        else if constexpr ( sizeof( IntT ) == 2 )
-        {
-            return std::bit_cast< IntT >( std::bit_cast< UInt16 >( val ) & static_cast< UInt16 >( 0x7FFFU ) );
-        }
-        else if constexpr ( sizeof( IntT ) == 4 )
-        {
-            return std::bit_cast< IntT >( std::bit_cast< UInt32 >( val ) & 0x7FFFFFFFUL );
-        }
-        else
-        {
-            return std::bit_cast< IntT >( std::bit_cast< UInt64 >( val ) & 0x7FFFFFFFFFFFFFFFULL );
-        }
+        using UIntT = std::make_unsigned_t<T>;
+        constexpr size_t ShiftCount = ( ( sizeof( T ) - 1 ) * 8 ) + 7;
+        constexpr UIntT UnsignedSignMask = static_cast< UIntT >( 1 ) << ShiftCount;
+        constexpr UIntT ValueMask = UnsignedSignMask - 1;
+
+        return std::bit_cast< T >( static_cast< UIntT >( std::bit_cast< UIntT >( val ) & ValueMask ) );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> FastAbs( T val ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T FastAbs( T val ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
-        if constexpr ( std::is_same_v<FloatT, float> )
+        if constexpr ( std::is_same_v<T, float> )
         {
             return std::bit_cast< float >( std::bit_cast< UInt32 >( val ) & 0x7FFFFFFFUL );
         }
@@ -1285,16 +1183,14 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// returns true if the value is signed, otherwise false.
     /// </returns>
-    template<typename T>
-        requires IsSignedInteger<T>
+    template<SignedIntegerType T>
     constexpr inline bool SignBit( T val ) noexcept
     { 
-        using IntT = std::remove_cvref_t<T>;
-        using UIntT = std::make_unsigned_t<IntT>;
-        constexpr size_t ByteCount = sizeof( IntT );
+        using UIntT = std::make_unsigned_t<T>;
+        constexpr size_t ByteCount = sizeof( T );
         constexpr size_t ShiftCount = ( ( ByteCount - 1 ) * 8 ) + 7;
         constexpr UIntT UnsignedSignMask = static_cast< UIntT >( 1 ) << ShiftCount;
-        constexpr IntT SignMask = std::bit_cast< IntT >( UnsignedSignMask );
+        constexpr T SignMask = std::bit_cast< T >( UnsignedSignMask );
         return (val & SignMask) != 0;
     }
 
@@ -1311,8 +1207,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// false
     /// </returns>
-    template<typename T>
-        requires IsUnsignedInteger<T>
+    template<UnsignedIntegerType T>
     constexpr inline bool SignBit( T val ) noexcept
     {
         return false;
@@ -1336,8 +1231,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// true if val is less than 0.0.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
     constexpr inline bool SignBit( T val ) noexcept
     {
         return Internal::SignBitImpl( val );
@@ -1372,14 +1266,11 @@ namespace Harlinn::Common::Core::Math
     /// If the value to be stored in result.second is outside the range of int, the behavior is unspecified.
     /// </para>
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::pair<std::remove_cvref_t<T>,int> FRExp( T val ) noexcept
+    template<FloatingPointType T>
+    constexpr inline std::pair<T,int> FRExp( T val ) noexcept
     { 
-        using FloatT = std::remove_cvref_t<T>;
-
-        std::pair<FloatT, int> result;
-        if constexpr ( std::is_same_v<FloatT, float> )
+        std::pair<T, int> result;
+        if constexpr ( std::is_same_v<T, float> )
         {
             result.first = Internal::OpenLibM::frexpf( val, &result.second );
         }
@@ -1418,13 +1309,10 @@ namespace Harlinn::Common::Core::Math
     /// If the value to be stored in *exp is outside the range of int, the behavior is unspecified.
     /// </para>
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> FRExp( T val, int* exp ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T FRExp( T val, int* exp ) noexcept
     { 
-        using FloatT = std::remove_cvref_t<T>;
-
-        if constexpr ( std::is_same_v<FloatT, float> )
+        if constexpr ( std::is_same_v<T, float> )
         {
             return Internal::OpenLibM::frexpf( val, exp );
         }
@@ -1461,13 +1349,10 @@ namespace Harlinn::Common::Core::Math
     /// If the value to be stored in exp is outside the range of int, the behavior is unspecified.
     /// </para>
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> FRExp( T val, int& exp ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T FRExp( T val, int& exp ) noexcept
     { 
-        using FloatT = std::remove_cvref_t<T>;
-
-        if constexpr ( std::is_same_v<FloatT, float> )
+        if constexpr ( std::is_same_v<T, float> )
         {
             return Internal::OpenLibM::frexpf( val, &exp );
         }
@@ -1493,17 +1378,15 @@ namespace Harlinn::Common::Core::Math
     /// A floating point value.
     /// </param>
     /// <returns>
-    /// A std::pair&lt;ValueT,ValueT&gt; where first holds the integral part 
+    /// A std::pair&lt;T,T&gt; where first holds the integral part 
     /// of the result and second holds the fractional part.
     /// </returns>
-    template<typename ValueT>
-        requires IsFloatingPoint<ValueT> 
-    constexpr inline std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> ModF( ValueT val ) noexcept
+    template<FloatingPointType T>
+    constexpr inline std::pair<T, T> ModF( T val ) noexcept
     {
-        using FloatT = std::remove_cvref_t<ValueT>;
-        std::pair<FloatT, FloatT> result;
+        std::pair<T, T> result;
 
-        if constexpr ( std::is_same_v<FloatT, float> )
+        if constexpr ( std::is_same_v<T, float> )
         {
             result.second = Internal::OpenLibM::modff( val, &result.first );
         }
@@ -1535,13 +1418,10 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The fractional part of val.
     /// </returns>
-    template<typename ValueT>
-        requires IsFloatingPoint<ValueT>
-    constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT* integerPart ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T ModF( T val, T* integerPart ) noexcept
     {
-        using FloatT = std::remove_cvref_t<ValueT>;
-
-        if constexpr ( std::is_same_v<FloatT, float> )
+        if constexpr ( std::is_same_v<T, float> )
         {
             return Internal::OpenLibM::modff( val, integerPart );
         }
@@ -1573,13 +1453,10 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The fractional part of val.
     /// </returns>
-    template<typename ValueT>
-        requires IsFloatingPoint<ValueT>
-    constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT& integerPart ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T ModF( T val, T& integerPart ) noexcept
     {
-        using FloatT = std::remove_cvref_t<ValueT>;
-
-        if constexpr ( std::is_same_v<FloatT, float> )
+        if constexpr ( std::is_same_v<T, float> )
         {
             return Internal::OpenLibM::modff( val, &integerPart );
         }
@@ -1605,20 +1482,18 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// Returns the smaller of <c>first</c> and <c>second</c>.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Min( T first, T second ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T Min( T first, T second ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
         if ( std::is_constant_evaluated( ) )
         {
             return std::min( first, second );
         }
         else
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
-                FloatT result;
+                T result;
                 _mm_store_ss( &result, _mm_min_ss( _mm_set_ss( first ), _mm_set_ss( second ) ) );
                 return result;
             }
@@ -1643,15 +1518,19 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// Returns the smaller of <c>first</c> and <c>second</c>.
     /// </returns>
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::remove_cvref_t<T> Min( T first, T second ) noexcept
+    template<IntegerType T>
+    constexpr inline T Min( T first, T second ) noexcept
     {
         return std::min( first, second );
     }
 
-    template<typename T, typename ...Args>
-        requires IsFloatingPoint<T> || IsInteger<T>
+    template<FloatingPointType T, FloatingPointType ...Args>
+    constexpr inline T Min( T first, T second, Args... remaining ) noexcept
+    {
+        return Min( Min( first, second ), remaining... );
+    }
+
+    template<IntegerType T, IntegerType ...Args>
     constexpr inline T Min( T first, T second, Args... remaining ) noexcept
     {
         return Min( Min( first, second ), remaining... );
@@ -1674,31 +1553,24 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// Returns the larger of <c>first</c> and <c>second</c>.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Max( T first, T second ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T Max( T first, T second ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
         if ( std::is_constant_evaluated( ) )
         {
             return std::max( first, second );
         }
         else
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
-                FloatT result;
+                T result;
                 _mm_store_ss( &result, _mm_max_ss( _mm_set_ss( first ), _mm_set_ss( second ) ) );
                 return result;
             }
             else
             {
                 return std::max( first, second );
-                /*
-                FloatT result;
-                _mm_store_sd( &result, _mm_max_sd( _mm_set_sd( first ), _mm_set_sd( second ) ) );
-                return result;
-                */
             }
         }
     }
@@ -1717,15 +1589,19 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// Returns the larger of <c>first</c> and <c>second</c>.
     /// </returns>
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::remove_cvref_t<T> Max( T first, T second ) noexcept
+    template<IntegerType T>
+    constexpr inline T Max( T first, T second ) noexcept
     {
         return std::max( first, second );
     }
 
-    template<typename T, typename ...Args>
-        requires IsArithmetic<T>
+    template<FloatingPointType T, FloatingPointType ...Args>
+    constexpr inline T Max( T first, T second, Args... remaining ) noexcept
+    {
+        return Max( Max( first, second ), remaining... );
+    }
+
+    template<IntegerType T, IntegerType ...Args>
     constexpr inline T Max( T first, T second, Args... remaining ) noexcept
     {
         return Max( Max( first, second ), remaining... );
@@ -1762,20 +1638,17 @@ namespace Harlinn::Common::Core::Math
     /// A floating point value with the nearest integer not 
     /// greater in magnitude than value.
     /// </returns>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Trunc( T value ) noexcept
+    template<FloatingPointType T>
+    constexpr inline T Trunc( T value ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
-
         if ( std::is_constant_evaluated( ) )
         {
-            FloatingPoint<FloatT> tmp( value );
+            FloatingPoint<T> tmp( value );
             return tmp.Trunc( );
         }
         else
         {
-            if constexpr ( std::is_same_v<double, FloatT> )
+            if constexpr ( std::is_same_v<double, T> )
             {
                 alignas( 16 ) double result;
                 _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC ) );
@@ -1805,9 +1678,8 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// value
     /// </returns>
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::remove_cvref_t<T> Trunc( T value ) noexcept
+    template<IntegerType T>
+    constexpr inline T Trunc( T value ) noexcept
     {
         return value;
     }
@@ -2119,7 +1991,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// <c>x</c> multiplied by <c>FLT_RADIX</c> raised to power <c>n</c>
     /// </returns>
-    inline constexpr double ScaleByN( double x, int n ) noexcept
+    inline constexpr double ScaleBN( double x, int n ) noexcept
     {
         constexpr double two54 = 1.80143985094819840000e+16;
         constexpr double twom54 = 5.55111512312578270212e-17;
@@ -2204,7 +2076,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// <c>x</c> multplied by <c>FLT_RADIX</c> raised to power <c>n</c>
     /// </returns>
-    inline constexpr float ScaleByN( float x, int n ) noexcept
+    inline constexpr float ScaleBN( float x, int n ) noexcept
     {
         constexpr float two25 = 3.355443200e+07f;
         constexpr float twom25 = 2.9802322388e-08f;
@@ -2286,10 +2158,10 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The floating point remainder of the division operation <c>x / y</c>.
     /// </returns>
-    template<typename FloatT>
-        requires IsFloatingPoint<FloatT>
-    constexpr inline std::remove_cvref_t<FloatT> FMod( FloatT x, FloatT y ) noexcept
+    template<FloatingPointType T>
+    constexpr inline std::decay_t<T> FMod( T x, T y ) noexcept
     {
+        using FloatT = std::decay_t<T>;
         if ( std::is_constant_evaluated( ) )
         {
             if constexpr ( std::is_same_v<FloatT, float> )
@@ -3365,11 +3237,10 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Computes the IEEE remainder of the floating point division operation x / y
     /// </summary>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> Remainder( T x, T y ) noexcept
+    template<FloatingPointType T>
+    constexpr inline std::decay_t<T> Remainder( T x, T y ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
+        using FloatT = std::decay_t<T>;
         if constexpr ( std::is_same_v<FloatT, float> )
         {
             return Math::Internal::OpenLibM::remainderf( x, y );
@@ -3386,11 +3257,10 @@ namespace Harlinn::Common::Core::Math
     /// Additionally, the sign and at least the three of the last bits of x / y will be 
     /// stored in quo, sufficient to determine the octant of the result within a period.
     /// </summary>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> RemQuo( T x, T y, int* quo ) noexcept
+    template<FloatingPointType T>
+    constexpr inline std::decay_t<T> RemQuo( T x, T y, int* quo ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
+        using FloatT = std::decay_t<T>;
         if constexpr ( std::is_same_v<FloatT, float> )
         {
             return Math::Internal::OpenLibM::remquof( x, y, quo );
@@ -3404,11 +3274,10 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Returns the positive difference between x and y, that is, if x > y, returns x - y, otherwise (i.e. if x <= y) returns +0.
     /// </summary>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> FDim( T x, T y ) noexcept
+    template<FloatingPointType T>
+    constexpr inline std::decay_t<T> FDim( T x, T y ) noexcept
     {
-        using FloatT = std::remove_cvref_t<T>;
+        using FloatT = std::decay_t<T>;
         if constexpr ( std::is_same_v<FloatT, float> )
         {
             return Math::Internal::OpenLibM::fdimf( x, y );
@@ -3424,9 +3293,8 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Computes x * y + z as if to infinite precision and rounded only once to fit the result type.
     /// </summary>
-    template<typename T>
-        requires IsInteger<T>
-    inline constexpr T FMA( T a, T b, T c ) noexcept
+    template<IntegerType T>
+    inline constexpr std::decay_t<T> FMA( T a, T b, T c ) noexcept
     {
         return a * b + c;
     }
@@ -3434,9 +3302,8 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Computes x * y + z as if to infinite precision and rounded only once to fit the result type.
     /// </summary>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    inline constexpr T FMA( T a, T b, T c ) noexcept
+    template<FloatingPointType T>
+    inline constexpr std::decay_t<T> FMA( T a, T b, T c ) noexcept
     {
         if ( std::is_constant_evaluated( ) )
         {

@@ -1006,7 +1006,6 @@ BOOST_AUTO_TEST_CASE( DoubleFastAbsTest1 )
     BOOST_CHECK( IsSameValue( result9, C::Zero ) );
 }
 
-
 // --run_test=ConstexprMathTests/FloatSignBitTest1
 BOOST_AUTO_TEST_CASE( FloatSignBitTest1 )
 {
@@ -1672,33 +1671,33 @@ BOOST_AUTO_TEST_CASE( FloatScaleByNTest1 )
 {
     using C = Constants<float>;
     
-    constexpr auto result1 = ScaleByN( C::NaN, C::Two );
+    constexpr auto result1 = ScaleBN( C::NaN, C::Two );
     BOOST_CHECK( IsNaN( result1 ) );
 
-    constexpr auto result2 = ScaleByN( C::Infinity, C::Two );
+    constexpr auto result2 = ScaleBN( C::Infinity, C::Two );
     BOOST_CHECK( IsInf( result2 ) );
 
-    constexpr auto result3 = ScaleByN( C::Max, C::Two );
+    constexpr auto result3 = ScaleBN( C::Max, C::Two );
     BOOST_CHECK( IsInf( result3 ) );
 
-    constexpr auto result4 = ScaleByN( -C::Max, C::Two );
+    constexpr auto result4 = ScaleBN( -C::Max, C::Two );
     BOOST_CHECK( IsInf( result4 ) );
 
     auto result5 = std::scalbn( -C::Max, C::Two );
     BOOST_CHECK( IsInf( result5 ) );
     BOOST_CHECK( result4 == result5 );
 
-    constexpr auto result6 = ScaleByN( -C::Max, C::Three );
+    constexpr auto result6 = ScaleBN( -C::Max, C::Three );
     BOOST_CHECK( IsInf( result6 ) );
 
     auto result7 = std::scalbn( -C::Max, C::Three );
     BOOST_CHECK( IsInf( result7 ) );
     BOOST_CHECK( result6 == result7 );
 
-    constexpr auto result8 = ScaleByN( C::Two, C::Two );
+    constexpr auto result8 = ScaleBN( C::Two, C::Two );
     BOOST_CHECK( result8 == 8.f );
 
-    constexpr auto result9 = ScaleByN( -C::Two, C::Two );
+    constexpr auto result9 = ScaleBN( -C::Two, C::Two );
     BOOST_CHECK( result9 == -8.f );
 }
 
@@ -1707,33 +1706,33 @@ BOOST_AUTO_TEST_CASE( DoubleScaleByNTest1 )
 {
     using C = Constants<double>;
 
-    constexpr auto result1 = ScaleByN( C::NaN, C::Two );
+    constexpr auto result1 = ScaleBN( C::NaN, C::Two );
     BOOST_CHECK( IsNaN( result1 ) );
 
-    constexpr auto result2 = ScaleByN( C::Infinity, C::Two );
+    constexpr auto result2 = ScaleBN( C::Infinity, C::Two );
     BOOST_CHECK( IsInf( result2 ) );
 
-    constexpr auto result3 = ScaleByN( C::Max, C::Two );
+    constexpr auto result3 = ScaleBN( C::Max, C::Two );
     BOOST_CHECK( IsInf( result3 ) );
 
-    constexpr auto result4 = ScaleByN( -C::Max, C::Two );
+    constexpr auto result4 = ScaleBN( -C::Max, C::Two );
     BOOST_CHECK( IsInf( result4 ) );
 
     auto result5 = std::scalbn( -C::Max, C::Two );
     BOOST_CHECK( IsInf( result5 ) );
     BOOST_CHECK( result4 == result5 );
 
-    constexpr auto result6 = ScaleByN( -C::Max, C::Three );
+    constexpr auto result6 = ScaleBN( -C::Max, C::Three );
     BOOST_CHECK( IsInf( result6 ) );
 
     auto result7 = std::scalbn( -C::Max, C::Three );
     BOOST_CHECK( IsInf( result7 ) );
     BOOST_CHECK( result6 == result7 );
 
-    constexpr auto result8 = ScaleByN( C::Two, C::Two );
+    constexpr auto result8 = ScaleBN( C::Two, C::Two );
     BOOST_CHECK( result8 == 8. );
 
-    constexpr auto result9 = ScaleByN( -C::Two, C::Two );
+    constexpr auto result9 = ScaleBN( -C::Two, C::Two );
     BOOST_CHECK( result9 == -8. );
 }
 
@@ -3126,8 +3125,13 @@ BOOST_AUTO_TEST_CASE( DoubleRemQuoTest1 )
 // --run_test=ConstexprMathTests/Deg2RadDoubleTest1
 BOOST_AUTO_TEST_CASE( Deg2RadDoubleTest1 )
 {
-    constexpr auto result1 = Deg2Rad( 0.001 );
+    constexpr auto arg = 0.001;
+    const auto& arg2 = arg;
+    constexpr auto result1 = Deg2Rad( arg );
     BOOST_CHECK( result1 == 1.7453292519943296e-5 );
+
+    auto result2 = Deg2Rad<double>( arg2 );
+
 }
 
 // --run_test=ConstexprMathTests/FloatSinTest1
