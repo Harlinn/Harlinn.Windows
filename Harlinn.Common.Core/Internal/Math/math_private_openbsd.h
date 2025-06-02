@@ -220,7 +220,31 @@ do {								\
      */
     double __exp__D( double, double );
     struct Double __log__D( double );
-    long double __p1evll( long double, void*, int );
-    long double __polevll( long double, void*, int );
+
+    constexpr inline double __p1evll( double x, const double* PP, int n )
+    {
+        const double* P = PP;
+        n -= 1;
+        double y = x + *P++;
+        do
+        {
+            y = y * x + *P++;
+        } while ( --n );
+
+        return ( y );
+    }
+
+
+    constexpr inline double __polevll( double x, const double* PP, int n )
+    {
+        const double* P = PP;
+        double y = *P++;
+        do
+        {
+            y = y * x + *P++;
+        } while ( --n );
+
+        return ( y );
+    }
 }
 #endif /* _MATH_PRIVATE_OPENBSD_H_ */

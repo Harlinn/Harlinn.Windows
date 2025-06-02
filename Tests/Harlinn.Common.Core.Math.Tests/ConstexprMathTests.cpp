@@ -6541,5 +6541,308 @@ BOOST_AUTO_TEST_CASE( DoubleYNTest1 )
     BOOST_CHECK( check36 );
 }
 
+// --run_test=ConstexprMathTests/FloatErfTest1
+BOOST_AUTO_TEST_CASE( FloatErfTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = Erf( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = Erf( x );
+            return IsNaN( r );
+        };
+
+    // erf (0) == 0
+    constexpr auto check1 = Check( C::Zero, C::Zero );
+    BOOST_CHECK( check1 );
+
+    // erf (-0) == -0
+    constexpr auto check2 = Check( -C::Zero, -C::Zero );
+    BOOST_CHECK( check2 );
+
+    // erf (inf) == 1
+    constexpr auto check3 = Check( C::Infinity, C::One );
+    BOOST_CHECK( check3 );
+
+    // erf (-inf) == -1
+    constexpr auto check4 = Check( C::NegativeInfinity, -C::One );
+    BOOST_CHECK( check4 );
+
+    // erf (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // erf (0.7) == 0.67780119383741847297
+    constexpr auto check6 = Check( 0.7, 0.67780119383741847297 );
+    BOOST_CHECK( check6 );
+
+    // erf (1.2) == 0.91031397822963538024
+    constexpr auto check7 = Check( 1.2, 0.91031397822963538024 );
+    BOOST_CHECK( check7 );
+
+    // erf (2.0) == 0.99532226501895273416
+    constexpr auto check8 = Check( 2.0, 0.99532226501895273416 );
+    BOOST_CHECK( check8 );
+
+    // erf (4.1) == 0.99999999329997234592
+    constexpr auto check9 = Check( 4.1, 0.99999999329997234592 );
+    BOOST_CHECK( check9 );
+
+    // erf (27) == 1.0
+    constexpr auto check10 = Check( 27, 1.0 );
+    BOOST_CHECK( check10 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleErfTest1
+BOOST_AUTO_TEST_CASE( DoubleErfTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = Erf( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = Erf( x );
+            return IsNaN( r );
+        };
+
+    // erf (0) == 0
+    constexpr auto check1 = Check( C::Zero, C::Zero );
+    BOOST_CHECK( check1 );
+
+    // erf (-0) == -0
+    constexpr auto check2 = Check( -C::Zero, -C::Zero );
+    BOOST_CHECK( check2 );
+
+    // erf (inf) == 1
+    constexpr auto check3 = Check( C::Infinity, C::One );
+    BOOST_CHECK( check3 );
+
+    // erf (-inf) == -1
+    constexpr auto check4 = Check( C::NegativeInfinity, -C::One );
+    BOOST_CHECK( check4 );
+
+    // erf (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // erf (0.7) == 0.67780119383741847297
+    constexpr auto check6 = Check( 0.7, 0.67780119383741847297 );
+    BOOST_CHECK( check6 );
+
+    // erf (1.2) == 0.91031397822963538024
+    constexpr auto check7 = Check( 1.2, 0.91031397822963538024 );
+    BOOST_CHECK( check7 );
+
+    // erf (2.0) == 0.99532226501895273416
+    constexpr auto check8 = Check( 2.0, 0.99532226501895273416 );
+    BOOST_CHECK( check8 );
+
+    // erf (4.1) == 0.99999999329997234592
+    constexpr auto check9 = Check( 4.1, 0.99999999329997234592 );
+    BOOST_CHECK( check9 );
+
+    // erf (27) == 1.0
+    constexpr auto check10 = Check( 27, 1.0 );
+    BOOST_CHECK( check10 );
+
+}
+
+// --run_test=ConstexprMathTests/FloatErfCTest1
+BOOST_AUTO_TEST_CASE( FloatErfCTest1 )
+{
+    using C = Constants<float>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ErfC( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ErfC( x );
+            return IsNaN( r );
+        };
+
+    // erfc (inf) == 0.0
+    constexpr auto check1 = Check( C::Infinity, C::Zero );
+    static_assert( ErfC( C::Infinity ) == C::Zero );
+    BOOST_CHECK( check1 );
+
+    // erfc (-inf) == 2.0
+    constexpr auto check2 = Check( C::NegativeInfinity, C::Two );
+    BOOST_CHECK( check2 );
+    
+    // erfc (0.0) == 1.0
+    constexpr auto check3 = Check( C::Zero, C::One );
+    BOOST_CHECK( check3 );
+
+    // erfc (-0) == 1.0
+    constexpr auto check4 = Check( -C::Zero, C::One );
+    BOOST_CHECK( check4 );
+
+    // erfc (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // erfc (0.7) == 0.322198808
+    constexpr auto check6 = Check( 0.7f, 0.322198808f );
+    BOOST_CHECK( check6 );
+
+    // erfc (1.2) == 0.0896860063
+    constexpr auto check7 = Check( 1.2f, 0.0896860063f );
+    BOOST_CHECK( check7 );
+
+    // erfc (2.0) == 0.00467773527
+    constexpr auto check8 = Check( 2.0f, 0.00467773527f );
+    static_assert( ErfC( 2.0f ) == 0.00467773527f );
+    BOOST_CHECK( check8 );
+
+    // erfc (4.1) == 6.70003297e-09
+    constexpr auto check9 = Check( 4.1f, 6.70003297e-09f );
+    BOOST_CHECK( check9 );
+
+    // erfc (9) == 4.13703171e-37
+    constexpr auto check10 = Check( 9.f, 4.13703171e-37 );
+    BOOST_CHECK( check10 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleErfCTest1
+BOOST_AUTO_TEST_CASE( DoubleErfCTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = ErfC( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = ErfC( x );
+            return IsNaN( r );
+        };
+
+    // erfc (inf) == 0.0
+    constexpr auto check1 = Check( C::Infinity, C::Zero );
+    BOOST_CHECK( check1 );
+
+    // erfc (-inf) == 2.0
+    constexpr auto check2 = Check( C::NegativeInfinity, C::Two );
+    BOOST_CHECK( check2 );
+
+    // erfc (0.0) == 1.0
+    constexpr auto check3 = Check( C::Zero, C::One );
+    BOOST_CHECK( check3 );
+
+    // erfc (-0) == 1.0
+    constexpr auto check4 = Check( -C::Zero, C::One );
+    BOOST_CHECK( check4 );
+
+    // erfc (NaN) == NaN
+    constexpr auto check5 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check5 );
+
+    // erfc (0.7) == 0.32219880616258156
+    constexpr auto check6 = Check( 0.7, 0.32219880616258156 );
+    BOOST_CHECK( check6 );
+
+    // erfc (1.2) == 0.089686021770364638
+    constexpr auto check7 = Check( 1.2, 0.089686021770364638 );
+    BOOST_CHECK( check7 );
+
+    // erfc (2.0) == 0.0046777349810472662
+    constexpr auto check8 = Check( 2.0, 0.0046777349810472662 );
+    BOOST_CHECK( check8 );
+
+    // erfc (4.1) == 6.7000276540849183e-09
+    constexpr auto check9 = Check( 4.1, 6.7000276540849183e-09 );
+    BOOST_CHECK( check9 );
+
+    // erfc (9) == 4.1370317465138101e-37
+    constexpr auto check10 = Check( 9., 4.1370317465138101e-37 );
+    BOOST_CHECK( check10 );
+
+}
+
+// --run_test=ConstexprMathTests/DoubleTGammaTest1
+BOOST_AUTO_TEST_CASE( DoubleTGammaTest1 )
+{
+    using C = Constants<double>;
+
+    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+        {
+            auto r = TGamma( x );
+            return IsSameValue( r, expected );
+        };
+
+    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+        {
+            auto r = TGamma( x );
+            return IsNaN( r );
+        };
+
+    // tgamma (inf) == inf
+    constexpr auto check1 = Check( C::Infinity, C::Infinity );
+    BOOST_CHECK( check1 );
+
+    // tgamma (0) == inf
+    constexpr auto check2 = Check( C::Zero, C::Infinity );
+    BOOST_CHECK( check2 );
+    
+    // tgamma (-0) == inf
+    constexpr auto check3 = Check( -C::Zero, C::Infinity );
+    BOOST_CHECK( check3 );
+
+    // tgamma (-2) == NaN
+    constexpr auto check4 = CheckIsNaN( -C::Two );
+    BOOST_CHECK( check4 );
+    // tgamma (-inf) == NaN
+    constexpr auto check5 = CheckIsNaN( -C::Infinity );
+    BOOST_CHECK( check5 );
+    // tgamma (NaN) == NaN
+    constexpr auto check6 = CheckIsNaN( C::NaN );
+    BOOST_CHECK( check6 );
+
+    // tgamma (0.5) == sqrt (pi)
+    constexpr auto check7 = Check( .5, Sqrt( C::Pi ) );
+    BOOST_CHECK( check7 );
+    // tgamma (-0.5) == -2 sqrt (pi)
+    constexpr auto check8 = Check( -.5, -2. * Sqrt( C::Pi ) );
+    BOOST_CHECK( check8 );
+
+    // tgamma (1) == 1
+    constexpr auto check9 = Check( 1., 1. );
+    BOOST_CHECK( check9 );
+    // tgamma (4) == 6
+    constexpr auto check10 = Check( 4., 6. );
+    BOOST_CHECK( check10 );
+
+    // tgamma (0.7) == 1.29805533264755778568
+    constexpr auto check11 = Check( 0.7, 1.29805533264755778568 );
+    BOOST_CHECK( check11 );
+                       
+    // tgamma (1.2) == 0.91816874239976054
+    constexpr auto check12 = Check( 1.2, 0.91816874239976054 );
+    auto res = TGamma( 1.2 );
+    BOOST_CHECK( check12 );
+
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

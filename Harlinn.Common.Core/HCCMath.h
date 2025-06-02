@@ -3202,14 +3202,17 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T TGamma( T x ) noexcept
     {
+        /*
         if constexpr ( std::is_same_v<T, float> )
         {
-            return Math::Internal::OpenLibM::tgammaf( x );
+            return Math::Internal::OpenLibM::tgammal( x );
         }
         else
         {
-            return Math::Internal::OpenLibM::tgamma( x );
+            return Math::Internal::OpenLibM::tgammal( x );
         }
+        */
+        return static_cast<T>( Math::Internal::OpenLibM::tgammal( x ) );
     }
 
     /// <summary>

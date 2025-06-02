@@ -460,6 +460,7 @@
     <None Include="Internal\Math\e_sinhf.inl" />
     <None Include="Internal\Math\e_sqrt.inl" />
     <None Include="Internal\Math\e_sqrtf.inl" />
+    <None Include="Internal\Math\e_tgamma.inl" />
     <None Include="Internal\Math\k_cos.inl" />
     <None Include="Internal\Math\k_cosf.inl" />
     <None Include="Internal\Math\k_exp.inl" />

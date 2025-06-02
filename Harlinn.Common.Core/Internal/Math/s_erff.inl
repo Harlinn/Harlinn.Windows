@@ -24,7 +24,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 {
 	namespace erff_internal
 	{
-		static const float
+		constexpr float
 			tiny = 1e-30f,
 			half = 5.0000000000e-01f, /* 0x3F000000 */
 			one = 1.0000000000e+00f, /* 0x3F800000 */
@@ -93,17 +93,24 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		GET_FLOAT_WORD( hx, x );
 		ix = hx & 0x7fffffff;
 		if ( ix >= 0x7f800000 )
-		{		/* erf(nan)=nan */
+		{		
+			/* erf(nan)=nan */
 			i = ( ( uint32_t )hx >> 31 ) << 1;
-			return ( float )( 1 - i ) + one / x;	/* erf(+-inf)=+-1 */
+			/* erf(+-inf)=+-1 */
+			return ( float )( 1 - i ) + one / x;
 		}
 
 		if ( ix < 0x3f580000 )
-		{		/* |x|<0.84375 */
+		{		
+			/* |x|<0.84375 */
 			if ( ix < 0x38800000 )
-			{       /* |x|<2**-14 */
-				if ( ix < 0x04000000 )    /* |x|<0x1p-119 */
+			{       
+				/* |x|<2**-14 */
+				if ( ix < 0x04000000 )
+				{
+					/* |x|<0x1p-119 */
 					return ( 8 * x + efx8 * x ) / 8;      /* avoid spurious underflow */
+				}
 				return x + efx * x;
 			}
 			z = x * x;
@@ -120,7 +127,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			if ( hx >= 0 ) return erx + P / Q; else return -erx - P / Q;
 		}
 		if ( ix >= 0x40800000 )
-		{		/* inf>|x|>=4 */
+		{		
+			/* inf>|x|>=4 */
 			if ( hx >= 0 ) return one - tiny; else return tiny - one;
 		}
 		x = fabsf( x );

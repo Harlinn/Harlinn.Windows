@@ -58,6 +58,7 @@
 #include "e_sinhf.inl"
 #include "e_sqrt.inl"
 #include "e_sqrtf.inl"
+#include "e_tgamma.inl"
 
 #include "s_asinh.inl"
 #include "s_asinhf.inl"

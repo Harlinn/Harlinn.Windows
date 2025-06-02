@@ -1149,5 +1149,8 @@
     <None Include="Internal\Math\w_cabsf.inl">
       <Filter>Header Files\Internal\Math</Filter>
     </None>
+    <None Include="Internal\Math\e_tgamma.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
   </ItemGroup>
 </Project>

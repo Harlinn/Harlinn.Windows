@@ -866,10 +866,12 @@ constexpr inline extern int signgam;
     {
         return tan( value );
     }
+    
     constexpr inline long double	tgammal( long double value )
     {
         return tgamma( value );
     }
+    
     constexpr inline long double	truncl( long double value )
     {
         return trunc( value );
