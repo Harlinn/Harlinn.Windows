@@ -48,7 +48,7 @@ namespace Harlinn::Common::Core::Math
     inline constexpr float ScaleBN( float x, int n ) noexcept;
 
     template<FloatingPointType T>
-    constexpr inline std::decay_t<T> FMod( T x, T y ) noexcept;
+    constexpr inline T FMod( T x, T y ) noexcept;
 
     template<FloatingPointType T>
     constexpr inline T Exp( T x ) noexcept;
@@ -170,28 +170,28 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline bool IsNaN( T val ) noexcept;
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsNaN( T val, Args&& ... args ) noexcept;
+    constexpr inline bool IsNaN( T val, Args ... args ) noexcept;
 
     template<IntegerType T>
     constexpr inline bool IsInf( T val ) noexcept;
     template<FloatingPointType T>
     constexpr inline bool IsInf( T val ) noexcept;
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsInf( T val, Args&& ... args ) noexcept;
+    constexpr inline bool IsInf( T val, Args ... args ) noexcept;
 
     template<IntegerType T>
     constexpr inline bool IsFinite( T val ) noexcept;
     template<FloatingPointType T>
     constexpr inline bool IsFinite( T val ) noexcept;
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsFinite( T val, Args&& ... args ) noexcept;
+    constexpr inline bool IsFinite( T val, Args ... args ) noexcept;
 
     template<IntegerType T>
     constexpr inline bool IsNormal( T val ) noexcept;
     template<FloatingPointType T>
     constexpr inline bool IsNormal( T val ) noexcept;
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsNormal( T val, Args&& ... args ) noexcept;
+    constexpr inline bool IsNormal( T val, Args ... args ) noexcept;
 
 
     template<SignedIntegerType T>

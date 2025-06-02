@@ -258,6 +258,7 @@ BOOST_AUTO_TEST_CASE( FloatNextAfterTest1 )
 {
     using C = Constants<float>;
     constexpr auto result1 = NextAfter( C::Zero, C::Infinity );
+    
     auto expected1 = std::nextafter( C::Zero, C::Infinity );
     BOOST_CHECK( result1 == expected1 );
 
@@ -619,6 +620,160 @@ BOOST_AUTO_TEST_CASE( DoubleNextUpTest1 )
 }
 
 
+// --run_test=ConstexprMathTests/FloatIsSameValueTest1
+BOOST_AUTO_TEST_CASE( FloatIsSameValueTest1 )
+{
+    using C = Constants<float>;
+
+    auto constexpr result1 = IsSameValue( C::NaN, C::NaN );
+    BOOST_CHECK( result1 );
+    auto constexpr result2 = IsSameValue( C::NegativeNaN, C::NegativeNaN );
+    BOOST_CHECK( result2 );
+    auto constexpr result3 = IsSameValue( C::sNaN, C::sNaN );
+    BOOST_CHECK( result3 );
+    auto constexpr result4 = IsSameValue( C::sNegativeNaN, C::sNegativeNaN );
+    BOOST_CHECK( result4 );
+    auto constexpr result5 = IsSameValue( C::NegativeInfinity, C::NegativeInfinity );
+    BOOST_CHECK( result5 );
+    auto constexpr result6 = IsSameValue( C::Lowest, C::Lowest );
+    BOOST_CHECK( result6 );
+    auto constexpr result7 = IsSameValue( -C::Min, -C::Min );
+    BOOST_CHECK( result7 );
+    auto constexpr result8 = IsSameValue( -C::DenormalMin, -C::DenormalMin );
+    BOOST_CHECK( result8 );
+    auto constexpr result9 = IsSameValue( -C::Zero, -C::Zero );
+    BOOST_CHECK( result9 );
+    auto constexpr result10 = IsSameValue( C::Zero, C::Zero );
+    BOOST_CHECK( result10 );
+    auto constexpr result11 = IsSameValue( C::DenormalMin, C::DenormalMin );
+    BOOST_CHECK( result11 );
+    auto constexpr result12 = IsSameValue( C::Min, C::Min );
+    BOOST_CHECK( result12 );
+    auto constexpr result13 = IsSameValue( C::Max, C::Max );
+    BOOST_CHECK( result13 );
+    auto constexpr result14 = IsSameValue( C::Infinity, C::Infinity );
+    BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsSameValue( C::NaN, C::sNaN );
+    BOOST_CHECK( result15 );
+    auto constexpr result16 = IsSameValue( C::NegativeNaN, C::NaN ) == false;
+    BOOST_CHECK( result16 );
+    auto constexpr result17 = IsSameValue( C::sNaN, C::sNegativeNaN ) == false;
+    BOOST_CHECK( result17 );
+    auto constexpr result18 = IsSameValue( C::Zero, -C::Zero ) == false;
+    BOOST_CHECK( result18 );
+
+}
+
+
+// --run_test=ConstexprMathTests/DoubleIsSameValueTest1
+BOOST_AUTO_TEST_CASE( DoubleIsSameValueTest1 )
+{
+    using C = Constants<double>;
+
+    auto constexpr result1 = IsSameValue( C::NaN, C::NaN );
+    BOOST_CHECK( result1 );
+    auto constexpr result2 = IsSameValue( C::NegativeNaN, C::NegativeNaN );
+    BOOST_CHECK( result2 );
+    auto constexpr result3 = IsSameValue( C::sNaN, C::sNaN );
+    BOOST_CHECK( result3 );
+    auto constexpr result4 = IsSameValue( C::sNegativeNaN, C::sNegativeNaN );
+    BOOST_CHECK( result4 );
+    auto constexpr result5 = IsSameValue( C::NegativeInfinity, C::NegativeInfinity );
+    BOOST_CHECK( result5 );
+    auto constexpr result6 = IsSameValue( C::Lowest, C::Lowest );
+    BOOST_CHECK( result6 );
+    auto constexpr result7 = IsSameValue( -C::Min, -C::Min );
+    BOOST_CHECK( result7 );
+    auto constexpr result8 = IsSameValue( -C::DenormalMin, -C::DenormalMin );
+    BOOST_CHECK( result8 );
+    auto constexpr result9 = IsSameValue( -C::Zero, -C::Zero );
+    BOOST_CHECK( result9 );
+    auto constexpr result10 = IsSameValue( C::Zero, C::Zero );
+    BOOST_CHECK( result10 );
+    auto constexpr result11 = IsSameValue( C::DenormalMin, C::DenormalMin );
+    BOOST_CHECK( result11 );
+    auto constexpr result12 = IsSameValue( C::Min, C::Min );
+    BOOST_CHECK( result12 );
+    auto constexpr result13 = IsSameValue( C::Max, C::Max );
+    BOOST_CHECK( result13 );
+    auto constexpr result14 = IsSameValue( C::Infinity, C::Infinity );
+    BOOST_CHECK( result14 );
+}
+
+// --run_test=ConstexprMathTests/FloatIsZeroTest1
+BOOST_AUTO_TEST_CASE( FloatIsZeroTest1 )
+{
+    using C = Constants<float>;
+
+    auto constexpr result1 = IsZero( C::NaN ) == false;
+    BOOST_CHECK( result1 );
+    auto constexpr result2 = IsZero( C::NegativeNaN ) == false;
+    BOOST_CHECK( result2 );
+    auto constexpr result3 = IsZero( C::sNaN ) == false;
+    BOOST_CHECK( result3 );
+    auto constexpr result4 = IsZero( C::sNegativeNaN ) == false;
+    BOOST_CHECK( result4 );
+    auto constexpr result5 = IsZero( C::NegativeInfinity ) == false;
+    BOOST_CHECK( result5 );
+    auto constexpr result6 = IsZero( C::Lowest ) == false;
+    BOOST_CHECK( result6 );
+    auto constexpr result7 = IsZero( -C::Min ) == false;
+    BOOST_CHECK( result7 );
+    auto constexpr result8 = IsZero( -C::DenormalMin ) == false;
+    BOOST_CHECK( result8 );
+    auto constexpr result9 = IsZero( -C::Zero );
+    BOOST_CHECK( result9 );
+    auto constexpr result10 = IsZero( C::Zero );
+    BOOST_CHECK( result10 );
+    auto constexpr result11 = IsZero( C::DenormalMin ) == false;
+    BOOST_CHECK( result11 );
+    auto constexpr result12 = IsZero( C::Min ) == false;
+    BOOST_CHECK( result12 );
+    auto constexpr result13 = IsZero( C::Max ) == false;
+    BOOST_CHECK( result13 );
+    auto constexpr result14 = IsZero( C::Infinity ) == false;
+    BOOST_CHECK( result14 );
+    auto constexpr result15 = IsZero( 0 );
+    BOOST_CHECK( result15 );
+}
+
+// --run_test=ConstexprMathTests/DoubleIsZeroTest1
+BOOST_AUTO_TEST_CASE( DoubleIsZeroTest1 )
+{
+    using C = Constants<double>;
+
+    auto constexpr result1 = IsZero( C::NaN ) == false;
+    BOOST_CHECK( result1 );
+    auto constexpr result2 = IsZero( C::NegativeNaN ) == false;
+    BOOST_CHECK( result2 );
+    auto constexpr result3 = IsZero( C::sNaN ) == false;
+    BOOST_CHECK( result3 );
+    auto constexpr result4 = IsZero( C::sNegativeNaN ) == false;
+    BOOST_CHECK( result4 );
+    auto constexpr result5 = IsZero( C::NegativeInfinity ) == false;
+    BOOST_CHECK( result5 );
+    auto constexpr result6 = IsZero( C::Lowest ) == false;
+    BOOST_CHECK( result6 );
+    auto constexpr result7 = IsZero( -C::Min ) == false;
+    BOOST_CHECK( result7 );
+    auto constexpr result8 = IsZero( -C::DenormalMin ) == false;
+    BOOST_CHECK( result8 );
+    auto constexpr result9 = IsZero( -C::Zero );
+    BOOST_CHECK( result9 );
+    auto constexpr result10 = IsZero( C::Zero );
+    BOOST_CHECK( result10 );
+    auto constexpr result11 = IsZero( C::DenormalMin ) == false;
+    BOOST_CHECK( result11 );
+    auto constexpr result12 = IsZero( C::Min ) == false;
+    BOOST_CHECK( result12 );
+    auto constexpr result13 = IsZero( C::Max ) == false;
+    BOOST_CHECK( result13 );
+    auto constexpr result14 = IsZero( C::Infinity ) == false;
+    BOOST_CHECK( result14 );
+    auto constexpr result15 = IsZero( 0 );
+    BOOST_CHECK( result15 );
+}
 
 
 // --run_test=ConstexprMathTests/FloatIsNaNTest1
@@ -654,6 +809,10 @@ BOOST_AUTO_TEST_CASE( FloatIsNaNTest1 )
     BOOST_CHECK( result13 );
     auto constexpr result14 = IsNaN( C::Infinity ) == false;
     BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsNaN( C::Max, C::NaN, C::Zero, 4, 0.3 );
+    BOOST_CHECK( result15 );
+
 }
 
 // --run_test=ConstexprMathTests/DoubleIsNaNTest1
@@ -689,6 +848,9 @@ BOOST_AUTO_TEST_CASE( DoubleIsNaNTest1 )
     BOOST_CHECK( result13 );
     auto constexpr result14 = IsNaN( C::Infinity ) == false;
     BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsNaN( C::Max, C::NaN, C::Zero, 4, 0.3f );
+    BOOST_CHECK( result15 );
 }
 
 // --run_test=ConstexprMathTests/FloatIsInfTest1
@@ -724,6 +886,10 @@ BOOST_AUTO_TEST_CASE( FloatIsInfTest1 )
     BOOST_CHECK( result13 );
     auto constexpr result14 = IsInf( C::Infinity );
     BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsInf( C::Max, C::Infinity, C::Zero, 4, 0.3 );
+    BOOST_CHECK( result15 );
+
 }
 
 // --run_test=ConstexprMathTests/DoubleIsInfTest1
@@ -759,6 +925,10 @@ BOOST_AUTO_TEST_CASE( DoubleIsInfTest1 )
     BOOST_CHECK( result13 );
     auto constexpr result14 = IsInf( C::Infinity );
     BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsInf( C::Max, C::Infinity, C::Zero, 4, 0.3 );
+    BOOST_CHECK( result15 );
+
 }
 
 // --run_test=ConstexprMathTests/FloatIsFiniteTest1
@@ -794,6 +964,21 @@ BOOST_AUTO_TEST_CASE( FloatIsFiniteTest1 )
     BOOST_CHECK( result13 );
     auto constexpr result14 = IsFinite( C::Infinity ) == false;
     BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsFinite( C::Lowest, -C::Min );
+    BOOST_CHECK( result15 );
+
+    auto constexpr result16 = IsFinite( C::Lowest, -C::Min, -C::DenormalMin, -C::Zero, C::Zero, C::DenormalMin, C::Min, C::Max );
+    BOOST_CHECK( result16 );
+
+    auto constexpr result17 = IsFinite( C::Lowest, -C::Min, -C::DenormalMin, C::NaN, -C::Zero, C::Zero, C::DenormalMin, C::Min, C::Max ) == false;
+    BOOST_CHECK( result17 );
+
+    auto constexpr result18 = IsFinite( C::Lowest, 4 ,-C::Min, 0.3 );
+    BOOST_CHECK( result18 );
+
+    auto constexpr result19 = IsFinite( C::Lowest, C::NaN ) == false;
+    BOOST_CHECK( result19 );
 }
 
 // --run_test=ConstexprMathTests/DoubleIsFiniteTest1
@@ -829,6 +1014,21 @@ BOOST_AUTO_TEST_CASE( DoubleIsFiniteTest1 )
     BOOST_CHECK( result13 );
     auto constexpr result14 = IsFinite( C::Infinity ) == false;
     BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsFinite( C::Lowest, -C::Min );
+    BOOST_CHECK( result15 );
+
+    auto constexpr result16 = IsFinite( C::Lowest, -C::Min, -C::DenormalMin, -C::Zero, C::Zero, C::DenormalMin, C::Min, C::Max );
+    BOOST_CHECK( result16 );
+
+    auto constexpr result17 = IsFinite( C::Lowest, -C::Min, -C::DenormalMin, C::NaN, -C::Zero, C::Zero, C::DenormalMin, C::Min, C::Max ) == false;
+    BOOST_CHECK( result17 );
+
+    auto constexpr result18 = IsFinite( C::Lowest, 4, -C::Min, 0.3f );
+    BOOST_CHECK( result18 );
+
+    auto constexpr result19 = IsFinite( C::Lowest, C::NaN ) == false;
+    BOOST_CHECK( result19 );
 }
 
 // --run_test=ConstexprMathTests/FloatIsNormalTest1
@@ -864,6 +1064,14 @@ BOOST_AUTO_TEST_CASE( FloatIsNormalTest1 )
     BOOST_CHECK( result13 );
     auto constexpr result14 = IsNormal( C::Infinity ) == false;
     BOOST_CHECK( result14 );
+
+    auto constexpr result15 = IsNormal( C::Lowest, -C::Min );
+    BOOST_CHECK( result15 );
+
+    auto constexpr result16 = IsNormal( C::Lowest, 0 ,C::Min ) == false;
+    BOOST_CHECK( result16 );
+
+
 }
 
 // --run_test=ConstexprMathTests/DoubleIsNormalTest1
@@ -1259,9 +1467,27 @@ BOOST_AUTO_TEST_CASE( DoubleModFTest1 )
 // --run_test=ConstexprMathTests/FloatMinTest1
 BOOST_AUTO_TEST_CASE( FloatMinTest1 )
 {
+    using C = Constants<float>;
+
     constexpr auto minValue = Math::Min( 5.f, 4.f, 3.f, 4.f, 4.f );
     constexpr bool equal = minValue == 3.f;
     BOOST_CHECK( equal );
+
+    constexpr auto check1 = Min( C::Infinity, C::NegativeInfinity ) == C::NegativeInfinity;
+    BOOST_CHECK( check1 );
+
+    constexpr auto check2 = Min( C::NaN, C::NegativeInfinity ) == C::NegativeInfinity;
+    BOOST_CHECK( check2 );
+
+    constexpr auto check3 = Min( C::NegativeInfinity, C::NaN ) == C::NegativeInfinity;
+    BOOST_CHECK( check3 );
+
+    constexpr auto check4 = IsSameValue( Min( C::Zero, -C::Zero ), -C::Zero );
+    BOOST_CHECK( check4 );
+
+    constexpr auto check5 = IsSameValue( Min( -C::Zero, C::Zero ), -C::Zero );
+    BOOST_CHECK( check5 );
+
 }
 
 // --run_test=ConstexprMathTests/DoubleMinTest1
@@ -1276,9 +1502,27 @@ BOOST_AUTO_TEST_CASE( DoubleMinTest1 )
 // --run_test=ConstexprMathTests/FloatMaxTest1
 BOOST_AUTO_TEST_CASE( FloatMaxTest1 )
 {
+    using C = Constants<float>;
     constexpr auto minValue = Math::Max( 5.f, 4.f, 3.f, 4.f, 4.f );
     constexpr bool equal = minValue == 5.f;
     BOOST_CHECK( equal );
+
+    constexpr auto check1 = Max( C::Infinity, C::NegativeInfinity ) == C::Infinity;
+    BOOST_CHECK( check1 );
+
+    constexpr auto check2 = Max( C::NaN, C::NegativeInfinity ) == C::NegativeInfinity;
+    BOOST_CHECK( check2 );
+
+    constexpr auto check3 = Max( C::NegativeInfinity, C::NaN  ) == C::NegativeInfinity;
+    BOOST_CHECK( check3 );
+
+    constexpr auto check4 = IsSameValue(Max( C::Zero, -C::Zero ), C::Zero );
+    BOOST_CHECK( check4 );
+
+    constexpr auto check5 = IsSameValue( Max( -C::Zero, C::Zero ), C::Zero );
+    BOOST_CHECK( check5 );
+
+
 }
 
 // --run_test=ConstexprMathTests/DoubleMaxTest1

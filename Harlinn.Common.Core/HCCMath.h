@@ -156,6 +156,9 @@ namespace Harlinn::Common::Core::Math
         }
     }
     
+    /// <summary>
+    /// Tests two integral values for equality.
+    /// </summary>
     template<IntegerType T>
     constexpr inline bool IsSameValue( T first, T second ) noexcept
     {
@@ -885,7 +888,7 @@ namespace Harlinn::Common::Core::Math
 
     /// <summary>
     /// Determines if any of the given integral or floating point values 
-    /// is a not-a-number (NaN) value.
+    /// are a not-a-number (NaN) value.
     /// </summary>
     /// <typeparam name="T">
     /// Integral or floating point type.
@@ -904,9 +907,13 @@ namespace Harlinn::Common::Core::Math
     /// is a not-a-number (NaN) value, otherwise <c>false</c>.
     /// </returns>
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsNaN( T val, Args&& ... args ) noexcept
+    constexpr inline bool IsNaN( T val, Args ... args ) noexcept
     {
-        return IsNaN( val ) || ( IsNaN( args ) || ... );
+        if ( IsNaN( val ) )
+        {
+            return true;
+        }
+        return IsNaN( args... );
     }
 
 
@@ -987,9 +994,13 @@ namespace Harlinn::Common::Core::Math
     /// is positive or negative infinity, otherwise <c>false</c>. 
     /// </returns>
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsInf( T val, Args&& ... args ) noexcept
+    constexpr inline bool IsInf( T val, Args ... args ) noexcept
     {
-        return IsInf( val ) || ( IsInf( args ) || ... );
+        if ( IsInf( val ) )
+        {
+            return true;
+        }
+        return IsInf( args... );
     }
 
     /// <summary>
@@ -1015,19 +1026,23 @@ namespace Harlinn::Common::Core::Math
     /// Determines if all the arguments are finite.
     /// </summary>
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsFinite( T val, Args&& ... args ) noexcept
+    constexpr inline bool IsFinite( T val, Args ... args ) noexcept
     {
-        return IsFinite( val ) && (IsFinite( args ) && ...);
+        if ( IsFinite( val ) == false )
+        {
+            return false;
+        }
+        return IsFinite( args... );
     }
 
 
     /// <summary>
-    /// All integers are <q>normal</q>.
+    /// All integers, except 0, are <q>normal</q>.
     /// </summary>
     template<IntegerType T>
     constexpr inline bool IsNormal( T val ) noexcept
     {
-        return true;
+        return val != static_cast< T >( 0 );
     }
 
     /// <summary>
@@ -1044,9 +1059,13 @@ namespace Harlinn::Common::Core::Math
     /// Determines if all the arguments are normal.
     /// </summary>
     template<ArithmeticType T, ArithmeticType ... Args>
-    constexpr inline bool IsNormal( T val, Args&& ... args ) noexcept
+    constexpr inline bool IsNormal( T val, Args ... args ) noexcept
     {
-        return IsNormal( val ) && ( IsNormal( args ) && ... );
+        if ( IsNormal( val ) == false )
+        {
+            return false;
+        }
+        return IsNormal( args... );
     }
 
 
@@ -1467,6 +1486,60 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    namespace Internal
+    {
+        template<FloatingPointType T>
+        constexpr inline T MaxImpl( T x, T y )
+        {
+            // Check for NaNs to avoid raising spurious exceptions. 
+            if ( IsNaN( x ) )
+            {
+                return y;
+            }
+
+            if ( IsNaN( y ) )
+            {
+                return x;
+            }
+
+            // Handle comparisons of signed zeroes. 
+            auto sx = FastSignBit( x );
+            auto sy = FastSignBit( y );
+            if ( sx != sy )
+            {
+                return sx < sy ? x : y;
+            }
+
+            return ( x > y ? x : y );
+        }
+
+        template<FloatingPointType T>
+        constexpr inline T MinImpl( T x, T y )
+        {
+            // Check for NaNs to avoid raising spurious exceptions. 
+            if ( IsNaN( x ) )
+            {
+                return y;
+            }
+
+            if ( IsNaN( y ) )
+            {
+                return x;
+            }
+
+            // Handle comparisons of signed zeroes. 
+            auto sx = FastSignBit( x );
+            auto sy = FastSignBit( y );
+            if ( sx != sy )
+            {
+                return sx > sy ? x : y;
+            }
+
+            return ( x < y ? x : y );
+        }
+
+    }
+
     /// <summary>
     /// Returns the smaller of the given values.
     /// </summary>
@@ -1487,19 +1560,17 @@ namespace Harlinn::Common::Core::Math
     {
         if ( std::is_constant_evaluated( ) )
         {
-            return std::min( first, second );
+            return Internal::MinImpl( first, second );
         }
         else
         {
             if constexpr ( std::is_same_v<T, float> )
             {
-                T result;
-                _mm_store_ss( &result, _mm_min_ss( _mm_set_ss( first ), _mm_set_ss( second ) ) );
-                return result;
+                return fminf( first, second );
             }
             else
             {
-                return std::min( first, second );
+                return fmin( first, second );
             }
         }
     }
@@ -1556,6 +1627,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Max( T first, T second ) noexcept
     {
+        /*
         if ( std::is_constant_evaluated( ) )
         {
             return std::max( first, second );
@@ -1573,6 +1645,23 @@ namespace Harlinn::Common::Core::Math
                 return std::max( first, second );
             }
         }
+        */
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Internal::MaxImpl( first, second );
+        }
+        else
+        {
+            if constexpr ( std::is_same_v<T, float> )
+            {
+                return fmaxf( first, second );
+            }
+            else
+            {
+                return fmax( first, second );
+            }
+        }
+
     }
     /// <summary>
     /// Returns the larger of the given values.
@@ -2147,12 +2236,11 @@ namespace Harlinn::Common::Core::Math
     /// The floating point remainder of the division operation <c>x / y</c>.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline std::decay_t<T> FMod( T x, T y ) noexcept
+    constexpr inline T FMod( T x, T y ) noexcept
     {
-        using FloatT = std::decay_t<T>;
         if ( std::is_constant_evaluated( ) )
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
                 return Internal::OpenLibM::fmodf( x, y );
             }
@@ -2163,7 +2251,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
+            if constexpr ( std::is_same_v<T, float> )
             {
                 return Internal::OpenLibM::fmodf( x, y );
             }
@@ -3196,7 +3284,7 @@ namespace Harlinn::Common::Core::Math
 
 
     /// <summary>
-    /// Computes x * y + z as if to infinite precision and rounded only once to fit the result type.
+    /// Computes x * y + z. 
     /// </summary>
     template<IntegerType T>
     inline constexpr T FMA( T a, T b, T c ) noexcept
