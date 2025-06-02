@@ -64,7 +64,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( hx >= 0x7f800000 ) return x + x;
 		if ( hx == 0x3f800000 )
-			return zero;			/* log(1) = +0 */
+			return 0.0f;			/* log(1) = +0 */
 		k += ( hx >> 23 ) - 127;
 		hx &= 0x007fffff;
 		i = ( hx + ( 0x4afb0d ) ) & 0x800000;

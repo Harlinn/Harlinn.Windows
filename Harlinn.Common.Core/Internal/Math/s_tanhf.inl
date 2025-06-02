@@ -39,8 +39,17 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* x is INF or NaN */
 		if ( ix >= 0x7f800000 )
 		{
-			if ( jx >= 0 ) return one / x + one;    /* tanh(+-inf)=+-1 */
-			else       return one / x - one;    /* tanh(NaN) = NaN */
+			if ( jx >= 0 )
+			{
+				/* tanh(+-inf)=+-1 */
+				return one / x + one;
+			}
+			else
+			{
+				/* tanh(NaN) = NaN */
+				return std::numeric_limits<float>::quiet_NaN( );
+				//return one / x - one;
+			}
 		}
 
 		/* |x| < 9 */

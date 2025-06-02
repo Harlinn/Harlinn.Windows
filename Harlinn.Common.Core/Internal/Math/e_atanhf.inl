@@ -48,7 +48,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			return CopySign( std::numeric_limits<float>::infinity( ), x );
 			//return x / zero;
 		}
-		if ( ix<0x31800000 && ( huge + x )>zero ) return x;	/* x<2**-28 */
+		if ( ix<0x31800000 && ( huge + x ) > 0.0f ) return x;	/* x<2**-28 */
 		SET_FLOAT_WORD( x, ix );
 		if ( ix < 0x3f000000 )
 		{		/* x < 0.5 */

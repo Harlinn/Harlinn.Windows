@@ -2984,7 +2984,8 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-
+            return std::acosh( x );
+            /*
             T result;
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2995,6 +2996,7 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_sd( &result, _mm_acosh_pd( _mm_set_sd( x ) ) );
             }
             return result;
+            */
         }
     }
 

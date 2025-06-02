@@ -66,7 +66,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			return CopySign( std::numeric_limits<double>::infinity( ), x );
 			//return x / zero;
 		}
-		if ( ix<0x3e300000 && ( huge + x )>zero ) return x;	/* x<2**-28 */
+		if ( ix<0x3e300000 && ( huge + x ) > 0.0 ) return x;	/* x<2**-28 */
 		SET_HIGH_WORD( x, ix );
 		if ( ix < 0x3fe00000 )
 		{		/* x < 0.5 */
