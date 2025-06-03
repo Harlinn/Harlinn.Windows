@@ -2610,7 +2610,7 @@ namespace Harlinn::Common::Core::Math
 
     /// <summary>
     /// <para>
-    /// Computes the principal value of the arc sine of x.
+    /// Computes the value of the arc sine of x.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -2664,7 +2664,7 @@ namespace Harlinn::Common::Core::Math
 
     /// <summary>
     /// <para>
-    /// Computes the principal value of the arc cosine of x.
+    /// Computes the value of the arc cosine of x.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -2723,7 +2723,7 @@ namespace Harlinn::Common::Core::Math
 
     /// <summary>
     /// <para>
-    /// Computes the principal value of the arc tangent of x.
+    /// Computes the value of the arc tangent of x.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
