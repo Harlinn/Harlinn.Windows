@@ -1162,6 +1162,33 @@ BOOST_AUTO_TEST_CASE( DoubleAbsTest1 )
     BOOST_CHECK( IsSameValue( result9, C::Zero ) );
 }
 
+
+// --run_test=ConstexprMathTests/IntegralAbsTest1
+BOOST_AUTO_TEST_CASE( IntegralAbsTest1 )
+{
+    constexpr auto result1 = Abs( -1 );
+    constexpr auto expected1 = 1;
+    constexpr auto success1 = result1 == expected1;
+    BOOST_CHECK( success1 );
+
+    constexpr auto result2 = Abs( MinInt32 + 1 );
+    constexpr auto expected2 = MaxInt32;
+    constexpr auto success2 = result2 == expected2;
+    BOOST_CHECK( success2 );
+
+
+    constexpr auto result3 = Abs( -1LL );
+    constexpr auto expected3 = 1;
+    constexpr auto success3 = result3 == expected3;
+    BOOST_CHECK( success3 );
+
+    constexpr auto result4 = Abs( MinInt64 + 1 );
+    constexpr auto expected4 = MaxInt64;
+    constexpr auto success4 = result4 == expected4;
+    BOOST_CHECK( success4 );
+}
+
+
 // --run_test=ConstexprMathTests/FloatFastAbsTest1
 BOOST_AUTO_TEST_CASE( FloatFastAbsTest1 )
 {
@@ -1213,6 +1240,50 @@ BOOST_AUTO_TEST_CASE( DoubleFastAbsTest1 )
     auto constexpr result9 = FastAbs( -C::Zero );
     BOOST_CHECK( IsSameValue( result9, C::Zero ) );
 }
+
+
+// --run_test=ConstexprMathTests/IntegralFastAbsTest1
+BOOST_AUTO_TEST_CASE( IntegralFastAbsTest1 )
+{
+    constexpr auto result1 = FastAbs( -1 );
+    constexpr auto expected1 = 1;
+    constexpr auto success1 = result1 == expected1;
+    BOOST_CHECK( success1 );
+
+    constexpr auto result2 = FastAbs( MinInt32 + 1 );
+    constexpr auto expected2 = MaxInt32;
+    constexpr auto success2 = result2 == expected2;
+    BOOST_CHECK( success2 );
+
+
+    constexpr auto result3 = FastAbs( -1LL );
+    constexpr auto expected3 = 1;
+    constexpr auto success3 = result3 == expected3;
+    BOOST_CHECK( success3 );
+
+    constexpr auto result4 = FastAbs( MinInt64 + 1 );
+    constexpr auto expected4 = MaxInt64;
+    constexpr auto success4 = result4 == expected4;
+    BOOST_CHECK( success4 );
+
+    constexpr auto result5 = FastAbs( 1 );
+    constexpr auto expected5 = 1;
+    constexpr auto success5 = result5 == expected5;
+    BOOST_CHECK( success5 );
+
+    constexpr auto result6 = FastAbs( static_cast<SByte>( -1 ) );
+    constexpr auto expected6 = 1;
+    constexpr auto success6 = result6 == expected6;
+    BOOST_CHECK( success6 );
+
+    constexpr auto result7 = FastAbs( static_cast< Int16 >( -1 ) );
+    constexpr auto expected7 = 1;
+    constexpr auto success7 = result7 == expected7;
+    BOOST_CHECK( success7 );
+
+
+}
+
 
 // --run_test=ConstexprMathTests/FloatSignBitTest1
 BOOST_AUTO_TEST_CASE( FloatSignBitTest1 )

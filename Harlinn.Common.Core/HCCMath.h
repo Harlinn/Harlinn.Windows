@@ -1168,12 +1168,8 @@ namespace Harlinn::Common::Core::Math
     template<SignedIntegerType T>
     constexpr inline T FastAbs( T val ) noexcept
     {
-        using UIntT = std::make_unsigned_t<T>;
-        constexpr size_t ShiftCount = ( ( sizeof( T ) - 1 ) * 8 ) + 7;
-        constexpr UIntT UnsignedSignMask = static_cast< UIntT >( 1 ) << ShiftCount;
-        constexpr UIntT ValueMask = UnsignedSignMask - 1;
-
-        return std::bit_cast< T >( static_cast< UIntT >( std::bit_cast< UIntT >( val ) & ValueMask ) );
+        const T mask = val >> ( sizeof( T ) * CHAR_BIT - 1 );
+        return ( ( val + mask ) ^ mask );
     }
 
     template<FloatingPointType T>
