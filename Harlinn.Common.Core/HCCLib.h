@@ -111,8 +111,19 @@ namespace Harlinn::Common::Core
             return ( ( ( ( value >> ( N * CHAR_BIT ) ) & (T)(unsigned char)( -1 ) )  << ( ( sizeof( T ) - 1 - N ) * CHAR_BIT ) ) | ... );
         };
     }
-    template<typename T>
-        requires IsInteger<std::remove_cvref_t<T>>
+    /// <summary>
+    /// Reverses the order of bytes in an integer.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integral type, normally deduced from the argument.
+    /// </typeparam>
+    /// <param name="value">
+    /// An integral value.
+    /// </param>
+    /// <returns>
+    /// An integral value calculated by reversing the order of the bytes from the argument.
+    /// </returns>
+    template<IntegerType T>
     inline constexpr T ByteSwap( T value )
     {
         if ( std::is_constant_evaluated( ) )
@@ -182,12 +193,20 @@ namespace Harlinn::Common::Core
     /// <returns>
     /// The bitmask.
     /// </returns>
-    template <typename T, size_t N>
-        requires IsUnsignedInteger<T> && (N <= CHAR_BIT * sizeof( T ) )
+    template <UnsignedIntegerType T, size_t N>
+        requires (N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskTrailingOnes( )
     {
         return BitMask_v<N>;
     }
+
+    template <SignedIntegerType T, size_t N>
+        requires ( N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskTrailingOnes( )
+    {
+        return std::bit_cast<T>( static_cast< std::make_unsigned_t<T> >( BitMask_v<N> ) );
+    }
+
 
     /// <summary>
     /// Creates a bitmask with the <c>N</c> left-most bits set to 1, and all other bits
@@ -202,11 +221,18 @@ namespace Harlinn::Common::Core
     /// <returns>
     /// The bitmask.
     /// </returns>
-    template <typename T, size_t N>
-        requires IsUnsignedInteger<T> && ( N <= CHAR_BIT * sizeof( T ) )
+    template <UnsignedIntegerType T, size_t N>
+        requires ( N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskLeadingOnes( )
     {
         return ~BitMask_v<( CHAR_BIT * sizeof( T ) ) - N>;
+    }
+
+    template <SignedIntegerType T, size_t N>
+        requires ( N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskLeadingOnes( )
+    {
+        return std::bit_cast< T >( static_cast< std::make_unsigned_t<T> >( ~BitMask_v<( CHAR_BIT * sizeof( T ) ) - N> ) );
     }
 
     /// <summary>
@@ -222,11 +248,18 @@ namespace Harlinn::Common::Core
     /// <returns>
     /// The bitmask.
     /// </returns>
-    template <typename T, size_t N>
-        requires IsUnsignedInteger<T> && ( N <= CHAR_BIT * sizeof( T ) )
+    template <UnsignedIntegerType T, size_t N>
+        requires ( N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskTrailingZeros( )
     {
         return ~BitMask_v<N>;
+    }
+
+    template <SignedIntegerType T, size_t N>
+        requires ( N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskTrailingZeros( )
+    {
+        return std::bit_cast< T >( static_cast< std::make_unsigned_t<T> >( ~BitMask_v<N> ) );
     }
 
     /// <summary>
@@ -242,11 +275,18 @@ namespace Harlinn::Common::Core
     /// <returns>
     /// The bitmask.
     /// </returns>
-    template <typename T, size_t N>
-        requires IsUnsignedInteger<T> && ( N <= CHAR_BIT * sizeof( T ) )
+    template <UnsignedIntegerType T, size_t N>
+        requires ( N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskLeadingZeros( )
     {
         return BitMask_v<( CHAR_BIT * sizeof( T ) ) - N>;
+    }
+
+    template <SignedIntegerType T, size_t N>
+        requires ( N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskLeadingZeros( )
+    {
+        return std::bit_cast< T >( BitMask_v<( CHAR_BIT * sizeof( T ) ) - N> );
     }
 
 
@@ -412,16 +452,28 @@ namespace Harlinn::Common::Core
         return std::bit_cast<Double>( ReverseBits( std::bit_cast<UInt64>( val ) ) );
     }
 
-    template<typename T>
-        requires std::is_integral_v<T>
-    constexpr bool IndexOfBitFromMSB( unsigned long* index, T bits )
+    /// <summary>
+    /// Search the mask data from least significant bit (LSB) to the most significant bit (MSB) for a set bit (1).
+    /// </summary>
+    /// <param name="index">
+    /// Pointer to a value that will receive the zero based index of the
+    /// of the bit, if found.
+    /// </param>
+    /// <param name="bits">
+    /// The value to search.
+    /// </param>
+    /// <returns>
+    /// Returns true if a set bit was found and the value pointed to by index is valid.
+    /// </returns>
+    template<IntegerType T>
+    constexpr bool IndexOfBitFromLSB( unsigned long* index, T bits )
     {
-        using UIntType = std::make_unsigned_t<T>;
-        auto value = std::bit_cast< UIntType >( bits );
         if ( std::is_constant_evaluated( ) )
         {
+            using UIntType = std::make_unsigned_t<T>;
+            auto value = std::bit_cast< UIntType >( bits );
             auto maskSize = ( ( sizeof( bits ) - 1 ) * 8 ) + 7;
-            for ( int i = static_cast<int>( maskSize ); i >= 0; i-- )
+            for ( UIntType i = 0; i < maskSize; i++ )
             {
                 if ( value & ( static_cast< UIntType >( 1 ) << i ) )
                 {
@@ -441,16 +493,109 @@ namespace Harlinn::Common::Core
             if constexpr ( bitsSize > 4 )
             {
                 auto value = std::bit_cast< UInt64 >( bits );
+                return _BitScanForward64( index, value ) != 0;
+            }
+            else
+            {
+                using UIntType = std::make_unsigned_t<T>;
+                auto value = std::bit_cast< UIntType >( bits );
+                return _BitScanForward( index, value ) != 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Search the mask data from least significant bit (LSB) to the most significant bit (MSB) for a set bit (1).
+    /// </summary>
+    /// <param name="bits">
+    /// The value to search.
+    /// </param>
+    /// <returns>
+    /// An std::optional with an assigned value if a set bit was found.
+    /// </returns>
+    template<IntegerType T>
+    constexpr std::optional<unsigned long> IndexOfBitFromLSB( T bits )
+    {
+        unsigned long index{};
+        if ( IndexOfBitFromLSB( &index, bits ) )
+        {
+            return index;
+        }
+        return {};
+    }
+
+    /// <summary>
+    /// Search the mask data from most significant bit (MSB) to least significant bit (LSB) for a set bit (1).
+    /// </summary>
+    /// <param name="index">
+    /// Pointer to a value that will receive the zero based index of the
+    /// of the bit, if found.
+    /// </param>
+    /// <param name="bits">
+    /// The value to search.
+    /// </param>
+    /// <returns>
+    /// Returns true if a set bit was found and the value pointed to by index is valid.
+    /// </returns>
+    template<IntegerType T>
+    constexpr bool IndexOfBitFromMSB( unsigned long* index, T bits )
+    {
+        using UIntType = std::make_unsigned_t<T>;
+        
+        if ( std::is_constant_evaluated( ) )
+        {
+            auto value = std::bit_cast< UIntType >( bits );
+            auto maskSize = ( ( sizeof( bits ) - 1 ) * 8 ) + 7;
+            for ( int i = static_cast< int >( maskSize ); i >= 0; i-- )
+            {
+                if ( value & ( static_cast< UIntType >( 1 ) << i ) )
+                {
+                    if ( index )
+                    {
+                        *index = i;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+        else
+        {
+            constexpr auto bitsSize = sizeof( bits );
+
+            if constexpr ( bitsSize > 4 )
+            {
+                auto value = std::bit_cast< UInt64 >( bits );
                 return _BitScanReverse64( index, value ) != 0;
             }
             else
             {
-                auto value = std::bit_cast< unsigned long >( bits );
+                using UIntType = std::make_unsigned_t<T>;
+                auto value = std::bit_cast< UIntType >( bits );
                 return _BitScanReverse( index, value ) != 0;
             }
         }
     }
 
+    /// <summary>
+    /// Search the mask data from most significant bit (MSB) to least significant bit (LSB) for a set bit (1).
+    /// </summary>
+    /// <param name="bits">
+    /// The value to search.
+    /// </param>
+    /// <returns>
+    /// An std::optional with an assigned value if a set bit was found.
+    /// </returns>
+    template<IntegerType T>
+    constexpr std::optional<unsigned long> IndexOfBitFromMSB( T bits )
+    {
+        unsigned long index{};
+        if ( IndexOfBitFromMSB( &index, bits ) )
+        {
+            return index;
+        }
+        return {};
+    }
     
 
     /// <summary>

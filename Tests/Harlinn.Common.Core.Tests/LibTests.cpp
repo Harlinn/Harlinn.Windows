@@ -29,6 +29,686 @@ namespace
 
 BOOST_FIXTURE_TEST_SUITE( LibTests, LocalFixture )
 
+// --run_test=LibTests/ByteSwapTest1
+BOOST_AUTO_TEST_CASE( ByteSwapTest1 )
+{
+    constexpr auto result1 = ByteSwap( static_cast< Byte >( 0x1 ) );
+    constexpr auto expected1 = static_cast< Byte >( 0x1 );
+    constexpr auto success1 = result1 == expected1;
+    BOOST_CHECK( success1 );
+
+    constexpr auto result2 = ByteSwap( static_cast< SByte >( 0x1 ) );
+    constexpr auto expected2 = static_cast< SByte >( 0x1 );
+    constexpr auto success2 = result2 == expected2;
+    BOOST_CHECK( success2 );
+
+    constexpr auto result3 = ByteSwap( static_cast< UInt16 >( 0x0201 ) );
+    constexpr auto expected3 = static_cast< UInt16 >( 0x0102 );
+    constexpr auto success3 = result3 == expected3;
+    BOOST_CHECK( success3 );
+
+    constexpr auto result4 = ByteSwap( static_cast< Int16 >( 0x0201 ) );
+    constexpr auto expected4 = static_cast< Int16 >( 0x0102 );
+    constexpr auto success4 = result4 == expected4;
+    BOOST_CHECK( success4 );
+
+    constexpr auto result5 = ByteSwap( static_cast< UInt32 >( 0x04030201 ) );
+    constexpr auto expected5 = static_cast< UInt32 >( 0x01020304 );
+    constexpr auto success5 = result5 == expected5;
+    BOOST_CHECK( success5 );
+
+    constexpr auto result6 = ByteSwap( static_cast< Int32 >( 0x04030201 ) );
+    constexpr auto expected6 = static_cast< Int32 >( 0x01020304 );
+    constexpr auto success6 = result6 == expected6;
+    BOOST_CHECK( success6 );
+
+    constexpr auto result7 = ByteSwap( static_cast< UInt64 >( 0x0807060504030201ULL ) );
+    constexpr auto expected7 = static_cast< UInt64 >( 0x0102030405060708ULL );
+    constexpr auto success7 = result7 == expected7;
+    BOOST_CHECK( success7 );
+
+    constexpr auto result8 = ByteSwap( static_cast< UInt64 >( 0x0807060504030201LL ) );
+    constexpr auto expected8 = static_cast< UInt64 >( 0x0102030405060708LL );
+    constexpr auto success8 = result8 == expected8;
+    BOOST_CHECK( success8 );
+}
+
+// --run_test=LibTests/ByteSwapTest2
+BOOST_AUTO_TEST_CASE( ByteSwapTest2 )
+{
+    auto result1 = ByteSwap( static_cast< Byte >( 0x1 ) );
+    auto expected1 = static_cast< Byte >( 0x1 );
+    auto success1 = result1 == expected1;
+    BOOST_CHECK( success1 );
+
+    auto result2 = ByteSwap( static_cast< SByte >( 0x1 ) );
+    auto expected2 = static_cast< SByte >( 0x1 );
+    auto success2 = result2 == expected2;
+    BOOST_CHECK( success2 );
+
+    auto result3 = ByteSwap( static_cast< UInt16 >( 0x0201 ) );
+    auto expected3 = static_cast< UInt16 >( 0x0102 );
+    auto success3 = result3 == expected3;
+    BOOST_CHECK( success3 );
+
+    auto result4 = ByteSwap( static_cast< Int16 >( 0x0201 ) );
+    auto expected4 = static_cast< Int16 >( 0x0102 );
+    auto success4 = result4 == expected4;
+    BOOST_CHECK( success4 );
+
+    auto result5 = ByteSwap( static_cast< UInt32 >( 0x04030201 ) );
+    auto expected5 = static_cast< UInt32 >( 0x01020304 );
+    auto success5 = result5 == expected5;
+    BOOST_CHECK( success5 );
+
+    auto result6 = ByteSwap( static_cast< Int32 >( 0x04030201 ) );
+    auto expected6 = static_cast< Int32 >( 0x01020304 );
+    auto success6 = result6 == expected6;
+    BOOST_CHECK( success6 );
+
+    auto result7 = ByteSwap( static_cast< UInt64 >( 0x0807060504030201ULL ) );
+    auto expected7 = static_cast< UInt64 >( 0x0102030405060708ULL );
+    auto success7 = result7 == expected7;
+    BOOST_CHECK( success7 );
+
+    auto result8 = ByteSwap( static_cast< UInt64 >( 0x0807060504030201LL ) );
+    auto expected8 = static_cast< UInt64 >( 0x0102030405060708LL );
+    auto success8 = result8 == expected8;
+    BOOST_CHECK( success8 );
+}
+
+// --run_test=LibTests/BitMaskTest1
+BOOST_AUTO_TEST_CASE( BitMaskTest1 )
+{
+    constexpr auto result1 = MaskTrailingOnes<Byte,2>( );
+    constexpr auto expected1 = static_cast< Byte >( 0b11 );
+    constexpr auto success1 = result1 == expected1;
+    BOOST_CHECK( success1 );
+    constexpr auto result2 = MaskLeadingOnes<Byte, 2>( );
+    constexpr auto expected2 = static_cast< Byte >( 0b11000000 );
+    constexpr auto success2 = result2 == expected2;
+    BOOST_CHECK( success2 );
+
+    constexpr auto result3 = MaskTrailingZeros<Byte, 2>( );
+    constexpr auto expected3 = static_cast< Byte >( 0b11111100 );
+    constexpr auto success3 = result3 == expected3;
+    BOOST_CHECK( success3 );
+    constexpr auto result4 = MaskLeadingZeros<Byte, 2>( );
+    constexpr auto expected4 = static_cast< Byte >( 0b00111111 );
+    constexpr auto success4 = result4 == expected4;
+    BOOST_CHECK( success4 );
+
+    constexpr auto result5 = MaskTrailingOnes<SByte, 2>( );
+    constexpr auto expected5 = static_cast< SByte >( 0b11 );
+    constexpr auto success5 = result5 == expected5;
+    BOOST_CHECK( success5 );
+    constexpr auto result6 = MaskLeadingOnes<SByte, 2>( );
+    constexpr auto expected6 = static_cast< SByte >( 0b11000000 );
+    constexpr auto success6 = result6 == expected6;
+    BOOST_CHECK( success6 );
+
+    constexpr auto result7 = MaskTrailingZeros<SByte, 2>( );
+    constexpr auto expected7 = static_cast< SByte >( 0b11111100 );
+    constexpr auto success7 = result7 == expected7;
+    BOOST_CHECK( success7 );
+    constexpr auto result8 = MaskLeadingZeros<SByte, 2>( );
+    constexpr auto expected8 = static_cast< SByte >( 0b00111111 );
+    constexpr auto success8 = result8 == expected8;
+    BOOST_CHECK( success8 );
+
+    constexpr auto result9 = MaskTrailingOnes<UInt16, 2>( );
+    constexpr auto expected9 = static_cast< UInt16 >( 0b0000000000000011 );
+    constexpr auto success9 = result9 == expected9;
+    BOOST_CHECK( success9 );
+    constexpr auto result10 = MaskLeadingOnes<UInt16, 2>( );
+    constexpr auto expected10 = static_cast< UInt16 >( 0b1100000000000000 );
+    constexpr auto success10 = result10 == expected10;
+    BOOST_CHECK( success10 );
+
+    constexpr auto result11 = MaskTrailingZeros<UInt16, 2>( );
+    constexpr auto expected11 = static_cast< UInt16 >( 0b1111111111111100 );
+    constexpr auto success11 = result11 == expected11;
+    BOOST_CHECK( success11 );
+    constexpr auto result12 = MaskLeadingZeros<UInt16, 2>( );
+    constexpr auto expected12 = static_cast< UInt16 >( 0b0011111111111111 );
+    constexpr auto success12 = result12 == expected12;
+    BOOST_CHECK( success12 );
+
+    constexpr auto result13 = MaskTrailingOnes<Int16, 2>( );
+    constexpr auto expected13 = static_cast< Int16 >( 0b0000000000000011 );
+    constexpr auto success13 = result13 == expected13;
+    BOOST_CHECK( success13 );
+    constexpr auto result14 = MaskLeadingOnes<Int16, 2>( );
+    constexpr auto expected14 = static_cast< Int16 >( 0b1100000000000000 );
+    constexpr auto success14 = result14 == expected14;
+    BOOST_CHECK( success14 );
+
+    constexpr auto result15 = MaskTrailingZeros<Int16, 2>( );
+    constexpr auto expected15 = static_cast< Int16 >( 0b1111111111111100 );
+    constexpr auto success15 = result15 == expected15;
+    BOOST_CHECK( success15 );
+    constexpr auto result16 = MaskLeadingZeros<Int16, 2>( );
+    constexpr auto expected16 = static_cast< Int16 >( 0b0011111111111111 );
+    constexpr auto success16 = result16 == expected16;
+    BOOST_CHECK( success16 );
+
+    constexpr auto result17 = MaskTrailingOnes<UInt32, 2>( );
+    constexpr auto expected17 = static_cast< UInt32 >( 0b00000000000000000000000000000011 );
+    constexpr auto success17 = result17 == expected17;
+    BOOST_CHECK( success17 );
+    constexpr auto result18 = MaskLeadingOnes<UInt32, 2>( );
+    constexpr auto expected18 = static_cast< UInt32 >( 0b11000000000000000000000000000000 );
+    constexpr auto success18 = result18 == expected18;
+    BOOST_CHECK( success18 );
+
+    constexpr auto result19 = MaskTrailingZeros<UInt32, 2>( );
+    constexpr auto expected19 = static_cast< UInt32 >( 0b11111111111111111111111111111100 );
+    constexpr auto success19 = result19 == expected19;
+    BOOST_CHECK( success19 );
+    constexpr auto result20 = MaskLeadingZeros<UInt32, 2>( );
+    constexpr auto expected20 = static_cast< UInt32 >( 0b00111111111111111111111111111111 );
+    constexpr auto success20 = result20 == expected20;
+    BOOST_CHECK( success20 );
+
+    constexpr auto result21 = MaskTrailingOnes<Int32, 2>( );
+    constexpr auto expected21 = static_cast< Int32 >( 0b00000000000000000000000000000011 );
+    constexpr auto success21 = result21 == expected21;
+    BOOST_CHECK( success21 );
+    constexpr auto result22 = MaskLeadingOnes<Int32, 2>( );
+    constexpr auto expected22 = static_cast< Int32 >( 0b11000000000000000000000000000000 );
+    constexpr auto success22 = result22 == expected22;
+    BOOST_CHECK( success22 );
+
+    constexpr auto result23 = MaskTrailingZeros<Int32, 2>( );
+    constexpr auto expected23 = static_cast< Int32 >( 0b11111111111111111111111111111100 );
+    constexpr auto success23 = result23 == expected23;
+    BOOST_CHECK( success23 );
+    constexpr auto result24 = MaskLeadingZeros<Int32, 2>( );
+    constexpr auto expected24 = static_cast< Int32 >( 0b00111111111111111111111111111111 );
+    constexpr auto success24 = result24 == expected24;
+    BOOST_CHECK( success24 );
+
+    constexpr auto result25 = MaskTrailingOnes<UInt64, 2>( );
+    constexpr auto expected25 = static_cast< UInt64 >( 0b0000000000000000000000000000000000000000000000000000000000000011 );
+    constexpr auto success25 = result25 == expected25;
+    BOOST_CHECK( success25 );
+    constexpr auto result26 = MaskLeadingOnes<UInt64, 2>( );
+    constexpr auto expected26 = static_cast< UInt64 >( 0b1100000000000000000000000000000000000000000000000000000000000000 );
+    constexpr auto success26 = result26 == expected26;
+    BOOST_CHECK( success26 );
+
+    constexpr auto result27 = MaskTrailingZeros<UInt64, 2>( );
+    constexpr auto expected27 = static_cast< UInt64 >( 0b1111111111111111111111111111111111111111111111111111111111111100 );
+    constexpr auto success27 = result27 == expected27;
+    BOOST_CHECK( success27 );
+    constexpr auto result28 = MaskLeadingZeros<UInt64, 2>( );
+    constexpr auto expected28 = static_cast< UInt64 >( 0b0011111111111111111111111111111111111111111111111111111111111111 );
+    constexpr auto success28 = result28 == expected28;
+    BOOST_CHECK( success28 );
+
+    constexpr auto result29 = MaskTrailingOnes<Int64, 2>( );
+    constexpr auto expected29 = static_cast< Int64 >( 0b0000000000000000000000000000000000000000000000000000000000000011 );
+    constexpr auto success29 = result29 == expected29;
+    BOOST_CHECK( success29 );
+    constexpr auto result30 = MaskLeadingOnes<Int64, 2>( );
+    constexpr auto expected30 = static_cast< Int64 >( 0b1100000000000000000000000000000000000000000000000000000000000000 );
+    constexpr auto success30 = result30 == expected30;
+    BOOST_CHECK( success30 );
+
+    constexpr auto result31 = MaskTrailingZeros<Int64, 2>( );
+    constexpr auto expected31 = static_cast< Int64 >( 0b1111111111111111111111111111111111111111111111111111111111111100 );
+    constexpr auto success31 = result31 == expected31;
+    BOOST_CHECK( success31 );
+    constexpr auto result32 = MaskLeadingZeros<Int64, 2>( );
+    constexpr auto expected32 = static_cast< Int64 >( 0b0011111111111111111111111111111111111111111111111111111111111111 );
+    constexpr auto success32 = result32 == expected32;
+    BOOST_CHECK( success32 );
+}
+
+// --run_test=LibTests/ReverseBitsTest1
+BOOST_AUTO_TEST_CASE( ReverseBitsTest1 )
+{
+    constexpr auto result1 = ReverseBits( MaskTrailingOnes<Byte, 2>( ) );
+    constexpr auto expected1 = static_cast< Byte >( 0b11000000 );
+    constexpr auto success1 = result1 == expected1;
+    BOOST_CHECK( success1 );
+    constexpr auto result2 = ReverseBits( MaskLeadingOnes<Byte, 2>( ) );
+    constexpr auto expected2 = static_cast< Byte >( 0b00000011 );
+    constexpr auto success2 = result2 == expected2;
+    BOOST_CHECK( success2 );
+
+    constexpr auto result3 = ReverseBits( MaskTrailingZeros<Byte, 2>( ) );
+    constexpr auto expected3 = static_cast< Byte >( 0b00111111 );
+    constexpr auto success3 = result3 == expected3;
+    BOOST_CHECK( success3 );
+    constexpr auto result4 = ReverseBits( MaskLeadingZeros<Byte, 2>( ) );
+    constexpr auto expected4 = static_cast< Byte >( 0b11111100 );
+    constexpr auto success4 = result4 == expected4;
+    BOOST_CHECK( success4 );
+
+    constexpr auto result5 = ReverseBits( MaskTrailingOnes<SByte, 2>( ) );
+    constexpr auto expected5 = static_cast< SByte >( 0b11000000 );
+    constexpr auto success5 = result5 == expected5;
+    BOOST_CHECK( success5 );
+    constexpr auto result6 = ReverseBits( MaskLeadingOnes<SByte, 2>( ) );
+    constexpr auto expected6 = static_cast< SByte >( 0b00000011 );
+    constexpr auto success6 = result6 == expected6;
+    BOOST_CHECK( success6 );
+
+    constexpr auto result7 = ReverseBits( MaskTrailingZeros<SByte, 2>( ) );
+    constexpr auto expected7 = static_cast< SByte >( 0b00111111 );
+    constexpr auto success7 = result7 == expected7;
+    BOOST_CHECK( success7 );
+    constexpr auto result8 = ReverseBits( MaskLeadingZeros<SByte, 2>( ) );
+    constexpr auto expected8 = static_cast< SByte >( 0b11111100 );
+    constexpr auto success8 = result8 == expected8;
+    BOOST_CHECK( success8 );
+
+    constexpr auto result9 = ReverseBits( MaskTrailingOnes<UInt16, 2>( ) );
+    constexpr auto expected9 = static_cast< UInt16 >( 0b1100000000000000 );
+    constexpr auto success9 = result9 == expected9;
+    BOOST_CHECK( success9 );
+    constexpr auto result10 = ReverseBits( MaskLeadingOnes<UInt16, 2>( ) );
+    constexpr auto expected10 = static_cast< UInt16 >( 0b0000000000000011 );
+    constexpr auto success10 = result10 == expected10;
+    BOOST_CHECK( success10 );
+
+    constexpr auto result11 = ReverseBits( MaskTrailingZeros<UInt16, 2>( ) );
+    constexpr auto expected11 = static_cast< UInt16 >( 0b0011111111111111 );
+    constexpr auto success11 = result11 == expected11;
+    BOOST_CHECK( success11 );
+    constexpr auto result12 = ReverseBits( MaskLeadingZeros<UInt16, 2>( ) );
+    constexpr auto expected12 = static_cast< UInt16 >( 0b1111111111111100 );
+    constexpr auto success12 = result12 == expected12;
+    BOOST_CHECK( success12 );
+
+    constexpr auto result13 = ReverseBits( MaskTrailingOnes<Int16, 2>( ) );
+    constexpr auto expected13 = static_cast< Int16 >( 0b1100000000000000 );
+    constexpr auto success13 = result13 == expected13;
+    BOOST_CHECK( success13 );
+    constexpr auto result14 = ReverseBits( MaskLeadingOnes<Int16, 2>( ) );
+    constexpr auto expected14 = static_cast< Int16 >( 0b0000000000000011 );
+    constexpr auto success14 = result14 == expected14;
+    BOOST_CHECK( success14 );
+
+    constexpr auto result15 = ReverseBits( MaskTrailingZeros<Int16, 2>( ) );
+    constexpr auto expected15 = static_cast< Int16 >( 0b0011111111111111 );
+    constexpr auto success15 = result15 == expected15;
+    BOOST_CHECK( success15 );
+    constexpr auto result16 = ReverseBits( MaskLeadingZeros<Int16, 2>( ) );
+    constexpr auto expected16 = static_cast< Int16 >( 0b1111111111111100 );
+    constexpr auto success16 = result16 == expected16;
+    BOOST_CHECK( success16 );
+
+    constexpr auto result17 = ReverseBits( MaskTrailingOnes<UInt32, 2>( ) );
+    constexpr auto expected17 = static_cast< UInt32 >( 0b11000000000000000000000000000000 );
+    constexpr auto success17 = result17 == expected17;
+    BOOST_CHECK( success17 );
+    constexpr auto result18 = ReverseBits( MaskLeadingOnes<UInt32, 2>( ) );
+    constexpr auto expected18 = static_cast< UInt32 >( 0b00000000000000000000000000000011 );
+    constexpr auto success18 = result18 == expected18;
+    BOOST_CHECK( success18 );
+
+    constexpr auto result19 = ReverseBits( MaskTrailingZeros<UInt32, 2>( ) );
+    constexpr auto expected19 = static_cast< UInt32 >( 0b00111111111111111111111111111111 );
+    constexpr auto success19 = result19 == expected19;
+    BOOST_CHECK( success19 );
+    constexpr auto result20 = ReverseBits( MaskLeadingZeros<UInt32, 2>( ) );
+    constexpr auto expected20 = static_cast< UInt32 >( 0b11111111111111111111111111111100 );
+    constexpr auto success20 = result20 == expected20;
+    BOOST_CHECK( success20 );
+
+    constexpr auto result21 = ReverseBits( MaskTrailingOnes<Int32, 2>( ) );
+    constexpr auto expected21 = static_cast< Int32 >( 0b11000000000000000000000000000000 );
+    constexpr auto success21 = result21 == expected21;
+    BOOST_CHECK( success21 );
+    constexpr auto result22 = ReverseBits( MaskLeadingOnes<Int32, 2>( ) );
+    constexpr auto expected22 = static_cast< Int32 >( 0b00000000000000000000000000000011 );
+    constexpr auto success22 = result22 == expected22;
+    BOOST_CHECK( success22 );
+
+    constexpr auto result23 = ReverseBits( MaskTrailingZeros<Int32, 2>( ) );
+    constexpr auto expected23 = static_cast< Int32 >( 0b00111111111111111111111111111111 );
+    constexpr auto success23 = result23 == expected23;
+    BOOST_CHECK( success23 );
+    constexpr auto result24 = ReverseBits( MaskLeadingZeros<Int32, 2>( ) );
+    constexpr auto expected24 = static_cast< Int32 >( 0b11111111111111111111111111111100 );
+    constexpr auto success24 = result24 == expected24;
+    BOOST_CHECK( success24 );
+
+    constexpr auto result25 = ReverseBits( MaskTrailingOnes<UInt64, 2>( ) );
+    constexpr auto expected25 = static_cast< UInt64 >( 0b1100000000000000000000000000000000000000000000000000000000000000 );
+    constexpr auto success25 = result25 == expected25;
+    BOOST_CHECK( success25 );
+    constexpr auto result26 = ReverseBits( MaskLeadingOnes<UInt64, 2>( ) );
+    constexpr auto expected26 = static_cast< UInt64 >( 0b0000000000000000000000000000000000000000000000000000000000000011 );
+    constexpr auto success26 = result26 == expected26;
+    BOOST_CHECK( success26 );
+
+    constexpr auto result27 = ReverseBits( MaskTrailingZeros<UInt64, 2>( ) );
+    constexpr auto expected27 = static_cast< UInt64 >( 0b0011111111111111111111111111111111111111111111111111111111111111 );
+    constexpr auto success27 = result27 == expected27;
+    BOOST_CHECK( success27 );
+    constexpr auto result28 = ReverseBits( MaskLeadingZeros<UInt64, 2>( ) );
+    constexpr auto expected28 = static_cast< UInt64 >( 0b1111111111111111111111111111111111111111111111111111111111111100 );
+    constexpr auto success28 = result28 == expected28;
+    BOOST_CHECK( success28 );
+
+    constexpr auto result29 = ReverseBits( MaskTrailingOnes<Int64, 2>( ) );
+    constexpr auto expected29 = static_cast< Int64 >( 0b1100000000000000000000000000000000000000000000000000000000000000 );
+    constexpr auto success29 = result29 == expected29;
+    BOOST_CHECK( success29 );
+    constexpr auto result30 = ReverseBits( MaskLeadingOnes<Int64, 2>( ) );
+    constexpr auto expected30 = static_cast< Int64 >( 0b0000000000000000000000000000000000000000000000000000000000000011 );
+    constexpr auto success30 = result30 == expected30;
+    BOOST_CHECK( success30 );
+
+    constexpr auto result31 = ReverseBits( MaskTrailingZeros<Int64, 2>( ) );
+    constexpr auto expected31 = static_cast< Int64 >( 0b0011111111111111111111111111111111111111111111111111111111111111 );
+    constexpr auto success31 = result31 == expected31;
+    BOOST_CHECK( success31 );
+    constexpr auto result32 = ReverseBits( MaskLeadingZeros<Int64, 2>( ) );
+    constexpr auto expected32 = static_cast< Int64 >( 0b1111111111111111111111111111111111111111111111111111111111111100 );
+    constexpr auto success32 = result32 == expected32;
+    BOOST_CHECK( success32 );
+}
+
+
+// --run_test=LibTests/ReverseBitsTest2
+BOOST_AUTO_TEST_CASE( ReverseBitsTest2 )
+{
+    auto result1 = ReverseBits( MaskTrailingOnes<Byte, 2>( ) );
+    auto expected1 = static_cast< Byte >( 0b11000000 );
+    auto success1 = result1 == expected1;
+    BOOST_CHECK( success1 );
+    auto result2 = ReverseBits( MaskLeadingOnes<Byte, 2>( ) );
+    auto expected2 = static_cast< Byte >( 0b00000011 );
+    auto success2 = result2 == expected2;
+    BOOST_CHECK( success2 );
+
+    auto result3 = ReverseBits( MaskTrailingZeros<Byte, 2>( ) );
+    auto expected3 = static_cast< Byte >( 0b00111111 );
+    auto success3 = result3 == expected3;
+    BOOST_CHECK( success3 );
+    auto result4 = ReverseBits( MaskLeadingZeros<Byte, 2>( ) );
+    auto expected4 = static_cast< Byte >( 0b11111100 );
+    auto success4 = result4 == expected4;
+    BOOST_CHECK( success4 );
+
+    auto result5 = ReverseBits( MaskTrailingOnes<SByte, 2>( ) );
+    auto expected5 = static_cast< SByte >( 0b11000000 );
+    auto success5 = result5 == expected5;
+    BOOST_CHECK( success5 );
+    auto result6 = ReverseBits( MaskLeadingOnes<SByte, 2>( ) );
+    auto expected6 = static_cast< SByte >( 0b00000011 );
+    auto success6 = result6 == expected6;
+    BOOST_CHECK( success6 );
+
+    auto result7 = ReverseBits( MaskTrailingZeros<SByte, 2>( ) );
+    auto expected7 = static_cast< SByte >( 0b00111111 );
+    auto success7 = result7 == expected7;
+    BOOST_CHECK( success7 );
+    auto result8 = ReverseBits( MaskLeadingZeros<SByte, 2>( ) );
+    auto expected8 = static_cast< SByte >( 0b11111100 );
+    auto success8 = result8 == expected8;
+    BOOST_CHECK( success8 );
+
+    auto result9 = ReverseBits( MaskTrailingOnes<UInt16, 2>( ) );
+    auto expected9 = static_cast< UInt16 >( 0b1100000000000000 );
+    auto success9 = result9 == expected9;
+    BOOST_CHECK( success9 );
+    auto result10 = ReverseBits( MaskLeadingOnes<UInt16, 2>( ) );
+    auto expected10 = static_cast< UInt16 >( 0b0000000000000011 );
+    auto success10 = result10 == expected10;
+    BOOST_CHECK( success10 );
+
+    auto result11 = ReverseBits( MaskTrailingZeros<UInt16, 2>( ) );
+    auto expected11 = static_cast< UInt16 >( 0b0011111111111111 );
+    auto success11 = result11 == expected11;
+    BOOST_CHECK( success11 );
+    auto result12 = ReverseBits( MaskLeadingZeros<UInt16, 2>( ) );
+    auto expected12 = static_cast< UInt16 >( 0b1111111111111100 );
+    auto success12 = result12 == expected12;
+    BOOST_CHECK( success12 );
+
+    auto result13 = ReverseBits( MaskTrailingOnes<Int16, 2>( ) );
+    auto expected13 = static_cast< Int16 >( 0b1100000000000000 );
+    auto success13 = result13 == expected13;
+    BOOST_CHECK( success13 );
+    auto result14 = ReverseBits( MaskLeadingOnes<Int16, 2>( ) );
+    auto expected14 = static_cast< Int16 >( 0b0000000000000011 );
+    auto success14 = result14 == expected14;
+    BOOST_CHECK( success14 );
+
+    auto result15 = ReverseBits( MaskTrailingZeros<Int16, 2>( ) );
+    auto expected15 = static_cast< Int16 >( 0b0011111111111111 );
+    auto success15 = result15 == expected15;
+    BOOST_CHECK( success15 );
+    auto result16 = ReverseBits( MaskLeadingZeros<Int16, 2>( ) );
+    auto expected16 = static_cast< Int16 >( 0b1111111111111100 );
+    auto success16 = result16 == expected16;
+    BOOST_CHECK( success16 );
+
+    auto result17 = ReverseBits( MaskTrailingOnes<UInt32, 2>( ) );
+    auto expected17 = static_cast< UInt32 >( 0b11000000000000000000000000000000 );
+    auto success17 = result17 == expected17;
+    BOOST_CHECK( success17 );
+    auto result18 = ReverseBits( MaskLeadingOnes<UInt32, 2>( ) );
+    auto expected18 = static_cast< UInt32 >( 0b00000000000000000000000000000011 );
+    auto success18 = result18 == expected18;
+    BOOST_CHECK( success18 );
+
+    auto result19 = ReverseBits( MaskTrailingZeros<UInt32, 2>( ) );
+    auto expected19 = static_cast< UInt32 >( 0b00111111111111111111111111111111 );
+    auto success19 = result19 == expected19;
+    BOOST_CHECK( success19 );
+    auto result20 = ReverseBits( MaskLeadingZeros<UInt32, 2>( ) );
+    auto expected20 = static_cast< UInt32 >( 0b11111111111111111111111111111100 );
+    auto success20 = result20 == expected20;
+    BOOST_CHECK( success20 );
+
+    auto result21 = ReverseBits( MaskTrailingOnes<Int32, 2>( ) );
+    auto expected21 = static_cast< Int32 >( 0b11000000000000000000000000000000 );
+    auto success21 = result21 == expected21;
+    BOOST_CHECK( success21 );
+    auto result22 = ReverseBits( MaskLeadingOnes<Int32, 2>( ) );
+    auto expected22 = static_cast< Int32 >( 0b00000000000000000000000000000011 );
+    auto success22 = result22 == expected22;
+    BOOST_CHECK( success22 );
+
+    auto result23 = ReverseBits( MaskTrailingZeros<Int32, 2>( ) );
+    auto expected23 = static_cast< Int32 >( 0b00111111111111111111111111111111 );
+    auto success23 = result23 == expected23;
+    BOOST_CHECK( success23 );
+    auto result24 = ReverseBits( MaskLeadingZeros<Int32, 2>( ) );
+    auto expected24 = static_cast< Int32 >( 0b11111111111111111111111111111100 );
+    auto success24 = result24 == expected24;
+    BOOST_CHECK( success24 );
+
+    auto result25 = ReverseBits( MaskTrailingOnes<UInt64, 2>( ) );
+    auto expected25 = static_cast< UInt64 >( 0b1100000000000000000000000000000000000000000000000000000000000000 );
+    auto success25 = result25 == expected25;
+    BOOST_CHECK( success25 );
+    auto result26 = ReverseBits( MaskLeadingOnes<UInt64, 2>( ) );
+    auto expected26 = static_cast< UInt64 >( 0b0000000000000000000000000000000000000000000000000000000000000011 );
+    auto success26 = result26 == expected26;
+    BOOST_CHECK( success26 );
+
+    auto result27 = ReverseBits( MaskTrailingZeros<UInt64, 2>( ) );
+    auto expected27 = static_cast< UInt64 >( 0b0011111111111111111111111111111111111111111111111111111111111111 );
+    auto success27 = result27 == expected27;
+    BOOST_CHECK( success27 );
+    auto result28 = ReverseBits( MaskLeadingZeros<UInt64, 2>( ) );
+    auto expected28 = static_cast< UInt64 >( 0b1111111111111111111111111111111111111111111111111111111111111100 );
+    auto success28 = result28 == expected28;
+    BOOST_CHECK( success28 );
+
+    auto result29 = ReverseBits( MaskTrailingOnes<Int64, 2>( ) );
+    auto expected29 = static_cast< Int64 >( 0b1100000000000000000000000000000000000000000000000000000000000000 );
+    auto success29 = result29 == expected29;
+    BOOST_CHECK( success29 );
+    auto result30 = ReverseBits( MaskLeadingOnes<Int64, 2>( ) );
+    auto expected30 = static_cast< Int64 >( 0b0000000000000000000000000000000000000000000000000000000000000011 );
+    auto success30 = result30 == expected30;
+    BOOST_CHECK( success30 );
+
+    auto result31 = ReverseBits( MaskTrailingZeros<Int64, 2>( ) );
+    auto expected31 = static_cast< Int64 >( 0b0011111111111111111111111111111111111111111111111111111111111111 );
+    auto success31 = result31 == expected31;
+    BOOST_CHECK( success31 );
+    auto result32 = ReverseBits( MaskLeadingZeros<Int64, 2>( ) );
+    auto expected32 = static_cast< Int64 >( 0b1111111111111111111111111111111111111111111111111111111111111100 );
+    auto success32 = result32 == expected32;
+    BOOST_CHECK( success32 );
+}
+
+
+// --run_test=LibTests/IndexOfBitFromLSBTest1
+BOOST_AUTO_TEST_CASE( IndexOfBitFromLSBTest1 )
+{
+    constexpr auto result1 = IndexOfBitFromLSB( static_cast< Byte >( 0b1000 ) );
+    BOOST_CHECK( result1 );
+    BOOST_CHECK( result1.value() == 3 );
+
+    constexpr auto result2 = IndexOfBitFromLSB( static_cast< SByte >( 0b1000 ) );
+    BOOST_CHECK( result2 );
+    BOOST_CHECK( result2.value( ) == 3 );
+
+    constexpr auto result3 = IndexOfBitFromLSB( static_cast< UInt16 >( 0b100000000000 ) );
+    BOOST_CHECK( result3 );
+    BOOST_CHECK( result3.value( ) == 11 );
+
+    constexpr auto result4 = IndexOfBitFromLSB( static_cast< Int16 >( 0b100000000000 ) );
+    BOOST_CHECK( result4 );
+    BOOST_CHECK( result4.value( ) == 11 );
+
+    constexpr auto result5 = IndexOfBitFromLSB( static_cast< UInt32 >( 0b100000000000000000000000 ) );
+    BOOST_CHECK( result5 );
+    BOOST_CHECK( result5.value( ) == 23 );
+
+    constexpr auto result6 = IndexOfBitFromLSB( static_cast< Int32 >( 0b100000000000000000000000 ) );
+    BOOST_CHECK( result6 );
+    BOOST_CHECK( result6.value( ) == 23 );
+
+    constexpr auto result7 = IndexOfBitFromLSB( static_cast< UInt64 >( 0b100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result7 );
+    BOOST_CHECK( result7.value( ) == 47 );
+
+    constexpr auto result8 = IndexOfBitFromLSB( static_cast< Int64 >( 0b100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result8 );
+    BOOST_CHECK( result8.value( ) == 47 );
+}
+
+// --run_test=LibTests/IndexOfBitFromLSBTest2
+BOOST_AUTO_TEST_CASE( IndexOfBitFromLSBTest2 )
+{
+    auto result1 = IndexOfBitFromLSB( static_cast< Byte >( 0b1000 ) );
+    BOOST_CHECK( result1 );
+    BOOST_CHECK( result1.value( ) == 3 );
+
+    auto result2 = IndexOfBitFromLSB( static_cast< SByte >( 0b1000 ) );
+    BOOST_CHECK( result2 );
+    BOOST_CHECK( result2.value( ) == 3 );
+
+    auto result3 = IndexOfBitFromLSB( static_cast< UInt16 >( 0b100000000000 ) );
+    BOOST_CHECK( result3 );
+    BOOST_CHECK( result3.value( ) == 11 );
+
+    auto result4 = IndexOfBitFromLSB( static_cast< Int16 >( 0b100000000000 ) );
+    BOOST_CHECK( result4 );
+    BOOST_CHECK( result4.value( ) == 11 );
+
+    auto result5 = IndexOfBitFromLSB( static_cast< UInt32 >( 0b100000000000000000000000 ) );
+    BOOST_CHECK( result5 );
+    BOOST_CHECK( result5.value( ) == 23 );
+
+    auto result6 = IndexOfBitFromLSB( static_cast< Int32 >( 0b100000000000000000000000 ) );
+    BOOST_CHECK( result6 );
+    BOOST_CHECK( result6.value( ) == 23 );
+
+    auto result7 = IndexOfBitFromLSB( static_cast< UInt64 >( 0b100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result7 );
+    BOOST_CHECK( result7.value( ) == 47 );
+
+    auto result8 = IndexOfBitFromLSB( static_cast< Int64 >( 0b100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result8 );
+    BOOST_CHECK( result8.value( ) == 47 );
+}
+
+// --run_test=LibTests/IndexOfBitFromMSBTest1
+BOOST_AUTO_TEST_CASE( IndexOfBitFromMSBTest1 )
+{
+    constexpr auto result1 = IndexOfBitFromMSB( static_cast< Byte >( 0b101000 ) );
+    BOOST_CHECK( result1 );
+    BOOST_CHECK( result1.value( ) == 5 );
+
+    constexpr auto result2 = IndexOfBitFromMSB( static_cast< SByte >( 0b101000 ) );
+    BOOST_CHECK( result2 );
+    BOOST_CHECK( result2.value( ) == 5 );
+
+    constexpr auto result3 = IndexOfBitFromMSB( static_cast< UInt16 >( 0b10100000000000 ) );
+    BOOST_CHECK( result3 );
+    BOOST_CHECK( result3.value( ) == 13 );
+
+    constexpr auto result4 = IndexOfBitFromMSB( static_cast< Int16 >( 0b10100000000000 ) );
+    BOOST_CHECK( result4 );
+    BOOST_CHECK( result4.value( ) == 13 );
+
+    constexpr auto result5 = IndexOfBitFromMSB( static_cast< UInt32 >( 0b10100000000000000000000000 ) );
+    BOOST_CHECK( result5 );
+    BOOST_CHECK( result5.value( ) == 25 );
+
+    constexpr auto result6 = IndexOfBitFromMSB( static_cast< Int32 >( 0b10100000000000000000000000 ) );
+    BOOST_CHECK( result6 );
+    BOOST_CHECK( result6.value( ) == 25 );
+
+    constexpr auto result7 = IndexOfBitFromMSB( static_cast< UInt64 >( 0b10100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result7 );
+    BOOST_CHECK( result7.value( ) == 49 );
+
+    constexpr auto result8 = IndexOfBitFromMSB( static_cast< Int64 >( 0b10100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result8 );
+    BOOST_CHECK( result8.value( ) == 49 );
+}
+
+
+// --run_test=LibTests/IndexOfBitFromMSBTest2
+BOOST_AUTO_TEST_CASE( IndexOfBitFromMSBTest2 )
+{
+    auto result1 = IndexOfBitFromMSB( static_cast< Byte >( 0b101000 ) );
+    BOOST_CHECK( result1 );
+    BOOST_CHECK( result1.value( ) == 5 );
+
+    auto result2 = IndexOfBitFromMSB( static_cast< SByte >( 0b101000 ) );
+    BOOST_CHECK( result2 );
+    BOOST_CHECK( result2.value( ) == 5 );
+
+    auto result3 = IndexOfBitFromMSB( static_cast< UInt16 >( 0b10100000000000 ) );
+    BOOST_CHECK( result3 );
+    BOOST_CHECK( result3.value( ) == 13 );
+
+    auto result4 = IndexOfBitFromMSB( static_cast< Int16 >( 0b10100000000000 ) );
+    BOOST_CHECK( result4 );
+    BOOST_CHECK( result4.value( ) == 13 );
+
+    auto result5 = IndexOfBitFromMSB( static_cast< UInt32 >( 0b10100000000000000000000000 ) );
+    BOOST_CHECK( result5 );
+    BOOST_CHECK( result5.value( ) == 25 );
+
+    auto result6 = IndexOfBitFromMSB( static_cast< Int32 >( 0b10100000000000000000000000 ) );
+    BOOST_CHECK( result6 );
+    BOOST_CHECK( result6.value( ) == 25 );
+
+    auto result7 = IndexOfBitFromMSB( static_cast< UInt64 >( 0b10100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result7 );
+    BOOST_CHECK( result7.value( ) == 49 );
+
+    auto result8 = IndexOfBitFromMSB( static_cast< Int64 >( 0b10100000000000000000000000000000000000000000000000 ) );
+    BOOST_CHECK( result8 );
+    BOOST_CHECK( result8.value( ) == 49 );
+}
+
+
 
 // --run_test=LibTests/CharStrCompareTest
 BOOST_AUTO_TEST_CASE( CharStrCompareTest )

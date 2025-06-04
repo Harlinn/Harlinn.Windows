@@ -3437,6 +3437,7 @@ BOOST_AUTO_TEST_CASE( FloatSinTest1 )
     constexpr auto sineR360 = Sin( r360 );
     constexpr auto sineR720 = Sin( r720 );
     constexpr auto sineR20000 = Sin( r20000 );
+    constexpr auto sineMax = Sin( std::numeric_limits<float>::max() );
 
     auto expectedSineRM20000 = std::sin( rM20000 );
     auto expectedSineRM720 = std::sin( rM720 );
@@ -3453,6 +3454,7 @@ BOOST_AUTO_TEST_CASE( FloatSinTest1 )
     auto expectedSineR360 = std::sin( r360 );
     auto expectedSineR720 = std::sin( r720 );
     auto expectedSineR20000 = std::sin( r20000 );
+    auto expectedSineMax = std::sin( std::numeric_limits<float>::max( ) );
 
     BOOST_CHECK( expectedSineRM20000 == sineRM20000 );
     BOOST_CHECK( expectedSineRM720 == sineRM720 );
@@ -3469,6 +3471,7 @@ BOOST_AUTO_TEST_CASE( FloatSinTest1 )
     BOOST_CHECK( expectedSineR360 == sineR360 );
     BOOST_CHECK( expectedSineR720 == sineR720 );
     BOOST_CHECK( expectedSineR20000 == sineR20000 );
+    BOOST_CHECK( expectedSineMax == sineMax );
 
 
     constexpr auto radians = Deg2Rad( 0.001f );
@@ -3514,6 +3517,7 @@ BOOST_AUTO_TEST_CASE( DoubleSinTest1 )
     constexpr auto sineR360 = Sin( r360 );
     constexpr auto sineR720 = Sin( r720 );
     constexpr auto sineR20000 = Sin( r20000 );
+    constexpr auto sineMax = Sin( std::numeric_limits<double>::max( ) );
 
     auto expectedSineRM20000 = std::sin( rM20000 );
     auto expectedSineRM720 = std::sin( rM720 );
@@ -3530,6 +3534,7 @@ BOOST_AUTO_TEST_CASE( DoubleSinTest1 )
     auto expectedSineR360 = std::sin( r360 );
     auto expectedSineR720 = std::sin( r720 );
     auto expectedSineR20000 = std::sin( r20000 );
+    auto expectedSineMax = std::sin( std::numeric_limits<double>::max( ) );
 
     BOOST_CHECK( expectedSineRM20000 == sineRM20000 );
     BOOST_CHECK( expectedSineRM720 == sineRM720 );
@@ -3546,7 +3551,7 @@ BOOST_AUTO_TEST_CASE( DoubleSinTest1 )
     BOOST_CHECK( expectedSineR360 == sineR360 );
     BOOST_CHECK( expectedSineR720 == sineR720 );
     BOOST_CHECK( expectedSineR20000 == sineR20000 );
-
+    BOOST_CHECK( expectedSineMax == sineMax );
 
     constexpr auto radians = Deg2Rad( 0.001 );
     constexpr auto result1a = Sin( radians );
