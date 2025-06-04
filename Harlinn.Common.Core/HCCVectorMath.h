@@ -13087,49 +13087,52 @@ namespace Harlinn::Common::Core::Math
         return Internal::AffineTransformationMatrixImpl( Internal::ToSimdType( scaling ), Internal::ToSimdType( rotationOrigin ), Internal::ToSimdType( rotationQuaternion ), Internal::ToSimdType( translation ) );
     }
 
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, camera direction, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="cameraDirection">
-    /// The camera direction.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S,T> && IsCompatible<S, U> && (S::Size == 3)
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    namespace Internal
     {
-        using Traits = SIMD::Traits<typename S::value_type, 4>;
-        using Constants = typename Traits::Constants;
-        using MatrixSimd = SquareMatrix<typename S::value_type, 4>::Simd;
-        auto r2 = Normalize( cameraDirection );
+        /// <summary>
+        /// Creates a view matrix using the left-handed coordinate system for the
+        /// provided camera position, camera direction, and up direction.
+        /// </summary>
+        /// <param name="cameraPosition">
+        /// The camera position.
+        /// </param>
+        /// <param name="cameraDirection">
+        /// The camera direction.
+        /// </param>
+        /// <param name="upDirection">
+        /// The up direction of the camera, often [0 1 0]
+        /// </param>
+        /// <returns>
+        /// The view matrix transforming coordinates from world space to view space.
+        /// </returns>
+        template<SimdType S, SimdType T, SimdType U>
+            requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
+        inline SquareMatrix<typename S::value_type, 4>::Simd LookToImpl( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+        {
+            using Traits = SIMD::Traits<typename S::value_type, 4>;
+            using Constants = typename Traits::Constants;
+            using MatrixSimd = SquareMatrix<typename S::value_type, 4>::Simd;
+            auto r2 = Normalize( cameraDirection );
 
-        auto r0 = Cross( upDirection, r2 );
-        r0 = Normalize( r0 );
+            auto r0 = Cross( upDirection, r2 );
+            r0 = Normalize( r0 );
 
-        auto r1 = Cross( r2, r0 );
+            auto r1 = Cross( r2, r0 );
 
-        auto negCameraPosition = -cameraPosition;
+            auto negCameraPosition = -cameraPosition;
 
-        auto d0 = Dot<0xFF>( r0, negCameraPosition );
-        auto d1 = Dot<0xFF>( r1, negCameraPosition );
-        auto d2 = Dot<0xFF>( r2, negCameraPosition );
+            auto d0 = Dot<0xFF>( r0, negCameraPosition );
+            auto d1 = Dot<0xFF>( r1, negCameraPosition );
+            auto d2 = Dot<0xFF>( r2, negCameraPosition );
 
-        MatrixSimd result;
-        result.simd[ 0 ] = Traits::Select( d0.simd, r0.simd, Constants::Select2221 );
-        result.simd[ 1 ] = Traits::Select( d1.simd, r1.simd, Constants::Select2221 );
-        result.simd[ 2 ] = Traits::Select( d2.simd, r2.simd, Constants::Select2221 );
-        result.simd[ 3 ] = Constants::IdentityR4;
+            MatrixSimd result;
+            result.simd[ 0 ] = Traits::Select( d0.simd, r0.simd, Constants::Select2221 );
+            result.simd[ 1 ] = Traits::Select( d1.simd, r1.simd, Constants::Select2221 );
+            result.simd[ 2 ] = Traits::Select( d2.simd, r2.simd, Constants::Select2221 );
+            result.simd[ 3 ] = Constants::IdentityR4;
 
-        return Transpose( result );
+            return Transpose( result );
+        }
     }
 
     /// <summary>
@@ -13148,150 +13151,14 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The view matrix transforming coordinates from world space to view space.
     /// </returns>
-    template<SimdType S, SimdType T, TupleType U>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
     inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
     {
-        return LookTo( cameraPosition, cameraDirection, upDirection.ToSimd() );
+        return Internal::LookToImpl( Internal::ToSimdType( cameraPosition ), Internal::ToSimdType( cameraDirection ), Internal::ToSimdType( upDirection ) );
     }
 
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, camera direction, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="cameraDirection">
-    /// The camera direction.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
-    {
-        return LookTo( cameraPosition, cameraDirection.ToSimd( ), upDirection );
-    }
 
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, camera direction, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="cameraDirection">
-    /// The camera direction.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
-    {
-        return LookTo( cameraPosition, cameraDirection.ToSimd( ), upDirection.ToSimd( ) );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, camera direction, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="cameraDirection">
-    /// The camera direction.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
-    {
-        return LookTo( cameraPosition.ToSimd( ), cameraDirection, upDirection );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, camera direction, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="cameraDirection">
-    /// The camera direction.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
-    {
-        return LookTo( cameraPosition.ToSimd( ), cameraDirection, upDirection.ToSimd( ) );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, camera direction, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="cameraDirection">
-    /// The camera direction.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
-    {
-        return LookTo( cameraPosition.ToSimd( ), cameraDirection.ToSimd( ), upDirection );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, camera direction, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="cameraDirection">
-    /// The camera direction.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
-    {
-        return LookTo( cameraPosition.ToSimd( ), cameraDirection.ToSimd( ), upDirection.ToSimd( ) );
-    }
 
     /// <summary>
     /// Creates a view matrix using the left-handed coordinate system for the
@@ -13309,173 +13176,12 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The view matrix transforming coordinates from world space to view space.
     /// </returns>
-    template<SimdType S, SimdType T, SimdType U>
+    template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
     inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
     {
         auto cameraDirection = focusPosition - cameraPosition;
-        return LookTo( cameraPosition, cameraDirection, upDirection );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, focal point, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="focusPosition">
-    /// The focal point.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<SimdType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
-    {
-        return LookAt( cameraPosition, focusPosition, upDirection.ToSimd( ) );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, focal point, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="focusPosition">
-    /// The focal point.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<SimdType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
-    {
-        return LookAt( cameraPosition, focusPosition.ToSimd( ), upDirection );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, focal point, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="focusPosition">
-    /// The focal point.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<SimdType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
-    {
-        return LookAt( cameraPosition, focusPosition.ToSimd( ), upDirection.ToSimd( ) );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, focal point, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="focusPosition">
-    /// The focal point.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
-    {
-        return LookAt( cameraPosition.ToSimd( ), focusPosition, upDirection );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, focal point, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="focusPosition">
-    /// The focal point.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, SimdType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
-    {
-        return LookAt( cameraPosition.ToSimd( ), focusPosition, upDirection.ToSimd( ) );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, focal point, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="focusPosition">
-    /// The focal point.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, TupleType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
-    {
-        return LookAt( cameraPosition.ToSimd( ), focusPosition.ToSimd( ), upDirection );
-    }
-
-    /// <summary>
-    /// Creates a view matrix using the left-handed coordinate system for the
-    /// provided camera position, focal point, and up direction.
-    /// </summary>
-    /// <param name="cameraPosition">
-    /// The camera position.
-    /// </param>
-    /// <param name="focusPosition">
-    /// The focal point.
-    /// </param>
-    /// <param name="upDirection">
-    /// The up direction of the camera, often [0 1 0]
-    /// </param>
-    /// <returns>
-    /// The view matrix transforming coordinates from world space to view space.
-    /// </returns>
-    template<TupleType S, TupleType T, TupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
-    {
-        return LookAt( cameraPosition.ToSimd( ), focusPosition.ToSimd( ), upDirection.ToSimd( ) );
+        return Internal::LookToImpl( Internal::ToSimdType( cameraPosition ), cameraDirection, Internal::ToSimdType( upDirection ) );
     }
 
     /// <summary>
@@ -13658,8 +13364,6 @@ namespace Harlinn::Common::Core::Math
     {
         return FromMatrix( matrix.ToSimd( ) );
     }
-
-
 
 
     /// <summary>
