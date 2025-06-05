@@ -38,20 +38,26 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline int
 	( isnan )( double d )
 	{
+		/*
 		union IEEEd2bits u;
 
 		u.d = d;
 		return ( u.bits.exp == 2047 && ( u.bits.manl != 0 || u.bits.manh != 0 ) );
+		*/
+		return IsNaN( d );
 	}
 #endif
 
 	constexpr inline int
 		__isnanf( float f )
 	{
+		/*
 		union IEEEf2bits u;
 
 		u.f = f;
 		return ( u.bits.exp == 255 && u.bits.man != 0 );
+		*/
+		return IsNaN( f );
 	}
 
 #ifdef OLM_LONG_DOUBLE

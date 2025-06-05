@@ -394,7 +394,10 @@ namespace Harlinn::Common::Core::Math
         {
             // x == 0 
             // return +-minsubnormal 
-            x = std::bit_cast<float>( ( hy & 0x80000000 ) | 1 );
+
+            return CopySign( std::numeric_limits<float>::denorm_min( ), y );
+            /*
+            x = std::bit_cast<float>( ( static_cast<uint32_t>(hy) & 0x80000000U ) | 1U );
             float t = x * x;
             if ( t == x )
             {
@@ -405,6 +408,7 @@ namespace Harlinn::Common::Core::Math
                 // raise underflow flag 
                 return x;
             }
+            */
         }
         if ( hx >= 0 )
         {
@@ -441,6 +445,8 @@ namespace Harlinn::Common::Core::Math
             return CopySign( std::numeric_limits<float>::infinity( ), y );
             //return x + x;
         }
+
+        /*
         if ( hy < 0x00800000 )
         {
             // underflow 
@@ -452,6 +458,8 @@ namespace Harlinn::Common::Core::Math
                 return y;
             }
         }
+        */
+
         x = std::bit_cast<float>( hx );
         return x;
     }
@@ -3200,17 +3208,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T TGamma( T x ) noexcept
     {
-        /*
-        if constexpr ( std::is_same_v<T, float> )
-        {
-            return Math::Internal::OpenLibM::tgammal( x );
-        }
-        else
-        {
-            return Math::Internal::OpenLibM::tgammal( x );
-        }
-        */
-        return static_cast<T>( Math::Internal::OpenLibM::tgammal( x ) );
+        return static_cast<T>( Math::Internal::OpenLibM::tgamma( x ) );
     }
 
     /// <summary>

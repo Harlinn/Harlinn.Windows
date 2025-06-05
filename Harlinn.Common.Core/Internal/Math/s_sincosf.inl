@@ -37,7 +37,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	namespace sincosf_internal
 	{
 		/* Constants used in shortcircuits in sincosf */
-		static const double
+		constexpr double
 			sc1pio2 = 1 * M_PI_2,			/* 0x3FF921FB, 0x54442D18 */
 			sc2pio2 = 2 * M_PI_2,			/* 0x400921FB, 0x54442D18 */
 			sc3pio2 = 3 * M_PI_2,			/* 0x4012D97C, 0x7F3321D2 */

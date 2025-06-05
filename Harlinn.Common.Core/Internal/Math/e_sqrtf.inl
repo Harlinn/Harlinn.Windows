@@ -38,8 +38,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* take care of Inf and NaN */
 		if ( ( ix & 0x7f800000 ) == 0x7f800000 )
 		{
-			return x * x + x;		/* sqrt(NaN)=NaN, sqrt(+inf)=+inf
-						   sqrt(-inf)=sNaN */
+			// sqrt(NaN)=NaN, sqrt(+inf)=+inf sqrt(-inf)=sNaN 
+
+			return x * x + x;
 		}
 		/* take care of zero */
 		if ( ix <= 0 )
@@ -96,7 +97,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			}
 		}
 		ix = ( q >> 1 ) + 0x3f000000;
-		ix += ( m << 23 );
+		ix += std::bit_cast<int32_t>( std::bit_cast<uint32_t>(m) << 23 );
 		SET_FLOAT_WORD( z, ix );
 		return z;
 	}

@@ -205,7 +205,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		ix0 = ( q >> 1 ) + 0x3fe00000;
 		ix1 = q1 >> 1;
 		if ( ( q & 1 ) == 1 ) ix1 |= sign;
-		ix0 += ( m << 20 );
+		ix0 += std::bit_cast< int32_t >( std::bit_cast<uint32_t>( m )<< 20 );
 		INSERT_WORDS( z, ix0, ix1 );
 		return z;
 	}

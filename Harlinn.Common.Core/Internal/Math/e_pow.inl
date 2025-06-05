@@ -369,7 +369,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		r = ( z * t1 ) / ( t1 - two ) - ( w + z * w );
 		z = one - ( r - z );
 		GET_HIGH_WORD( j, z );
-		j += ( n << 20 );
+		j += std::bit_cast<int32_t>( std::bit_cast<uint32_t>( n ) << 20 );
 		if ( ( j >> 20 ) <= 0 ) z = scalbn( z, n );	/* subnormal output */
 		else SET_HIGH_WORD( z, j );
 		return s * z;

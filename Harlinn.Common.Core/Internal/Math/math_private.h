@@ -170,7 +170,7 @@ do {								\
 	template<typename T, typename U>
 	constexpr inline void INSERT_WORDS( double& dest, T srcHigh, U srcLow )
 	{
-		dest = std::bit_cast<double>(( static_cast< UInt64 >( std::bit_cast< UInt32 >( srcHigh ) ) << 32 ) + static_cast< Int64 >( std::bit_cast< UInt32 >( srcLow ) ));
+		dest = std::bit_cast<double>(( static_cast< UInt64 >( std::bit_cast< UInt32 >( srcHigh ) ) << 32 ) | static_cast< UInt64 >( std::bit_cast< UInt32 >( srcLow ) ));
 	}
 
 /*

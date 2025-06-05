@@ -36,9 +36,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline double
 		scalbln( double x, long n )
 	{
-		int in;
+		//int in;
 
-		in = ( int )n;
+		int in = ( int )n;
 		if ( in != n )
 		{
 			if ( n > 0 )
@@ -52,9 +52,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline float
 		scalblnf( float x, long n )
 	{
-		int in;
+		//int in;
 
-		in = ( int )n;
+		int in = ( int )n;
 		if ( in != n )
 		{
 			if ( n > 0 )

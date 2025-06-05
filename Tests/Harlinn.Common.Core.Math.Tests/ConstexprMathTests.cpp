@@ -316,6 +316,7 @@ BOOST_AUTO_TEST_CASE( DoubleNextAfterTest1 )
     BOOST_CHECK( result5 == expected5 );
 
     constexpr auto result6 = NextAfter( C::Min, C::NegativeInfinity );
+    static_assert( NextAfter( C::Min, C::NegativeInfinity ) != 0.0 );
     auto expected6 = std::nextafter( C::Min, C::NegativeInfinity );
     BOOST_CHECK( result6 == expected6 );
 
@@ -1280,6 +1281,18 @@ BOOST_AUTO_TEST_CASE( IntegralFastAbsTest1 )
     constexpr auto expected7 = 1;
     constexpr auto success7 = result7 == expected7;
     BOOST_CHECK( success7 );
+
+    constexpr auto result8 = FastAbs( static_cast< Int32 >( -1 ) );
+    constexpr auto expected8 = 1;
+    constexpr auto success8 = result8 == expected8;
+    BOOST_CHECK( success8 );
+
+    constexpr auto result9 = FastAbs( static_cast< Int64 >( -1 ) );
+    constexpr auto expected9 = 1;
+    constexpr auto success9 = result9 == expected9;
+    BOOST_CHECK( success9 );
+
+
 
 
 }
@@ -5276,12 +5289,6 @@ BOOST_AUTO_TEST_CASE( DoubleATanHTest1 )
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
-        {
-            auto r = ATanH( x );
-            return AreNearlyEqual( r, expected, epsilon );
-        };
-
     constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
         {
             auto r = ATanH( x );
@@ -5315,8 +5322,8 @@ BOOST_AUTO_TEST_CASE( DoubleATanHTest1 )
     constexpr auto check7 = CheckIsNaN( -1.1 );
     BOOST_CHECK( check7 );
 
-    // atanh (0.7) == 0.8673005276940531944
-    constexpr auto check8 = CheckClose( 0.7, 0.8673005276940531944 );
+    // atanh (0.7) == 0.86730052769405308
+    constexpr auto check8 = Check( 0.7, 0.86730052769405308 );
     BOOST_CHECK( check8 );
 }
 
@@ -5329,12 +5336,6 @@ BOOST_AUTO_TEST_CASE( FloatJ0Test1 )
         {
             auto r = J0( x );
             return IsSameValue( r, expected );
-        };
-
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
-        {
-            auto r = J0( x );
-            return AreNearlyEqual( r, expected, epsilon );
         };
 
     constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
@@ -5351,40 +5352,40 @@ BOOST_AUTO_TEST_CASE( FloatJ0Test1 )
     constexpr auto check2 = Check( C::Infinity, 0. );
     BOOST_CHECK( check2 );
 
-    // j0 (-1.0) == 0.76519768655796655145
-    constexpr auto check3 = Check( -C::One, 0.76519768655796655145 );
+    // j0 (-1.0) == 0.765197694f
+    constexpr auto check3 = Check( -C::One, 0.765197694f );
     BOOST_CHECK( check3 );
 
     // j0 (0.0) == 1.0
     constexpr auto check4 = Check( C::Zero, 1.0 );
     BOOST_CHECK( check4 );
 
-    // j0( 0.1 ) == 0.99750156206604003228
-    constexpr auto check5 = Check( 0.1, 0.99750156206604003228 );
+    // j0( 0.1 ) == 0.997501552f
+    constexpr auto check5 = Check( 0.1, 0.997501552f );
     BOOST_CHECK( check5 );
     
-    // j0( 0.7 ) == 0.88120088860740528084
-    constexpr auto check6 = Check( 0.7, 0.88120088860740528084 );
+    // j0( 0.7 ) == 0.881200910f
+    constexpr auto check6 = Check( 0.7, 0.881200910f );
     BOOST_CHECK( check6 );
 
-    // j0( 1.0 ) == 0.76519768655796655145
-    constexpr auto check7 = Check( C::One, 0.76519768655796655145 );
+    // j0( 1.0 ) == 0.765197694f
+    constexpr auto check7 = Check( C::One, 0.765197694f );
     BOOST_CHECK( check7 );
 
-    // j0( 1.5 ) == 0.51182767173591812875
-    constexpr auto check8 = Check( 1.5, 0.51182767173591812875 );
+    // j0( 1.5 ) == 0.511827648f
+    constexpr auto check8 = Check( 1.5, 0.511827648f );
     BOOST_CHECK( check8 );
 
-    // j0( 2.0 ) == 0.22389077914123566805
-    constexpr auto check9 = CheckClose( 2.0, 0.22389077914123566805 );
+    // j0( 2.0 ) == 0.223890811f
+    constexpr auto check9 = Check( 2.0, 0.223890811f );
     BOOST_CHECK( check9 );
 
-    // j0( 8.0 ) == 0.17165080713755390609
-    constexpr auto check10 = CheckClose( 8.0, 0.17165080713755390609 );
+    // j0( 8.0 ) == 0.171650827f
+    constexpr auto check10 = Check( 8.0, 0.171650827f );
     BOOST_CHECK( check10 );
 
-    // j0 (10.0) == -0.24593576445134833520
-    constexpr auto check11 = CheckClose( 10.0, -0.24593576445134833520 );
+    // j0 (10.0) == -0.245935783f
+    constexpr auto check11 = Check( 10.0, -0.245935783f );
     BOOST_CHECK( check11 );
 }
 
@@ -6890,7 +6891,6 @@ BOOST_AUTO_TEST_CASE( DoubleTGammaTest1 )
                        
     // tgamma (1.2) == 0.91816874239976054
     constexpr auto check12 = Check( 1.2, 0.91816874239976054 );
-    auto res = TGamma( 1.2 );
     BOOST_CHECK( check12 );
 
 }

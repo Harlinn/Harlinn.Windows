@@ -102,9 +102,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* x is now in primary range */
 		t = x * x;
 		if ( k >= -125 )
-			SET_FLOAT_WORD( twopk, 0x3f800000 + ( k << 23 ) );
+			SET_FLOAT_WORD( twopk, 0x3f800000U + ( std::bit_cast<uint32_t>( k ) << 23 ) );
 		else
-			SET_FLOAT_WORD( twopk, 0x3f800000 + ( ( k + 100 ) << 23 ) );
+			SET_FLOAT_WORD( twopk, 0x3f800000U + ( ( std::bit_cast<uint32_t>( k ) + 100 ) << 23 ) );
 		c = x - t * ( P1 + t * P2 );
 		if ( k == 0 ) 	return one - ( ( x * c ) / ( c - static_cast< float >( 2.0 ) ) - x );
 		else 		y = one - ( ( lo - ( x * c ) / ( static_cast< float >( 2.0 ) - c ) ) - hi );

@@ -48,12 +48,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 {
 	namespace jn_internal
 	{
-		static const double
+		constexpr double
 			invsqrtpi = 5.64189583547756279280e-01, /* 0x3FE20DD7, 0x50429B6D */
 			two = 2.00000000000000000000e+00, /* 0x40000000, 0x00000000 */
 			one = 1.00000000000000000000e+00; /* 0x3FF00000, 0x00000000 */
 
-		static const double zero = 0.00000000000000000000e+00;
+		constexpr double zero = 0.00000000000000000000e+00;
 	}
 	constexpr inline double
 		__ieee754_jn( int n, double x )

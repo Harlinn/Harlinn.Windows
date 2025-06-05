@@ -37,20 +37,26 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline int
 	( isinf )( double d )
 	{
+		/*
 		union IEEEd2bits u;
 
 		u.d = d;
 		return ( u.bits.exp == 2047 && u.bits.manl == 0 && u.bits.manh == 0 );
+		*/
+		return IsInf( d );
 	}
 #endif
 
 	constexpr inline int
 		__isinff( float f )
 	{
+		/*
 		union IEEEf2bits u;
 
 		u.f = f;
 		return ( u.bits.exp == 255 && u.bits.man == 0 );
+		*/
+		return IsInf( f );
 	}
 
 #ifdef OLM_LONG_DOUBLE

@@ -25,21 +25,21 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	namespace atanf_internal
 	{
 
-		constexpr float atanhi[ ] = {
+		constexpr std::array<float,4> atanhi = {
 		  4.6364760399e-01f, /* atan(0.5)hi 0x3eed6338 */
 		  7.8539812565e-01f, /* atan(1.0)hi 0x3f490fda */
 		  9.8279368877e-01f, /* atan(1.5)hi 0x3f7b985e */
 		  1.5707962513e+00f, /* atan(inf)hi 0x3fc90fda */
 		};
 
-		constexpr float atanlo[ ] = {
+		constexpr std::array<float, 4> atanlo = {
 		  5.0121582440e-09f, /* atan(0.5)lo 0x31ac3769 */
 		  3.7748947079e-08f, /* atan(1.0)lo 0x33222168 */
 		  3.4473217170e-08f, /* atan(1.5)lo 0x33140fb4 */
 		  7.5497894159e-08f, /* atan(inf)lo 0x33a22168 */
 		};
 
-		constexpr float aT[ ] = {
+		constexpr std::array<float, 5>  aT = {
 		  3.3333328366e-01f,
 		 -1.9999158382e-01f,
 		  1.4253635705e-01f,
@@ -66,8 +66,14 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				return x + x;		/* NaN */
 			//if ( hx > 0 ) return  atanhi[ 3 ] + *( volatile float* )&atanlo[ 3 ];
 			//else     return -atanhi[ 3 ] - *( volatile float* )&atanlo[ 3 ];
-			if ( hx > 0 ) return  atanhi[ 3 ] + atanlo[ 3 ];
-			else     return -atanhi[ 3 ] - atanlo[ 3 ];
+			if ( hx > 0 )
+			{
+				return  atanhi[ 3 ] + atanlo[ 3 ];
+			}
+			else
+			{
+				return -atanhi[ 3 ] - atanlo[ 3 ];
+			}
 		} if ( ix < 0x3ee00000 )
 		{	/* |x| < 0.4375 */
 			if ( ix < 0x39800000 )

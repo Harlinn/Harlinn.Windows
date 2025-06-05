@@ -43,10 +43,19 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			return x + y;
 		if ( x == y ) return y;		/* x=y, return y */
 		if ( ( ix | lx ) == 0 )
-		{			/* x == 0 */
-			INSERT_WORDS( x, hy & 0x80000000, 1 );	/* return +-minsubnormal */
+		{	
+			/* x == 0 */
+
+			return CopySign( std::numeric_limits<double>::denorm_min( ), y );
+
+			/*
+			INSERT_WORDS( x, hy & 0x80000000, 1 );	// return +-minsubnormal 
 			t = x * x;
-			if ( t == x ) return t; else return x;	/* raise underflow flag */
+			if ( t == x ) 
+				return t; 
+			else 
+				return x;	// raise underflow flag 
+			*/
 		}
 		if ( hx >= 0 )
 		{				/* x > 0 */
@@ -75,16 +84,25 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			}
 		}
 		hy = hx & 0x7ff00000;
-		if ( hy >= 0x7ff00000 ) return x + x;	/* overflow  */
+		if ( hy >= 0x7ff00000 )
+		{
+			/* overflow  */
+			return CopySign( std::numeric_limits<double>::infinity( ), y );
+			//return x + x;	
+		}
+		/*
 		if ( hy < 0x00100000 )
-		{		/* underflow */
+		{		
+			// underflow 
 			t = x * x;
 			if ( t != x )
-			{		/* raise underflow flag */
+			{
+				// raise underflow flag 
 				INSERT_WORDS( y, hx, lx );
 				return y;
 			}
 		}
+		*/
 		INSERT_WORDS( x, hx, lx );
 		return x;
 	}

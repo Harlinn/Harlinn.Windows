@@ -157,15 +157,19 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		GET_FLOAT_WORD( hx, x );
 		ix = hx & 0x7fffffff;
 		if ( ix >= 0x7f800000 )
-		{			/* erfc(nan)=nan */
-		/* erfc(+-inf)=0,2 */
+		{			
+			// erfc(nan)=nan, erfc(+-inf)=0,2 
 			return ( float )( ( ( uint32_t )hx >> 31 ) << 1 ) + one / x;
 		}
 
 		if ( ix < 0x3f580000 )
-		{		/* |x|<0.84375 */
-			if ( ix < 0x33800000 )  	/* |x|<2**-56 */
+		{		
+			/* |x|<0.84375 */
+			if ( ix < 0x33800000 )
+			{
+				/* |x|<2**-56 */
 				return one - x;
+			}
 			z = x * x;
 			r = pp0 + z * ( pp1 + z * pp2 );
 			s = one + z * ( qq1 + z * ( qq2 + z * qq3 ) );
@@ -182,7 +186,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			}
 		}
 		if ( ix < 0x3fa00000 )
-		{		/* 0.84375 <= |x| < 1.25 */
+		{	
+			/* 0.84375 <= |x| < 1.25 */
 			s = fabsf( x ) - one;
 			P = pa0 + s * ( pa1 + s * ( pa2 + s * pa3 ) );
 			Q = one + s * ( qa1 + s * ( qa2 + s * ( qa3 + s * qa4 ) ) );
@@ -196,27 +201,40 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			}
 		}
 		if ( ix < 0x41300000 )
-		{		/* |x|<28 */
+		{	
+			/* |x|<28 */
 			x = fabsf( x );
 			s = one / ( x * x );
 			if ( ix < 0x4036DB6D )
-			{	/* |x| < 1/.35 ~ 2.857143*/
+			{	
+				/* |x| < 1/.35 ~ 2.857143*/
 				R = ra0 + s * ( ra1 + s * ( ra2 + s * ra3 ) );
 				S = one + s * ( sa1 + s * ( sa2 + s * ( sa3 + s * sa4 ) ) );
 			}
 			else
-			{			/* |x| >= 1/.35 ~ 2.857143 */
-				if ( hx < 0 && ix >= 0x40a00000 ) return two - tiny;/* x < -5 */
+			{
+				/* |x| >= 1/.35 ~ 2.857143 */
+				if ( hx < 0 && ix >= 0x40a00000 )
+				{
+					/* x < -5 */
+					return two - tiny;
+				}
 				R = rb0 + s * ( rb1 + s * ( rb2 + s * ( rb3 + s * rb4 ) ) );
 				S = one + s * ( sb1 + s * ( sb2 + s * ( sb3 + s * sb4 ) ) );
 			}
 			SET_FLOAT_WORD( z, hx & 0xffffe000 );
 			r = expf( -z * z - 0.5625F ) * expf( ( z - x ) * ( z + x ) + R / S );
-			if ( hx > 0 ) return r / x; else return two - r / x;
+			if ( hx > 0 ) 
+				return r / x; 
+			else 
+				return two - r / x;
 		}
 		else
 		{
-			if ( hx > 0 ) return tiny * tiny; else return two - tiny;
+			if ( hx > 0 ) 
+				return tiny * tiny; 
+			else 
+				return two - tiny;
 		}
 	}
 }

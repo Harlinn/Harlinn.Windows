@@ -115,7 +115,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( k == 0 ) return x - ( x * e - hxs );		/* c is 0 */
 		else
 		{
-			SET_FLOAT_WORD( twopk, 0x3f800000 + ( k << 23 ) );	/* 2^k */
+			SET_FLOAT_WORD( twopk, 0x3f800000U + ( std::bit_cast<uint32_t>( k ) << 23 ) );	/* 2^k */
 			e = ( x * ( e - c ) - c );
 			e -= hxs;
 			if ( k == -1 ) return ( float )0.5 * ( x - e ) - ( float )0.5;
@@ -140,7 +140,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			}
 			else
 			{
-				SET_FLOAT_WORD( t, ( ( 0x7f - k ) << 23 ) );	/* 2^-k */
+				SET_FLOAT_WORD( t, ( std::bit_cast< uint32_t >( 0x7f - k ) << 23 ) );	/* 2^-k */
 				y = x - ( e + t );
 				y += one;
 				y = y * twopk;

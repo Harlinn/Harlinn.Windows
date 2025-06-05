@@ -36,19 +36,25 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline int
 		__signbit( double d )
 	{
+		/*
 		union IEEEd2bits u;
 
 		u.d = d;
 		return ( u.bits.sign );
+		*/
+		return static_cast<int>(( std::bit_cast< uint64_t >( d ) & 0x8000'0000'0000'0000ULL ) >> 63);
 	}
 
 	constexpr inline int
 		__signbitf( float f )
 	{
+		/*
 		union IEEEf2bits u;
 
 		u.f = f;
 		return ( u.bits.sign );
+		*/
+		return static_cast< int >( ( std::bit_cast< uint32_t >( f ) & 0x8000'0000UL ) >> 31 );
 	}
 
 #ifdef OLM_LONG_DOUBLE

@@ -37,9 +37,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			Lp5 = 1.8183572590e-01f, /* 3E3A3325 */
 			Lp6 = 1.5313838422e-01f, /* 3E1CD04F */
 			Lp7 = 1.4798198640e-01f; /* 3E178897 */
+
+		constexpr float zero = 0.0;
+
 	}
 
-	static const float zero = 0.0;
+	
 
 	constexpr inline float
 		log1pf( float x )
@@ -68,9 +71,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				}
 			}
 			if ( ax < 0x38000000 )
-			{			/* |x| < 2**-15 */
-				if ( two25 + x > zero			/* raise inexact */
-					&& ax < 0x33800000 ) 		/* |x| < 2**-24 */
+			{
+				/* |x| < 2**-15 */
+				if ( /*two25 + x > zero			// raise inexact 
+					&&*/ ax < 0x33800000 ) 		// |x| < 2**-24 
 					return x;
 				else
 					return x - x * x * ( float )0.5;
@@ -135,7 +139,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				}
 			}
 			R = hfsq * ( ( float )1.0 - ( float )0.66666666666666666 * f );
-			if ( k == 0 ) return f - R; else
+			if ( k == 0 ) 
+				return f - R; 
+			else
 				return k * ln2_hi - ( ( R - ( k * ln2_lo + c ) ) - f );
 		}
 		s = f / ( ( float )2.0 + f );

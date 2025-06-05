@@ -206,7 +206,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( k == 0 ) return x - ( x * e - hxs );		/* c is 0 */
 		else
 		{
-			INSERT_WORDS( twopk, 0x3ff00000 + ( k << 20 ), 0 );	/* 2^k */
+			INSERT_WORDS( twopk, 0x3ff00000U + ( std::bit_cast< uint32_t >( k ) << 20 ), 0 );	/* 2^k */
 			e = ( x * ( e - c ) - c );
 			e -= hxs;
 			if ( k == -1 ) return 0.5 * ( x - e ) - 0.5;
@@ -231,7 +231,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			}
 			else
 			{
-				SET_HIGH_WORD( t, ( ( 0x3ff - k ) << 20 ) );	/* 2^-k */
+				SET_HIGH_WORD( t, ( std::bit_cast< uint32_t >( 0x3ff - k ) << 20 ) );	/* 2^-k */
 				y = x - ( e + t );
 				y += one;
 				y = y * twopk;

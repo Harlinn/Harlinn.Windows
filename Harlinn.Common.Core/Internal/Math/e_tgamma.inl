@@ -220,7 +220,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 
 	}
 	constexpr inline double
-		tgammal( double x )
+		tgamma( double x )
 	{
 		using namespace tgamma_internal;
 
@@ -228,11 +228,14 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		int i;
 
 		if ( IsNaN( x ) )
-			return( NAN );
-		if ( x == INFINITY )
-			return( INFINITY );
-		if ( x == -INFINITY )
-			return( x - x );
+			return x;
+		if ( x == std::numeric_limits<double>::infinity( ) )
+			return std::numeric_limits<double>::infinity( );
+		if ( x == -std::numeric_limits<double>::infinity( ) )
+		{
+			return std::numeric_limits<double>::quiet_NaN( );
+			//return( x - x );
+		}
 		if ( x == 0.0L )
 		{
 			// +/- 0. => INFINITY
@@ -246,14 +249,18 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			int sign = 1;
 			if ( q > MAXGAML )
 			{
-				return( sign * INFINITY );
+				return std::numeric_limits<double>::infinity( );
+				//return( sign * INFINITY );
 			}
 			if ( x < 0.0L )
 			{
 				p = Floor( q );
 				if ( p == q )
-					return ( x - x ) / ( x - x );
-				i = p;
+				{
+					return std::numeric_limits<double>::quiet_NaN( );
+					//return ( x - x ) / ( x - x );
+				}
+				i = static_cast<int>( p );
 				if ( ( i & 1 ) == 0 )
 					sign = -1;
 				z = q - p;
@@ -266,7 +273,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				z = FastAbs( z ) * stirf( q );
 				if ( z <= PIL / LDBL_MAX )
 				{
-					return( sign * INFINITY );
+					return sign < 0 ? -std::numeric_limits<double>::infinity( ) : std::numeric_limits<double>::infinity( );
+					//return( sign * INFINITY );
 				}
 				z = PIL / z;
 			}
