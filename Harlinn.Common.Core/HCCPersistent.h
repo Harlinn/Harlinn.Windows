@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __HCCPERSISTENT2_H__
-#define __HCCPERSISTENT2_H__
+#ifndef __HCCPERSISTENT_H__
+#define __HCCPERSISTENT_H__
 /*
    Copyright 2024-2025 Espen Harlinn
 

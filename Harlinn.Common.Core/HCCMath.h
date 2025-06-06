@@ -2549,6 +2549,45 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
+    /// Extracts the value of the unbiased radix-independent exponent 
+    /// from the floating-point argument x, and returns it as a 
+    /// floating-point value.
+    /// </summary>
+    template<FloatingPointType T>
+    constexpr inline T LogB( T x ) noexcept
+    {
+        if constexpr ( std::is_same_v<T, float> )
+        {
+            return Math::Internal::OpenLibM::logbf( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::logb( x );
+        }
+    }
+
+    /// <summary>
+    /// Extracts the value of the unbiased exponent from the floating-point 
+    /// argument x, and returns it as a signed integer value.
+    /// </summary>
+    template<FloatingPointType T>
+    constexpr inline int ILogB( T x ) noexcept
+    {
+        if constexpr ( std::is_same_v<T, float> )
+        {
+            return Math::Internal::OpenLibM::ilogbf( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::ilogb( x );
+        }
+    }
+
+
+
+
+
+    /// <summary>
     /// Computes the value of x raised to the power y.
     /// </summary>
     /// <typeparam name="T">

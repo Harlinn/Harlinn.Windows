@@ -825,7 +825,6 @@ namespace Harlinn::Common::Core
         constexpr size_t BasicTypeIdMin = static_cast<size_t>( BasicTypeId::Boolean );
         constexpr size_t BasicTypeIdMax = static_cast<size_t>( BasicTypeId::Guid );
 
-
         template<typename T>
         struct TypeTraits;
 
@@ -1727,7 +1726,7 @@ namespace Harlinn::Common::Core
 
         }
 
-
+        
         template<typename T>
         struct TypeTraits : 
             std::conditional_t
@@ -1776,9 +1775,10 @@ namespace Harlinn::Common::Core
                   > 
               >
         { };
-
-
         
+
+
+
 
         template<typename T>
         struct PackedSizeOf
