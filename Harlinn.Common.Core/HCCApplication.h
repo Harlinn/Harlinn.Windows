@@ -19,7 +19,7 @@
 
 #include <HCCDef.h>
 #include <HCCApplicationOptions.h>
-#include <HCCLoggerImpl.h>
+#include <HCCActiveObject.h>
 
 namespace Harlinn::Common::Core
 {
@@ -119,23 +119,6 @@ namespace Harlinn::Common::Core
     protected:
         HCC_EXPORT virtual void ProcessMessage( const MessageType& message ) override;
     public:
-        bool Start( const TimeSpan& timeout ) override
-        {
-            auto result = Base::Start( timeout );
-            if ( result )
-            {
-                auto logManager = Logging::LogManager::Instance( );
-                return logManager->Start( timeout );
-            }
-            return result;
-        }
-
-        bool Stop( const TimeSpan& timeout ) override
-        {
-            auto logManager = Logging::LogManager::Instance( );
-            logManager->Stop( timeout );
-            return Base::Stop( timeout );
-        }
 
     protected:
         virtual bool IsStopMessage( const MessageType& message ) const noexcept override

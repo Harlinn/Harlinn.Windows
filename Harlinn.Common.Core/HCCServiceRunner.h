@@ -159,12 +159,6 @@ namespace Harlinn::Common::Core::Services
             
             application->Start( );
             this->AfterApplicationStart( application );
-            auto applicationOptions = application->Options( );
-            auto loggerOptions = applicationOptions->LoggerOptions( );
-            auto textSinkOptions = loggerOptions->TextSinkOptions( );
-            auto textSink = std::make_shared<Logging::Sinks::TextSink>( textSinkOptions );
-            auto logManager = Logging::LogManager::Instance( );
-            logManager->Add( textSink );
             HCC_DEBUG( "Service started." );
             application->Run( );
             HCC_DEBUG( "Service stopped." );

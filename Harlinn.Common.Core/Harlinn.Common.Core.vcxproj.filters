@@ -171,9 +171,6 @@
     <ClInclude Include="HCCArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCPersistent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCC7BitEncoding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -183,22 +180,10 @@
     <ClInclude Include="HCCLogging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCLogger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCIOBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCLoggerImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCApplication.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerOptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCApplicationOptions.h">
@@ -207,31 +192,10 @@
     <ClInclude Include="HCCActiveObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCLoggerLMDBSink.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerLMDBSinkOptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerLMDBSinkStorage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCIOCompletionPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCIORequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCTypeDescriptorCursor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCPersistentDecoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCLMDBEx.h">
@@ -357,19 +321,7 @@
     <ClInclude Include="HCCNetwork.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCPersistentFormatter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCFormatStringParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCPersistentPrinter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerStorage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCLoggerTextSinkOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCServiceRunner.h">
@@ -536,15 +488,6 @@
     <ClCompile Include="HCCApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HCCLoggerImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HCCLoggerLMDBSink.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HCCLoggerTypes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="xxh_x86dispatch.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -567,12 +510,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HCCService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HCCLoggerLevel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HCCPersistentFormatter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HCCBinary.cpp">

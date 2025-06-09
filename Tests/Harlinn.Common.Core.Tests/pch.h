@@ -35,7 +35,6 @@
 #include <HCCIOContext.h>
 #include <HCCLib.h>
 #include <HCCLMDB.h>
-#include <HCCLoggerLMDBSinkStorage.h>
 #include <HCCObj.h>
 #include <HCCProcess.h>
 #include <HCCSecurity.h>
@@ -47,7 +46,6 @@
 #include <HCCThread.h>
 #include <HCCTraits.h>
 #include <HCCTuple.h>
-#include <HCCTypeDescriptorCursor.h>
 #include <HCCVariant.h>
 #include <HCCVector.h>
 #include <HCCXml.h>

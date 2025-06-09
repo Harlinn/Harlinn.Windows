@@ -274,8 +274,6 @@ BOOST_AUTO_TEST_CASE( IsContainerTest1 )
 {
     constexpr bool stdarrayIsContainer = IsContainer<std::array<Byte, 1>>;
     BOOST_CHECK( stdarrayIsContainer == true );
-    constexpr bool byteArrayIsContainer = IsContainer<ByteArray<1>>;
-    BOOST_CHECK( byteArrayIsContainer == true );
 
 
     constexpr bool vectorIsContainer = IsContainer<std::vector<Byte>>;
@@ -1003,7 +1001,6 @@ void ContainerTypeTraitsTest( )
 BOOST_AUTO_TEST_CASE( ContainerTypeTraitsTest1 )
 {
     ContainerTypeTraitsTest<std::array<Int32, 4>, Types::ContainerTypeId::StdArray>( );
-    ContainerTypeTraitsTest<ByteArray<4>, Types::ContainerTypeId::ByteArray>( );
     ContainerTypeTraitsTest<std::vector<Byte>, Types::ContainerTypeId::StdVector>( );
     ContainerTypeTraitsTest<std::unordered_map<int, double>, Types::ContainerTypeId::StdUnorderedMap>( );
     ContainerTypeTraitsTest<AnsiString, Types::ContainerTypeId::BasicString>( );
@@ -1862,25 +1859,6 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest70 )
     BOOST_CHECK( isStdBasicStringView_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest71
-BOOST_AUTO_TEST_CASE( TypeTraitsTest71 )
-{
-    using Type = ByteArray<5>;
-    constexpr auto isCoreByteArray_1 = IsCoreByteArray<Type>;
-    BOOST_CHECK( isCoreByteArray_1 == true );
-    constexpr auto isCoreByteArray_1b = Internal::IsCoreByteArrayImpl<Type>;
-    BOOST_CHECK( isCoreByteArray_1b == true );
-
-    constexpr auto isCoreByteArray_2 = IsCoreByteArray<Type&>;
-    BOOST_CHECK( isCoreByteArray_2 == true );
-    constexpr auto isCoreByteArray_2b = Internal::IsCoreByteArrayImpl<Type&>;
-    BOOST_CHECK( isCoreByteArray_2b == false );
-
-    constexpr auto isCoreByteArray_3 = IsCoreByteArray<Type&&>;
-    BOOST_CHECK( isCoreByteArray_3 == true );
-    constexpr auto isCoreByteArray_3b = Internal::IsCoreByteArrayImpl<Type&&>;
-    BOOST_CHECK( isCoreByteArray_3b == false );
-}
 
 // --run_test=TraitsTests/TypeTraitsTest72
 BOOST_AUTO_TEST_CASE( TypeTraitsTest72 )

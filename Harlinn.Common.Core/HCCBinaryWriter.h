@@ -27,6 +27,7 @@
 #include <HCCArray.h>
 #include <HCCVector.h>
 #include <HCCLogging.h>
+#include <HCC7BitEncoding.h>
 
 namespace Harlinn::Common::Core::IO
 {

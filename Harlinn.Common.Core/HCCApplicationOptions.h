@@ -18,23 +18,19 @@
 */
 
 #include <HCCDef.h>
-#include <HCCLoggerOptions.h>
+#include <HCCIO.h>
+#include <HCCXml.h>
 
 namespace Harlinn::Common::Core
 {
     class ApplicationOptions : public std::enable_shared_from_this<ApplicationOptions>
     {
-        std::shared_ptr<Logging::LoggerOptions> loggerOptions_;
+        
     public:
         using Element = Xml::Dom::Element;
         ApplicationOptions()
-            : loggerOptions_( std::make_shared<Logging::LoggerOptions>() )
         { }
 
-        ApplicationOptions( const std::shared_ptr<Logging::LoggerOptions>& loggerOptions )
-            : loggerOptions_( loggerOptions )
-        {
-        }
 
         ApplicationOptions( const ApplicationOptions& other ) = delete;
         ApplicationOptions( ApplicationOptions&& other ) = delete;
@@ -43,15 +39,7 @@ namespace Harlinn::Common::Core
 
         virtual void ReadFrom( const Element& element )
         {
-            auto loggingElement = element.FindElement( L"Logging" );
-            if ( loggingElement )
-            {
-                if ( loggerOptions_ == nullptr )
-                {
-                    loggerOptions_ = std::make_shared<Logging::LoggerOptions>( );
-                }
-                loggerOptions_->ReadFrom( loggingElement );
-            }
+            
         }
 
         static WideString DefaultConfigurationFilename( )
@@ -147,13 +135,6 @@ namespace Harlinn::Common::Core
             {
                 return std::make_shared<ApplicationOptionsT>( );
             }
-        }
-
-
-
-        const std::shared_ptr<Logging::LoggerOptions>& LoggerOptions( ) const noexcept
-        {
-            return loggerOptions_;
         }
 
 

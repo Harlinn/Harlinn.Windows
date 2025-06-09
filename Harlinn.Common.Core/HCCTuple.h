@@ -293,6 +293,9 @@ namespace Harlinn::Common::Core
         return TupleType( std::forward<Args>( args )... );
     }
 
+    
+
+
     /// <summary>
     /// Creates a Tuple of references from arguments
     /// </summary>
@@ -411,7 +414,7 @@ namespace Harlinn::Common::Core
         {
             using namespace std;
             // concatenate tuples
-            return ResultType( get<I>( get<J>( forward<T>( arg ) ) )... );
+            return ResultType( get<I>( get<J>( forward<T&&>( arg ) ) )... );
         }
 
     }

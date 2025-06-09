@@ -147,16 +147,7 @@
     <ClCompile Include="TraitsTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PersistentTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SocketTest2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TypeDescriptorCursorTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LoggerLMDBSinkStorageTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileTests.cpp">
@@ -195,9 +186,6 @@
     <ClCompile Include="BitsConversionTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LoggerLevelTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ZMQTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -211,9 +199,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FormatStringParserTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PersistentPrinterTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HtmlNamedCharactersTests.cpp">

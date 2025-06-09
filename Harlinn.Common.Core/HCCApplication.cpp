@@ -16,7 +16,6 @@
 
 #include "pch.h"
 #include <HCCApplication.h>
-#include <HCCLoggerImpl.h>
 #include <HCCSync.h>
 #include <HCCProcess.h>
 
@@ -30,7 +29,6 @@ namespace Harlinn::Common::Core
     Application::Application( const std::shared_ptr<ApplicationOptions>& options )
         : Base(WideString(L"Core::Application") ), options_( options )
     {
-        Logging::LogManager::SetOptions( options->LoggerOptions( ) );
 
         instance_ = this;
         mainThreadId = CurrentThread::Id( );
@@ -92,11 +90,6 @@ namespace Harlinn::Common::Core
                     if ( instance_ )
                     {
                         instance_->PostThreadDetachedMessage( );
-                    }
-                    auto logManager = Logging::LogManager::Instance( );
-                    if ( logManager )
-                    {
-                        logManager->PostThreadDetachedMessage( );
                     }
                 }
                 break;

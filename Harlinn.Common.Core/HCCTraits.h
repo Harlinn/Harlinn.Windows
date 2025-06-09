@@ -30,9 +30,6 @@ namespace Harlinn::Common::Core
     template<typename T>
     class Vector;
 
-    template<size_t N>
-    class ByteArray;
-
     template <typename ...Types>
     using TypeList = Meta::List<Types...>;
 
@@ -311,16 +308,7 @@ namespace Harlinn::Common::Core
     constexpr bool IsBasicStringView = Core::Internal::IsBasicStringViewImpl<std::remove_cvref_t<T>>;
 
 
-    namespace Internal
-    {
-        template<typename T>
-        constexpr bool IsCoreByteArrayImpl = false;
-
-        template<size_t N>
-        constexpr bool IsCoreByteArrayImpl<ByteArray<N>> = true;
-    }
-    template<typename T>
-    constexpr bool IsCoreByteArray = Core::Internal::IsCoreByteArrayImpl<std::remove_cvref_t<T>>;
+    
 
     namespace Internal
     {
@@ -357,12 +345,11 @@ namespace Harlinn::Common::Core
                                 IsBasicString<T> ||
                                 IsBasicStringView<T> ||
 #endif
-                                IsCoreByteArray<T> ||
                                 IsCoreVector<T>;
 
 
     template<typename T>
-    constexpr bool IsArrayContainer = IsStdArray<T> || IsCoreByteArray<T>;
+    constexpr bool IsArrayContainer = IsStdArray<T>;
 
     template<typename T>
     constexpr bool IsVectorContainer = IsStdVector<T> || IsCoreVector<T>;
@@ -1075,7 +1062,6 @@ namespace Harlinn::Common::Core
             StdBasicStringView,
             BasicString,
             BasicStringView,
-            ByteArray,
             Vector
         };
 
@@ -1230,20 +1216,6 @@ namespace Harlinn::Common::Core
                 static constexpr ContainerTypeId TypeId = ContainerTypeId::Unknown;
             };
 
-            template<typename RT, size_t N>
-            struct ContainerTypeTraits<RT, ByteArray<N>> : ContainerTypeTraitsBase<ByteArray<N>, RT>
-            {
-                using Base = ContainerTypeTraitsBase<ByteArray<N>, RT>;
-                static constexpr bool IsFixedSize = true;
-                static constexpr size_t Count = N;
-                static constexpr ContainerTypeId TypeId = ContainerTypeId::ByteArray;
-
-                static constexpr size_t SizeOf( const ByteArray<N>& object ) noexcept
-                {
-                    return Count;
-                }
-
-            };
             template<typename RT, typename T>
             struct ContainerTypeTraits<RT, Vector<T>> : ContainerTypeTraitsBase<Vector<T>, RT>
             {
