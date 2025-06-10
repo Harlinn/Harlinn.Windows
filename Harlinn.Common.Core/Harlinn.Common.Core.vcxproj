@@ -218,7 +218,6 @@
     <ClInclude Include="HCCData.h" />
     <ClInclude Include="HCCDataSource.h" />
     <ClInclude Include="HCCDebugServiceHost.h" />
-    <ClInclude Include="HCCDemangle.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />
     <ClInclude Include="HCCDoxygen.h" />
     <ClInclude Include="HCCError.h" />
@@ -334,7 +333,6 @@
     <ClCompile Include="HCCCRC32.cpp" />
     <ClCompile Include="HCCCurrency.cpp" />
     <ClCompile Include="HCCDateTime.cpp" />
-    <ClCompile Include="HCCDemangle.cpp" />
     <ClCompile Include="HCCDoxygen.cpp" />
     <ClCompile Include="HCCDoxygenEnums.cpp" />
     <ClCompile Include="HCCDoxygenStructure.cpp" />
@@ -387,7 +385,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HCCComInterfaces.xm" />
-    <None Include="HCCDemangle.m" />
     <None Include="Internal\Math\e_acos.inl" />
     <None Include="Internal\Math\e_acosf.inl" />
     <None Include="Internal\Math\e_acosh.inl" />
