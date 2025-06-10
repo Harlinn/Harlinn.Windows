@@ -38,11 +38,8 @@
 #include <HCCObj.h>
 #include <HCCProcess.h>
 #include <HCCSecurity.h>
-#include <HCCSocket.h>
 #include <HCCString.h>
 #include <HCCSync.h>
-#include <HCCTcpClient.h>
-#include <HCCTcpServer.h>
 #include <HCCThread.h>
 #include <HCCTraits.h>
 #include <HCCTuple.h>

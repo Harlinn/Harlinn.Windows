@@ -90,9 +90,6 @@
     <ClCompile Include="ProcessTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SocketTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EnvironmentTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -132,9 +129,6 @@
     <ClCompile Include="SecurityPackageTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SocketSecurityTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VectorTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,9 +139,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TraitsTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketTest2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileTests.cpp">

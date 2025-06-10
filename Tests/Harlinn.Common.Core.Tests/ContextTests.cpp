@@ -21,7 +21,6 @@ namespace
 {
     class LocalFixture
     {
-        WSAInitTerm wsa;
     public:
         LocalFixture( ) {}
         ~LocalFixture( ) {}

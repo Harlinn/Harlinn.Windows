@@ -290,19 +290,13 @@
     <ClInclude Include="HCCServiceRunner.h" />
     <ClInclude Include="HCCShell.h" />
     <ClInclude Include="HCCSIMD.h" />
-    <ClInclude Include="HCCSocket.h" />
-    <ClInclude Include="HCCSocketServer.h" />
     <ClInclude Include="HCCString.h" />
     <ClInclude Include="HCCStringBuilder.h" />
     <ClInclude Include="HCCSync.h" />
-    <ClInclude Include="HCCTcpClient.h" />
-    <ClInclude Include="HCCTcpServer.h" />
     <ClInclude Include="HCCThread.h" />
     <ClInclude Include="HCCThreadpools.h" />
     <ClInclude Include="HCCTraits.h" />
     <ClInclude Include="HCCTuple.h" />
-    <ClInclude Include="HCCUdpClient.h" />
-    <ClInclude Include="HCCUdpServer.h" />
     <ClInclude Include="HCCUtf.h" />
     <ClInclude Include="HCCVariant.h" />
     <ClInclude Include="HCCVector.h" />
@@ -361,7 +355,6 @@
     <ClCompile Include="HCCSecurity.cpp" />
     <ClCompile Include="HCCCommDevice.cpp" />
     <ClCompile Include="HCCService.cpp" />
-    <ClCompile Include="HCCSocket.cpp" />
     <ClCompile Include="HCCString.cpp" />
     <ClCompile Include="HCCVariant.cpp" />
     <ClCompile Include="HCCwbem.cpp" />

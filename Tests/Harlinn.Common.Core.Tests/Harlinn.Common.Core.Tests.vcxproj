@@ -240,9 +240,6 @@
     <ClCompile Include="SecurityTokenTests.cpp" />
     <ClCompile Include="SecurityTrusteeTests.cpp" />
     <ClCompile Include="SlimReaderWriterLockTests.cpp" />
-    <ClCompile Include="SocketSecurityTests.cpp" />
-    <ClCompile Include="SocketTest2.cpp" />
-    <ClCompile Include="SocketTests.cpp" />
     <ClCompile Include="SpinlockTests.cpp" />
     <ClCompile Include="LibTests.cpp" />
     <ClCompile Include="StringTests.cpp" />
