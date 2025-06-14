@@ -19,6 +19,9 @@
 
 #include <HCCException.h>
 #include <HCCString.h>
+#include <HCCDateTime.h>
+#include <HCCCurrency.h>
+#include <HCCGuid.h>
 
 
 /// <summary>
@@ -41,17 +44,60 @@ namespace Harlinn::Common::Core::BitConverter
     constexpr bool IsBigEndian = false;
 #endif
 
-    // Converts a byte into a vector of bytes with length one.
+    // Converts a bool into a vector of bytes with length one.
     inline std::vector<byte> GetBytes( bool value )
     {
-        std::vector<byte> result( 1, value ? 1 : 0 );
+        std::vector<byte> result( 1, value ? static_cast< Byte >( 1U ) : static_cast< Byte >( 0U ) );
         return result;
     }
+
+    // Converts a bool into a std::array<Byte,1>.
+    constexpr inline std::array<Byte,1> GetArray( bool value )
+    {
+        std::array<Byte, 1> result{ value ? static_cast<Byte>( 1U ) : static_cast< Byte >( 0U ) };
+        return result;
+    }
+
 
     // Converts a char into a vector of bytes with length one. 
     inline std::vector<byte> GetBytes( char value )
     {
+        std::vector<byte> result( 1, std::bit_cast< Byte >( value ) );
+        return result;
+    }
+
+    // Converts a char into a std::array<Byte,1>.
+    constexpr inline std::array<Byte, 1> GetArray( char value )
+    {
+        std::array<Byte, 1> result{ std::bit_cast< Byte >( value ) };
+        return result;
+    }
+
+    // Converts a SByte into a vector of bytes with length one. 
+    inline std::vector<byte> GetBytes( SByte value )
+    {
+        std::vector<byte> result( 1, std::bit_cast< Byte >( value ) );
+        return result;
+    }
+
+    // Converts a SByte into a std::array<Byte,1>.
+    constexpr inline std::array<Byte, 1> GetArray( SByte value )
+    {
+        std::array<Byte, 1> result{ std::bit_cast< Byte >( value ) };
+        return result;
+    }
+
+    // Converts a Byte into a vector of bytes with length one. 
+    inline std::vector<byte> GetBytes( Byte value )
+    {
         std::vector<byte> result( 1, value );
+        return result;
+    }
+
+    // Converts a Byte into a std::array<Byte,1>.
+    constexpr inline std::array<Byte, 1> GetArray( Byte value )
+    {
+        std::array<Byte, 1> result{ value };
         return result;
     }
 
@@ -64,14 +110,48 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
+    // Converts a Byte into a std::array<Byte,2>.
+    constexpr inline std::array<Byte, 2> GetArray( wchar_t value )
+    {
+        std::array<Byte, 2> result{ static_cast< Byte >( value ), static_cast< Byte >( value >> 8 ) };
+        return result;
+    }
+
     // Converts a short into a vector of bytes with length two.
     inline std::vector<byte> GetBytes( short value )
     {
         std::vector<byte> result( 2 );
-        short* ptr = reinterpret_cast<short*>( result.data( ) );
+        short* ptr = reinterpret_cast< short* >( result.data( ) );
         *ptr = value;
         return result;
     }
+
+
+    // Converts a short into a std::array<Byte,2>.
+    constexpr inline std::array<Byte, 2> GetArray( short value )
+    {
+        std::array<Byte, 2> result{ static_cast< Byte >( value ), static_cast< Byte >( value >> 8 ) };
+        return result;
+    }
+
+    // Converts a short into a vector of bytes with length two.
+    inline std::vector<byte> GetBytes( unsigned short value )
+    {
+        std::vector<byte> result( 2 );
+        short* ptr = reinterpret_cast< short* >( result.data( ) );
+        *ptr = value;
+        return result;
+    }
+
+    // Converts an unsigned short into a std::array<Byte,2>.
+    constexpr inline std::array<Byte, 2> GetArray( unsigned short value )
+    {
+        std::array<Byte, 2> result{ static_cast< Byte >( value ), static_cast< Byte >( value >> 8 ) };
+        return result;
+    }
+
+
+    
 
     // Converts an int into a vector of bytes with length four.
     inline std::vector<byte> GetBytes( int value )
@@ -82,7 +162,14 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
-    // Converts a long into a vector of bytes with length eight. 
+    // Converts an int into a std::array<Byte,4>.
+    constexpr inline std::array<Byte, 4> GetArray( int value )
+    {
+        std::array<Byte, 4> result{ static_cast< Byte >( value ), static_cast< Byte >( value >> 8 ), static_cast< Byte >( value >> 16 ), static_cast< Byte >( value >> 24 ) };
+        return result;
+    }
+
+    // Converts a long long into a vector of bytes with length eight. 
     inline std::vector<byte> GetBytes( long long value )
     {
         std::vector<byte> result( 8 );
@@ -91,12 +178,11 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
-    // Converts an ushort into a vector of bytes with length two.
-    inline std::vector<byte> GetBytes( unsigned short value )
+    // Converts a long long into a std::array<Byte,8>.
+    constexpr inline std::array<Byte, 8> GetArray( long long value )
     {
-        std::vector<byte> result( 2 );
-        unsigned short* ptr = reinterpret_cast<unsigned short*>( result.data( ) );
-        *ptr = value;
+        std::array<Byte, 8> result{ static_cast< Byte >( value ), static_cast< Byte >( value >> 8 ), static_cast< Byte >( value >> 16 ), static_cast< Byte >( value >> 24 ),
+        static_cast< Byte >( value >> 32 ), static_cast< Byte >( value >> 40 ), static_cast< Byte >( value >> 48 ), static_cast< Byte >( value >> 56 ) };
         return result;
     }
 
@@ -109,12 +195,27 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
+    // Converts an unsigned int into a std::array<Byte,4>.
+    constexpr inline std::array<Byte, 4> GetArray( unsigned int value )
+    {
+        std::array<Byte, 4> result{ static_cast< Byte >( value ), static_cast< Byte >( value >> 8 ), static_cast< Byte >( value >> 16 ), static_cast< Byte >( value >> 24 ) };
+        return result;
+    }
+
     // Converts an unsigned long into a vector of bytes with length eight. 
     inline std::vector<byte> GetBytes( unsigned long long value )
     {
         std::vector<byte> result( 8 );
         unsigned long long* ptr = reinterpret_cast<unsigned long long*>( result.data( ) );
         *ptr = value;
+        return result;
+    }
+
+    // Converts an unsigned long long into a std::array<Byte,8>.
+    constexpr inline std::array<Byte, 8> GetArray( unsigned long long value )
+    {
+        std::array<Byte, 8> result{ static_cast< Byte >( value ), static_cast< Byte >( value >> 8 ), static_cast< Byte >( value >> 16 ), static_cast< Byte >( value >> 24 ),
+        static_cast< Byte >( value >> 32 ), static_cast< Byte >( value >> 40 ), static_cast< Byte >( value >> 48 ), static_cast< Byte >( value >> 56 ) };
         return result;
     }
 
@@ -127,6 +228,13 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
+    // Converts a float into a std::array<Byte,4>.
+    constexpr inline std::array<Byte, 4> GetArray( float value )
+    {
+        return GetArray( std::bit_cast<UInt32>( value ) );
+    }
+
+
     // Converts a double into a vector of bytes with length eight. 
     inline std::vector<byte> GetBytes( double value )
     {
@@ -136,310 +244,280 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
+    // Converts a double into a std::array<Byte,8>.
+    constexpr inline std::array<Byte, 8> GetArray( double value )
+    {
+        return GetArray( std::bit_cast< UInt64 >( value ) );
+    }
+
+
+    // Converts a DateTime into a vector of bytes with length eight. 
+    inline std::vector<byte> GetBytes( const DateTime& value )
+    {
+        return GetBytes( value.Ticks( ) );
+    }
+
+    // Converts a DateTime into a std::array<Byte,8>.
+    constexpr inline std::array<Byte, 8> GetArray( const DateTime& value )
+    {
+        return GetArray( value.Ticks( ) );
+    }
+
+    // Converts a TimeSpan into a vector of bytes with length eight. 
+    inline std::vector<byte> GetBytes( const TimeSpan& value )
+    {
+        return GetBytes( value.Ticks( ) );
+    }
+
+    // Converts a TimeSpan into a std::array<Byte,8>.
+    constexpr inline std::array<Byte, 8> GetArray( const TimeSpan& value )
+    {
+        return GetArray( value.Ticks( ) );
+    }
+
+    // Converts a Currency into a vector of bytes with length eight. 
+    inline std::vector<byte> GetBytes( const Currency& value )
+    {
+        return GetBytes( value.Value( ) );
+    }
+
+    // Converts a Currency into a std::array<Byte,8>.
+    constexpr inline std::array<Byte, 8> GetArray( const Currency& value )
+    {
+        return GetArray( value.Value( ) );
+    }
+
+    // Converts a Guid into a vector of bytes with length 16. 
+    inline std::vector<byte> GetBytes( const Guid& value )
+    {
+        std::vector<byte> result( 16 );
+        Guid* ptr = reinterpret_cast< Guid* >( result.data( ) );
+        *ptr = value;
+        return result;
+    }
+
+    // Converts a Guid into a std::array<Byte,16>.
+    constexpr inline std::array<Byte, 16> GetArray( const Guid& value )
+    {
+        return value.ToArray( );
+    }
+
+
+
+
+    namespace Internal
+    {
+        template<typename T, SimpleByteSpanLike SpanT>
+        void RangeCheck( const SpanT& value, size_t startIndex )
+        {
+            if ( startIndex >= value.size( ) )
+            {
+                throw ArgumentException( L"startIndex" );
+            }
+
+            if ( startIndex + sizeof(T) > value.size( ) )
+            {
+                throw ArgumentException( L"Remaining buffer is too small" );
+            }
+        }
+    }
+
+    // Converts a SimpleByteSpanLike container into a boolean. 
+    template<SimpleSpanLike SpanT>
+    inline bool ToBoolean( const SpanT& value, size_t startIndex = 0U )
+    {
+        Internal::RangeCheck<Byte>( value, startIndex );
+        return ( value[ startIndex ] == 0 ) ? false : true;
+    }
+
+    // Converts a SimpleByteSpanLike container into a SByte
+    template<SimpleByteSpanLike SpanT>
+    inline SByte ToSByte( const SpanT& value, size_t startIndex = 0U )
+    {
+        using ResultType = SByte;
+        Internal::RangeCheck<ResultType>( value, startIndex );
+
+        const Byte* pbyte = value.data( ) + startIndex;
+        return std::bit_cast< ResultType >( *pbyte );
+    }
+
+
+    // Converts a SimpleByteSpanLike container into a Byte
+    template<SimpleByteSpanLike SpanT>
+    inline Byte ToByte( const SpanT& value, size_t startIndex = 0U )
+    {
+        using ResultType = Byte;
+        Internal::RangeCheck<ResultType>( value, startIndex );
+
+        const Byte* pbyte = value.data( ) + startIndex;
+        return *pbyte;
+    }
+
+    // Converts a SimpleByteSpanLike container into a char
+    template<SimpleByteSpanLike SpanT>
+    inline char ToChar( const SpanT& value, size_t startIndex = 0U )
+    {
+        using ResultType = char;
+        Internal::RangeCheck<ResultType>( value, startIndex );
+
+        const Byte* pbyte = value.data( ) + startIndex;
+        return std::bit_cast< ResultType >( *pbyte );
+    }
+
+
+
     // Converts a SimpleByteSpanLike container into a wchar_t.
     template<SimpleByteSpanLike SpanT>
-    inline wchar_t ToWideChar( const SpanT& value, size_t startIndex )
+    inline wchar_t ToWideChar( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = wchar_t;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 2 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 2 == 0 )
-        {
-            // data is aligned
-            return *( (wchar_t*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            return (wchar_t)( ( *pbyte << 8 ) | ( *( pbyte + 1 ) ) );
-#else
-            return (wchar_t)( ( *pbyte ) | ( *( pbyte + 1 ) << 8 ) );
-#endif
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast<const wchar_t*>( ptr );
     }
+
+
+    
+
 
     // Converts a SimpleByteSpanLike container into a short. 
     template<SimpleByteSpanLike SpanT>
-    inline short ToInt16( const SpanT& value, size_t startIndex )
+    inline Int16 ToInt16( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = Int16;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 2 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 2 == 0 )
-        {
-            // data is aligned
-            return *( (short*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            return (short)( ( *pbyte << 8 ) | ( *( pbyte + 1 ) ) );
-#else
-            return (short)( ( *pbyte ) | ( *( pbyte + 1 ) << 8 ) );
-#endif
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
 
     // Converts a SimpleByteSpanLike container into an unsigned short. 
     template<SimpleByteSpanLike SpanT>
-    inline unsigned short ToUInt16( const SpanT& value, size_t startIndex )
+    inline UInt16 ToUInt16( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = UInt16;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 2 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 2 == 0 )
-        {
-            // data is aligned
-            return *( (unsigned short*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            return (unsigned short)( ( *pbyte << 8 ) | ( *( pbyte + 1 ) ) );
-#else
-            return (unsigned short)( ( *pbyte ) | ( *( pbyte + 1 ) << 8 ) );
-#endif
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
 
     // Converts a SimpleByteSpanLike container into a 32-bit integer. 
     template<SimpleByteSpanLike SpanT>
-    inline int ToInt32( const SpanT& value, size_t startIndex )
+    inline Int32 ToInt32( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = Int32;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 4 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 4 == 0 )
-        {
-            // data is aligned
-            return *( (int*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            return (int)( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
-#else
-            return (int)( *pbyte ) | ( *( pbyte + 1 ) << 8 ) | ( *( pbyte + 2 ) << 16 ) | ( *( pbyte + 3 ) << 24 );
-#endif
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
 
     // Converts a SimpleByteSpanLike container into a 32-bit unsigned integer. 
     template<SimpleByteSpanLike SpanT>
-    inline unsigned int ToUInt32( const SpanT& value, size_t startIndex )
+    inline UInt32 ToUInt32( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = UInt32;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 4 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 4 == 0 )
-        {
-            // data is aligned
-            return *( (unsigned int*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            return (unsigned int)( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
-#else
-            return (unsigned int)( *pbyte ) | ( *( pbyte + 1 ) << 8 ) | ( *( pbyte + 2 ) << 16 ) | ( *( pbyte + 3 ) << 24 );
-#endif
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
 
 
     // Converts a SimpleByteSpanLike container into a 64-bit integer. 
     template<SimpleByteSpanLike SpanT>
-    inline long long ToInt64( const SpanT& value, size_t startIndex )
+    inline Int64 ToInt64( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = Int64;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 8 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 8 == 0 )
-        {
-            // data is aligned
-            return *( (long long*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            int i1 = ( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
-            uint i2 = ( *( pbyte + 4 ) << 24 ) | ( *( pbyte + 5 ) << 16 ) | ( *( pbyte + 6 ) << 8 ) | ( *( pbyte + 7 ) );
-            return ( (long long)i1 << 32 ) | i2;
-#else
-            uint i1 = ( *pbyte ) | ( *( pbyte + 1 ) << 8 ) | ( *( pbyte + 2 ) << 16 ) | ( *( pbyte + 3 ) << 24 );
-            int i2 = ( *( pbyte + 4 ) ) | ( *( pbyte + 5 ) << 8 ) | ( *( pbyte + 6 ) << 16 ) | ( *( pbyte + 7 ) << 24 );
-            return ( (long long)i2 << 32 ) | i1;
-#endif
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
 
 
     // Converts a SimpleByteSpanLike container into a 64-bit unsigned integer. 
     template<SimpleByteSpanLike SpanT>
-    inline unsigned long long ToUInt64( const SpanT& value, size_t startIndex )
+    inline UInt64 ToUInt64( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = UInt64;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 8 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 8 == 0 )
-        {
-            // data is aligned
-            return *( (long long*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            uint i1 = ( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
-            uint i2 = ( *( pbyte + 4 ) << 24 ) | ( *( pbyte + 5 ) << 16 ) | ( *( pbyte + 6 ) << 8 ) | ( *( pbyte + 7 ) );
-            return ( ( unsigned long long ) i1 << 32 ) | i2;
-#else
-            uint i1 = ( *pbyte ) | ( *( pbyte + 1 ) << 8 ) | ( *( pbyte + 2 ) << 16 ) | ( *( pbyte + 3 ) << 24 );
-            uint i2 = ( *( pbyte + 4 ) ) | ( *( pbyte + 5 ) << 8 ) | ( *( pbyte + 6 ) << 16 ) | ( *( pbyte + 7 ) << 24 );
-            return ( ( unsigned long long ) i2 << 32 ) | i1;
-#endif
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
 
 
     // Converts a SimpleByteSpanLike container into a float.
     template<SimpleByteSpanLike SpanT>
-    inline float ToSingle( const SpanT& value, size_t startIndex )
+    inline float ToSingle( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = float;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 4 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 4 == 0 )
-        {
-            // data is aligned
-            return *( (float*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            auto i = (int)( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
-#else
-            auto i = (int)( *pbyte ) | ( *( pbyte + 1 ) << 8 ) | ( *( pbyte + 2 ) << 16 ) | ( *( pbyte + 3 ) << 24 );
-#endif
-            return *(float*)&i;
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
 
     // Converts a SimpleByteSpanLike container into a double.
     template<SimpleByteSpanLike SpanT>
-    inline double ToDouble( const SpanT& value, size_t startIndex )
+    inline double ToDouble( const SpanT& value, size_t startIndex = 0U )
     {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
+        using ResultType = double;
+        Internal::RangeCheck<ResultType>( value, startIndex );
 
-        if ( startIndex > value.size( ) - 8 )
-        {
-            throw ArgumentException( L"Remaining buffer is to small" );
-        }
-
-
-        const byte* pbyte = value.data( ) + startIndex;
-        if ( size_t( pbyte ) % 8 == 0 )
-        {
-            // data is aligned
-            return *( (double*)pbyte );
-        }
-        else
-        {
-#if BIGENDIAN 
-            int i1 = ( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
-            uint i2 = ( *( pbyte + 4 ) << 24 ) | ( *( pbyte + 5 ) << 16 ) | ( *( pbyte + 6 ) << 8 ) | ( *( pbyte + 7 ) );
-            auto i = ( (long long)i1 << 32 ) | i2;
-#else
-            uint i1 = ( *pbyte ) | ( *( pbyte + 1 ) << 8 ) | ( *( pbyte + 2 ) << 16 ) | ( *( pbyte + 3 ) << 24 );
-            int i2 = ( *( pbyte + 4 ) ) | ( *( pbyte + 5 ) << 8 ) | ( *( pbyte + 6 ) << 16 ) | ( *( pbyte + 7 ) << 24 );
-            auto i = ( (long long)i2 << 32 ) | i1;
-#endif
-            return *(double*)&i;
-        }
-
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
     }
+
+    // Converts a SimpleByteSpanLike container into a DateTime.
+    template<SimpleByteSpanLike SpanT>
+    inline DateTime ToDateTime( const SpanT& value, size_t startIndex = 0U )
+    {
+        using ResultType = DateTime;
+        Internal::RangeCheck<ResultType>( value, startIndex );
+
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
+    }
+
+    // Converts a SimpleByteSpanLike container into a TimeSpan.
+    template<SimpleByteSpanLike SpanT>
+    inline TimeSpan ToTimeSpan( const SpanT& value, size_t startIndex = 0U )
+    {
+        using ResultType = TimeSpan;
+        Internal::RangeCheck<ResultType>( value, startIndex );
+
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
+    }
+
+    // Converts a SimpleByteSpanLike container into a Currency object.
+    template<SimpleByteSpanLike SpanT>
+    inline Currency ToCurrency( const SpanT& value, size_t startIndex = 0U )
+    {
+        using ResultType = Currency;
+        Internal::RangeCheck<ResultType>( value, startIndex );
+
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
+    }
+
+    // Converts a SimpleByteSpanLike container into a Guid object.
+    template<SimpleByteSpanLike SpanT>
+    inline Guid ToGuid( const SpanT& value, size_t startIndex = 0U )
+    {
+        using ResultType = Guid;
+        Internal::RangeCheck<ResultType>( value, startIndex );
+
+        const Byte* ptr = value.data( ) + startIndex;
+        return *reinterpret_cast< const ResultType* >( ptr );
+    }
+
+
+
 
 
     inline WideString::value_type GetHexValue( int i )
@@ -509,16 +587,7 @@ namespace Harlinn::Common::Core::BitConverter
         return ToString( value, startIndex, value.size( ) - startIndex );
     }
 
-    // Converts a SimpleByteSpanLike container into a boolean. 
-    template<SimpleByteSpanLike SpanT>
-    inline bool ToBoolean( const SpanT& value, size_t startIndex )
-    {
-        if ( startIndex >= value.size( ) )
-        {
-            throw ArgumentOutOfRangeException( L"startIndex" );
-        }
-        return ( value[startIndex] == 0 ) ? false : true;
-    }
+    
 
 }
 

@@ -1911,7 +1911,7 @@ namespace Harlinn::Common::Core
         /// Tests if the reference count is zero. By convention any
         /// object with a reference count of 0 will be destroyed.
         /// </summary>
-        /// <returns>true if the reference count is 1, otherwise false.</returns>
+        /// <returns>true if the reference count is 0, otherwise false.</returns>
         bool IsZero( ) const
         {
             return Atomic::Load( &referenceCount_ ) == 0;
@@ -2127,6 +2127,7 @@ namespace Harlinn::Common::Core
             }
             return *this;
         }
+        
         ReferenceCountedPtr& operator = ( const ReferenceCountedPtr& other )
         {
             if ( pointer_ != other.pointer_ )
@@ -2143,6 +2144,7 @@ namespace Harlinn::Common::Core
             }
             return *this;
         }
+        
 
         ReferenceCountedPtr& operator = ( ReferenceCountedPtr&& other ) noexcept
         {
@@ -2239,7 +2241,7 @@ namespace Harlinn::Common::Core
     template<SimpleComLike T>
     inline ReferenceCountedPtr<T> WrapReferenceCounted( T* ptr, bool addRef = false )
     {
-        ReferenceCountedPtr<T> result( ptr );
+        ReferenceCountedPtr<T> result( ptr, addRef );
         return result;
     }
 

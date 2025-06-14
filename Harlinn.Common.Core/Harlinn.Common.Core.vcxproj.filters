@@ -300,9 +300,6 @@
     <ClInclude Include="HCCNetwork.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCFormatStringParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCServiceRunner.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -43,6 +43,9 @@ BOOST_AUTO_TEST_CASE( SimpleSpanLikeTest )
     BOOST_CHECK( b5 );
     constexpr bool b6 = SimpleSpanLike<std::array<WideString, 5>>;
     BOOST_CHECK( b6 );
+    constexpr bool b7 = SimpleSpanLike<std::span<WideString, 5>>;
+    BOOST_CHECK( b7 );
+
 
 }
 

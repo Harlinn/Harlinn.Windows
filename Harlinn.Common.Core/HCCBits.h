@@ -21,51 +21,6 @@
 
 namespace Harlinn::Common::Core
 {
-    template<typename T>
-    struct BitTraits : public std::false_type {};
-
-    template<typename T>
-        requires ( std::is_integral_v<T> || std::is_same_v<bool, T> )
-    struct BitTraitsBase : public std::true_type
-    {
-        using type = T;
-        static constexpr size_t ByteCount = sizeof( T );
-        static constexpr size_t BitCount = ByteCount * 8;
-
-    };
-
-    struct BooleanBitTraits : public BitTraitsBase<bool> {};
-    template<> struct BitTraits<bool> : public BooleanBitTraits {};
-
-    struct ByteBitTraits : public BitTraitsBase<Byte> {};
-    template<> struct BitTraits<Byte> : public ByteBitTraits {};
-
-    struct SByteBitTraits : public BitTraitsBase<SByte> {};
-    template<> struct BitTraits<SByte> : public SByteBitTraits {};
-
-    struct CharBitTraits : public BitTraitsBase<char> {};
-    template<> struct BitTraits<char> : public CharBitTraits {};
-
-    struct WideCharBitTraits : public BitTraitsBase<wchar_t> {};
-    template<> struct BitTraits<wchar_t> : public WideCharBitTraits {};
-
-    struct UInt16BitTraits : public BitTraitsBase<UInt16> {};
-    template<> struct BitTraits<UInt16> : public UInt16BitTraits {};
-
-    struct Int16BitTraits : public BitTraitsBase<Int16> {};
-    template<> struct BitTraits<Int16> : public Int16BitTraits {};
-
-    struct UInt32BitTraits : public BitTraitsBase<UInt32> {};
-    template<> struct BitTraits<UInt32> : public UInt32BitTraits {};
-
-    struct Int32BitTraits : public BitTraitsBase<Int32> {};
-    template<> struct BitTraits<Int32> : public Int32BitTraits {};
-
-    struct UInt64BitTraits : public BitTraitsBase<UInt64> {};
-    template<> struct BitTraits<UInt64> : public UInt64BitTraits {};
-
-    struct Int64BitTraits : public BitTraitsBase<Int64> {};
-    template<> struct BitTraits<Int64> : public Int64BitTraits {};
 
     /// <summary>
     /// Extracts the value of a bit at a bit index from an integer value.
@@ -214,7 +169,7 @@ namespace Harlinn::Common::Core
         requires ( std::is_integral_v<T>&& std::is_unsigned_v<T> )
     inline constexpr T GrayDecode( T value )
     {
-        constexpr auto InitialShift = BitTraits<T>::BitCount - 1;
+        constexpr auto InitialShift = (sizeof( T ) * CHAR_BIT) - 1; 
         for ( T bit = static_cast<T>(1U) << InitialShift; bit > 1; bit >>= 1 )
         {
             if ( value & bit )
@@ -232,9 +187,6 @@ namespace Harlinn::Common::Core
         using UnsignedType = std::make_unsigned_t<T>;
         return std::bit_cast< T >( GrayDecode( std::bit_cast< UnsignedType >( value ) ) );
     }
-
-
-
 
     /// <summary>
     /// A type that holds a fixed number of bits

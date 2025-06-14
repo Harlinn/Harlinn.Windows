@@ -184,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="ArrayTests.cpp" />
     <ClCompile Include="BinaryRWTests.cpp" />
+    <ClCompile Include="BitConverterTests.cpp" />
     <ClCompile Include="BitsConversionTests.cpp" />
     <ClCompile Include="BitsTests.cpp" />
     <ClCompile Include="BitVectorTests.cpp" />
@@ -196,7 +197,6 @@
     <ClCompile Include="DirectoryUtilsTests.cpp" />
     <ClCompile Include="EseOptionsTests.cpp" />
     <ClCompile Include="FlagsTests.cpp" />
-    <ClCompile Include="FormatStringParserTests.cpp" />
     <ClCompile Include="HtmlNamedCharactersTests.cpp" />
     <ClCompile Include="IntervalTests.cpp" />
     <ClCompile Include="IOPathTests.cpp" />

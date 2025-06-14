@@ -756,7 +756,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 64-bit unsigned integer
     /// referenced by resultValue.
     /// </summary>
@@ -853,7 +853,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded nubmer, located at offset in the buffer, 
     /// decodes in and places the result into the 64-bit signed integer
     /// referenced by resultValue.
     /// </summary>
@@ -884,7 +884,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -953,7 +953,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -986,7 +986,7 @@ namespace Harlinn::Common::Core
 
     
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded nubmer, located at offset in the buffer, 
     /// decodes in and places the result into the 32-bit unsigned integer
     /// referenced by resultValue.
     /// </summary>
@@ -1048,7 +1048,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 32-bit signed integer
     /// referenced by resultValue.
     /// </summary>
@@ -1079,7 +1079,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -1128,7 +1128,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -1160,7 +1160,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 16-bit unsigned integer
     /// referenced by resultValue.
     /// </summary>
@@ -1203,7 +1203,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 16-bit signed integer
     /// referenced by resultValue.
     /// </summary>
@@ -1234,7 +1234,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 16-bit wchar_t
     /// referenced by resultValue.
     /// </summary>
@@ -1260,7 +1260,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -1299,7 +1299,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -1331,7 +1331,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -1357,7 +1357,7 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 8-bit unsigned integer
     /// referenced by resultValue.
     /// </summary>
@@ -1390,7 +1390,7 @@ namespace Harlinn::Common::Core
         }
     }
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 8-bit signed integer
     /// referenced by resultValue.
     /// </summary>
@@ -1422,7 +1422,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// Reads a 7-bit encoded number, located at offset in the buffer, 
     /// decodes in and places the result into the 8-bit char
     /// referenced by resultValue.
     /// </summary>
@@ -1454,7 +1454,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -1488,7 +1488,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">
@@ -1515,7 +1515,7 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// Decodes a 7-bit encoded numer by reading
+    /// Decodes a 7-bit encoded number by reading
     /// one byte at the time from the Reader object referenced by reader.
     /// </summary>
     /// <typeparam name="Reader">

@@ -450,23 +450,23 @@ namespace Harlinn::Common::Core
         }
 
         /// <summary>
-        /// Retrieves a const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// Retrieves the data of this Guid as a std::array&lt;Byte, 16&gt;.
         /// </summary>
         /// <returns>
-        /// A const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// The data of this Guid as a std::array&lt;Byte, 16&gt;.
         /// </returns>
-        const std::array<Byte, 16>& ToArray( ) const
+        constexpr std::array<Byte, 16> ToArray( ) const
         {
-            return reinterpret_cast<const std::array<Byte, 16>&>( data_ );
+            return std::bit_cast<const std::array<Byte, 16>>( data_ );
         }
         
         /// <summary>
-        /// Retrieves a const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// Retrieves the data of this Guid as a std::array&lt;Byte, 16&gt;.
         /// </summary>
         /// <returns>
-        /// A const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// The data of this Guid as a std::array&lt;Byte, 16&gt;.
         /// </returns>
-        const std::array<Byte, 16>& ToBytes( ) const
+        constexpr std::array<Byte, 16> ToBytes( ) const
         {
             return ToArray( );
         }

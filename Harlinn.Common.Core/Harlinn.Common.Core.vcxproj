@@ -225,7 +225,6 @@
     <ClInclude Include="HCCExport.h" />
     <ClInclude Include="HCCFlags.h" />
     <ClInclude Include="HCCFloatingPoint.h" />
-    <ClInclude Include="HCCFormatStringParser.h" />
     <ClInclude Include="HCCGenerators.h" />
     <ClInclude Include="HCCHtmlNamedCharacters.h" />
     <ClInclude Include="HCCInteger.h" />
