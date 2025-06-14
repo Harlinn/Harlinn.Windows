@@ -279,6 +279,11 @@ namespace pbrto
 
         void Decompose( Vector3f* T, SquareMatrix<4>* R, SquareMatrix<4>* S ) const;
 
+        bool Decompose( Vector3f::Simd* outScale, Quaternion::Simd* outRotQuat, Vector3f::Simd* outTrans ) const
+        {
+            return Math::Decompose( m_, outScale, outRotQuat, outTrans );
+        }
+
         PBRTO_EXPORT
         Interaction operator()( const Interaction& in ) const;
         PBRTO_EXPORT

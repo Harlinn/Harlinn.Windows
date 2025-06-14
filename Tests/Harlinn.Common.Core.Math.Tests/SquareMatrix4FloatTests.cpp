@@ -153,5 +153,68 @@ BOOST_AUTO_TEST_CASE( DeterminantTest2 )
     BOOST_CHECK_CLOSE( determinant, expected, 0.01f );
 }
 
+// --run_test=SquareMatrix4FloatTests/DecomposeTest1
+BOOST_AUTO_TEST_CASE( DecomposeTest1 )
+{
+    using namespace Harlinn::Common::Core::Math;
+    SquareMatrix<float, 4>::Simd matrix = SquareMatrix<float, 4>( 0.285714f, 0.857143f, -0.428571f, 0.0f,
+        -0.857143f, 0.428571f, 0.285714f, 0.0f,
+        0.428571f, 0.285714f, 0.857143f, 0.0f,
+        1.0f, 2.0f, 3.0f, 1.0f );
+
+    Vector3f::Simd scale;
+    Quaternion<float>::Simd rotationQuaternion;
+    Vector3f::Simd translation;
+
+    auto success = Decompose( matrix, &scale, &rotationQuaternion, &translation );
+
+    BOOST_CHECK( success );
+
+    Vector3f::Simd expectedScale{ 0.999999821, 0.999999821, 0.999999821 };
+    Quaternion<float>::Simd expectedRotationQuaternion{ -0.00000000, 0.267261058, 0.534522712, 0.801783681 };
+    Vector3f::Simd expectedTranslation{ 1.00000000, 2.00000000, 3.00000000 };
+
+    auto hasExpectedScale = expectedScale == scale;
+    BOOST_CHECK( hasExpectedScale );
+    auto hasExpectedRotationQuaternion = expectedRotationQuaternion == rotationQuaternion;
+    BOOST_CHECK( hasExpectedRotationQuaternion );
+    auto hasExpectedTranslation = expectedTranslation == translation;
+    BOOST_CHECK( hasExpectedTranslation );
+    
+}
+
+
+// --run_test=SquareMatrix4FloatTests/DecomposeTest2b
+BOOST_AUTO_TEST_CASE( DecomposeTest2b )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using namespace DirectX;
+    XMFLOAT4X4 matrix( 0.285714f, 0.857143f, -0.428571f, 0.0f,
+        -0.857143f, 0.428571f, 0.285714f, 0.0f,
+        0.428571f, 0.285714f, 0.857143f, 0.0f,
+        1.0f, 2.0f, 3.0f, 1.0f );
+
+    
+    auto loaded = XMLoadFloat4x4( &matrix );
+
+    XMVECTOR scale;
+    XMVECTOR rotationQuaternion;
+    XMVECTOR translation;
+
+    auto success = XMMatrixDecompose(&scale,&rotationQuaternion, &translation, loaded );
+    
+    XMFLOAT4 expectedScale{ 0.999999821, 0.999999821, 0.999999821, 0.00000000 };
+    XMVECTOR expectedRotationQuaternion{ -0.00000000, 0.267261058, 0.534522772, 0.801783681 };
+    XMVECTOR expectedTranslation{ 1.00000000, 2.00000000, 3.00000000, 1.00000000 };
+
+
+    BOOST_CHECK( success );
+
+    
+}
+
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

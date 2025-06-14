@@ -7094,6 +7094,7 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+
     // Length
 
     /// <summary>
@@ -13750,6 +13751,165 @@ namespace Harlinn::Common::Core::Math
 
         return S( SIMD::Traits<FloatT, 3>::FMAdd( result, scale, offset ) );
     }
+
+
+    namespace Internal
+    {
+        template<FloatingPointType T>
+        void RankDecompose( T x, T y, T z, size_t& a, size_t& b, size_t& c )
+        {
+            if ( x < y )
+            {
+                if ( y < z )
+                {
+                    a = 2;
+                    b = 1;
+                    c = 0;
+                }
+                else
+                {
+                    a = 1;
+
+                    if ( x < z )
+                    {
+                        b = 2;
+                        c = 0;
+                    }
+                    else
+                    {
+                        b = 0;
+                        c = 2;
+                    }
+                }
+            }
+            else
+            {
+                if ( x < z )
+                {
+                    a = 2;
+                    b = 0;
+                    c = 1;
+                }
+                else
+                {
+                    a = 0;
+
+                    if ( y < z )
+                    {
+                        b = 2;
+                        c = 1;
+                    }
+                    else
+                    {
+                        b = 1;
+                        c = 2;
+                    }
+                }
+            }
+        }
+    }
+
+    inline bool Decompose( const SquareMatrix<float, 4>::Simd& matrix, Vector3f::Simd* outScale, Quaternion<float>::Simd* outRotQuat, Vector3f::Simd* outTrans ) noexcept
+    {
+        constexpr float DecomposeEpsilon = 0.0001f;
+
+        using VTraits = Vector3f::Traits;
+        using MTraits = SquareMatrix<float, 4>::Traits;
+        using Constants = MTraits::Constants;
+        using SIMDType = MTraits::SIMDType;
+        using MatrixSimd = SquareMatrix<float, 4>::Simd;
+
+
+        const Vector3f::Simd canonicalBasis[ 3 ] = { Constants::IdentityR1, Constants::IdentityR2, Constants::IdentityR3 };
+
+        assert( outScale != nullptr );
+        assert( outRotQuat != nullptr );
+        assert( outTrans != nullptr );
+
+        // Get the translation
+        (*outTrans).simd = matrix.simd[ 3 ];
+
+        
+        MatrixSimd matTemp( matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], Constants::IdentityR4 );
+
+        Vector3f::Simd* vectorBasis[ 3 ];
+        vectorBasis[ 0 ] = reinterpret_cast< Vector3f::Simd* >( &matTemp.simd[ 0 ] );
+        vectorBasis[ 1 ] = reinterpret_cast< Vector3f::Simd* >( &matTemp.simd[ 1 ] );
+        vectorBasis[ 2 ] = reinterpret_cast< Vector3f::Simd* >( &matTemp.simd[ 2 ] );
+
+        auto& scales = *outScale;
+        scales = Vector3f::Simd( ScalarLength( *vectorBasis[ 0 ] ), ScalarLength( *vectorBasis[ 1 ] ), ScalarLength( *vectorBasis[ 2 ] ) );
+
+        size_t a, b, c;
+
+        Internal::RankDecompose( scales[ 0 ], scales[ 1 ], scales[ 2 ], a, b, c );
+
+        if ( scales[ a ] < DecomposeEpsilon )
+        {
+            *vectorBasis[ a ] = canonicalBasis[ a ];
+        }
+        *vectorBasis[ a ] = Normalize( *vectorBasis[ a ] );
+
+        if ( scales[ b ] < DecomposeEpsilon )
+        {
+            Vector3f tmp = Abs( *vectorBasis[ a ] );
+
+            size_t aa, bb, cc;
+
+            Internal::RankDecompose( tmp.x, tmp.y, tmp.z, aa, bb, cc );
+
+            *vectorBasis[ b ] = Vector3f::Simd( VTraits::Cross( (*vectorBasis[ a ]).simd, canonicalBasis[cc].simd ) );
+        }
+
+        *vectorBasis[ b ] = Normalize( *vectorBasis[ b ] );
+
+        if ( scales[ c ] < DecomposeEpsilon )
+        {
+            *vectorBasis[ c ] = Vector3f::Simd( VTraits::Cross( ( *vectorBasis[ a ] ).simd, ( *vectorBasis[ b ] ).simd ) );
+        }
+        *vectorBasis[ c ] = Normalize( *vectorBasis[ c ] );
+
+
+        float fDet = ScalarDeterminant( matTemp );
+
+        // use Kramer's rule to check for handedness of coordinate system
+        if ( fDet < 0.0f )
+        {
+            // switch coordinate system by negating the scale and inverting the basis vector on the x-axis
+            switch ( a )
+            {
+                case 0:
+                    scales = scales.WithNegatedX( );
+                    break;
+                case 1:
+                    scales = scales.WithNegatedY( );
+                    break;
+                case 2:
+                    scales = scales.WithNegatedZ( );
+                    break;
+            }
+            
+            *vectorBasis[ a ] = - (*vectorBasis[ a ]);
+
+            fDet = -fDet;
+        }
+
+        fDet -= 1.0f;
+        fDet *= fDet;
+
+        if ( DecomposeEpsilon < fDet )
+        {
+            // Non-SRT matrix encountered
+            return false;
+        }
+
+        // generate the quaternion from the matrix
+        *outRotQuat = Quaternion<float>::Simd::FromMatrix( matTemp );
+        return true;
+    }
+
+
+
 }
 
 namespace std

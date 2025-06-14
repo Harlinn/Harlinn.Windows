@@ -347,9 +347,11 @@ namespace pbrto
         if ( !actuallyAnimated )
             return;
         // Decompose start and end transformations
+#if 0
         SquareMatrix<4> Rm;
         SquareMatrix<4> s[ 2 ];
         Vector3f t[ 2 ];
+
         startTransform.Decompose( &t[ 0 ], &Rm, &s[ 0 ] );
         R[ 0 ] = Quaternion( Transform( Rm ) );
         T[ 0 ] = t[ 0 ];
@@ -359,7 +361,27 @@ namespace pbrto
         R[ 1 ] = Quaternion( Transform( Rm ) );
         T[ 1 ] = t[ 1 ];
         S[ 1 ] = s[ 1 ];
+#else
+        SquareMatrix<4> s[ 2 ];
+        Vector3f t[ 2 ];
+        Vector3f::Simd scaling;
+        Quaternion::Simd rotation;
+        Vector3f::Simd translation;
 
+        startTransform.Decompose( &scaling, &rotation, &translation );
+        R[ 0 ] = rotation;
+        T[ 0 ] = translation;
+        t[ 0 ] = translation;
+        S[ 0 ] = Math::Scaling( scaling );
+        s[ 0 ] = S[ 0 ];
+
+        endTransform.Decompose( &scaling, &rotation, &translation );
+        R[ 1 ] = rotation;
+        T[ 1 ] = translation;
+        t[ 1 ] = translation;
+        S[ 1 ] = Math::Scaling( scaling );
+        s[ 1 ] = S[ 1 ];
+#endif
         // Flip _R[1]_ if needed to select shortest path
         if ( ScalarDot( R[ 0 ], R[ 1 ] ) < 0 )
         {
