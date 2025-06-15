@@ -715,8 +715,8 @@ namespace Harlinn::Common::Core::Math
     template<typename T>
     concept SimdTupleOrArithmeticType = SimdType<T> || TupleType<T> || ArithmeticType<T>;
 
-    template<typename T1, typename T2>
-    constexpr bool IsCompatible = std::is_same_v<typename T1::Traits, typename T2::Traits>;
+    template<typename T, typename ... Other>
+    constexpr bool IsCompatible = ( std::is_same_v<typename T::Traits, typename Other::Traits> && ... );
 
     namespace Internal
     {
@@ -8917,11 +8917,6 @@ namespace Harlinn::Common::Core::Math
         using Base::Base;
     };
 
-
-    
-
-
-
     namespace Internal
     {
         struct QuaternionSimdBase
@@ -8940,25 +8935,16 @@ namespace Harlinn::Common::Core::Math
     concept QuaternionOrQuaternionSimdType = QuaternionType<T> || QuaternionSimdType<T>;
 
 
-    template<typename T1, typename T2>
-    constexpr bool IsCompatibleQuaternion = std::is_same_v<typename T1::Traits, typename T2::Traits>;
+    template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType ...Other>
+    constexpr bool IsCompatibleQuaternion = (std::is_same_v<typename T::Traits, typename Other::Traits> && ...);
 
     namespace Internal
     {
-
         template<QuaternionSimdType T>
         inline constexpr const typename T::SIMDType ToSimd( const T& q ) noexcept
         {
             return q.simd;
         }
-
-        /*
-        template<QuaternionSimdType T>
-        inline constexpr const typename T::SIMDType& ToSimd( const T& q ) noexcept
-        {
-            return q.simd;
-        }
-        */
 
         template<QuaternionType T>
         inline typename T::SIMDType ToSimd( const T& q ) noexcept
@@ -8979,13 +8965,11 @@ namespace Harlinn::Common::Core::Math
             return typename T::Simd( q );
         }
 
-        template<QuaternionOrQuaternionSimdType T1, QuaternionOrQuaternionSimdType T2>
-        constexpr bool HasQuaternionSimdType = QuaternionSimdType<T1> || QuaternionSimdType<T2>;
+        template<QuaternionOrQuaternionSimdType ... Args>
+        constexpr bool HasQuaternionSimdType = (QuaternionSimdType<Args> || ...);
 
-        template<QuaternionOrQuaternionSimdType T1, QuaternionOrQuaternionSimdType T2>
-        constexpr bool HasQuaternionType = QuaternionType<T1> || QuaternionType<T2>;
-
-
+        template<QuaternionOrQuaternionSimdType ... Args>
+        constexpr bool HasQuaternionType = (QuaternionType<Args> || ...);
     }
 
 
@@ -10750,8 +10734,8 @@ namespace Harlinn::Common::Core::Math
     concept SquareMatrixOrSquareMatrixSimdType = SquareMatrixType<T> || SquareMatrixSimdType<T>;
 
 
-    template<typename T1, typename T2>
-    constexpr bool IsCompatibleMatrix = std::is_same_v<typename T1::Traits, typename T2::Traits> && ( T1::Size == T2::Size );
+    template<typename T, typename ... Other>
+    constexpr bool IsCompatibleMatrix = ( (std::is_same_v<typename T::Traits, typename Other::Traits> && ( T::Size == Other::Size ) ) && ... );
 
     namespace Internal
     {
@@ -10779,11 +10763,11 @@ namespace Harlinn::Common::Core::Math
             return m.ToSimd( );
         }
 
-        template<SquareMatrixOrSquareMatrixSimdType T1, SquareMatrixOrSquareMatrixSimdType T2>
-        constexpr bool HasSquareMatrixSimdType = SquareMatrixSimdType<T1> || SquareMatrixSimdType<T2>;
+        template<SquareMatrixOrSquareMatrixSimdType ... T>
+        constexpr bool HasSquareMatrixSimdType = ( SquareMatrixSimdType<T> || ... );
 
-        template<SquareMatrixOrSquareMatrixSimdType T1, SquareMatrixOrSquareMatrixSimdType T2>
-        constexpr bool HasSquareMatrixType = SquareMatrixType<T1> || SquareMatrixType<T2>;
+        template<SquareMatrixOrSquareMatrixSimdType ... T>
+        constexpr bool HasSquareMatrixType = ( SquareMatrixType<T> || ... );
 
 
     }
@@ -13889,7 +13873,7 @@ namespace Harlinn::Common::Core::Math
                     break;
             }
             
-            *vectorBasis[ a ] = - (*vectorBasis[ a ]);
+            *vectorBasis[ a ] = -(*vectorBasis[ a ]);
 
             fDet = -fDet;
         }
@@ -13907,6 +13891,37 @@ namespace Harlinn::Common::Core::Math
         *outRotQuat = Quaternion<float>::Simd::FromMatrix( matTemp );
         return true;
     }
+
+    namespace Internal
+    {
+        struct PlaneSimdBase
+        {
+        };
+        struct PlaneBase
+        {
+        };
+    }
+
+
+    template<typename T>
+    concept PlaneSimdType = std::is_base_of_v<Internal::PlaneSimdBase, T>;
+
+    template<typename T>
+    concept PlaneType = std::is_base_of_v<Internal::PlaneBase, T>;
+
+    template<typename T>
+    concept PlaneOrPlaneSimdType = PlaneType<T> || PlaneSimdType<T>;
+
+    template<PlaneOrPlaneSimdType T, PlaneOrPlaneSimdType ... Other>
+    constexpr bool IsCompatiblePlane = ( std::is_same_v<typename T::Traits, typename Other::Traits> && ... );
+
+
+
+
+    class Plane
+    {
+
+    };
 
 
 
