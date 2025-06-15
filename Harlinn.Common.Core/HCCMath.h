@@ -344,7 +344,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     inline constexpr double NextAfter( double x, double y ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Math::Internal::OpenLibM::nextafter( x, y );
         }
@@ -490,7 +490,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Sqrt( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -503,8 +503,6 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            
-            T result;
             if constexpr ( std::is_same_v<T, float> )
             {
                 return sqrtf( x );
@@ -512,10 +510,11 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
+                T result;
                 _mm_store_sd( &result, _mm_sqrt_pd( _mm_set_sd( x ) ) );
-                
+                return result;
             }
-            return result;
+            
         }
     }
     static_assert( Sqrt(2.0) > 0.0 );
@@ -523,7 +522,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T ReciprocalSqrt( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             constexpr T one = static_cast< T >( 1. );
             if constexpr ( std::is_same_v<T, float> )
@@ -563,7 +562,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Cbrt( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -576,17 +575,19 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-
-            T result;
             if constexpr ( std::is_same_v<T, float> )
             {
-                _mm_store_ss( &result, _mm_cbrt_ps( _mm_set_ss( x ) ) );
+                //_mm_store_ss( &result, _mm_cbrt_ps( _mm_set_ss( x ) ) );
+                //return std::cbrt( x );
+                return Math::Internal::OpenLibM::cbrtf( x );
             }
             else
             {
+                T result;
                 _mm_store_sd( &result, _mm_cbrt_pd( _mm_set_sd( x ) ) );
+                return result;
             }
-            return result;
+            
         }
     }
     static_assert( Cbrt( 2.0 ) > 0.0 );
@@ -884,7 +885,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline bool IsNaN( T val ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Internal::IsNaNImpl<T>( val );
         }
@@ -963,7 +964,7 @@ namespace Harlinn::Common::Core::Math
     constexpr inline bool IsInf( T val ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Internal::IsInfImpl<FloatT>( val );
         }
@@ -1101,7 +1102,7 @@ namespace Harlinn::Common::Core::Math
     template<SignedIntegerType T>
     constexpr inline T Abs( T val ) noexcept
     { 
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return val >= 0 ? val : -val;
         }
@@ -1148,7 +1149,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Abs( T val ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Internal::AbsImpl( val );
         }
@@ -1562,7 +1563,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Min( T first, T second ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Internal::MinImpl( first, second );
         }
@@ -1632,7 +1633,7 @@ namespace Harlinn::Common::Core::Math
     constexpr inline T Max( T first, T second ) noexcept
     {
         /*
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return std::max( first, second );
         }
@@ -1650,7 +1651,7 @@ namespace Harlinn::Common::Core::Math
             }
         }
         */
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Internal::MaxImpl( first, second );
         }
@@ -1736,7 +1737,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Trunc( T value ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             FloatingPoint<T> tmp( value );
             return tmp.Trunc( );
@@ -1799,7 +1800,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Floor( T value ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             FloatingPoint<T> tmp( value );
             return tmp.Floor( );
@@ -1853,7 +1854,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Ceil( T value ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             FloatingPoint<T> tmp( value );
             return tmp.Ceil( );
@@ -1909,7 +1910,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Round( T value ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             FloatingPoint<T> tmp( value );
             return tmp.Round( );
@@ -2036,7 +2037,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T CopySign( T magnitude, T signValue ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Math::Internal::CopySignImpl<T>( magnitude, signValue );
         }
@@ -2242,7 +2243,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T FMod( T x, T y ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2297,7 +2298,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T ExpM1( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2310,23 +2311,27 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            T result;
+            
             if constexpr ( std::is_same_v<T, float> )
             {
-                _mm_store_ss( &result, _mm_expm1_ps( _mm_set_ss( x ) ) );
+                //_mm_store_ss( &result, _mm_expm1_ps( _mm_set_ss( x ) ) );
+                return Math::Internal::OpenLibM::expm1f( x );
             }
             else
             {
-                _mm_store_sd( &result, _mm_expm1_pd( _mm_set_sd( x ) ) );
+                //T result;
+                //_mm_store_sd( &result, _mm_expm1_pd( _mm_set_sd( x ) ) );
+                //return result;
+                return std::expm1( x );
             }
-            return result;
+            
         }
     }
 
     template<FloatingPointType T>
     constexpr inline T Exp2( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2369,7 +2374,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Exp10( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Math::Internal::Exp10Impl( x );
         }
@@ -2414,7 +2419,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Hypot( T x, T y ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Math::Internal::OpenLibM::FastHypot( x, y );
         }
@@ -2434,7 +2439,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T Hypot( T x, T y, T z ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return Sqrt( x*x + y*y + z*z );
         }
@@ -2640,7 +2645,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            if ( std::is_constant_evaluated( ) )
+            if consteval
             {
                 return Math::Internal::OpenLibM::sin( x );
             }
@@ -2694,7 +2699,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            if ( std::is_constant_evaluated( ) )
+            if consteval
             {
                 return Math::Internal::OpenLibM::cos( x );
             }
@@ -2753,7 +2758,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            if ( std::is_constant_evaluated( ) )
+            if consteval
             {
                 return Math::Internal::OpenLibM::tan( x );
             }
@@ -2781,7 +2786,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T ATan( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2915,7 +2920,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T SinH( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2932,7 +2937,8 @@ namespace Harlinn::Common::Core::Math
             T result;
             if constexpr ( std::is_same_v<T, float> )
             {
-                _mm_store_ss( &result, _mm_sinh_ps( _mm_set_ss( x ) ) );
+                //_mm_store_ss( &result, _mm_sinh_ps( _mm_set_ss( x ) ) );
+                return std::sinh( x );
             }
             else
             {
@@ -2949,7 +2955,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T ASinH( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2965,7 +2971,8 @@ namespace Harlinn::Common::Core::Math
             T result;
             if constexpr ( std::is_same_v<T, float> )
             {
-                _mm_store_ss( &result, _mm_asinh_ps( _mm_set_ss( x ) ) );
+                //_mm_store_ss( &result, _mm_asinh_ps( _mm_set_ss( x ) ) );
+                return std::asinh( x );
             }
             else
             {
@@ -2981,7 +2988,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T CosH( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -2998,7 +3005,8 @@ namespace Harlinn::Common::Core::Math
             T result;
             if constexpr ( std::is_same_v<T, float> )
             {
-                _mm_store_ss( &result, _mm_cosh_ps( _mm_set_ss( x ) ) );
+                //_mm_store_ss( &result, _mm_cosh_ps( _mm_set_ss( x ) ) );
+                return std::cosh( x );
             }
             else
             {
@@ -3014,32 +3022,13 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T ACosH( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if constexpr ( std::is_same_v<T, float> )
         {
-            if constexpr ( std::is_same_v<T, float> )
-            {
-                return Math::Internal::OpenLibM::acoshf( x );
-            }
-            else
-            {
-                return Math::Internal::OpenLibM::acosh( x );
-            }
+            return Math::Internal::OpenLibM::acoshf( x );
         }
         else
         {
-            return std::acosh( x );
-            /*
-            T result;
-            if constexpr ( std::is_same_v<T, float> )
-            {
-                _mm_store_ss( &result, _mm_acosh_ps( _mm_set_ss( x ) ) );
-            }
-            else
-            {
-                _mm_store_sd( &result, _mm_acosh_pd( _mm_set_sd( x ) ) );
-            }
-            return result;
-            */
+            return Math::Internal::OpenLibM::acosh( x );
         }
     }
 
@@ -3049,7 +3038,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T TanH( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -3062,17 +3051,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-
-            T result;
-            if constexpr ( std::is_same_v<T, float> )
-            {
-                _mm_store_ss( &result, _mm_tanh_ps( _mm_set_ss( x ) ) );
-            }
-            else
-            {
-                _mm_store_sd( &result, _mm_tanh_pd( _mm_set_sd( x ) ) );
-            }
-            return result;
+            return std::tanh( x );
         }
     }
 
@@ -3082,7 +3061,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     constexpr inline T ATanH( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             if constexpr ( std::is_same_v<T, float> )
             {
@@ -3095,17 +3074,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-
-            T result;
-            if constexpr ( std::is_same_v<T, float> )
-            {
-                _mm_store_ss( &result, _mm_atanh_ps( _mm_set_ss( x ) ) );
-            }
-            else
-            {
-                _mm_store_sd( &result, _mm_atanh_pd( _mm_set_sd( x ) ) );
-            }
-            return result;
+            return std::atanh( x );
         }
     }
 
@@ -3336,7 +3305,7 @@ namespace Harlinn::Common::Core::Math
     template<FloatingPointType T>
     inline constexpr T FMA( T a, T b, T c ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        if consteval
         {
             return a * b + c;
         }

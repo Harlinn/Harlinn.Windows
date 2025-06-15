@@ -3441,7 +3441,7 @@ namespace Harlinn::Common::Core::Math
     /// otherwise the corresponding element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
@@ -3500,7 +3500,7 @@ namespace Harlinn::Common::Core::Math
     /// or equally apart than the corresponding element of epsilon, otherwise false.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
@@ -3554,7 +3554,7 @@ namespace Harlinn::Common::Core::Math
     /// or equally apart than the corresponding element of epsilon, otherwise false.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
@@ -4233,7 +4233,7 @@ namespace Harlinn::Common::Core::Math
     /// 0xFFFFFFFF, the corresponding element in the result will be from v2.
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline S Select( const S& v1, const T& v2, const U& control ) noexcept
     {
         using Traits = typename T::Traits;
@@ -4528,7 +4528,7 @@ namespace Harlinn::Common::Core::Math
     /// in t outside [0,1).
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
+        requires IsCompatible<S, T, U>
     inline auto Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
@@ -4543,7 +4543,7 @@ namespace Harlinn::Common::Core::Math
     /// in t outside [0,1).
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<T, U> && ( Internal::HasTupleType<S, T> || Internal::HasTupleType<T, U>)
+        requires IsCompatible<S, T, U> && Internal::HasTupleType<S, T, U>
     inline auto Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
