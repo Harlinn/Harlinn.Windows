@@ -5870,7 +5870,6 @@ namespace Harlinn::Common::Core::SIMD
         /// Square Root of Single-Precision Floating-Point Values
         /// </summary>
         /// <param name="v"></param>
-        
         static SIMDType Sqrt( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -5882,6 +5881,23 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_sqrt_ps( v );
             }
         }
+
+        /// <summary>
+        /// Reciprocal square Root of Single-Precision Floating-Point Values
+        /// </summary>
+        /// <param name="v"></param>
+        static SIMDType ReciprocalSqrt( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_rsqrt_ps( v );
+            }
+            else
+            {
+                return _mm256_rsqrt_ps( v );
+            }
+        }
+
 
         /// <summary>
         /// Cube Root of Single-Precision Floating-Point Values
@@ -5899,6 +5915,23 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
         
+
+        /// <summary>
+        /// Reciprocal of Single-Precision Floating-Point Values
+        /// </summary>
+        /// <param name="v"></param>
+        static SIMDType Reciprocal( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_rcp_ps( v );
+            }
+            else
+            {
+                return _mm256_rcp_ps( v );
+            }
+        }
+
 
 
         /// <summary>

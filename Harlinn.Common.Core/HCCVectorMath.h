@@ -29,16 +29,6 @@ namespace Harlinn::Common::Core::Math
     template<typename T, size_t N>
     class SquareMatrix;
 
-
-
-    /*
-    template<typename T>
-    constexpr bool IsLoadedType = T::Loaded;
-
-    template<typename T>
-    constexpr bool IsUnloadedType = T::Unloaded;
-    */
-
     namespace Internal
     {
         struct VectorBase
@@ -738,15 +728,6 @@ namespace Harlinn::Common::Core::Math
 
         template<typename ...Args>
         constexpr bool AllAreSimdOrTupleType = ( SimdOrTupleType<Args> && ... );
-
-        /*
-        template<SimdTupleOrArithmeticType T1, SimdTupleOrArithmeticType T2>
-        constexpr bool HasSimdType = SimdType<T1> || SimdType<T2>;
-        
-
-        template<SimdTupleOrArithmeticType T1, SimdTupleOrArithmeticType T2>
-        constexpr bool HasTupleType = TupleType<T1> || TupleType<T2>;
-        */
     }
 
     namespace Internal
@@ -835,8 +816,6 @@ namespace Harlinn::Common::Core::Math
         using SIMDType = typename Traits::SIMDType;
 
         static constexpr size_type Size = TupleType::Size;
-        static constexpr bool Loaded = true;
-        static constexpr bool Unloaded = false;
         static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
 
         SIMDType simd;
@@ -1466,8 +1445,6 @@ namespace Harlinn::Common::Core::Math
         using ValueType = value_type;
         using SizeType = size_type;
         static constexpr size_type Size = 2;
-        static constexpr bool Loaded = false;
-        static constexpr bool Unloaded = true;
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
@@ -1840,8 +1817,6 @@ namespace Harlinn::Common::Core::Math
         using ValueType = value_type;
         using SizeType = size_type;
         static constexpr size_type Size = 3;
-        static constexpr bool Loaded = false;
-        static constexpr bool Unloaded = true;
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
@@ -2248,8 +2223,6 @@ namespace Harlinn::Common::Core::Math
         using ValueType = value_type;
         using SizeType = size_type;
         static constexpr size_type Size = 4;
-        static constexpr bool Loaded = false;
-        static constexpr bool Unloaded = true;
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
@@ -4627,7 +4600,7 @@ namespace Harlinn::Common::Core::Math
     /// in t outside [0,1).
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
+        requires IsCompatible<S, T, U>
     inline auto Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
@@ -4644,7 +4617,7 @@ namespace Harlinn::Common::Core::Math
     /// in t outside [0,1).
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<T, U> && ( Internal::HasTupleType<S, T> || Internal::HasTupleType<T, U> )
+        requires IsCompatible<S, T, U> && Internal::HasTupleType<S, T, U>
     inline auto Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
@@ -4719,7 +4692,7 @@ namespace Harlinn::Common::Core::Math
     /// boundary is returned.
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<T, U>
+        requires IsCompatible<S, T, U>
     inline auto Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
         using Traits = typename S::Traits;
@@ -4734,7 +4707,7 @@ namespace Harlinn::Common::Core::Math
     /// boundary is returned.
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<T, U> && ( Internal::HasTupleType<S, T> || Internal::HasTupleType<T, U> )
+        requires IsCompatible<S, T, U> && Internal::HasTupleType<S, T, U>
     inline auto Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
         using Traits = typename S::Traits;
@@ -4851,7 +4824,7 @@ namespace Harlinn::Common::Core::Math
     namespace Internal
     {
         template<SimdType S, SimdType T, SimdType U>
-            requires IsCompatible<S, T>&& IsCompatible<S, U>
+            requires IsCompatible<S, T, U>
         inline S ClampLengthImpl( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
         {
             using Traits = typename S::Traits;
@@ -4908,7 +4881,7 @@ namespace Harlinn::Common::Core::Math
     /// minimum and maximum.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
     {
         return Internal::ClampLengthImpl( Internal::ToSimdType( v ), Internal::ToSimdType( lengthMin ), Internal::ToSimdType( lengthMax ) );
@@ -5005,7 +4978,7 @@ namespace Harlinn::Common::Core::Math
         /// return a vector with all elements set to zero.
         /// </returns>
         template<SimdType S, SimdType T, SimdType U>
-            requires IsCompatible<S, T>&& IsCompatible<S, U>
+            requires IsCompatible<S, T, U>
         inline S RefractImpl( const S& incident, const T& normal, const U& refractionIndex ) noexcept
         {
             using Traits = typename S::Traits;
@@ -5052,7 +5025,7 @@ namespace Harlinn::Common::Core::Math
     /// return a vector with all elements set to zero.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
     {
         return Internal::RefractImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ), Internal::ToSimdType( refractionIndex ) );
@@ -5235,7 +5208,7 @@ namespace Harlinn::Common::Core::Math
     /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto FMA( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
@@ -5248,7 +5221,7 @@ namespace Harlinn::Common::Core::Math
     /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T> && IsCompatible<S, U> && (Internal::HasTupleType<S, T> || Internal::HasTupleType<S, U> )
+        requires IsCompatible<S, T, U> && Internal::HasTupleType<S, T, U>
     inline auto FMA( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
@@ -5444,7 +5417,7 @@ namespace Harlinn::Common::Core::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto FMSub( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
@@ -5554,7 +5527,7 @@ namespace Harlinn::Common::Core::Math
     /// are rounded to the nearest floating point values.
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto FMAddSub( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
@@ -5666,7 +5639,7 @@ namespace Harlinn::Common::Core::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto FMSubAdd( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
@@ -5777,7 +5750,7 @@ namespace Harlinn::Common::Core::Math
     /// floating point values.
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto FNMAdd( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
@@ -5888,7 +5861,7 @@ namespace Harlinn::Common::Core::Math
     /// to the nearest floating point value.
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto FNMSub( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
@@ -6783,7 +6756,7 @@ namespace Harlinn::Common::Core::Math
         /// Calculates the Hermite spline interpolation, using the specified arguments.
         /// </summary>
         template<SimdType T, SimdType U, SimdType V, SimdType W>
-            requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
+            requires IsCompatible<T, U, V, W>
         inline T HermiteImpl( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
         {
             using Traits = typename T::Traits;
@@ -6807,7 +6780,7 @@ namespace Harlinn::Common::Core::Math
     /// Calculates the Hermite spline interpolation, using the specified arguments.
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W, ArithmeticType X>
-        requires IsCompatible<T, U>&& IsCompatible<T, V>&& IsCompatible<T, W>
+        requires IsCompatible<T, U, V, W>
     inline auto Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, const X t ) noexcept
     {
         using Traits = typename T::Traits;
@@ -7252,7 +7225,7 @@ namespace Harlinn::Common::Core::Math
     // ScalarDistance
 
     template<SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<T, U> //&& Internal::HasSimdType<T, U>
+        requires IsCompatible<T, U>
     inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
@@ -7311,7 +7284,7 @@ namespace Harlinn::Common::Core::Math
         /// Weighting factor.
         /// </param>
         template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
-            requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
+            requires IsCompatible<S, T, U, V, W>
         inline S BaryCentricImpl( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
         {
             using Traits = typename S::Traits;
@@ -7370,7 +7343,7 @@ namespace Harlinn::Common::Core::Math
     /// Weighting factor.
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, ArithmeticType V, ArithmeticType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>
+        requires IsCompatible<S, T, U>
     inline auto BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
@@ -7403,7 +7376,7 @@ namespace Harlinn::Common::Core::Math
         /// The interpolation control factors.
         /// </param>
         template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
-            requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
+            requires IsCompatible<S, T, U, V, W>
         inline S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
         {
             using Traits = typename S::Traits;
@@ -7460,7 +7433,7 @@ namespace Harlinn::Common::Core::Math
     /// The interpolation control factors.
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
+        requires IsCompatible<S, T, U, V, W>
     inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
     {
         return Internal::CatmullRomImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( p4 ), Internal::ToSimdType( t ) );
@@ -7487,7 +7460,7 @@ namespace Harlinn::Common::Core::Math
         /// The interpolation control factors.
         /// </param>
         template<SimdType S, SimdType T, SimdType U, SimdType V>
-            requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
+            requires IsCompatible<S, T, U, V>
         inline S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const typename S::value_type t ) noexcept
         {
             using Traits = typename S::Traits;
@@ -7529,7 +7502,7 @@ namespace Harlinn::Common::Core::Math
     /// The interpolation control factors.
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, ArithmeticType W>
-        requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
+        requires IsCompatible<S, T, U, V>
     inline auto CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
     {
         using Traits = typename S::Traits;
@@ -8994,8 +8967,6 @@ namespace Harlinn::Common::Core::Math
         using MatrixSimd = SquareMatrixSimd<Matrix, 4>;
 
         static constexpr size_type Size = 4;
-        static constexpr bool Loaded = true;
-        static constexpr bool Unloaded = false;
 
         using Traits = typename QuaternionType::Traits;
         using SIMDType = typename Traits::SIMDType;
@@ -9241,7 +9212,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<SimdType T, SimdType U>
-            requires IsCompatible<T, VectorSimd> && IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             const auto fromDirNormalized = Normalize( fromDir );
@@ -9288,7 +9259,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<SimdType T, TupleType U>
-            requires IsCompatible<T, VectorSimd>&& IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return ShortestArc( fromDir, toDir.ToSimd( ) );
@@ -9306,7 +9277,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<TupleType T, SimdType U>
-            requires IsCompatible<T, VectorSimd>&& IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return ShortestArc( fromDir.ToSimd( ), toDir );
@@ -9324,7 +9295,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<TupleType T, TupleType U>
-            requires IsCompatible<T, VectorSimd>&& IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return ShortestArc( fromDir.ToSimd( ), toDir.ToSimd( ) );
@@ -9468,8 +9439,6 @@ namespace Harlinn::Common::Core::Math
         using ValueType = value_type;
         using SizeType = size_type;
         static constexpr size_type Size = 4;
-        static constexpr bool Loaded = false;
-        static constexpr bool Unloaded = true;
 
         using Traits = Core::SIMD::Traits<ValueType, Size>;
         using SIMDType = typename Traits::SIMDType;
@@ -9705,7 +9674,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<SimdType T, SimdType U>
-            requires IsCompatible<T, VectorSimd> && IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
@@ -9724,7 +9693,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<SimdType T, TupleType U>
-            requires IsCompatible<T, VectorSimd>&& IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
@@ -9743,7 +9712,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<TupleType T, SimdType U>
-            requires IsCompatible<T, VectorSimd>&& IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
@@ -9762,7 +9731,7 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         template<TupleType T, TupleType U>
-            requires IsCompatible<T, VectorSimd> && IsCompatible<T, U>
+            requires IsCompatible<T, VectorSimd, U>
         static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
@@ -13091,7 +13060,7 @@ namespace Harlinn::Common::Core::Math
         /// The view matrix transforming coordinates from world space to view space.
         /// </returns>
         template<SimdType S, SimdType T, SimdType U>
-            requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
+            requires IsCompatible<S, T, U> && ( S::Size == 3 )
         inline SquareMatrix<typename S::value_type, 4>::Simd LookToImpl( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
         {
             using Traits = SIMD::Traits<typename S::value_type, 4>;
@@ -13137,7 +13106,7 @@ namespace Harlinn::Common::Core::Math
     /// The view matrix transforming coordinates from world space to view space.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
+        requires IsCompatible<S, T, U> && ( S::Size == 3 )
     inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
     {
         return Internal::LookToImpl( Internal::ToSimdType( cameraPosition ), Internal::ToSimdType( cameraDirection ), Internal::ToSimdType( upDirection ) );
@@ -13162,7 +13131,7 @@ namespace Harlinn::Common::Core::Math
     /// The view matrix transforming coordinates from world space to view space.
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
-        requires IsCompatible<S, T>&& IsCompatible<S, U> && ( S::Size == 3 )
+        requires IsCompatible<S, T, U> && ( S::Size == 3 )
     inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
     {
         auto cameraDirection = focusPosition - cameraPosition;
@@ -13915,14 +13884,448 @@ namespace Harlinn::Common::Core::Math
     template<PlaneOrPlaneSimdType T, PlaneOrPlaneSimdType ... Other>
     constexpr bool IsCompatiblePlane = ( std::is_same_v<typename T::Traits, typename Other::Traits> && ... );
 
+    template<FloatingPointType T>
+    class Plane;
 
 
-
-    class Plane
+    template<typename PlaneT>
+    class PlaneSimd : public Internal::PlaneSimdBase
     {
+    public:
+        using PlaneType = PlaneT;
+
+        using ValueType = typename PlaneType::ValueType;
+        using size_type = size_t;
+        using value_type = ValueType;
+        using Vector = Math::Vector<ValueType, 3>;
+
+        using Simd = PlaneSimd<PlaneT>;
+
+        static constexpr size_type Size = 4;
+
+        using Traits = typename PlaneType::Traits;
+        using SIMDType = typename Traits::SIMDType;
+
+        static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
+
+        SIMDType simd;
+
+        PlaneSimd( ) noexcept
+            : simd( Traits::Zero( ) )
+        { }
+
+        PlaneSimd( const PlaneSimd& other ) noexcept
+            : simd( other.simd )
+        { }
+
+        explicit PlaneSimd( SIMDType other ) noexcept
+            : simd( other )
+        { }
+
+        inline PlaneSimd( const PlaneType& plane ) noexcept;
+
+        template<SimdType T>
+        PlaneSimd( const T& normal, value_type distance )
+            : simd( Traits::SetW( normal.simd, distance ) )
+        { }
+
+        template<TupleType T>
+        PlaneSimd( const T& normal, value_type distance )
+            : simd( Traits::SetW( Traits::Load( normal.values ), distance ) )
+        { }
+
+
+        template<SimdType S, SimdType T, SimdType U>
+            requires IsCompatible<S, T, U> && (S::Size > 2) && std::is_same_v<value_type, typename S::value_type>
+        PlaneSimd( const S& point1, const T& point2, const U& point3 ) noexcept
+        {
+            using Constants = typename Traits::Constants;
+            Vector v21 = point1 - point2;
+            Vector v31 = point1 - point3;
+
+            auto n = Cross( v21, v31 );
+            n = Normalize( n );
+
+            auto distance = Traits::Negate( Traits::Dot<0x7f>( n.simd, point1.simd ) );
+
+            simd = Traits::Select( n.simd, distance, Constants::Select1112 );
+        }
+
+
+
+        PlaneSimd& operator = ( const PlaneSimd& other ) noexcept
+        {
+            simd = other.simd;
+            return *this;
+        }
+
+        PlaneSimd& operator = ( SIMDType other ) noexcept
+        {
+            simd = other;
+            return *this;
+        }
+
+        PlaneSimd& operator = ( const PlaneType& quaternion ) noexcept;
+
+        bool operator == ( const PlaneSimd& other ) const noexcept
+        {
+            return Traits::AllEqual( simd, other.simd );
+        }
+
+        bool operator != ( const PlaneSimd& other ) const noexcept
+        {
+            return Traits::AllEqual( simd, other.simd ) == false;
+        }
+
+        bool operator == ( const PlaneType& other ) const noexcept;
+        bool operator != ( const PlaneType& other ) const noexcept;
+
 
     };
 
+
+    template<FloatingPointType T>
+    class Plane : public Internal::PlaneBase
+    {
+    public:
+        using value_type = T;
+        using size_type = size_t;
+        using ValueType = value_type;
+        using SizeType = size_type;
+        static constexpr size_type Size = 4;
+
+        using Traits = Core::SIMD::Traits<ValueType, Size>;
+        using SIMDType = typename Traits::SIMDType;
+
+        static constexpr size_type Capacity = Size;
+        using ArrayType = typename Traits::ArrayType;
+
+        using reference = typename ArrayType::reference;
+        using const_reference = typename ArrayType::const_reference;
+        using pointer = typename ArrayType::pointer;
+        using const_pointer = typename ArrayType::const_pointer;
+        using iterator = typename ArrayType::iterator;
+        using const_iterator = typename ArrayType::const_iterator;
+        using reverse_iterator = typename ArrayType::reverse_iterator;
+        using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
+
+        using Simd = PlaneSimd<Plane>;
+
+        using Vector = Math::Vector<ValueType, 3>;
+
+        // smallest such that 1.0+NormalizeEpsilon != 1.0
+        static constexpr float NormalizeEpsilon = 1.192092896e-07f; 
+
+        union
+        {
+            ArrayType values;
+            struct
+            {
+                /// <summary>
+                /// The normal vector of the plane.
+                /// </summary>
+                Vector Normal;
+
+                /// <summary>
+                /// The distance of the plane along its normal from the origin.
+                /// </summary>
+                ValueType Distance;
+            };
+        };
+
+        constexpr Plane( ) noexcept
+            : values{}
+        { }
+        constexpr Plane( ValueType x, ValueType y, ValueType z, ValueType distance ) noexcept
+            : values( { x, y, z, distance } )
+        { }
+
+        constexpr Plane( const ArrayType& plane ) noexcept
+            : values( plane )
+        { }
+
+        template<TupleType T>
+            requires IsCompatible<T, Vector>
+        constexpr Plane( const T& normal, ValueType distance ) noexcept
+            : Normal( normal ), Distance( distance )
+        { }
+
+        template<SimdType T>
+            requires IsCompatible<T, Vector>
+        constexpr Plane( const T& normal, ValueType distance ) noexcept
+            : Normal( normal ), Distance( distance )
+        { }
+
+        Plane( const Simd& plane ) noexcept
+            : values( Traits::ToArray( plane.simd ) )
+        { }
+
+        Plane& operator = ( const Simd& plane ) noexcept
+        {
+            values = Traits::ToArray( plane.simd );
+            return *this;
+        }
+
+        Plane& operator = ( const Plane& other ) noexcept
+        {
+            values = other.values;
+            return *this;
+        }
+
+
+        Simd ToSimd( ) const noexcept
+        {
+            return Simd( Traits::Load( values ) );
+        }
+
+        operator Simd( ) const noexcept
+        {
+            return ToSimd( );
+        }
+
+        bool operator == ( const Simd& other ) const noexcept
+        {
+            return Traits::AllEqual( Traits::Load( values ), other.simd );
+        }
+
+        bool operator != ( const Simd& other ) const noexcept
+        {
+            return Traits::AnyNotEqual( Traits::Load( values ), other.simd );
+        }
+
+        bool operator == ( const Plane& other ) const noexcept
+        {
+            return values == other.values;
+        }
+        bool operator != ( const Plane& other ) const noexcept
+        {
+            return values != other.values;
+        }
+
+        Simd operator - ( ) const noexcept
+        {
+            return Simd( Traits::Negate( Traits::Load( values ) ) );
+        }
+
+        const_reference operator[]( size_t index ) const noexcept
+        {
+            return values[ index ];
+        }
+
+        reference operator[]( size_t index ) noexcept
+        {
+            return values[ index ];
+        }
+
+        const_pointer data( ) const noexcept
+        {
+            return values.data( );
+        }
+        pointer data( ) noexcept
+        {
+            return values.data( );
+        }
+
+        constexpr size_t size( ) const noexcept
+        {
+            return Size;
+        }
+
+        const_reference front( ) const noexcept
+        {
+            return values.front( );
+        }
+        reference front( ) noexcept
+        {
+            return values.front( );
+        }
+
+        const_reference back( ) const noexcept
+        {
+            return values.back( );
+        }
+        reference back( ) noexcept
+        {
+            return values.back( );
+        }
+
+        const_iterator begin( ) const noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator cbegin( ) const noexcept
+        {
+            return values.cbegin( );
+        }
+        iterator begin( ) noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator end( ) const noexcept
+        {
+            return values.end( );
+        }
+        const_iterator cend( ) const noexcept
+        {
+            return values.cend( );
+        }
+        iterator end( ) noexcept
+        {
+            return values.end( );
+        }
+        const_reverse_iterator rbegin( ) const noexcept
+        {
+            return values.rbegin( );
+        }
+        reverse_iterator rbegin( ) noexcept
+        {
+            return values.rbegin( );
+        }
+        const_reverse_iterator rend( ) const noexcept
+        {
+            return values.rend( );
+        }
+        reverse_iterator rend( ) noexcept
+        {
+            return values.rend( );
+        }
+    };
+
+    template<typename PlaneT>
+    inline PlaneSimd<PlaneT>::PlaneSimd( const PlaneT& plane ) noexcept
+        : simd( Traits::Load( plane.values ) )
+    {
+    }
+
+    template<typename PlaneT>
+    inline PlaneSimd<PlaneT>& PlaneSimd<PlaneT>::operator = ( const PlaneT& plane ) noexcept
+    {
+        simd = Traits::Load( plane.values );
+        return *this;
+    }
+
+    template<typename PlaneT>
+    inline bool PlaneSimd<PlaneT>::operator == ( const PlaneT& other ) const noexcept
+    {
+        return Traits::AllEqual( simd, Traits::Load( other.values ) );
+    }
+    template<typename PlaneT>
+    inline bool PlaneSimd<PlaneT>::operator != ( const PlaneT& other ) const noexcept
+    {
+        return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
+    }
+
+    template<PlaneSimdType T>
+    inline T Normalize( const T& plane ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Constants = typename Traits::Constants;
+
+        auto lengthSquared = Traits::Dot<0x7f>( plane.simd, plane.simd );
+        auto length = Traits::Sqrt( lengthSquared );
+        auto notInfinity = Traits::NotEqual( lengthSquared, Constants::Infinity );
+        auto result = Traits::Div( plane.simd, length );
+        return T( Traits::And( result, notInfinity ) );
+    }
+
+    template<PlaneType T>
+    inline typename T::Simd Normalize( const T& plane ) noexcept
+    {
+        return Normalize( plane.ToSimd( ) );
+    }
+
+    template<PlaneSimdType T>
+    inline T FastNormalize( const T& plane ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Constants = typename Traits::Constants;
+
+        auto lengthSquared = Traits::Dot<0x7f>( plane.simd, plane.simd );
+        auto scale = Traits::ReciprocalSqrt( lengthSquared );
+        return T( Traits::Mul( scale, plane.simd ) );
+    }
+
+    template<PlaneType T>
+    inline typename T::Simd FastNormalize( const T& plane ) noexcept
+    {
+        return FastNormalize( plane.ToSimd( ) );
+    }
+
+
+    template<PlaneSimdType P, VectorSimdType V>
+        requires std::is_same_v<typename P::value_type, typename V::value_type> && ( V::Size > 2 )
+    inline V Dot( const P& plane, const V& v )
+    {
+        using Traits = typename P::Traits;
+        return V( Traits::Dot( plane.simd, v.simd ) );
+    }
+
+    template<PlaneSimdType P, NormalSimdType N>
+        requires std::is_same_v<typename P::value_type, typename N::value_type> && ( N::Size > 2 )
+    inline N Dot( const P& plane, const N& normal )
+    {
+        using Traits = typename N::Traits;
+        return N( Traits::Dot<0x7f>( plane.simd, normal.simd ) );
+    }
+
+    template<PlaneSimdType P, PointSimdType PT>
+    inline PT Dot( const P& plane, const PT& point )
+    {
+        using Traits = typename P::Traits;
+        return PT( Traits::Dot( plane.simd, Traits::SetW( point.simd, static_cast< typename Traits::Type >( 1 ) ) ) );
+    }
+
+    namespace Internal
+    {
+        template<typename T>
+        concept VectorNormalOrPointSimdType = VectorSimdType<T> || NormalSimdType<T> || PointSimdType<T>;
+
+        template<typename T>
+        concept VectorNormalOrPointType = VectorType<T> || NormalType<T> || PointType<T>;
+    }
+
+    template<Internal::VectorNormalOrPointSimdType T,PlaneSimdType P>
+    inline T Dot( const T& v, const P& plane )
+    {
+        return Dot( plane, v );
+    }
+
+    template<Internal::VectorNormalOrPointType T, PlaneSimdType P>
+    inline T Dot( const T& v, const P& plane )
+    {
+        return Dot( plane, v.ToSimd( ) );
+    }
+
+    template<Internal::VectorNormalOrPointType T, PlaneType P>
+    inline T Dot( const T& v, const P& plane )
+    {
+        return Dot( plane.ToSimd(), v.ToSimd( ) );
+    }
+
+    template<PlaneType P, Internal::VectorNormalOrPointType T>
+    inline T Dot( const P& plane, const T& v )
+    {
+        return Dot( plane.ToSimd( ), v.ToSimd( ) );
+    }
+
+    inline Plane<float>::Simd Transform( const Plane<float>::Simd& plane, const SquareMatrix<float, 4>::Simd& transformationMatrix ) noexcept
+    {
+        using Traits = SquareMatrix<float, 4>::Traits;
+
+        auto row = Traits::At<3>( plane.simd );
+        auto result = Traits::Mul( row, transformationMatrix.simd[ 3 ] );
+        row = Traits::At<2>( plane.simd );
+        result = Traits::FMAdd( row, transformationMatrix.simd[ 2 ], result );
+        row = Traits::At<1>( plane.simd );
+        result = Traits::FMAdd( row, transformationMatrix.simd[ 1 ], result );
+        row = Traits::At<0>( plane.simd );
+        return Plane<float>::Simd( Traits::FMAdd( row, transformationMatrix.simd[ 0 ], result ) );
+    }
+
+
+
+
+    //using Traits = SIMD::Traits<float,4>;
 
 
 }
