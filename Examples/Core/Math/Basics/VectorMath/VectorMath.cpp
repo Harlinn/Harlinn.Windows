@@ -76,7 +76,7 @@ namespace Basics
     }
 }
 
-
+#if 1
 int main( int argc, char* argv[ ] )
 {
     Vector3f fromVector( 2.f, 2.f, 1.f );
@@ -100,4 +100,13 @@ int main( int argc, char* argv[ ] )
     }
 
 }
-
+#else
+int main( )
+{
+    Vector3f::Simd v1( 1.f, 2.f, 3.f );
+    auto v2 = Sqrt( v1 );
+    auto v3 = v2.Values( );
+    static_assert( std::is_same_v<decltype( v3 ), Vector3f> );
+    PrintLn( "x:{}, y:{}, z:{}", v3.x, v3.y, v3.z );
+}
+#endif

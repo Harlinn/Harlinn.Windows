@@ -26,7 +26,7 @@ namespace Harlinn::Common::Core::Math
     struct SquareMatrixSimd;
 
 
-    template<typename T, size_t N>
+    template<ArithmeticType T, size_t N>
     class SquareMatrix;
 
     namespace Internal
@@ -84,7 +84,7 @@ namespace Harlinn::Common::Core::Math
     /// <typeparam name="N">
     /// The size of the Vector
     /// </typeparam>
-    template<typename ValueT, size_t N>
+    template<ArithmeticType ValueT, size_t N>
     class alignas( Core::SIMD::Traits<ValueT, N>::AlignAs ) Vector : public Internal::VectorBase
     {
     public:
@@ -781,18 +781,10 @@ namespace Harlinn::Common::Core::Math
     /// Holds the SIMD value for a Tuple2, Tuple3 or Tuple4.
     /// </para>
     /// <para>
-    /// Mathematical operations for a particular Tuple2, Tuple3 
-    /// or Tuple4 derived type should generally be performed as 
-    /// a sequence of operations on this type, not the Tuple2, Tuple3 
-    /// or Tuple4 derived type, as this type represents the loaded
-    /// state of the data. 
+    /// Most operations on a particular Tuple2, Tuple3 or Tuple4 
+    /// derived type are implemented using TupleSimd.
     /// </para>
     /// </summary>
-    /// <typeparam name="TraitsT">
-    /// The SIMD::Traits specialization that will be
-    /// used to select the SIMD intrinsics that
-    /// operates on the simd value held by this TupleSimd.
-    /// </typeparam>
     /// <typeparam name="TupleT">
     /// A Tuple2, Tuple3 or Tuple4 derived type.
     /// </typeparam>
@@ -802,16 +794,16 @@ namespace Harlinn::Common::Core::Math
     /// the performance of pbrto by approximately 10 %.
     /// </remarks>
 
-    template<typename TraitsT, typename TupleT>
-    class alignas( TraitsT::AlignAs ) TupleSimd : public Internal::TupleSimdBase
+    template<typename TupleT>
+    class alignas( TupleT::Traits::AlignAs ) TupleSimd : public Internal::TupleSimdBase
     {
     public:
-        using Traits = TraitsT;
         using TupleType = TupleT;
-        using DerivedType = typename TupleType::Simd;
+        using Traits = typename TupleType::Traits;
+        
         using value_type = typename Traits::Type;
         using size_type = size_t;
-        using Simd = TupleSimd;
+        using Simd = typename TupleType::Simd;
 
         using SIMDType = typename Traits::SIMDType;
 
@@ -1287,95 +1279,95 @@ namespace Harlinn::Common::Core::Math
         }
 
 
-        static DerivedType Zero( ) noexcept requires ( Size == 2 )
+        static TupleSimd Zero( ) noexcept requires ( Size == 2 )
         {
-            return DerivedType( Traits::Zero( ) );
+            return TupleSimd( Traits::Zero( ) );
         }
-        static DerivedType One( ) noexcept requires ( Size == 2 )
+        static TupleSimd One( ) noexcept requires ( Size == 2 )
         {
-            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
-        }
-
-        static DerivedType UnitX( ) noexcept requires ( Size == 2 )
-        {
-            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
-        }
-        static DerivedType UnitY( ) noexcept requires ( Size == 2 )
-        {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
         }
 
-
-        static DerivedType Zero( ) noexcept requires (Size == 3)
+        static TupleSimd UnitX( ) noexcept requires ( Size == 2 )
         {
-            return DerivedType( Traits::Zero( ) );
+            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType One( ) noexcept requires ( Size == 3 )
+        static TupleSimd UnitY( ) noexcept requires ( Size == 2 )
         {
-            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
-        }
-
-        static DerivedType UnitX( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
-        }
-        static DerivedType UnitY( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
-        }
-        static DerivedType UnitZ( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
-        }
-        static DerivedType Up( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
-        }
-        static DerivedType Down( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) );
-        }
-        static DerivedType Right( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
-        }
-        static DerivedType Left( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
-        }
-        static DerivedType Forward( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( -1 ) );
-        }
-        static DerivedType Backward( ) noexcept requires ( Size == 3 )
-        {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
 
-        static DerivedType Zero( ) noexcept requires ( Size == 4 )
+
+        static TupleSimd Zero( ) noexcept requires (Size == 3)
         {
-            return DerivedType( Traits::Zero( ) );
+            return TupleSimd( Traits::Zero( ) );
         }
-        static DerivedType One( ) noexcept requires ( Size == 4 )
+        static TupleSimd One( ) noexcept requires ( Size == 3 )
         {
-            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
         }
 
-        static DerivedType UnitX( ) noexcept requires ( Size == 4 )
+        static TupleSimd UnitX( ) noexcept requires ( Size == 3 )
         {
-            return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitY( ) noexcept requires ( Size == 4 )
+        static TupleSimd UnitY( ) noexcept requires ( Size == 3 )
         {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitZ( ) noexcept requires ( Size == 4 )
+        static TupleSimd UnitZ( ) noexcept requires ( Size == 3 )
         {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
-        static DerivedType UnitW( ) noexcept requires ( Size == 4 )
+        static TupleSimd Up( ) noexcept requires ( Size == 3 )
         {
-            return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static TupleSimd Down( ) noexcept requires ( Size == 3 )
+        {
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) );
+        }
+        static TupleSimd Right( ) noexcept requires ( Size == 3 )
+        {
+            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static TupleSimd Left( ) noexcept requires ( Size == 3 )
+        {
+            return TupleSimd( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static TupleSimd Forward( ) noexcept requires ( Size == 3 )
+        {
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( -1 ) );
+        }
+        static TupleSimd Backward( ) noexcept requires ( Size == 3 )
+        {
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+        }
+
+        static TupleSimd Zero( ) noexcept requires ( Size == 4 )
+        {
+            return TupleSimd( Traits::Zero( ) );
+        }
+        static TupleSimd One( ) noexcept requires ( Size == 4 )
+        {
+            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+        }
+
+        static TupleSimd UnitX( ) noexcept requires ( Size == 4 )
+        {
+            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static TupleSimd UnitY( ) noexcept requires ( Size == 4 )
+        {
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+        }
+        static TupleSimd UnitZ( ) noexcept requires ( Size == 4 )
+        {
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+        }
+        static TupleSimd UnitW( ) noexcept requires ( Size == 4 )
+        {
+            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
 
 
@@ -1435,7 +1427,7 @@ namespace Harlinn::Common::Core::Math
     /// true for Tuple3 derived objects. Passing Tuple4 derived by
     /// value degraded the performance of pbrto by approximately 5 %.
     /// </remarks>
-    template<class DerivedT, typename T>
+    template<class DerivedT, ArithmeticType T>
     class Tuple2 : public Internal::TupleBase
     {
     public:
@@ -1465,7 +1457,7 @@ namespace Harlinn::Common::Core::Math
         /// The mathematical operations are performed using 
         /// this type which holds a SIMD vector.  
         /// </summary>
-        using Simd = TupleSimd<Traits,DerivedType>;
+        using Simd = TupleSimd<DerivedType>;
 
         union
         {
@@ -1807,7 +1799,7 @@ namespace Harlinn::Common::Core::Math
 
     };
 
-    template<typename DerivedT, typename T>
+    template<typename DerivedT, ArithmeticType T>
     class Tuple3 : public Internal::TupleBase
     {
     public:
@@ -1836,7 +1828,7 @@ namespace Harlinn::Common::Core::Math
         /// The mathematical operations are performed using 
         /// this type which holds a SIMD vector.  
         /// </summary>
-        using Simd = TupleSimd<Traits, DerivedType>;
+        using Simd = TupleSimd<DerivedType>;
 
         union
         {
@@ -2213,7 +2205,7 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
-    template<typename DerivedT, typename T>
+    template<typename DerivedT, ArithmeticType T>
     class Tuple4 : public Internal::TupleBase
     {
     public:
@@ -2242,7 +2234,7 @@ namespace Harlinn::Common::Core::Math
         /// The mathematical operations are performed using 
         /// this type which holds a SIMD vector.  
         /// </summary>
-        using Simd = TupleSimd<Traits, DerivedType>;
+        using Simd = TupleSimd<DerivedType>;
 
         union
         {
@@ -8656,7 +8648,7 @@ namespace Harlinn::Common::Core::Math
     using Vector4i = Vector<int, 4>;
 
     
-    template<typename T, size_t N>
+    template<ArithmeticType T, size_t N>
     class Scalar;
 
 
@@ -8741,7 +8733,7 @@ namespace Harlinn::Common::Core::Math
     concept NormalOrNormalSimdType = NormalType<T> || NormalSimdType<T>;
 
 
-    template<typename T, size_t N>
+    template<ArithmeticType T, size_t N>
     class Point;
 
     template<>
@@ -8892,7 +8884,7 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    template<typename T, size_t N>
+    template<ArithmeticType T, size_t N>
     class Normal;
 
     template<>
@@ -11165,7 +11157,7 @@ namespace Harlinn::Common::Core::Math
 
 
     // SquareMatrix Definition
-    template<typename T, size_t N>
+    template<ArithmeticType T, size_t N>
     class SquareMatrix : public Internal::MatrixBase
     {
     public:
