@@ -8741,26 +8741,36 @@ namespace Harlinn::Common::Core::Math
     concept NormalOrNormalSimdType = NormalType<T> || NormalSimdType<T>;
 
 
-    class Point2i : public Tuple2<Point2i, Int32>, public Internal::PointBase
+    template<typename T, size_t N>
+    class Point;
+
+    template<>
+    class Point<Int32,2> : public Tuple2<Point<Int32, 2>, Int32>, public Internal::PointBase
     {
     public:
-        using Base = Tuple2<Point2i, Int32>;
+        using Base = Tuple2<Point<Int32, 2>, Int32>;
+        using Base::Base;
+    };
+    using Point2i = Point<Int32, 2>;
+
+    template<>
+    class Point<Int32, 3> : public Tuple3<Point<Int32, 3>, Int32>, public Internal::PointBase
+    {
+    public:
+        using Base = Tuple3<Point<Int32, 3>, Int32>;
         using Base::Base;
     };
 
-    class Point3i : public Tuple3<Point3i, Int32>, public Internal::PointBase
-    {
-    public:
-        using Base = Tuple3<Point3i, Int32>;
-        using Base::Base;
-    };
+    using Point3i = Point<Int32, 3>;
 
-    class Point2f : public Tuple2<Point2f, float>, public Internal::PointBase
+    template<>
+    class Point<float, 2> : public Tuple2<Point<float, 2>, float>, public Internal::PointBase
     {
     public:
-        using Base = Tuple2<Point2f, float>;
+        using Base = Tuple2<Point<float, 2>, float>;
         using Base::Base;
     };
+    using Point2f = Point<float, 2>;
 
 
     // Copied from pbrt-v4 https://github.com/mmp/pbrt-v4
@@ -8813,13 +8823,14 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-
-    class Point3f : public Tuple3<Point3f, float>, public Internal::PointBase
+    template<>
+    class Point<float,3> : public Tuple3<Point<float, 3>, float>, public Internal::PointBase
     {
     public:
-        using Base = Tuple3<Point3f, float>;
+        using Base = Tuple3<Point<float, 3>, float>;
         using Base::Base;
     };
+    using Point3f = Point<float, 3>;
 
 
     namespace Internal
@@ -8881,14 +8892,19 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    template<typename T, size_t N>
+    class Normal;
 
-
-    class Normal3f : public Tuple3<Normal3f, float>, public Internal::NormalBase
+    template<>
+    class Normal<float,3> : public Tuple3<Normal<float, 3>, float>, public Internal::NormalBase
     {
     public:
-        using Base = Tuple3<Normal3f, float>;
+        using Base = Tuple3<Normal<float, 3>, float>;
         using Base::Base;
     };
+
+    using Normal3f = Normal<float, 3>;
+
 
     namespace Internal
     {
@@ -9429,8 +9445,7 @@ namespace Harlinn::Common::Core::Math
     /// </summary>
     /// <typeparam name="T">
     /// </typeparam>
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<FloatingPointType T>
     class Quaternion : public Internal::QuaternionBase
     {
     public:
@@ -10743,7 +10758,7 @@ namespace Harlinn::Common::Core::Math
 
 
     
-    template<typename MatrixT, typename size_t N>
+    template<typename MatrixT, size_t N>
     struct SquareMatrixSimd
     {
     };
@@ -14307,6 +14322,64 @@ namespace Harlinn::Common::Core::Math
     {
         return Dot( plane.ToSimd( ), v.ToSimd( ) );
     }
+
+    template<PlaneType P, PointSimdType PT>
+    inline PT Intersect( const P& plane, const PT& linePoint1, const PT& linePoint2 ) noexcept
+    {
+        using Traits = typename P::Traits;
+        
+        using Constants = typename Traits::Constants;
+        using FloatT = typename Traits::Type;
+        using Vector = typename Math::Vector<FloatT,3>::Simd;
+        Vector v1 = Traits::Dot<0x7f>( plane.simd, linePoint1.simd );
+        Vector v2 = Traits::Dot<0x7f>( plane.simd, linePoint2.simd );
+        auto d = v1 - v2;
+
+        Vector vt = Dot( plane, linePoint1 );
+        vt = vt / d;
+
+        Vector point = linePoint2 - linePoint1;
+        point.simd = Traits::FMAdd( point.simd, vt.simd, linePoint1.simd );
+
+        const auto zero = Traits::Zero( );
+        const auto nearEqual = Traits::NearEqual( d.simd, zero, Constants::Epsilon );
+
+        return PT( Traits::Select( point.simd, Constants::QNaN, nearEqual ) );
+    }
+
+    inline std::pair<Point3f::Simd, Point3f::Simd> Intersect( const Plane<float>::Simd& plane1, const Plane<float>::Simd& plane2 ) noexcept
+    {
+        using Traits = typename Plane<float>::Traits;
+
+        using Constants = typename Traits::Constants;
+        using FloatT = typename Traits::Type;
+        using Vector = typename Math::Vector<FloatT, 3>::Simd;
+
+        Vector v1 = Vector::Traits::Cross( plane2.simd, plane1.simd );
+
+        auto lengthSquared = LengthSquared( v1 );
+
+        Vector v2 = Vector::Traits::Cross( plane2.simd, v1.simd );
+
+        auto plane1W = Traits::At<3>( plane1.simd );
+        auto point = Traits::Mul( v2.simd, plane1W );
+
+        Vector v3 = Vector::Traits::Cross( v1.simd, plane1.simd );
+
+        auto plane2W = Traits::At<3>( plane2.simd );
+        point = Traits::FMAdd( v3.simd, plane2W, point );
+
+        auto linePoint1 = Traits::Div( point, lengthSquared.simd );
+
+        auto linePoint2 = Traits::Add( linePoint1, v1.simd );
+
+        auto control = Traits::LessOrEqual( lengthSquared.simd, Constants::Epsilon );
+        linePoint1 = Traits::Select( linePoint1, Constants::QNaN, control );
+        linePoint2 = Traits::Select( linePoint2, Constants::QNaN, control );
+        return { linePoint1, linePoint2 };
+    }
+
+
 
     inline Plane<float>::Simd Transform( const Plane<float>::Simd& plane, const SquareMatrix<float, 4>::Simd& transformationMatrix ) noexcept
     {
