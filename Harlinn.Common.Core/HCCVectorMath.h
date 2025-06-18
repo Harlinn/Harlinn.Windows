@@ -789,7 +789,7 @@ namespace Harlinn::Common::Core::Math
     /// A Tuple2, Tuple3 or Tuple4 derived type.
     /// </typeparam>
     /// <remarks>
-    /// This implementation passes TupleSimd objects by reference,
+    /// The implementation passes TupleSimd objects by reference,
     /// since passing the TupleSimd objects by value degraded
     /// the performance of pbrto by approximately 10 %.
     /// </remarks>
@@ -812,16 +812,25 @@ namespace Harlinn::Common::Core::Math
 
         SIMDType simd;
 
+        /// <summary>
+        /// Sets the elements of <c>simd</c> to zero.
+        /// </summary>
         TupleSimd( ) noexcept
             : simd( Traits::Zero( ) )
         {
         }
 
-        TupleSimd( SIMDType other ) noexcept
-            : simd( other )
+        /// <summary>
+        /// Assigns the elements of <c>values</c> to <c>simd</c>.
+        /// </summary>
+        TupleSimd( SIMDType values ) noexcept
+            : simd( values )
         {
         }
 
+        /// <summary>
+        /// Assigns the elements of <c>other.simd</c> to <c>simd</c>.
+        /// </summary>
         template<SimdType S>
             requires std::is_same_v<Traits, typename S::Traits> ||
                 ( std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size > S::Size ) )
@@ -830,6 +839,10 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        /// <summary>
+        /// Assigns the first <c>S::Size</c> elements of <c>other.simd</c> 
+        /// to <c>simd</c>, while initializing the remaining elements to zero.
+        /// </summary>
         template<SimdType S>
             requires std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size < S::Size )
         TupleSimd( const S& other ) noexcept
@@ -846,102 +859,180 @@ namespace Harlinn::Common::Core::Math
         }
 
 
-
+        /// <summary>
+        /// Loads <c>other.values</c> into <c>simd</c>.
+        /// </summary>
         TupleSimd( const TupleType& other ) noexcept
             : simd( Traits::Load( other.values ) )
         {
         }
 
+        /// <summary>
+        /// Assigns <c>x</c> to the first element, and <c>y</c> to the second element, of <c>simd</c>&semi; 
+        /// while initializing the remaining elements to zero.
+        /// </summary>
+        /// <remarks>
+        /// Can only be called for a <c>TupleSimd</c> type instantiated for a <c>Tuple2</c> derived type.
+        /// </remarks>
         TupleSimd( value_type x, value_type y ) noexcept requires ( Size == 2 )
             : simd( Traits::Set(y, x) )
         {
         }
 
+        /// <summary>
+        /// Assigns <c>x</c> to the first element, <c>y</c> to the second element, and <c>z</c> to the third element, of <c>simd</c>; 
+        /// while initializing the remaining elements to zero.
+        /// </summary>
+        /// <remarks>
+        /// Can only be called for a <c>TupleSimd</c> type instantiated for a <c>Tuple3</c> derived type.
+        /// </remarks>
         TupleSimd( value_type x, value_type y, value_type z ) noexcept requires ( Size == 3 )
             : simd( Traits::Set( z, y, x ) )
         {
         }
 
+        /// <summary>
+        /// Assigns <c>x</c> to the first element, <c>y</c> to the second element, <c>z</c> to the third element, and <c>w</c> to the fourth element, of <c>simd</c>;
+        /// while initializing the remaining elements to zero.
+        /// </summary>
+        /// <remarks>
+        /// Can only be called for a <c>TupleSimd</c> type instantiated for a <c>Tuple4</c> derived type.
+        /// </remarks>
         TupleSimd( value_type x, value_type y, value_type z, value_type w ) noexcept requires ( Size == 4 )
             : simd( Traits::Set( w, z, y, x ) )
         {
         }
 
+        /// <summary>
+        /// Assigns <c>x</c> to the first two elements of <c>simd</c>.
+        /// </summary>
         explicit TupleSimd( value_type x ) noexcept requires ( Size == 2 )
             : simd( Traits::Set( x, x ) )
         { }
+
+
+        /// <summary>
+        /// Assigns <c>x</c> to the first three elements of <c>simd</c>.
+        /// </summary>
         explicit TupleSimd( value_type x ) noexcept requires ( Size == 3 )
             : simd( Traits::Set( x, x, x ) )
-        {
-        }
+        { }
+
+        /// <summary>
+        /// Assigns <c>x</c> to the first four elements of <c>simd</c>.
+        /// </summary>
         explicit TupleSimd( value_type x ) noexcept requires ( Size == 4 )
             : simd( Traits::Set( x, x, x, x ) )
         { }
+
+
+        /// <summary>
+        /// Assigns <c>x</c> to the first eight elements of <c>simd</c>.
+        /// </summary>
         explicit TupleSimd( value_type x ) noexcept requires ( Size == 8 )
             : simd( Traits::Set( x, x, x, x, x, x, x, x ) )
         {
         }
 
+
+        /// <summary>
+        /// Returns an instance of the <c>Tuple2</c>, <c>Tuple3</c> or <c>Tuple4</c>
+        /// derived type initialized using the <c>Size</c> first elements of <c>simd</c>.
+        /// </summary>
         TupleType Values( ) const noexcept
         {
             return TupleType( *this );
         }
 
 
+        /// <summary>
+        /// Returns a <c>TupleSimd</c> with each element of <c>simd</c> negated.
+        /// </summary>
         TupleSimd operator - ( ) const noexcept
         {
             return Traits::Negate( simd );
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if each element of <c>simd</c> is equal to the corresponding element of <c>other.simd</c>, otherwise <c>false</c>.
+        /// </summary>
         bool operator == ( const TupleSimd& other ) const noexcept
         {
             return Traits::AllEqual( simd, other.simd );
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if any element of <c>simd</c> is not equal to the corresponding element of <c>other.simd</c>, otherwise <c>false</c>.
+        /// </summary>
         bool operator != ( const TupleSimd& other ) const noexcept
         {
             return Traits::AnyNotEqual( simd, other.simd );
         }
 
-        bool operator == ( const value_type& value ) const noexcept
+        /// <summary>
+        /// Returns <c>true</c> if each element of <c>simd</c> is equal to <c>value</c>, otherwise <c>false</c>.
+        /// </summary>
+        bool operator == ( const value_type value ) const noexcept
         {
             return Traits::AllEqual( simd, Traits::Fill( value ) );
         }
 
-        bool operator != ( const value_type& value ) const noexcept
+        /// <summary>
+        /// Returns <c>true</c> if any element of <c>simd</c> is not equal to <c>value</c>, otherwise <c>false</c>.
+        /// </summary>
+        bool operator != ( const value_type value ) const noexcept
         {
             return Traits::AnyNotEqual( simd, Traits::Fill( value ) );
         }
 
-        bool AnyEqual( const value_type& value ) const noexcept
+        /// <summary>
+        /// Returns <c>true</c> if any element of <c>simd</c> is equal to <c>value</c>, otherwise <c>false</c>.
+        /// </summary>
+        bool AnyEqual( const value_type value ) const noexcept
         {
             return Traits::AnyEqual( simd, Traits::Fill( value ) );
         }
-        bool AnyNotEqual( const value_type& value ) const noexcept
+
+        /// <summary>
+        /// Returns <c>true</c> if any element of <c>simd</c> is not equal to <c>value</c>, otherwise <c>false</c>.
+        /// </summary>
+        bool AnyNotEqual( const value_type value ) const noexcept
         {
             return Traits::AnyNotEqual( simd, Traits::Fill( value ) );
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if any element of <c>simd</c> is not equal to zero, otherwise <c>false</c>.
+        /// </summary>
         explicit operator bool( ) const noexcept
         {
             return Traits::AnyNotEqual( simd, Traits::Zero( ) );
         }
 
 
+        /// <summary>
+        /// Returns <c>true</c> if each element of <c>simd</c> is equal to the corresponding element of <c>other.values</c>, otherwise <c>false</c>.
+        /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         bool operator == ( const T& other ) const noexcept
         {
-            return Traits::AllEqual( simd, Traits::Load( other.values.data() ) );
+            return Traits::AllEqual( simd, Traits::Load( other.values ) );
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if any element of <c>simd</c> is not equal to the corresponding element of <c>other.values</c>, otherwise <c>false</c>.
+        /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         bool operator != ( const T& other ) const noexcept
         {
-            return Traits::AllEqual( simd, Traits::Load( other.values.data() ) ) == false;
+            return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
         }
 
+        /// <summary>
+        /// Adds each element of <c>other.values</c> to the corresponding element of <c>simd</c>.
+        /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator += ( const T& other ) noexcept
@@ -949,17 +1040,28 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Add( simd, Traits::Load( other.values ) );
             return *this;
         }
+
+        /// <summary>
+        /// Adds each element of <c>other.simd</c> to the corresponding element of <c>simd</c>.
+        /// </summary>
         TupleSimd& operator += ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Add( simd, other.simd );
             return *this;
         }
-        TupleSimd& operator += ( const value_type other ) noexcept
+
+        /// <summary>
+        /// Adds <c>value</c> to each element of <c>simd</c>.
+        /// </summary>
+        TupleSimd& operator += ( const value_type value ) noexcept
         {
-            simd = Traits::Add( simd, Traits::Fill<Size>( other ) );
+            simd = Traits::Add( simd, Traits::Fill<Size>( value ) );
             return *this;
         }
 
+        /// <summary>
+        /// Subtracts each element of <c>other.values</c> from the corresponding element of <c>simd</c>.
+        /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator -= ( const T& other ) noexcept
@@ -967,19 +1069,28 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Sub( simd, Traits::Load( other.values ) );
             return *this;
         }
+
+        /// <summary>
+        /// Subtracts each element of <c>other.simd</c> from the corresponding element of <c>simd</c>.
+        /// </summary>
         TupleSimd& operator -= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Sub( simd, other.simd );
             return *this;
         }
 
-        TupleSimd& operator -= ( const value_type other ) noexcept
+        /// <summary>
+        /// Subtracts <c>value</c> from each element of <c>simd</c>.
+        /// </summary>
+        TupleSimd& operator -= ( const value_type value ) noexcept
         {
-            simd = Traits::Sub( simd, Traits::Fill<Size>( other ) );
+            simd = Traits::Sub( simd, Traits::Fill<Size>( value ) );
             return *this;
         }
 
-
+        /// <summary>
+        /// Multiplies each element of <c>simd</c> with the corresponding element of <c>other.values</c>.
+        /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator *= ( const T& other ) noexcept
@@ -987,18 +1098,28 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Mul( simd, Traits::Load( other.values ) );
             return *this;
         }
+
+        /// <summary>
+        /// Multiplies each element of <c>simd</c> with the corresponding element of <c>other.simd</c>.
+        /// </summary>
         TupleSimd& operator *= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Mul( simd, other.simd );
             return *this;
         }
 
-        TupleSimd& operator *= ( const value_type other ) noexcept
+        /// <summary>
+        /// Multiplies each element of <c>simd</c> with <c>value</c>.
+        /// </summary>
+        TupleSimd& operator *= ( const value_type value ) noexcept
         {
-            simd = Traits::Mul( simd, Traits::Fill<Size>( other ) );
+            simd = Traits::Mul( simd, Traits::Fill<Size>( value ) );
             return *this;
         }
 
+        /// <summary>
+        /// Multiplies each element of <c>simd</c> with the corresponding element of <c>other.values</c>.
+        /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         TupleSimd& operator /= ( const T& other ) noexcept
@@ -1006,18 +1127,45 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Div( simd, Traits::Load( other.values ) );
             return *this;
         }
+
+        /// <summary>
+        /// Divides each element of <c>simd</c> by the corresponding element of <c>other.simd</c>.
+        /// </summary>
         TupleSimd& operator /= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Div( simd, other.simd );
             return *this;
         }
 
-        TupleSimd& operator /= ( const value_type v ) noexcept
+        /// <summary>
+        /// Divides each element of <c>simd</c> by <c>value</c>.
+        /// </summary>
+        TupleSimd& operator /= ( const value_type value ) noexcept
         {
-            simd = Traits::Div( simd, Traits::FillDivisor<Size>( v ) );
+            simd = Traits::Div( simd, Traits::FillDivisor<Size>( value ) );
             return *this;
         }
 
+        /// <summary>
+        /// Assigns each element of <c>other.simd</c> to the corresponding element of <c>simd</c>.
+        /// </summary>
+        /// <param name="other"></param>
+        void Assign( const TupleSimd& other ) noexcept
+        {
+            simd = other.simd;
+        }
+
+        /// <summary>
+        /// Assigns <c>value</c> to the first <c>Size</c> elements of <c>simd</c>.
+        /// </summary>
+        void Assign( const value_type value ) noexcept
+        {
+            simd = Traits::Fill<Size>( value );
+        }
+
+        /// <summary>
+        /// Assigns each element of <c>other.values</c> to the corresponding element of <c>simd</c>.
+        /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         void Assign( const T& other ) noexcept
@@ -1025,9 +1173,12 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Load( other.values );
         }
 
-        void Assign( SIMDType other ) noexcept
+        /// <summary>
+        /// Assigns each element of <c>values</c> to the corresponding element of <c>simd</c>.
+        /// </summary>
+        void Assign( SIMDType values ) noexcept
         {
-            simd = other;
+            simd = values;
         }
 
         bool HasNaN( ) const noexcept
