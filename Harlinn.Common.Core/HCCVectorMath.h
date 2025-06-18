@@ -1181,187 +1181,328 @@ namespace Harlinn::Common::Core::Math
             simd = values;
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if at least one of the elements of <c>simd</c>` is NaN, otherwise <c>false</c>.
+        /// </summary>
         bool HasNaN( ) const noexcept
         {
             return Traits::HasNaN( simd );
         }
 
+        /// <summary>
+        /// Replicates the first element of `simd` to all the elements of the result.
+        /// </summary>
         TupleSimd X( ) const
         {
             return Traits::Trim( Traits::At<0>( simd ) );
         }
+        /// <summary>
+        /// Extracts the first element of `simd`.
+        /// </summary>
         value_type x( ) const
         {
             return Traits::Extract<0>( simd );
         }
+        /// <summary>
+        /// Assigns the first element of `src` to the first element of `simd`.
+        /// </summary>
         void SetX( SIMDType src )
         {
             simd = Traits::Permute<4, 1, 2, 3>( simd, src );
         }
+        /// <summary>
+        /// Assigns the first element of `src.simd` to the first element of `simd`.
+        /// </summary>
         void SetX( const TupleSimd& src )
         {
             SetX( src.simd );
         }
+        /// <summary>
+        /// Assigns `value` to the first element of `simd`.
+        /// </summary>
         void SetX( const value_type value )
         {
             SetX( Traits::Fill<Size>( value ) );
         }
+        /// <summary>
+        /// Sets the first element of `simd` to its absolute value.
+        /// </summary>
         void AbsX( )
         {
             simd = Traits::AbsX( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the first element to its absolute value.
+        /// </summary>
         TupleSimd WithAbsX( ) const
         {
             return Traits::AbsX( simd );
         }
+        /// <summary>
+        /// Sets the first element of `simd` to its negated value.
+        /// </summary>
         void NegateX( )
         {
             simd = Traits::NegateX( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the first element to its negated value.
+        /// </summary>
         TupleSimd WithNegatedX( ) const
         {
             return Traits::NegateX( simd );
         }
 
 
+        /// <summary>
+        /// Replicates the second element of `simd` to all the elements of the result.
+        /// </summary>
         TupleSimd Y( ) const
         {
             return Traits::Trim( Traits::At<1>( simd ) );
         }
+        /// <summary>
+        /// Extracts the second element of `simd`.
+        /// </summary>
         value_type y( ) const
         {
             return Traits::Extract<1>( simd );
         }
+        /// <summary>
+        /// Assigns the second element of `src` to the second element of `simd`.
+        /// </summary>
         void SetY( SIMDType src )
         {
             simd = Traits::Permute<0, 5, 2, 3>( simd, src );
         }
+        /// <summary>
+        /// Assigns the second element of `src.simd` to the second element of `simd`.
+        /// </summary>
         void SetY( const TupleSimd& src )
         {
             SetY( src.simd );
         }
+        /// <summary>
+        /// Assigns `value` to the second element of `simd`.
+        /// </summary>
         void SetY( const value_type value )
         {
             SetY( Traits::Fill<Size>( value ) );
         }
+        /// <summary>
+        /// Sets the second element of `simd` to its absolute value.
+        /// </summary>
         void AbsY( )
         {
             simd = Traits::AbsY( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the second element to its absolute value.
+        /// </summary>
         TupleSimd WithAbsY( ) const noexcept
         {
             return Traits::AbsY( simd );
         }
+        /// <summary>
+        /// Sets the second element of `simd` to its negated value.
+        /// </summary>
         void NegateY( )
         {
             simd = Traits::NegateY( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the second element to its negated value.
+        /// </summary>
         TupleSimd WithNegatedY( ) const
         {
             return Traits::NegateY( simd );
         }
 
+        /// <summary>
+        /// Sets the first and second elements of `simd` to their absolute values.
+        /// </summary>
         void AbsXY( )
         {
             simd = Traits::AbsXY( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the first and second elements to their absolute values.
+        /// </summary>
         TupleSimd WithAbsXY( ) const noexcept
         {
             return Traits::AbsXY( simd );
         }
+        /// <summary>
+        /// Sets the first and second elements of `simd` to their negated values.
+        /// </summary>
         void NegateXY( )
         {
             simd = Traits::NegateXY( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the first and second elements to their negated values.
+        /// </summary>
         TupleSimd WithNegatedXY( ) const
         {
             return Traits::NegateXY( simd );
         }
 
+        /// <summary>
+        /// Replicates the third element of `simd` to all the elements of the result.
+        /// </summary>
         TupleSimd Z( ) const requires (Size > 2)
         {
             return Traits::Trim( Traits::At<2>( simd ) );
         }
+        /// <summary>
+        /// Extracts the third element of `simd`.
+        /// </summary>
         value_type z( ) const requires ( Size > 2 )
         {
             return Traits::Extract<2>( simd );
         }
+        /// <summary>
+        /// Assigns the third element of `src` to the third element of `simd`.
+        /// </summary>
         void SetZ( SIMDType src ) requires ( Size > 2 )
         {
             simd = Traits::Permute<0, 1, 6, 3>( simd, src );
         }
+        /// <summary>
+        /// Assigns the third element of `src.simd` to the third element of `simd`.
+        /// </summary>
         void SetZ( const TupleSimd& src ) requires ( Size > 2 )
         {
             SetZ( src.simd );
         }
+        /// <summary>
+        /// Assigns `value` to the third element of `simd`.
+        /// </summary>
         void SetZ( const value_type value ) requires ( Size > 2 )
         {
             SetZ( Traits::Fill<Size>( value ) );
         }
+        /// <summary>
+        /// Sets the third element of `simd` to its absolute value.
+        /// </summary>
         void AbsZ( ) requires ( Size > 2 )
         {
             simd = Traits::AbsZ( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the third element to its absolute value.
+        /// </summary>
         TupleSimd WithAbsZ( ) const noexcept requires ( Size > 2 )
         {
             return Traits::AbsZ( simd );
         }
+        /// <summary>
+        /// Sets the third element of `simd` to its negated value.
+        /// </summary>
         void NegateZ( ) requires ( Size > 2 )
         {
             simd = Traits::NegateZ( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the third element to its negated value.
+        /// </summary>
         TupleSimd WithNegatedZ( ) const requires ( Size > 2 )
         {
             return Traits::NegateZ( simd );
         }
 
+        /// <summary>
+        /// Assigns the first, second and third elements of `src` to the first, second and third elements of `simd`.
+        /// </summary>
         void SetXYZ( SIMDType src ) requires ( Size > 2 )
         {
             simd = Traits::Permute<0, 1, 2, 7>( src, simd );
         }
+        /// <summary>
+        /// Assigns the first, second and third elements of `src.simd` to the first, second and third elements of `simd`.
+        /// </summary>
         void SetXYZ( const TupleSimd& src )
         {
             SetXYZ( src.simd );
         }
+
+        /// <summary>
+        /// Assigns `x` to the first element of `simd`, `y` to the second element of `simd`, and `z` to the third element of `simd`.
+        /// </summary>
+        void SetXYZ( const value_type x, const value_type y, const value_type z )
+        {
+            SetXYZ( Traits::Set( z, y, x ) );
+        }
+
+        /// <summary>
+        /// Replicates the fourth element of `simd` to all the elements of the result.
+        /// </summary>
         TupleSimd W( ) const requires ( Size > 3 )
         {
             return Traits::Trim( Traits::At<3>( simd ) );
         }
+        /// <summary>
+        /// Extracts the fourth element of `simd`.
+        /// </summary>
         value_type w( ) const requires ( Size > 3 )
         {
             return Traits::Extract<3>( simd );
         }
 
+        /// <summary>
+        /// Assigns the fourth element of `src` to the fourth element of `simd`.
+        /// </summary>
         void SetW( SIMDType src ) requires ( Size > 3 )
         {
             simd = Traits::Permute<0, 1, 2, 7>( simd, src );
         }
+        /// <summary>
+        /// Assigns the fourth element of `src.simd` to the fourth element of `simd`.
+        /// </summary>
         void SetW( const TupleSimd& src ) requires ( Size > 3 )
         {
             SetW( src.simd );
         }
+        /// <summary>
+        /// Assigns `value` to the fourth element of `simd`.
+        /// </summary>
         void SetW( const value_type value ) requires ( Size > 3 )
         {
             SetW( Traits::Fill<Size>( value ) );
         }
 
+        /// <summary>
+        /// Sets the fourth element of `simd` to its absolute value.
+        /// </summary>
         void AbsW( ) requires ( Size > 3 )
         {
             simd = Traits::AbsW( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the fourth element to its absolute value.
+        /// </summary>
         TupleSimd WithAbsW( ) const noexcept requires ( Size > 3 )
         {
             return Traits::AbsW( simd );
         }
+        /// <summary>
+        /// Sets the fourth element of `simd` to its negated value.
+        /// </summary>
         void NegateW( ) requires ( Size > 3 )
         {
             simd = Traits::NegateW( simd );
         }
+        /// <summary>
+        /// Copies the `TupleSimd` setting the fourth element to its negated value.
+        /// </summary>
         TupleSimd WithNegatedW( ) const requires ( Size > 3 )
         {
             return Traits::NegateW( simd );
         }
 
+        /// <summary>
+        /// Returns the element at index `idx` in `simd`.
+        /// </summary>
         value_type operator[]( size_t idx ) const
         {
             if constexpr ( Size == 1 )
@@ -1404,6 +1545,60 @@ namespace Harlinn::Common::Core::Math
                         return Traits::Extract<3>( simd );
                 }
             }
+            else if constexpr ( Size == 5 )
+            {
+                switch ( idx )
+                {
+                    case 0:
+                        return Traits::Extract<0>( simd );
+                    case 1:
+                        return Traits::Extract<1>( simd );
+                    case 2:
+                        return Traits::Extract<2>( simd );
+                    case 3:
+                        return Traits::Extract<3>( simd );
+                    case 4:
+                        return Traits::Extract<4>( simd );
+                }
+            }
+            else if constexpr ( Size == 6 )
+            {
+                switch ( idx )
+                {
+                    case 0:
+                        return Traits::Extract<0>( simd );
+                    case 1:
+                        return Traits::Extract<1>( simd );
+                    case 2:
+                        return Traits::Extract<2>( simd );
+                    case 3:
+                        return Traits::Extract<3>( simd );
+                    case 4:
+                        return Traits::Extract<4>( simd );
+                    case 5:
+                        return Traits::Extract<5>( simd );
+                }
+            }
+            else if constexpr ( Size == 7 )
+            {
+                switch ( idx )
+                {
+                    case 0:
+                        return Traits::Extract<0>( simd );
+                    case 1:
+                        return Traits::Extract<1>( simd );
+                    case 2:
+                        return Traits::Extract<2>( simd );
+                    case 3:
+                        return Traits::Extract<3>( simd );
+                    case 4:
+                        return Traits::Extract<4>( simd );
+                    case 5:
+                        return Traits::Extract<5>( simd );
+                    case 6:
+                        return Traits::Extract<6>( simd );
+                }
+            }
             else if constexpr ( Size == 8 )
             {
                 switch ( idx )
@@ -1429,97 +1624,99 @@ namespace Harlinn::Common::Core::Math
             return operator[]( idx % Size );
         }
 
-
-        static TupleSimd Zero( ) noexcept requires ( Size == 2 )
+        /// <summary>
+        /// 
+        /// </summary>
+        static TupleSimd Zero( ) noexcept
         {
             return TupleSimd( Traits::Zero( ) );
         }
-        static TupleSimd One( ) noexcept requires ( Size == 2 )
+        /// <summary>
+        /// Returns a `TupleSimd` with all elements set to zero.
+        /// </summary>
+        static TupleSimd One( ) noexcept
         {
-            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( Traits::Fill<Size>( static_cast< value_type >( 1 ) ) );
         }
 
-        static TupleSimd UnitX( ) noexcept requires ( Size == 2 )
+        /// <summary>
+        /// Returns a `TupleSimd` the first element set to 1, and the other elements set to 0.
+        /// </summary>
+        static TupleSimd UnitX( ) noexcept
         {
-            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( 1 ) ) );
         }
-        static TupleSimd UnitY( ) noexcept requires ( Size == 2 )
+        /// <summary>
+        /// Returns a `TupleSimd` the second element set to 1, and the other elements set to 0.
+        /// </summary>
+        static TupleSimd UnitY( ) noexcept
         {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
-        }
-
-
-        static TupleSimd Zero( ) noexcept requires (Size == 3)
-        {
-            return TupleSimd( Traits::Zero( ) );
-        }
-        static TupleSimd One( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) ) );
         }
 
-        static TupleSimd UnitX( ) noexcept requires ( Size == 3 )
+        /// <summary>
+        /// Returns a `TupleSimd` the third element set to 1, and the other elements set to 0.
+        /// </summary>
+        static TupleSimd UnitZ( ) noexcept requires ( Size >= 3 )
         {
-            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
-        }
-        static TupleSimd UnitY( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
-        }
-        static TupleSimd UnitZ( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
-        }
-        static TupleSimd Up( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
-        }
-        static TupleSimd Down( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) );
-        }
-        static TupleSimd Right( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
-        }
-        static TupleSimd Left( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
-        }
-        static TupleSimd Forward( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( -1 ) );
-        }
-        static TupleSimd Backward( ) noexcept requires ( Size == 3 )
-        {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
         }
 
-        static TupleSimd Zero( ) noexcept requires ( Size == 4 )
+        /// <summary>
+        /// Returns a `TupleSimd` the fourth element set to 1, and the other elements set to 0.
+        /// </summary>
+        static TupleSimd UnitW( ) noexcept requires ( Size >= 4 )
         {
-            return TupleSimd( Traits::Zero( ) );
-        }
-        static TupleSimd One( ) noexcept requires ( Size == 4 )
-        {
-            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
         }
 
-        static TupleSimd UnitX( ) noexcept requires ( Size == 4 )
+        /// <summary>
+        /// Returns a `TupleSimd` containing the unit vector for the up direction.
+        /// </summary>
+        static TupleSimd Up( ) noexcept requires ( Size >= 3 )
         {
-            return TupleSimd( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) ) );
         }
-        static TupleSimd UnitY( ) noexcept requires ( Size == 4 )
+        /// <summary>
+        /// Returns a `TupleSimd` containing the unit vector for the down direction.
+        /// </summary>
+        static TupleSimd Down( ) noexcept requires ( Size >= 3 )
         {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) ) );
         }
-        static TupleSimd UnitZ( ) noexcept requires ( Size == 4 )
+        /// <summary>
+        /// Returns a `TupleSimd` containing the unit vector for the right direction.
+        /// </summary>
+        static TupleSimd Right( ) noexcept requires ( Size >= 3 )
         {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( 1 ) ) );
         }
-        static TupleSimd UnitW( ) noexcept requires ( Size == 4 )
+
+        /// <summary>
+        /// Returns a `TupleSimd` containing the unit vector for the left direction.
+        /// </summary>
+        static TupleSimd Left( ) noexcept requires ( Size >= 3 )
         {
-            return TupleSimd( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
+            return TupleSimd( Traits::Set( static_cast< value_type >( -1 ) ) );
         }
+
+        /// <summary>
+        /// Returns a `TupleSimd` containing the unit vector for the forward direction.
+        /// </summary>
+        static TupleSimd Forward( ) noexcept requires ( Size >= 3 )
+        {
+            return TupleSimd( Traits::Set( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
+        }
+
+        /// <summary>
+        /// Returns a `TupleSimd` containing the unit vector for the backward direction.
+        /// </summary>
+        static TupleSimd Backward( ) noexcept requires ( Size >= 3 )
+        {
+            return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
+        }
+        
+        
 
 
         WideString ToString( ) const
@@ -1558,9 +1755,8 @@ namespace Harlinn::Common::Core::Math
             stream << t.ToStdString( );
             return stream;
         }
-
-
     };
+
 
     /// <summary>
     /// A tuple holding two numbers.
@@ -1591,7 +1787,6 @@ namespace Harlinn::Common::Core::Math
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
-        static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
 
         using reference = typename ArrayType::reference;
@@ -1606,7 +1801,7 @@ namespace Harlinn::Common::Core::Math
 
         /// <summary>
         /// The mathematical operations are performed using 
-        /// this type which holds a SIMD vector.  
+        /// this type which holds a SIMD vector.
         /// </summary>
         using Simd = TupleSimd<DerivedType>;
 
@@ -1963,7 +2158,6 @@ namespace Harlinn::Common::Core::Math
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
-        static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
 
         using reference = typename ArrayType::reference;
@@ -2369,7 +2563,6 @@ namespace Harlinn::Common::Core::Math
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
-        static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
 
         using reference = typename ArrayType::reference;
@@ -8787,6 +8980,8 @@ namespace Harlinn::Common::Core::Math
     using Vector2f = Vector<float,2>;
     using Vector2d = Vector<double, 2>;
     using Vector2i = Vector<int,2>;
+
+    static_assert( sizeof( Vector2f ) == sizeof( std::array<float, 2> ) );
 
     // Vector3* Definitions
     using Vector3f = Vector<float,3>;
