@@ -800,7 +800,7 @@ namespace Harlinn::Common::Core::Math
     public:
         using TupleType = TupleT;
         using Traits = typename TupleType::Traits;
-        
+        using ArrayType = typename TupleType::ArrayType;
         using value_type = typename Traits::Type;
         using size_type = size_t;
         using Simd = typename TupleType::Simd;
@@ -864,6 +864,14 @@ namespace Harlinn::Common::Core::Math
         /// </summary>
         TupleSimd( const TupleType& other ) noexcept
             : simd( Traits::Load( other.values ) )
+        {
+        }
+
+        /// <summary>
+        /// Loads <c>values</c> into <c>simd</c>.
+        /// </summary>
+        TupleSimd( const ArrayType& values ) noexcept
+            : simd( Traits::Load( values ) )
         {
         }
 

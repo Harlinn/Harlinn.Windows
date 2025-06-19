@@ -16,7 +16,7 @@
 
 #include "pch.h"
 
-#include <HCCLine.h>
+#include <HCCSegment.h>
 
 
 using namespace Harlinn::Common::Core;
@@ -33,42 +33,22 @@ namespace
 
 }
 
-BOOST_FIXTURE_TEST_SUITE( LineTests, LocalFixture )
+BOOST_FIXTURE_TEST_SUITE( SegmentTests, LocalFixture )
 
-// --run_test=LineTests/LineDistanceTest1
-BOOST_AUTO_TEST_CASE( LineDistanceTest1 )
-{
-    Point3f lineOrigin( 0.f, 0.f, -3.f );
-    Vector3f lineDirection( Normalize( Vector3f( 2.5f, 2.5f, 2.5f ) ) );
-    Point3f point( 1.f, 1.f, 1.f );
-
-    Line3f line( lineOrigin, lineDirection );
-
-    auto distanceResult = line.Distance( point );
-
-    auto distance = distanceResult.Distance( );
-    Point3f closestPoint = distanceResult.ClosestPoint( );
-    auto distanceFromOrigin = distanceResult.DistanceFromOrigin( );
-
-    BOOST_CHECK( closestPoint.x == 2.f );
-    BOOST_CHECK( closestPoint.y == 2.f );
-    BOOST_CHECK( closestPoint.z == -1.f );
-}
-
-// --run_test=LineTests/LineDistanceTest2
-BOOST_AUTO_TEST_CASE( LineDistanceTest2 )
+// --run_test=SegmentTests/SegmentDistanceTest1
+BOOST_AUTO_TEST_CASE( SegmentDistanceTest1 )
 {
     Point3f A( 4, 2, 1 );
     Point3f B( 1, 0, 1 );
     Point3f C( 1, 2, 0 );
 
-    Line3f line( B, C );
+    Segment3<float> segment( B, C );
 
-    auto distanceResult = line.Distance( A );
+    auto distanceResult = segment.Distance( A );
 
     auto distance = distanceResult.Distance( );
     Point3f closestPoint = distanceResult.ClosestPoint( );
-    auto distanceFromOrigin = distanceResult.DistanceFromOrigin( );
+    auto fraction = distanceResult.Fraction( );
 
     auto expectedX = 1.f;
     auto expectedY = 8.f / 5.f;
@@ -78,5 +58,24 @@ BOOST_AUTO_TEST_CASE( LineDistanceTest2 )
     BOOST_CHECK( closestPoint.y == expectedY );
     BOOST_CHECK_CLOSE( closestPoint.z, expectedZ, 0.001f );
 }
+
+// --run_test=SegmentTests/SegmentDistanceTest2
+BOOST_AUTO_TEST_CASE( SegmentDistanceTest2 )
+{
+    Point3f A( 2, 3, 6 );
+    Point3f B( 1, 2, 1 );
+    Point3f C( 1, 2, 5 );
+
+    Segment3<float> segment( B, C );
+
+    auto distanceResult = segment.Distance( A );
+
+    auto distance = distanceResult.Distance( );
+    Point3f closestPoint = distanceResult.ClosestPoint( );
+    auto fraction = distanceResult.Fraction( );
+    BOOST_CHECK( closestPoint == C );
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

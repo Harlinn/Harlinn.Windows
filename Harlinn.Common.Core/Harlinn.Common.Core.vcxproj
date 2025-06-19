@@ -262,6 +262,7 @@
     <ClInclude Include="HCCLMDB.h" />
     <ClInclude Include="HCCLogging.h" />
     <ClInclude Include="HCCMath.h" />
+    <ClInclude Include="HCCSegment.h" />
     <ClInclude Include="HCCTestUtils.h" />
     <ClInclude Include="HCCTransformations.h" />
     <ClInclude Include="HCCVectorMath.h" />
