@@ -168,6 +168,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="LineTests.cpp" />
     <ClCompile Include="MathMatrixTests.cpp" />
     <ClCompile Include="MathTests.cpp" />
     <ClCompile Include="MathVector2DoubleTests.cpp" />

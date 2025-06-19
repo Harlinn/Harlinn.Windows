@@ -968,6 +968,7 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::AnyNotEqual( simd, other.simd );
         }
+        
 
         /// <summary>
         /// Returns <c>true</c> if each element of <c>simd</c> is equal to <c>value</c>, otherwise <c>false</c>.
@@ -984,6 +985,27 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::AnyNotEqual( simd, Traits::Fill( value ) );
         }
+
+        /// <summary>
+        /// Returns <c>true</c> if each element of <c>simd</c> is equal to the corresponding element of <c>other.values</c>, otherwise <c>false</c>.
+        /// </summary>
+        template<Math::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        bool operator == ( const T& other ) const noexcept
+        {
+            return Traits::AllEqual( simd, Traits::Load( other.values ) );
+        }
+
+        /// <summary>
+        /// Returns <c>true</c> if any element of <c>simd</c> is not equal to the corresponding element of <c>other.values</c>, otherwise <c>false</c>.
+        /// </summary>
+        template<Math::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        bool operator != ( const T& other ) const noexcept
+        {
+            return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
+        }
+
 
         /// <summary>
         /// Returns <c>true</c> if any element of <c>simd</c> is equal to <c>value</c>, otherwise <c>false</c>.
@@ -1010,25 +1032,7 @@ namespace Harlinn::Common::Core::Math
         }
 
 
-        /// <summary>
-        /// Returns <c>true</c> if each element of <c>simd</c> is equal to the corresponding element of <c>other.values</c>, otherwise <c>false</c>.
-        /// </summary>
-        template<Math::TupleType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        bool operator == ( const T& other ) const noexcept
-        {
-            return Traits::AllEqual( simd, Traits::Load( other.values ) );
-        }
-
-        /// <summary>
-        /// Returns <c>true</c> if any element of <c>simd</c> is not equal to the corresponding element of <c>other.values</c>, otherwise <c>false</c>.
-        /// </summary>
-        template<Math::TupleType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        bool operator != ( const T& other ) const noexcept
-        {
-            return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
-        }
+        
 
         /// <summary>
         /// Adds each element of <c>other.values</c> to the corresponding element of <c>simd</c>.
@@ -1625,14 +1629,14 @@ namespace Harlinn::Common::Core::Math
         }
 
         /// <summary>
-        /// 
+        /// Returns a `TupleSimd` with all elements set to zero.
         /// </summary>
         static TupleSimd Zero( ) noexcept
         {
             return TupleSimd( Traits::Zero( ) );
         }
         /// <summary>
-        /// Returns a `TupleSimd` with all elements set to zero.
+        /// Returns a `TupleSimd` with all elements set to one.
         /// </summary>
         static TupleSimd One( ) noexcept
         {
@@ -2002,15 +2006,6 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        const_reference operator[]( size_t index ) const noexcept
-        {
-            return values[ index ];
-        }
-
-        reference operator[]( size_t index ) noexcept
-        {
-            return values[ index ];
-        }
 
         static DerivedType Zero( )
         {
@@ -2030,6 +2025,15 @@ namespace Harlinn::Common::Core::Math
         }
 
 
+        const_reference operator[]( size_t index ) const noexcept
+        {
+            return values[ index ];
+        }
+
+        reference operator[]( size_t index ) noexcept
+        {
+            return values[ index ];
+        }
 
         const_pointer data( ) const noexcept
         {
@@ -7338,6 +7342,17 @@ namespace Harlinn::Common::Core::Math
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Cross( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) ) );
     }
+
+    /// <summary>
+    /// Calculates the normalized cross product between v1 and v2.
+    /// </summary>
+    template<SimdOrTupleType T, SimdOrTupleType U>
+        requires IsCompatible<T, U>
+    inline auto UnitCross( const T& v1, const U& v2 ) noexcept
+    {
+        return Normalize( Cross( v1, v2 ) );
+    }
+
 
     // LengthSquared
 
