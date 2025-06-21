@@ -30,6 +30,8 @@ namespace Harlinn::AI::ONNX
     class Session;
     class Environment;
 
+    
+
     class SessionOptions
     {
         friend class Session;
@@ -1010,6 +1012,7 @@ namespace std
         using value_type = Harlinn::AI::ONNX::Prediction;
         size_t operator()( const value_type& x ) const
         {
+            using namespace Harlinn::Common;
             using namespace Harlinn::Common::Core;
             XXH64Hasher hasher;
             hasher.Add( reinterpret_cast<const Byte*>( &x ), sizeof( value_type ) );

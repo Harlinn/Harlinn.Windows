@@ -25,7 +25,7 @@
 
 #include <pbrto/NewPbrt.h>
 #include <pbrto/util/NewPStd.h>
-#include <HCCMath.h>
+#include <Harlinn/Math/Math.h>
 #include <cmath>
 #include <cstdint>
 #include <cstring>

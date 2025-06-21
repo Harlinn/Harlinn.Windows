@@ -21,7 +21,11 @@
 #include <iostream>
 
 using namespace Harlinn;
-namespace hcc = Harlinn::Common::Core;
+namespace hcc
+{
+    using namespace Harlinn::Common;
+    using namespace Harlinn::Common::Core;
+}
 
 
 hcc::UInt64 Harlinn::CIMTool::TreeNode::nextId_ = 0;

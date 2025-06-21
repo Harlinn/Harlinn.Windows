@@ -16,9 +16,10 @@
    limitations under the License.
 */
 
-#include <HCCTransformations.h>
+#include <Harlinn/Math/Transformations.h>
 #include <HUTTransformations.h>
 
+using namespace Harlinn;
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Util::Test;
 

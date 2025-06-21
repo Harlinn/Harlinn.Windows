@@ -144,7 +144,7 @@ namespace Harlinn::AI::Meta
         TensorTypeAndShapeInfo( TypeInfoType type, const AnsiString& name, TensorElementType elementType, std::vector<Int64>&& dimensions, std::vector<AnsiString>&& symbolicDimensions )
             : Base( type, name ), elementType_( elementType ), dimensions_( std::move( dimensions ) ), symbolicDimensions_( std::move( symbolicDimensions ) )
         {
-            elementCount_ = Math::Multiply( dimensions_ );
+            elementCount_ = Harlinn::Math::Multiply( dimensions_ );
         }
 
         virtual bool Matches( const TypeInfoBase& other ) const override

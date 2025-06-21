@@ -24,7 +24,11 @@
 #include "HCCEnvironment.h"
 #include "HCCString.h"
 
-namespace hcc = Harlinn::Common::Core;
+namespace hcc
+{
+    using namespace Harlinn::Common;
+    using namespace Harlinn::Common::Core;
+}
 namespace hw = Harlinn::Windows;
 
 namespace Harlinn::CIMTool

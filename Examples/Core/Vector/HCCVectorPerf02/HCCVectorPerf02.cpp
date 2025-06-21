@@ -23,6 +23,7 @@
 #include <HCCString.h>
 #include <ranges>
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 namespace ranges = std::ranges;
 

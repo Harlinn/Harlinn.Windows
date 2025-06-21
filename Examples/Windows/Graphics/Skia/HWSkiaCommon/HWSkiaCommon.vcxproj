@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -120,7 +120,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -141,7 +141,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -164,7 +164,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>

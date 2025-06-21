@@ -40,7 +40,8 @@ namespace pstdo
 namespace pbrto
 {
     using namespace Harlinn::Common::Core;
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
+    using namespace Harlinn;
 
 
     // Float Type Definitions

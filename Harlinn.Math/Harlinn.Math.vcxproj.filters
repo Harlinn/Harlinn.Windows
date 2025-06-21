@@ -1,0 +1,641 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{f4787e6a-74e2-4921-a44f-1bb1bd345b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Harlinn">
+      <UniqueIdentifier>{cc154186-9ede-46b5-9541-f89e157c5291}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Harlinn\Math">
+      <UniqueIdentifier>{880ad433-0afe-45a6-af62-5e8fa268cfc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Harlinn\Math\Internal">
+      <UniqueIdentifier>{2c14bfe7-9ba7-4391-bd98-a1f4b048e826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Harlinn\Math\Internal\OpenLibM">
+      <UniqueIdentifier>{7924ed20-1fb4-4dc2-92ed-ab79e20896a1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\aarch64_fpmath.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\amd64_fpmath.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\cdefs-compat.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\constexpr_math.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\fpmath.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\k_log.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\k_logf.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\math_private.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\math_private_openbsd.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\NearestInteger.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm_complex.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm_defs.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm_math.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\RangeReduction.h">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\FloatingPoint.h">
+      <Filter>Include\Harlinn\Math\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Internal\Integer.h">
+      <Filter>Include\Harlinn\Math\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\Math.h">
+      <Filter>Include\Harlinn\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Math\MathForward.h" />
+    <ClInclude Include="include\Harlinn\Math\Simd.h" />
+    <ClInclude Include="include\Harlinn\Math\VectorMath.h" />
+    <ClInclude Include="include\Harlinn\Math\Line.h" />
+    <ClInclude Include="include\Harlinn\Math\Segment.h" />
+    <ClInclude Include="include\Harlinn\Math\Transformations.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Harlinn.Math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acos.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acosf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acosh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acoshf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_asin.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_asinf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atan2.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atan2f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atanh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atanhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_cosh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_coshf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_exp.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_expf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_fmod.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_fmodf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_hypot.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_hypotf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j0.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j0f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j1.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j1f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_jn.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_jnf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgamma.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgamma_r.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgammaf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgammaf_r.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log2.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log2f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log10.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log10f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_logf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_pow.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_powf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_rem_pio2.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_rem_pio2f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_remainder.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_remainderf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sinh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sinhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sqrt.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sqrtf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_tgamma.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_cos.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_cosf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_exp.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_expf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_rem_pio2.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_sin.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_sinf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_tan.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_tanf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\Readme.md">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_asinh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_asinhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_atan.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_atanf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cabs.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cabsf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacos.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacosf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacosh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacoshf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_carg.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cargf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casin.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casinf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casinh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casinhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catan.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catanf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catanh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catanhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cbrt.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cbrtf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccos.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccosf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccosh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccoshf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ceil.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ceilf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cexp.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cexpf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cimag.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cimagf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_clog.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_clogf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_conj.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_conjf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_copysign.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_copysignf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cos.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cosf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cpow.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cpowf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cproj.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cprojf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_creal.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_crealf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csin.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csinf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csinh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csinhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csqrt.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csqrtf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctan.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctanf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctanh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctanhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_erf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_erff.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_exp2.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_exp2f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_expm1.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_expm1f.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fabs.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fabsf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fdim.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_floor.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_floorf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fma.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmaf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmax.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmaxf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmin.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fminf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fpclassify.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_frexp.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_frexpf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ilogb.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ilogbf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isfinite.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isinf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isnan.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isnormal.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llrint.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llrintf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llround.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llroundf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_log1p.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_log1pf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_logb.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_logbf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lrint.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lrintf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lround.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lroundf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_modf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_modff.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nan.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nearbyint.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nextafter.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nextafterf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nexttoward.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nexttowardf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_remquo.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_remquof.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_rint.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_rintf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_round.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_roundf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_scalbln.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_scalbn.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_scalbnf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_signbit.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_signgam.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sin.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sincos.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sincosf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sinf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tan.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tanf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tanh.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tanhf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tgammaf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_trunc.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_truncf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\w_cabs.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\w_cabsf.inl">
+      <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
+    </None>
+    <None Include="include\Harlinn\Math\Readme.md" />
+  </ItemGroup>
+</Project>

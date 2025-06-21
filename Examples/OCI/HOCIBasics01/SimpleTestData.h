@@ -20,6 +20,7 @@
 
 #include <HCCString.h>
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 
 class SimpleTestData

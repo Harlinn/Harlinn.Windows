@@ -22,6 +22,7 @@
 // netsh http add urlacl url=http://+:20000/Example user=BUILTIN\Users
 // The url is: http://127.0.0.1:20000/Example
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 
 int main()

@@ -921,7 +921,11 @@ namespace Harlinn::Common::Core
 
         static Data* Initialize( const CharType* string )
         {
+#ifndef HCC_USE_COMMON
             auto size = Internal::LengthOf( string );
+#else
+            auto size = Common::Internal::LengthOf( string );
+#endif
             return Initialize( string, size );
         }
 
@@ -1214,12 +1218,20 @@ namespace Harlinn::Common::Core
         [[nodiscard]] static BasicString From( const wchar_t* s )
             requires std::is_same_v<CharType, char>
         {
+#ifndef HCC_USE_COMMON
             return Internal::From( s, Internal::LengthOf( s ) );
+#else
+            return Internal::From( s, Common::Internal::LengthOf( s ) );
+#endif
         }
         [[nodiscard]] static BasicString From( const char* s )
             requires std::is_same_v<CharType, char>
         {
+#ifndef HCC_USE_COMMON
             return BasicString( s, Internal::LengthOf( s ) );
+#else
+            return BasicString( s, Common::Internal::LengthOf( s ) );
+#endif
         }
 
 
@@ -1286,12 +1298,20 @@ namespace Harlinn::Common::Core
         [[nodiscard]] static BasicString From( const wchar_t* s )
             requires std::is_same_v<CharType, wchar_t>
         {
+#ifndef HCC_USE_COMMON
             return BasicString( s, Internal::LengthOf( s ) );
+#else
+            return BasicString( s, Common::Internal::LengthOf( s ) );
+#endif
         }
         [[nodiscard]] static BasicString From( const char* s )
             requires std::is_same_v<CharType, wchar_t>
         {
+#ifndef HCC_USE_COMMON
             return Internal::From( s, Internal::LengthOf( s ) );
+#else
+            return Internal::From( s, LengthOf( s ) );
+#endif
         }
 
 
@@ -1650,7 +1670,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] friend BasicString<CharType> operator +( const CharType* first, const BasicString<CharType>& second )
         {
-            auto firstSize = Internal::LengthOf( first );
+            auto firstSize = LengthOf( first );
 
             auto secondSize = second.size( );
             auto* secondData = second.data( );
@@ -1663,7 +1683,7 @@ namespace Harlinn::Common::Core
             auto firstSize = first.size( );
             auto* firstData = first.data( );
 
-            auto secondSize = Internal::LengthOf( second );
+            auto secondSize = LengthOf( second );
 
             return BasicString( firstData, firstSize, second, secondSize );
         }
@@ -1691,7 +1711,7 @@ namespace Harlinn::Common::Core
 
         void Append( const CharType* other )
         {
-            auto otherLength = Internal::LengthOf( other );
+            auto otherLength = LengthOf( other );
             auto* dest = Extend( otherLength );
             MemCopy( dest, other, otherLength );
         }
@@ -2046,7 +2066,7 @@ namespace Harlinn::Common::Core
                 {
                     if ( second )
                     {
-                        size_type secondSize = Internal::LengthOf( second );
+                        size_type secondSize = LengthOf( second );
                         if ( first->size_ == secondSize )
                         {
                             return MemCmp( first->buffer_, second, secondSize ) == 0;
@@ -2063,7 +2083,7 @@ namespace Harlinn::Common::Core
             {
                 if ( first )
                 {
-                    size_type firstSize = Internal::LengthOf( first );
+                    size_type firstSize = LengthOf( first );
                     if ( second->size_ == firstSize )
                     {
                         return MemCmp( second->buffer_, first, firstSize ) == 0;
@@ -2913,7 +2933,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type IndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             if ( length )
             {
                 return IndexOfAnyOf( searchChars, length, start );
@@ -2928,7 +2948,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type IIndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             if ( length )
             {
                 return IIndexOfAnyOf( searchChars, length, start );
@@ -3041,7 +3061,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type IndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             return IndexOfAnyBut( searchChars, length, start );
         }
 
@@ -3052,7 +3072,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type IIndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             return IIndexOfAnyBut( searchChars, length, start );
         }
 
@@ -3185,7 +3205,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type LastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             if ( length )
             {
                 return LastIndexOfAnyOf( searchChars, length, start );
@@ -3201,7 +3221,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             if ( length )
             {
                 return ILastIndexOfAnyOf( searchChars, length, start );
@@ -3312,7 +3332,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type LastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             if ( length )
             {
                 return LastIndexOfAnyBut( searchChars, length, start );
@@ -3322,7 +3342,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
         {
-            size_type length = Internal::LengthOf( searchChars );
+            size_type length = LengthOf( searchChars );
             if ( length )
             {
                 return ILastIndexOfAnyBut( searchChars, length, start );
@@ -3773,7 +3793,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type LastIndexOf( const CharType* searchString, size_type start = npos ) const
         {
-            size_type length = Internal::LengthOf( searchString );
+            size_type length = LengthOf( searchString );
             if ( length )
             {
 
@@ -3784,7 +3804,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type ILastIndexOf( const CharType* searchString, size_type start = npos ) const
         {
-            size_type length = Internal::LengthOf( searchString );
+            size_type length = LengthOf( searchString );
             if ( length )
             {
 
@@ -4109,7 +4129,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && data_->size_ && str && str[0] )
             {
-                auto otherLength = Internal::LengthOf( str );
+                auto otherLength = LengthOf( str );
                 if ( otherLength <= data_->size_ )
                 {
                     return Internal::Compare( &data_->buffer_[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;
@@ -4145,7 +4165,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && data_->size_ && str && str[0] )
             {
-                auto otherLength = Internal::LengthOf( str );
+                auto otherLength = LengthOf( str );
                 if ( otherLength <= data_->size_ )
                 {
                     return Internal::ICompare( &data_->buffer_[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;

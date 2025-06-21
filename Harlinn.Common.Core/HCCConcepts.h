@@ -19,8 +19,13 @@
 
 #include "HCCDef.h"
 
+#ifdef HCC_USE_COMMON
+#include <Harlinn/Common/Concepts.h>
+#endif
+
 namespace Harlinn::Common::Core
 {
+#ifndef HCC_USE_COMMON
     template<typename T>
     concept CharType = std::is_same_v<T, char> || std::is_same_v<T, wchar_t> || std::is_same_v<T, char8_t> || std::is_same_v<T, char16_t> || std::is_same_v<T, char32_t>;
 
@@ -247,7 +252,7 @@ namespace Harlinn::Common::Core
 
     template<typename T>
     concept ArithmeticType = IntegerType<T> || FloatingPointType<T>;
-
+#endif
 
 }
 

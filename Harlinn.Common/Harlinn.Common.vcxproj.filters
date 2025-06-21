@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{2ebeb825-1474-4eb9-b0a6-dbdafc9b5f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Harlinn">
+      <UniqueIdentifier>{0d7a1469-897b-43e2-9a59-ee82c097619b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Harlinn\Common">
+      <UniqueIdentifier>{75c6d95e-d1e4-40a1-85c8-e4ea5dd9866a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Harlinn.Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Harlinn\Common\Concepts.h">
+      <Filter>Include\Harlinn\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Common\BasicTypes.h">
+      <Filter>Include\Harlinn\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Harlinn\Common\Utils.h">
+      <Filter>Include\Harlinn\Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme.md" />
+  </ItemGroup>
+</Project>

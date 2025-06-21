@@ -98,7 +98,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BuildStlModules>false</BuildStlModules>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -125,7 +125,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BuildStlModules>false</BuildStlModules>
     </ClCompile>
@@ -150,7 +150,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BuildStlModules>false</BuildStlModules>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -178,7 +178,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BuildStlModules>false</BuildStlModules>
     </ClCompile>

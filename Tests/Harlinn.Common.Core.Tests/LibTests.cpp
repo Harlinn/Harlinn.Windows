@@ -16,6 +16,7 @@
 
 #include "pch.h"
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 namespace
 {

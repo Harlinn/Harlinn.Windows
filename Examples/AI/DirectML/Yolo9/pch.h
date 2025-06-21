@@ -42,7 +42,7 @@
 #include <HWForm.h>
 #include <HCCEnvironment.h>
 #include <HCCIO.h>
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 
 #include "imgui.h"
 #include "implot.h"

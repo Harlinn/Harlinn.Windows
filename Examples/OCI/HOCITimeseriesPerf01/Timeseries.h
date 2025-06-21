@@ -20,7 +20,7 @@
 
 #include <HCCGuid.h>
 
-
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 class TimeseriesPoint
 {

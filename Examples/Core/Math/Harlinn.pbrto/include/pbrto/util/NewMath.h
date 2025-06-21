@@ -28,7 +28,7 @@
 #include <pbrto/util/NewFloat.h>
 #include <pbrto/util/NewPStd.h>
 
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 
 #include <algorithm>
 #include <cmath>
@@ -44,25 +44,25 @@
 
 namespace pbrto
 {
-    using Math::AbsDot;
-    using Math::AngleBetween;
-    using Math::Clamp;
-    using Math::DifferenceOfProducts;
-    using Math::FastExp;
-    using Math::FMA;
-    using Math::InnerProduct;
-    using Math::Inverse;
-    using Math::IsInf;
-    using Math::IsNaN;
-    using Math::IsSameValue;
-    using Math::Log2;
-    using Math::LogI0;
-    using Math::Max;
-    using Math::Min;
-    using Math::Pow;
-    using Math::Sqr;
-    using Math::SafeSqrt;
-    using Math::SumOfProducts;
+    using Harlinn::Math::AbsDot;
+    using Harlinn::Math::AngleBetween;
+    using Harlinn::Math::Clamp;
+    using Harlinn::Math::DifferenceOfProducts;
+    using Harlinn::Math::FastExp;
+    using Harlinn::Math::FMA;
+    using Harlinn::Math::InnerProduct;
+    using Harlinn::Math::Inverse;
+    using Harlinn::Math::IsInf;
+    using Harlinn::Math::IsNaN;
+    using Harlinn::Math::IsSameValue;
+    using Harlinn::Math::Log2;
+    using Harlinn::Math::LogI0;
+    using Harlinn::Math::Max;
+    using Harlinn::Math::Min;
+    using Harlinn::Math::Pow;
+    using Harlinn::Math::Sqr;
+    using Harlinn::Math::SafeSqrt;
+    using Harlinn::Math::SumOfProducts;
 
 
     // Mathematical Constants

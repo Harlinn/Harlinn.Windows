@@ -22,6 +22,7 @@
 
 namespace GenerateProject
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
     class Project;
     class File

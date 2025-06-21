@@ -2,11 +2,11 @@
 //
 
 #include <HWDXApplication.h>
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 
 using namespace Harlinn;
 using namespace Harlinn::Windows;
-namespace m = Harlinn::Common::Core::Math;
+namespace m = Harlinn::Math;
 
 class HelloTriangleForm : public Windows::DXForm
 {

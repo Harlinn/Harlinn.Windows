@@ -22,6 +22,7 @@
 
 namespace OCITest
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
 
     class OwnedObjectType

@@ -3755,7 +3755,7 @@ namespace Harlinn::Windows
     }
 }
 
-namespace Harlinn::Common::Core::Math
+namespace Harlinn::Math
 {
     constexpr Harlinn::Windows::Point Min( const Harlinn::Windows::Point& first, const Harlinn::Windows::Point& second )
     {

@@ -24,9 +24,10 @@
 
 #include <pbrto/util/NewCheck.h>
 
-#include <HCCMath.h>
+#include <Harlinn/Math/Math.h>
 using namespace Harlinn::Common::Core;
-using namespace Harlinn::Common::Core::Math;
+using namespace Harlinn::Math;
+using namespace Harlinn;
 
 #include <float.h>
 #include <limits.h>

@@ -16,10 +16,12 @@
 
 #include "pch.h"
 
-#include <HCCMath.h>
+#include <Harlinn/Math/Math.h>
 
 
 using namespace Harlinn::Common::Core;
+namespace SIMD = Harlinn::Math::SIMD;
+
 namespace
 {
     class LocalFixture

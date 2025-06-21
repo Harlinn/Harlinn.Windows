@@ -15,17 +15,17 @@
    limitations under the License.
 */
 
-#include "HCCVectorMath.h"
+#include <Harlinn/Math/Math.h>
 #include "HCCString.h"
 
 namespace Harlinn::Common::Core
 {
-    HCC_EXPORT WideString ToWideString( const Math::Half& value )
+    HCC_EXPORT WideString ToWideString( const Harlinn::Math::Half& value )
     {
         float v = static_cast< float >(value);
         return ToWideString( v );
     }
-    HCC_EXPORT AnsiString ToAnsiString( const Math::Half& value )
+    HCC_EXPORT AnsiString ToAnsiString( const Harlinn::Math::Half& value )
     {
         float v = static_cast< float >( value );
         return ToAnsiString( v );

@@ -64,7 +64,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix4x4Add );
 
 static void BenchmarkSquareMatrix4x4Add( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
     FloatGenerator.Reset( );
 
@@ -115,7 +115,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix3x3Add );
 
 static void BenchmarkSquareMatrix3x3Add( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 3>;
     FloatGenerator.Reset( );
 
@@ -162,7 +162,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix2x2Add );
 
 static void BenchmarkSquareMatrix2x2Add( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 2>;
     FloatGenerator.Reset( );
 
@@ -184,7 +184,7 @@ BENCHMARK( BenchmarkSquareMatrix2x2Add );
 
 static void BenchmarkSquareMatrix4x4Sub( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
     FloatGenerator.Reset( );
 
@@ -209,7 +209,7 @@ BENCHMARK( BenchmarkSquareMatrix4x4Sub );
 
 static void BenchmarkSquareMatrix3x3Sub( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 3>;
     FloatGenerator.Reset( );
 
@@ -255,7 +255,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix4x4Transpose );
 
 static void BenchmarkSquareMatrix4x4Transpose( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
     FloatGenerator.Reset( );
 
@@ -297,7 +297,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix3x3Transpose );
 
 static void BenchmarkSquareMatrix3x3Transpose( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 3>;
     FloatGenerator.Reset( );
 
@@ -337,7 +337,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix2x2Transpose );
 
 static void BenchmarkSquareMatrix2x2Transpose( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 2>;
     FloatGenerator.Reset( );
 
@@ -380,7 +380,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix4x4ScalarMultiply );
 
 static void BenchmarkSquareMatrix4x4ScalarMultiply( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
     FloatGenerator.Reset( );
 
@@ -422,7 +422,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix3x3ScalarMultiply );
 
 static void BenchmarkSquareMatrix3x3ScalarMultiply( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 3>;
     FloatGenerator.Reset( );
 
@@ -462,7 +462,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix2x2ScalarMultiply );
 
 static void BenchmarkSquareMatrix2x2ScalarMultiply( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 2>;
     FloatGenerator.Reset( );
 
@@ -508,7 +508,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix4x4Multiply );
 
 static void BenchmarkSquareMatrix4x4Multiply( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
     FloatGenerator.Reset( );
 
@@ -559,7 +559,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix3x3Multiply );
 
 static void BenchmarkSquareMatrix3x3Multiply( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 3>;
     FloatGenerator.Reset( );
 
@@ -606,7 +606,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix2x2Multiply );
 
 static void BenchmarkSquareMatrix2x2Multiply( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 2>;
     FloatGenerator.Reset( );
 
@@ -672,7 +672,7 @@ BENCHMARK( BenchmarkXMMatrix4x4Determinant );
 
 static void BenchmarkSquareMatrix4x4Determinant( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
     FloatGenerator.Reset( );
 
@@ -714,7 +714,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix3x3Determinant );
 
 static void BenchmarkSquareMatrix3x3Determinant( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 3>;
     FloatGenerator.Reset( );
 
@@ -754,7 +754,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix2x2Determinant );
 
 static void BenchmarkSquareMatrix2x2Determinant( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 2>;
     FloatGenerator.Reset( );
 
@@ -816,7 +816,7 @@ BENCHMARK( BenchmarkXMMatrix4x4Inverse );
 
 static void BenchmarkSquareMatrix4x4Inverse( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
     FloatGenerator.Reset( );
 
@@ -857,7 +857,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix3x3Inverse );
 #endif
 static void BenchmarkSquareMatrix3x3Inverse( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 3>;
     FloatGenerator.Reset( );
 
@@ -897,7 +897,7 @@ BENCHMARK( BenchmarkPbrtSquareMatrix2x2Inverse );
 
 static void BenchmarkSquareMatrix2x2Inverse( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Matrix = Math::SquareMatrix<float, 2>;
     FloatGenerator.Reset( );
 

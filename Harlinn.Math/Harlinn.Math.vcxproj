@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{7767b370-8c53-4217-92b1-e50282fa17ba}</ProjectGuid>
+    <RootNamespace>HarlinnMath</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Harlinn\Math\Internal\FloatingPoint.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\Integer.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\aarch64_fpmath.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\amd64_fpmath.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\cdefs-compat.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\constexpr_math.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\fpmath.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\k_log.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\k_logf.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\math_private.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\math_private_openbsd.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\NearestInteger.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm_complex.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm_defs.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\openlibm_math.h" />
+    <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\RangeReduction.h" />
+    <ClInclude Include="include\Harlinn\Math\Line.h" />
+    <ClInclude Include="include\Harlinn\Math\Math.h" />
+    <ClInclude Include="include\Harlinn\Math\MathForward.h" />
+    <ClInclude Include="include\Harlinn\Math\Segment.h" />
+    <ClInclude Include="include\Harlinn\Math\Simd.h" />
+    <ClInclude Include="include\Harlinn\Math\Transformations.h" />
+    <ClInclude Include="include\Harlinn\Math\VectorMath.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Harlinn.Math.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acos.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acosf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acosh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_acoshf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_asin.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_asinf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atan2.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atan2f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atanh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_atanhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_cosh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_coshf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_exp.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_expf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_fmod.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_fmodf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_hypot.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_hypotf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j0.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j0f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j1.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_j1f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_jn.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_jnf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgamma.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgammaf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgammaf_r.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_lgamma_r.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log10.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log10f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log2.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_log2f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_logf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_pow.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_powf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_remainder.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_remainderf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_rem_pio2.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_rem_pio2f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sinh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sinhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sqrt.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_sqrtf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\e_tgamma.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_cos.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_cosf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_exp.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_expf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_rem_pio2.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_sin.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_sinf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_tan.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\k_tanf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\Readme.md" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_asinh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_asinhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_atan.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_atanf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cabs.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cabsf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacos.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacosf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacosh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cacoshf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_carg.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cargf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casin.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casinf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casinh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_casinhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catan.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catanf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catanh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_catanhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cbrt.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cbrtf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccos.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccosf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccosh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ccoshf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ceil.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ceilf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cexp.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cexpf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cimag.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cimagf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_clog.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_clogf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_conj.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_conjf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_copysign.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_copysignf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cos.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cosf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cpow.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cpowf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cproj.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_cprojf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_creal.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_crealf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csin.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csinf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csinh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csinhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csqrt.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_csqrtf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctan.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctanf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctanh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ctanhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_erf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_erff.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_exp2.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_exp2f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_expm1.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_expm1f.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fabs.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fabsf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fdim.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_floor.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_floorf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fma.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmaf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmax.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmaxf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fmin.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fminf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_fpclassify.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_frexp.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_frexpf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ilogb.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_ilogbf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isfinite.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isinf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isnan.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_isnormal.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llrint.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llrintf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llround.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_llroundf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_log1p.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_log1pf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_logb.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_logbf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lrint.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lrintf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lround.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_lroundf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_modf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_modff.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nan.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nearbyint.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nextafter.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nextafterf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nexttoward.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_nexttowardf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_remquo.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_remquof.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_rint.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_rintf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_round.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_roundf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_scalbln.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_scalbn.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_scalbnf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_signbit.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_signgam.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sin.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sincos.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sincosf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_sinf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tan.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tanf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tanh.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tanhf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_tgammaf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_trunc.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\s_truncf.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\w_cabs.inl" />
+    <None Include="include\Harlinn\Math\Internal\OpenLibM\w_cabsf.inl" />
+    <None Include="include\Harlinn\Math\Readme.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -7,6 +7,7 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+namespace hc = Harlinn::Common;
 namespace hcc = Harlinn::Common::Core;
 
 namespace
@@ -32,7 +33,7 @@ BOOST_AUTO_TEST_CASE( broadphaseTest )
 
 	
 
-	BOOST_CHECK( hcc::AreNearlyEqual( -9.8f * 3.0f, tested->getGravity( ).x( ) ) );
+	BOOST_CHECK( hc::AreNearlyEqual( -9.8f * 3.0f, tested->getGravity( ).x( ) ) );
 	BOOST_CHECK_EQUAL( 0, tested->getGravity( ).y( ) );
 	BOOST_CHECK_EQUAL( 0, tested->getGravity( ).z( ) );
 }

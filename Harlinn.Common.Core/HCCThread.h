@@ -378,11 +378,6 @@ namespace Harlinn::Common::Core
             return OpenToken( mask, useProcessSecurityContext );
         }
 
-        HCC_EXPORT void FlushLogger( Logging::FlushType flushType = Logging::FlushType::Normal ) noexcept;
-
-        HCC_EXPORT Logging::ThreadLogger* ThreadLogger( ) noexcept;
-
-
     }
 
 

@@ -19,7 +19,7 @@
 */
 
 #include "HUTVectorMath.h"
-#include <HCCTransformations.h>
+#include <Harlinn/Math/Transformations.h>
 
 namespace Harlinn::Util::Test
 {

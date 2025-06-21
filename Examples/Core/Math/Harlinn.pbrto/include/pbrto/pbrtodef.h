@@ -20,7 +20,7 @@
 
 
 #include <HCCDef.h>
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 #include <HCCString.h>
 #include <HCCIO.h>
 

@@ -78,7 +78,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -99,7 +99,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_ENABLE_EXTENDED_ALIGNED_STORAGE=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -142,7 +142,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_ENABLE_EXTENDED_ALIGNED_STORAGE=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>

@@ -16,7 +16,7 @@
 #include "pch.h"
 #include "HCCBitConverter.h"
 
-
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 namespace
 {

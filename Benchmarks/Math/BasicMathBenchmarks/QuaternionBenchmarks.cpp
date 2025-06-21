@@ -207,7 +207,7 @@ namespace Basics
 {
 
     using namespace Harlinn::Common::Core;
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
 
     using Quaternion = Math::Quaternion<float>;
 

@@ -48,7 +48,7 @@ for ( auto _ : state )
 
 static void BenchmarkVector2MultipleAdds( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector<float, 4>;
     using VectorSimd = typename Vector::Simd;
     using Traits = typename Vector::Traits;
@@ -96,7 +96,7 @@ BENCHMARK( BenchmarkVector2MultipleXMVectorAdd );
 
 static void BenchmarkVector2MultipleOperations( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector<float, 3>;
     FloatGenerator.Reset( );
 
@@ -127,7 +127,7 @@ BENCHMARK( BenchmarkPBRTVector2fMultipleOperations );
 
 static void BenchmarkMathFMA1( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     FloatGenerator.Reset( );
 
     for ( auto _ : state )
@@ -158,7 +158,7 @@ BENCHMARK( BenchmarkPbrtFMA1 );
 
 static void BenchmarkMathFMA2( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector<float, 2>;
     FloatGenerator.Reset( );
 
@@ -191,7 +191,7 @@ BENCHMARK( BenchmarkPbrtFMA2 );
 
 static void BenchmarkMathFMA3( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector<float, 3>;
     FloatGenerator.Reset( );
 
@@ -225,7 +225,7 @@ BENCHMARK( BenchmarkPbrtFMA3 );
 
 static void BenchmarkMathQuaternionAdd( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Quaternion = Math::Quaternion<float>;
     FloatGenerator.Reset( );
 
@@ -241,7 +241,7 @@ BENCHMARK( BenchmarkMathQuaternionAdd );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtQuaternionAdd( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Quaternion = pbrt::Quaternion;
     FloatGenerator.Reset( );
 
@@ -257,7 +257,7 @@ BENCHMARK( BenchmarkPbrtQuaternionAdd );
 
 static void BenchmarkMathPoint3Distance( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Point = Math::Point3f;
     FloatGenerator.Reset( );
 
@@ -273,7 +273,7 @@ BENCHMARK( BenchmarkMathPoint3Distance );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtPoint3Distance( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Point = pbrt::Point3f;
     FloatGenerator.Reset( );
 
@@ -289,7 +289,7 @@ BENCHMARK( BenchmarkPbrtPoint3Distance );
 
 static void BenchmarkMathPoint3DistanceSquared( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Point = Math::Point3f;
     FloatGenerator.Reset( );
 
@@ -305,7 +305,7 @@ BENCHMARK( BenchmarkMathPoint3DistanceSquared );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtPoint3DistanceSquared( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Point = pbrt::Point3f;
     FloatGenerator.Reset( );
 
@@ -321,7 +321,7 @@ BENCHMARK( BenchmarkPbrtPoint3DistanceSquared );
 
 static void BenchmarkMathVector3Cross( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     using Normal = Math::Normal3f;
     FloatGenerator.Reset( );
@@ -338,7 +338,7 @@ BENCHMARK( BenchmarkMathVector3Cross );
 
 static void BenchmarkMathPbrtVector3Cross( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     using Normal = pbrt::Normal3f;
     FloatGenerator.Reset( );
@@ -357,7 +357,7 @@ BENCHMARK( BenchmarkMathPbrtVector3Cross );
 
 static void BenchmarkMathVector4Cross( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector<float,4>;
     using Normal = Math::Vector<float,4>;
     FloatGenerator.Reset( );
@@ -377,7 +377,7 @@ BENCHMARK( BenchmarkMathVector4Cross );
 
 static void BenchmarkMathVector3Dot( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -393,7 +393,7 @@ BENCHMARK( BenchmarkMathVector3Dot );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Dot( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     FloatGenerator.Reset( );
 
@@ -409,7 +409,7 @@ BENCHMARK( BenchmarkPbrtVector3Dot );
 
 static void BenchmarkMathVector3AngleBetween( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -425,7 +425,7 @@ BENCHMARK( BenchmarkMathVector3AngleBetween );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3AngleBetween( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     FloatGenerator.Reset( );
 
@@ -457,7 +457,7 @@ BENCHMARK( BenchmarkXMVector3AngleBetweenVectors );
 
 static void BenchmarkMathVector3LengthSquared( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -472,7 +472,7 @@ BENCHMARK( BenchmarkMathVector3LengthSquared );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3LengthSquared( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     FloatGenerator.Reset( );
 
@@ -487,7 +487,7 @@ BENCHMARK( BenchmarkPbrtVector3LengthSquared );
 
 static void BenchmarkMathVector3Length( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -502,7 +502,7 @@ BENCHMARK( BenchmarkMathVector3Length );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Length( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     FloatGenerator.Reset( );
 
@@ -517,7 +517,7 @@ BENCHMARK( BenchmarkPbrtVector3Length );
 
 static void BenchmarkMathVector3Ceil( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -532,7 +532,7 @@ BENCHMARK( BenchmarkMathVector3Ceil );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Ceil( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     FloatGenerator.Reset( );
 
@@ -547,7 +547,7 @@ BENCHMARK( BenchmarkPbrtVector3Ceil );
 
 static void BenchmarkMathVector3Floor( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -562,7 +562,7 @@ BENCHMARK( BenchmarkMathVector3Floor );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Floor( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     FloatGenerator.Reset( );
 
@@ -577,7 +577,7 @@ BENCHMARK( BenchmarkPbrtVector3Floor );
 
 static void BenchmarkMathVector3Trunc( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -591,7 +591,7 @@ BENCHMARK( BenchmarkMathVector3Trunc );
 
 static void BenchmarkMathVector3Round( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -606,7 +606,7 @@ BENCHMARK( BenchmarkMathVector3Round );
 
 static void BenchmarkMathVector3Lerp( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -623,7 +623,7 @@ BENCHMARK( BenchmarkMathVector3Lerp );
 #ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Lerp( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = pbrt::Vector3f;
     FloatGenerator.Reset( );
 
@@ -640,7 +640,7 @@ BENCHMARK( BenchmarkPbrtVector3Lerp );
 
 static void BenchmarkMathVector3Clamp( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatAngleInRadiansGenerator.Reset( );
 
@@ -657,7 +657,7 @@ BENCHMARK( BenchmarkMathVector3Clamp );
 
 static void BenchmarkMathVector3Sqrt( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -671,7 +671,7 @@ BENCHMARK( BenchmarkMathVector3Sqrt );
 
 static void BenchmarkMathVector3Sin( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatAngleInRadiansGenerator.Reset( );
 
@@ -685,7 +685,7 @@ BENCHMARK( BenchmarkMathVector3Sin );
 
 static void BenchmarkMathVector3Cos( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatAngleInRadiansGenerator.Reset( );
 
@@ -699,7 +699,7 @@ BENCHMARK( BenchmarkMathVector3Cos );
 
 static void BenchmarkMathVector3Tan( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatAngleInRadiansGenerator.Reset( );
 
@@ -713,7 +713,7 @@ BENCHMARK( BenchmarkMathVector3Tan );
 
 static void BenchmarkMathVector3ASin( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatMinusOneToOneGenerator.Reset( );
 
@@ -727,7 +727,7 @@ BENCHMARK( BenchmarkMathVector3ASin );
 
 static void BenchmarkMathVector3ACos( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatMinusOneToOneGenerator.Reset( );
 
@@ -741,7 +741,7 @@ BENCHMARK( BenchmarkMathVector3ACos );
 
 static void BenchmarkMathVector3ATan( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatMinusOneToOneGenerator.Reset( );
 
@@ -755,7 +755,7 @@ BENCHMARK( BenchmarkMathVector3ATan );
 
 static void BenchmarkMathVector3ATan2( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatMinusOneToOneGenerator.Reset( );
 
@@ -770,7 +770,7 @@ BENCHMARK( BenchmarkMathVector3ATan2 );
 
 static void BenchmarkMathVector3SinH( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -784,7 +784,7 @@ BENCHMARK( BenchmarkMathVector3SinH );
 
 static void BenchmarkMathVector3CosH( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatGenerator.Reset( );
 
@@ -798,7 +798,7 @@ BENCHMARK( BenchmarkMathVector3CosH );
 
 static void BenchmarkMathVector3TanH( benchmark::State& state )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using Vector = Math::Vector3f;
     FloatMinusOneToOneGenerator.Reset( );
 

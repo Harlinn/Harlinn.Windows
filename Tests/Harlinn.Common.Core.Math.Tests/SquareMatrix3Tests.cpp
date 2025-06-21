@@ -72,7 +72,7 @@ BOOST_FIXTURE_TEST_SUITE( SquareMatrix3FloatTests, LocalFixture )
 // --run_test=SquareMatrix3FloatTests/AddTest1
 BOOST_AUTO_TEST_CASE( AddTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 3> matrix1( 1.f, 2.f, 3.f, 
                                     4.f, 5.f, 6.f,
                                     7.f, 8.f, 9.f);
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE( AddTest1 )
 // --run_test=SquareMatrix3FloatTests/SubTest1
 BOOST_AUTO_TEST_CASE( SubTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 3> matrix1( 2.f, 3.f, 4.f,
                                     5.f, 6.f, 7.f,
                                     8.f, 9.f, 10.f );
@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE( SubTest1 )
 // --run_test=SquareMatrix3FloatTests/MulTest1
 BOOST_AUTO_TEST_CASE( MulTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 3> matrix1( 1.f, 2.f, 3.f,
                                     4.f, 5.f, 6.f,
                                     7.f, 8.f, 9.f );
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE( MulTest1 )
 // --run_test=SquareMatrix3FloatTests/TransposeTest1
 BOOST_AUTO_TEST_CASE( TransposeTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 3> matrix1( 1.f, 2.f, 3.f,
                                     4.f, 5.f, 6.f,
                                     7.f, 8.f, 9.f );
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE( TransposeTest1 )
 // --run_test=SquareMatrix3FloatTests/DeterminantTest1
 BOOST_AUTO_TEST_CASE( DeterminantTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 3> matrix1( 3.f, 2.f, 3.f,
                             4.f, 2.f, 4.f,
                             8.f, 2.f, 2.f );
@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE( DeterminantTest1 )
 // --run_test=SquareMatrix3FloatTests/InverseTest1
 BOOST_AUTO_TEST_CASE( InverseTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 3> matrix( 3.f, 2.f, 3.f,
                                 4.f, 2.f, 4.f,
                                 8.f, 2.f, 2.f );

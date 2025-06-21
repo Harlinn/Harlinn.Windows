@@ -52,6 +52,7 @@ namespace Harlinn::Common::Core
 }
 namespace Harlinn::OCI
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
 }
 

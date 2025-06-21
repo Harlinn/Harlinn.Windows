@@ -19,11 +19,14 @@
 */
 
 #include "HAIDef.h"
+#include <HCCString.h>
 
 #pragma comment(lib, "DirectML.lib")
 
 namespace Harlinn::AI::DML
 {
+    using namespace Harlinn::Common;
+    using namespace Harlinn::Common::Core;
     
 #define DML_IMPLEMENT_CONVERSIONS_TO( name ) HWD3D12_IMPLEMENT_CONVERSIONS_TO( name )
 
@@ -55,7 +58,7 @@ namespace Harlinn::AI::DML
     inline bool TryParse##name( const AnsiString& str, name& value ) \
     { \
         return TryParse##name( ToWideString( str ), value ); \
-    }
+    } 
 
 
 

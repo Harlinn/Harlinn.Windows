@@ -17,6 +17,8 @@
 #include "BenchmarkUtils.h"
 #include <pbrto/util/vecmath.h>
 
+using namespace Harlinn::Math;
+
 namespace
 {
     RandomGenerator<double, SampleCount> DoubleGenerator;

@@ -16,11 +16,11 @@
 
 #include "pch.h"
 
-#include <HCCMath.h>
+#include <Harlinn/Math/Math.h>
 
 
 using namespace Harlinn::Common::Core;
-using namespace Harlinn::Common::Core::Math;
+using namespace Harlinn::Math;
 namespace
 {
     class LocalFixture
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE( TruncDoubleTest1 )
         },
         []( auto x )
         {
-            return Math::FloatingPoint<FloatT>::Trunc( x );
+            return Math::Internal::FloatingPoint<FloatT>::Trunc( x );
         } );
     BOOST_CHECK( success );
 }
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE( TruncFloatTest1 )
         },
         []( auto x )
         {
-            return Math::FloatingPoint<FloatT>::Trunc( x );
+            return Math::Internal::FloatingPoint<FloatT>::Trunc( x );
         } );
     BOOST_CHECK( success );
 }

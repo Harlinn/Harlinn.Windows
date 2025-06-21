@@ -7,6 +7,7 @@
 
 namespace Barrelman::Types
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
 
     enum class Kind : Int32

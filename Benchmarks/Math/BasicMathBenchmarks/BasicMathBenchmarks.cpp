@@ -16,6 +16,7 @@
 
 #include "BenchmarkUtils.h"
 
+using namespace Harlinn::Math;
 
 namespace
 {
@@ -1496,16 +1497,16 @@ static void BenchmarkStdDoubleModF( benchmark::State& state )
 }
 BENCHMARK( BenchmarkStdDoubleModF );
 
-static void BenchmarkMathFloatingPointDoubleModF( benchmark::State& state )
+static void BenchmarkMathFloatingPointInternalDoubleModF( benchmark::State& state )
 {
     double exp;
     DoubleGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<double>::ModF( DoubleGenerator( ), exp ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<double>::ModF( DoubleGenerator( ), exp ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointDoubleModF );
+BENCHMARK( BenchmarkMathFloatingPointInternalDoubleModF );
 
 
 static void BenchmarkMathFloatModF( benchmark::State& state )
@@ -1532,16 +1533,16 @@ static void BenchmarkOpenLibMFloatModF( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMFloatModF );
 
-static void BenchmarkMathFloatingPointFloatModF( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointFloatModF( benchmark::State& state )
 {
     float exp;
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<float>::ModF( FloatGenerator( ), exp ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<float>::ModF( FloatGenerator( ), exp ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointFloatModF );
+BENCHMARK( BenchmarkMathInternalFloatingPointFloatModF );
 
 
 static void BenchmarkStdFloatModF( benchmark::State& state )
@@ -1820,16 +1821,16 @@ static void BenchmarkOpenLibMDoubleTrunc( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMDoubleTrunc );
 
-static void BenchmarkMathFloatingPointDoubleTrunc( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointDoubleTrunc( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
     for ( auto _ : state )
     {
-        Math::FloatingPoint<double> fp( DoubleGenerator( ) );
+        Math::Internal::FloatingPoint<double> fp( DoubleGenerator( ) );
         benchmark::DoNotOptimize( fp.Trunc(  ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointDoubleTrunc );
+BENCHMARK( BenchmarkMathInternalFloatingPointDoubleTrunc );
 
 
 static void BenchmarkStdDoubleTrunc( benchmark::State& state )
@@ -1941,16 +1942,16 @@ static void BenchmarkOpenLibMFloatTrunc( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMFloatTrunc );
 
-static void BenchmarkMathFloatingPointFloatTrunc( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointFloatTrunc( benchmark::State& state )
 {
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        Math::FloatingPoint<float> fp( FloatGenerator( ) );
+        Math::Internal::FloatingPoint<float> fp( FloatGenerator( ) );
         benchmark::DoNotOptimize( fp.Trunc( ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointFloatTrunc );
+BENCHMARK( BenchmarkMathInternalFloatingPointFloatTrunc );
 
 
 static void BenchmarkStdFloatTrunc( benchmark::State& state )
@@ -2000,15 +2001,15 @@ static void BenchmarkOpenLibMDoubleFloor( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMDoubleFloor );
 
-static void BenchmarkMathFloatingPointDoubleFloor( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointDoubleFloor( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<double>::Floor( DoubleGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<double>::Floor( DoubleGenerator( ) ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointDoubleFloor );
+BENCHMARK( BenchmarkMathInternalFloatingPointDoubleFloor );
 
 
 static void BenchmarkStdDoubleFloor( benchmark::State& state )
@@ -2104,15 +2105,15 @@ static void BenchmarkOpenLibMFloatFloor( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMFloatFloor );
 
-static void BenchmarkMathFloatingPointFloatFloor( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointFloatFloor( benchmark::State& state )
 {
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<float>::Floor( FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<float>::Floor( FloatGenerator( ) ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointFloatFloor );
+BENCHMARK( BenchmarkMathInternalFloatingPointFloatFloor );
 
 
 static void BenchmarkStdFloatFloor( benchmark::State& state )
@@ -2146,15 +2147,15 @@ static void BenchmarkOpenLibMDoubleCeil( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMDoubleCeil );
 
-static void BenchmarkMathFloatingPointDoubleCeil( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointDoubleCeil( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<double>::Ceil( DoubleGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<double>::Ceil( DoubleGenerator( ) ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointDoubleCeil );
+BENCHMARK( BenchmarkMathInternalFloatingPointDoubleCeil );
 
 
 static void BenchmarkStdDoubleCeil( benchmark::State& state )
@@ -2250,15 +2251,15 @@ static void BenchmarkOpenLibMFloatCeil( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMFloatCeil );
 
-static void BenchmarkMathFloatingPointFloatCeil( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointFloatCeil( benchmark::State& state )
 {
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<float>::Ceil( FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<float>::Ceil( FloatGenerator( ) ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointFloatCeil );
+BENCHMARK( BenchmarkMathInternalFloatingPointFloatCeil );
 
 static void BenchmarkStdFloatCeil( benchmark::State& state )
 {
@@ -2290,15 +2291,15 @@ static void BenchmarkOpenLibMDoubleRound( benchmark::State& state )
 }
 BENCHMARK( BenchmarkOpenLibMDoubleRound );
 
-static void BenchmarkMathFloatingPointDoubleRound( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointDoubleRound( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<double>::Round( DoubleGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<double>::Round( DoubleGenerator( ) ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointDoubleRound );
+BENCHMARK( BenchmarkMathInternalFloatingPointDoubleRound );
 
 
 static void BenchmarkStdDoubleRound( benchmark::State& state )
@@ -2395,15 +2396,15 @@ static void BenchmarkOpenLibMFloatRound( benchmark::State& state )
 BENCHMARK( BenchmarkOpenLibMFloatRound );
 
 
-static void BenchmarkMathFloatingPointFloatRound( benchmark::State& state )
+static void BenchmarkMathInternalFloatingPointFloatRound( benchmark::State& state )
 {
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FloatingPoint<float>::Round( FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::Internal::FloatingPoint<float>::Round( FloatGenerator( ) ) );
     }
 }
-BENCHMARK( BenchmarkMathFloatingPointFloatRound );
+BENCHMARK( BenchmarkMathInternalFloatingPointFloatRound );
 
 
 static void BenchmarkStdFloatRound( benchmark::State& state )

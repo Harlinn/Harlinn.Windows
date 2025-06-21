@@ -19,17 +19,20 @@
 #ifndef HDMC_USES_HCC_MATH
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
+    
+
     uint32_t Color::R11G11B10F( bool RoundToEven ) const
     {
 #if 1
+        
         static const float kMaxVal = float( 1 << 16 );
         static const float kF32toF16 = ( 1.0 / ( 1ull << 56 ) ) * ( 1.0 / ( 1ull << 56 ) );
 
         union { float f; uint32_t u; } R, G, B;
 
-        R.f = Math::Clamp( m_value.f[ 0 ], 0.0f, kMaxVal ) * kF32toF16;
-        G.f = Math::Clamp( m_value.f[ 1 ], 0.0f, kMaxVal ) * kF32toF16;
-        B.f = Math::Clamp( m_value.f[ 2 ], 0.0f, kMaxVal ) * kF32toF16;
+        R.f = Harlinn::Math::Clamp( m_value.f[ 0 ], 0.0f, kMaxVal ) * kF32toF16;
+        G.f = Harlinn::Math::Clamp( m_value.f[ 1 ], 0.0f, kMaxVal ) * kF32toF16;
+        B.f = Harlinn::Math::Clamp( m_value.f[ 2 ], 0.0f, kMaxVal ) * kF32toF16;
 
         if ( RoundToEven )
         {
@@ -91,12 +94,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         static const float kMinVal = float( 1.f / ( 1 << 16 ) );
 
         // Clamp RGB to [0, 1.FF*2^16]
-        float r = Math::Clamp( m_value.f[ 0 ], 0.0f, kMaxVal );
-        float g = Math::Clamp( m_value.f[ 1 ], 0.0f, kMaxVal );
-        float b = Math::Clamp( m_value.f[ 2 ], 0.0f, kMaxVal );
+        float r = Harlinn::Math::Clamp( m_value.f[ 0 ], 0.0f, kMaxVal );
+        float g = Harlinn::Math::Clamp( m_value.f[ 1 ], 0.0f, kMaxVal );
+        float b = Harlinn::Math::Clamp( m_value.f[ 2 ], 0.0f, kMaxVal );
 
         // Compute the maximum channel, no less than 1.0*2^-15
-        float MaxChannel = Math::Max( Math::Max( r, g ), Math::Max( b, kMinVal ) );
+        float MaxChannel = Harlinn::Math::Max( Harlinn::Math::Max( r, g ), Harlinn::Math::Max( b, kMinVal ) );
 
         // Take the exponent of the maximum channel (rounding up the 9th bit) and
         // add 15 to it.  When added to the channels, it causes the implicit '1.0'

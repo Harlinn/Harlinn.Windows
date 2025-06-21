@@ -15,7 +15,7 @@
    limitations under the License.
 */
 
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 #include <HCCString.h>
 #include <HCCTestUtils.h>
 #include <pbrto/util/vecmath.h>

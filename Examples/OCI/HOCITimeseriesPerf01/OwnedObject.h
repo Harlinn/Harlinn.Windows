@@ -23,6 +23,7 @@
 #include <HCCGuid.h>
 #include <HCCIO.h>
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 
 struct OwnedObjectTypeData

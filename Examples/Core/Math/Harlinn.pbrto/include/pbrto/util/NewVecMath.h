@@ -30,7 +30,7 @@
 
 #include <pbrto/util/NewPStd.h>
 
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 
 
 namespace pbrto

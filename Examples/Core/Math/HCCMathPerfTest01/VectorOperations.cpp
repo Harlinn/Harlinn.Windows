@@ -17,10 +17,12 @@
 
 #include "HCCMathPerfTest01.h"
 
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 #include <HCCDateTime.h>
 #include <HCCString.h>
 
+using namespace Harlinn;
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 
 namespace
@@ -49,7 +51,7 @@ namespace
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
             PrintLn( L"{}: Duration={}, Accumulated={}",
-                ToWideString( testName ), duration, accumulated.ToString() );
+                ToWideString( testName ), duration, ToWideString( accumulated.ToString() ) );
         }
     }
 
@@ -79,7 +81,7 @@ namespace
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
             PrintLn( L"{}: Duration={}, Accumulated={}",
-                ToWideString( testName ), duration, accumulated.ToString( ) );
+                ToWideString( testName ), duration, ToWideString( accumulated.ToString( ) ) );
         }
     }
 
@@ -111,7 +113,7 @@ namespace
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
             PrintLn( L"{}: Duration={}, Accumulated={}",
-                ToWideString( testName ), duration, accumulated.ToString( ) );
+                ToWideString( testName ), duration, ToWideString( accumulated.ToString( ) ) );
         }
     }
 

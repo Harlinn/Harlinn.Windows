@@ -22,7 +22,7 @@
 #include <DirectXMath.h>
 #include <pbrto/util/transform.h>
 #include <pbrto/util/NewTransform.h>
-#include <HCCTransformations.h>
+#include <Harlinn/Math/Transformations.h>
 
 #ifdef BUILDING_HARLINN_UTIL_TEST
 #define HUT_EXPORT __declspec(dllexport)

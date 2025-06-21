@@ -41,14 +41,27 @@
 #endif
 
 
+#ifdef HCC_USE_COMMON
+namespace Harlinn::Math
+{
+    class Half;
+}
+#endif
+
 namespace Harlinn::Common::Core
 {
+#ifndef HCC_USE_COMMON
     namespace Math
     {
         class Half;
     }
     HCC_EXPORT WideString ToWideString( const Math::Half& value );
     HCC_EXPORT AnsiString ToAnsiString( const Math::Half& value );
+#else
+    HCC_EXPORT WideString ToWideString( const Harlinn::Math::Half& value );
+    HCC_EXPORT AnsiString ToAnsiString( const Harlinn::Math::Half& value );
+#endif
+    
 }
 
 

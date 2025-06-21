@@ -83,7 +83,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -103,7 +103,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -124,7 +124,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -144,7 +144,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ATGTK;$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.DirectXTK12\Inc;$(SolutionDir)3rdParty\Harlinn.ImGui;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>

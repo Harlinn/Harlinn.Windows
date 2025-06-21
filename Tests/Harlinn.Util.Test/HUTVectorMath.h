@@ -19,7 +19,7 @@
 */
 
 #include "HUTDef.h"
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 
 namespace Harlinn::Util::Test
 {
@@ -30,9 +30,9 @@ namespace Harlinn::Util::Test
     }
 
 
-    inline Common::Core::Math::SquareMatrix<float, 4> ConvertMatrix( const pbrt::SquareMatrix<4>& m )
+    inline Math::SquareMatrix<float, 4> ConvertMatrix( const pbrt::SquareMatrix<4>& m )
     {
-        Common::Core::Math::SquareMatrix<float, 4> result(
+        Math::SquareMatrix<float, 4> result(
             m[ 0 ][ 0 ], m[ 0 ][ 1 ], m[ 0 ][ 2 ], m[ 0 ][ 3 ],
             m[ 1 ][ 0 ], m[ 1 ][ 1 ], m[ 1 ][ 2 ], m[ 1 ][ 3 ],
             m[ 2 ][ 0 ], m[ 2 ][ 1 ], m[ 2 ][ 2 ], m[ 2 ][ 3 ],
@@ -40,7 +40,7 @@ namespace Harlinn::Util::Test
         return result;
     }
 
-    inline pbrt::SquareMatrix<4> ConvertMatrix( const Common::Core::Math::SquareMatrix<float, 4>& m )
+    inline pbrt::SquareMatrix<4> ConvertMatrix( const Math::SquareMatrix<float, 4>& m )
     {
         pbrt::SquareMatrix<4> result(
             m[ 0 ][ 0 ], m[ 0 ][ 1 ], m[ 0 ][ 2 ], m[ 0 ][ 3 ],
@@ -51,7 +51,7 @@ namespace Harlinn::Util::Test
     }
 
 
-    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>& m1, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
+    inline bool Equal( const Math::SquareMatrix<float, 4>& m1, const Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
         {
@@ -69,22 +69,22 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>& m1, const Common::Core::Math::SquareMatrix<float, 4>::Simd& m2simd, float epsilon = 0.0001f )
+    inline bool Equal( const Math::SquareMatrix<float, 4>& m1, const Math::SquareMatrix<float, 4>::Simd& m2simd, float epsilon = 0.0001f )
     {
-        Common::Core::Math::SquareMatrix<float, 4> m2( m2simd );
+        Math::SquareMatrix<float, 4> m2( m2simd );
         return Equal( m1, m2 );
     }
 
-    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>::Simd& m1simd, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
+    inline bool Equal( const Math::SquareMatrix<float, 4>::Simd& m1simd, const Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
-        Common::Core::Math::SquareMatrix<float, 4> m1( m1simd );
+        Math::SquareMatrix<float, 4> m1( m1simd );
         return Equal( m1, m2 );
     }
 
-    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>::Simd& m1simd, const Common::Core::Math::SquareMatrix<float, 4>::Simd& m2simd, float epsilon = 0.0001f )
+    inline bool Equal( const Math::SquareMatrix<float, 4>::Simd& m1simd, const Math::SquareMatrix<float, 4>::Simd& m2simd, float epsilon = 0.0001f )
     {
-        Common::Core::Math::SquareMatrix<float, 4> m1( m1simd );
-        Common::Core::Math::SquareMatrix<float, 4> m2( m2simd );
+        Math::SquareMatrix<float, 4> m1( m1simd );
+        Math::SquareMatrix<float, 4> m2( m2simd );
         return Equal( m1, m2 );
     }
 
@@ -128,7 +128,7 @@ namespace Harlinn::Util::Test
     }
 
 #ifndef PBRT_USES_HCCMATH
-    inline bool Equal( const pbrt::SquareMatrix<4>& m1, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
+    inline bool Equal( const pbrt::SquareMatrix<4>& m1, const Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
         {
@@ -145,7 +145,7 @@ namespace Harlinn::Util::Test
         }
         return true;
     }
-    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
+    inline bool Equal( const Math::SquareMatrix<float, 4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
         {
@@ -164,7 +164,7 @@ namespace Harlinn::Util::Test
     }
 #endif
 
-    inline bool Equal( const DirectX::XMFLOAT4X4& m1, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
+    inline bool Equal( const DirectX::XMFLOAT4X4& m1, const Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
         {
@@ -181,7 +181,7 @@ namespace Harlinn::Util::Test
         }
         return true;
     }
-    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>& m1, const DirectX::XMFLOAT4X4& m2, float epsilon = 0.0001f )
+    inline bool Equal( const Math::SquareMatrix<float, 4>& m1, const DirectX::XMFLOAT4X4& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
         {
@@ -199,14 +199,14 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    inline bool Equal( const DirectX::FXMMATRIX& m1, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
+    inline bool Equal( const DirectX::FXMMATRIX& m1, const Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
         DirectX::XMFLOAT4X4 m;
         DirectX::XMStoreFloat4x4( &m, m1 );
         return Equal( m, m2 );
 
     }
-    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>& m1, const DirectX::FXMMATRIX& m2, float epsilon = 0.0001f )
+    inline bool Equal( const Math::SquareMatrix<float, 4>& m1, const DirectX::FXMMATRIX& m2, float epsilon = 0.0001f )
     {
         DirectX::XMFLOAT4X4 m;
         DirectX::XMStoreFloat4x4( &m, m2 );
@@ -214,7 +214,7 @@ namespace Harlinn::Util::Test
     }
 
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const DirectX::XMFLOAT3& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -230,7 +230,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const DirectX::XMFLOAT3& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -262,7 +262,7 @@ namespace Harlinn::Util::Test
     }
 
 #ifndef PBRT_USES_HCCMATH
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrt::Vector2f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -278,7 +278,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Vector2f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -294,7 +294,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrt::Point2f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -310,7 +310,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Point2f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 2; i++ )
@@ -329,7 +329,7 @@ namespace Harlinn::Util::Test
 
 
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrt::Vector3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -345,7 +345,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Vector3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -361,7 +361,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrt::Point3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -377,7 +377,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Point3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -393,7 +393,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrt::Normal3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -409,7 +409,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrt::Normal3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -425,7 +425,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 #endif
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrto::Vector3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -441,7 +441,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrto::Vector3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -457,7 +457,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrto::Point3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -473,7 +473,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrto::Point3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -489,7 +489,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const pbrto::Normal3f& v1, const T& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )
@@ -505,7 +505,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-    template<Common::Core::Math::TupleType T>
+    template<Math::TupleType T>
     inline bool Equal( const T& v1, const pbrto::Normal3f& v2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 3; i++ )

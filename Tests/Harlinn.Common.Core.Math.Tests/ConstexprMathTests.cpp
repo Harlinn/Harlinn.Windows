@@ -16,12 +16,12 @@
 
 #include "pch.h"
 
-#include <HCCMath.h>
+#include <Harlinn/Math/Math.h>
 
 
 using namespace Harlinn::Common::Core;
-using namespace Harlinn::Common::Core::Math;
-namespace OpenLibM = Harlinn::Common::Core::Math::Internal::OpenLibM;
+using namespace Harlinn::Math;
+namespace OpenLibM = Harlinn::Math::Internal::OpenLibM;
 namespace
 {
     class LocalFixture

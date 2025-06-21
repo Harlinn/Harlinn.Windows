@@ -11,7 +11,7 @@
 #include "HWDXCore.h"
 #include "HWMediaEngine.h"
 #include "HCCActiveObject.h"
-#include "HCCVectorMath.h"
+#include "Harlinn/Math/VectorMath.h"
 
 #ifdef BUILDING_HARLINN_AI
 #define HAI_EXPORT __declspec(dllexport)
@@ -34,6 +34,9 @@
 
 namespace Harlinn::AI
 {
+    using namespace Harlinn;
+    using namespace Harlinn::Common;
+    using namespace Harlinn::Common::Core;
     using namespace Harlinn::Windows;
     HAI_EXPORT UInt32 GetHAIVersion( );
 }

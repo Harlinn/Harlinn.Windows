@@ -17,13 +17,14 @@
 
 #include "HCCMathPerfTest01.h"
 
-#include <HCCMath.h>
+#include <Harlinn/Math/Math.h>
 #include <HCCDateTime.h>
 #include <HCCBits.h>
 #include <bitset>
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
-using namespace Harlinn::Common::Core::Math;
+using namespace Harlinn::Math;
 
 namespace
 {

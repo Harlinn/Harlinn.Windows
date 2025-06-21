@@ -90,7 +90,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -111,7 +111,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -134,7 +134,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,7 +155,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1,7 +1,9 @@
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
+#include <HCCString.h>
 
+using namespace Harlinn;
 using namespace Harlinn::Common::Core;
-using namespace Harlinn::Common::Core::Math;
+using namespace Harlinn::Math;
 
 namespace Basics
 {

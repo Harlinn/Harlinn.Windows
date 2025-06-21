@@ -54,6 +54,7 @@ namespace Harlinn::Common::Core
 }
 namespace Harlinn::ODBC
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
 }
 

@@ -72,7 +72,7 @@ BOOST_FIXTURE_TEST_SUITE( SquareMatrix2FloatTests, LocalFixture )
 // --run_test=SquareMatrix2FloatTests/AddTest1
 BOOST_AUTO_TEST_CASE( AddTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 2> matrix1( 1.f, 2.f, 3.f, 4.f );
     SquareMatrix<float, 2> matrix2( 2.f, 3.f, 4.f, 5.f );
 
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE( AddTest1 )
 // --run_test=SquareMatrix2FloatTests/SubTest1
 BOOST_AUTO_TEST_CASE( SubTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 2> matrix1( 2.f, 3.f, 4.f, 5.f );
     SquareMatrix<float, 2> matrix2( 1.f, 2.f, 2.f, 2.f );
     
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE( SubTest1 )
 // --run_test=SquareMatrix2FloatTests/MulTest1
 BOOST_AUTO_TEST_CASE( MulTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 2> matrix1( 2.f, 3.f, 4.f, 5.f );
     SquareMatrix<float, 2> matrix2( 1.f, 2.f, 2.f, 2.f );
 
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE( MulTest1 )
 // --run_test=SquareMatrix2FloatTests/TransposeTest1
 BOOST_AUTO_TEST_CASE( TransposeTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 2> matrix1( 1.f, 2.f, 3.f, 4.f );
 
     SquareMatrix<float, 2> expected( 1.f, 3.f, 2.f, 4.f );
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE( TransposeTest1 )
 // --run_test=SquareMatrix2FloatTests/DeterminantTest1
 BOOST_AUTO_TEST_CASE( DeterminantTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 2> matrix1( 1.f, 2.f, 3.f, 4.f );
 
     Math::Vector<float, 2> result = Determinant( matrix1 );
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE( DeterminantTest1 )
 // --run_test=SquareMatrix2FloatTests/InverseTest1
 BOOST_AUTO_TEST_CASE( InverseTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 2> matrix( 0.285714f, 0.857143f, -0.428571f, 0.0f );
 
     SquareMatrix<float, 2> expected( 0.0f, -2.33334f, 1.16667f, 0.777778f );

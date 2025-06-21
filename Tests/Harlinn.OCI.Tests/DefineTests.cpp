@@ -22,6 +22,7 @@
 #include <boost/test/unit_test.hpp>
 #include <OCITestFixture.h>
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 using namespace Harlinn;
 using namespace std::string_literals;

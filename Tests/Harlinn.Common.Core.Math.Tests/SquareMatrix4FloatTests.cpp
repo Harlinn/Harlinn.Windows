@@ -70,7 +70,7 @@ BOOST_FIXTURE_TEST_SUITE( SquareMatrix4FloatTests, LocalFixture )
 // --run_test=SquareMatrix4FloatTests/InverseTest1
 BOOST_AUTO_TEST_CASE( InverseTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 4> matrix( 0.285714f,  0.857143f, -0.428571f, 0.0f,
                                         -0.857143f, 0.428571f, 0.285714f, 0.0f,
                                         0.428571f, 0.285714f, 0.857143f, 0.0f,
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE( PbrtInverseTest1 )
 // --run_test=SquareMatrix4FloatTests/DeterminantTest1
 BOOST_AUTO_TEST_CASE( DeterminantTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 4> matrix( 0.285714f, 0.857143f, -0.428571f, 0.0f,
         -0.857143f, 0.428571f, 0.285714f, 0.0f,
         0.428571f, 0.285714f, 0.857143f, 0.0f,
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE( DeterminantTest1 )
 // --run_test=SquareMatrix4FloatTests/DeterminantTest2
 BOOST_AUTO_TEST_CASE( DeterminantTest2 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using namespace DirectX;
     XMFLOAT4X4 matrix( 0.285714f, 0.857143f, -0.428571f, 0.0f,
         -0.857143f, 0.428571f, 0.285714f, 0.0f,
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE( DeterminantTest2 )
 // --run_test=SquareMatrix4FloatTests/DecomposeTest1
 BOOST_AUTO_TEST_CASE( DecomposeTest1 )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     SquareMatrix<float, 4>::Simd matrix = SquareMatrix<float, 4>( 0.285714f, 0.857143f, -0.428571f, 0.0f,
         -0.857143f, 0.428571f, 0.285714f, 0.0f,
         0.428571f, 0.285714f, 0.857143f, 0.0f,
@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE( DecomposeTest1 )
 // --run_test=SquareMatrix4FloatTests/DecomposeTest2b
 BOOST_AUTO_TEST_CASE( DecomposeTest2b )
 {
-    using namespace Harlinn::Common::Core::Math;
+    using namespace Harlinn::Math;
     using namespace DirectX;
     XMFLOAT4X4 matrix( 0.285714f, 0.857143f, -0.428571f, 0.0f,
         -0.857143f, 0.428571f, 0.285714f, 0.0f,

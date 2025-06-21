@@ -498,7 +498,7 @@ namespace Harlinn::Common::Core
 
     }
 
-
+#ifndef HCC_USE_COMMON
     template<typename T>
     inline constexpr bool IsNotBoolean = std::is_same_v<std::remove_cvref_t<T>, bool> == false;
     template<typename T>
@@ -517,7 +517,7 @@ namespace Harlinn::Common::Core
 
     template<typename T>
     inline constexpr bool IsArithmetic = IsInteger<T> || IsFloatingPoint<T>;
-
+#endif
     
 
     template<typename T>

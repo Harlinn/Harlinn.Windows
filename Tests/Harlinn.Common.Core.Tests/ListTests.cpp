@@ -17,6 +17,8 @@
 #include "pch.h"
 #include "HCCList.h"
 #include "HCCVector.h"
+
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 
 template<typename T>

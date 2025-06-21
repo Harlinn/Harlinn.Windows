@@ -15,7 +15,7 @@
 */
 
 #include "BenchmarkUtils.h"
-#include <HCCTransformations.h>
+#include <Harlinn/Math/Transformations.h>
 #include <pbrto/util/transform.h>
 #include <pbrto/util/NewTransform.h>
 

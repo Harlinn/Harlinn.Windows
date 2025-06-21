@@ -16,6 +16,7 @@
 
 #include "pch.h"
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 
 using namespace Harlinn::Common;
@@ -1545,17 +1546,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest55 )
     using Type = std::array<Byte,2>;
     constexpr auto isStdArray_1 = IsStdArray<Type>;
     BOOST_CHECK( isStdArray_1 == true );
-    constexpr auto isStdArray_1b = Internal::IsStdArrayImpl<Type>;
+    constexpr auto isStdArray_1b = Core::Internal::IsStdArrayImpl<Type>;
     BOOST_CHECK( isStdArray_1b == true );
 
     constexpr auto isStdArray_2 = IsStdArray<Type&>;
     BOOST_CHECK( isStdArray_2 == true );
-    constexpr auto isStdArray_2b = Internal::IsStdArrayImpl<Type&>;
+    constexpr auto isStdArray_2b = Core::Internal::IsStdArrayImpl<Type&>;
     BOOST_CHECK( isStdArray_2b == false );
 
     constexpr auto isStdArray_3 = IsStdArray<Type&&>;
     BOOST_CHECK( isStdArray_3 == true );
-    constexpr auto isStdArray_3b = Internal::IsStdArrayImpl<Type&&>;
+    constexpr auto isStdArray_3b = Core::Internal::IsStdArrayImpl<Type&&>;
     BOOST_CHECK( isStdArray_3b == false );
 }
 
@@ -1565,17 +1566,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest56 )
     using Type = std::vector<Byte>;
     constexpr auto isStdVector_1 = IsStdVector<Type>;
     BOOST_CHECK( isStdVector_1 == true );
-    constexpr auto isStdVector_1b = Internal::IsStdVectorImpl<Type>;
+    constexpr auto isStdVector_1b = Core::Internal::IsStdVectorImpl<Type>;
     BOOST_CHECK( isStdVector_1b == true );
 
     constexpr auto isStdVector_2 = IsStdVector<Type&>;
     BOOST_CHECK( isStdVector_2 == true );
-    constexpr auto isStdVector_2b = Internal::IsStdVectorImpl<Type&>;
+    constexpr auto isStdVector_2b = Core::Internal::IsStdVectorImpl<Type&>;
     BOOST_CHECK( isStdVector_2b == false );
 
     constexpr auto isStdVector_3 = IsStdVector<Type&&>;
     BOOST_CHECK( isStdVector_3 == true );
-    constexpr auto isStdVector_3b = Internal::IsStdVectorImpl<Type&&>;
+    constexpr auto isStdVector_3b = Core::Internal::IsStdVectorImpl<Type&&>;
     BOOST_CHECK( isStdVector_3b == false );
 }
 
@@ -1585,17 +1586,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest57 )
     using Type = std::vector<bool>;
     constexpr auto isStdVectorBool_1 = IsStdVectorBool<Type>;
     BOOST_CHECK( isStdVectorBool_1 == true );
-    constexpr auto isStdVectorBool_1b = Internal::IsStdVectorBoolImpl<Type>;
+    constexpr auto isStdVectorBool_1b = Core::Internal::IsStdVectorBoolImpl<Type>;
     BOOST_CHECK( isStdVectorBool_1b == true );
 
     constexpr auto isStdVectorBool_2 = IsStdVectorBool<Type&>;
     BOOST_CHECK( isStdVectorBool_2 == true );
-    constexpr auto isStdVectorBool_2b = Internal::IsStdVectorBoolImpl<Type&>;
+    constexpr auto isStdVectorBool_2b = Core::Internal::IsStdVectorBoolImpl<Type&>;
     BOOST_CHECK( isStdVectorBool_2b == false );
 
     constexpr auto isStdVectorBool_3 = IsStdVectorBool<Type&&>;
     BOOST_CHECK( isStdVectorBool_3 == true );
-    constexpr auto isStdVectorBool_3b = Internal::IsStdVectorBoolImpl<Type&&>;
+    constexpr auto isStdVectorBool_3b = Core::Internal::IsStdVectorBoolImpl<Type&&>;
     BOOST_CHECK( isStdVectorBool_3b == false );
 }
 
@@ -1605,17 +1606,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest58 )
     using Type = std::deque<Byte>;
     constexpr auto isStdDeque_1 = IsStdDeque<Type>;
     BOOST_CHECK( isStdDeque_1 == true );
-    constexpr auto isStdDeque_1b = Internal::IsStdDequeImpl<Type>;
+    constexpr auto isStdDeque_1b = Core::Internal::IsStdDequeImpl<Type>;
     BOOST_CHECK( isStdDeque_1b == true );
 
     constexpr auto isStdDeque_2 = IsStdDeque<Type&>;
     BOOST_CHECK( isStdDeque_2 == true );
-    constexpr auto isStdDeque_2b = Internal::IsStdDequeImpl<Type&>;
+    constexpr auto isStdDeque_2b = Core::Internal::IsStdDequeImpl<Type&>;
     BOOST_CHECK( isStdDeque_2b == false );
 
     constexpr auto isStdDeque_3 = IsStdDeque<Type&&>;
     BOOST_CHECK( isStdDeque_3 == true );
-    constexpr auto isStdDeque_3b = Internal::IsStdDequeImpl<Type&&>;
+    constexpr auto isStdDeque_3b = Core::Internal::IsStdDequeImpl<Type&&>;
     BOOST_CHECK( isStdDeque_3b == false );
 }
 
@@ -1625,17 +1626,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest59 )
     using Type = std::forward_list<Byte>;
     constexpr auto isStdForwardList_1 = IsStdForwardList<Type>;
     BOOST_CHECK( isStdForwardList_1 == true );
-    constexpr auto isStdForwardList_1b = Internal::IsStdForwardListImpl<Type>;
+    constexpr auto isStdForwardList_1b = Core::Internal::IsStdForwardListImpl<Type>;
     BOOST_CHECK( isStdForwardList_1b == true );
 
     constexpr auto isStdForwardList_2 = IsStdForwardList<Type&>;
     BOOST_CHECK( isStdForwardList_2 == true );
-    constexpr auto isStdForwardList_2b = Internal::IsStdForwardListImpl<Type&>;
+    constexpr auto isStdForwardList_2b = Core::Internal::IsStdForwardListImpl<Type&>;
     BOOST_CHECK( isStdForwardList_2b == false );
 
     constexpr auto isStdForwardList_3 = IsStdForwardList<Type&&>;
     BOOST_CHECK( isStdForwardList_3 == true );
-    constexpr auto isStdForwardList_3b = Internal::IsStdForwardListImpl<Type&&>;
+    constexpr auto isStdForwardList_3b = Core::Internal::IsStdForwardListImpl<Type&&>;
     BOOST_CHECK( isStdForwardList_3b == false );
 }
 
@@ -1645,17 +1646,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest60 )
     using Type = std::list<Byte>;
     constexpr auto isStdList_1 = IsStdList<Type>;
     BOOST_CHECK( isStdList_1 == true );
-    constexpr auto isStdList_1b = Internal::IsStdListImpl<Type>;
+    constexpr auto isStdList_1b = Core::Internal::IsStdListImpl<Type>;
     BOOST_CHECK( isStdList_1b == true );
 
     constexpr auto isStdList_2 = IsStdList<Type&>;
     BOOST_CHECK( isStdList_2 == true );
-    constexpr auto isStdList_2b = Internal::IsStdListImpl<Type&>;
+    constexpr auto isStdList_2b = Core::Internal::IsStdListImpl<Type&>;
     BOOST_CHECK( isStdList_2b == false );
 
     constexpr auto isStdList_3 = IsStdList<Type&&>;
     BOOST_CHECK( isStdList_3 == true );
-    constexpr auto isStdList_3b = Internal::IsStdListImpl<Type&&>;
+    constexpr auto isStdList_3b = Core::Internal::IsStdListImpl<Type&&>;
     BOOST_CHECK( isStdList_3b == false );
 }
 
@@ -1665,17 +1666,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest61 )
     using Type = std::set<Byte>;
     constexpr auto isStdSet_1 = IsStdSet<Type>;
     BOOST_CHECK( isStdSet_1 == true );
-    constexpr auto isStdSet_1b = Internal::IsStdSetImpl<Type>;
+    constexpr auto isStdSet_1b = Core::Internal::IsStdSetImpl<Type>;
     BOOST_CHECK( isStdSet_1b == true );
 
     constexpr auto isStdSet_2 = IsStdSet<Type&>;
     BOOST_CHECK( isStdSet_2 == true );
-    constexpr auto isStdSet_2b = Internal::IsStdSetImpl<Type&>;
+    constexpr auto isStdSet_2b = Core::Internal::IsStdSetImpl<Type&>;
     BOOST_CHECK( isStdSet_2b == false );
 
     constexpr auto isStdSet_3 = IsStdSet<Type&&>;
     BOOST_CHECK( isStdSet_3 == true );
-    constexpr auto isStdSet_3b = Internal::IsStdSetImpl<Type&&>;
+    constexpr auto isStdSet_3b = Core::Internal::IsStdSetImpl<Type&&>;
     BOOST_CHECK( isStdSet_3b == false );
 }
 
@@ -1685,17 +1686,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest62 )
     using Type = std::map<Byte,std::string>;
     constexpr auto isStdMap_1 = IsStdMap<Type>;
     BOOST_CHECK( isStdMap_1 == true );
-    constexpr auto isStdMap_1b = Internal::IsStdMapImpl<Type>;
+    constexpr auto isStdMap_1b = Core::Internal::IsStdMapImpl<Type>;
     BOOST_CHECK( isStdMap_1b == true );
 
     constexpr auto isStdMap_2 = IsStdMap<Type&>;
     BOOST_CHECK( isStdMap_2 == true );
-    constexpr auto isStdMap_2b = Internal::IsStdMapImpl<Type&>;
+    constexpr auto isStdMap_2b = Core::Internal::IsStdMapImpl<Type&>;
     BOOST_CHECK( isStdMap_2b == false );
 
     constexpr auto isStdMap_3 = IsStdMap<Type&&>;
     BOOST_CHECK( isStdMap_3 == true );
-    constexpr auto isStdMap_3b = Internal::IsStdMapImpl<Type&&>;
+    constexpr auto isStdMap_3b = Core::Internal::IsStdMapImpl<Type&&>;
     BOOST_CHECK( isStdMap_3b == false );
 }
 
@@ -1705,17 +1706,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest63 )
     using Type = std::multiset<Byte>;
     constexpr auto isStdMultiset_1 = IsStdMultiset<Type>;
     BOOST_CHECK( isStdMultiset_1 == true );
-    constexpr auto isStdMultiset_1b = Internal::IsStdMultisetImpl<Type>;
+    constexpr auto isStdMultiset_1b = Core::Internal::IsStdMultisetImpl<Type>;
     BOOST_CHECK( isStdMultiset_1b == true );
 
     constexpr auto isStdMultiset_2 = IsStdMultiset<Type&>;
     BOOST_CHECK( isStdMultiset_2 == true );
-    constexpr auto isStdMultiset_2b = Internal::IsStdMultisetImpl<Type&>;
+    constexpr auto isStdMultiset_2b = Core::Internal::IsStdMultisetImpl<Type&>;
     BOOST_CHECK( isStdMultiset_2b == false );
 
     constexpr auto isStdMultiset_3 = IsStdMultiset<Type&&>;
     BOOST_CHECK( isStdMultiset_3 == true );
-    constexpr auto isStdMultiset_3b = Internal::IsStdMultisetImpl<Type&&>;
+    constexpr auto isStdMultiset_3b = Core::Internal::IsStdMultisetImpl<Type&&>;
     BOOST_CHECK( isStdMultiset_3b == false );
 }
 
@@ -1725,17 +1726,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest64 )
     using Type = std::multimap<Byte, std::string>;
     constexpr auto isStdMultimap_1 = IsStdMultimap<Type>;
     BOOST_CHECK( isStdMultimap_1 == true );
-    constexpr auto isStdMultimap_1b = Internal::IsStdMultimapImpl<Type>;
+    constexpr auto isStdMultimap_1b = Core::Internal::IsStdMultimapImpl<Type>;
     BOOST_CHECK( isStdMultimap_1b == true );
 
     constexpr auto isStdMultimap_2 = IsStdMultimap<Type&>;
     BOOST_CHECK( isStdMultimap_2 == true );
-    constexpr auto isStdMultimap_2b = Internal::IsStdMultimapImpl<Type&>;
+    constexpr auto isStdMultimap_2b = Core::Internal::IsStdMultimapImpl<Type&>;
     BOOST_CHECK( isStdMultimap_2b == false );
 
     constexpr auto isStdMultimap_3 = IsStdMultimap<Type&&>;
     BOOST_CHECK( isStdMultimap_3 == true );
-    constexpr auto isStdMultimap_3b = Internal::IsStdMultimapImpl<Type&&>;
+    constexpr auto isStdMultimap_3b = Core::Internal::IsStdMultimapImpl<Type&&>;
     BOOST_CHECK( isStdMultimap_3b == false );
 }
 
@@ -1745,17 +1746,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest65 )
     using Type = std::stack<Byte>;
     constexpr auto isStdStack_1 = IsStdStack<Type>;
     BOOST_CHECK( isStdStack_1 == true );
-    constexpr auto isStdStack_1b = Internal::IsStdStackImpl<Type>;
+    constexpr auto isStdStack_1b = Core::Internal::IsStdStackImpl<Type>;
     BOOST_CHECK( isStdStack_1b == true );
 
     constexpr auto isStdStack_2 = IsStdStack<Type&>;
     BOOST_CHECK( isStdStack_2 == true );
-    constexpr auto isStdStack_2b = Internal::IsStdStackImpl<Type&>;
+    constexpr auto isStdStack_2b = Core::Internal::IsStdStackImpl<Type&>;
     BOOST_CHECK( isStdStack_2b == false );
 
     constexpr auto isStdStack_3 = IsStdStack<Type&&>;
     BOOST_CHECK( isStdStack_3 == true );
-    constexpr auto isStdStack_3b = Internal::IsStdStackImpl<Type&&>;
+    constexpr auto isStdStack_3b = Core::Internal::IsStdStackImpl<Type&&>;
     BOOST_CHECK( isStdStack_3b == false );
 }
 
@@ -1765,17 +1766,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest66 )
     using Type = std::queue<Byte>;
     constexpr auto isStdQueue_1 = IsStdQueue<Type>;
     BOOST_CHECK( isStdQueue_1 == true );
-    constexpr auto isStdQueue_1b = Internal::IsStdQueueImpl<Type>;
+    constexpr auto isStdQueue_1b = Core::Internal::IsStdQueueImpl<Type>;
     BOOST_CHECK( isStdQueue_1b == true );
 
     constexpr auto isStdQueue_2 = IsStdQueue<Type&>;
     BOOST_CHECK( isStdQueue_2 == true );
-    constexpr auto isStdQueue_2b = Internal::IsStdQueueImpl<Type&>;
+    constexpr auto isStdQueue_2b = Core::Internal::IsStdQueueImpl<Type&>;
     BOOST_CHECK( isStdQueue_2b == false );
 
     constexpr auto isStdQueue_3 = IsStdQueue<Type&&>;
     BOOST_CHECK( isStdQueue_3 == true );
-    constexpr auto isStdQueue_3b = Internal::IsStdQueueImpl<Type&&>;
+    constexpr auto isStdQueue_3b = Core::Internal::IsStdQueueImpl<Type&&>;
     BOOST_CHECK( isStdQueue_3b == false );
 }
 
@@ -1785,17 +1786,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest67 )
     using Type = std::priority_queue<Byte>;
     constexpr auto isStdPriorityQueue_1 = IsStdPriorityQueue<Type>;
     BOOST_CHECK( isStdPriorityQueue_1 == true );
-    constexpr auto isStdPriorityQueue_1b = Internal::IsStdPriorityQueueImpl<Type>;
+    constexpr auto isStdPriorityQueue_1b = Core::Internal::IsStdPriorityQueueImpl<Type>;
     BOOST_CHECK( isStdPriorityQueue_1b == true );
 
     constexpr auto isStdPriorityQueue_2 = IsStdPriorityQueue<Type&>;
     BOOST_CHECK( isStdPriorityQueue_2 == true );
-    constexpr auto isStdPriorityQueue_2b = Internal::IsStdPriorityQueueImpl<Type&>;
+    constexpr auto isStdPriorityQueue_2b = Core::Internal::IsStdPriorityQueueImpl<Type&>;
     BOOST_CHECK( isStdPriorityQueue_2b == false );
 
     constexpr auto isStdPriorityQueue_3 = IsStdPriorityQueue<Type&&>;
     BOOST_CHECK( isStdPriorityQueue_3 == true );
-    constexpr auto isStdPriorityQueue_3b = Internal::IsStdPriorityQueueImpl<Type&&>;
+    constexpr auto isStdPriorityQueue_3b = Core::Internal::IsStdPriorityQueueImpl<Type&&>;
     BOOST_CHECK( isStdPriorityQueue_3b == false );
 }
 
@@ -1805,17 +1806,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest68 )
     using Type = std::span<Byte>;
     constexpr auto isStdSpan_1 = IsStdSpan<Type>;
     BOOST_CHECK( isStdSpan_1 == true );
-    constexpr auto isStdSpan_1b = Internal::IsStdSpanImpl<Type>;
+    constexpr auto isStdSpan_1b = Core::Internal::IsStdSpanImpl<Type>;
     BOOST_CHECK( isStdSpan_1b == true );
 
     constexpr auto isStdSpan_2 = IsStdSpan<Type&>;
     BOOST_CHECK( isStdSpan_2 == true );
-    constexpr auto isStdSpan_2b = Internal::IsStdSpanImpl<Type&>;
+    constexpr auto isStdSpan_2b = Core::Internal::IsStdSpanImpl<Type&>;
     BOOST_CHECK( isStdSpan_2b == false );
 
     constexpr auto isStdSpan_3 = IsStdSpan<Type&&>;
     BOOST_CHECK( isStdSpan_3 == true );
-    constexpr auto isStdSpan_3b = Internal::IsStdSpanImpl<Type&&>;
+    constexpr auto isStdSpan_3b = Core::Internal::IsStdSpanImpl<Type&&>;
     BOOST_CHECK( isStdSpan_3b == false );
 }
 
@@ -1825,17 +1826,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest69 )
     using Type = std::string;
     constexpr auto isStdBasicString_1 = IsStdBasicString<Type>;
     BOOST_CHECK( isStdBasicString_1 == true );
-    constexpr auto isStdBasicString_1b = Internal::IsStdBasicStringImpl<Type>;
+    constexpr auto isStdBasicString_1b = Core::Internal::IsStdBasicStringImpl<Type>;
     BOOST_CHECK( isStdBasicString_1b == true );
 
     constexpr auto isStdBasicString_2 = IsStdBasicString<Type&>;
     BOOST_CHECK( isStdBasicString_2 == true );
-    constexpr auto isStdBasicString_2b = Internal::IsStdBasicStringImpl<Type&>;
+    constexpr auto isStdBasicString_2b = Core::Internal::IsStdBasicStringImpl<Type&>;
     BOOST_CHECK( isStdBasicString_2b == false );
 
     constexpr auto isStdBasicString_3 = IsStdBasicString<Type&&>;
     BOOST_CHECK( isStdBasicString_3 == true );
-    constexpr auto isStdBasicString_3b = Internal::IsStdBasicStringImpl<Type&&>;
+    constexpr auto isStdBasicString_3b = Core::Internal::IsStdBasicStringImpl<Type&&>;
     BOOST_CHECK( isStdBasicString_3b == false );
 }
 
@@ -1845,17 +1846,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest70 )
     using Type = std::string_view;
     constexpr auto isStdBasicStringView_1 = IsStdBasicStringView<Type>;
     BOOST_CHECK( isStdBasicStringView_1 == true );
-    constexpr auto isStdBasicStringView_1b = Internal::IsStdBasicStringViewImpl<Type>;
+    constexpr auto isStdBasicStringView_1b = Core::Internal::IsStdBasicStringViewImpl<Type>;
     BOOST_CHECK( isStdBasicStringView_1b == true );
 
     constexpr auto isStdBasicStringView_2 = IsStdBasicStringView<Type&>;
     BOOST_CHECK( isStdBasicStringView_2 == true );
-    constexpr auto isStdBasicStringView_2b = Internal::IsStdBasicStringViewImpl<Type&>;
+    constexpr auto isStdBasicStringView_2b = Core::Internal::IsStdBasicStringViewImpl<Type&>;
     BOOST_CHECK( isStdBasicStringView_2b == false );
 
     constexpr auto isStdBasicStringView_3 = IsStdBasicStringView<Type&&>;
     BOOST_CHECK( isStdBasicStringView_3 == true );
-    constexpr auto isStdBasicStringView_3b = Internal::IsStdBasicStringViewImpl<Type&&>;
+    constexpr auto isStdBasicStringView_3b = Core::Internal::IsStdBasicStringViewImpl<Type&&>;
     BOOST_CHECK( isStdBasicStringView_3b == false );
 }
 
@@ -1866,17 +1867,17 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest72 )
     using Type = Vector<Byte>;
     constexpr auto isCoreVector_1 = IsCoreVector<Type>;
     BOOST_CHECK( isCoreVector_1 == true );
-    constexpr auto isCoreVector_1b = Internal::IsCoreVectorImpl<Type>;
+    constexpr auto isCoreVector_1b = Core::Internal::IsCoreVectorImpl<Type>;
     BOOST_CHECK( isCoreVector_1b == true );
 
     constexpr auto isCoreVector_2 = IsCoreVector<Type&>;
     BOOST_CHECK( isCoreVector_2 == true );
-    constexpr auto isCoreVector_2b = Internal::IsCoreVectorImpl<Type&>;
+    constexpr auto isCoreVector_2b = Core::Internal::IsCoreVectorImpl<Type&>;
     BOOST_CHECK( isCoreVector_2b == false );
 
     constexpr auto isCoreVector_3 = IsCoreVector<Type&&>;
     BOOST_CHECK( isCoreVector_3 == true );
-    constexpr auto isCoreVector_3b = Internal::IsCoreVectorImpl<Type&&>;
+    constexpr auto isCoreVector_3b = Core::Internal::IsCoreVectorImpl<Type&&>;
     BOOST_CHECK( isCoreVector_3b == false );
 }
 

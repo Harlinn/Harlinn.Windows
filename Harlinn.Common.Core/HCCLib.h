@@ -19,48 +19,23 @@
 
 #include <HCCDef.h>
 #include <HCCTraits.h>
+
+#ifndef HCC_USE_COMMON
 #include <HCCConcepts.h>
+#else
+#include <Harlinn/Common/Utils.h>
+#endif
 
 #define HCCLIB_IMPLEMENTS_ROUND 1
 #define HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP 1
 #define HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC 1
 
-namespace Harlinn::Common::Core::Logging
-{
-    /// <summary>
-    /// Fully declared in HCCLoggerImpl.h
-    /// </summary>
-    class ThreadLogger;
-
-    /// <summary>
-    /// Passed to ThreadLogger::Flush,
-    /// either directly or indirectly through
-    /// CurrentThread::FlushLogger
-    /// </summary>
-    enum class FlushType
-    {
-        /// <summary>
-        /// Normal flush operation
-        /// </summary>
-        Normal,
-        /// <summary>
-        /// Flush was called while the LogManager checks 
-        /// each ThreadLogger for uncommitted data.
-        /// </summary>
-        Poll,
-        /// <summary>
-        /// Flush was called because the LogManager
-        /// detected that the thread has exited.
-        /// 
-        /// In this case the Buffer will have its Final flag set.
-        /// </summary>
-        Final
-    };
-}
 
 
 namespace Harlinn::Common::Core
 {
+    using Harlinn::Common::ByteSwap;
+#ifndef HCC_USE_COMMON
 #pragma pack(push,1)
     struct Bits8
     {
@@ -761,7 +736,7 @@ namespace Harlinn::Common::Core
     {
         return (( reinterpret_cast<size_t>( address ) + N ) & ~static_cast<size_t>( N )) - reinterpret_cast<size_t>( address );
     }
-
+#endif
 
 
     template<typename T>
@@ -783,6 +758,7 @@ namespace Harlinn::Common::Core
         return GUID{ ByteSwap( guid.Data1 ), ByteSwap( guid.Data2 ), ByteSwap( guid.Data3 ), { guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7] } };
     }
 
+#ifndef HCC_USE_COMMON
     /// <summary>
     /// Reverses the bytes of a floating point value, or an enum.
     /// </summary>
@@ -946,6 +922,7 @@ namespace Harlinn::Common::Core
     {
         return ( const wchar_t* )wmemchr( buffer, value, bufferSize );
     }
+#endif
 
     [[nodiscard]] inline char ToUpper( char c ) noexcept
     {
@@ -1081,7 +1058,7 @@ namespace Harlinn::Common::Core
 
 
 
-
+#ifndef HCC_USE_COMMON
     template<typename T, size_t N>
         requires ( std::is_same_v<char,std::remove_cv_t<T>> == false && std::is_same_v<wchar_t, std::remove_cv_t<T>> == false )
     [[nodiscard]] inline constexpr size_t LengthOf( T ( &array )[N] ) noexcept
@@ -1257,7 +1234,7 @@ namespace Harlinn::Common::Core
     {
         return v1.CompareTo( v2 );
     }
-
+#endif
 
     template<typename T1, typename T2>
         requires ((std::is_same_v<Guid, std::remove_cvref_t<T1>> || std::is_same_v<GUID, std::remove_cvref_t<T1>> ) &&
@@ -1267,7 +1244,7 @@ namespace Harlinn::Common::Core
         return reinterpret_cast<const Guid&>(v1).CompareTo( reinterpret_cast< const Guid& >( v2 ) );
     }
 
-
+#ifndef HCC_USE_COMMON
     template<typename T1, typename T2 >
         requires requires( const T1& t1, const T2& t2 )
         {
@@ -1277,6 +1254,7 @@ namespace Harlinn::Common::Core
     {
         return v1.compare( v2 );
     }
+#endif
 
     template<typename FirstT, typename SecondT >
         requires requires( FirstT f, SecondT s )
@@ -1387,7 +1365,7 @@ namespace Harlinn::Common::Core
     }
 
 
-
+#ifndef HCC_USE_COMMON
     template<typename T>
         requires std::is_floating_point_v<T>
     constexpr bool AreNearlyEqual( T a, T b, T smallNumber = static_cast<T>( 0.0001 ) ) noexcept
@@ -1401,7 +1379,7 @@ namespace Harlinn::Common::Core
             return ( a - b ) <= smallNumber;
         }
     }
-
+#endif
 
 
 
@@ -1516,7 +1494,7 @@ namespace Harlinn::Common::Core
         }
     };
 
-
+#ifndef HCC_USE_COMMON
     // Bit manipulation
     template<typename T>
         requires IsInteger<T>
@@ -1635,7 +1613,7 @@ namespace Harlinn::Common::Core
         v++;
         return v;
     }
-
+#endif
     template<typename CharType>
     bool HexToBinary( CharType c, Byte& result )
     {
@@ -2245,6 +2223,7 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+#ifndef HCC_USE_COMMON
     template<typename T>
     class MallocaDeleter
     {
@@ -2278,13 +2257,17 @@ namespace Harlinn::Common::Core
     {
         return { std::forward<Fn>( Func ) };
     }
-
+#endif
     
 }
 
 namespace std
 {
+#ifndef HCC_USE_COMMON
     template<Harlinn::Common::Core::SimpleComLike ValueT>
+#else
+    template<Harlinn::Common::SimpleComLike ValueT>
+#endif
     inline void swap( Harlinn::Common::Core::ReferenceCountedPtr<ValueT>& first, Harlinn::Common::Core::ReferenceCountedPtr<ValueT>& second ) noexcept
     {
         first.swap( second );

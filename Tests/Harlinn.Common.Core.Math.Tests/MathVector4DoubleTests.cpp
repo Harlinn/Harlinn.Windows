@@ -16,9 +16,10 @@
 
 #include "pch.h"
 
-#include <HCCVectorMath.h>
 
+#include <Harlinn/Math/VectorMath.h>
 
+using namespace Harlinn;
 using namespace Harlinn::Common::Core;
 namespace
 {

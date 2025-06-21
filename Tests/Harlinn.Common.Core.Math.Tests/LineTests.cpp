@@ -16,11 +16,11 @@
 
 #include "pch.h"
 
-#include <HCCLine.h>
+#include <Harlinn/Math/Line.h>
 
 
 using namespace Harlinn::Common::Core;
-using namespace Harlinn::Common::Core::Math;
+using namespace Harlinn::Math;
 namespace
 {
     class LocalFixture

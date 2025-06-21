@@ -96,7 +96,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -123,7 +123,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -150,7 +150,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -178,7 +178,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -235,7 +235,6 @@
     <ClInclude Include="HCCIOBase.h" />
     <ClInclude Include="HCCIOCompletionPort.h" />
     <ClInclude Include="HCCIORequest.h" />
-    <ClInclude Include="HCCLine.h" />
     <ClInclude Include="HCCNetwork.h" />
     <ClInclude Include="HCCIStreamOnStreamImpl.h" />
     <ClInclude Include="HCCIterator.h" />
@@ -261,11 +260,7 @@
     <ClInclude Include="HCCLinkedList.h" />
     <ClInclude Include="HCCLMDB.h" />
     <ClInclude Include="HCCLogging.h" />
-    <ClInclude Include="HCCMath.h" />
-    <ClInclude Include="HCCSegment.h" />
     <ClInclude Include="HCCTestUtils.h" />
-    <ClInclude Include="HCCTransformations.h" />
-    <ClInclude Include="HCCVectorMath.h" />
     <ClInclude Include="HCCMeta.h" />
     <ClInclude Include="HCCMemory.h" />
     <ClInclude Include="HCCObj.h" />
@@ -304,21 +299,6 @@
     <ClInclude Include="HCCWinError.h" />
     <ClInclude Include="HCCXml.h" />
     <ClInclude Include="HCCZMQ.h" />
-    <ClInclude Include="HCCMathForward.h" />
-    <ClInclude Include="Internal\Math\aarch64_fpmath.h" />
-    <ClInclude Include="Internal\Math\amd64_fpmath.h" />
-    <ClInclude Include="Internal\Math\cdefs-compat.h" />
-    <ClInclude Include="Internal\Math\constexpr_math.h" />
-    <ClInclude Include="Internal\Math\fpmath.h" />
-    <ClInclude Include="Internal\Math\k_log.h" />
-    <ClInclude Include="Internal\Math\k_logf.h" />
-    <ClInclude Include="Internal\Math\math_private.h" />
-    <ClInclude Include="Internal\Math\math_private_openbsd.h" />
-    <ClInclude Include="Internal\Math\NearestInteger.h" />
-    <ClInclude Include="Internal\Math\openlibm.h" />
-    <ClInclude Include="Internal\Math\openlibm_complex.h" />
-    <ClInclude Include="Internal\Math\openlibm_defs.h" />
-    <ClInclude Include="Internal\Math\openlibm_math.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="xxh3.h" />
     <ClInclude Include="xxhash.h" />
@@ -386,188 +366,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HCCComInterfaces.xm" />
-    <None Include="Internal\Math\e_acos.inl" />
-    <None Include="Internal\Math\e_acosf.inl" />
-    <None Include="Internal\Math\e_acosh.inl" />
-    <None Include="Internal\Math\e_acoshf.inl" />
-    <None Include="Internal\Math\e_asin.inl" />
-    <None Include="Internal\Math\e_asinf.inl" />
-    <None Include="Internal\Math\e_atan2.inl" />
-    <None Include="Internal\Math\e_atan2f.inl" />
-    <None Include="Internal\Math\e_atanh.inl" />
-    <None Include="Internal\Math\e_atanhf.inl" />
-    <None Include="Internal\Math\e_cosh.inl" />
-    <None Include="Internal\Math\e_coshf.inl" />
-    <None Include="Internal\Math\e_exp.inl" />
-    <None Include="Internal\Math\e_expf.inl" />
-    <None Include="Internal\Math\e_fmod.inl" />
-    <None Include="Internal\Math\e_fmodf.inl" />
-    <None Include="Internal\Math\e_hypot.inl" />
-    <None Include="Internal\Math\e_hypotf.inl" />
-    <None Include="Internal\Math\e_j0.inl" />
-    <None Include="Internal\Math\e_j0f.inl" />
-    <None Include="Internal\Math\e_j1.inl" />
-    <None Include="Internal\Math\e_j1f.inl" />
-    <None Include="Internal\Math\e_jn.inl" />
-    <None Include="Internal\Math\e_jnf.inl" />
-    <None Include="Internal\Math\e_lgamma.inl" />
-    <None Include="Internal\Math\e_lgammaf.inl" />
-    <None Include="Internal\Math\e_lgammaf_r.inl" />
-    <None Include="Internal\Math\e_lgamma_r.inl" />
-    <None Include="Internal\Math\e_log.inl" />
-    <None Include="Internal\Math\e_log10.inl" />
-    <None Include="Internal\Math\e_log10f.inl" />
-    <None Include="Internal\Math\e_log2.inl" />
-    <None Include="Internal\Math\e_log2f.inl" />
-    <None Include="Internal\Math\e_logf.inl" />
-    <None Include="Internal\Math\e_pow.inl" />
-    <None Include="Internal\Math\e_powf.inl" />
-    <None Include="Internal\Math\e_remainder.inl" />
-    <None Include="Internal\Math\e_remainderf.inl" />
-    <None Include="Internal\Math\e_rem_pio2.inl" />
-    <None Include="Internal\Math\e_rem_pio2f.inl" />
-    <None Include="Internal\Math\e_sinh.inl" />
-    <None Include="Internal\Math\e_sinhf.inl" />
-    <None Include="Internal\Math\e_sqrt.inl" />
-    <None Include="Internal\Math\e_sqrtf.inl" />
-    <None Include="Internal\Math\e_tgamma.inl" />
-    <None Include="Internal\Math\k_cos.inl" />
-    <None Include="Internal\Math\k_cosf.inl" />
-    <None Include="Internal\Math\k_exp.inl" />
-    <None Include="Internal\Math\k_expf.inl" />
-    <None Include="Internal\Math\k_rem_pio2.inl" />
-    <None Include="Internal\Math\k_sin.inl" />
-    <None Include="Internal\Math\k_sinf.inl" />
-    <None Include="Internal\Math\k_tan.inl" />
-    <None Include="Internal\Math\k_tanf.inl" />
-    <None Include="Internal\Math\RangeReduction.h" />
-    <None Include="Internal\Math\Readme.md" />
-    <None Include="Internal\Math\s_asinh.inl" />
-    <None Include="Internal\Math\s_asinhf.inl" />
-    <None Include="Internal\Math\s_atan.inl" />
-    <None Include="Internal\Math\s_atanf.inl" />
-    <None Include="Internal\Math\s_cabs.inl" />
-    <None Include="Internal\Math\s_cabsf.inl" />
-    <None Include="Internal\Math\s_cacos.inl" />
-    <None Include="Internal\Math\s_cacosf.inl" />
-    <None Include="Internal\Math\s_cacosh.inl" />
-    <None Include="Internal\Math\s_cacoshf.inl" />
-    <None Include="Internal\Math\s_carg.inl" />
-    <None Include="Internal\Math\s_cargf.inl" />
-    <None Include="Internal\Math\s_casin.inl" />
-    <None Include="Internal\Math\s_casinf.inl" />
-    <None Include="Internal\Math\s_casinh.inl" />
-    <None Include="Internal\Math\s_casinhf.inl" />
-    <None Include="Internal\Math\s_catan.inl" />
-    <None Include="Internal\Math\s_catanf.inl" />
-    <None Include="Internal\Math\s_catanh.inl" />
-    <None Include="Internal\Math\s_catanhf.inl" />
-    <None Include="Internal\Math\s_cbrt.inl" />
-    <None Include="Internal\Math\s_cbrtf.inl" />
-    <None Include="Internal\Math\s_ccos.inl" />
-    <None Include="Internal\Math\s_ccosf.inl" />
-    <None Include="Internal\Math\s_ccosh.inl" />
-    <None Include="Internal\Math\s_ccoshf.inl" />
-    <None Include="Internal\Math\s_ceil.inl" />
-    <None Include="Internal\Math\s_ceilf.inl" />
-    <None Include="Internal\Math\s_cexp.inl" />
-    <None Include="Internal\Math\s_cexpf.inl" />
-    <None Include="Internal\Math\s_cimag.inl" />
-    <None Include="Internal\Math\s_cimagf.inl" />
-    <None Include="Internal\Math\s_clog.inl" />
-    <None Include="Internal\Math\s_clogf.inl" />
-    <None Include="Internal\Math\s_conj.inl" />
-    <None Include="Internal\Math\s_conjf.inl" />
-    <None Include="Internal\Math\s_copysign.inl" />
-    <None Include="Internal\Math\s_copysignf.inl" />
-    <None Include="Internal\Math\s_cos.inl" />
-    <None Include="Internal\Math\s_cosf.inl" />
-    <None Include="Internal\Math\s_cpow.inl" />
-    <None Include="Internal\Math\s_cpowf.inl" />
-    <None Include="Internal\Math\s_cproj.inl" />
-    <None Include="Internal\Math\s_cprojf.inl" />
-    <None Include="Internal\Math\s_creal.inl" />
-    <None Include="Internal\Math\s_crealf.inl" />
-    <None Include="Internal\Math\s_csin.inl" />
-    <None Include="Internal\Math\s_csinf.inl" />
-    <None Include="Internal\Math\s_csinh.inl" />
-    <None Include="Internal\Math\s_csinhf.inl" />
-    <None Include="Internal\Math\s_csqrt.inl" />
-    <None Include="Internal\Math\s_csqrtf.inl" />
-    <None Include="Internal\Math\s_ctan.inl" />
-    <None Include="Internal\Math\s_ctanf.inl" />
-    <None Include="Internal\Math\s_ctanh.inl" />
-    <None Include="Internal\Math\s_ctanhf.inl" />
-    <None Include="Internal\Math\s_erf.inl" />
-    <None Include="Internal\Math\s_erff.inl" />
-    <None Include="Internal\Math\s_exp2.inl" />
-    <None Include="Internal\Math\s_exp2f.inl" />
-    <None Include="Internal\Math\s_expm1.inl" />
-    <None Include="Internal\Math\s_expm1f.inl" />
-    <None Include="Internal\Math\s_fabs.inl" />
-    <None Include="Internal\Math\s_fabsf.inl" />
-    <None Include="Internal\Math\s_fdim.inl" />
-    <None Include="Internal\Math\s_floor.inl" />
-    <None Include="Internal\Math\s_floorf.inl" />
-    <None Include="Internal\Math\s_fma.inl" />
-    <None Include="Internal\Math\s_fmaf.inl" />
-    <None Include="Internal\Math\s_fmax.inl" />
-    <None Include="Internal\Math\s_fmaxf.inl" />
-    <None Include="Internal\Math\s_fmin.inl" />
-    <None Include="Internal\Math\s_fminf.inl" />
-    <None Include="Internal\Math\s_fpclassify.inl" />
-    <None Include="Internal\Math\s_frexp.inl" />
-    <None Include="Internal\Math\s_frexpf.inl" />
-    <None Include="Internal\Math\s_ilogb.inl" />
-    <None Include="Internal\Math\s_ilogbf.inl" />
-    <None Include="Internal\Math\s_isfinite.inl" />
-    <None Include="Internal\Math\s_isinf.inl" />
-    <None Include="Internal\Math\s_isnan.inl" />
-    <None Include="Internal\Math\s_isnormal.inl" />
-    <None Include="Internal\Math\s_llrint.inl" />
-    <None Include="Internal\Math\s_llrintf.inl" />
-    <None Include="Internal\Math\s_llround.inl" />
-    <None Include="Internal\Math\s_llroundf.inl" />
-    <None Include="Internal\Math\s_log1p.inl" />
-    <None Include="Internal\Math\s_log1pf.inl" />
-    <None Include="Internal\Math\s_logb.inl" />
-    <None Include="Internal\Math\s_logbf.inl" />
-    <None Include="Internal\Math\s_lrint.inl" />
-    <None Include="Internal\Math\s_lrintf.inl" />
-    <None Include="Internal\Math\s_lround.inl" />
-    <None Include="Internal\Math\s_lroundf.inl" />
-    <None Include="Internal\Math\s_modf.inl" />
-    <None Include="Internal\Math\s_modff.inl" />
-    <None Include="Internal\Math\s_nan.inl" />
-    <None Include="Internal\Math\s_nearbyint.inl" />
-    <None Include="Internal\Math\s_nextafter.inl" />
-    <None Include="Internal\Math\s_nextafterf.inl" />
-    <None Include="Internal\Math\s_nexttoward.inl" />
-    <None Include="Internal\Math\s_nexttowardf.inl" />
-    <None Include="Internal\Math\s_remquo.inl" />
-    <None Include="Internal\Math\s_remquof.inl" />
-    <None Include="Internal\Math\s_rint.inl" />
-    <None Include="Internal\Math\s_rintf.inl" />
-    <None Include="Internal\Math\s_round.inl" />
-    <None Include="Internal\Math\s_roundf.inl" />
-    <None Include="Internal\Math\s_scalbln.inl" />
-    <None Include="Internal\Math\s_scalbn.inl" />
-    <None Include="Internal\Math\s_scalbnf.inl" />
-    <None Include="Internal\Math\s_signbit.inl" />
-    <None Include="Internal\Math\s_signgam.inl" />
-    <None Include="Internal\Math\s_sin.inl" />
-    <None Include="Internal\Math\s_sincos.inl" />
-    <None Include="Internal\Math\s_sincosf.inl" />
-    <None Include="Internal\Math\s_sinf.inl" />
-    <None Include="Internal\Math\s_tan.inl" />
-    <None Include="Internal\Math\s_tanf.inl" />
-    <None Include="Internal\Math\s_tanh.inl" />
-    <None Include="Internal\Math\s_tanhf.inl" />
-    <None Include="Internal\Math\s_tgammaf.inl" />
-    <None Include="Internal\Math\s_trunc.inl" />
-    <None Include="Internal\Math\s_truncf.inl" />
-    <None Include="Internal\Math\w_cabs.inl" />
-    <None Include="Internal\Math\w_cabsf.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

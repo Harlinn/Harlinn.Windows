@@ -21,6 +21,7 @@
 
 namespace Doxygen2Md
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
 
 

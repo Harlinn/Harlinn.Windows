@@ -25,7 +25,7 @@ namespace Harlinn::OCI
 
     void BinaryDynamicBind::Bind( UInt32 positon, UInt32 iters )
     {
-        BindByPos( positon, ExternalType, ( Common::Core::MaxInt32 - 1 ) );
+        BindByPos( positon, ExternalType, ( Common::MaxInt32 - 1 ) );
 
     }
 

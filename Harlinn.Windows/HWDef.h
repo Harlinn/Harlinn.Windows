@@ -18,13 +18,13 @@
 */
 
 #include <HCCDef.h>
+#include <Harlinn/Math/Math.h>
 #include <HCCGuid.h>
 #include <HCCCom.h>
 #include <HCCDateTime.h>
 #include <HCCString.h>
 #include <HCCBinary.h>
 #include <HCCTraits.h>
-#include <HCCMath.h>
 #include <HCCSync.h>
 #include <HCCLogging.h>
 
@@ -49,6 +49,7 @@
 
 namespace Harlinn::Windows
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
 }
 

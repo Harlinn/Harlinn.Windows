@@ -62,6 +62,7 @@ namespace Harlinn::Common::Core
 }
 namespace Harlinn::Julia
 {
+    using namespace Harlinn::Common;
     using namespace Harlinn::Common::Core;
 
     using ValueT = jl_value_t;

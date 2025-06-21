@@ -18,8 +18,7 @@
    limitations under the License.
 */
 
-#include <HCCMath.h>
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 #include <pbrto/util/vecmath.h>
 #include <benchmark/benchmark.h>
 #include <HCCTestUtils.h>
@@ -36,8 +35,11 @@
 #define RUN_TRANSFORMATIONS_BENCHMARKS 1
 #define RUN_SIMD_BENCHMARKS 1
 
+
+using namespace Harlinn;
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
-namespace OpenLibM = Harlinn::Common::Core::Math::Internal::OpenLibM;
+namespace OpenLibM = Harlinn::Math::Internal::OpenLibM;
 
 template<typename ValueT, size_t N >
 using RandomGenerator = Test::Generators::RandomGenerator<ValueT, N>;

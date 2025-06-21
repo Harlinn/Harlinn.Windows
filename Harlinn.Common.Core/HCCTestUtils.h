@@ -19,7 +19,7 @@
 */
 
 
-#include "HCCMath.h"
+#include <Harlinn/Math/Math.h>
 
 namespace Harlinn::Common::Core::Test
 {

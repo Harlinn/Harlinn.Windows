@@ -32,7 +32,7 @@ namespace Harlinn::OCI
 
     void DynamicLongRawDefine::Initialize( UInt32 positon )
     {
-        DefineByPos( positon, OCI::OraType::LBI, nullptr, static_cast<Int32>( Common::Core::MaxInt32 ), nullptr, nullptr, OCI_DYNAMIC_FETCH );
+        DefineByPos( positon, OCI::OraType::LBI, nullptr, static_cast<Int32>( Common::MaxInt32 ), nullptr, nullptr, OCI_DYNAMIC_FETCH );
         RegisterCallback( );
     }
 

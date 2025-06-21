@@ -82,7 +82,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -104,7 +104,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -126,7 +126,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -148,7 +148,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Common\include;$(SolutionDir)Harlinn.Math\include;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>

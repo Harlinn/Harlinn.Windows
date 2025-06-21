@@ -27,7 +27,9 @@
 
 #define OEMRESOURCE
 
-#define _USE_MATH_DEFINES 
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES 1
+#endif
 
 #ifdef _M_AMD64
 #define WIN64 1
@@ -297,6 +299,11 @@
 
 #include <HCCWinError.h>
 
+#include <Harlinn/Common/BasicTypes.h>
+
+#define HCC_USE_COMMON 1
+
+#ifndef HCC_USE_COMMON
 namespace Harlinn::Common::Core
 {
     namespace asio = boost::asio;
@@ -342,10 +349,7 @@ namespace Harlinn::Common::Core
         IntType mask = std::bit_cast<IntType>( ( args | ... ) );
         return ( std::bit_cast<IntType>( flags ) & mask ) == static_cast<IntType>( 0 );
     }
-
-
 }
-
 
 
 #define HCC_DEFINE_ENUM_FLAG_OPERATORS(ENUMTYPE,INTTYPE) \
@@ -363,10 +367,12 @@ namespace Harlinn::Common::Core
   inline constexpr bool operator != (INTTYPE a, ENUMTYPE b) noexcept { return static_cast<INTTYPE>(a) != static_cast<INTTYPE>(b); } \
   inline constexpr bool operator != (ENUMTYPE a, INTTYPE b) noexcept { return static_cast<INTTYPE>(a) != static_cast<INTTYPE>(b); } \
   static_assert(std::is_same_v<std::underlying_type_t<ENUMTYPE>, INTTYPE> )
+#endif
 
 namespace Harlinn::Common::Core
 {
 
+#ifndef HCC_USE_COMMON
     constexpr unsigned long long operator"" _gb( unsigned long long value )
     {
         return value * 1024ULL * 1024ULL * 1024ULL;
@@ -379,6 +385,8 @@ namespace Harlinn::Common::Core
     {
         return value * 1024ULL;
     }
+#endif
+
 //#define HCC_WITH_BASIC_STRING 1
 #ifdef HCC_WITH_BASIC_STRING
     template<typename T>
@@ -407,7 +415,7 @@ namespace Harlinn::Common::Core
     class Variant;
     class PropertyVariant;
     
-
+#ifndef HCC_USE_COMMON
     using Boolean = bool;
     using Int8 = signed char;
     using SByte = signed char;
@@ -492,7 +500,7 @@ namespace Harlinn::Common::Core
     template<typename T>
     using Nullable = std::optional<T>;
 
-
+#endif
     
 #define HCC_TEXT(quote) L##quote
 #define CURRENT_FUNCTION __FUNCTIONW__
