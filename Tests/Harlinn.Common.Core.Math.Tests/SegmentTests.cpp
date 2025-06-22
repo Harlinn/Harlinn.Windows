@@ -17,6 +17,7 @@
 #include "pch.h"
 
 #include <Harlinn/Math/Segment.h>
+#include <Harlinn/Math/Distance.h>
 
 
 using namespace Harlinn::Common::Core;
@@ -44,7 +45,7 @@ BOOST_AUTO_TEST_CASE( SegmentDistanceTest1 )
 
     Segment3<float> segment( B, C );
 
-    auto distanceResult = segment.Distance( A );
+    auto distanceResult = Distance( A, segment );
 
     auto distance = distanceResult.Distance( );
     Point3f closestPoint = distanceResult.ClosestPoint( );
@@ -68,7 +69,7 @@ BOOST_AUTO_TEST_CASE( SegmentDistanceTest2 )
 
     Segment3<float> segment( B, C );
 
-    auto distanceResult = segment.Distance( A );
+    auto distanceResult = Distance( A, segment );
 
     auto distance = distanceResult.Distance( );
     Point3f closestPoint = distanceResult.ClosestPoint( );

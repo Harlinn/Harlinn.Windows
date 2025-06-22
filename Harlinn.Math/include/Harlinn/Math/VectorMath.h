@@ -7523,7 +7523,7 @@ namespace Harlinn::Math
     inline auto DistanceSquared( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
-        auto diff = Traits::Sub( Internal::ToSimd( p1 ), Internal::ToSimd( p2 ) );
+        auto diff = Traits::Sub( Internal::ToSimd( p2 ), Internal::ToSimd( p1 ) );
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::HSum( Traits::Mul( diff, diff ) ) );
     }
@@ -7552,23 +7552,23 @@ namespace Harlinn::Math
         using Traits = typename T::Traits;
         if constexpr ( T::Size == 2 )
         {
-            auto x = p1.x - p2.x;
-            auto y = p1.y - p2.y;
+            auto x = p2.x - p1.x;
+            auto y = p2.y - p1.y;
             return x * x + y * y;
         }
         else if constexpr ( T::Size == 3 )
         {
-            auto x = p1.x - p2.x;
-            auto y = p1.y - p2.y;
-            auto z = p1.z - p2.z;
+            auto x = p2.x - p1.x;
+            auto y = p2.y - p1.y;
+            auto z = p2.z - p1.z;
             return x * x + y * y + z * z;
         }
         else if constexpr ( T::Size == 4 )
         {
-            auto x = p1.x - p2.x;
-            auto y = p1.y - p2.y;
-            auto z = p1.z - p2.z;
-            auto w = p1.w - p2.w;
+            auto x = p2.x - p1.x;
+            auto y = p2.y - p1.y;
+            auto z = p2.z - p1.z;
+            auto w = p2.w - p1.w;
             return x * x + y * y + z * z + w * w;
         }
     }

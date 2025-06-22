@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HARLINN_MATH_LINE_H_
-#define HARLINN_MATH_LINE_H_
+#ifndef HARLINN_MATH_RAY_H_
+#define HARLINN_MATH_RAY_H_
 
 /*
    Copyright 2024-2025 Espen Harlinn
@@ -24,32 +24,34 @@
 namespace Harlinn::Math
 {
     template<FloatingPointType T, size_t N>
-    struct Line;
+    struct Ray;
 
     namespace Internal
     {
-        struct LineSimdBase
-        { };
-        struct LineBase
-        { };
+        struct RaySimdBase
+        {
+        };
+        struct RayBase
+        {
+        };
     }
 
     template<typename T>
-    concept LineSimdType = std::is_base_of_v<Internal::LineSimdBase, T>;
+    concept RaySimdType = std::is_base_of_v<Internal::RaySimdBase, T>;
     template<typename T>
-    concept LineType = std::is_base_of_v<Internal::LineBase, T>;
+    concept RayType = std::is_base_of_v<Internal::RayBase, T>;
 
     template<typename T>
-    concept LineOrLineSimdType = LineSimdType<T> || LineType<T>;
+    concept RayOrRaySimdType = RaySimdType<T> || RayType<T>;
 
     namespace Internal
     {
-        template<LineSimdType T>
+        template<RaySimdType T>
         const T& ToSimdType( const T& line ) noexcept
         {
             return line;
         }
-        template<LineType T>
+        template<RayType T>
         const typename T::Simd ToSimdType( const T& line ) noexcept
         {
             return line.ToSimd( );
@@ -58,7 +60,7 @@ namespace Harlinn::Math
 
 
     /// <summary>
-    /// An infinite line passing through <c>origin<c>
+    /// A semi-infinite line starting at <c>origin<c>
     /// with direction given by the unit vector <c>direction<c>.
     /// </summary>
     /// <typeparam name="T">
@@ -68,11 +70,11 @@ namespace Harlinn::Math
     /// Dimension count.
     /// </typeparam>
     template<FloatingPointType T, size_t N>
-    struct LineSimd : public Internal::LineSimdBase
+    struct RaySimd : public Internal::RaySimdBase
     {
         using Point = typename Math::Point<T, N>::Simd;
         using Vector = Math::Vector<T, N>::Simd;
-        using Line = Math::Line<T, N>;
+        using Ray = Math::Ray<T, N>;
         using value_type = T;
 
         static constexpr size_t Dimensions = N;
@@ -87,20 +89,22 @@ namespace Harlinn::Math
         /// </summary>
         Vector direction;
 
-        LineSimd( ) noexcept = default;
-        LineSimd( const Point& o, const Vector& d ) noexcept
+        RaySimd( ) noexcept = default;
+        RaySimd( const Point& o, const Vector& d ) noexcept
             : origin( o ), direction( d )
-        { }
+        {
+        }
 
-        LineSimd( const Point& p1, const Point& p2 ) noexcept
+        RaySimd( const Point& p1, const Point& p2 ) noexcept
             : origin( p1 ), direction( Normalize( p1 - p2 ) )
-        { }
+        {
+        }
 
-        LineSimd( const Line& l ) noexcept;
+        RaySimd( const Ray& r ) noexcept;
     };
 
     /// <summary>
-    /// An infinite line passing through <c>origin<c>
+    /// A semi-infinite line starting at <c>origin<c>
     /// with direction given by the unit vector <c>direction<c>.
     /// </summary>
     /// <typeparam name="T">
@@ -110,11 +114,11 @@ namespace Harlinn::Math
     /// Dimension count.
     /// </typeparam>
     template<FloatingPointType T, size_t N>
-    struct Line : public Internal::LineBase
+    struct Ray : public Internal::RayBase
     {
         using Point = Math::Point<T, N>;
         using Vector = Math::Vector<T, N>;
-        using Simd = LineSimd<T, N>;
+        using Simd = RaySimd<T, N>;
         using value_type = T;
 
         static constexpr size_t Dimensions = N;
@@ -128,14 +132,16 @@ namespace Harlinn::Math
         /// </summary>
         Vector direction;
 
-        Line( ) noexcept = default;
-        Line( const Point& o, const Vector& d ) noexcept
+        Ray( ) noexcept = default;
+        Ray( const Point& o, const Vector& d ) noexcept
             : origin( o ), direction( d )
-        { }
+        {
+        }
 
-        Line( const Point& p1, const Point& p2 ) noexcept
+        Ray( const Point& p1, const Point& p2 ) noexcept
             : origin( p1 ), direction( Normalize( p1 - p2 ) )
-        { }
+        {
+        }
 
         Simd ToSimd( ) const noexcept
         {
@@ -145,20 +151,19 @@ namespace Harlinn::Math
     };
 
     template<FloatingPointType T, size_t N>
-    inline LineSimd<T,N>::LineSimd( const Line& l ) noexcept
-        : origin( l.origin ), direction( l.direction )
+    inline RaySimd<T, N>::RaySimd( const Ray& r ) noexcept
+        : origin( r.origin ), direction( r.direction )
     { }
 
     template<FloatingPointType T>
-    using Line2 = Line<T, 2>;
-    using Line2f = Line2<float>;
-    using Line2d = Line2<double>;
+    using Ray2 = Ray<T, 2>;
+    using Ray2f = Ray2<float>;
+    using Ray2d = Ray2<double>;
 
     template<FloatingPointType T>
-    using Line3 = Line<T, 3>;
-    using Line3f = Line3<float>;
-    using Line3d = Line3<double>;
+    using Ray3 = Ray<T, 3>;
+    using Ray3f = Ray3<float>;
+    using Ray3d = Ray3<double>;
 }
-
 
 #endif

@@ -26,8 +26,41 @@ namespace Harlinn::Math
     template<FloatingPointType T, size_t N>
     struct Segment;
 
+    namespace Internal
+    {
+        struct SegmentSimdBase
+        {
+        };
+        struct SegmentBase
+        {
+        };
+    }
+
+    template<typename T>
+    concept SegmentSimdType = std::is_base_of_v<Internal::SegmentSimdBase, T>;
+    template<typename T>
+    concept SegmentType = std::is_base_of_v<Internal::SegmentBase, T>;
+
+    template<typename T>
+    concept SegmentOrSegmentSimdType = SegmentSimdType<T> || SegmentType<T>;
+
+    namespace Internal
+    {
+        template<SegmentSimdType T>
+        const T& ToSimdType( const T& line ) noexcept
+        {
+            return line;
+        }
+        template<SegmentType T>
+        const typename T::Simd ToSimdType( const T& line ) noexcept
+        {
+            return line.ToSimd( );
+        }
+    }
+
+
     template<FloatingPointType T, size_t N>
-    struct SegmentSimd
+    struct SegmentSimd : public Internal::SegmentSimdBase
     {
     public:
         using Point = typename Math::Point<T, N>::Simd;
@@ -35,6 +68,8 @@ namespace Harlinn::Math
         using ArrayType = Point::ArrayType;
         using Segment = Math::Segment<T, N>;
         using value_type = T;
+
+        static constexpr size_t Dimensions = N;
 
         static constexpr value_type Zero = static_cast< value_type >( 0 );
         static constexpr value_type One = static_cast< value_type >( 1 );
@@ -71,101 +106,11 @@ namespace Harlinn::Math
             extent = Half * length.x( );
         }
 
-        class PointDistanceResult
-        {
-            Point closestPoint_;
-            value_type distanceSquared_;
-            value_type fraction_;
-        public:
-            PointDistanceResult( const SegmentSimd& segment, const Point& point )
-            {
-                Vector direction = segment.points[ 1 ] - segment.points[ 0 ];
-                Vector diff = point - segment.points[ 1 ];
-                value_type t = ScalarDot( direction, diff );
-                if ( t >= Zero )
-                {
-                    fraction_ = One;
-                    closestPoint_ = segment.points[ 1 ];
-                }
-                else
-                {
-                    diff = point - segment.points[ 0 ];
-                    t = ScalarDot( direction, diff );
-                    if ( t <= Zero )
-                    {
-                        fraction_ = Zero;
-                        closestPoint_ = segment.points[ 0 ];
-                    }
-                    else
-                    {
-                        value_type lengthSquared = ScalarLengthSquared( direction );
-                        if ( lengthSquared > Zero )
-                        {
-                            t /= lengthSquared;
-                            fraction_ = t;
-                            closestPoint_ = segment.points[ 0 ] + t * direction;
-                        }
-                        else
-                        {
-                            fraction_ = Zero;
-                            closestPoint_ = segment.points[ 0 ];
-                        }
-                    }
-                }
-
-                diff = point - closestPoint_;
-                distanceSquared_ = ScalarLengthSquared( diff );
-            }
-
-            /// <summary>
-            /// The closest point on the segment
-            /// </summary>
-            const Point& ClosestPoint( ) const
-            {
-                return closestPoint_;
-            }
-
-            /// <summary>
-            /// Shortest distance squared between the segment and the point.
-            /// </summary>
-            value_type DistanceSquared( ) const noexcept
-            {
-                return distanceSquared_;
-            }
-            /// <summary>
-            /// Shortest distance between the segment and the point.
-            /// </summary>
-            value_type Distance( ) const noexcept
-            {
-                return Sqrt( distanceSquared_ );
-            }
-
-            /// <summary>
-            /// Returns the fractional position of the closest point on the segment.
-            /// If 0 then segment.points[ 0 ] is the closest point, or if 1
-            /// then segment.points[ 1 ] is the closest point.
-            /// </summary>
-            value_type Fraction( ) const
-            {
-                return fraction_;
-            }
-
-            
-
-        };
-
-        /// <summary>
-        /// Retrieves the closest point and distance from <c>point</c> to the segment.
-        /// </summary>
-        PointDistanceResult Distance( const Point& point ) const noexcept
-        {
-            return PointDistanceResult( *this, point );
-        }
     };
 
 
     template<FloatingPointType T, size_t N>
-    struct Segment
+    struct Segment : public Internal::SegmentBase
     {
     public:
         using Point = Math::Point<T, N>;
@@ -173,8 +118,8 @@ namespace Harlinn::Math
         using ArrayType = Point::ArrayType;
         using Simd = SegmentSimd<T, N>;
         using value_type = T;
-        using PointDistanceResult = typename Simd::PointDistanceResult;
 
+        static constexpr size_t Dimensions = N;
 
         static constexpr value_type Zero = static_cast< value_type >( 0 );
         static constexpr value_type One = static_cast< value_type >( 1 );
@@ -216,17 +161,6 @@ namespace Harlinn::Math
             auto length = Length( direction );
             direction = direction / length;
             extent = Half * length.x( );
-        }
-
-        /// <summary>
-        /// Retrieves the closest point and distance from <c>point</c> to the segment.
-        /// </summary>
-        template<PointOrPointSimdType PT>
-            requires ( PT::Size == N )
-        PointDistanceResult Distance( const PT& point ) const noexcept
-        {
-            auto simd = ToSimd( );
-            return simd.Distance( Internal::ToSimdType( point ) );
         }
 
     };

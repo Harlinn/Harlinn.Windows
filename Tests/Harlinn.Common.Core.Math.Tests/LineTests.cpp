@@ -17,6 +17,7 @@
 #include "pch.h"
 
 #include <Harlinn/Math/Line.h>
+#include <Harlinn/Math/Distance.h>
 
 
 using namespace Harlinn::Common::Core;
@@ -44,7 +45,7 @@ BOOST_AUTO_TEST_CASE( LineDistanceTest1 )
 
     Line3f line( lineOrigin, lineDirection );
 
-    auto distanceResult = line.Distance( point );
+    auto distanceResult = Distance( point, line );
 
     auto distance = distanceResult.Distance( );
     Point3f closestPoint = distanceResult.ClosestPoint( );
@@ -64,7 +65,7 @@ BOOST_AUTO_TEST_CASE( LineDistanceTest2 )
 
     Line3f line( B, C );
 
-    auto distanceResult = line.Distance( A );
+    auto distanceResult = Distance( A, line );
 
     auto distance = distanceResult.Distance( );
     Point3f closestPoint = distanceResult.ClosestPoint( );
@@ -78,5 +79,65 @@ BOOST_AUTO_TEST_CASE( LineDistanceTest2 )
     BOOST_CHECK( closestPoint.y == expectedY );
     BOOST_CHECK_CLOSE( closestPoint.z, expectedZ, 0.001f );
 }
+
+// --run_test=LineTests/LineDistanceTest3
+BOOST_AUTO_TEST_CASE( LineDistanceTest3 )
+{
+    Point3f A( -1, -2, -2 );
+    Point3f B( 1, 1, 1 );
+    Point3f C( 1, 2, 2 );
+    Point3f D( 1, 2, 0 );
+
+    Line3f line1( A, B );
+    Line3f line2( C, D );
+    auto distanceResult = Distance( line1, line2 );
+
+    auto distance = distanceResult.Distance( );
+    Point3f closestPoint1 = distanceResult.ClosestPoint1( );
+    Point3f closestPoint2 = distanceResult.ClosestPoint2( );
+
+    BOOST_CHECK( distance == 0.554700255f );
+    
+    BOOST_CHECK( closestPoint1.x == 1.46153855f );
+    BOOST_CHECK( closestPoint1.y == 1.69230771f );
+    BOOST_CHECK( closestPoint1.z == 1.69230771f );
+
+    BOOST_CHECK( closestPoint2.x == 1.00000000f );
+    BOOST_CHECK( closestPoint2.y == 2.00000000f );
+    BOOST_CHECK( closestPoint2.z == 1.69230759f );
+
+}
+
+// --run_test=LineTests/LineDistanceTest4
+BOOST_AUTO_TEST_CASE( LineDistanceTest4 )
+{
+    Point3f A( 0, 0, 0 );
+    Point3f B( 1, 2, 3 );
+    Point3f C( 1, 1, 1 );
+    Point3f D( 2, 3, 5 );
+
+    Line3f line1( A, B );
+    Line3f line2( C, D );
+    auto distanceResult = Distance( line1, line2 );
+
+    auto distance = distanceResult.Distance( );
+    Point3f closestPoint1 = distanceResult.ClosestPoint1( );
+    Point3f closestPoint2 = distanceResult.ClosestPoint2( );
+
+    auto expectedDistance = Sqrt( 5.f ) / 5.f;
+
+    BOOST_CHECK( distance == expectedDistance );
+
+    BOOST_CHECK( closestPoint1.x == 1.40000772f );
+    BOOST_CHECK( closestPoint1.y == 2.80001545f );
+    BOOST_CHECK( closestPoint1.z == 4.20002317f );
+
+    BOOST_CHECK( closestPoint2.x == 1.80000710f );
+    BOOST_CHECK( closestPoint2.y == 2.60001421f );
+    BOOST_CHECK( closestPoint2.z == 4.20002842f );
+
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

@@ -86,6 +86,9 @@
     <ClInclude Include="include\Harlinn\Math\Line.h" />
     <ClInclude Include="include\Harlinn\Math\Segment.h" />
     <ClInclude Include="include\Harlinn\Math\Transformations.h" />
+    <ClInclude Include="include\Harlinn\Math\Distance.h" />
+    <ClInclude Include="include\Harlinn\Math\Triangle.h" />
+    <ClInclude Include="include\Harlinn\Math\Ray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Harlinn.Math.cpp">
@@ -636,6 +639,6 @@
     <None Include="include\Harlinn\Math\Internal\OpenLibM\w_cabsf.inl">
       <Filter>Include\Harlinn\Math\Internal\OpenLibM</Filter>
     </None>
-    <None Include="include\Harlinn\Math\Readme.md" />
+    <None Include="Readme.md" />
   </ItemGroup>
 </Project>
