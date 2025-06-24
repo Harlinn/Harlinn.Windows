@@ -20,6 +20,7 @@
 #include <HCCString.h>
 #include <HCCIO.h>
 
+using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 
 namespace Doxygen2Md

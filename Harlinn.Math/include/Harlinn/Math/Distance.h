@@ -18,10 +18,7 @@
    limitations under the License.
 */
 
-#include "Line.h"
-#include "Ray.h"
-#include "Segment.h"
-#include "Triangle.h"
+#include "Primitives.h"
 
 namespace Harlinn::Math
 {

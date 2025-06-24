@@ -234,6 +234,27 @@ namespace Harlinn::Math::SIMD
     };
 
 
+    namespace Internal
+    {
+
+        template<UInt32 Arg>
+        constexpr UInt32 ShuffleImpl()
+        {
+            return Arg & 3;
+        };
+
+        template<UInt32 Arg1, UInt32 Arg2, UInt32 ...Remaining>
+        constexpr UInt32 ShuffleImpl( )
+        {
+            UInt32 Count = sizeof...( Remaining ) + 1;
+            UInt32 Shift = Count * 2;
+            return (( Arg1 & 3 ) << Shift) + ShuffleImpl<Arg2, Remaining...>( );
+        };
+    }
+
+    template<UInt32 ...Args>
+    constexpr UInt32 Shuffle_v = Internal::ShuffleImpl<Args...>( );
+
     template<typename T, size_t N>
     struct Traits : public std::false_type
     {
@@ -3803,13 +3824,15 @@ namespace Harlinn::Math::SIMD
                 return _mm256_permute_ps( v, shuffleMask );
             }
         }
+        
 
-        template<typename ... Args>
-        static SIMDType Swizzle( Args&& ... args )
+        template<UInt32 shuffle>
+        static SIMDType Swizzle( SIMDType v ) noexcept requires( UseShortSIMDType )
         {
-            static_assert( false, "No matching overload" );
+            return _mm_permute_ps( v, shuffle );
         }
 
+        
         static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept
             requires( UseShortSIMDType )
         {
@@ -3825,12 +3848,7 @@ namespace Harlinn::Math::SIMD
             __m128i selectionControl = _mm256_load_si256( reinterpret_cast< const __m256i* >( selection[ 0 ].data( ) ) );
             return _mm256_permutevar8x32_ps( v, selectionControl );
         }
-
-        template<UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1>
-        static SIMDType Swizzle( SIMDType v ) noexcept requires( UseShortSIMDType )
-        {
-            return _mm_permute_ps( v, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
-        }
+        
 
 
         template<typename ... Args>
@@ -4213,9 +4231,11 @@ namespace Harlinn::Math::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                auto rmm1 = _mm_andnot_ps( control, v1 );
+                auto rmm1 = _mm_castsi128_ps( _mm_andnot_epi32( _mm_castps_si128( control ), _mm_castps_si128( v1 ) ) );
+                //auto rmm1 = _mm_andnot_ps( control, v1 );
                 auto rmm2 = _mm_and_ps( v2, control );
-                return _mm_or_ps( rmm1, rmm2 );
+                return  _mm_castsi128_ps( _mm_or_epi32( _mm_castps_si128( rmm1 ), _mm_castps_si128( rmm2 ) ) );
+                //return  _mm_or_ps( rmm1, rmm2 );
             }
             else
             {
@@ -6270,6 +6290,56 @@ namespace Harlinn::Math::SIMD
                 return _mm256_add_ps( rmm1, rmm2 );
             }
         }
+
+        
+        static SIMDType OuterProduct2x2( SIMDType a, SIMDType b ) noexcept
+        {
+            // a1*b1  a1*b2 a2*b1  a2*b2
+            //
+            // a: 1 1 0 0
+            // b: 1 0 1 0
+
+            auto rmm1 = Swizzle< Shuffle_v<1, 1, 0, 0>>( a );
+            auto rmm2 = Swizzle< Shuffle_v<1, 0, 1, 0>>( b );
+
+            return Mul( rmm1, rmm2 );
+        }
+
+        static std::array<SIMDType, 3> OuterProduct3x3( SIMDType a, SIMDType b ) noexcept
+        {
+            // a1*b1 a1*b2 a1*b3
+            // a2*b1 a2*b2 a2*b3
+            // a3*b1 a3*b2 a3*b3
+
+            auto an = At<0>( a );
+            auto r1 = Mul( an, b );
+            an = At<1>( a );
+            auto r2 = Mul( an, b );
+            an = At<2>( a );
+            auto r3 = Mul( an, b );
+
+            return std::array<SIMDType, 3>{ r1, r2, r3 };
+        }
+
+        static std::array<SIMDType, 4> OuterProduct4x4( SIMDType a, SIMDType b ) noexcept
+        {
+            // a1*b1 a1*b2 a1*b3 a1*b4
+            // a2*b1 a2*b2 a2*b3 a2*b4
+            // a3*b1 a3*b2 a3*b3 a3*b4
+            // a4*b1 a4*b2 a4*b4 a4*b4
+
+            auto an = At<0>( a );
+            auto r1 = Mul( an, b );
+            an = At<1>( a );
+            auto r2 = Mul( an, b );
+            an = At<2>( a );
+            auto r3 = Mul( an, b );
+            an = At<3>( a );
+            auto r4 = Mul( an, b );
+
+            return std::array<SIMDType, 4>{ r1, r2, r3, r4 };
+        }
+        
 
 
         static SIMDType Cross( SIMDType a, SIMDType b ) noexcept

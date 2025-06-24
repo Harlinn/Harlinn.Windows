@@ -140,6 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Harlinn\Math\Distance.h" />
+    <ClInclude Include="include\Harlinn\Math\Ellipsoid.h" />
+    <ClInclude Include="include\Harlinn\Math\Sphere.h" />
     <ClInclude Include="include\Harlinn\Math\Internal\FloatingPoint.h" />
     <ClInclude Include="include\Harlinn\Math\Internal\Integer.h" />
     <ClInclude Include="include\Harlinn\Math\Internal\OpenLibM\aarch64_fpmath.h" />
@@ -160,7 +162,9 @@
     <ClInclude Include="include\Harlinn\Math\Line.h" />
     <ClInclude Include="include\Harlinn\Math\Math.h" />
     <ClInclude Include="include\Harlinn\Math\MathForward.h" />
+    <ClInclude Include="include\Harlinn\Math\Primitives.h" />
     <ClInclude Include="include\Harlinn\Math\Ray.h" />
+    <ClInclude Include="include\Harlinn\Math\Rectangle.h" />
     <ClInclude Include="include\Harlinn\Math\Segment.h" />
     <ClInclude Include="include\Harlinn\Math\Simd.h" />
     <ClInclude Include="include\Harlinn\Math\Transformations.h" />

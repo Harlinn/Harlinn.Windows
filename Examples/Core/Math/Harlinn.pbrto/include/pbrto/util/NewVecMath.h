@@ -2333,7 +2333,7 @@ namespace pbrto
                 d.y * d.z
                 */
                 using Traits = SIMD::Traits<Float, 3>;
-                auto result = 2.f * Traits::First( Traits::HSum( Traits::Mul( Traits::Swizzle<3, 1, 0, 0>( d.simd ), Traits::Swizzle<3, 2, 2, 1>( d.simd ) ) ) );
+                auto result = 2.f * Traits::First( Traits::HSum( Traits::Mul( Traits::Swizzle< Math::SIMD::Shuffle_v<3, 1, 0, 0>>( d.simd ), Traits::Swizzle< Math::SIMD::Shuffle_v<3, 2, 2, 1>>( d.simd ) ) ) );
                 return result;
 
                 //return 2 * ( d.x * d.y + d.x * d.z + d.y * d.z );

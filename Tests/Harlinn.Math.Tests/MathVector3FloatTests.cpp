@@ -2501,6 +2501,28 @@ BOOST_AUTO_TEST_CASE( SumOfProductsTest1 )
 
 }
 
+// --run_test=MathVector3FloatTests/OuterProductTest
+BOOST_AUTO_TEST_CASE( OuterProductTest )
+{
+    Vector3f a( 5, 4, 3 );
+    Vector3f b( 3, 5, 7 );
+    SquareMatrix<float, 3> m = OuterProduct( a, b );
+    Vector3f r1 = m[ 0 ];
+    Vector3f r2 = m[ 1 ];
+    Vector3f r3 = m[ 2 ];
+    
+
+    Vector3f expectedR1( 15, 25, 35 );
+    Vector3f expectedR2( 12, 20, 28 );
+    Vector3f expectedR3( 9, 15, 21 );
+
+
+
+    BOOST_CHECK( r1 == expectedR1 );
+    BOOST_CHECK( r2 == expectedR2 );
+    BOOST_CHECK( r3 == expectedR3 );
+}
+
 
 
 BOOST_AUTO_TEST_SUITE_END( )

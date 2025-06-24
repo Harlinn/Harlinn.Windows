@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Harlinn.Common.Core.Math.Tests.cpp">
+    <ClCompile Include="Harlinn.Math.Tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SquareMatrix4FloatTests.cpp">

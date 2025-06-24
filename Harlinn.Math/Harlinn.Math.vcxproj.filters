@@ -89,6 +89,10 @@
     <ClInclude Include="include\Harlinn\Math\Distance.h" />
     <ClInclude Include="include\Harlinn\Math\Triangle.h" />
     <ClInclude Include="include\Harlinn\Math\Ray.h" />
+    <ClInclude Include="include\Harlinn\Math\Sphere.h" />
+    <ClInclude Include="include\Harlinn\Math\Primitives.h" />
+    <ClInclude Include="include\Harlinn\Math\Rectangle.h" />
+    <ClInclude Include="include\Harlinn\Math\Ellipsoid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Harlinn.Math.cpp">

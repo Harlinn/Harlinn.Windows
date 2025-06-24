@@ -73,7 +73,6 @@ namespace Harlinn::Math
 
         static constexpr value_type Zero = static_cast< value_type >( 0 );
         static constexpr value_type One = static_cast< value_type >( 1 );
-        static constexpr value_type Half = static_cast< value_type >( .5 );
 
         std::array<Point, 3> v;
 

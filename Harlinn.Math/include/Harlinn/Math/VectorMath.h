@@ -12037,11 +12037,11 @@ namespace Harlinn::Math
         // c1 * a2 + d1 * c2
         // c1 * b2 + d1 * d2
 
-        auto rmm1 = Traits::Swizzle<2, 2, 0, 0>( matrix1.simd );
-        auto rmm2 = Traits::Swizzle<1, 0, 1, 0>( matrix2.simd );
+        auto rmm1 = Traits::Swizzle<SIMD::Shuffle_v<2, 2, 0, 0>>( matrix1.simd );
+        auto rmm2 = Traits::Swizzle<SIMD::Shuffle_v<1, 0, 1, 0>>( matrix2.simd );
         auto rmm3 = Traits::Mul( rmm1, rmm2 );
-        rmm1 = Traits::Swizzle<3, 3, 1, 1>( matrix1.simd );
-        rmm2 = Traits::Swizzle<3, 2, 3, 2>( matrix2.simd );
+        rmm1 = Traits::Swizzle< SIMD::Shuffle_v<3, 3, 1, 1>>( matrix1.simd );
+        rmm2 = Traits::Swizzle< SIMD::Shuffle_v<3, 2, 3, 2>>( matrix2.simd );
         return Simd( Traits::FMAdd( rmm1, rmm2, rmm3 ) );
     }
 
@@ -12059,6 +12059,40 @@ namespace Harlinn::Math
     {
         return Math::Multiply( Internal::ToSimdType( m1 ), Internal::ToSimdType( m2 ) );
     }
+
+    /// <summary>
+    /// a*b^T, where a is a column vector and b is a row vector with the same
+    /// number of elements as a. The result is square matrix.
+    /// </summary>
+    template<SimdType T1, SimdType T2>
+        requires IsCompatible<T1, T2>&& FloatingPointType<typename T1::value_type>
+    typename SquareMatrix<typename T1::value_type, T1::Size>::Simd OuterProduct( const T1& a, const T2& b )
+    {
+        using S = typename SquareMatrix<typename T1::value_type, T1::Size>::Simd;
+        using Traits = typename S::Traits;
+
+        if constexpr ( S::Size == 2 )
+        {
+            return S( Traits::OuterProduct2x2( a.simd, b.simd ) );
+        }
+        else if constexpr ( S::Size == 3 )
+        {
+            return S( Traits::OuterProduct3x3( a.simd, b.simd ) );
+        }
+        else if constexpr ( S::Size == 4 )
+        {
+            return S( Traits::OuterProduct4x4( a.simd, b.simd ) );
+        }
+
+    }
+
+    template<SimdOrTupleType T1, SimdOrTupleType T2>
+        requires IsCompatible<T1, T2>&& Internal::HasTupleType<T1,T2> && FloatingPointType<typename T1::value_type>
+    typename SquareMatrix<typename T1::value_type, T1::Size>::Simd OuterProduct( const T1& a, const T2& b )
+    {
+        return OuterProduct( Internal::ToSimdType( a ), Internal::ToSimdType( b ) );
+    }
+
 
 
     // Division
@@ -12140,18 +12174,18 @@ namespace Harlinn::Math
         auto matrix2 = matrix.simd[ 2 ];
         auto matrix3 = matrix.simd[ 3 ];
 
-        auto rmm0 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( matrix2 );
-        auto rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix3 );
-        auto rmm2 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( matrix3 );
-        auto rmm3 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix2 );
+        auto rmm0 = Traits::Swizzle< SIMD::Shuffle_v<Select::X, Select::X, Select::X, Select::Y>>( matrix2 );
+        auto rmm1 = Traits::Swizzle< SIMD::Shuffle_v<Select::Y, Select::Y, Select::Z, Select::Z>>( matrix3 );
+        auto rmm2 = Traits::Swizzle< SIMD::Shuffle_v<Select::Z, Select::W, Select::W, Select::W>>( matrix3 );
+        auto rmm3 = Traits::Swizzle< SIMD::Shuffle_v<Select::Y, Select::Y, Select::Z, Select::Z>>( matrix2 );
 
         auto rmm4 = Traits::Mul( rmm0, rmm1 );
         auto rmm5 = Traits::Mul( rmm0, rmm2 );
         auto rmm6 = Traits::Mul( rmm3, rmm2 );
-        rmm0 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix2 );
-        rmm1 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( matrix3 );
-        rmm2 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( matrix2 );
-        rmm3 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix3 );
+        rmm0 = Traits::Swizzle< SIMD::Shuffle_v<Select::Y, Select::Y, Select::Z, Select::Z>>( matrix2 );
+        rmm1 = Traits::Swizzle< SIMD::Shuffle_v<Select::X, Select::X, Select::X, Select::Y>>( matrix3 );
+        rmm2 = Traits::Swizzle< SIMD::Shuffle_v<Select::Z, Select::W, Select::W, Select::W>>( matrix2 );
+        rmm3 = Traits::Swizzle< SIMD::Shuffle_v<Select::Y, Select::Y, Select::Z, Select::Z>>( matrix3 );
 
         rmm4 = Traits::FNMAdd( rmm0, rmm1, rmm4 );
         rmm5 = Traits::FNMAdd( rmm2, rmm1, rmm5 );
@@ -12159,9 +12193,9 @@ namespace Harlinn::Math
 
         rmm3 = matrix.simd[ 1 ];
 
-        rmm0 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( rmm3 );
-        rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( rmm3 );
-        rmm2 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( rmm3 );
+        rmm0 = Traits::Swizzle< SIMD::Shuffle_v<Select::Z, Select::W, Select::W, Select::W>>( rmm3 );
+        rmm1 = Traits::Swizzle< SIMD::Shuffle_v<Select::Y, Select::Y, Select::Z, Select::Z>>( rmm3 );
+        rmm2 = Traits::Swizzle< SIMD::Shuffle_v<Select::X, Select::X, Select::X, Select::Y>>( rmm3 );
 
         auto rmm7 = Traits::Mul( rmm0, rmm4 );
         rmm7 = Traits::FNMAdd( rmm1, rmm5, rmm7 );
@@ -12227,10 +12261,10 @@ namespace Harlinn::Math
         auto v1 = matrix.simd[ 1 ];
         auto v2 = matrix.simd[ 2 ];
 
-        auto edd = Traits::Swizzle<3, 0, 0, 1>( v1 );
-        auto iih = Traits::Swizzle<3, 1, 2, 2>( v2 );
-        auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
-        auto ffe = Traits::Swizzle<3, 1, 2, 2>( v1 );
+        auto edd = Traits::Swizzle< SIMD::Shuffle_v<3, 0, 0, 1>>( v1 );
+        auto iih = Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 2>>( v2 );
+        auto hgg = Traits::Swizzle< SIMD::Shuffle_v<3, 0, 0, 1>>( v2 );
+        auto ffe = Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 2>>( v1 );
 
         auto det = Traits::FMSub( edd, iih, Traits::Mul( hgg, ffe ) );
 
@@ -12358,10 +12392,10 @@ namespace Harlinn::Math
         transposed.simd[ 2 ] = Traits::Shuffle<2, 0, 2, 0>( vTemp3, vTemp4 );
         transposed.simd[ 3 ] = Traits::Shuffle<3, 1, 3, 1>( vTemp3, vTemp4 );
 
-        auto V00 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 2 ] );
-        auto V10 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 3 ] );
-        auto V01 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 0 ] );
-        auto V11 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 1 ] );
+        auto V00 = Traits::Swizzle< SIMD::Shuffle_v<1, 1, 0, 0>>( transposed.simd[ 2 ] );
+        auto V10 = Traits::Swizzle< SIMD::Shuffle_v<3, 2, 3, 2>>( transposed.simd[ 3 ] );
+        auto V01 = Traits::Swizzle< SIMD::Shuffle_v<1, 1, 0, 0>>( transposed.simd[ 0 ] );
+        auto V11 = Traits::Swizzle< SIMD::Shuffle_v<3, 2, 3, 2>>( transposed.simd[ 1 ] );
 
         auto V02 = Traits::Shuffle<2, 0, 2, 0>( transposed.simd[ 2 ], transposed.simd[ 0 ] );
         auto V12 = Traits::Shuffle<3, 1, 3, 1>( transposed.simd[ 3 ], transposed.simd[ 1 ] );
@@ -12371,10 +12405,10 @@ namespace Harlinn::Math
         auto D2 = Traits::Mul( V02, V12 );
 
 
-        V00 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 2 ] );
-        V10 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 3 ] );
-        V01 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 0 ] );
-        V11 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 1 ] );
+        V00 = Traits::Swizzle< SIMD::Shuffle_v<3, 2, 3, 2>>( transposed.simd[ 2 ] );
+        V10 = Traits::Swizzle< SIMD::Shuffle_v<1, 1, 0, 0>>( transposed.simd[ 3 ] );
+        V01 = Traits::Swizzle< SIMD::Shuffle_v<3, 2, 3, 2>>( transposed.simd[ 0 ] );
+        V11 = Traits::Swizzle< SIMD::Shuffle_v<1, 1, 0, 0>>( transposed.simd[ 1 ] );
 
         V02 = Traits::Shuffle<3, 1, 3, 1>( transposed.simd[ 2 ], transposed.simd[ 0 ] );
         V12 = Traits::Shuffle<2, 0, 2, 0>( transposed.simd[ 3 ], transposed.simd[ 1 ] );
@@ -12386,16 +12420,16 @@ namespace Harlinn::Math
 
         // V11 = D0Y,D0W,D2Y,D2Y
         V11 = Traits::Shuffle<1, 1, 3, 1>( D0, D2 );
-        V00 = Traits::Swizzle<1, 0, 2, 1>( transposed.simd[ 1 ] );
+        V00 = Traits::Swizzle< SIMD::Shuffle_v<1, 0, 2, 1>>( transposed.simd[ 1 ] );
         V10 = Traits::Shuffle<0, 3, 0, 2>( V11, D0 );
-        V01 = Traits::Swizzle<0, 1, 0, 2>( transposed.simd[ 0 ] );
+        V01 = Traits::Swizzle< SIMD::Shuffle_v<0, 1, 0, 2>>( transposed.simd[ 0 ] );
         V11 = Traits::Shuffle<2, 1, 2, 1>( V11, D0 );
 
         // V13 = D1Y,D1W,D2W,D2W
         auto V13 = Traits::Shuffle<3, 3, 3, 1>( D1, D2 );
-        V02 = Traits::Swizzle<1, 0, 2, 1>( transposed.simd[ 3 ] );
+        V02 = Traits::Swizzle< SIMD::Shuffle_v<1, 0, 2, 1>>( transposed.simd[ 3 ] );
         V12 = Traits::Shuffle<0, 3, 0, 2>( V13, D1 );
-        auto V03 = Traits::Swizzle<0, 1, 0, 2>( transposed.simd[ 2 ] );
+        auto V03 = Traits::Swizzle< SIMD::Shuffle_v<0, 1, 0, 2>>( transposed.simd[ 2 ] );
         V13 = Traits::Shuffle<2, 1, 2, 1>( V13, D1 );
 
         auto C0 = Traits::Mul( V00, V10 );
@@ -12406,15 +12440,15 @@ namespace Harlinn::Math
 
         // V11 = D0X,D0Y,D2X,D2X
         V11 = Traits::Shuffle<0, 0, 1, 0>( D0, D2 );
-        V00 = Traits::Swizzle<2, 1, 3, 2>( transposed.simd[ 1 ] );
+        V00 = Traits::Swizzle< SIMD::Shuffle_v<2, 1, 3, 2>>( transposed.simd[ 1 ] );
         V10 = Traits::Shuffle<2, 1, 0, 3>( D0, V11 );
-        V01 = Traits::Swizzle<1, 3, 2, 3>( transposed.simd[ 0 ] );
+        V01 = Traits::Swizzle< SIMD::Shuffle_v<1, 3, 2, 3>>( transposed.simd[ 0 ] );
         V11 = Traits::Shuffle<0, 2, 1, 2>( D0, V11 );
         // V13 = D1X,D1Y,D2Z,D2Z
         V13 = Traits::Shuffle<2, 2, 1, 0>( D1, D2 );
-        V02 = Traits::Swizzle<2, 1, 3, 2>( transposed.simd[ 3 ] );
+        V02 = Traits::Swizzle< SIMD::Shuffle_v<2, 1, 3, 2>>( transposed.simd[ 3 ] );
         V12 = Traits::Shuffle<2, 1, 0, 3>( D1, V13 );
-        V03 = Traits::Swizzle<1, 3, 2, 3>( transposed.simd[ 2 ] );
+        V03 = Traits::Swizzle< SIMD::Shuffle_v<1, 3, 2, 3>>( transposed.simd[ 2 ] );
         V13 = Traits::Shuffle<0, 2, 1, 2>( D1, V13 );
 
         C0 = Traits::FNMAdd( V00, V10, C0 );
@@ -12422,22 +12456,22 @@ namespace Harlinn::Math
         C4 = Traits::FNMAdd( V02, V12, C4 );
         C6 = Traits::FNMAdd( V03, V13, C6 );
 
-        V00 = Traits::Swizzle<0, 3, 0, 3>( transposed.simd[ 1 ] );
+        V00 = Traits::Swizzle< SIMD::Shuffle_v<0, 3, 0, 3>>( transposed.simd[ 1 ] );
         // V10 = D0Z,D0Z,D2X,D2Y
         V10 = Traits::Shuffle<1, 0, 2, 2>( D0, D2 );
-        V10 = Traits::Swizzle<0, 2, 3, 0>( V10 );
-        V01 = Traits::Swizzle<2, 0, 3, 1>( transposed.simd[ 0 ] );
+        V10 = Traits::Swizzle< SIMD::Shuffle_v<0, 2, 3, 0>>( V10 );
+        V01 = Traits::Swizzle< SIMD::Shuffle_v<2, 0, 3, 1>>( transposed.simd[ 0 ] );
         // V11 = D0X,D0W,D2X,D2Y
         V11 = Traits::Shuffle<1, 0, 3, 0>( D0, D2 );
-        V11 = Traits::Swizzle<2, 1, 0, 3>( V11 );
-        V02 = Traits::Swizzle<0, 3, 0, 3>( transposed.simd[ 3 ] );
+        V11 = Traits::Swizzle< SIMD::Shuffle_v<2, 1, 0, 3>>( V11 );
+        V02 = Traits::Swizzle< SIMD::Shuffle_v<0, 3, 0, 3>>( transposed.simd[ 3 ] );
         // V12 = D1Z,D1Z,D2Z,D2W
         V12 = Traits::Shuffle<3, 2, 2, 2>( D1, D2 );
-        V12 = Traits::Swizzle<0, 2, 3, 0>( V12 );
-        V03 = Traits::Swizzle<2, 0, 3, 1>( transposed.simd[ 2 ] );
+        V12 = Traits::Swizzle< SIMD::Shuffle_v<0, 2, 3, 0>>( V12 );
+        V03 = Traits::Swizzle< SIMD::Shuffle_v<2, 0, 3, 1>>( transposed.simd[ 2 ] );
         // V13 = D1X,D1W,D2Z,D2W
         V13 = Traits::Shuffle<3, 2, 3, 0>( D1, D2 );
-        V13 = Traits::Swizzle<2, 1, 0, 3>( V13 );
+        V13 = Traits::Swizzle< SIMD::Shuffle_v<2, 1, 0, 3>>( V13 );
 
         V00 = Traits::Mul( V00, V10 );
         V01 = Traits::Mul( V01, V11 );
@@ -12457,10 +12491,10 @@ namespace Harlinn::Math
         C2 = Traits::Shuffle<3, 1, 2, 0>( C2, C3 );
         C4 = Traits::Shuffle<3, 1, 2, 0>( C4, C5 );
         C6 = Traits::Shuffle<3, 1, 2, 0>( C6, C7 );
-        C0 = Traits::Swizzle<3, 1, 2, 0>( C0 );
-        C2 = Traits::Swizzle<3, 1, 2, 0>( C2 );
-        C4 = Traits::Swizzle<3, 1, 2, 0>( C4 );
-        C6 = Traits::Swizzle<3, 1, 2, 0>( C6 );
+        C0 = Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 0 >>( C0 );
+        C2 = Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 0 >>( C2 );
+        C4 = Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 0 >>( C4 );
+        C6 = Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 0 >>( C6 );
         // Get the determinant
         auto vTemp = Traits::Dot( C0, transposed.simd[ 0 ] );
         if ( determinant != nullptr )
@@ -12505,10 +12539,10 @@ namespace Harlinn::Math
         auto v1 = matrix.simd[ 1 ];
         auto v2 = matrix.simd[ 2 ];
 
-        auto edd = Traits::Swizzle<3, 0, 0, 1>( v1 );
-        auto iih = Traits::Swizzle<3, 1, 2, 2>( v2 );
-        auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
-        auto ffe = Traits::Swizzle<3, 1, 2, 2>( v1 );
+        auto edd = Traits::Swizzle<SIMD::Shuffle_v<3, 0, 0, 1>>( v1 );
+        auto iih = Traits::Swizzle<SIMD::Shuffle_v<3, 1, 2, 2>>( v2 );
+        auto hgg = Traits::Swizzle<SIMD::Shuffle_v<3, 0, 0, 1>>( v2 );
+        auto ffe = Traits::Swizzle<SIMD::Shuffle_v<3, 1, 2, 2>>( v1 );
 
         auto det = Traits::FMSub( edd, iih, Traits::Mul( hgg, ffe ) );
 
@@ -12542,8 +12576,8 @@ namespace Harlinn::Math
 
         //auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
         auto c0 = Traits::FMSub( edd, iih, Traits::Mul( ffe, hgg ) );
-        auto baa = Traits::Swizzle<3, 0, 0, 1>( v0 );
-        auto ccb = Traits::Swizzle<3, 1, 2, 2>( v0 );
+        auto baa = Traits::Swizzle<SIMD::Shuffle_v<3, 0, 0, 1>>( v0 );
+        auto ccb = Traits::Swizzle<SIMD::Shuffle_v<3, 1, 2, 2>>( v0 );
 
         auto c1 = Traits::FMSub( baa, iih, Traits::Mul( ccb, hgg ) );
         auto c2 = Traits::FMSub( baa, ffe, Traits::Mul( ccb, edd ) );
@@ -12585,7 +12619,7 @@ namespace Harlinn::Math
     {
         using Traits = SquareMatrix<float, 2>::Traits;
         using Simd = typename SquareMatrix<float, 2>::Simd;
-        return Simd( Traits::Swizzle<3, 1, 2, 0>( matrix.simd ) );
+        return Simd( Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 0>>( matrix.simd ) );
     }
 
     inline SquareMatrix<float, 2>::Simd Transpose( const SquareMatrix<float, 2>& matrix )
@@ -12599,11 +12633,11 @@ namespace Harlinn::Math
         using Traits = SquareMatrix<float, 2>::Traits;
         using Simd = typename Vector<float, 2>::Simd;
 
-        auto rmm1 = Traits::Swizzle<2, 1, 3, 0>( matrix.simd );
-        auto rmm2 = Traits::Swizzle<2, 3, 0, 1>( rmm1 );
+        auto rmm1 = Traits::Swizzle<SIMD::Shuffle_v<2, 1, 3, 0>>( matrix.simd );
+        auto rmm2 = Traits::Swizzle<SIMD::Shuffle_v<2, 3, 0, 1>>( rmm1 );
         rmm1 = Traits::Mul( rmm1, rmm2 );
         rmm1 = Traits::Mul( rmm1, { {1.f,1.f,-1.f,-1.f} } );
-        rmm2 = Traits::Swizzle<1, 0, 3, 2>( rmm1 );
+        rmm2 = Traits::Swizzle< SIMD::Shuffle_v<1, 0, 3, 2>>( rmm1 );
         return Simd( Traits::Add( rmm1, rmm2 ) );
     }
 
@@ -12617,18 +12651,18 @@ namespace Harlinn::Math
     {
         using Traits = SquareMatrix<float, 2>::Traits;
         using Simd = typename SquareMatrix<float, 2>::Simd;
-        auto rmm1 = Traits::Swizzle<2, 1, 3, 0>( matrix.simd );
-        auto rmm2 = Traits::Swizzle<2, 3, 0, 1>( rmm1 );
+        auto rmm1 = Traits::Swizzle<SIMD::Shuffle_v<2, 1, 3, 0>>( matrix.simd );
+        auto rmm2 = Traits::Swizzle<SIMD::Shuffle_v<2, 3, 0, 1>>( rmm1 );
         rmm1 = Traits::Mul( rmm1, rmm2 );
         rmm1 = Traits::Mul( rmm1, { {1.f,1.f,-1.f,-1.f} } );
-        rmm2 = Traits::Swizzle<1, 0, 3, 2>( rmm1 );
+        rmm2 = Traits::Swizzle< SIMD::Shuffle_v<1, 0, 3, 2>>( rmm1 );
         rmm1 = Traits::Add( rmm1, rmm2 );
         if ( determinant )
         {
             ( *determinant ).simd = rmm1;
         }
         rmm1 = Traits::Div( { {1.f,1.f,1.f,1.f} }, rmm1 );
-        rmm2 = Traits::Swizzle<0, 2, 1, 3>( matrix.simd );
+        rmm2 = Traits::Swizzle< SIMD::Shuffle_v<0, 2, 1, 3>>( matrix.simd );
         rmm2 = Traits::Mul( rmm2, { {1.f,-1.f,-1.f,1.f} } );
         return Simd( Traits::Mul( rmm1, rmm2 ) );
     }
@@ -14269,6 +14303,11 @@ namespace Harlinn::Math
         *outRotQuat = Quaternion<float>::Simd::FromMatrix( matTemp );
         return true;
     }
+
+
+    
+
+
 
     namespace Internal
     {

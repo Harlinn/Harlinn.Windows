@@ -259,5 +259,23 @@ BOOST_AUTO_TEST_CASE( Basics )
 }
 
 
+// --run_test=MathVector2FloatTests/OuterProductTest
+BOOST_AUTO_TEST_CASE( OuterProductTest )
+{
+    Vector2f a( 1, 2 );
+    Vector2f b( 3, 4);
+    SquareMatrix<float,2> m = OuterProduct( a, b );
+    auto m00 = m[ 0 ][ 0 ];
+    auto m01 = m[ 0 ][ 1 ];
+    auto m10 = m[ 1 ][ 0 ];
+    auto m11 = m[ 1 ][ 1 ];
+
+    BOOST_CHECK( m00 == 3 );
+    BOOST_CHECK( m01 == 4 );
+    BOOST_CHECK( m10 == 6 );
+    BOOST_CHECK( m11 == 8 );
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

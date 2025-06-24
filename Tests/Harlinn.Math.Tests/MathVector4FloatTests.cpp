@@ -191,5 +191,30 @@ BOOST_AUTO_TEST_CASE( DivTest2 )
     BOOST_CHECK( wAsExpected );
 }
 
+// --run_test=MathVector4FloatTests/OuterProductTest
+BOOST_AUTO_TEST_CASE( OuterProductTest )
+{
+    Vector4f a( 5, 4, 3, 2 );
+    Vector4f b( 3, 5, 7, 9 );
+    SquareMatrix<float, 4> m = OuterProduct( a, b );
+    Vector4f r1 = m[ 0 ];
+    Vector4f r2 = m[ 1 ];
+    Vector4f r3 = m[ 2 ];
+    Vector4f r4 = m[ 3 ];
+
+
+    Vector4f expectedR1( 15, 25, 35, 45 );
+    Vector4f expectedR2( 12, 20, 28, 36 );
+    Vector4f expectedR3( 9, 15, 21, 27 );
+    Vector4f expectedR4( 6, 10, 14,	18 );
+
+
+
+    BOOST_CHECK( r1 == expectedR1 );
+    BOOST_CHECK( r2 == expectedR2 );
+    BOOST_CHECK( r3 == expectedR3 );
+    BOOST_CHECK( r4 == expectedR4 );
+}
+
 
 BOOST_AUTO_TEST_SUITE_END( )
