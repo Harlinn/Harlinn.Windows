@@ -153,7 +153,7 @@ namespace Harlinn::Common::Core::RapidXml
         rapidxml::xml_base<Ch>* data_ = nullptr;
     public:
         using StringView = std::basic_string_view<Ch>;
-        using StringType = BasicString<Ch>;
+        using StringType = std::basic_string<Ch>;
 
         XmlBase( ) = default;
         explicit XmlBase( rapidxml::xml_base<Ch>* data )
@@ -222,8 +222,7 @@ namespace Harlinn::Common::Core::RapidXml
 
         inline XmlNode<Ch> Parent( ) const;
 
-        template<typename StringT = WideString>
-            requires std::is_same_v<StringT,WideString> || std::is_same_v<StringT, std::wstring>
+        template<WideStringLike StringT>
         StringT ToString( ) const
         {
             auto value = Value( );
@@ -231,13 +230,11 @@ namespace Harlinn::Common::Core::RapidXml
             ToWideString( value.data(), value.size(), result );
             return result;
         }
-        template<typename StringT>
-            requires std::is_same_v<StringT, AnsiString> || std::is_same_v<StringT, std::string>
+        template<AnsiStringLike StringT = std::string>
         StringT ToString( ) const
         {
             auto value = Value( );
-            StringT result;
-            ToAnsiString( value.data( ), value.size( ), result );
+            StringT result( value.data( ), value.size( ) );
             return result;
         }
 
@@ -267,8 +264,7 @@ namespace Harlinn::Common::Core::RapidXml
             return static_cast< rapidxml::xml_attribute<Ch>* >( data_ );
         }
     public:
-        template<typename T>
-            requires std::is_same_v<T, bool>
+        template<BooleanType T>
         T Read( ) const
         {
             auto data = Data( );
@@ -366,7 +362,7 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
-        template<typename T>
+        template<BooleanType T>
             requires std::is_same_v<T, std::optional<bool>>
         T Read( ) const
         {
@@ -380,8 +376,7 @@ namespace Harlinn::Common::Core::RapidXml
         }
 
 
-        template<typename T>
-            requires std::is_integral_v<T> && ( std::is_same_v<T, bool> == false )
+        template<IntegerType T>
         T Read( int radix = 10 ) const
         {
             StringType str( data_->value( ), data_->value_size( ) );
@@ -389,7 +384,7 @@ namespace Harlinn::Common::Core::RapidXml
         }
 
 
-        template<typename T>
+        template<FloatingPointType T>
             requires std::is_floating_point_v<T>
         T Read( ) const
         {
@@ -469,7 +464,7 @@ namespace Harlinn::Common::Core::RapidXml
 
     };
 
-    using NodeType = rapidxml::node_type;
+    using NodeType = typename rapidxml::node_type;
 
     template<typename Ch>
     class XmlNode : public XmlBase<Ch>

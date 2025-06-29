@@ -512,8 +512,10 @@ namespace Harlinn::Common::Core
                 return begin_[index];
             }
 
-            void AppendTo( std::vector<AnsiString>& strings ) const
+            template<AnsiStringLike StringT>
+            void AppendTo( std::vector<StringT>& strings ) const
             {
+                using CharType = typename StringT::value_type;
                 auto start = begin( );
                 auto ptr = start;
 
@@ -522,12 +524,8 @@ namespace Harlinn::Common::Core
                     auto c = *ptr;
                     if ( c == '\r' )
                     {
-#ifdef HCC_WITH_BASIC_STRING
-                        AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast<size_t>(ptr - start) );
+                        StringT str( reinterpret_cast< const CharType* >( start ), static_cast<size_t>(ptr - start) );
                         strings.emplace_back( std::move( str ) );
-#else
-                        strings.emplace_back( start, ptr );
-#endif
                         if ( ( ptr + 1 < end_ ) && *( ptr + 1 ) == '\n' )
                         {
                             ptr++;
@@ -536,34 +534,26 @@ namespace Harlinn::Common::Core
                     }
                     else if ( c == '\n' )
                     {
-#ifdef HCC_WITH_BASIC_STRING
-                        AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast< size_t >( ptr - start ) );
+                        StringT str( reinterpret_cast< const CharType* >( start ), static_cast< size_t >( ptr - start ) );
                         strings.emplace_back( std::move( str ) );
-#else
-                        strings.emplace_back( start, ptr );
-#endif
+
                         start = ptr + 1;
                     }
                     ptr++;
                 }
                 if ( start < end_ )
                 {
-#ifdef HCC_WITH_BASIC_STRING
-                    AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast< size_t >( end( ) - start ) );
+
+                    StringT str( reinterpret_cast< const CharType* >( start ), static_cast< size_t >( end( ) - start ) );
                     strings.emplace_back( std::move( str ) );
-#else
-                    strings.emplace_back( start, end( ) );
-#endif
                 }
             }
 
-            void AppendTo( AnsiString& str ) const
+            template<AnsiStringLike StringT>
+            void AppendTo( StringT& str ) const
             {
-#ifdef HCC_WITH_BASIC_STRING
-                str.append( reinterpret_cast< const AnsiString::value_type*>( begin( ) ), reinterpret_cast< const AnsiString::value_type* >( end( ) ) );
-#else
-                str.append( begin( ), end( ) );
-#endif
+                using CharType = typename StringT::value_type;
+                str.append( reinterpret_cast< const CharType*>( begin( ) ), reinterpret_cast< const CharType* >( end( ) ) );
             }
 
             void AppendTo( std::vector<Byte>& destination ) const

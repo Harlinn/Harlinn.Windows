@@ -3729,6 +3729,8 @@ namespace Harlinn::Common::Core::IO
 
         HCC_EXPORT static void ReadAndAppendAllTextTo( const AnsiString& filePath, AnsiString& destination );
         HCC_EXPORT static void ReadAndAppendAllTextTo( const WideString& filePath, AnsiString& destination );
+        HCC_EXPORT static void ReadAndAppendAllTextTo( const std::string& filePath, std::string& destination );
+        HCC_EXPORT static void ReadAndAppendAllTextTo( const std::wstring& filePath, std::string& destination );
         HCC_EXPORT static void ReadAndAppendAllBytesTo( const AnsiString& filePath, std::vector<Byte> &destination );
         HCC_EXPORT static void ReadAndAppendAllBytesTo( const WideString& filePath, std::vector<Byte>& destination );
 
@@ -4411,6 +4413,11 @@ namespace Harlinn::Common::Core::IO
         /// Appends all lines of the file to the target destination
         /// </summary>
         HCC_EXPORT void ReadFile( AnsiString& destination ) const;
+
+        /// <summary>
+        /// Appends all lines of the file to the target destination
+        /// </summary>
+        HCC_EXPORT void ReadFile( std::string& destination ) const;
 
         HCC_EXPORT void ReadFile( std::vector<Byte>& destination ) const;
 

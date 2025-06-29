@@ -21,12 +21,12 @@
 
 namespace Harlinn::Common::Core
 {
-    template<typename DerivedT, typename ValueT>
+    template<typename DerivedT, typename ValueT, typename StringT = WideString>
     class EnumBase
     {
     public:
         using DerivedType = DerivedT;
-        using StringType = WideString;
+        using StringType = StringT;
         using CharType = typename StringType::value_type;
         using ValueType = ValueT;
         using IntegerType = std::conditional_t<std::is_enum_v<ValueType>, std::underlying_type_t<ValueType>, ValueType>;
@@ -81,11 +81,11 @@ namespace Harlinn::Common::Core
     };
 
 
-    template<typename ValueT>
-    class Flags : public EnumBase<Flags<ValueT>, ValueT>
+    template<typename ValueT, typename StringT = WideString>
+    class Flags : public EnumBase<Flags<ValueT, StringT>, ValueT, StringT>
     {
     public:
-        using Base = EnumBase<Flags<ValueT>, ValueT>;
+        using Base = EnumBase<Flags<ValueT, StringT>, ValueT, StringT>;
         using StringType = typename Base::StringType;
         using CharType = typename Base::CharType;
         using ValueType = typename Base::ValueType;
@@ -240,11 +240,11 @@ namespace Harlinn::Common::Core
         }
     };
 
-    template<typename ValueT>
-    class Enum : public EnumBase<Enum<ValueT>, ValueT>
+    template<typename ValueT, typename StringT = WideString>
+    class Enum : public EnumBase<Enum<ValueT, StringT>, ValueT, StringT>
     {
     public:
-        using Base = EnumBase<Enum<ValueT>, ValueT>;
+        using Base = EnumBase<Enum<ValueT, StringT>, ValueT, StringT>;
         using StringType = typename Base::StringType;
         using CharType = typename Base::CharType;
         using ValueType = typename Base::ValueType;

@@ -433,6 +433,17 @@ namespace Harlinn::Common::Core::IO
         fileStream.ReadFile( destination );
     }
 
+    void File::ReadAndAppendAllTextTo( const std::string& filePath, std::string& destination )
+    {
+        FileStream fileStream( filePath.c_str( ), FileAccess::Read, FileShare::Read, nullptr, FileMode::Open, FileAttributes::Normal, FileOptions::Default );
+        fileStream.ReadFile( destination );
+    }
+    void File::ReadAndAppendAllTextTo( const std::wstring& filePath, std::string& destination )
+    {
+        FileStream fileStream( filePath.c_str( ), FileAccess::Read, FileShare::Read, nullptr, FileMode::Open, FileAttributes::Normal, FileOptions::Default );
+        fileStream.ReadFile( destination );
+    }
+
     void File::ReadAndAppendAllBytesTo( const AnsiString& filePath, std::vector<Byte>& destination )
     {
         FileStream fileStream( filePath.c_str( ), FileAccess::Read, FileShare::Read, nullptr, FileMode::Open, FileAttributes::Normal, FileOptions::Default );
@@ -734,6 +745,17 @@ namespace Harlinn::Common::Core::IO
             view.AppendTo( destination );
         }
     }
+    void FileStream::ReadFile( std::string& destination ) const
+    {
+        auto fileSize = Size( );
+        if ( fileSize )
+        {
+            FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
+            FileMapping::View view( fileMapping, FileMap::Read, 0, fileSize );
+            view.AppendTo( destination );
+        }
+    }
+
     void FileStream::ReadFile( std::vector<Byte>& destination ) const
     {
         auto fileSize = Size( );

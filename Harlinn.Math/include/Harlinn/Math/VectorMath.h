@@ -1808,10 +1808,14 @@ namespace Harlinn::Math
 
         union
         {
+            //! \unnamed{union}
             ArrayType values;
             struct
             {
-                value_type x, y;
+                //! \unnamed{union/struct:1}
+                value_type x; 
+                //! \unnamed{union/struct:2}
+                value_type y;
             };
         };
 
@@ -2184,10 +2188,16 @@ namespace Harlinn::Math
 
         union
         {
+            //! \unnamed{union}
             ArrayType values;
             struct
             {
-                value_type x, y, z;
+                //! \unnamed{union/struct:1}
+                value_type x; 
+                //! \unnamed{union/struct:2}
+                value_type y; 
+                //! \unnamed{union/struct:3}
+                value_type z;
             };
         };
 
@@ -2595,10 +2605,18 @@ namespace Harlinn::Math
 
         union
         {
+            //! \unnamed{union}
             ArrayType values;
             struct
             {
-                value_type x, y, z, w;
+                //! \unnamed{union/struct:1}
+                value_type x;
+                //! \unnamed{union/struct:2}
+                value_type y; 
+                //! \unnamed{union/struct:3}
+                value_type z; 
+                //! \unnamed{union/struct:4}
+                value_type w;
             };
         };
 

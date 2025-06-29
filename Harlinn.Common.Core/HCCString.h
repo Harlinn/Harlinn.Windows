@@ -5389,6 +5389,12 @@ namespace Harlinn::Common::Core
         ToWideString( source, result );
         return result;
     }
+    inline std::wstring to_wstring( const std::string& source )
+    {
+        std::wstring result;
+        ToWideString( source, result );
+        return result;
+    }
 
     inline WideString ToWideString( const AnsiString& source )
     {
@@ -5397,10 +5403,25 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+    inline std::wstring to_wstring( const AnsiString& source )
+    {
+        std::wstring result;
+        ToWideString( source, result );
+        return result;
+    }
+
+
 
     inline WideString ToWideString( const std::string_view& source )
     {
         WideString result;
+        ToWideString( source.data( ), source.size( ), result );
+        return result;
+    }
+
+    inline std::wstring to_wstring( const std::string_view& source )
+    {
+        std::wstring result;
         ToWideString( source.data( ), source.size( ), result );
         return result;
     }
@@ -5419,12 +5440,42 @@ namespace Harlinn::Common::Core
             return {};
         }
     }
+
+    inline std::wstring to_wstring( const char* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = strlen( source );
+            std::wstring result;
+            ToWideString( source, length, CP_ACP, 0, result );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
     inline WideString ToWideString( const wchar_t* source )
     {
         if ( source && source[ 0 ] )
         {
             auto length = wcslen( source );
             WideString result( source, length );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    inline std::wstring to_wstring( const wchar_t* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = wcslen( source );
+            std::wstring result( source, length );
             return result;
         }
         else
@@ -5499,14 +5550,35 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+    template<AnsiStringLike AnsiStringT = std::string, WideStringLike WideStringT>
+    inline AnsiStringT to_string( const WideStringT& source )
+    {
+        AnsiStringT result;
+        ToAnsiString( source, result );
+        return result;
+    }
+
     inline void ToAnsiString( const std::wstring_view& source, AnsiString& dest )
     {
         ToAnsiString( source.data( ), source.length( ), CP_ACP, 0, dest );
     }
+
+    inline void to_string( const std::wstring_view& source, std::string& dest )
+    {
+        ToAnsiString( source.data( ), source.length( ), CP_ACP, 0, dest );
+    }
+
     inline AnsiString ToAnsiString( const std::wstring_view& source )
     {
         AnsiString result;
         ToAnsiString( source, result );
+        return result;
+    }
+
+    inline std::string to_string( const std::wstring_view& source )
+    {
+        std::string result;
+        to_string( source, result );
         return result;
     }
 
@@ -5525,8 +5597,39 @@ namespace Harlinn::Common::Core
         }
     }
 
+    inline std::string to_string( const wchar_t* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = wcslen( source );
+            std::string result;
+            ToAnsiString( source, length, CP_ACP, 0, result );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
     template<AnsiStringLike StringT = AnsiString>
     inline StringT ToAnsiString( const wchar_t* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = wcslen( source );
+            StringT result;
+            ToAnsiString( source, length, CP_ACP, 0, result );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    template<AnsiStringLike StringT = std::string>
+    inline StringT to_string( const wchar_t* source )
     {
         if ( source && source[ 0 ] )
         {
@@ -5556,9 +5659,30 @@ namespace Harlinn::Common::Core
         }
     }
 
+    template<AnsiStringLike StringT = std::string>
+    inline StringT to_string( const char* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = strlen( source );
+            StringT result( source, length );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
     inline AnsiString ToAnsiString( const std::string& source )
     {
         AnsiString result( source.c_str(), source.size() );
+        return result;
+    }
+
+    inline std::string to_string( const AnsiString& source )
+    {
+        std::string result( source.c_str( ), source.size( ) );
         return result;
     }
 
@@ -6174,7 +6298,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsAlnum( char c )
     {
-        return std::isalnum( c );
+        return std::isalnum( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsAlpha( wchar_t c )
     {
@@ -6182,7 +6306,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsAlpha( char c )
     {
-        return std::isalpha( c );
+        return std::isalpha( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsBlank( wchar_t c )
     {
@@ -6190,7 +6314,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsBlank( char c )
     {
-        return std::isblank( c );
+        return std::isblank( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsCntrl( wchar_t c )
     {
@@ -6198,7 +6322,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsCntrl( char c )
     {
-        return std::iscntrl( c );
+        return std::iscntrl( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsDigit( wchar_t c )
     {
@@ -6206,7 +6330,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsDigit( char c )
     {
-        return std::isdigit( c );
+        return std::isdigit( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsGraph( wchar_t c )
     {
@@ -6214,7 +6338,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsGraph( char c )
     {
-        return std::isgraph( c );
+        return std::isgraph( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsLower( wchar_t c )
     {
@@ -6222,7 +6346,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsLower( char c )
     {
-        return std::islower( c );
+        return std::islower( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsPrint( wchar_t c )
     {
@@ -6230,7 +6354,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsPrint( char c )
     {
-        return std::isprint( c );
+        return std::isprint( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsPunct( wchar_t c )
     {
@@ -6238,7 +6362,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsPunct( char c )
     {
-        return std::ispunct( c );
+        return std::ispunct( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsSpace( wchar_t c )
     {
@@ -6246,7 +6370,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsSpace( char c )
     {
-        return std::isspace( c );
+        return std::isspace( static_cast<int>( std::bit_cast<Byte>( c ) ) );
     }
     inline bool IsUpper( wchar_t c )
     {
@@ -6254,7 +6378,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsUpper( char c )
     {
-        return std::isupper( c );
+        return std::isupper( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
     inline bool IsXDigit( wchar_t c )
     {
@@ -6262,7 +6386,7 @@ namespace Harlinn::Common::Core
     }
     inline bool IsXDigit( char c )
     {
-        return std::isxdigit( c );
+        return std::isxdigit( static_cast< int >( std::bit_cast< Byte >( c ) ) );
     }
 
     template<typename T>

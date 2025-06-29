@@ -111,7 +111,9 @@ namespace Harlinn::Common
     {
         struct
         {
+            //! \unnamed{struct:1}
             Byte Low;
+            //! \unnamed{struct:2}
             Byte High;
         };
         UInt16 Value;
@@ -121,7 +123,9 @@ namespace Harlinn::Common
     {
         struct
         {
+            //! \unnamed{struct:1}
             Bits16 Low;
+            //! \unnamed{struct:2}
             Bits16 High;
         };
         UInt32 Value;
@@ -133,7 +137,9 @@ namespace Harlinn::Common
     {
         struct
         {
+            //! \unnamed{struct:1}
             Bits32 Low;
+            //! \unnamed{struct:2}
             Bits32 High;
         };
         UInt64 Value;

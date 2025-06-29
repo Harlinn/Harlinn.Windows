@@ -257,7 +257,7 @@ namespace Harlinn::Common::Core::Doxygen
         Unchecked
     };
 
-    using DoxVersionNumber = WideString;
+    using DoxVersionNumber = std::string;
 
     enum class DoxImageKind
     {
@@ -975,17 +975,17 @@ namespace Harlinn::Common::Core::Doxygen
 
     class TextType : public Internal::DocBase<Doxygen::DoxType::TextType>
     {
-        WideString text_;
+        std::string text_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::TextType>;
 
         TextType( ) = default;
-        explicit TextType( const WideString& text )
+        explicit TextType( const std::string& text )
             : text_( text )
         { }
         HCC_EXPORT explicit TextType( const XmlNode& xmlNode );
 
-        const WideString& Text( ) const
+        const std::string& Text( ) const
         {
             return text_;
         }
@@ -993,14 +993,14 @@ namespace Harlinn::Common::Core::Doxygen
 
     class TitleType : public Internal::DocBase<Doxygen::DoxType::TitleType>
     {
-        WideString text_;
+        std::string text_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::TitleType>;
 
         TitleType( ) = default;
         HCC_EXPORT explicit TitleType( const XmlNode& xmlNode );
 
-        const WideString& Text( ) const
+        const std::string& Text( ) const
         {
             return text_;
         }
@@ -1009,18 +1009,18 @@ namespace Harlinn::Common::Core::Doxygen
 
     class DocEmojiType : public Internal::DocBase<Doxygen::DoxType::DocEmojiType>
     {
-        WideString name_;
-        WideString unicode_;
+        std::string name_;
+        std::string unicode_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocEmojiType>;
         DocEmojiType( ) = default;
         HCC_EXPORT explicit DocEmojiType( const XmlNode& xmlNode );
 
-        const WideString& Name( ) const
+        const std::string& Name( ) const
         {
             return name_;
         }
-        const WideString& Unicode( ) const
+        const std::string& Unicode( ) const
         {
             return unicode_;
         }
@@ -1029,8 +1029,8 @@ namespace Harlinn::Common::Core::Doxygen
 
     class TableOfContentsKindType : public Internal::DocBase<Doxygen::DoxType::TableOfContentsKindType>
     {
-        WideString name_;
-        WideString reference_;
+        std::string name_;
+        std::string reference_;
         std::vector<std::shared_ptr<TableOfContentsType>> tableOfContents_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::TableOfContentsKindType>;
@@ -1038,12 +1038,12 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit TableOfContentsKindType( const XmlNode& xmlNode );
 
 
-        const WideString& Name( ) const
+        const std::string& Name( ) const
         {
             return name_;
         }
 
-        const WideString& Reference( ) const
+        const std::string& Reference( ) const
         {
             return reference_;
         }
@@ -1322,18 +1322,18 @@ namespace Harlinn::Common::Core::Doxygen
 
     class DocRefTextType : public Internal::DocBase<Doxygen::DoxType::DocRefTextType>, public std::vector<DocCmdGroupType>
     {
-        WideString refId_;
+        std::string refId_;
         DoxRefKind kindRef_{};
-        WideString external_;
+        std::string external_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocRefTextType>;
 
         DocRefTextType( ) = default;
         HCC_EXPORT explicit DocRefTextType( const XmlNode& xmlNode );
 
-        const WideString& RefId() const { return refId_; }
+        const std::string& RefId() const { return refId_; }
         DoxRefKind KindRef() const { return kindRef_; }
-        const WideString& External( ) const { return external_; }
+        const std::string& External( ) const { return external_; }
 
     };
 
@@ -1421,57 +1421,57 @@ namespace Harlinn::Common::Core::Doxygen
 
     class DocIndexEntryType : public Internal::DocBase<Doxygen::DoxType::DocIndexEntryType>
     {
-        WideString primary_;
-        WideString secondary_;
+        std::string primary_;
+        std::string secondary_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocIndexEntryType>;
 
         DocIndexEntryType( ) = default;
         HCC_EXPORT explicit DocIndexEntryType( const XmlNode& xmlNode );
 
-        const WideString& Primary( ) const { return primary_; }
-        const WideString& Secondary( ) const { return secondary_; }
+        const std::string& Primary( ) const { return primary_; }
+        const std::string& Secondary( ) const { return secondary_; }
 
     };
 
     class DocFormulaType : public Internal::DocBase<Doxygen::DoxType::DocFormulaType>
     {
-        WideString id_;
-        WideString content_;
+        std::string id_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocFormulaType>;
 
         DocFormulaType( ) = default;
         HCC_EXPORT explicit DocFormulaType( const XmlNode& xmlNode );
 
-        const WideString& Id( ) const { return id_; }
-        const WideString& Content( ) const { return content_; }
+        const std::string& Id( ) const { return id_; }
+        const std::string& Content( ) const { return content_; }
     };
 
     class DocAnchorType : public Internal::DocBase<Doxygen::DoxType::DocAnchorType>
     {
-        WideString id_;
-        WideString content_;
+        std::string id_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocAnchorType>;
 
         DocAnchorType( ) = default;
         HCC_EXPORT explicit DocAnchorType( const XmlNode& xmlNode );
 
-        const WideString& Id( ) const { return id_; }
-        const WideString& Content( ) const { return content_; }
+        const std::string& Id( ) const { return id_; }
+        const std::string& Content( ) const { return content_; }
     };
 
     class DocURLLink : public Internal::DocBase<Doxygen::DoxType::DocURLLink>, public std::vector<DocCmdGroupType>
     {
-        WideString url_;
+        std::string url_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocURLLink>;
 
         DocURLLink( ) = default;
         HCC_EXPORT explicit DocURLLink( const XmlNode& xmlNode );
 
-        const WideString& Url( ) const { return url_; }
+        const std::string& Url( ) const { return url_; }
     };
 
     class DocMarkupType : public Internal::DocBase<Doxygen::DoxType::DocMarkupType>, public std::vector<DocCmdGroupType>
@@ -1546,14 +1546,14 @@ namespace Harlinn::Common::Core::Doxygen
 
             using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
         protected:
-            WideString id_;
+            std::string id_;
             TitleTypePtr title_;
             ParaTypeVector para_;
         public:
             DocInternalSectionBaseType( ) = default;
             HCC_EXPORT explicit DocInternalSectionBaseType( const XmlNode& xmlNode );
 
-            const WideString& Id( ) const { return id_; }
+            const std::string& Id( ) const { return id_; }
             const TitleTypePtr& Title( ) const { return title_; }
             const ParaTypeVector& Para( ) const { return para_; }
         };
@@ -1665,7 +1665,7 @@ namespace Harlinn::Common::Core::Doxygen
             using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
             using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
         protected:
-            WideString id_;
+            std::string id_;
             TitleTypePtr title_;
             ParaTypeVector para_;
             InternalTypeVector internal_;
@@ -1673,7 +1673,7 @@ namespace Harlinn::Common::Core::Doxygen
             DocSectionBaseType( ) = default;
             HCC_EXPORT explicit DocSectionBaseType( const XmlNode& xmlNode );
 
-            const WideString& Id( ) const { return id_; }
+            const std::string& Id( ) const { return id_; }
             const TitleTypePtr& Title( ) const { return title_; }
             const ParaTypeVector& Para( ) const { return para_; }
             const InternalTypeVector& Internal( ) const { return internal_; }
@@ -1773,13 +1773,13 @@ namespace Harlinn::Common::Core::Doxygen
 
     class LocationType : public Internal::DocBase<Doxygen::DoxType::LocationType>
     {
-        WideString file_;
+        std::string file_;
         Int32 line_ = 0;
         Int32 column_ = 0;
-        WideString declFile_;
+        std::string declFile_;
         Int32 declLine_ = 0;
         Int32 declColumn_ = 0;
-        WideString bodyFile_;
+        std::string bodyFile_;
         Int32 bodyStart_ = 0;
         Int32 bodyEnd_ = 0;
     public:
@@ -1788,13 +1788,13 @@ namespace Harlinn::Common::Core::Doxygen
         LocationType( ) = default;
         HCC_EXPORT explicit LocationType( const XmlNode& xmlNode );
 
-        const WideString& File( ) const { return file_; }
+        const std::string& File( ) const { return file_; }
         Int32 Line( ) const { return line_; }
         Int32 Column( ) const { return column_; }
-        const WideString& DeclFile( ) const { return declFile_; }
+        const std::string& DeclFile( ) const { return declFile_; }
         Int32 DeclLine( ) const { return declLine_; }
         Int32 DeclColumn( ) const { return declColumn_; }
-        const WideString& BodyFile( ) const { return bodyFile_; }
+        const std::string& BodyFile( ) const { return bodyFile_; }
         Int32 BodyStart( ) const { return bodyStart_; }
         Int32 BodyEnd( ) const { return bodyEnd_; }
 
@@ -1802,29 +1802,29 @@ namespace Harlinn::Common::Core::Doxygen
 
     class ReferenceType : public Internal::DocBase<Doxygen::DoxType::ReferenceType>
     {
-        WideString refId_;
-        WideString compoundRef_;
+        std::string refId_;
+        std::string compoundRef_;
         Int32 startLine_ = 0;
         Int32 endline_ = 0;
-        WideString text_;
+        std::string text_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::ReferenceType>;
 
         ReferenceType( ) = default;
         HCC_EXPORT explicit ReferenceType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
 
-        const WideString& CompoundRef( ) const { return compoundRef_; }
+        const std::string& CompoundRef( ) const { return compoundRef_; }
         Int32 StartLine( ) const { return startLine_; }
         Int32 Endline( ) const { return endline_; }
-        const WideString& Text( ) const { return text_; }
+        const std::string& Text( ) const { return text_; }
     };
     
     class SpType : public Internal::DocBase<Doxygen::DoxType::SpType>
     {
         Int32 value_;
-        WideString text_;
+        std::string text_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::SpType>;
 
@@ -1832,7 +1832,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit SpType( const XmlNode& xmlNode );
 
         Int32 Value( ) const { return value_; }
-        const WideString& Text( ) const { return text_; }
+        const std::string& Text( ) const { return text_; }
 
     };
     
@@ -1854,7 +1854,7 @@ namespace Harlinn::Common::Core::Doxygen
     class CodeLineType : public Internal::DocBase<Doxygen::DoxType::CodeLineType>
     {
         Int32 lineno_ = 0;
-        WideString refId_;
+        std::string refId_;
         DoxRefKind refKind_{};
         bool external_{};
         std::vector<HighlightTypePtr> highlight_;
@@ -1865,7 +1865,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit CodeLineType( const XmlNode& xmlNode );
 
         Int32 LineNo( ) const { return lineno_; }
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
         DoxRefKind RefKind( ) const { return refKind_; }
         bool External( ) const { return external_; }
         const std::vector<HighlightTypePtr>& Highlight( ) const { return highlight_; }
@@ -1874,35 +1874,35 @@ namespace Harlinn::Common::Core::Doxygen
 
     class ListingType : public Internal::DocBase<Doxygen::DoxType::ListingType>, public std::vector<CodeLineTypePtr>
     {
-        WideString fileName_;
+        std::string fileName_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::ListingType>;
 
         ListingType( ) = default;
         HCC_EXPORT explicit ListingType( const XmlNode& xmlNode );
 
-        const WideString& fileName( ) const { return fileName_; }
+        const std::string& fileName( ) const { return fileName_; }
 
     };
 
     class LinkType : public Internal::DocBase<Doxygen::DoxType::LinkType>
     {
-        WideString refId_;
-        WideString external_;
+        std::string refId_;
+        std::string external_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::LinkType>;
 
         LinkType( ) = default;
         HCC_EXPORT explicit LinkType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
-        const WideString& External( ) const { return external_; }
+        const std::string& RefId( ) const { return refId_; }
+        const std::string& External( ) const { return external_; }
     };
 
     class ChildNodeType : public Internal::DocBase<Doxygen::DoxType::ChildNodeType>
     {
-        WideString refId_;
-        std::vector<WideString> edgeLabel_;
+        std::string refId_;
+        std::vector<std::string> edgeLabel_;
         DoxGraphRelation relation_{};
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::ChildNodeType>;
@@ -1910,15 +1910,15 @@ namespace Harlinn::Common::Core::Doxygen
         ChildNodeType( ) = default;
         HCC_EXPORT explicit ChildNodeType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
-        const std::vector<WideString>& EdgeLabel( ) const { return edgeLabel_; }
+        const std::string& RefId( ) const { return refId_; }
+        const std::vector<std::string>& EdgeLabel( ) const { return edgeLabel_; }
         DoxGraphRelation Relation( ) const { return relation_; }
     };
 
     class NodeType : public Internal::DocBase<Doxygen::DoxType::NodeType>
     {
-        WideString id_;
-        WideString label_;
+        std::string id_;
+        std::string label_;
         LinkTypePtr link_;
         std::vector<ChildNodeTypePtr> childNode_;
 
@@ -1928,8 +1928,8 @@ namespace Harlinn::Common::Core::Doxygen
         NodeType( ) = default;
         HCC_EXPORT explicit NodeType( const XmlNode& xmlNode );
 
-        const WideString& Id( ) const { return id_; }
-        const WideString& Label( ) const { return label_; }
+        const std::string& Id( ) const { return id_; }
+        const std::string& Label( ) const { return label_; }
         const LinkTypePtr& Link( ) const { return link_; }
         const std::vector<ChildNodeTypePtr>& ChildNode( ) const { return childNode_; }
 
@@ -1956,11 +1956,11 @@ namespace Harlinn::Common::Core::Doxygen
 
     class ParamType : public Internal::DocBase<Doxygen::DoxType::ParamType>
     {
-        WideString attributes_;
+        std::string attributes_;
         LinkedTextTypePtr type_;
-        WideString declName_;
-        WideString defName_;
-        WideString array_;
+        std::string declName_;
+        std::string defName_;
+        std::string array_;
         LinkedTextTypePtr defVal_;
         LinkedTextTypePtr typeConstraint_;
         DescriptionTypePtr briefDescription_;
@@ -1970,11 +1970,11 @@ namespace Harlinn::Common::Core::Doxygen
         ParamType( ) = default;
         HCC_EXPORT explicit ParamType( const XmlNode& xmlNode );
 
-        const WideString& Attributes( ) const { return attributes_; }
+        const std::string& Attributes( ) const { return attributes_; }
         const LinkedTextTypePtr& Type( ) const { return type_; }
-        const WideString& DeclName( ) const { return declName_; }
-        const WideString& DefName( ) const { return defName_; }
-        const WideString& Array( ) const { return array_; }
+        const std::string& DeclName( ) const { return declName_; }
+        const std::string& DefName( ) const { return defName_; }
+        const std::string& Array( ) const { return array_; }
         const LinkedTextTypePtr& DefVal( ) const { return defVal_; }
         const LinkedTextTypePtr& TypeConstraint( ) const { return typeConstraint_; }
         const DescriptionTypePtr& BriefDescription( ) const { return briefDescription_; }
@@ -1993,9 +1993,9 @@ namespace Harlinn::Common::Core::Doxygen
 
     class EnumvalueType : public Internal::DocBase<Doxygen::DoxType::EnumvalueType>
     {
-        WideString id_;
+        std::string id_;
         DoxProtectionKind prot_;
-        WideString name_;
+        std::string name_;
         LinkedTextTypePtr initializer_;
         DescriptionTypePtr briefDescription_;
         DescriptionTypePtr detailedDescription_;
@@ -2029,7 +2029,7 @@ namespace Harlinn::Common::Core::Doxygen
     class MemberDefType : public Internal::DocBase<Doxygen::DoxType::MemberDefType>
     {
         DoxMemberKind kind_{};
-        WideString id_;
+        std::string id_;
         DoxProtectionKind prot_{};
         bool static_{};
         bool extern_{};
@@ -2042,7 +2042,7 @@ namespace Harlinn::Common::Core::Doxygen
         bool volatile_{};
         bool mutable_{};
         bool noExcept_{};
-        WideString noexceptExpression_;
+        std::string noexceptExpression_;
         bool nodiscard_{};
         bool constexpr_{};
         bool consteval_{};
@@ -2086,16 +2086,16 @@ namespace Harlinn::Common::Core::Doxygen
 
         TemplateParamListTypePtr templateParamList_;
         LinkedTextTypePtr type_;
-        WideString definition_;
-        WideString argsString_;
-        WideString name_;
-        WideString qualifiedName_;
-        WideString read_;
-        WideString write_;
-        WideString bitField_;
+        std::string definition_;
+        std::string argsString_;
+        std::string name_;
+        std::string qualifiedName_;
+        std::string read_;
+        std::string write_;
+        std::string bitField_;
         std::vector<ReimplementTypePtr> reimplements_;
         std::vector<ReimplementTypePtr> reimplementedBy_;
-        WideString qualifier_;
+        std::string qualifier_;
         std::vector<ParamTypePtr> param_;
         std::vector<EnumvalueTypePtr> enumvalue_;
         LinkedTextTypePtr requiresClause_;
@@ -2114,7 +2114,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit MemberDefType( const XmlNode& xmlNode );
 
         DoxMemberKind Kind( ) const { return kind_; }
-        const WideString& Id( ) const { return id_; }
+        const std::string& Id( ) const { return id_; }
         DoxProtectionKind Prot( ) const { return prot_; }
         bool Static( ) const { return static_; }
         bool Extern( ) const { return extern_; }
@@ -2127,7 +2127,7 @@ namespace Harlinn::Common::Core::Doxygen
         bool Volatile( ) const { return volatile_; }
         bool Mutable( ) const { return mutable_; }
         bool NoExcept( ) const { return noExcept_; }
-        const WideString& NoexceptExpression( ) const { return noexceptExpression_; }
+        const std::string& NoexceptExpression( ) const { return noexceptExpression_; }
         bool Nodiscard( ) const { return nodiscard_; }
         bool Constexpr( ) const { return constexpr_; }
         bool Consteval( ) const { return consteval_; }
@@ -2163,16 +2163,16 @@ namespace Harlinn::Common::Core::Doxygen
 
         const TemplateParamListTypePtr& TemplateParamList( ) const { return templateParamList_; }
         const LinkedTextTypePtr& Type( ) const { return type_; }
-        const WideString& Definition( ) const { return definition_; }
-        const WideString& ArgsString( ) const { return argsString_; }
-        const WideString& Name( ) const { return name_; }
-        const WideString& QualifiedName( ) const { return qualifiedName_; }
-        const WideString& Read( ) const { return read_; }
-        const WideString& Write( ) const { return write_; }
-        const WideString& BitField( ) const { return bitField_; }
+        const std::string& Definition( ) const { return definition_; }
+        const std::string& ArgsString( ) const { return argsString_; }
+        const std::string& Name( ) const { return name_; }
+        const std::string& QualifiedName( ) const { return qualifiedName_; }
+        const std::string& Read( ) const { return read_; }
+        const std::string& Write( ) const { return write_; }
+        const std::string& BitField( ) const { return bitField_; }
         const std::vector<ReimplementTypePtr>& Reimplements( ) const { return reimplements_; }
         const std::vector<ReimplementTypePtr>& ReimplementedBy( ) const { return reimplementedBy_; }
-        const WideString& Qualifier( ) const { return qualifier_; }
+        const std::string& Qualifier( ) const { return qualifier_; }
         const std::vector<ParamTypePtr>& Param( ) const { return param_; }
         const std::vector<EnumvalueTypePtr>& Enumvalue( ) const { return enumvalue_; }
         const LinkedTextTypePtr& RequiresClause( ) const { return requiresClause_; }
@@ -2189,7 +2189,7 @@ namespace Harlinn::Common::Core::Doxygen
 
     class SectionDefType : public Internal::DocBase<Doxygen::DoxType::SectionDefType>
     {
-        WideString header_;
+        std::string header_;
         DescriptionTypePtr description_;
         std::vector<MemberDefTypePtr> memberDef_;
         std::vector<MemberTypePtr> member_;
@@ -2200,7 +2200,7 @@ namespace Harlinn::Common::Core::Doxygen
         SectionDefType( ) = default;
         HCC_EXPORT explicit SectionDefType( const XmlNode& xmlNode );
 
-        const WideString& Header( ) const { return header_; }
+        const std::string& Header( ) const { return header_; }
         const DescriptionTypePtr& Description( ) const { return description_; }
         const std::vector<MemberDefTypePtr>& MemberDef( ) const { return memberDef_; }
         const std::vector<MemberTypePtr>& Member( ) const { return member_; }
@@ -2210,8 +2210,8 @@ namespace Harlinn::Common::Core::Doxygen
 
     class MemberType : public Internal::DocBase<Doxygen::DoxType::MemberType>
     {
-        WideString name_;
-        WideString refId_;
+        std::string name_;
+        std::string refId_;
         MemberKind kind_{};
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::MemberType>;
@@ -2220,49 +2220,49 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit MemberType( const XmlNode& xmlNode );
 
 
-        const WideString& Name( ) const { return name_; }
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& Name( ) const { return name_; }
+        const std::string& RefId( ) const { return refId_; }
         MemberKind kind( ) const { return kind_; }
     };
 
     class RefTextType : public Internal::DocBase<Doxygen::DoxType::RefTextType>
     {
-        WideString refId_;
+        std::string refId_;
         DoxRefKind kindRef_{};
-        WideString external_;
-        WideString tooltip_;
-        WideString content_;
+        std::string external_;
+        std::string tooltip_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::RefTextType>;
 
         RefTextType( ) = default;
         HCC_EXPORT explicit RefTextType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
         DoxRefKind KindRef( ) const { return kindRef_; }
-        const WideString& External( ) const { return external_; }
-        const WideString& Tooltip( ) const { return tooltip_; }
-        const WideString& Content( ) const { content_; }
+        const std::string& External( ) const { return external_; }
+        const std::string& Tooltip( ) const { return tooltip_; }
+        const std::string& Content( ) const { content_; }
 
     };
 
     class RefType : public Internal::DocBase<Doxygen::DoxType::RefType>
     {
-        WideString refId_;
+        std::string refId_;
         DoxProtectionKind prot_{};
         bool inline_ = false;
-        WideString content_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::RefType>;
 
         RefType( ) = default;
         HCC_EXPORT explicit RefType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
         DoxProtectionKind Prot( ) const { return prot_; }
         bool Inline( ) const { return inline_; }
 
-        const WideString& Content( ) const
+        const std::string& Content( ) const
         {
             return content_;
         }
@@ -2271,17 +2271,17 @@ namespace Harlinn::Common::Core::Doxygen
 
     class ExportType : public Internal::DocBase<Doxygen::DoxType::ExportType>
     {
-        WideString refId_;
-        WideString content_;
+        std::string refId_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::ExportType>;
 
         ExportType( ) = default;
         HCC_EXPORT explicit ExportType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
 
-        const WideString& Content( ) const
+        const std::string& Content( ) const
         {
             return content_;
         }
@@ -2298,19 +2298,19 @@ namespace Harlinn::Common::Core::Doxygen
 
     class IncType : public Internal::DocBase<Doxygen::DoxType::IncType>
     {
-        WideString refId_;
+        std::string refId_;
         bool local_ = false;
-        WideString content_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::IncType>;
 
         IncType( ) = default;
         HCC_EXPORT explicit IncType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
         bool Local( ) const { return local_; }
 
-        const WideString& Content( ) const
+        const std::string& Content( ) const
         {
             return content_;
         }
@@ -2318,17 +2318,17 @@ namespace Harlinn::Common::Core::Doxygen
 
     class ReimplementType : public Internal::DocBase<Doxygen::DoxType::ReimplementType>
     {
-        WideString refId_;
-        WideString content_;
+        std::string refId_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::ReimplementType>;
 
         ReimplementType( ) = default;
         HCC_EXPORT explicit ReimplementType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
 
-        const WideString& Content( ) const
+        const std::string& Content( ) const
         {
             return content_;
         }
@@ -2337,21 +2337,21 @@ namespace Harlinn::Common::Core::Doxygen
 
     class CompoundRefType : public Internal::DocBase<Doxygen::DoxType::CompoundRefType>
     {
-        WideString refId_;
+        std::string refId_;
         DoxProtectionKind prot_{};
         DoxVirtualKind virt_{};
-        WideString content_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::CompoundRefType>;
 
         CompoundRefType( ) = default;
         HCC_EXPORT explicit CompoundRefType( const XmlNode& xmlNode );
 
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& RefId( ) const { return refId_; }
         DoxProtectionKind Prot( ) const { return prot_; }
         DoxVirtualKind Virt( ) const { return virt_; }
 
-        const WideString& Content( ) const
+        const std::string& Content( ) const
         {
             return content_;
         }
@@ -2360,20 +2360,20 @@ namespace Harlinn::Common::Core::Doxygen
 
     class DocHtmlOnlyType : public Internal::DocBase<Doxygen::DoxType::DocHtmlOnlyType>
     {
-        WideString block_;
-        WideString content_;
+        std::string block_;
+        std::string content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocHtmlOnlyType>;
 
         DocHtmlOnlyType( ) = default;
         HCC_EXPORT explicit DocHtmlOnlyType( const XmlNode& xmlNode );
 
-        const WideString& Block( ) const
+        const std::string& Block( ) const
         {
             return block_;
         }
 
-        const WideString& Content( ) const
+        const std::string& Content( ) const
         {
             return content_;
         }
@@ -2383,24 +2383,24 @@ namespace Harlinn::Common::Core::Doxygen
 
     class MemberRefType : public Internal::DocBase<Doxygen::DoxType::MemberRefType>
     {
-        WideString name_;
-        WideString scope_;
-        WideString refId_;
+        std::string name_;
+        std::string scope_;
+        std::string refId_;
         DoxProtectionKind prot_{};
         DoxVirtualKind virt_{};
-        WideString ambiguityScope_;
+        std::string ambiguityScope_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::MemberRefType>;
 
         MemberRefType( ) = default;
         HCC_EXPORT explicit MemberRefType( const XmlNode& xmlNode );
 
-        const WideString& Name( ) const { return name_; }
-        const WideString& Scope( ) const { return scope_; }
-        const WideString& RefId( ) const { return refId_; }
+        const std::string& Name( ) const { return name_; }
+        const std::string& Scope( ) const { return scope_; }
+        const std::string& RefId( ) const { return refId_; }
         DoxProtectionKind Prot( ) const { return prot_; }
         DoxVirtualKind Virt( ) const { return virt_; }
-        const WideString& AmbiguityScope( ) const { return ambiguityScope_; }
+        const std::string& AmbiguityScope( ) const { return ambiguityScope_; }
 
     };
 
@@ -2417,7 +2417,7 @@ namespace Harlinn::Common::Core::Doxygen
 
     class CompoundDefType : public Internal::DocBase<Doxygen::DoxType::CompoundDefType>
     {
-        WideString id_;
+        std::string id_;
         DoxCompoundKind kind_{};
         DoxLanguage language_{};
         DoxProtectionKind prot_{};
@@ -2425,8 +2425,8 @@ namespace Harlinn::Common::Core::Doxygen
         bool inline_{};
         bool sealed_{};
         bool abstract_{};
-        WideString compoundName_;
-        WideString title_;
+        std::string compoundName_;
+        std::string title_;
         std::vector<CompoundRefTypePtr> baseCompoundRef_;
         std::vector<CompoundRefTypePtr> derivedCompoundRef_;
         std::vector<IncTypePtr> includes_;
@@ -2441,7 +2441,7 @@ namespace Harlinn::Common::Core::Doxygen
         std::vector<RefTypePtr> innerNamespace_;
         std::vector<RefTypePtr> innerPage_;
         std::vector<RefTypePtr> innerGroup_;
-        std::vector<WideString> qualifier_;
+        std::vector<std::string> qualifier_;
         TemplateParamListTypePtr templateParamList_;
         std::vector<SectionDefTypePtr> sectiondef_;
         TableOfContentsTypePtr tableOfContents_;
@@ -2462,7 +2462,7 @@ namespace Harlinn::Common::Core::Doxygen
         CompoundDefType( ) = default;
         HCC_EXPORT explicit CompoundDefType( const XmlNode& xmlNode );
 
-        const WideString& Id() const { return id_; }
+        const std::string& Id() const { return id_; }
         DoxCompoundKind Kind( ) const { return kind_; }
         DoxLanguage Language( ) const { return language_; }
         DoxProtectionKind Prot() const { return prot_; }
@@ -2470,8 +2470,8 @@ namespace Harlinn::Common::Core::Doxygen
         bool Inline() const { return inline_; }
         bool Sealed() const { return sealed_; }
         bool Abstract() const { return abstract_; }
-        const WideString& CompoundName() const { return compoundName_; }
-        const WideString& Title() const { return title_; }
+        const std::string& CompoundName() const { return compoundName_; }
+        const std::string& Title() const { return title_; }
         const std::vector<CompoundRefTypePtr>& BaseCompoundRef() const { return baseCompoundRef_; }
         const std::vector<CompoundRefTypePtr>& DerivedCompoundRef() const { return derivedCompoundRef_; }
         const std::vector<IncTypePtr>& Includes() const { return includes_; }
@@ -2486,7 +2486,7 @@ namespace Harlinn::Common::Core::Doxygen
         const std::vector<RefTypePtr>& InnerNamespace() const { return innerNamespace_; }
         const std::vector<RefTypePtr>& InnerPage() const { return innerPage_; }
         const std::vector<RefTypePtr>& InnerGroup() const { return innerGroup_; }
-        const std::vector<WideString>& Qualifier() const { return qualifier_; }
+        const std::vector<std::string>& Qualifier() const { return qualifier_; }
         const TemplateParamListTypePtr& TemplateParamList() const { return templateParamList_; }
         const std::vector<SectionDefTypePtr>& SectionDef() const { return sectiondef_; }
         const TableOfContentsTypePtr& TableOfContents() const { return tableOfContents_; }
@@ -2505,24 +2505,33 @@ namespace Harlinn::Common::Core::Doxygen
 
     class Document : public Internal::DocBase<Doxygen::DoxType::Document>, public std::vector<CompoundDefTypePtr>
     {
-        WideString name_;
+        std::wstring name_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::Document>;
 
         Document( ) = default;
-        HCC_EXPORT explicit Document( const WideString& name, const XmlNode& xmlNode );
+        HCC_EXPORT explicit Document( const std::wstring& name, const XmlNode& xmlNode );
     };
 
-    class DocumentCollection : public std::unordered_map<WideString, DocumentPtr>
+    class DocumentCollection : public std::unordered_map<std::wstring, DocumentPtr>
     {
          
     public:
-        using Base = std::unordered_map<WideString, DocumentPtr>;
+        using Base = std::unordered_map<std::string, DocumentPtr>;
 
         HCC_EXPORT explicit DocumentCollection( );
 
-        HCC_EXPORT void AddDirectory( const WideString& directoryName );
-        HCC_EXPORT void AddFile( const WideString& filename );
+        HCC_EXPORT void AddDirectory( const std::wstring& directoryName );
+        HCC_EXPORT void AddFile( const std::wstring& filename );
+
+        void AddDirectory( const std::string& directoryName )
+        {
+            AddDirectory( to_wstring( directoryName ) );
+        }
+        void AddFile( const std::string& filename )
+        {
+            AddFile( to_wstring( filename ) );
+        }
 
         HCC_EXPORT std::unique_ptr<Structure::TypeSystem> TypeSystem( ) const;
 
@@ -2542,6 +2551,7 @@ namespace Harlinn::Common::Core::Doxygen
             Module,
             Concept,
             Function,
+            FunctionOverload,
             Enum,
             Define,
             Property,
@@ -2569,6 +2579,7 @@ namespace Harlinn::Common::Core::Doxygen
         class Enum;
         class Concept;
         class Function;
+        class FunctionOverload;
         class Module;
         class Define;
         class Property;
@@ -2586,21 +2597,25 @@ namespace Harlinn::Common::Core::Doxygen
         class TypeSystem
         {
             std::vector<std::unique_ptr<Member>> all_;
-            std::unordered_map<WideStringView, Member*> allTypes_;
-            std::unordered_map<WideStringView, Member*> allTypesByQualifiedName_;
-            std::unordered_map<WideStringView, Namespace*> allNamespaces_;
-            std::unordered_map<WideStringView, Namespace*> allNamespacesByQualifiedName_;
+            std::unordered_map<std::string, Member*> allTypes_;
+            std::unordered_map<std::string, Member*> allTypesByQualifiedName_;
+            std::unordered_map<std::string, Namespace*> allNamespaces_;
+            std::unordered_map<std::string, Namespace*> allNamespacesByQualifiedName_;
+            std::unordered_map<std::string, Function*> allFunctionsByQualifiedName_;
+            std::unordered_map<std::string, FunctionOverload*> allFunctionOverloadsById_;
             Namespace* global_ = nullptr;
         public:
             HCC_EXPORT TypeSystem( );
             HCC_EXPORT ~TypeSystem( );
 
-            const std::unordered_map<WideStringView, Member*>& AllTypes( ) const { return allTypes_; }
-            const std::unordered_map<WideStringView, Member*>& AllTypesByQualifiedName( ) const { return allTypesByQualifiedName_; }
-            const std::unordered_map<WideStringView, Namespace*>& AllNamespaces( ) const { return allNamespaces_; }
-            const std::unordered_map<WideStringView, Namespace*>& AllNamespacesByQualifiedName( ) const { allNamespacesByQualifiedName_; }
+            const std::unordered_map<std::string, Member*>& AllTypes( ) const { return allTypes_; }
+            const std::unordered_map<std::string, Member*>& AllTypesByQualifiedName( ) const { return allTypesByQualifiedName_; }
+            const std::unordered_map<std::string, Namespace*>& AllNamespaces( ) const { return allNamespaces_; }
+            const std::unordered_map<std::string, Namespace*>& AllNamespacesByQualifiedName( ) const { return allNamespacesByQualifiedName_; }
+            const std::unordered_map<std::string, Function*>& AllFunctionsByQualifiedName( ) const { return allFunctionsByQualifiedName_; }
+            const std::unordered_map<std::string, FunctionOverload*>& AllFunctionOverloadsById( ) const { return allFunctionOverloadsById_; }
 
-            Member* FindTypeById( const WideString& id ) const
+            Member* FindTypeById( const std::string& id ) const
             {
                 auto it = allTypes_.find( id );
                 if ( it != allTypes_.end( ) )
@@ -2610,7 +2625,7 @@ namespace Harlinn::Common::Core::Doxygen
                 return nullptr;
             }
 
-            Member* FindTypeByQualifiedName( const WideString& qualifiedName ) const
+            Member* FindTypeByQualifiedName( const std::string& qualifiedName ) const
             {
                 auto it = allTypesByQualifiedName_.find( qualifiedName );
                 if ( it != allTypesByQualifiedName_.end( ) )
@@ -2620,7 +2635,7 @@ namespace Harlinn::Common::Core::Doxygen
                 return nullptr;
             }
 
-            Namespace* FindNamespaceById( const WideString& id ) const
+            Namespace* FindNamespaceById( const std::string& id ) const
             {
                 auto it = allNamespaces_.find( id );
                 if ( it != allNamespaces_.end( ) )
@@ -2630,7 +2645,7 @@ namespace Harlinn::Common::Core::Doxygen
                 return nullptr;
             }
 
-            Namespace* FindNamespaceByQualifiedName( const WideString& qualifiedName ) const
+            Namespace* FindNamespaceByQualifiedName( const std::string& qualifiedName ) const
             {
                 auto it = allNamespacesByQualifiedName_.find( qualifiedName );
                 if ( it != allNamespacesByQualifiedName_.end( ) )
@@ -2639,6 +2654,17 @@ namespace Harlinn::Common::Core::Doxygen
                 }
                 return nullptr;
             }
+
+            Function* FindFunctionByQualifiedName( const std::string& qualifiedName ) const
+            {
+                auto it = allFunctionsByQualifiedName_.find( qualifiedName );
+                if ( it != allFunctionsByQualifiedName_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
 
             HCC_EXPORT void Process( const DocumentCollection& documentCollection );
 
@@ -2676,7 +2702,7 @@ namespace Harlinn::Common::Core::Doxygen
             HCC_EXPORT Member* AddMemberDef( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
 
             template<typename MemberDefT>
-            MemberDefT* AddMemberDef( const WideString& qualifiedName, const WideString& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            MemberDefT* AddMemberDef( const std::string& qualifiedName, const std::string& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
         };
 
 
@@ -2684,8 +2710,9 @@ namespace Harlinn::Common::Core::Doxygen
         {
             Structure::TypeSystem* typeSystem_ = nullptr;
             Container* owner_ = nullptr;
-            WideString name_;
-            WideString qualifiedName_;
+            std::string name_;
+            std::string qualifiedName_;
+            std::string id_;
         public:
 
             explicit Member( Structure::TypeSystem* typeSystem )
@@ -2701,25 +2728,33 @@ namespace Harlinn::Common::Core::Doxygen
                 owner_ = owner;
             }
 
-            const WideString& Name( ) const { return name_; }
-            void SetName( const WideString& name )
+            const std::string& Name( ) const { return name_; }
+            void SetName( const std::string& name )
             {
                 name_ = name;
             }
-            const WideString& QualifiedName( ) const { return qualifiedName_; }
-            void SetQualifiedName( const WideString& qualifiedName )
+            const std::string& QualifiedName( ) const { return qualifiedName_; }
+            void SetQualifiedName( const std::string& qualifiedName )
             {
                 qualifiedName_ = qualifiedName;
             }
 
+            const std::string& Id( ) const { return id_; }
+            void SetId( const std::string& id )
+            {
+                id_ = id;
+            }
 
+            std::string Path( ) const;
+            Member* Root( ) const;
 
+            HCC_EXPORT static std::string NameOf( const Doxygen::CompoundDefTypePtr& compoundDef );
         };
 
         class Container : public Member
         {
             std::vector<Member*> members_;
-            std::unordered_map<WideString,Member*> membersByName_;
+            std::unordered_map<std::string,Member*> membersByName_;
         public:
             using Base = Member;
             explicit Container( Structure::TypeSystem* typeSystem )
@@ -2727,7 +2762,7 @@ namespace Harlinn::Common::Core::Doxygen
             { }
 
             const std::vector<Member*>& Members( ) const { return members_; }
-            const std::unordered_map<WideString, Member*>& MembersByName( ) const { return membersByName_; }
+            const std::unordered_map<std::string, Member*>& MembersByName( ) const { return membersByName_; }
 
             virtual void Add( Member* member )
             {
@@ -2736,10 +2771,53 @@ namespace Harlinn::Common::Core::Doxygen
                 {
                     membersByName_.emplace( member->Name( ), member );
                     members_.emplace_back( member );
+                    
                 }
             }
 
+            virtual void Add( Member* member, const std::string& name )
+            {
+                assert( member != nullptr );
+                if ( !membersByName_.contains( name ) )
+                {
+                    membersByName_.emplace( name, member );
+                    members_.emplace_back( member );
+                }
+            }
+
+
+            Member* FindMemberByName( const std::string& name ) const
+            {
+                auto it = membersByName_.find( name );
+                if ( it != membersByName_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
         };
+
+        inline std::string Member::Path( ) const
+        {
+            if ( owner_ )
+            {
+                auto ownerPath = owner_->Path( );
+                return std::format( "{}\\{}", ownerPath, name_ );
+            }
+            return std::format( "{}:{}", qualifiedName_, name_ );
+        }
+
+        inline Member* Member::Root( ) const
+        {
+            if ( owner_ )
+            {
+                return owner_->Root( );
+            }
+            return const_cast< Member* >(this);
+        }
+
+
 
         class TypeContainer : public Container
         {
@@ -2751,7 +2829,6 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
 
-
             const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
             {
                 return compoundDef_;
@@ -2759,6 +2836,12 @@ namespace Harlinn::Common::Core::Doxygen
             void Assign( const Doxygen::CompoundDefTypePtr& compoundDef )
             {
                 compoundDef_ = compoundDef;
+                auto name = NameOf( compoundDef );
+                SetName( name );
+                const auto& qualifiedName = compoundDef->CompoundName( );
+                SetQualifiedName( qualifiedName );
+                const auto& id = compoundDef->Id( );
+                SetId( id );
             }
 
             DoxLanguage Language( ) const
@@ -2768,6 +2851,30 @@ namespace Harlinn::Common::Core::Doxygen
                     return compoundDef_->Language();
                 }
                 return {};
+            }
+
+            bool IsTemplate( ) const
+            {
+                return compoundDef_->TemplateParamList( ) != nullptr;
+            }
+
+            const TemplateParamListTypePtr& TemplateParameters( ) const
+            {
+                return compoundDef_->TemplateParamList( );
+            }
+
+            const LinkedTextTypePtr& RequiresClause( ) const
+            {
+                return compoundDef_->RequiresClause( );
+            }
+
+            const DescriptionTypePtr& BriefDescription( ) const 
+            {
+                return compoundDef_->BriefDescription( );
+            }
+            const DescriptionTypePtr& DetailedDescription( ) const 
+            {
+                return compoundDef_->DetailedDescription( );
             }
 
         };
@@ -2791,7 +2898,7 @@ namespace Harlinn::Common::Core::Doxygen
             }
 
             const Doxygen::SectionDefTypePtr& SectionDef( ) const { return sectionDef_; }
-            const Doxygen::MemberDefTypePtr& SemberDef( ) const { return memberDef_; }
+            const Doxygen::MemberDefTypePtr& MemberDefType( ) const { return memberDef_; }
 
             void Assign( const Doxygen::CompoundDefTypePtr& compoundDef, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
             {
@@ -2847,6 +2954,12 @@ namespace Harlinn::Common::Core::Doxygen
 
         class Namespace : public Internal::TypeContainerBase<Structure::MemberType::Namespace>
         {
+            friend class TypeSystem;
+
+            std::vector<Member*> types_;
+            std::vector<FunctionOverload*> functionOverloads_;
+            std::vector<Function*> functions_;
+            std::vector<Variable*> variables_;
         public:
             using Base = Internal::TypeContainerBase<Structure::MemberType::Namespace>;
 
@@ -2855,9 +2968,67 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
 
+            const std::vector<Member*>& Types( ) const { return types_; }
+            const std::vector<FunctionOverload*>& FunctionOverloads( ) const { return functionOverloads_; }
+            const std::vector<Function*>& Functions( ) const { return functions_; }
+            const std::vector<Variable*>& Variables( ) const { return variables_; }
+
+        private:
+            HCC_EXPORT void Process( );
+        public:
+
         };
 
-        class Struct : public Internal::TypeContainerBase<Structure::MemberType::Struct>
+        class InheritanceInfo
+        {
+            TypeContainer* type_ = nullptr;
+            DoxProtectionKind protection_{};
+            bool virtual_{};
+        public:
+            InheritanceInfo( ) = default;
+
+            InheritanceInfo( TypeContainer* type, DoxProtectionKind protection, bool virt )
+                : type_( type ), protection_( protection ), virtual_( virt )
+            { }
+
+            TypeContainer* Type( ) const { return type_; }
+            DoxProtectionKind Protection( ) const { protection_; }
+            bool Virtual() const { return virtual_; }
+
+
+        };
+
+
+        
+
+
+        class ClassInfo
+        {
+            friend class TypeSystem;
+            std::vector<InheritanceInfo> inheritance_;
+            std::vector<Member*> nestedTypes_;
+            std::vector<Variable*> staticVariables_;
+            std::vector<Variable*> variables_;
+            std::vector<FunctionOverload*> staticFunctionOverloads_;
+            std::vector<FunctionOverload*> functionOverloads_;
+            std::vector<Function*> functions_;
+        public:
+            ClassInfo( ) = default;
+        private:
+            HCC_EXPORT void Process( Structure::TypeSystem* typeSystem, Structure::TypeContainer* type );
+        public:
+            const std::vector<InheritanceInfo>& Inheritance( ) const { return inheritance_; }
+            const std::vector<Member*>& NestedTypes( ) const { return nestedTypes_; }
+            const std::vector<Variable*>& StaticVariables( ) const { return staticVariables_; }
+            const std::vector<Variable*>& Variables( ) const { return variables_; }
+            const std::vector<FunctionOverload*>& StaticFunctionOverloads( ) const { return staticFunctionOverloads_; }
+            const std::vector<FunctionOverload*>& FunctionOverloads( ) const { return functionOverloads_; }
+            const std::vector<Function*>& Functions( ) const { return functions_; }
+
+        };
+        
+
+        class Struct : public Internal::TypeContainerBase<Structure::MemberType::Struct>, public ClassInfo
         {
         public:
             using Base = Internal::TypeContainerBase<Structure::MemberType::Struct>;
@@ -2875,7 +3046,7 @@ namespace Harlinn::Common::Core::Doxygen
 
         };
 
-        class Class : public Internal::TypeContainerBase<Structure::MemberType::Class>
+        class Class : public Internal::TypeContainerBase<Structure::MemberType::Class>, public ClassInfo
         {
         public:
             using Base = Internal::TypeContainerBase<Structure::MemberType::Class>;
@@ -2941,6 +3112,12 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
 
+            const std::string& Id( ) const
+            {
+                return memberDef_->Id( );
+            }
+
+
             bool IsNested( )
             {
                 auto owner = Owner( );
@@ -2988,10 +3165,10 @@ namespace Harlinn::Common::Core::Doxygen
 
         };
 
-        class Function : public Internal::MemberDefBase<Structure::MemberType::Function>
+        class Function : public Internal::ContainerBase<Structure::MemberType::Function>
         {
         public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Function>;
+            using Base = Internal::ContainerBase<Structure::MemberType::Function>;
 
             explicit Function( Structure::TypeSystem* typeSystem )
                 : Base( typeSystem )
@@ -3005,6 +3182,108 @@ namespace Harlinn::Common::Core::Doxygen
             }
 
         };
+
+
+        class FunctionOverload : public Internal::MemberDefBase<Structure::MemberType::FunctionOverload>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::FunctionOverload>;
+
+            explicit FunctionOverload( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            { }
+
+            bool Static( ) const
+            {
+                return MemberDefType( )->Static( );
+            }
+
+            bool Extern( ) const
+            {
+                return MemberDefType( )->Extern( );
+            }
+
+            bool Const( ) const
+            {
+                return MemberDefType( )->Const( );
+            }
+
+            bool Explicit( ) const
+            {
+                return MemberDefType( )->Explicit( );
+            }
+
+            bool Inline( ) const
+            {
+                return MemberDefType( )->Inline( );
+            }
+
+            DoxRefQualifierKind RefQual( ) const 
+            { 
+                return MemberDefType( )->RefQual( );
+            }
+            DoxVirtualKind Virtual( ) const 
+            {
+                return MemberDefType( )->Virt( );
+            }
+            
+            bool NoExcept( ) const 
+            {
+                return MemberDefType( )->NoExcept( );
+            }
+            const std::string& NoexceptExpression( ) const 
+            {
+                return MemberDefType( )->NoexceptExpression( );
+            }
+            bool Nodiscard( ) const 
+            {
+                return MemberDefType( )->Nodiscard( );
+            }
+            bool Constexpr( ) const 
+            {
+                return MemberDefType( )->Constexpr( );
+            }
+            bool Consteval( ) const 
+            {
+                return MemberDefType( )->Consteval( );
+            }
+            
+            bool IsTemplate( ) const
+            {
+                return MemberDefType( )->TemplateParamList( ) != nullptr;
+            }
+
+            const TemplateParamListTypePtr& TemplateParameters( ) const
+            {
+                return MemberDefType( )->TemplateParamList( );
+            }
+
+            const LinkedTextTypePtr& RequiresClause( ) const
+            {
+                return MemberDefType( )->RequiresClause( );
+            }
+
+            const std::string& ArgsString( ) const 
+            {
+                return MemberDefType( )->ArgsString( );
+            }
+
+            const DescriptionTypePtr& BriefDescription( ) const 
+            {
+                return MemberDefType( )->BriefDescription( );
+            }
+            const DescriptionTypePtr& DetailedDescription( ) const 
+            {
+                return MemberDefType( )->DetailedDescription( );
+            }
+            const DescriptionTypePtr& InbodyDescription( ) const 
+            {
+                return MemberDefType( )->InbodyDescription( );
+            }
+
+
+        };
+
 
         class Define : public Internal::MemberDefBase<Structure::MemberType::Define>
         {
@@ -3047,6 +3326,11 @@ namespace Harlinn::Common::Core::Doxygen
             explicit Variable( Structure::TypeSystem* typeSystem )
                 : Base( typeSystem )
             {
+            }
+
+            bool Static( ) const
+            {
+                return MemberDefType( )->Static( );
             }
 
             bool IsMemberVariable( )
@@ -3147,14 +3431,16 @@ namespace Harlinn::Common::Core::Doxygen
 
         
         template<typename MemberDefT>
-        inline MemberDefT* TypeSystem::AddMemberDef( const WideString& qualifiedName, const WideString& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
+        inline MemberDefT* TypeSystem::AddMemberDef( const std::string& qualifiedName, const std::string& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
         {
+            auto id = memberDef->Id( );
             auto memberDefT = std::make_unique<MemberDefT>( this );
             auto result = memberDefT.get( );
             all_.emplace_back( std::move( memberDefT ) );
             result->SetQualifiedName( qualifiedName );
             result->SetName( name );
             result->SetOwner( container );
+            result->SetId( id );
             container->Add( result );
             result->Assign( compoundDef, sectionDef, memberDef );
             return result;
@@ -3168,47 +3454,47 @@ namespace Harlinn::Common::Core::Doxygen
 
 namespace Harlinn::Common::Core
 {
-    HCC_EXPORT WideString ToWideString( Doxygen::MemberKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::MemberKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::MemberKind value );
+    HCC_EXPORT std::string to_string( Doxygen::MemberKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::MemberKind value )
+    inline std::wstring to_wstring( Doxygen::MemberKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::MemberKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::MemberKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT MemberKind ParseMemberKind( const WideString& str );
-        HCC_EXPORT MemberKind ParseMemberKind( const WideString& str, MemberKind defaultResult );
-        HCC_EXPORT bool TryParseMemberKind( const WideString& str, MemberKind& value );
+        HCC_EXPORT MemberKind ParseMemberKind( const std::string& str );
+        HCC_EXPORT MemberKind ParseMemberKind( const std::string& str, MemberKind defaultResult );
+        HCC_EXPORT bool TryParseMemberKind( const std::string& str, MemberKind& value );
 
-        inline MemberKind ParseMemberKind( const AnsiString& str )
+        inline MemberKind ParseMemberKind( const std::wstring& str )
         {
-            return ParseMemberKind( ToWideString( str ) );
+            return ParseMemberKind( to_string( str ) );
         }
-        inline MemberKind ParseMemberKind( const AnsiString& str, MemberKind defaultResult )
+        inline MemberKind ParseMemberKind( const std::wstring& str, MemberKind defaultResult )
         {
-            return ParseMemberKind( ToWideString( str ), defaultResult );
+            return ParseMemberKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseMemberKind( const AnsiString& str, MemberKind& value )
+        inline bool TryParseMemberKind( const std::wstring& str, MemberKind& value )
         {
-            return TryParseMemberKind( ToWideString( str ), value );
+            return TryParseMemberKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::MemberKind& value )
     {
         return Doxygen::TryParseMemberKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::MemberKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::MemberKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseMemberKind( str );
@@ -3218,52 +3504,52 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::MemberKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseMemberKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseMemberKind( std::basic_string<CharT>( str ) );
     }
 
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxGraphRelation value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxGraphRelation value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxGraphRelation value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxGraphRelation value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxGraphRelation value )
+    inline std::wstring to_wstring( Doxygen::DoxGraphRelation value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxGraphRelation value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxGraphRelation value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxGraphRelation ParseDoxGraphRelation( const WideString& str );
-        HCC_EXPORT DoxGraphRelation ParseDoxGraphRelation( const WideString& str, DoxGraphRelation defaultResult );
-        HCC_EXPORT bool TryParseDoxGraphRelation( const WideString& str, DoxGraphRelation& value );
+        HCC_EXPORT DoxGraphRelation ParseDoxGraphRelation( const std::string& str );
+        HCC_EXPORT DoxGraphRelation ParseDoxGraphRelation( const std::string& str, DoxGraphRelation defaultResult );
+        HCC_EXPORT bool TryParseDoxGraphRelation( const std::string& str, DoxGraphRelation& value );
 
-        inline DoxGraphRelation ParseDoxGraphRelation( const AnsiString& str )
+        inline DoxGraphRelation ParseDoxGraphRelation( const std::wstring& str )
         {
-            return ParseDoxGraphRelation( ToWideString( str ) );
+            return ParseDoxGraphRelation( to_string( str ) );
         }
-        inline DoxGraphRelation ParseDoxGraphRelation( const AnsiString& str, DoxGraphRelation defaultResult )
+        inline DoxGraphRelation ParseDoxGraphRelation( const std::wstring& str, DoxGraphRelation defaultResult )
         {
-            return ParseDoxGraphRelation( ToWideString( str ), defaultResult );
+            return ParseDoxGraphRelation( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxGraphRelation( const AnsiString& str, DoxGraphRelation& value )
+        inline bool TryParseDoxGraphRelation( const std::wstring& str, DoxGraphRelation& value )
         {
-            return TryParseDoxGraphRelation( ToWideString( str ), value );
+            return TryParseDoxGraphRelation( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxGraphRelation& value )
     {
         return Doxygen::TryParseDoxGraphRelation( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxGraphRelation, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxGraphRelation, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxGraphRelation( str );
@@ -3273,51 +3559,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxGraphRelation, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxGraphRelation( BasicString<CharT>(str) );
+        return Doxygen::ParseDoxGraphRelation( std::basic_string<CharT>(str) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxRefKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxRefKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxRefKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxRefKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxRefKind value )
+    inline std::wstring to_wstring( Doxygen::DoxRefKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxRefKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxRefKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxRefKind ParseDoxRefKind( const WideString& str );
-        HCC_EXPORT DoxRefKind ParseDoxRefKind( const WideString& str, DoxRefKind defaultResult );
-        HCC_EXPORT bool TryParseDoxRefKind( const WideString& str, DoxRefKind& value );
+        HCC_EXPORT DoxRefKind ParseDoxRefKind( const std::string& str );
+        HCC_EXPORT DoxRefKind ParseDoxRefKind( const std::string& str, DoxRefKind defaultResult );
+        HCC_EXPORT bool TryParseDoxRefKind( const std::string& str, DoxRefKind& value );
 
-        inline DoxRefKind ParseDoxRefKind( const AnsiString& str )
+        inline DoxRefKind ParseDoxRefKind( const std::wstring& str )
         {
-            return ParseDoxRefKind( ToWideString( str ) );
+            return ParseDoxRefKind( to_string( str ) );
         }
-        inline DoxRefKind ParseDoxRefKind( const AnsiString& str, DoxRefKind defaultResult )
+        inline DoxRefKind ParseDoxRefKind( const std::wstring& str, DoxRefKind defaultResult )
         {
-            return ParseDoxRefKind( ToWideString( str ), defaultResult );
+            return ParseDoxRefKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxRefKind( const AnsiString& str, DoxRefKind& value )
+        inline bool TryParseDoxRefKind( const std::wstring& str, DoxRefKind& value )
         {
-            return TryParseDoxRefKind( ToWideString( str ), value );
+            return TryParseDoxRefKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxRefKind& value )
     {
         return Doxygen::TryParseDoxRefKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxRefKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxRefKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxRefKind( str );
@@ -3327,51 +3613,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxRefKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxRefKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxRefKind( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxMemberKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxMemberKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxMemberKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxMemberKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxMemberKind value )
+    inline std::wstring to_wstring( Doxygen::DoxMemberKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxMemberKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxMemberKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxMemberKind ParseDoxMemberKind( const WideString& str );
-        HCC_EXPORT DoxMemberKind ParseDoxMemberKind( const WideString& str, DoxMemberKind defaultResult );
-        HCC_EXPORT bool TryParseDoxMemberKind( const WideString& str, DoxMemberKind& value );
+        HCC_EXPORT DoxMemberKind ParseDoxMemberKind( const std::string& str );
+        HCC_EXPORT DoxMemberKind ParseDoxMemberKind( const std::string& str, DoxMemberKind defaultResult );
+        HCC_EXPORT bool TryParseDoxMemberKind( const std::string& str, DoxMemberKind& value );
 
-        inline DoxMemberKind ParseDoxMemberKind( const AnsiString& str )
+        inline DoxMemberKind ParseDoxMemberKind( const std::wstring& str )
         {
-            return ParseDoxMemberKind( ToWideString( str ) );
+            return ParseDoxMemberKind( to_string( str ) );
         }
-        inline DoxMemberKind ParseDoxMemberKind( const AnsiString& str, DoxMemberKind defaultResult )
+        inline DoxMemberKind ParseDoxMemberKind( const std::wstring& str, DoxMemberKind defaultResult )
         {
-            return ParseDoxMemberKind( ToWideString( str ), defaultResult );
+            return ParseDoxMemberKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxMemberKind( const AnsiString& str, DoxMemberKind& value )
+        inline bool TryParseDoxMemberKind( const std::wstring& str, DoxMemberKind& value )
         {
-            return TryParseDoxMemberKind( ToWideString( str ), value );
+            return TryParseDoxMemberKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxMemberKind& value )
     {
         return Doxygen::TryParseDoxMemberKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxMemberKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxMemberKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxMemberKind( str );
@@ -3381,51 +3667,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxMemberKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxMemberKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxMemberKind( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxProtectionKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxProtectionKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxProtectionKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxProtectionKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxProtectionKind value )
+    inline std::wstring to_wstring( Doxygen::DoxProtectionKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxProtectionKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxProtectionKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxProtectionKind ParseDoxProtectionKind( const WideString& str );
-        HCC_EXPORT DoxProtectionKind ParseDoxProtectionKind( const WideString& str, DoxProtectionKind defaultResult );
-        HCC_EXPORT bool TryParseDoxProtectionKind( const WideString& str, DoxProtectionKind& value );
+        HCC_EXPORT DoxProtectionKind ParseDoxProtectionKind( const std::string& str );
+        HCC_EXPORT DoxProtectionKind ParseDoxProtectionKind( const std::string& str, DoxProtectionKind defaultResult );
+        HCC_EXPORT bool TryParseDoxProtectionKind( const std::string& str, DoxProtectionKind& value );
 
-        inline DoxProtectionKind ParseDoxProtectionKind( const AnsiString& str )
+        inline DoxProtectionKind ParseDoxProtectionKind( const std::wstring& str )
         {
-            return ParseDoxProtectionKind( ToWideString( str ) );
+            return ParseDoxProtectionKind( to_string( str ) );
         }
-        inline DoxProtectionKind ParseDoxProtectionKind( const AnsiString& str, DoxProtectionKind defaultResult )
+        inline DoxProtectionKind ParseDoxProtectionKind( const std::wstring& str, DoxProtectionKind defaultResult )
         {
-            return ParseDoxProtectionKind( ToWideString( str ), defaultResult );
+            return ParseDoxProtectionKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxProtectionKind( const AnsiString& str, DoxProtectionKind& value )
+        inline bool TryParseDoxProtectionKind( const std::wstring& str, DoxProtectionKind& value )
         {
-            return TryParseDoxProtectionKind( ToWideString( str ), value );
+            return TryParseDoxProtectionKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxProtectionKind& value )
     {
         return Doxygen::TryParseDoxProtectionKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxProtectionKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxProtectionKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxProtectionKind( str );
@@ -3435,51 +3721,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxProtectionKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxProtectionKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxProtectionKind( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxRefQualifierKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxRefQualifierKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxRefQualifierKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxRefQualifierKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxRefQualifierKind value )
+    inline std::wstring to_wstring( Doxygen::DoxRefQualifierKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxRefQualifierKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxRefQualifierKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxRefQualifierKind ParseDoxRefQualifierKind( const WideString& str );
-        HCC_EXPORT DoxRefQualifierKind ParseDoxRefQualifierKind( const WideString& str, DoxRefQualifierKind defaultResult );
-        HCC_EXPORT bool TryParseDoxRefQualifierKind( const WideString& str, DoxRefQualifierKind& value );
+        HCC_EXPORT DoxRefQualifierKind ParseDoxRefQualifierKind( const std::string& str );
+        HCC_EXPORT DoxRefQualifierKind ParseDoxRefQualifierKind( const std::string& str, DoxRefQualifierKind defaultResult );
+        HCC_EXPORT bool TryParseDoxRefQualifierKind( const std::string& str, DoxRefQualifierKind& value );
 
-        inline DoxRefQualifierKind ParseDoxRefQualifierKind( const AnsiString& str )
+        inline DoxRefQualifierKind ParseDoxRefQualifierKind( const std::wstring& str )
         {
-            return ParseDoxRefQualifierKind( ToWideString( str ) );
+            return ParseDoxRefQualifierKind( to_string( str ) );
         }
-        inline DoxRefQualifierKind ParseDoxRefQualifierKind( const AnsiString& str, DoxRefQualifierKind defaultResult )
+        inline DoxRefQualifierKind ParseDoxRefQualifierKind( const std::wstring& str, DoxRefQualifierKind defaultResult )
         {
-            return ParseDoxRefQualifierKind( ToWideString( str ), defaultResult );
+            return ParseDoxRefQualifierKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxRefQualifierKind( const AnsiString& str, DoxRefQualifierKind& value )
+        inline bool TryParseDoxRefQualifierKind( const std::wstring& str, DoxRefQualifierKind& value )
         {
-            return TryParseDoxRefQualifierKind( ToWideString( str ), value );
+            return TryParseDoxRefQualifierKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxRefQualifierKind& value )
     {
         return Doxygen::TryParseDoxRefQualifierKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxRefQualifierKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxRefQualifierKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxRefQualifierKind( str );
@@ -3489,52 +3775,52 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxRefQualifierKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxRefQualifierKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxRefQualifierKind( std::basic_string<CharT>( str ) );
     }
 
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxLanguage value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxLanguage value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxLanguage value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxLanguage value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxLanguage value )
+    inline std::wstring to_wstring( Doxygen::DoxLanguage value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxLanguage value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxLanguage value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxLanguage ParseDoxLanguage( const WideString& str );
-        HCC_EXPORT DoxLanguage ParseDoxLanguage( const WideString& str, DoxLanguage defaultResult );
-        HCC_EXPORT bool TryParseDoxLanguage( const WideString& str, DoxLanguage& value );
+        HCC_EXPORT DoxLanguage ParseDoxLanguage( const std::string& str );
+        HCC_EXPORT DoxLanguage ParseDoxLanguage( const std::string& str, DoxLanguage defaultResult );
+        HCC_EXPORT bool TryParseDoxLanguage( const std::string& str, DoxLanguage& value );
 
-        inline DoxLanguage ParseDoxLanguage( const AnsiString& str )
+        inline DoxLanguage ParseDoxLanguage( const std::wstring& str )
         {
-            return ParseDoxLanguage( ToWideString( str ) );
+            return ParseDoxLanguage( to_string( str ) );
         }
-        inline DoxLanguage ParseDoxLanguage( const AnsiString& str, DoxLanguage defaultResult )
+        inline DoxLanguage ParseDoxLanguage( const std::wstring& str, DoxLanguage defaultResult )
         {
-            return ParseDoxLanguage( ToWideString( str ), defaultResult );
+            return ParseDoxLanguage( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxLanguage( const AnsiString& str, DoxLanguage& value )
+        inline bool TryParseDoxLanguage( const std::wstring& str, DoxLanguage& value )
         {
-            return TryParseDoxLanguage( ToWideString( str ), value );
+            return TryParseDoxLanguage( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxLanguage& value )
     {
         return Doxygen::TryParseDoxLanguage( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxLanguage, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxLanguage, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxLanguage( str );
@@ -3544,51 +3830,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxLanguage, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxLanguage( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxLanguage( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxVirtualKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxVirtualKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxVirtualKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxVirtualKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxVirtualKind value )
+    inline std::wstring to_wstring( Doxygen::DoxVirtualKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxVirtualKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxVirtualKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxVirtualKind ParseDoxVirtualKind( const WideString& str );
-        HCC_EXPORT DoxVirtualKind ParseDoxVirtualKind( const WideString& str, DoxVirtualKind defaultResult );
-        HCC_EXPORT bool TryParseDoxVirtualKind( const WideString& str, DoxVirtualKind& value );
+        HCC_EXPORT DoxVirtualKind ParseDoxVirtualKind( const std::string& str );
+        HCC_EXPORT DoxVirtualKind ParseDoxVirtualKind( const std::string& str, DoxVirtualKind defaultResult );
+        HCC_EXPORT bool TryParseDoxVirtualKind( const std::string& str, DoxVirtualKind& value );
 
-        inline DoxVirtualKind ParseDoxVirtualKind( const AnsiString& str )
+        inline DoxVirtualKind ParseDoxVirtualKind( const std::wstring& str )
         {
-            return ParseDoxVirtualKind( ToWideString( str ) );
+            return ParseDoxVirtualKind( to_string( str ) );
         }
-        inline DoxVirtualKind ParseDoxVirtualKind( const AnsiString& str, DoxVirtualKind defaultResult )
+        inline DoxVirtualKind ParseDoxVirtualKind( const std::wstring& str, DoxVirtualKind defaultResult )
         {
-            return ParseDoxVirtualKind( ToWideString( str ), defaultResult );
+            return ParseDoxVirtualKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxVirtualKind( const AnsiString& str, DoxVirtualKind& value )
+        inline bool TryParseDoxVirtualKind( const std::wstring& str, DoxVirtualKind& value )
         {
-            return TryParseDoxVirtualKind( ToWideString( str ), value );
+            return TryParseDoxVirtualKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxVirtualKind& value )
     {
         return Doxygen::TryParseDoxVirtualKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxVirtualKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxVirtualKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxVirtualKind( str );
@@ -3598,51 +3884,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxVirtualKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxVirtualKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxVirtualKind( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxCompoundKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxCompoundKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxCompoundKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxCompoundKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxCompoundKind value )
+    inline std::wstring to_wstring( Doxygen::DoxCompoundKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxCompoundKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxCompoundKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxCompoundKind ParseDoxCompoundKind( const WideString& str );
-        HCC_EXPORT DoxCompoundKind ParseDoxCompoundKind( const WideString& str, DoxCompoundKind defaultResult );
-        HCC_EXPORT bool TryParseDoxCompoundKind( const WideString& str, DoxCompoundKind& value );
+        HCC_EXPORT DoxCompoundKind ParseDoxCompoundKind( const std::string& str );
+        HCC_EXPORT DoxCompoundKind ParseDoxCompoundKind( const std::string& str, DoxCompoundKind defaultResult );
+        HCC_EXPORT bool TryParseDoxCompoundKind( const std::string& str, DoxCompoundKind& value );
 
-        inline DoxCompoundKind ParseDoxCompoundKind( const AnsiString& str )
+        inline DoxCompoundKind ParseDoxCompoundKind( const std::wstring& str )
         {
-            return ParseDoxCompoundKind( ToWideString( str ) );
+            return ParseDoxCompoundKind( to_string( str ) );
         }
-        inline DoxCompoundKind ParseDoxCompoundKind( const AnsiString& str, DoxCompoundKind defaultResult )
+        inline DoxCompoundKind ParseDoxCompoundKind( const std::wstring& str, DoxCompoundKind defaultResult )
         {
-            return ParseDoxCompoundKind( ToWideString( str ), defaultResult );
+            return ParseDoxCompoundKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxCompoundKind( const AnsiString& str, DoxCompoundKind& value )
+        inline bool TryParseDoxCompoundKind( const std::wstring& str, DoxCompoundKind& value )
         {
-            return TryParseDoxCompoundKind( ToWideString( str ), value );
+            return TryParseDoxCompoundKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxCompoundKind& value )
     {
         return Doxygen::TryParseDoxCompoundKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxCompoundKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxCompoundKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxCompoundKind( str );
@@ -3652,51 +3938,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxCompoundKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxCompoundKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxCompoundKind( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxSectionKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxSectionKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxSectionKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxSectionKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxSectionKind value )
+    inline std::wstring to_wstring( Doxygen::DoxSectionKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxSectionKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxSectionKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxSectionKind ParseDoxSectionKind( const WideString& str );
-        HCC_EXPORT DoxSectionKind ParseDoxSectionKind( const WideString& str, DoxSectionKind defaultResult );
-        HCC_EXPORT bool TryParseDoxSectionKind( const WideString& str, DoxSectionKind& value );
+        HCC_EXPORT DoxSectionKind ParseDoxSectionKind( const std::string& str );
+        HCC_EXPORT DoxSectionKind ParseDoxSectionKind( const std::string& str, DoxSectionKind defaultResult );
+        HCC_EXPORT bool TryParseDoxSectionKind( const std::string& str, DoxSectionKind& value );
 
-        inline DoxSectionKind ParseDoxSectionKind( const AnsiString& str )
+        inline DoxSectionKind ParseDoxSectionKind( const std::wstring& str )
         {
-            return ParseDoxSectionKind( ToWideString( str ) );
+            return ParseDoxSectionKind( to_string( str ) );
         }
-        inline DoxSectionKind ParseDoxSectionKind( const AnsiString& str, DoxSectionKind defaultResult )
+        inline DoxSectionKind ParseDoxSectionKind( const std::wstring& str, DoxSectionKind defaultResult )
         {
-            return ParseDoxSectionKind( ToWideString( str ), defaultResult );
+            return ParseDoxSectionKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxSectionKind( const AnsiString& str, DoxSectionKind& value )
+        inline bool TryParseDoxSectionKind( const std::wstring& str, DoxSectionKind& value )
         {
-            return TryParseDoxSectionKind( ToWideString( str ), value );
+            return TryParseDoxSectionKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxSectionKind& value )
     {
         return Doxygen::TryParseDoxSectionKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxSectionKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxSectionKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxSectionKind( str );
@@ -3706,51 +3992,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxSectionKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxSectionKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxSectionKind( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxHighlightClass value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxHighlightClass value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxHighlightClass value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxHighlightClass value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxHighlightClass value )
+    inline std::wstring to_wstring( Doxygen::DoxHighlightClass value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxHighlightClass value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxHighlightClass value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxHighlightClass ParseDoxHighlightClass( const WideString& str );
-        HCC_EXPORT DoxHighlightClass ParseDoxHighlightClass( const WideString& str, DoxHighlightClass defaultResult );
-        HCC_EXPORT bool TryParseDoxHighlightClass( const WideString& str, DoxHighlightClass& value );
+        HCC_EXPORT DoxHighlightClass ParseDoxHighlightClass( const std::string& str );
+        HCC_EXPORT DoxHighlightClass ParseDoxHighlightClass( const std::string& str, DoxHighlightClass defaultResult );
+        HCC_EXPORT bool TryParseDoxHighlightClass( const std::string& str, DoxHighlightClass& value );
 
-        inline DoxHighlightClass ParseDoxHighlightClass( const AnsiString& str )
+        inline DoxHighlightClass ParseDoxHighlightClass( const std::wstring& str )
         {
-            return ParseDoxHighlightClass( ToWideString( str ) );
+            return ParseDoxHighlightClass( to_string( str ) );
         }
-        inline DoxHighlightClass ParseDoxHighlightClass( const AnsiString& str, DoxHighlightClass defaultResult )
+        inline DoxHighlightClass ParseDoxHighlightClass( const std::wstring& str, DoxHighlightClass defaultResult )
         {
-            return ParseDoxHighlightClass( ToWideString( str ), defaultResult );
+            return ParseDoxHighlightClass( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxHighlightClass( const AnsiString& str, DoxHighlightClass& value )
+        inline bool TryParseDoxHighlightClass( const std::wstring& str, DoxHighlightClass& value )
         {
-            return TryParseDoxHighlightClass( ToWideString( str ), value );
+            return TryParseDoxHighlightClass( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxHighlightClass& value )
     {
         return Doxygen::TryParseDoxHighlightClass( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxHighlightClass, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxHighlightClass, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxHighlightClass( str );
@@ -3760,50 +4046,50 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxHighlightClass, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxHighlightClass( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxHighlightClass( std::basic_string<CharT>( str ) );
     }
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxSimpleSectKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxSimpleSectKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxSimpleSectKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxSimpleSectKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxSimpleSectKind value )
+    inline std::wstring to_wstring( Doxygen::DoxSimpleSectKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxSimpleSectKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxSimpleSectKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxSimpleSectKind ParseDoxSimpleSectKind( const WideString& str );
-        HCC_EXPORT DoxSimpleSectKind ParseDoxSimpleSectKind( const WideString& str, DoxSimpleSectKind defaultResult );
-        HCC_EXPORT bool TryParseDoxSimpleSectKind( const WideString& str, DoxSimpleSectKind& value );
+        HCC_EXPORT DoxSimpleSectKind ParseDoxSimpleSectKind( const std::string& str );
+        HCC_EXPORT DoxSimpleSectKind ParseDoxSimpleSectKind( const std::string& str, DoxSimpleSectKind defaultResult );
+        HCC_EXPORT bool TryParseDoxSimpleSectKind( const std::string& str, DoxSimpleSectKind& value );
 
-        inline DoxSimpleSectKind ParseDoxSimpleSectKind( const AnsiString& str )
+        inline DoxSimpleSectKind ParseDoxSimpleSectKind( const std::wstring& str )
         {
-            return ParseDoxSimpleSectKind( ToWideString( str ) );
+            return ParseDoxSimpleSectKind( to_string( str ) );
         }
-        inline DoxSimpleSectKind ParseDoxSimpleSectKind( const AnsiString& str, DoxSimpleSectKind defaultResult )
+        inline DoxSimpleSectKind ParseDoxSimpleSectKind( const std::wstring& str, DoxSimpleSectKind defaultResult )
         {
-            return ParseDoxSimpleSectKind( ToWideString( str ), defaultResult );
+            return ParseDoxSimpleSectKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxSimpleSectKind( const AnsiString& str, DoxSimpleSectKind& value )
+        inline bool TryParseDoxSimpleSectKind( const std::wstring& str, DoxSimpleSectKind& value )
         {
-            return TryParseDoxSimpleSectKind( ToWideString( str ), value );
+            return TryParseDoxSimpleSectKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxSimpleSectKind& value )
     {
         return Doxygen::TryParseDoxSimpleSectKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxSimpleSectKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxSimpleSectKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxSimpleSectKind( str );
@@ -3813,51 +4099,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxSimpleSectKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxSimpleSectKind( BasicString<CharT>(str) );
+        return Doxygen::ParseDoxSimpleSectKind( std::basic_string<CharT>(str) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxCheck value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxCheck value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxCheck value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxCheck value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxCheck value )
+    inline std::wstring to_wstring( Doxygen::DoxCheck value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxCheck value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxCheck value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxCheck ParseDoxCheck( const WideString& str );
-        HCC_EXPORT DoxCheck ParseDoxCheck( const WideString& str, DoxCheck defaultResult );
-        HCC_EXPORT bool TryParseDoxCheck( const WideString& str, DoxCheck& value );
+        HCC_EXPORT DoxCheck ParseDoxCheck( const std::string& str );
+        HCC_EXPORT DoxCheck ParseDoxCheck( const std::string& str, DoxCheck defaultResult );
+        HCC_EXPORT bool TryParseDoxCheck( const std::string& str, DoxCheck& value );
 
-        inline DoxCheck ParseDoxCheck( const AnsiString& str )
+        inline DoxCheck ParseDoxCheck( const std::wstring& str )
         {
-            return ParseDoxCheck( ToWideString( str ) );
+            return ParseDoxCheck( to_string( str ) );
         }
-        inline DoxCheck ParseDoxCheck( const AnsiString& str, DoxCheck defaultResult )
+        inline DoxCheck ParseDoxCheck( const std::wstring& str, DoxCheck defaultResult )
         {
-            return ParseDoxCheck( ToWideString( str ), defaultResult );
+            return ParseDoxCheck( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxCheck( const AnsiString& str, DoxCheck& value )
+        inline bool TryParseDoxCheck( const std::wstring& str, DoxCheck& value )
         {
-            return TryParseDoxCheck( ToWideString( str ), value );
+            return TryParseDoxCheck( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxCheck& value )
     {
         return Doxygen::TryParseDoxCheck( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxCheck, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxCheck, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxCheck( str );
@@ -3867,51 +4153,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxCheck, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxCheck( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxCheck( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxImageKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxImageKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxImageKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxImageKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxImageKind value )
+    inline std::wstring to_wstring( Doxygen::DoxImageKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxImageKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxImageKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxImageKind ParseDoxImageKind( const WideString& str );
-        HCC_EXPORT DoxImageKind ParseDoxImageKind( const WideString& str, DoxImageKind defaultResult );
-        HCC_EXPORT bool TryParseDoxImageKind( const WideString& str, DoxImageKind& value );
+        HCC_EXPORT DoxImageKind ParseDoxImageKind( const std::string& str );
+        HCC_EXPORT DoxImageKind ParseDoxImageKind( const std::string& str, DoxImageKind defaultResult );
+        HCC_EXPORT bool TryParseDoxImageKind( const std::string& str, DoxImageKind& value );
 
-        inline DoxImageKind ParseDoxImageKind( const AnsiString& str )
+        inline DoxImageKind ParseDoxImageKind( const std::wstring& str )
         {
-            return ParseDoxImageKind( ToWideString( str ) );
+            return ParseDoxImageKind( to_string( str ) );
         }
-        inline DoxImageKind ParseDoxImageKind( const AnsiString& str, DoxImageKind defaultResult )
+        inline DoxImageKind ParseDoxImageKind( const std::wstring& str, DoxImageKind defaultResult )
         {
-            return ParseDoxImageKind( ToWideString( str ), defaultResult );
+            return ParseDoxImageKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxImageKind( const AnsiString& str, DoxImageKind& value )
+        inline bool TryParseDoxImageKind( const std::wstring& str, DoxImageKind& value )
         {
-            return TryParseDoxImageKind( ToWideString( str ), value );
+            return TryParseDoxImageKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxImageKind& value )
     {
         return Doxygen::TryParseDoxImageKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxImageKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxImageKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxImageKind( str );
@@ -3921,53 +4207,53 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxImageKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxImageKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxImageKind( std::basic_string<CharT>( str ) );
     }
 
 
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxPlantumlEngine value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxPlantumlEngine value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxPlantumlEngine value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxPlantumlEngine value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxPlantumlEngine value )
+    inline std::wstring to_wstring( Doxygen::DoxPlantumlEngine value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxPlantumlEngine value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxPlantumlEngine value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxPlantumlEngine ParseDoxPlantumlEngine( const WideString& str );
-        HCC_EXPORT DoxPlantumlEngine ParseDoxPlantumlEngine( const WideString& str, DoxPlantumlEngine defaultResult );
-        HCC_EXPORT bool TryParseDoxPlantumlEngine( const WideString& str, DoxPlantumlEngine& value );
+        HCC_EXPORT DoxPlantumlEngine ParseDoxPlantumlEngine( const std::string& str );
+        HCC_EXPORT DoxPlantumlEngine ParseDoxPlantumlEngine( const std::string& str, DoxPlantumlEngine defaultResult );
+        HCC_EXPORT bool TryParseDoxPlantumlEngine( const std::string& str, DoxPlantumlEngine& value );
 
-        inline DoxPlantumlEngine ParseDoxPlantumlEngine( const AnsiString& str )
+        inline DoxPlantumlEngine ParseDoxPlantumlEngine( const std::wstring& str )
         {
-            return ParseDoxPlantumlEngine( ToWideString( str ) );
+            return ParseDoxPlantumlEngine( to_string( str ) );
         }
-        inline DoxPlantumlEngine ParseDoxPlantumlEngine( const AnsiString& str, DoxPlantumlEngine defaultResult )
+        inline DoxPlantumlEngine ParseDoxPlantumlEngine( const std::wstring& str, DoxPlantumlEngine defaultResult )
         {
-            return ParseDoxPlantumlEngine( ToWideString( str ), defaultResult );
+            return ParseDoxPlantumlEngine( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxPlantumlEngine( const AnsiString& str, DoxPlantumlEngine& value )
+        inline bool TryParseDoxPlantumlEngine( const std::wstring& str, DoxPlantumlEngine& value )
         {
-            return TryParseDoxPlantumlEngine( ToWideString( str ), value );
+            return TryParseDoxPlantumlEngine( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxPlantumlEngine& value )
     {
         return Doxygen::TryParseDoxPlantumlEngine( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxPlantumlEngine, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxPlantumlEngine, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxPlantumlEngine( str );
@@ -3977,51 +4263,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxPlantumlEngine, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxPlantumlEngine( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxPlantumlEngine( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxParamListKind value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxParamListKind value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxParamListKind value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxParamListKind value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxParamListKind value )
+    inline std::wstring to_wstring( Doxygen::DoxParamListKind value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxParamListKind value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxParamListKind value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxParamListKind ParseDoxParamListKind( const WideString& str );
-        HCC_EXPORT DoxParamListKind ParseDoxParamListKind( const WideString& str, DoxParamListKind defaultResult );
-        HCC_EXPORT bool TryParseDoxParamListKind( const WideString& str, DoxParamListKind& value );
+        HCC_EXPORT DoxParamListKind ParseDoxParamListKind( const std::string& str );
+        HCC_EXPORT DoxParamListKind ParseDoxParamListKind( const std::string& str, DoxParamListKind defaultResult );
+        HCC_EXPORT bool TryParseDoxParamListKind( const std::string& str, DoxParamListKind& value );
 
-        inline DoxParamListKind ParseDoxParamListKind( const AnsiString& str )
+        inline DoxParamListKind ParseDoxParamListKind( const std::wstring& str )
         {
-            return ParseDoxParamListKind( ToWideString( str ) );
+            return ParseDoxParamListKind( to_string( str ) );
         }
-        inline DoxParamListKind ParseDoxParamListKind( const AnsiString& str, DoxParamListKind defaultResult )
+        inline DoxParamListKind ParseDoxParamListKind( const std::wstring& str, DoxParamListKind defaultResult )
         {
-            return ParseDoxParamListKind( ToWideString( str ), defaultResult );
+            return ParseDoxParamListKind( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxParamListKind( const AnsiString& str, DoxParamListKind& value )
+        inline bool TryParseDoxParamListKind( const std::wstring& str, DoxParamListKind& value )
         {
-            return TryParseDoxParamListKind( ToWideString( str ), value );
+            return TryParseDoxParamListKind( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxParamListKind& value )
     {
         return Doxygen::TryParseDoxParamListKind( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxParamListKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxParamListKind, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxParamListKind( str );
@@ -4031,51 +4317,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxParamListKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxParamListKind( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxParamListKind( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxParamDir value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxParamDir value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxParamDir value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxParamDir value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxParamDir value )
+    inline std::wstring to_wstring( Doxygen::DoxParamDir value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxParamDir value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxParamDir value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxParamDir ParseDoxParamDir( const WideString& str );
-        HCC_EXPORT DoxParamDir ParseDoxParamDir( const WideString& str, DoxParamDir defaultResult );
-        HCC_EXPORT bool TryParseDoxParamDir( const WideString& str, DoxParamDir& value );
+        HCC_EXPORT DoxParamDir ParseDoxParamDir( const std::string& str );
+        HCC_EXPORT DoxParamDir ParseDoxParamDir( const std::string& str, DoxParamDir defaultResult );
+        HCC_EXPORT bool TryParseDoxParamDir( const std::string& str, DoxParamDir& value );
 
-        inline DoxParamDir ParseDoxParamDir( const AnsiString& str )
+        inline DoxParamDir ParseDoxParamDir( const std::wstring& str )
         {
-            return ParseDoxParamDir( ToWideString( str ) );
+            return ParseDoxParamDir( to_string( str ) );
         }
-        inline DoxParamDir ParseDoxParamDir( const AnsiString& str, DoxParamDir defaultResult )
+        inline DoxParamDir ParseDoxParamDir( const std::wstring& str, DoxParamDir defaultResult )
         {
-            return ParseDoxParamDir( ToWideString( str ), defaultResult );
+            return ParseDoxParamDir( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxParamDir( const AnsiString& str, DoxParamDir& value )
+        inline bool TryParseDoxParamDir( const std::wstring& str, DoxParamDir& value )
         {
-            return TryParseDoxParamDir( ToWideString( str ), value );
+            return TryParseDoxParamDir( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxParamDir& value )
     {
         return Doxygen::TryParseDoxParamDir( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxParamDir, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxParamDir, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxParamDir( str );
@@ -4085,51 +4371,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxParamDir, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxParamDir( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxParamDir( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxAccessor value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxAccessor value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxAccessor value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxAccessor value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxAccessor value )
+    inline std::wstring to_wstring( Doxygen::DoxAccessor value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxAccessor value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxAccessor value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxAccessor ParseDoxAccessor( const WideString& str );
-        HCC_EXPORT DoxAccessor ParseDoxAccessor( const WideString& str, DoxAccessor defaultResult );
-        HCC_EXPORT bool TryParseDoxAccessor( const WideString& str, DoxAccessor& value );
+        HCC_EXPORT DoxAccessor ParseDoxAccessor( const std::string& str );
+        HCC_EXPORT DoxAccessor ParseDoxAccessor( const std::string& str, DoxAccessor defaultResult );
+        HCC_EXPORT bool TryParseDoxAccessor( const std::string& str, DoxAccessor& value );
 
-        inline DoxAccessor ParseDoxAccessor( const AnsiString& str )
+        inline DoxAccessor ParseDoxAccessor( const std::wstring& str )
         {
-            return ParseDoxAccessor( ToWideString( str ) );
+            return ParseDoxAccessor( to_string( str ) );
         }
-        inline DoxAccessor ParseDoxAccessor( const AnsiString& str, DoxAccessor defaultResult )
+        inline DoxAccessor ParseDoxAccessor( const std::wstring& str, DoxAccessor defaultResult )
         {
-            return ParseDoxAccessor( ToWideString( str ), defaultResult );
+            return ParseDoxAccessor( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxAccessor( const AnsiString& str, DoxAccessor& value )
+        inline bool TryParseDoxAccessor( const std::wstring& str, DoxAccessor& value )
         {
-            return TryParseDoxAccessor( ToWideString( str ), value );
+            return TryParseDoxAccessor( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxAccessor& value )
     {
         return Doxygen::TryParseDoxAccessor( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxAccessor, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxAccessor, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxAccessor( str );
@@ -4139,51 +4425,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxAccessor, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxAccessor( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxAccessor( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxAlign value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxAlign value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxAlign value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxAlign value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxAlign value )
+    inline std::wstring to_wstring( Doxygen::DoxAlign value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxAlign value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxAlign value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxAlign ParseDoxAlign( const WideString& str );
-        HCC_EXPORT DoxAlign ParseDoxAlign( const WideString& str, DoxAlign defaultResult );
-        HCC_EXPORT bool TryParseDoxAlign( const WideString& str, DoxAlign& value );
+        HCC_EXPORT DoxAlign ParseDoxAlign( const std::string& str );
+        HCC_EXPORT DoxAlign ParseDoxAlign( const std::string& str, DoxAlign defaultResult );
+        HCC_EXPORT bool TryParseDoxAlign( const std::string& str, DoxAlign& value );
 
-        inline DoxAlign ParseDoxAlign( const AnsiString& str )
+        inline DoxAlign ParseDoxAlign( const std::wstring& str )
         {
-            return ParseDoxAlign( ToWideString( str ) );
+            return ParseDoxAlign( to_string( str ) );
         }
-        inline DoxAlign ParseDoxAlign( const AnsiString& str, DoxAlign defaultResult )
+        inline DoxAlign ParseDoxAlign( const std::wstring& str, DoxAlign defaultResult )
         {
-            return ParseDoxAlign( ToWideString( str ), defaultResult );
+            return ParseDoxAlign( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxAlign( const AnsiString& str, DoxAlign& value )
+        inline bool TryParseDoxAlign( const std::wstring& str, DoxAlign& value )
         {
-            return TryParseDoxAlign( ToWideString( str ), value );
+            return TryParseDoxAlign( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxAlign& value )
     {
         return Doxygen::TryParseDoxAlign( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxAlign, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxAlign, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxAlign( str );
@@ -4193,51 +4479,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxAlign, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxAlign( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxAlign( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxVerticalAlign value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxVerticalAlign value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxVerticalAlign value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxVerticalAlign value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxVerticalAlign value )
+    inline std::wstring to_wstring( Doxygen::DoxVerticalAlign value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxVerticalAlign value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxVerticalAlign value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxVerticalAlign ParseDoxVerticalAlign( const WideString& str );
-        HCC_EXPORT DoxVerticalAlign ParseDoxVerticalAlign( const WideString& str, DoxVerticalAlign defaultResult );
-        HCC_EXPORT bool TryParseDoxVerticalAlign( const WideString& str, DoxVerticalAlign& value );
+        HCC_EXPORT DoxVerticalAlign ParseDoxVerticalAlign( const std::string& str );
+        HCC_EXPORT DoxVerticalAlign ParseDoxVerticalAlign( const std::string& str, DoxVerticalAlign defaultResult );
+        HCC_EXPORT bool TryParseDoxVerticalAlign( const std::string& str, DoxVerticalAlign& value );
 
-        inline DoxVerticalAlign ParseDoxVerticalAlign( const AnsiString& str )
+        inline DoxVerticalAlign ParseDoxVerticalAlign( const std::wstring& str )
         {
-            return ParseDoxVerticalAlign( ToWideString( str ) );
+            return ParseDoxVerticalAlign( to_string( str ) );
         }
-        inline DoxVerticalAlign ParseDoxVerticalAlign( const AnsiString& str, DoxVerticalAlign defaultResult )
+        inline DoxVerticalAlign ParseDoxVerticalAlign( const std::wstring& str, DoxVerticalAlign defaultResult )
         {
-            return ParseDoxVerticalAlign( ToWideString( str ), defaultResult );
+            return ParseDoxVerticalAlign( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxVerticalAlign( const AnsiString& str, DoxVerticalAlign& value )
+        inline bool TryParseDoxVerticalAlign( const std::wstring& str, DoxVerticalAlign& value )
         {
-            return TryParseDoxVerticalAlign( ToWideString( str ), value );
+            return TryParseDoxVerticalAlign( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxVerticalAlign& value )
     {
         return Doxygen::TryParseDoxVerticalAlign( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxVerticalAlign, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxVerticalAlign, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxVerticalAlign( str );
@@ -4247,51 +4533,51 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxVerticalAlign, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxVerticalAlign( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxVerticalAlign( std::basic_string<CharT>( str ) );
     }
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxOlType value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxOlType value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxOlType value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxOlType value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxOlType value )
+    inline std::wstring to_wstring( Doxygen::DoxOlType value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxOlType value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxOlType value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxOlType ParseDoxOlType( const WideString& str );
-        HCC_EXPORT DoxOlType ParseDoxOlType( const WideString& str, DoxOlType defaultResult );
-        HCC_EXPORT bool TryParseDoxOlType( const WideString& str, DoxOlType& value );
+        HCC_EXPORT DoxOlType ParseDoxOlType( const std::string& str );
+        HCC_EXPORT DoxOlType ParseDoxOlType( const std::string& str, DoxOlType defaultResult );
+        HCC_EXPORT bool TryParseDoxOlType( const std::string& str, DoxOlType& value );
 
-        inline DoxOlType ParseDoxOlType( const AnsiString& str )
+        inline DoxOlType ParseDoxOlType( const std::wstring& str )
         {
-            return ParseDoxOlType( ToWideString( str ) );
+            return ParseDoxOlType( to_string( str ) );
         }
-        inline DoxOlType ParseDoxOlType( const AnsiString& str, DoxOlType defaultResult )
+        inline DoxOlType ParseDoxOlType( const std::wstring& str, DoxOlType defaultResult )
         {
-            return ParseDoxOlType( ToWideString( str ), defaultResult );
+            return ParseDoxOlType( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxOlType( const AnsiString& str, DoxOlType& value )
+        inline bool TryParseDoxOlType( const std::wstring& str, DoxOlType& value )
         {
-            return TryParseDoxOlType( ToWideString( str ), value );
+            return TryParseDoxOlType( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxOlType& value )
     {
         return Doxygen::TryParseDoxOlType( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxOlType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxOlType, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxOlType( str );
@@ -4301,52 +4587,52 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxOlType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxOlType( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxOlType( std::basic_string<CharT>( str ) );
     }
 
 
     /////////
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxCmdGroupType value );
-    HCC_EXPORT WideString ToWideString( Doxygen::DoxCmdGroupType value, const WideString& defaultResult );
+    HCC_EXPORT std::string to_string( Doxygen::DoxCmdGroupType value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxCmdGroupType value, const std::string& defaultResult );
 
-    inline AnsiString ToAnsiString( Doxygen::DoxCmdGroupType value )
+    inline std::wstring to_wstring( Doxygen::DoxCmdGroupType value )
     {
-        return ToAnsiString( ToWideString( value ) );
+        return to_wstring( to_string( value ) );
     }
-    inline AnsiString ToAnsiString( Doxygen::DoxCmdGroupType value, const AnsiString& defaultResult )
+    inline std::wstring to_wstring( Doxygen::DoxCmdGroupType value, const std::wstring& defaultResult )
     {
-        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
     }
 
     namespace Doxygen
     {
-        HCC_EXPORT DoxCmdGroupType ParseDoxCmdGroupType( const WideString& str );
-        HCC_EXPORT DoxCmdGroupType ParseDoxCmdGroupType( const WideString& str, DoxCmdGroupType defaultResult );
-        HCC_EXPORT bool TryParseDoxCmdGroupType( const WideString& str, DoxCmdGroupType& value );
+        HCC_EXPORT DoxCmdGroupType ParseDoxCmdGroupType( const std::string& str );
+        HCC_EXPORT DoxCmdGroupType ParseDoxCmdGroupType( const std::string& str, DoxCmdGroupType defaultResult );
+        HCC_EXPORT bool TryParseDoxCmdGroupType( const std::string& str, DoxCmdGroupType& value );
 
-        inline DoxCmdGroupType ParseDoxCmdGroupType( const AnsiString& str )
+        inline DoxCmdGroupType ParseDoxCmdGroupType( const std::wstring& str )
         {
-            return ParseDoxCmdGroupType( ToWideString( str ) );
+            return ParseDoxCmdGroupType( to_string( str ) );
         }
-        inline DoxCmdGroupType ParseDoxCmdGroupType( const AnsiString& str, DoxCmdGroupType defaultResult )
+        inline DoxCmdGroupType ParseDoxCmdGroupType( const std::wstring& str, DoxCmdGroupType defaultResult )
         {
-            return ParseDoxCmdGroupType( ToWideString( str ), defaultResult );
+            return ParseDoxCmdGroupType( to_string( str ), defaultResult );
         }
-        inline bool TryParseDoxCmdGroupType( const AnsiString& str, DoxCmdGroupType& value )
+        inline bool TryParseDoxCmdGroupType( const std::wstring& str, DoxCmdGroupType& value )
         {
-            return TryParseDoxCmdGroupType( ToWideString( str ), value );
+            return TryParseDoxCmdGroupType( to_string( str ), value );
         }
     }
 
     template<typename StringT>
-        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
     inline bool TryParse( const StringT& str, Doxygen::DoxCmdGroupType& value )
     {
         return Doxygen::TryParseDoxCmdGroupType( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::DoxCmdGroupType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Doxygen::DoxCmdGroupType, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
     inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxCmdGroupType( str );
@@ -4356,11 +4642,63 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxCmdGroupType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxCmdGroupType( BasicString<CharT>( str ) );
+        return Doxygen::ParseDoxCmdGroupType( std::basic_string<CharT>( str ) );
     }
 
 
+    /////////
+    HCC_EXPORT std::string to_string( Doxygen::Structure::MemberType value );
+    HCC_EXPORT std::string to_string( Doxygen::Structure::MemberType value, const std::string& defaultResult );
 
+    inline std::wstring to_wstring( Doxygen::Structure::MemberType value )
+    {
+        return to_wstring( to_string( value ) );
+    }
+    inline std::wstring to_wstring( Doxygen::Structure::MemberType value, const std::wstring& defaultResult )
+    {
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
+    }
+
+    namespace Doxygen::Structure
+    {
+        HCC_EXPORT MemberType ParseMemberType( const std::string& str );
+        HCC_EXPORT MemberType ParseMemberType( const std::string& str, MemberType defaultResult );
+        HCC_EXPORT bool TryParseMemberType( const std::string& str, MemberType& value );
+
+        inline MemberType ParseMemberType( const std::wstring& str )
+        {
+            return ParseMemberType( to_string( str ) );
+        }
+        inline MemberType ParseMemberType( const std::wstring& str, MemberType defaultResult )
+        {
+            return ParseMemberType( to_string( str ), defaultResult );
+        }
+        inline bool TryParseMemberType( const std::wstring& str, MemberType& value )
+        {
+            return TryParseMemberType( to_string( str ), value );
+        }
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
+    inline bool TryParse( const StringT& str, Doxygen::Structure::MemberType& value )
+    {
+        return Doxygen::Structure::TryParseMemberType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Doxygen::Structure::MemberType, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
+    inline T Parse( const StringT& str )
+    {
+        return Doxygen::Structure::ParseMemberType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Doxygen::Structure::MemberType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Doxygen::Structure::ParseMemberType( std::basic_string<CharT>( str ) );
+    }
 
 
 }

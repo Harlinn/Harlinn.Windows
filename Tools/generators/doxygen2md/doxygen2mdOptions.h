@@ -27,15 +27,15 @@ namespace Doxygen2Md
 {
     class Doxygen2MdOptions
     {
-        bool help_;
+        bool help_{};
         std::string inputDirectory_;
         std::string outputDirectory_;
     public:
         Doxygen2MdOptions( ) = default;
 
         bool Help( ) const { return help_; }
-        const WideString InputDirectory( ) const { return ToWideString( inputDirectory_ ); }
-        const WideString OutputDirectory( ) const { return ToWideString( outputDirectory_ ); }
+        const std::wstring InputDirectory( ) const { return to_wstring( inputDirectory_ ); }
+        const std::wstring OutputDirectory( ) const { return to_wstring( outputDirectory_ ); }
 
 
         bool IsValid( ) const

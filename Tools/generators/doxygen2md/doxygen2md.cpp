@@ -14,323 +14,230 @@
    limitations under the License.
 */
 
-#include <HCCDoxygen.h>
-#include <HCCStringBuilder.h>
+#include "D2MStructure.h"
 
-#include "doxygen2mdOptions.h"
-
-
-using namespace Harlinn::Common::Core;
 using namespace Doxygen2Md;
 
-class DocMember
+
+
+void ProcessMembers( DocContext& context, DocContainer* owner, const std::vector<Doxygen::Structure::Member*>& members );
+
+
+void ProcessNamespace( DocContext& context, DocContainer* owner, Doxygen::Structure::Namespace* nspace )
 {
-public:
-    
-private:
-    Doxygen::Structure::Member* member_;
-public:
-    DocMember( Doxygen::Structure::Member* member )
-        : member_( member )
-    { }
-
-    Doxygen::Structure::Member* Member( ) const
-    {
-        return member_;
-    }
-
-};
-
-
-class DocContainer : public DocMember
-{
-public:
-    using Base = DocMember;
-
-    DocContainer( Doxygen::Structure::Container* container )
-        : Base( container )
-    { }
-
-};
-
-class DocTypeContainer : public DocContainer
-{
-public:
-    using Base = DocContainer;
-
-    DocTypeContainer( Doxygen::Structure::TypeContainer* typeContainer )
-        : Base( typeContainer )
-    { }
-
-};
-
-
-class DocNamespace : public DocTypeContainer
-{
-public:
-    using Base = DocTypeContainer;
-
-    DocNamespace( Doxygen::Structure::Namespace* nspace )
-        : Base( nspace )
-    { }
-};
-
-class DocStructOrClass : public DocTypeContainer
-{
-public:
-    using Base = DocTypeContainer;
-
-    DocStructOrClass( Doxygen::Structure::TypeContainer* typeContainer )
-        : Base( typeContainer )
-    { }
-};
-
-class DocStruct : public DocStructOrClass
-{
-public:
-    using Base = DocStructOrClass;
-
-    DocStruct( Doxygen::Structure::Struct* type )
-        : Base( type )
-    { }
-};
-
-class DocClass : public DocStructOrClass
-{
-public:
-    using Base = DocStructOrClass;
-
-    DocClass( Doxygen::Structure::Class* type )
-        : Base( type )
-    { }
-};
-
-class DocUnion : public DocTypeContainer
-{
-public:
-    using Base = DocTypeContainer;
-
-    DocUnion( Doxygen::Structure::Union* type )
-        : Base( type )
-    { }
-};
-
-
-
-
-class DocContext
-{
-
-};
-
-void ProcessMembers( DocContext& context, Doxygen::Structure::Member* owner, const std::vector<Doxygen::Structure::Member*>& members, size_t level );
-
-
-void ProcessNamespace( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Namespace* nspace, size_t level )
-{
-    PrintLn( L"Namespace: {} -> {}", nspace->Name( ), nspace->QualifiedName( ) );
-    
-
+    auto* newNamespace = context.AddNamespace( owner, nspace );
     const auto& members = nspace->Members( );
-    ProcessMembers( context, nspace, members, level + 1 );
+    ProcessMembers( context, newNamespace, members );
 }
 
-void ProcessStruct( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Struct* type, size_t level )
+void ProcessStruct( DocContext& context, DocContainer* owner, Doxygen::Structure::Struct* type )
 {
-    PrintLn( L"Struct: {} -> {}", type->Name( ), type->QualifiedName( ) );
+    auto* newStruct = context.AddStruct( owner, type );
     const auto& members = type->Members( );
-    ProcessMembers( context, type, members, level + 1 );
+    ProcessMembers( context, newStruct, members );
 }
 
-void ProcessClass( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Class* type, size_t level )
+void ProcessClass( DocContext& context, DocContainer* owner, Doxygen::Structure::Class* type )
 {
-    PrintLn( L"Class: {} -> {}", type->Name( ), type->QualifiedName( ) );
+    auto* newClass = context.AddClass( owner, type );
+    
     const auto& members = type->Members( );
-    ProcessMembers( context, type, members, level + 1 );
+    ProcessMembers( context, newClass, members );
 }
 
-void ProcessUnion( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Union* type, size_t level )
+void ProcessUnion( DocContext& context, DocContainer* owner, Doxygen::Structure::Union* type )
 {
-    PrintLn( L"Union: {} -> {}", type->Name( ), type->QualifiedName( ) );
+    auto* newUnion = context.AddUnion( owner, type );
     const auto& members = type->Members( );
-    ProcessMembers( context, type, members, level + 1 );
+    ProcessMembers( context, newUnion, members );
 }
 
-void ProcessInterface( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Interface* type, size_t level )
+void ProcessInterface( DocContext& context, DocContainer* owner, Doxygen::Structure::Interface* type )
 {
-    PrintLn( L"Interface: {} -> {}", type->Name( ), type->QualifiedName( ) );
+    auto* newInterface = context.AddInterface( owner, type );
     const auto& members = type->Members( );
-    ProcessMembers( context, type, members, level + 1 );
+    ProcessMembers( context, newInterface, members );
 }
 
-void ProcessModule( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Module* mod, size_t level )
+void ProcessModule( DocContext& context, DocContainer* owner, Doxygen::Structure::Module* mod )
 {
-    PrintLn( L"Module: {} -> {}", mod->Name( ), mod->QualifiedName( ) );
+    auto* newModule = context.AddModule( owner, mod );
     const auto& members = mod->Members( );
-    ProcessMembers( context, mod, members, level + 1 );
+    ProcessMembers( context, newModule, members );
 }
 
-void ProcessConcept( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Concept* cpt, size_t level )
+void ProcessConcept( DocContext& context, DocContainer* owner, Doxygen::Structure::Concept* cpt )
 {
-    PrintLn( L"Concept: {} -> {}", cpt->Name( ), cpt->QualifiedName( ) );
+    auto* newConcept = context.AddConcept( owner, cpt );
     const auto& members = cpt->Members( );
-    ProcessMembers( context, cpt, members, level + 1 );
+    ProcessMembers( context, newConcept, members );
 }
 
-void ProcessFunction( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Function* func, size_t level )
+void ProcessFunction( DocContext& context, DocContainer* owner, Doxygen::Structure::Function* func )
 {
-    PrintLn( L"Function: {} -> {}", func->Name( ), func->QualifiedName( ) );
+    auto* newFunction = context.AddFunction( owner, func );
+    const auto& members = func->Members( );
+    ProcessMembers( context, newFunction, members );
 }
 
-void ProcessEnum( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Enum* type, size_t level )
+void ProcessFunctionOverload( DocContext& context, DocContainer* owner, Doxygen::Structure::FunctionOverload* functionOverload )
 {
-    PrintLn( L"Enum: {} -> {}", type->Name( ), type->QualifiedName( ) );
+    auto* newFunctionOverload = context.AddFunctionOverload( owner, functionOverload );
+    
+}
+
+void ProcessEnum( DocContext& context, DocContainer* owner, Doxygen::Structure::Enum* type )
+{
+    auto* newEnum = context.AddEnum( owner, type );
     const auto& members = type->Members( );
-    ProcessMembers( context, type, members, level + 1 );
+    ProcessMembers( context, newEnum, members );
 }
 
-void ProcessDefine( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Define* def, size_t level )
+void ProcessDefine( DocContext& context, DocContainer* owner, Doxygen::Structure::Define* def )
 {
-    PrintLn( L"Define: {} -> {}", def->Name( ), def->QualifiedName( ) );
+    PrintLn( "Define: {} -> {}", def->Name( ), def->QualifiedName( ) );
 }
 
-void ProcessProperty( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Property* prop, size_t level )
+void ProcessProperty( DocContext& context, DocContainer* owner, Doxygen::Structure::Property* prop )
 {
-    PrintLn( L"Property: {} -> {}", prop->Name( ), prop->QualifiedName( ) );
+    PrintLn( "Property: {} -> {}", prop->Name( ), prop->QualifiedName( ) );
 }
 
-void ProcessEvent( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Event* evt, size_t level )
+void ProcessEvent( DocContext& context, DocContainer* owner, Doxygen::Structure::Event* evt )
 {
-    PrintLn( L"Event: {} -> {}", evt->Name( ), evt->QualifiedName( ) );
+    PrintLn( "Event: {} -> {}", evt->Name( ), evt->QualifiedName( ) );
 }
 
-void ProcessVariable( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Variable* var, size_t level )
+void ProcessVariable( DocContext& context, DocContainer* owner, Doxygen::Structure::Variable* var )
 {
-    PrintLn( L"Variable: {} -> {}", var->Name( ), var->QualifiedName( ) );
+    context.AddVariable( owner, var );
+    //const auto& members = var->Members( );
+    //ProcessMembers( context, newVariable, members );
 }
 
-void ProcessTypedef( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Typedef* type, size_t level )
+void ProcessTypedef( DocContext& context, DocContainer* owner, Doxygen::Structure::Typedef* type )
 {
-    PrintLn( L"Typedef: {} -> {}", type->Name( ), type->QualifiedName( ) );
+    context.AddTypedef( owner, type );
 }
 
-void ProcessSignal( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Signal* s, size_t level )
+void ProcessSignal( DocContext& context, DocContainer* owner, Doxygen::Structure::Signal* s )
 {
-    PrintLn( L"Signal: {} -> {}", s->Name( ), s->QualifiedName( ) );
+    PrintLn( "Signal: {} -> {}", s->Name( ), s->QualifiedName( ) );
 }
 
-void ProcessPrototype( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Prototype* p, size_t level )
+void ProcessPrototype( DocContext& context, DocContainer* owner, Doxygen::Structure::Prototype* p )
 {
-    PrintLn( L"Prototype: {} -> {}", p->Name( ), p->QualifiedName( ) );
+    PrintLn( "Prototype: {} -> {}", p->Name( ), p->QualifiedName( ) );
 }
 
-void ProcessFriend( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Friend* frnd, size_t level )
+void ProcessFriend( DocContext& context, DocContainer* owner, Doxygen::Structure::Friend* frnd )
 {
-    PrintLn( L"Friend: {} -> {}", frnd->Name( ), frnd->QualifiedName( ) );
+    PrintLn( "Friend: {} -> {}", frnd->Name( ), frnd->QualifiedName( ) );
 }
 
-void ProcessDCop( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::DCop* dcop, size_t level )
+void ProcessDCop( DocContext& context, DocContainer* owner, Doxygen::Structure::DCop* dcop )
 {
-    PrintLn( L"DCop: {} -> {}", dcop->Name( ), dcop->QualifiedName( ) );
+    PrintLn( "DCop: {} -> {}", dcop->Name( ), dcop->QualifiedName( ) );
 }
 
-void ProcessSlot( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Slot* slot, size_t level )
+void ProcessSlot( DocContext& context, DocContainer* owner, Doxygen::Structure::Slot* slot )
 {
-    PrintLn( L"Slot: {} -> {}", slot->Name( ), slot->QualifiedName( ) );
+    PrintLn( "Slot: {} -> {}", slot->Name( ), slot->QualifiedName( ) );
 }
 
-void ProcessInterfaceReference( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::InterfaceReference* ir, size_t level )
+void ProcessInterfaceReference( DocContext& context, DocContainer* owner, Doxygen::Structure::InterfaceReference* ir )
 {
-    PrintLn( L"InterfaceReference: {} -> {}", ir->Name( ), ir->QualifiedName( ) );
+    PrintLn( "InterfaceReference: {} -> {}", ir->Name( ), ir->QualifiedName( ) );
 }
 
-void ProcessService( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Service* service, size_t level )
+void ProcessService( DocContext& context, DocContainer* owner, Doxygen::Structure::Service* service )
 {
-    PrintLn( L"Service: {} -> {}", service->Name( ), service->QualifiedName( ) );
+    PrintLn( "Service: {} -> {}", service->Name( ), service->QualifiedName( ) );
 }
 
 
-void ProcessMember( DocContext& context, Doxygen::Structure::Member* owner, Doxygen::Structure::Member* member, size_t level )
+void ProcessMember( DocContext& context, DocContainer* owner, Doxygen::Structure::Member* member )
 {
+    using MemberType = Doxygen::Structure::MemberType;
     auto memberType = member->MemberType( );
-
-    
-    
 
     switch ( memberType )
     {
-        case Doxygen::Structure::MemberType::Namespace:
-            ProcessNamespace( context, owner, static_cast< Doxygen::Structure::Namespace* >( member ), level );
+        case MemberType::Namespace:
+            ProcessNamespace( context, owner, static_cast< Doxygen::Structure::Namespace* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Struct:
-            ProcessStruct( context, owner, static_cast< Doxygen::Structure::Struct* >( member ), level );
+        case MemberType::Struct:
+            ProcessStruct( context, owner, static_cast< Doxygen::Structure::Struct* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Class:
-            ProcessClass( context, owner, static_cast< Doxygen::Structure::Class* >( member ), level );
+        case MemberType::Class:
+            ProcessClass( context, owner, static_cast< Doxygen::Structure::Class* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Union:
-            ProcessUnion( context, owner, static_cast< Doxygen::Structure::Union* >( member ), level );
+        case MemberType::Union:
+            ProcessUnion( context, owner, static_cast< Doxygen::Structure::Union* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Interface:
-            ProcessInterface( context, owner, static_cast< Doxygen::Structure::Interface* >( member ), level );
+        case MemberType::Interface:
+            ProcessInterface( context, owner, static_cast< Doxygen::Structure::Interface* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Module:
-            ProcessModule( context, owner, static_cast< Doxygen::Structure::Module* >( member ), level );
+        case MemberType::Module:
+            ProcessModule( context, owner, static_cast< Doxygen::Structure::Module* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Concept:
-            ProcessConcept( context, owner, static_cast< Doxygen::Structure::Concept* >( member ), level );
+        case MemberType::Concept:
+            ProcessConcept( context, owner, static_cast< Doxygen::Structure::Concept* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Function:
-            ProcessFunction( context, owner, static_cast< Doxygen::Structure::Function* >( member ), level );
+        case MemberType::Function:
+            ProcessFunction( context, owner, static_cast< Doxygen::Structure::Function* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Enum:
-            ProcessEnum( context, owner, static_cast< Doxygen::Structure::Enum* >( member ), level );
+        case MemberType::FunctionOverload:
+            ProcessFunctionOverload( context, owner, static_cast< Doxygen::Structure::FunctionOverload* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Define:
-            ProcessDefine( context, owner, static_cast< Doxygen::Structure::Define* >( member ), level );
+        case MemberType::Enum:
+            ProcessEnum( context, owner, static_cast< Doxygen::Structure::Enum* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Property:
-            ProcessProperty( context, owner, static_cast< Doxygen::Structure::Property* >( member ), level );
+        case MemberType::Define:
+            ProcessDefine( context, owner, static_cast< Doxygen::Structure::Define* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Event:
-            ProcessEvent( context, owner, static_cast< Doxygen::Structure::Event* >( member ), level );
+        case MemberType::Property:
+            ProcessProperty( context, owner, static_cast< Doxygen::Structure::Property* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Variable:
-            ProcessVariable( context, owner, static_cast< Doxygen::Structure::Variable* >( member ), level );
+        case MemberType::Event:
+            ProcessEvent( context, owner, static_cast< Doxygen::Structure::Event* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Typedef:
-            ProcessTypedef( context, owner, static_cast< Doxygen::Structure::Typedef* >( member ), level );
+        case MemberType::Variable:
+            ProcessVariable( context, owner, static_cast< Doxygen::Structure::Variable* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Signal:
-            ProcessSignal( context, owner, static_cast< Doxygen::Structure::Signal* >( member ), level );
+        case MemberType::Typedef:
+            ProcessTypedef( context, owner, static_cast< Doxygen::Structure::Typedef* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Prototype:
-            ProcessPrototype( context, owner, static_cast< Doxygen::Structure::Prototype* >( member ), level );
+        case MemberType::Signal:
+            ProcessSignal( context, owner, static_cast< Doxygen::Structure::Signal* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Friend:
-            ProcessFriend( context, owner, static_cast< Doxygen::Structure::Friend* >( member ), level );
+        case MemberType::Prototype:
+            ProcessPrototype( context, owner, static_cast< Doxygen::Structure::Prototype* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::DCop:
-            ProcessDCop( context, owner, static_cast< Doxygen::Structure::DCop* >( member ), level );
+        case MemberType::Friend:
+            ProcessFriend( context, owner, static_cast< Doxygen::Structure::Friend* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Slot:
-            ProcessSlot( context, owner, static_cast< Doxygen::Structure::Slot* >( member ), level );
+        case MemberType::DCop:
+            ProcessDCop( context, owner, static_cast< Doxygen::Structure::DCop* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::InterfaceReference:
-            ProcessInterfaceReference( context, owner, static_cast< Doxygen::Structure::InterfaceReference* >( member ), level );
+        case MemberType::Slot:
+            ProcessSlot( context, owner, static_cast< Doxygen::Structure::Slot* >( member ) );
             break;
-        case Doxygen::Structure::MemberType::Service:
-            ProcessService( context, owner, static_cast< Doxygen::Structure::Service* >( member ), level );
+        case MemberType::InterfaceReference:
+            ProcessInterfaceReference( context, owner, static_cast< Doxygen::Structure::InterfaceReference* >( member ) );
+            break;
+        case MemberType::Service:
+            ProcessService( context, owner, static_cast< Doxygen::Structure::Service* >( member ) );
             break;
     }
 }
 
 
-void ProcessMembers( DocContext& context, Doxygen::Structure::Member* owner, const std::vector<Doxygen::Structure::Member*>& members, size_t level )
+void ProcessMembers( DocContext& context, DocContainer* owner, const std::vector<Doxygen::Structure::Member*>& members )
 {
     for ( auto member : members )
     {
-        ProcessMember( context, owner, member, level );
+        ProcessMember( context, owner, member );
     }
 }
 
@@ -352,14 +259,88 @@ int main(int argc, char* argv[] )
         const auto& allTypes = typeSystem->AllTypes( );
         auto allTypesSize = allTypes.size( );
 
+        DocContext context( options );
+
         auto globalNamespace = typeSystem->GlobalNamespace( );
+        auto globalDocNamespace = context.AddNamespace(nullptr, globalNamespace );
 
         const auto& globalNamespaceMembers = globalNamespace->Members( );
 
-        DocContext context;
-        ProcessMembers( context, globalNamespace, globalNamespaceMembers, 0 );
+        
+        ProcessMembers( context, globalDocNamespace, globalNamespaceMembers );
+
+        auto& allNamespacesByQualifiedName = typeSystem->AllNamespacesByQualifiedName( );
+        auto& allContextNamespaces = context.AllNamespacesByQualifiedName( );
+
+        PrintLn( "Namespaces:{}", allNamespacesByQualifiedName.size( ) );
+        PrintLn( "Namespaces:{}", allContextNamespaces.size( ) );
+
+        for ( const auto& entry : allNamespacesByQualifiedName )
+        {
+            auto member = entry.second;
+            const auto& memberQualifiedName = member->QualifiedName( );
+
+            auto it = allContextNamespaces.find( memberQualifiedName );
+            if ( it == allContextNamespaces.end( ) )
+            {
+                auto root = member->Root( );
+                const auto& rootId = root->Id( );
+                auto path = member->Path( );
+                auto owner = member->Owner( );
+                auto memberMemberType = to_string( member->MemberType( ) );
+                auto ownerMemberType = owner ? to_string( owner->MemberType( ) ) : std::string("<no owner>");
+                auto rootIsGlobalNamespace = globalNamespace == root;
+                PrintLn( "Missing {}, Path {} {} {} {} {}", memberQualifiedName, path, memberMemberType, ownerMemberType, rootId, rootIsGlobalNamespace );
+                //PrintLn( "Missing {}, {}", memberQualifiedName, rootIsGlobalNamespace );
+
+            }
+        }
+
+
+        
+        auto& allFunctionsByQualifiedName = typeSystem->AllFunctionsByQualifiedName( );
+        auto& allContextFunctionsByQualifiedName = context.AllFunctionsByQualifiedName( );
+
+        PrintLn( "Function names:{}", allFunctionsByQualifiedName.size( ) );
+        PrintLn( "Function names:{}", allContextFunctionsByQualifiedName.size( ) );
+        /*
+        for ( const auto& entry : allFunctions )
+        {
+            auto function = entry.second;
+            const auto& functionQualifiedName = function->QualifiedName( );
+            
+            auto it = allContextFunctions.find( functionQualifiedName );
+            if ( it == allContextFunctions.end( ) )
+            {
+                auto root = function->Root( );
+                const auto& rootId = root->Id( );
+                auto path = function->Path( );
+                auto owner = function->Owner( );
+                auto functionMemberType = to_string( function->MemberType( ) );
+                auto ownerMemberType = to_string( owner->MemberType( ) );
+                auto rootIsGlobalNamespace = globalNamespace == root;
+                //PrintLn( "Missing {}, Path {} {} {} {} {}", functionQualifiedName, path, functionMemberType, ownerMemberType, rootId, rootIsGlobalNamespace );
+                PrintLn( "Missing {}, {}", functionQualifiedName, rootIsGlobalNamespace );
+                
+            }
+        }
+        */
+
+        size_t functionImplementations = 0;
+        for ( const auto& entry : allFunctionsByQualifiedName )
+        {
+            auto* funtion = entry.second;
+            const auto& overloads = funtion->Members( );
+            functionImplementations += overloads.size( );
+        }   
+        PrintLn( "Functions implemented:{}", functionImplementations );
+        PrintLn( "Functions implemented:{}", context.AllFunctionOverloadsById( ).size( ) );
+        
 
         auto documentCount = documentCollection.size( );
+
+
+
     }
 
 

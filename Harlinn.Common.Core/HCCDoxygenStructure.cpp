@@ -21,11 +21,11 @@ namespace Harlinn::Common::Core::Doxygen::Structure
 {
     namespace
     {
-        size_t IndexOfUnqualifiedName( const WideString& qualifiedName )
+        size_t IndexOfUnqualifiedName( const std::string& qualifiedName )
         {
             const auto* qualifiedNamePtr = qualifiedName.c_str( );
             const auto* ptr = qualifiedNamePtr;
-            auto qualifiedNameLength = qualifiedName.Length( );
+            auto qualifiedNameLength = qualifiedName.length( );
             const auto* qualifiedNameEndPtr = qualifiedNamePtr + qualifiedNameLength;
             const auto* nameStartPtr = qualifiedNamePtr;
             while ( ptr < qualifiedNameEndPtr )
@@ -52,43 +52,43 @@ namespace Harlinn::Common::Core::Doxygen::Structure
             return nameStartPtr - qualifiedNamePtr;
         }
 
-        WideString GetNameOf( const WideString& compoundName, DoxLanguage language )
+        std::string GetNameOf( const std::string& compoundName, DoxLanguage language )
         {
             auto index = IndexOfUnqualifiedName( compoundName );
             if ( index )
             {
-                return compoundName.SubString( index );
+                return compoundName.substr( index );
             }
             return compoundName;
         }
 
-        WideString GetQualifiedNameOfOwner( const WideString& compoundName, DoxLanguage language )
+        std::string GetQualifiedNameOfOwner( const std::string& compoundName, DoxLanguage language )
         {
             auto index = IndexOfUnqualifiedName( compoundName );
             if ( index )
             {
                 assert( index >= 2 );
-                return compoundName.SubString( 0, index - 2 );
+                return compoundName.substr( 0, index - 2 );
             }
             return {};
         }
 
 
-        WideString GetNameOf( const Doxygen::CompoundDefTypePtr& compoundDef )
+        std::string GetNameOf( const Doxygen::CompoundDefTypePtr& compoundDef )
         {
             auto compoundName = compoundDef->CompoundName( );
             auto language = compoundDef->Language( );
             return GetNameOf( compoundName, language );
         }
 
-        WideString GetQualifiedNameOfOwner( const Doxygen::CompoundDefTypePtr& compoundDef )
+        std::string GetQualifiedNameOfOwner( const Doxygen::CompoundDefTypePtr& compoundDef )
         {
             auto compoundName = compoundDef->CompoundName( );
             auto language = compoundDef->Language( );
             return GetQualifiedNameOfOwner( compoundName, language );
         }
 
-        WideString GetQualifiedNameOfOwner( const Doxygen::CompoundDefTypePtr& compoundDef, const Doxygen::MemberDefTypePtr& memberDef )
+        std::string GetQualifiedNameOfOwner( const Doxygen::CompoundDefTypePtr& compoundDef, const Doxygen::MemberDefTypePtr& memberDef )
         {
             auto qualifiedName = memberDef->QualifiedName( );
             auto language = compoundDef->Language( );
@@ -127,7 +127,7 @@ namespace Harlinn::Common::Core::Doxygen::Structure
             auto nspaceQualifiedName = nspace->QualifiedName( );
             const auto& compoundDef = nspace->CompoundDef( );
             auto ownerQualifiedName = GetQualifiedNameOfOwner( compoundDef );
-            if ( ownerQualifiedName )
+            if ( ownerQualifiedName.length() )
             {
                 auto ownerNamespace = FindNamespaceByQualifiedName( ownerQualifiedName );
                 if ( ownerNamespace != nullptr )
@@ -161,7 +161,7 @@ namespace Harlinn::Common::Core::Doxygen::Structure
                 }
                 
                 auto ownerQualifiedName = GetQualifiedNameOfOwner( compoundDef );
-                if ( ownerQualifiedName )
+                if ( ownerQualifiedName.length( ) )
                 {
                     auto ownerNamespace = FindNamespaceByQualifiedName( ownerQualifiedName );
                     if ( ownerNamespace != nullptr )
@@ -185,7 +185,41 @@ namespace Harlinn::Common::Core::Doxygen::Structure
                     type->SetOwner( global_ );
                 }
             }
+
+            switch ( memberType )
+            {
+                case MemberType::Struct:
+                {
+                    auto strct = static_cast< Struct* >( type );
+                    strct->Process( this, strct );
+                }
+                break;
+                case MemberType::Class:
+                {
+                    auto clss = static_cast< Class* >( type );
+                    clss->Process( this, clss );
+                }
+                break;
+            }
         }
+
+        for ( const auto& entry : allFunctionsByQualifiedName_ )
+        {
+            Function* function = entry.second;
+            auto owner = function->Owner( );
+            if ( owner == nullptr )
+            {
+                global_->Add( function );
+                function->SetOwner( global_ );
+            }
+        }
+
+
+        for ( const auto& entry : allNamespaces_ )
+        {
+            entry.second->Process( );
+        }
+
 
     }
 
@@ -205,107 +239,150 @@ namespace Harlinn::Common::Core::Doxygen::Structure
     Namespace* TypeSystem::AddNamespace( const Doxygen::CompoundDefTypePtr& compoundDef )
     {
         auto id = compoundDef->Id( );
-        auto qualifiedName = compoundDef->CompoundName( );
-        auto name = GetNameOf( compoundDef );
-        std::unique_ptr<Namespace> nspace( new Namespace( this ) );
-        auto* result = nspace.get( );
-        all_.emplace_back( std::move( nspace ) );
-        allNamespaces_.emplace( id, result );
-        allNamespacesByQualifiedName_.emplace( qualifiedName, result );
-        result->SetName( name );
-        result->SetQualifiedName( qualifiedName );
-        result->Assign( compoundDef );
-        return result;
+        
+        auto it = allNamespaces_.find( id );
+        if ( it != allNamespaces_.end( ) )
+        {
+            return it->second;
+        }
+        else
+        {
+            auto name = GetNameOf( compoundDef );
+            std::unique_ptr<Namespace> nspace( new Namespace( this ) );
+            auto* result = nspace.get( );
+            all_.emplace_back( std::move( nspace ) );
+            allNamespaces_.emplace( id, result );
+            auto qualifiedName = compoundDef->CompoundName( );
+            allNamespacesByQualifiedName_.emplace( qualifiedName, result );
+            result->Assign( compoundDef );
+            return result;
+        }
     }
     Struct* TypeSystem::AddStruct( const Doxygen::CompoundDefTypePtr& compoundDef )
     {
         auto id = compoundDef->Id( );
-        auto qualifiedName = compoundDef->CompoundName( );
-        auto name = GetNameOf( compoundDef );
-        std::unique_ptr<Struct> type( new Struct( this ) );
-        auto* result = type.get( );
-        all_.emplace_back( std::move( type ) );
-        allTypes_.emplace( id, result );
-        allTypesByQualifiedName_.emplace( qualifiedName, result );
-        result->SetName( name );
-        result->SetQualifiedName( qualifiedName );
-        result->Assign( compoundDef );
-        return result;
+        auto it = allTypes_.find( id );
+        if ( it != allTypes_.end( ) )
+        {
+            return static_cast< Struct* >( it->second );
+        }
+        else
+        {
+            auto qualifiedName = compoundDef->CompoundName( );
+            auto name = GetNameOf( compoundDef );
+            std::unique_ptr<Struct> type( new Struct( this ) );
+            auto* result = type.get( );
+            all_.emplace_back( std::move( type ) );
+            allTypes_.emplace( id, result );
+            allTypesByQualifiedName_.emplace( qualifiedName, result );
+            result->Assign( compoundDef );
+            return result;
+        }
     }
     Class* TypeSystem::AddClass( const Doxygen::CompoundDefTypePtr& compoundDef )
     {
         auto id = compoundDef->Id( );
-        auto qualifiedName = compoundDef->CompoundName( );
-        auto name = GetNameOf( compoundDef );
-        std::unique_ptr<Class> type( new Class( this ) );
-        auto* result = type.get( );
-        all_.emplace_back( std::move( type ) );
-        allTypes_.emplace( id, result );
-        allTypesByQualifiedName_.emplace( qualifiedName, result );
-        result->SetName( name );
-        result->SetQualifiedName( qualifiedName );
-        result->Assign( compoundDef );
-        return result;
+        auto it = allTypes_.find( id );
+        if ( it != allTypes_.end( ) )
+        {
+            return static_cast< Class* >( it->second );
+        }
+        else
+        {
+            auto qualifiedName = compoundDef->CompoundName( );
+            auto name = GetNameOf( compoundDef );
+            std::unique_ptr<Class> type( new Class( this ) );
+            auto* result = type.get( );
+            all_.emplace_back( std::move( type ) );
+            allTypes_.emplace( id, result );
+            allTypesByQualifiedName_.emplace( qualifiedName, result );
+            result->Assign( compoundDef );
+            return result;
+        }
     }
     Union* TypeSystem::AddUnion( const Doxygen::CompoundDefTypePtr& compoundDef )
     {
         auto id = compoundDef->Id( );
-        auto qualifiedName = compoundDef->CompoundName( );
-        auto name = GetNameOf( compoundDef );
-        std::unique_ptr<Union> type( new Union( this ) );
-        auto* result = type.get( );
-        all_.emplace_back( std::move( type ) );
-        allTypes_.emplace( id, result );
-        allTypesByQualifiedName_.emplace( qualifiedName, result );
-        result->SetName( name );
-        result->SetQualifiedName( qualifiedName );
-        result->Assign( compoundDef );
-        return result;
+        auto it = allTypes_.find( id );
+        if ( it != allTypes_.end( ) )
+        {
+            return static_cast< Union* >( it->second );
+        }
+        else
+        {
+            auto qualifiedName = compoundDef->CompoundName( );
+            auto name = GetNameOf( compoundDef );
+            std::unique_ptr<Union> type( new Union( this ) );
+            auto* result = type.get( );
+            all_.emplace_back( std::move( type ) );
+            allTypes_.emplace( id, result );
+            allTypesByQualifiedName_.emplace( qualifiedName, result );
+            result->Assign( compoundDef );
+            return result;
+        }
     }
     Interface* TypeSystem::AddInterface( const Doxygen::CompoundDefTypePtr& compoundDef )
     {
         auto id = compoundDef->Id( );
-        auto qualifiedName = compoundDef->CompoundName( );
-        auto name = GetNameOf( compoundDef );
-        std::unique_ptr<Interface> type( new Interface( this ) );
-        auto* result = type.get( );
-        all_.emplace_back( std::move( type ) );
-        allTypes_.emplace( id, result );
-        allTypesByQualifiedName_.emplace( qualifiedName, result );
-        result->SetName( name );
-        result->SetQualifiedName( qualifiedName );
-        result->Assign( compoundDef );
-        return result;
+        auto it = allTypes_.find( id );
+        if ( it != allTypes_.end( ) )
+        {
+            return static_cast< Interface* >( it->second );
+        }
+        else
+        {
+            auto qualifiedName = compoundDef->CompoundName( );
+            auto name = GetNameOf( compoundDef );
+            std::unique_ptr<Interface> type( new Interface( this ) );
+            auto* result = type.get( );
+            all_.emplace_back( std::move( type ) );
+            allTypes_.emplace( id, result );
+            allTypesByQualifiedName_.emplace( qualifiedName, result );
+            result->Assign( compoundDef );
+            return result;
+        }
     }
     Concept* TypeSystem::AddConcept( const Doxygen::CompoundDefTypePtr& compoundDef )
     {
         auto id = compoundDef->Id( );
-        auto qualifiedName = compoundDef->CompoundName( );
-        auto name = GetNameOf( compoundDef );
-        std::unique_ptr<Concept> type( new Concept( this ) );
-        auto* result = type.get( );
-        all_.emplace_back( std::move( type ) );
-        allTypes_.emplace( id, result );
-        allTypesByQualifiedName_.emplace( qualifiedName, result );
-        result->SetName( name );
-        result->SetQualifiedName( qualifiedName );
-        result->Assign( compoundDef );
-        return result;
+        auto it = allTypes_.find( id );
+        if ( it != allTypes_.end( ) )
+        {
+            return static_cast< Concept* >( it->second );
+        }
+        else
+        {
+            auto qualifiedName = compoundDef->CompoundName( );
+            auto name = GetNameOf( compoundDef );
+            std::unique_ptr<Concept> type( new Concept( this ) );
+            auto* result = type.get( );
+            all_.emplace_back( std::move( type ) );
+            allTypes_.emplace( id, result );
+            allTypesByQualifiedName_.emplace( qualifiedName, result );
+            result->Assign( compoundDef );
+            return result;
+        }
     }
     Module* TypeSystem::AddModule( const Doxygen::CompoundDefTypePtr& compoundDef )
     {
         auto id = compoundDef->Id( );
-        auto qualifiedName = compoundDef->CompoundName( );
-        auto name = GetNameOf( compoundDef );
-        std::unique_ptr<Module> type( new Module( this ) );
-        auto* result = type.get( );
-        all_.emplace_back( std::move( type ) );
-        allTypes_.emplace( id, result );
-        allTypesByQualifiedName_.emplace( qualifiedName, result );
-        result->SetName( name );
-        result->SetQualifiedName( qualifiedName );
-        result->Assign( compoundDef );
-        return result;
+        auto it = allTypes_.find( id );
+        if ( it != allTypes_.end( ) )
+        {
+            return static_cast< Module* >( it->second );
+        }
+        else
+        {
+            auto qualifiedName = compoundDef->CompoundName( );
+            auto name = GetNameOf( compoundDef );
+            std::unique_ptr<Module> type( new Module( this ) );
+            auto* result = type.get( );
+            all_.emplace_back( std::move( type ) );
+            allTypes_.emplace( id, result );
+            allTypesByQualifiedName_.emplace( qualifiedName, result );
+            result->Assign( compoundDef );
+            return result;
+        }
     }
 
     Member* TypeSystem::AddCompoundDef( const Doxygen::CompoundDefTypePtr& compoundDef )
@@ -380,10 +457,45 @@ namespace Harlinn::Common::Core::Doxygen::Structure
 
     Function* TypeSystem::AddFunction( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
     {
-        auto qualifiedName = memberDef->QualifiedName( );
-        auto name = memberDef->Name( );
-        auto result = AddMemberDef<Function>( qualifiedName, name, compoundDef, container, sectionDef, memberDef );
-        return result;
+        auto id = memberDef->Id( );
+        auto it = allFunctionOverloadsById_.find( id );
+        if ( it != allFunctionOverloadsById_.end( ) )
+        {
+            return static_cast< Function* >( it->second->Owner( ) );
+        }
+        else
+        {
+            auto qualifiedName = memberDef->QualifiedName( );
+            auto name = memberDef->Name( );
+
+            auto* funtion = FindFunctionByQualifiedName( qualifiedName );
+            if ( !funtion )
+            {
+                auto f = std::make_unique<Function>( this );
+                funtion = f.get( );
+                all_.emplace_back( std::move( f ) );
+                funtion->SetQualifiedName( qualifiedName );
+                funtion->SetName( name );
+                funtion->SetOwner( container );
+                container->Add( funtion );
+                allFunctionsByQualifiedName_.emplace( qualifiedName, funtion );
+            }
+            auto& argsString = memberDef->ArgsString( );
+            auto* fo = static_cast< FunctionOverload* >( funtion->FindMemberByName( argsString ) );
+            if ( fo == nullptr )
+            {
+                auto functionOverload = std::make_unique<FunctionOverload>( this );
+                functionOverload->Assign( compoundDef, sectionDef, memberDef );
+                fo = functionOverload.get( );
+                fo->SetQualifiedName( qualifiedName );
+                fo->SetName( name );
+                fo->SetId( id );
+                all_.emplace_back( std::move( functionOverload ) );
+                funtion->Add( fo, argsString );
+                allFunctionOverloadsById_.emplace( id, fo );
+            }
+            return funtion;
+        }
     }
 
     Enum* TypeSystem::AddEnum( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
@@ -576,5 +688,171 @@ namespace Harlinn::Common::Core::Doxygen::Structure
         }
         return result;
     }
+
+    std::string Member::NameOf( const Doxygen::CompoundDefTypePtr& compoundDef )
+    {
+        return GetNameOf( compoundDef );
+    }
+
+
+    void Namespace::Process( )
+    {
+        const auto& members = Members( );
+        for ( auto member : members )
+        {
+            auto memberType = member->MemberType( );
+            switch ( memberType )
+            {
+                case MemberType::Struct:
+                {
+                    auto strct = static_cast< Structure::Struct* >( member );
+                    types_.push_back( strct );
+                }
+                break;
+                case MemberType::Class:
+                {
+                    auto clss = static_cast< Structure::Class* >( member );
+                    types_.push_back( clss );
+                }
+                break;
+                case MemberType::Typedef:
+                {
+                    auto typeDef = static_cast< Structure::Typedef* >( member );
+                    types_.push_back( typeDef );
+                }
+                break;
+                case MemberType::Union:
+                {
+                    auto u = static_cast< Structure::Union* >( member );
+                    types_.push_back( u );
+                }
+                break;
+                case MemberType::Interface:
+                {
+                    auto i = static_cast< Structure::Interface* >( member );
+                    types_.push_back( i );
+                }
+                break;
+                case MemberType::Enum:
+                {
+                    auto e = static_cast< Structure::Enum* >( member );
+                    types_.push_back( e );
+                }
+                break;
+                case MemberType::Function:
+                {
+                    auto f = static_cast< Structure::Function* >( member );
+                    functions_.push_back( f );
+                    const auto& overloads = f->Members( );
+                    for ( auto o : overloads )
+                    {
+                        auto overload = static_cast< Structure::FunctionOverload* >( o );
+                        functionOverloads_.push_back( overload );
+                    }
+                }
+                break;
+                case MemberType::Variable:
+                {
+                    auto v = static_cast< Structure::Variable* >( member );
+                    variables_.push_back( v );
+                }
+                break;
+            }
+        }
+    }
+
+    void ClassInfo::Process( Structure::TypeSystem* typeSystem, Structure::TypeContainer* type )
+    {
+        const auto& compoundDef = type->CompoundDef( );
+        const auto& baseCompoundRefs = compoundDef->BaseCompoundRef( );
+        for ( auto& baseCompoundRef : baseCompoundRefs )
+        {
+            auto baseType = static_cast< Structure::TypeContainer* >( typeSystem->FindTypeById( baseCompoundRef->RefId( ) ) );
+            if ( baseType )
+            {
+                Structure::InheritanceInfo inheritanceInfo( baseType, baseCompoundRef->Prot( ), baseCompoundRef->Virt( ) == DoxVirtualKind::Virtual );
+                inheritance_.push_back( inheritanceInfo );
+            }
+        }
+
+        const auto& members = type->Members( );
+        for ( auto member : members )
+        {
+            auto memberType = member->MemberType( );
+            switch ( memberType )
+            {
+                case MemberType::Struct:
+                {
+                    auto strct = static_cast< Structure::Struct* >( member );
+                    nestedTypes_.push_back( strct );
+                }
+                break;
+                case MemberType::Class:
+                {
+                    auto clss = static_cast< Structure::Class* >( member );
+                    nestedTypes_.push_back( clss );
+                }
+                break;
+                case MemberType::Typedef:
+                {
+                    auto typeDef = static_cast< Structure::Typedef* >( member );
+                    nestedTypes_.push_back( typeDef );
+                }
+                break;
+                case MemberType::Union:
+                {
+                    auto u = static_cast< Structure::Union* >( member );
+                    nestedTypes_.push_back( u );
+                }
+                break;
+                case MemberType::Interface:
+                {
+                    auto i = static_cast< Structure::Interface* >( member );
+                    nestedTypes_.push_back( i );
+                }
+                break;
+                case MemberType::Enum:
+                {
+                    auto e = static_cast< Structure::Enum* >( member );
+                    nestedTypes_.push_back( e );
+                }
+                break;
+                case MemberType::Function:
+                {
+                    auto f = static_cast< Structure::Function* >( member );
+                    functions_.push_back( f );
+                    const auto& overloads = f->Members( );
+                    for ( auto o : overloads )
+                    {
+                        auto overload = static_cast< Structure::FunctionOverload* >( o );
+                        if ( overload->Static( ) )
+                        {
+                            staticFunctionOverloads_.push_back( overload );
+                        }
+                        else
+                        {
+                            functionOverloads_.push_back( overload );
+                        }
+                    }
+                }
+                break;
+                case MemberType::Variable:
+                {
+                    auto v = static_cast< Structure::Variable* >( member );
+                    if ( v->Static( ) )
+                    {
+                        staticVariables_.push_back( v );
+                    }
+                    else
+                    {
+                        variables_.push_back( v );
+                    }
+                }
+                break;
+            }
+        }
+
+    }
+ 
 
 }

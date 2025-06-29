@@ -21,6 +21,18 @@
 
 namespace Harlinn::Common::Core::Doxygen
 {
+    inline std::string DecodeHtml( std::string_view text )
+    {
+        auto ws = ToWideString( text );
+        return to_string( Html::Decode( ws ) );
+    }
+    inline std::string DecodeHtml( const std::string& text )
+    {
+        auto ws = ToWideString( text );
+        return to_string( Html::Decode( ws ) );
+    }
+
+
     using namespace std::literals::string_view_literals;
     using XmlNodeType = RapidXml::NodeType;
 
@@ -29,7 +41,7 @@ namespace Harlinn::Common::Core::Doxygen
         if ( xmlNode.NodeType( ) == XmlNodeType::node_element )
         {
             DoxCmdGroupType doxCmdGroupType{};
-            WideString nodeName = ToWideString( xmlNode.Name( ) );
+            std::string nodeName = to_string( xmlNode.Name( ) );
             if ( TryParse( nodeName, doxCmdGroupType ) )
             {
                 result.Type = doxCmdGroupType;
@@ -315,7 +327,7 @@ namespace Harlinn::Common::Core::Doxygen
                 auto text = Trim( xmlNode.ToString( ) );
                 if ( text.size( ) )
                 {
-                    auto decoded = Html::Decode( text );
+                    auto decoded = DecodeHtml( text );
                     result.Value = std::make_shared<TextType>( decoded );
                     return true;
                 }
@@ -332,30 +344,26 @@ namespace Harlinn::Common::Core::Doxygen
     TextType::TextType( const XmlNode& xmlNode )
     {
         auto value = xmlNode.Value( );
-        WideString text;
-        ToWideString( value.data( ), value.length( ), text );
-        text_ = Html::Decode( text );
+        text_ = DecodeHtml( value );
     }
 
     TitleType::TitleType( const XmlNode& xmlNode )
     {
         auto value = xmlNode.Value( );
-        WideString text;
-        ToWideString( value.data( ), value.length( ), text );
-        text_ = Html::Decode( text );
+        text_ = DecodeHtml( value );
     }
 
     DocEmojiType::DocEmojiType( const XmlNode& xmlNode )
     {
-        name_ = xmlNode.Read<WideString>( "name" );
-        unicode_ = xmlNode.Read<WideString>( "unicode" );
+        name_ = xmlNode.Read<std::string>( "name" );
+        unicode_ = xmlNode.Read<std::string>( "unicode" );
     }
 
     TableOfContentsKindType::TableOfContentsKindType( const XmlNode& xmlNode )
     {
         /*
-        name_ = xmlNode.Read<WideString>( L"name" );
-        reference_ = xmlNode.Read<WideString>( L"reference" );
+        name_ = xmlNode.Read<std::string>( L"name" );
+        reference_ = xmlNode.Read<std::string>( L"reference" );
         auto childNodes = xmlNode.ChildNodes( );
         for ( auto& childNode : childNodes )
         {
@@ -495,9 +503,9 @@ namespace Harlinn::Common::Core::Doxygen
 
     DocRefTextType::DocRefTextType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         kindRef_ = xmlNode.Read<DoxRefKind>( "kindref" );
-        external_ = xmlNode.Read<WideString>( "external" );
+        external_ = xmlNode.Read<std::string>( "external" );
         auto childNode = xmlNode.FirstNode( );
         if ( childNode )
         {
@@ -609,25 +617,25 @@ namespace Harlinn::Common::Core::Doxygen
 
     DocIndexEntryType::DocIndexEntryType( const XmlNode& xmlNode )
     {
-        primary_ = Html::Decode( xmlNode.Child<WideString>( "primaryie" ) );
-        secondary_ = Html::Decode( xmlNode.Child<WideString>( "secondaryie" ) );
+        primary_ = DecodeHtml( xmlNode.Child<std::string>( "primaryie" ) );
+        secondary_ = DecodeHtml( xmlNode.Child<std::string>( "secondaryie" ) );
     }
 
     DocFormulaType::DocFormulaType( const XmlNode& xmlNode )
     {
-        id_ = xmlNode.Read<WideString>( "id" );
-        content_ = Html::Decode( Trim( xmlNode.ToString<WideString>( ) ) );
+        id_ = xmlNode.Read<std::string>( "id" );
+        content_ = DecodeHtml( Trim( xmlNode.ToString<std::string>( ) ) );
     }
 
     DocAnchorType::DocAnchorType( const XmlNode& xmlNode )
     {
-        id_ = xmlNode.Read<WideString>( "id" );
-        content_ = Html::Decode( Trim(xmlNode.ToString<WideString>( )) );
+        id_ = xmlNode.Read<std::string>( "id" );
+        content_ = DecodeHtml( Trim(xmlNode.ToString<std::string>( )) );
     }
 
     DocURLLink::DocURLLink( const XmlNode& xmlNode )
     {
-        url_ = xmlNode.Read<WideString>( "url" );
+        url_ = xmlNode.Read<std::string>( "url" );
         auto childNode = xmlNode.FirstNode( );
         if ( childNode )
         {
@@ -730,7 +738,7 @@ namespace Harlinn::Common::Core::Doxygen
         template<Doxygen::DoxType doxType>
         DocInternalSectionBaseType<doxType>::DocInternalSectionBaseType( const XmlNode& xmlNode )
         {
-            WideString id_ = xmlNode.Read<WideString>( "id" );
+            std::string id_ = xmlNode.Read<std::string>( "id" );
 
             auto childNode = xmlNode.FirstNode( );
             if ( childNode )
@@ -743,7 +751,7 @@ namespace Harlinn::Common::Core::Doxygen
                         auto text = Trim( childNode.ToString( ) );
                         if ( text.size( ) )
                         {
-                            auto decoded = Html::Decode( text );
+                            auto decoded = DecodeHtml( text );
                             auto textType = std::make_shared<TextType>( decoded );
                             emplace_back( std::move( textType ) );
                         }
@@ -767,7 +775,7 @@ namespace Harlinn::Common::Core::Doxygen
         template<Doxygen::DoxType doxType, typename SubSectT  >
         DocInternalSectionType<doxType, SubSectT>::DocInternalSectionType( const XmlNode& xmlNode, std::string_view subSectionElementName )
         {
-            WideString id_ = xmlNode.Read<WideString>( "id" );
+            std::string id_ = xmlNode.Read<std::string>( "id" );
 
             auto childNode = xmlNode.FirstNode( );
             if ( childNode )
@@ -780,7 +788,7 @@ namespace Harlinn::Common::Core::Doxygen
                         auto text = Trim( childNode.ToString( ) );
                         if ( text.size( ) )
                         {
-                            auto decoded = Html::Decode( text );
+                            auto decoded = DecodeHtml( text );
                             auto textType = std::make_shared<TextType>( decoded );
                             emplace_back( std::move( textType ) );
                         }
@@ -850,7 +858,7 @@ namespace Harlinn::Common::Core::Doxygen
         template<Doxygen::DoxType doxType, typename InternalT>
         DocSectionBaseType<doxType, InternalT>::DocSectionBaseType( const XmlNode& xmlNode )
         {
-            WideString id_ = xmlNode.Read<WideString>( "id" );
+            std::string id_ = xmlNode.Read<std::string>( "id" );
 
             auto childNode = xmlNode.FirstNode( );
             if ( childNode )
@@ -863,7 +871,7 @@ namespace Harlinn::Common::Core::Doxygen
                         auto text = Trim( childNode.ToString( ) );
                         if ( text.size( ) )
                         {
-                            auto decoded = Html::Decode( text );
+                            auto decoded = DecodeHtml( text );
                             auto textType = std::make_shared<TextType>( decoded );
                             emplace_back( std::move( textType ) );
                         }
@@ -893,7 +901,7 @@ namespace Harlinn::Common::Core::Doxygen
         template<Doxygen::DoxType doxType, typename InternalT, typename SubSectT  >
         DocSectionType<doxType, InternalT, SubSectT>::DocSectionType( const XmlNode& xmlNode, std::string_view subSectionElementName )
         {
-            WideString id_ = xmlNode.Read<WideString>( "id" );
+            std::string id_ = xmlNode.Read<std::string>( "id" );
 
             auto childNode = xmlNode.FirstNode( );
             if ( childNode )
@@ -906,7 +914,7 @@ namespace Harlinn::Common::Core::Doxygen
                         auto text = Trim( childNode.ToString( ) );
                         if ( text.size( ) )
                         {
-                            auto decoded = Html::Decode( text );
+                            auto decoded = DecodeHtml( text );
                             auto textType = std::make_shared<TextType>( decoded );
                             emplace_back( std::move( textType ) );
                         }
@@ -974,21 +982,21 @@ namespace Harlinn::Common::Core::Doxygen
 
     LocationType::LocationType( const XmlNode& xmlNode )
     {
-        file_ = xmlNode.Read<WideString>( "file" );
+        file_ = xmlNode.Read<std::string>( "file" );
         line_ = xmlNode.Read<Int32>( "line" );
         column_ = xmlNode.Read<Int32>( "column" );
-        declFile_ = xmlNode.Read<WideString>( "declfile" );
+        declFile_ = xmlNode.Read<std::string>( "declfile" );
         declLine_ = xmlNode.Read<Int32>( "declline" );
         declColumn_ = xmlNode.Read<Int32>( "declcolumn" );
-        bodyFile_ = xmlNode.Read<WideString>( "bodyfile" );
+        bodyFile_ = xmlNode.Read<std::string>( "bodyfile" );
         bodyStart_ = xmlNode.Read<Int32>( "bodystart" );
         bodyEnd_ = xmlNode.Read<Int32>( "bodyend" );
     }
 
     ReferenceType::ReferenceType( const XmlNode& xmlNode )
     {
-        WideString refId_ = xmlNode.Read<WideString>( "refid" );
-        WideString compoundRef_ = xmlNode.Read<WideString>( "compoundref" );
+        std::string refId_ = xmlNode.Read<std::string>( "refid" );
+        std::string compoundRef_ = xmlNode.Read<std::string>( "compoundref" );
         Int32 startLine_ = xmlNode.Read<Int32>( "startline" );
         Int32 endline_ = xmlNode.Read<Int32>( "endline" );
         text_ = Trim( xmlNode.ToString( ) );
@@ -1015,7 +1023,7 @@ namespace Harlinn::Common::Core::Doxygen
                     auto text = Trim( childNode.ToString( ) );
                     if ( text.size( ) )
                     {
-                        auto decoded = Html::Decode( text );
+                        auto decoded = DecodeHtml( text );
                         auto textType = std::make_shared<TextType>( decoded );
                         emplace_back( std::move( textType ) );
                     }
@@ -1039,7 +1047,7 @@ namespace Harlinn::Common::Core::Doxygen
     CodeLineType::CodeLineType( const XmlNode& xmlNode )
     {
         lineno_ = xmlNode.Read<Int32>( "lineno" );
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         refKind_ = xmlNode.Read<DoxRefKind>( "refkind" );
         external_ = xmlNode.Read<bool>( "external" );
         highlight_ = xmlNode.Children<HighlightType>( "highlight" );
@@ -1047,27 +1055,27 @@ namespace Harlinn::Common::Core::Doxygen
 
     ListingType::ListingType( const XmlNode& xmlNode )
     {
-        fileName_ = xmlNode.Read<WideString>( "refid" );
+        fileName_ = xmlNode.Read<std::string>( "refid" );
         static_cast< std::vector<CodeLineTypePtr>& >( *this ) = xmlNode.Children<CodeLineType>( "codeline" );
     }
 
     LinkType::LinkType( const XmlNode& xmlNode )
     {
-        WideString refId_ = xmlNode.Read<WideString>( "refid" );
-        WideString external_ = xmlNode.Read<WideString>( "external" );
+        std::string refId_ = xmlNode.Read<std::string>( "refid" );
+        std::string external_ = xmlNode.Read<std::string>( "external" );
     }
 
     ChildNodeType::ChildNodeType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         relation_ = xmlNode.Read<DoxGraphRelation>( "relation" );
-        edgeLabel_ = xmlNode.Children<WideString>( "edgelabel" );
+        edgeLabel_ = xmlNode.Children<std::string>( "edgelabel" );
     }
 
     NodeType::NodeType( const XmlNode& xmlNode )
     {
-        WideString id_ = xmlNode.Read<WideString>( "id" );
-        WideString label_ = xmlNode.Child<WideString>( "label" );
+        std::string id_ = xmlNode.Read<std::string>( "id" );
+        std::string label_ = xmlNode.Child<std::string>( "label" );
         LinkTypePtr link_ = xmlNode.Child<LinkType>( "link" );
         std::vector<ChildNodeTypePtr> childNode_ = xmlNode.Children<ChildNodeType>( "childnode" );
     }
@@ -1090,7 +1098,7 @@ namespace Harlinn::Common::Core::Doxygen
                     auto text = Trim( childNode.ToString( ) );
                     if ( text.size( ) )
                     {
-                        auto decoded = Html::Decode( text );
+                        auto decoded = DecodeHtml( text );
                         auto textType = std::make_shared<TextType>( decoded );
                         emplace_back( std::move(textType) );
                     }
@@ -1108,11 +1116,11 @@ namespace Harlinn::Common::Core::Doxygen
 
     ParamType::ParamType( const XmlNode& xmlNode )
     {
-        attributes_ = xmlNode.Child<WideString>( "attributes" );
+        attributes_ = xmlNode.Child<std::string>( "attributes" );
         type_ = xmlNode.Child<LinkedTextType>( "type" );
-        declName_ = xmlNode.Child<WideString>( "declname" );
-        defName_ = xmlNode.Child<WideString>( "defname" );
-        array_ = xmlNode.Child<WideString>( "array" );
+        declName_ = xmlNode.Child<std::string>( "declname" );
+        defName_ = xmlNode.Child<std::string>( "defname" );
+        array_ = xmlNode.Child<std::string>( "array" );
         defVal_ = xmlNode.Child<LinkedTextType>( "defval" );
         typeConstraint_ = xmlNode.Child<LinkedTextType>( "typeconstraint" );
         briefDescription_ = xmlNode.Child<DescriptionType>( "briefdescription" );
@@ -1125,9 +1133,9 @@ namespace Harlinn::Common::Core::Doxygen
 
     EnumvalueType::EnumvalueType( const XmlNode& xmlNode )
     {
-        id_ = xmlNode.Read<WideString>( "id" );
+        id_ = xmlNode.Read<std::string>( "id" );
         prot_ = xmlNode.Read<DoxProtectionKind>( "prot" );
-        name_ = xmlNode.Child<WideString>( "name" );
+        name_ = xmlNode.Child<std::string>( "name" );
         initializer_ = xmlNode.Child<LinkedTextType>( "initializer" );
         briefDescription_ = xmlNode.Child<DescriptionType>( "briefdescription" );
         detailedDescription_ = xmlNode.Child<DescriptionType>( "detaileddescription" );
@@ -1144,11 +1152,11 @@ namespace Harlinn::Common::Core::Doxygen
                 auto nodeName = childNode.Name( );
                 if ( childNode.NodeType( ) == XmlNodeType::node_data )
                 {
-                    auto value = ToWideString( childNode.Value( ) );
+                    auto value = to_string( childNode.Value( ) );
                     value = Trim( value );
                     if ( value.size( ) )
                     {
-                        auto decoded = Html::Decode( value );
+                        auto decoded = DecodeHtml( value );
                         auto textType = std::make_shared<TextType>( decoded );
                         emplace_back( std::move( textType ) );
                     }
@@ -1185,7 +1193,7 @@ namespace Harlinn::Common::Core::Doxygen
     MemberDefType::MemberDefType( const XmlNode& xmlNode )
     {
         kind_ = xmlNode.Read<DoxMemberKind>( "kind" );
-        id_ = xmlNode.Read<WideString>( "id" );
+        id_ = xmlNode.Read<std::string>( "id" );
         prot_ = xmlNode.Read<DoxProtectionKind>( "prot" );
         static_ = xmlNode.Read<bool>( "static" );
         extern_ = xmlNode.Read<bool>( "extern" );
@@ -1198,7 +1206,7 @@ namespace Harlinn::Common::Core::Doxygen
         volatile_ = xmlNode.Read<bool>( "volatile" );
         mutable_ = xmlNode.Read<bool>( "mutable" );
         noExcept_ = xmlNode.Read<bool>( "noexcept" );
-        noexceptExpression_ = xmlNode.Read<WideString>( "noexceptexpression" );
+        noexceptExpression_ = xmlNode.Read<std::string>( "noexceptexpression" );
         nodiscard_ = xmlNode.Read<bool>( "nodiscard" );
         constexpr_ = xmlNode.Read<bool>( "constexpr" );
         consteval_ = xmlNode.Read<bool>( "consteval" );
@@ -1243,16 +1251,16 @@ namespace Harlinn::Common::Core::Doxygen
 
         templateParamList_ = xmlNode.Child<TemplateParamListType>( "templateparamlist" );
         type_ = xmlNode.Child<LinkedTextType>( "type" );
-        definition_ = xmlNode.Child<WideString>( "definition" );
-        argsString_ = xmlNode.Child<WideString>( "argsstring" );
-        name_ = xmlNode.Child<WideString>( "name" );
-        qualifiedName_ = xmlNode.Child<WideString>( "qualifiedname" );
-        read_ = xmlNode.Child<WideString>( "read" );
-        write_ = xmlNode.Child<WideString>( "write" );
-        bitField_ = xmlNode.Child<WideString>( "bitfield" );
+        definition_ = xmlNode.Child<std::string>( "definition" );
+        argsString_ = xmlNode.Child<std::string>( "argsstring" );
+        name_ = xmlNode.Child<std::string>( "name" );
+        qualifiedName_ = xmlNode.Child<std::string>( "qualifiedname" );
+        read_ = xmlNode.Child<std::string>( "read" );
+        write_ = xmlNode.Child<std::string>( "write" );
+        bitField_ = xmlNode.Child<std::string>( "bitfield" );
         reimplements_ = xmlNode.Children<ReimplementType>( "reimplements" );
         reimplementedBy_ = xmlNode.Children<ReimplementType>( "reimplementedby" );
-        qualifier_ = xmlNode.Child<WideString>( "qualifier" );
+        qualifier_ = xmlNode.Child<std::string>( "qualifier" );
         param_ = xmlNode.Children<ParamType>( "param" );
         enumvalue_ = xmlNode.Children<EnumvalueType>( "enumvalue" );
         requiresClause_ = xmlNode.Child<LinkedTextType>( "requiresclause" );
@@ -1269,7 +1277,7 @@ namespace Harlinn::Common::Core::Doxygen
 
     SectionDefType::SectionDefType( const XmlNode& xmlNode )
     {
-        header_ = xmlNode.Child<WideString>( "header" );
+        header_ = xmlNode.Child<std::string>( "header" );
         description_ = xmlNode.Child<DescriptionType>( "description" );
         memberDef_ = xmlNode.Children<MemberDefType>( "memberdef" );
         member_ = xmlNode.Children<MemberType>( "member" );
@@ -1278,32 +1286,32 @@ namespace Harlinn::Common::Core::Doxygen
 
     MemberType::MemberType( const XmlNode& xmlNode )
     {
-        name_ = xmlNode.Child<WideString>( "name" );
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        name_ = xmlNode.Child<std::string>( "name" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         kind_ = xmlNode.Read<MemberKind>( "kind" );
     }
 
     RefTextType::RefTextType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         kindRef_ = xmlNode.Read<DoxRefKind>( "kindref" );
-        external_ = xmlNode.Read<WideString>( "external" );
-        tooltip_ = xmlNode.Read<WideString>( "tooltip" );
-        content_ = xmlNode.Content<WideString>( );
+        external_ = xmlNode.Read<std::string>( "external" );
+        tooltip_ = xmlNode.Read<std::string>( "tooltip" );
+        content_ = xmlNode.Content<std::string>( );
     }
 
     RefType::RefType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         prot_ = xmlNode.Read<DoxProtectionKind>( "prot" );
         inline_ = xmlNode.Read<bool>( "inline" );
-        content_ = xmlNode.Content<WideString>( );
+        content_ = xmlNode.Content<std::string>( );
     }
 
     ExportType::ExportType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
-        content_ = xmlNode.Content<WideString>( );
+        refId_ = xmlNode.Read<std::string>( "refid" );
+        content_ = xmlNode.Content<std::string>( );
     }
 
     ExportsType::ExportsType( const XmlNode& xmlNode )
@@ -1313,39 +1321,39 @@ namespace Harlinn::Common::Core::Doxygen
 
     IncType::IncType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         local_ = xmlNode.Read<bool>( "local" );
-        content_ = xmlNode.Content<WideString>( );
+        content_ = xmlNode.Content<std::string>( );
     }
 
     ReimplementType::ReimplementType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
-        content_ = xmlNode.Content<WideString>( );
+        refId_ = xmlNode.Read<std::string>( "refid" );
+        content_ = xmlNode.Content<std::string>( );
     }
 
     CompoundRefType::CompoundRefType( const XmlNode& xmlNode )
     {
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         prot_ = xmlNode.Read<DoxProtectionKind>( "prot" );
         virt_ = xmlNode.Read<DoxVirtualKind>( "virt" );
-        content_ = xmlNode.Content<WideString>( );
+        content_ = xmlNode.Content<std::string>( );
     }
 
     DocHtmlOnlyType::DocHtmlOnlyType( const XmlNode& xmlNode )
     {
-        block_ = xmlNode.Read<WideString>( "block" );
-        content_ = xmlNode.Content<WideString>( );
+        block_ = xmlNode.Read<std::string>( "block" );
+        content_ = xmlNode.Content<std::string>( );
     }
 
     MemberRefType::MemberRefType( const XmlNode& xmlNode )
     {
-        name_ = Html::Decode( xmlNode.Child<WideString>( "name" ) );
-        scope_ = Html::Decode( xmlNode.Child<WideString>( "scope" ) );
-        refId_ = xmlNode.Read<WideString>( "refid" );
+        name_ = DecodeHtml( xmlNode.Child<std::string>( "name" ) );
+        scope_ = DecodeHtml( xmlNode.Child<std::string>( "scope" ) );
+        refId_ = xmlNode.Read<std::string>( "refid" );
         prot_ = xmlNode.Read<DoxProtectionKind>( "prot" );
         virt_ = xmlNode.Read<DoxVirtualKind>( "virt" );
-        ambiguityScope_ = xmlNode.Read<WideString>( "ambiguityscope" );
+        ambiguityScope_ = xmlNode.Read<std::string>( "ambiguityscope" );
     }
 
     ListOfAllMembersType::ListOfAllMembersType( const XmlNode& xmlNode )
@@ -1355,7 +1363,7 @@ namespace Harlinn::Common::Core::Doxygen
 
     CompoundDefType::CompoundDefType( const XmlNode& xmlNode )
     {
-        id_ = xmlNode.Read<WideString>( "id" );
+        id_ = xmlNode.Read<std::string>( "id" );
         kind_ = xmlNode.Read<DoxCompoundKind>( "kind" );
         
         language_ = xmlNode.Read<DoxLanguage>( "language" );
@@ -1366,8 +1374,8 @@ namespace Harlinn::Common::Core::Doxygen
         sealed_ = xmlNode.Read<bool>( "sealed" );
         abstract_ = xmlNode.Read<bool>( "abstract" );
 
-        compoundName_ = Html::Decode( xmlNode.Child<WideString>( "compoundname" ) );
-        title_ = Html::Decode( xmlNode.Child<WideString>( "title" ) );
+        compoundName_ = DecodeHtml( xmlNode.Child<std::string>( "compoundname" ) );
+        title_ = DecodeHtml( xmlNode.Child<std::string>( "title" ) );
         baseCompoundRef_ = xmlNode.Children<CompoundRefType>( "basecompoundref" );
 
         derivedCompoundRef_ = xmlNode.Children<CompoundRefType>( "derivedcompoundref" );
@@ -1383,7 +1391,7 @@ namespace Harlinn::Common::Core::Doxygen
         innerNamespace_ = xmlNode.Children<RefType>( "innernamespace" );
         innerPage_ = xmlNode.Children<RefType>( "innerpage" );
         innerGroup_ = xmlNode.Children<RefType>( "innergroup" );
-        qualifier_ = xmlNode.Children<WideString>( "qualifier" );
+        qualifier_ = xmlNode.Children<std::string>( "qualifier" );
         templateParamList_ = xmlNode.Child<TemplateParamListType>( "templateparamlist" );
         sectiondef_ = xmlNode.Children<SectionDefType>( "sectiondef" );
         tableOfContents_ = xmlNode.Child<TableOfContentsType>( "tableofcontents" );
@@ -1400,7 +1408,7 @@ namespace Harlinn::Common::Core::Doxygen
         
     }
 
-    Document::Document( const WideString& name, const XmlNode& xmlNode )
+    Document::Document( const std::wstring& name, const XmlNode& xmlNode )
         : name_( name )
     {
         auto childNode = xmlNode.FirstNode( "compounddef" );
@@ -1421,9 +1429,9 @@ namespace Harlinn::Common::Core::Doxygen
 
     }
 
-    void DocumentCollection::AddDirectory( const WideString& directoryName )
+    void DocumentCollection::AddDirectory( const std::wstring& directoryName )
     {
-        IO::FileSystemEntries<WideString> fileSystemEntries( directoryName, L"*.xml" );
+        IO::FileSystemEntries<std::wstring> fileSystemEntries( directoryName, L"*.xml" );
         while ( fileSystemEntries.Read( ) )
         {
             if ( fileSystemEntries.IsDirectory( ) == false )
@@ -1433,9 +1441,9 @@ namespace Harlinn::Common::Core::Doxygen
             }
         }
     }
-    void DocumentCollection::AddFile( const WideString& path )
+    void DocumentCollection::AddFile( const std::wstring& path )
     {
-        AnsiString xml;
+        std::string xml;
         IO::File::ReadAndAppendAllTextTo( path, xml );
 
         if ( xml.size() )
@@ -1449,7 +1457,7 @@ namespace Harlinn::Common::Core::Doxygen
             auto xmlNode = xmlDocument.FirstNode( "doxygen" );
             if ( xmlNode )
             {
-                IO::SplitPath<WideString> splitPath( path );
+                IO::SplitPath<std::wstring> splitPath( path );
                 auto name = splitPath.Name( );
 
                 auto document = std::make_shared<Document>( name, xmlNode );
