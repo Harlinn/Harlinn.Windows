@@ -19,7 +19,7 @@
 
 #include <HCCDef.h>
 #include <HCCTraits.h>
-#include <HCCConcepts.h>
+#include <Harlinn/Common/Concepts.h>
 #include <HCCException.h>
 #include <HCCIterator.h>
 
@@ -28,7 +28,7 @@
 namespace Harlinn::Common::Core
 {
 
-#ifdef HCC_WITH_BASIC_STRING
+
     namespace Internal
     {
         inline char* AllocateBytes( size_t count )
@@ -921,11 +921,8 @@ namespace Harlinn::Common::Core
 
         static Data* Initialize( const CharType* string )
         {
-#ifndef HCC_USE_COMMON
-            auto size = Internal::LengthOf( string );
-#else
+
             auto size = Common::Internal::LengthOf( string );
-#endif
             return Initialize( string, size );
         }
 
@@ -1218,20 +1215,12 @@ namespace Harlinn::Common::Core
         [[nodiscard]] static BasicString From( const wchar_t* s )
             requires std::is_same_v<CharType, char>
         {
-#ifndef HCC_USE_COMMON
-            return Internal::From( s, Internal::LengthOf( s ) );
-#else
-            return Internal::From( s, Common::Internal::LengthOf( s ) );
-#endif
+            return Internal::From( s, LengthOf( s ) );
         }
         [[nodiscard]] static BasicString From( const char* s )
             requires std::is_same_v<CharType, char>
         {
-#ifndef HCC_USE_COMMON
-            return BasicString( s, Internal::LengthOf( s ) );
-#else
-            return BasicString( s, Common::Internal::LengthOf( s ) );
-#endif
+            return BasicString( s, LengthOf( s ) );
         }
 
 
@@ -1298,20 +1287,12 @@ namespace Harlinn::Common::Core
         [[nodiscard]] static BasicString From( const wchar_t* s )
             requires std::is_same_v<CharType, wchar_t>
         {
-#ifndef HCC_USE_COMMON
-            return BasicString( s, Internal::LengthOf( s ) );
-#else
-            return BasicString( s, Common::Internal::LengthOf( s ) );
-#endif
+            return BasicString( s, LengthOf( s ) );
         }
         [[nodiscard]] static BasicString From( const char* s )
             requires std::is_same_v<CharType, wchar_t>
         {
-#ifndef HCC_USE_COMMON
-            return Internal::From( s, Internal::LengthOf( s ) );
-#else
             return Internal::From( s, LengthOf( s ) );
-#endif
         }
 
 
@@ -5004,7 +4985,7 @@ namespace Harlinn::Common::Core
         : data_( Initialize( v.data( ), v.size( ) ) )
     {
     }
-#endif
+
     template<WideStringLike StringT>
     inline void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, StringT& dest )
     {
@@ -6521,9 +6502,9 @@ namespace Harlinn::Common::Core
         auto begin = str.begin( );
         auto end = str.end( );
         StringType result;
-#ifndef HCC_WITH_BASIC_STRING
+
         result.reserve( str.size( ) );
-#endif
+
         while ( begin < end )
         {
             CharType c = *begin;
@@ -6605,7 +6586,7 @@ namespace Harlinn::Common::Core
 
 
 
-#ifdef HCC_WITH_BASIC_STRING
+
     inline [[nodiscard]] AnsiString FormatV( const std::string_view fmt, const std::format_args args )
     {
         AnsiString result;
@@ -6691,7 +6672,7 @@ namespace Harlinn::Common::Core
     }
 
 
-#endif
+
     namespace Html
     {
         /// <summary>
@@ -6787,7 +6768,7 @@ namespace Harlinn::Common::Core
 
 }
 
-#ifdef HCC_WITH_BASIC_STRING
+
 namespace std
 {
     template<> struct hash<Harlinn::Common::Core::WideString>
@@ -6858,7 +6839,7 @@ namespace std
     };
 
 }
-#endif
+
 
 
 #endif

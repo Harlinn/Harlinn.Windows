@@ -22,6 +22,7 @@
  * Parses doxygen xml output 
  */
 
+#include <HCCDef.h>
 #include <HCCString.h>
 
 namespace Harlinn::Common::Core::RapidXml
@@ -2257,6 +2258,11 @@ namespace Harlinn::Common::Core::Doxygen
 
         RefType( ) = default;
         HCC_EXPORT explicit RefType( const XmlNode& xmlNode );
+        RefType( const std::string& refId, DoxProtectionKind prot, const std::string& content, bool isInline = false )
+            : refId_( refId ), prot_( prot ), inline_( isInline ), content_( content )
+        { }
+
+        RefType( const CompoundDefType& compoundDefType );
 
         const std::string& RefId( ) const { return refId_; }
         DoxProtectionKind Prot( ) const { return prot_; }
@@ -2462,6 +2468,11 @@ namespace Harlinn::Common::Core::Doxygen
         CompoundDefType( ) = default;
         HCC_EXPORT explicit CompoundDefType( const XmlNode& xmlNode );
 
+        CompoundDefType( const std::string& id, DoxCompoundKind kind, const std::string& compoundName, DoxLanguage language )
+            : id_(id), kind_(kind), compoundName_( compoundName ), language_( language )
+        { }
+
+
         const std::string& Id() const { return id_; }
         DoxCompoundKind Kind( ) const { return kind_; }
         DoxLanguage Language( ) const { return language_; }
@@ -2482,8 +2493,20 @@ namespace Harlinn::Common::Core::Doxygen
         const std::vector<RefTypePtr>& InnerDir() const { return innerDir_; }
         const std::vector<RefTypePtr>& InnerFile() const { return innerFile_; }
         const std::vector<RefTypePtr>& InnerClass() const { return innerClass_; }
+        void AddInnerClass( const CompoundDefTypePtr& compoundDefType )
+        {
+            innerClass_.emplace_back( std::make_shared<RefType>( *compoundDefType ) );
+        }
         const std::vector<RefTypePtr>& InnerConcept() const { return innerConcept_; }
+        void AddInnerConcept( const CompoundDefTypePtr& compoundDefType )
+        {
+            innerConcept_.emplace_back( std::make_shared<RefType>( *compoundDefType ) );
+        }
         const std::vector<RefTypePtr>& InnerNamespace() const { return innerNamespace_; }
+        void AddInnerNamespace( const CompoundDefTypePtr& compoundDefType )
+        {
+            innerNamespace_.emplace_back( std::make_shared<RefType>( *compoundDefType ) );
+        }
         const std::vector<RefTypePtr>& InnerPage() const { return innerPage_; }
         const std::vector<RefTypePtr>& InnerGroup() const { return innerGroup_; }
         const std::vector<std::string>& Qualifier() const { return qualifier_; }
@@ -2502,6 +2525,11 @@ namespace Harlinn::Common::Core::Doxygen
         const ListOfAllMembersTypePtr& ListOfallMembers( ) const { return listOfAllMembers_; }
 
     };
+
+    inline RefType::RefType( const CompoundDefType& compoundDefType )
+        : refId_( compoundDefType.Id() ), prot_( compoundDefType.Prot() ), inline_( compoundDefType.Inline() ), content_( compoundDefType.CompoundName( ) )
+    { }
+
 
     class Document : public Internal::DocBase<Doxygen::DoxType::Document>, public std::vector<CompoundDefTypePtr>
     {
@@ -2539,911 +2567,753 @@ namespace Harlinn::Common::Core::Doxygen
 
     namespace Structure
     {
+        class BaseDef;
+        class CompoundDef;
 
-        enum class MemberType
-        {
-            Unknown,
-            Namespace,
-            Struct,
-            Class,
-            Union,
-            Interface,
-            Module,
-            Concept,
-            Function,
-            FunctionOverload,
-            Enum,
-            Define,
-            Property,
-            Event,
-            Variable,
-            Typedef,
-            Signal,
-            Prototype,
-            Friend,
-            DCop,
-            Slot,
-            InterfaceReference,
-            Service
+        class ClassCompoundDef;
+        class StructCompoundDef;
+        class UnionCompoundDef;
+        class InterfaceCompoundDef;
+        class ProtocolCompoundDef;
+        class CategoryCompoundDef;
+        class ExceptionCompoundDef;
+        class ServiceCompoundDef;
+        class SingletonCompoundDef;
+        class ModuleCompoundDef;
+        class TypeCompoundDef;
+        class FileCompoundDef;
+        class NamespaceCompoundDef;
+        class GroupCompoundDef;
+        class PageCompoundDef;
+        class ExampleCompoundDef;
+        class DirCompoundDef;
+        class ConceptCompoundDef;
 
-
-        };
-
-        class Member;
-        class Container;
-        class Namespace;
-        class Struct;
-        class Class;
-        class Union;
-        class Interface;
-        class Enum;
-        class Concept;
-        class Function;
-        class FunctionOverload;
-        class Module;
-        class Define;
-        class Property;
-        class Event;
-        class Variable;
-        class Typedef;
-        class Signal;
-        class Prototype;
-        class Friend;
-        class DCop;
-        class Slot;
-        class InterfaceReference;
-        class Service;
+        class MemberDef;
+        class DefineMemberDef;
+        class PropertyMemberDef;
+        class EventMemberDef;
+        class VariableMemberDef;
+        class TypedefMemberDef;
+        class EnumMemberDef;
+        class FunctionMemberDef;
+        class SignalMemberDef;
+        class PrototypeMemberDef;
+        class FriendMemberDef;
+        class DCopMemberDef;
+        class SlotMemberDef;
+        class InterfaceMemberDef;
+        class ServiceMemberDef;
 
         class TypeSystem
         {
-            std::vector<std::unique_ptr<Member>> all_;
-            std::unordered_map<std::string, Member*> allTypes_;
-            std::unordered_map<std::string, Member*> allTypesByQualifiedName_;
-            std::unordered_map<std::string, Namespace*> allNamespaces_;
-            std::unordered_map<std::string, Namespace*> allNamespacesByQualifiedName_;
-            std::unordered_map<std::string, Function*> allFunctionsByQualifiedName_;
-            std::unordered_map<std::string, FunctionOverload*> allFunctionOverloadsById_;
-            Namespace* global_ = nullptr;
+            friend class CompoundDef;
+            std::vector<std::unique_ptr<BaseDef>> _all;
+
+            std::unordered_map<std::string_view, CompoundDef*> allCompoundDefs_;
+            std::unordered_map<std::string_view, MemberDef*> allMemberDefs_;
+            std::unordered_map<std::string_view, CompoundDef*> rootCompoundDefs_;
+            std::multimap<std::string_view, NamespaceCompoundDef*> namespaceMap_;
+            std::vector<NamespaceCompoundDef*> namespaces_;
         public:
             HCC_EXPORT TypeSystem( );
             HCC_EXPORT ~TypeSystem( );
-
-            const std::unordered_map<std::string, Member*>& AllTypes( ) const { return allTypes_; }
-            const std::unordered_map<std::string, Member*>& AllTypesByQualifiedName( ) const { return allTypesByQualifiedName_; }
-            const std::unordered_map<std::string, Namespace*>& AllNamespaces( ) const { return allNamespaces_; }
-            const std::unordered_map<std::string, Namespace*>& AllNamespacesByQualifiedName( ) const { return allNamespacesByQualifiedName_; }
-            const std::unordered_map<std::string, Function*>& AllFunctionsByQualifiedName( ) const { return allFunctionsByQualifiedName_; }
-            const std::unordered_map<std::string, FunctionOverload*>& AllFunctionOverloadsById( ) const { return allFunctionOverloadsById_; }
-
-            Member* FindTypeById( const std::string& id ) const
-            {
-                auto it = allTypes_.find( id );
-                if ( it != allTypes_.end( ) )
-                {
-                    return it->second;
-                }
-                return nullptr;
-            }
-
-            Member* FindTypeByQualifiedName( const std::string& qualifiedName ) const
-            {
-                auto it = allTypesByQualifiedName_.find( qualifiedName );
-                if ( it != allTypesByQualifiedName_.end( ) )
-                {
-                    return it->second;
-                }
-                return nullptr;
-            }
-
-            Namespace* FindNamespaceById( const std::string& id ) const
-            {
-                auto it = allNamespaces_.find( id );
-                if ( it != allNamespaces_.end( ) )
-                {
-                    return it->second;
-                }
-                return nullptr;
-            }
-
-            Namespace* FindNamespaceByQualifiedName( const std::string& qualifiedName ) const
-            {
-                auto it = allNamespacesByQualifiedName_.find( qualifiedName );
-                if ( it != allNamespacesByQualifiedName_.end( ) )
-                {
-                    return it->second;
-                }
-                return nullptr;
-            }
-
-            Function* FindFunctionByQualifiedName( const std::string& qualifiedName ) const
-            {
-                auto it = allFunctionsByQualifiedName_.find( qualifiedName );
-                if ( it != allFunctionsByQualifiedName_.end( ) )
-                {
-                    return it->second;
-                }
-                return nullptr;
-            }
-
-
             HCC_EXPORT void Process( const DocumentCollection& documentCollection );
 
-            Namespace* GlobalNamespace( ) const { return global_; }
-
+            const std::unordered_map<std::string_view, CompoundDef*>& AllCompoundDefs( ) const { return allCompoundDefs_; }
+            const std::unordered_map<std::string_view, MemberDef*>& AllMemberDefs( ) const { return allMemberDefs_; }
+            const std::unordered_map<std::string_view, CompoundDef*>& RootCompoundDefs( ) const { return rootCompoundDefs_; }
+            const std::multimap<std::string_view, NamespaceCompoundDef*>& NamespaceMap( ) const { return namespaceMap_; }
+            const std::vector<NamespaceCompoundDef*>& Namespaces( ) const { return namespaces_; }
+        private:
+            void ScanSections( const CompoundDefTypePtr& compoundDefTypePtr );
+            
+            static bool ParentNamespaceName( std::string_view compoundName, std::string& parentCompoundName );
+            CompoundDef* FindCompoundDefByName( const std::string& compoundName );
+            NamespaceCompoundDef* FindNamespace( const std::string& compoundName );
+            NamespaceCompoundDef* CreateNamespace( const std::string& compoundName );
 
         private:
-            HCC_EXPORT void ScanSections( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container );
-        public:
-            HCC_EXPORT Namespace* AddNamespace( const Doxygen::CompoundDefTypePtr& compoundDef );
-            HCC_EXPORT Struct* AddStruct( const Doxygen::CompoundDefTypePtr& compoundDef );
-            HCC_EXPORT Class* AddClass( const Doxygen::CompoundDefTypePtr& compoundDef );
-            HCC_EXPORT Union* AddUnion( const Doxygen::CompoundDefTypePtr& compoundDef );
-            HCC_EXPORT Interface* AddInterface( const Doxygen::CompoundDefTypePtr& compoundDef );
-            
-            HCC_EXPORT Concept* AddConcept( const Doxygen::CompoundDefTypePtr& compoundDef );
-            
-            HCC_EXPORT Module* AddModule( const Doxygen::CompoundDefTypePtr& compoundDef );
-            HCC_EXPORT Member* AddCompoundDef( const Doxygen::CompoundDefTypePtr& compoundDef );
+            template<typename T, typename ContainerT, typename DefPtrT>
+            T* Add( ContainerT& container, const DefPtrT& defPtr )
+            {
+                const auto& id = defPtr->Id( );
+                auto it = container.find( id );
+                if ( it != container.end( ) )
+                {
+                    return static_cast< T* >( it->second );
+                }
+                auto ptr = std::make_unique<T>( this, defPtr );
+                auto result = ptr.get( );
+                _all.emplace_back( std::move( ptr ) );
+                container.emplace( id, result );
+                return result;
+            }
 
-            HCC_EXPORT Function* AddFunction( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Enum* AddEnum( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Define* AddDefine( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Property* AddProperty( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Event* AddEvent( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Variable* AddVariable( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Typedef* AddTypedef( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Signal* AddSignal( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Prototype* AddPrototype( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Friend* AddFriend( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT DCop* AddDCop( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Slot* AddSlot( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Service* AddService( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT InterfaceReference* AddInterfaceReference( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
-            HCC_EXPORT Member* AddMemberDef( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            template<typename T>
+            T* AddCompoundDef( const CompoundDefTypePtr& compoundDefPtr )
+            {
+                return Add<T>( allCompoundDefs_, compoundDefPtr );
+            }
 
-            template<typename MemberDefT>
-            MemberDefT* AddMemberDef( const std::string& qualifiedName, const std::string& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            CompoundDef* AddCompoundDef( const CompoundDefTypePtr& compoundDefPtr );
+
+
+            template<typename T>
+            T* AddMemberDef( const MemberDefTypePtr& memberDef )
+            {
+                return Add<T>( allMemberDefs_, memberDef );
+            }
+
+            MemberDef* AddMemberDef( const MemberDefTypePtr& memberDef );
+
+            CompoundDef* FindCompoundDef( const std::string_view& id ) const
+            {
+                auto it = allCompoundDefs_.find( id );
+                if ( it != allCompoundDefs_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
+            MemberDef* FindMemberDef( const std::string_view& id ) const
+            {
+                auto it = allMemberDefs_.find( id );
+                if ( it != allMemberDefs_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
         };
 
-
-        class Member 
+        class BaseDef
         {
-            Structure::TypeSystem* typeSystem_ = nullptr;
-            Container* owner_ = nullptr;
-            std::string name_;
-            std::string qualifiedName_;
-            std::string id_;
+            TypeSystem* typeSystem_{};
+            std::string_view id_;
+            BaseDef* owner_{};
         public:
+            BaseDef( TypeSystem* typeSystem, const std::string_view& id )
+                : typeSystem_( typeSystem ), id_( id )
+            {
+            }
+            virtual ~BaseDef( ) = default;
 
-            explicit Member( Structure::TypeSystem* typeSystem )
-                : typeSystem_( typeSystem )
-            { }
-            virtual ~Member( ) = default;
-            virtual Structure::MemberType MemberType( ) const = 0;
+            TypeSystem* Types( ) const { return typeSystem_; }
 
-            Structure::TypeSystem* TypeSystem( ) const { return typeSystem_; }
-            Container* Owner( ) const { return owner_; }
-            void SetOwner( Container* owner )
+            const std::string_view& Id( ) const
+            {
+                return id_;
+            }
+
+
+            BaseDef* Owner( ) const
+            {
+                return owner_;
+            }
+
+            void SetOwner( BaseDef* owner )
             {
                 owner_ = owner;
             }
 
-            const std::string& Name( ) const { return name_; }
-            void SetName( const std::string& name )
-            {
-                name_ = name;
-            }
-            const std::string& QualifiedName( ) const { return qualifiedName_; }
-            void SetQualifiedName( const std::string& qualifiedName )
-            {
-                qualifiedName_ = qualifiedName;
-            }
-
-            const std::string& Id( ) const { return id_; }
-            void SetId( const std::string& id )
-            {
-                id_ = id;
-            }
-
-            std::string Path( ) const;
-            Member* Root( ) const;
-
-            HCC_EXPORT static std::string NameOf( const Doxygen::CompoundDefTypePtr& compoundDef );
         };
 
-        class Container : public Member
+
+        class Inherit
         {
-            std::vector<Member*> members_;
-            std::unordered_map<std::string,Member*> membersByName_;
+            CompoundDef* base_{};
+            DoxProtectionKind prot_{};
+            DoxVirtualKind virt_{};
+            std::string_view content_;
         public:
-            using Base = Member;
-            explicit Container( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            Inherit( ) = default;
+            Inherit( CompoundDef* inherits, DoxProtectionKind prot, DoxVirtualKind virt, std::string_view content )
+                : base_( inherits ), prot_( prot ), virt_( virt ), content_( content )
             { }
 
-            const std::vector<Member*>& Members( ) const { return members_; }
-            const std::unordered_map<std::string, Member*>& MembersByName( ) const { return membersByName_; }
-
-            virtual void Add( Member* member )
-            {
-                assert( member != nullptr );
-                if ( !membersByName_.contains( member->Name( ) ) )
-                {
-                    membersByName_.emplace( member->Name( ), member );
-                    members_.emplace_back( member );
-                    
-                }
-            }
-
-            virtual void Add( Member* member, const std::string& name )
-            {
-                assert( member != nullptr );
-                if ( !membersByName_.contains( name ) )
-                {
-                    membersByName_.emplace( name, member );
-                    members_.emplace_back( member );
-                }
-            }
-
-
-            Member* FindMemberByName( const std::string& name ) const
-            {
-                auto it = membersByName_.find( name );
-                if ( it != membersByName_.end( ) )
-                {
-                    return it->second;
-                }
-                return nullptr;
-            }
+            CompoundDef* Base( ) const { return base_; }
+            DoxProtectionKind Protection( ) const { return prot_; }
+            DoxVirtualKind Virtual( ) const { return virt_; }
+            std::string_view Content( ) const { return content_; }
 
         };
 
-        inline std::string Member::Path( ) const
+        class ChildEntry
         {
-            if ( owner_ )
-            {
-                auto ownerPath = owner_->Path( );
-                return std::format( "{}\\{}", ownerPath, name_ );
-            }
-            return std::format( "{}:{}", qualifiedName_, name_ );
-        }
-
-        inline Member* Member::Root( ) const
-        {
-            if ( owner_ )
-            {
-                return owner_->Root( );
-            }
-            return const_cast< Member* >(this);
-        }
-
-
-
-        class TypeContainer : public Container
-        {
-            Doxygen::CompoundDefTypePtr compoundDef_;
+            CompoundDef* compoundDef_{};
+            DoxProtectionKind prot_{};
+            bool inline_ = false;
+            std::string_view content_;
         public:
-            using Base = Container;
-            explicit TypeContainer( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            ChildEntry( CompoundDef* compoundDef, DoxProtectionKind prot, bool isInline, std::string_view content )
+                : compoundDef_( compoundDef ), prot_( prot ), inline_( isInline ), content_( content )
+            { }
+
+            CompoundDef* CompoundDef( ) const { return compoundDef_; }
+            DoxProtectionKind Protection( ) const { return prot_; }
+            bool Inline( ) const { return inline_; }
+            std::string_view Content( ) const { return content_; }
+
+        };
+
+        class MemberEntry
+        {
+            MemberDef* memberDef_{};
+            std::string_view name_;
+            std::string_view scope_;
+            DoxProtectionKind prot_{};
+            DoxVirtualKind virt_{};
+            std::string_view ambiguityScope_;
+        public:
+            MemberEntry( MemberDef* memberDef, std::string_view name, std::string_view scope, DoxProtectionKind prot, DoxVirtualKind virt, std::string_view ambiguityScope )
+                : memberDef_( memberDef ), name_( name ), scope_( scope ), prot_( prot ), virt_( virt ), ambiguityScope_( ambiguityScope )
+            { }
+
+            MemberDef* MemberDef( ) const { return memberDef_; }
+            const std::string_view& Name( ) const { return name_; }
+            const std::string_view& Scope( ) const { return scope_; }
+            DoxProtectionKind Protection( ) const { return prot_; }
+            DoxVirtualKind Virtual( ) const { return virt_; }
+            const std::string_view& AmbiguityScope( ) const { return ambiguityScope_; }
+
+        };
+
+
+        class CompoundDef : public BaseDef
+        {
+            friend class TypeSystem;
+            CompoundDefTypePtr compoundDefType_;
+            std::vector<Inherit> inherits_;
+            std::vector<MemberEntry> members_;
+            std::unordered_map<std::string_view, MemberEntry> membersMap_;
+            std::vector<ChildEntry> children_;
+            std::unordered_map<std::string_view, ChildEntry> childrenMap_;
+            std::vector<ChildEntry> references_;
+            std::unordered_map<std::string_view, ChildEntry> referenceMap_;
+        public:
+            using Base = BaseDef;
+
+            CompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType->Id( ) ), compoundDefType_( compoundDefType )
             {
             }
 
-            const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
+            const CompoundDefTypePtr& Def( ) const
             {
-                return compoundDef_;
+                return compoundDefType_;
             }
-            void Assign( const Doxygen::CompoundDefTypePtr& compoundDef )
+
+            const std::vector<Inherit>& Inherits( ) const { return inherits_; }
+            const std::vector<MemberEntry>& Members( ) const { return members_; }
+            const std::unordered_map<std::string_view, MemberEntry>& MembersById( ) const { return membersMap_; }
+            const std::vector<ChildEntry>& Children( ) const { return children_; }
+            const std::unordered_map<std::string_view, ChildEntry>& ChildrenById( ) const { return childrenMap_; }
+
+            DoxCompoundKind Kind( ) const
             {
-                compoundDef_ = compoundDef;
-                auto name = NameOf( compoundDef );
-                SetName( name );
-                const auto& qualifiedName = compoundDef->CompoundName( );
-                SetQualifiedName( qualifiedName );
-                const auto& id = compoundDef->Id( );
-                SetId( id );
+                return compoundDefType_->Kind( );
             }
 
             DoxLanguage Language( ) const
             {
-                if ( compoundDef_ )
-                {
-                    return compoundDef_->Language();
-                }
-                return {};
+                return compoundDefType_->Language( );
             }
 
-            bool IsTemplate( ) const
-            {
-                return compoundDef_->TemplateParamList( ) != nullptr;
+            DoxProtectionKind Protection( ) const 
+            { 
+                return compoundDefType_->Prot( );
+            }
+            bool Final( ) const 
+            { 
+                return compoundDefType_->Final();
+            }
+            bool Inline( ) const 
+            { 
+                return compoundDefType_->Inline( );
+            }
+            bool Sealed( ) const 
+            { 
+                return compoundDefType_->Sealed( );
+            }
+            bool Abstract( ) const 
+            { 
+                return compoundDefType_->Abstract( );
+            }
+            const std::string& CompoundName( ) const 
+            { 
+                return compoundDefType_->CompoundName( );
+            }
+            const std::string& Title( ) const 
+            { 
+                return compoundDefType_->Title( );
             }
 
-            const TemplateParamListTypePtr& TemplateParameters( ) const
-            {
-                return compoundDef_->TemplateParamList( );
-            }
-
-            const LinkedTextTypePtr& RequiresClause( ) const
-            {
-                return compoundDef_->RequiresClause( );
-            }
-
-            const DescriptionTypePtr& BriefDescription( ) const 
-            {
-                return compoundDef_->BriefDescription( );
-            }
-            const DescriptionTypePtr& DetailedDescription( ) const 
-            {
-                return compoundDef_->DetailedDescription( );
-            }
-
-        };
-
-        class MemberDef : public Member
-        {
-            Doxygen::CompoundDefTypePtr compoundDef_;
-            Doxygen::SectionDefTypePtr sectionDef_;
-            Doxygen::MemberDefTypePtr memberDef_;
-        public:
-            using Base = Member;
-            explicit MemberDef( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-
-
-            const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
-            {
-                return compoundDef_;
-            }
-
-            const Doxygen::SectionDefTypePtr& SectionDef( ) const { return sectionDef_; }
-            const Doxygen::MemberDefTypePtr& MemberDefType( ) const { return memberDef_; }
-
-            void Assign( const Doxygen::CompoundDefTypePtr& compoundDef, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
-            {
-                compoundDef_ = compoundDef;
-                sectionDef_ = sectionDef;
-                memberDef_ = memberDef;
-            }
-
-        };
-
-
-        
-
-
-        namespace Internal
-        {
-            template<typename BaseT,Structure::MemberType memberType>
-            class Base : public BaseT
-            {
-            public:
-                static constexpr Structure::MemberType MEMBERTYPE = memberType;
-
-                Base( Structure::TypeSystem* typeSystem )
-                    : BaseT( typeSystem )
-                { }
-
-                template<typename T>
-                    requires std::is_constructible_v<BaseT, Structure::TypeSystem*,const T&>
-                Base( Structure::TypeSystem* typeSystem, const T& arg )
-                    : BaseT( typeSystem, arg )
-                {
-                }
-
-                virtual Structure::MemberType MemberType( ) const override
-                {
-                    return MEMBERTYPE;
-                }
-            };
-
-            template<Structure::MemberType memberType>
-            using MemberBase = Base<Member, memberType>;
-
-            template<Structure::MemberType memberType>
-            using ContainerBase = Base<Container, memberType>;
-
-            template<Structure::MemberType memberType>
-            using TypeContainerBase = Base<TypeContainer, memberType>;
-
-            template<Structure::MemberType memberType>
-            using MemberDefBase = Base<MemberDef, memberType>;
             
+
+
+        private:
+            void Process( );
+
+            void ProcessChildren( const std::vector<RefTypePtr>& children );
+
+        };
+
+        class ClassCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            ClassCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class StructCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            StructCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class UnionCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            UnionCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class InterfaceCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            InterfaceCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class ProtocolCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            ProtocolCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class CategoryCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            CategoryCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class ExceptionCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            ExceptionCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class ServiceCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            ServiceCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class SingletonCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            SingletonCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class ModuleCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            ModuleCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class TypeCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            TypeCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class FileCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            FileCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class NamespaceCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            NamespaceCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class GroupCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            GroupCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class PageCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            PageCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class ExampleCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            ExampleCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class DirCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            DirCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+        class ConceptCompoundDef : public CompoundDef
+        {
+        public:
+            using Base = CompoundDef;
+
+            ConceptCompoundDef( TypeSystem* typeSystem, const CompoundDefTypePtr& compoundDefType )
+                : Base( typeSystem, compoundDefType )
+            {
+            }
+        };
+
+
+        inline CompoundDef* TypeSystem::AddCompoundDef( const CompoundDefTypePtr& compoundDefPtr )
+        {
+
+            auto kind = compoundDefPtr->Kind( );
+            switch ( kind )
+            {
+                case DoxCompoundKind::Class:
+                    return AddCompoundDef<ClassCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Struct:
+                    return AddCompoundDef<StructCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Union:
+                    return AddCompoundDef<UnionCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Interface:
+                    return AddCompoundDef<InterfaceCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Protocol:
+                    return AddCompoundDef<ProtocolCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Category:
+                    return AddCompoundDef<CategoryCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Exception:
+                    return AddCompoundDef<ExceptionCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Service:
+                    return AddCompoundDef<ServiceCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Singleton:
+                    return AddCompoundDef<SingletonCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Module:
+                    return AddCompoundDef<ModuleCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Type:
+                    return AddCompoundDef<TypeCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::File:
+                    return AddCompoundDef<FileCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Namespace:
+                    return AddCompoundDef<NamespaceCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Group:
+                    return AddCompoundDef<GroupCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Page:
+                    return AddCompoundDef<PageCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Example:
+                    return AddCompoundDef<ExampleCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Dir:
+                    return AddCompoundDef<DirCompoundDef>( compoundDefPtr );
+                    break;
+                case DoxCompoundKind::Concept:
+                    return AddCompoundDef<ConceptCompoundDef>( compoundDefPtr );
+                    break;
+            }
         }
 
-        class Namespace : public Internal::TypeContainerBase<Structure::MemberType::Namespace>
+
+        class MemberDef : public BaseDef
         {
-            friend class TypeSystem;
-
-            std::vector<Member*> types_;
-            std::vector<FunctionOverload*> functionOverloads_;
-            std::vector<Function*> functions_;
-            std::vector<Variable*> variables_;
+            MemberDefTypePtr memberDefType_;
         public:
-            using Base = Internal::TypeContainerBase<Structure::MemberType::Namespace>;
+            using Base = BaseDef;
 
-            explicit Namespace( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            MemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType->Id( ) ), memberDefType_( memberDefType )
             {
             }
 
-            const std::vector<Member*>& Types( ) const { return types_; }
-            const std::vector<FunctionOverload*>& FunctionOverloads( ) const { return functionOverloads_; }
-            const std::vector<Function*>& Functions( ) const { return functions_; }
-            const std::vector<Variable*>& Variables( ) const { return variables_; }
-
-        private:
-            HCC_EXPORT void Process( );
-        public:
-
-        };
-
-        class InheritanceInfo
-        {
-            TypeContainer* type_ = nullptr;
-            DoxProtectionKind protection_{};
-            bool virtual_{};
-        public:
-            InheritanceInfo( ) = default;
-
-            InheritanceInfo( TypeContainer* type, DoxProtectionKind protection, bool virt )
-                : type_( type ), protection_( protection ), virtual_( virt )
-            { }
-
-            TypeContainer* Type( ) const { return type_; }
-            DoxProtectionKind Protection( ) const { protection_; }
-            bool Virtual() const { return virtual_; }
-
-
-        };
-
-
-        
-
-
-        class ClassInfo
-        {
-            friend class TypeSystem;
-            std::vector<InheritanceInfo> inheritance_;
-            std::vector<Member*> nestedTypes_;
-            std::vector<Variable*> staticVariables_;
-            std::vector<Variable*> variables_;
-            std::vector<FunctionOverload*> staticFunctionOverloads_;
-            std::vector<FunctionOverload*> functionOverloads_;
-            std::vector<Function*> functions_;
-        public:
-            ClassInfo( ) = default;
-        private:
-            HCC_EXPORT void Process( Structure::TypeSystem* typeSystem, Structure::TypeContainer* type );
-        public:
-            const std::vector<InheritanceInfo>& Inheritance( ) const { return inheritance_; }
-            const std::vector<Member*>& NestedTypes( ) const { return nestedTypes_; }
-            const std::vector<Variable*>& StaticVariables( ) const { return staticVariables_; }
-            const std::vector<Variable*>& Variables( ) const { return variables_; }
-            const std::vector<FunctionOverload*>& StaticFunctionOverloads( ) const { return staticFunctionOverloads_; }
-            const std::vector<FunctionOverload*>& FunctionOverloads( ) const { return functionOverloads_; }
-            const std::vector<Function*>& Functions( ) const { return functions_; }
-
-        };
-        
-
-        class Struct : public Internal::TypeContainerBase<Structure::MemberType::Struct>, public ClassInfo
-        {
-        public:
-            using Base = Internal::TypeContainerBase<Structure::MemberType::Struct>;
-
-            explicit Struct( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            const MemberDefTypePtr& Def( ) const
             {
-            }
-
-            bool IsNested( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
-            }
-
-        };
-
-        class Class : public Internal::TypeContainerBase<Structure::MemberType::Class>, public ClassInfo
-        {
-        public:
-            using Base = Internal::TypeContainerBase<Structure::MemberType::Class>;
-
-            explicit Class( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-
-            bool IsNested( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
-            }
-
-        };
-
-        class Union : public Internal::TypeContainerBase<Structure::MemberType::Union>
-        {
-        public:
-            using Base = Internal::TypeContainerBase<Structure::MemberType::Union>;
-
-            explicit Union( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-
-            bool IsNested( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
-            }
-
-        };
-
-        class Interface : public Internal::TypeContainerBase<Structure::MemberType::Interface>
-        {
-        public:
-            using Base = Internal::TypeContainerBase<Structure::MemberType::Interface>;
-
-            explicit Interface( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-
-            bool IsNested( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
+                return memberDefType_;
             }
         };
 
-        class Enum : public Internal::ContainerBase<Structure::MemberType::Enum>
+        class DefineMemberDef : public MemberDef
         {
-            Doxygen::CompoundDefTypePtr compoundDef_;
-            Doxygen::SectionDefTypePtr sectionDef_;
-            Doxygen::MemberDefTypePtr memberDef_;
         public:
-            using Base = Internal::ContainerBase<Structure::MemberType::Enum>;
+            using Base = MemberDef;
 
-            explicit Enum( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            DefineMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
             {
             }
-
-            const std::string& Id( ) const
-            {
-                return memberDef_->Id( );
-            }
-
-
-            bool IsNested( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
-            }
-
-            const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
-            {
-                return compoundDef_;
-            }
-
-            const Doxygen::SectionDefTypePtr& SectionDef( ) const { return sectionDef_; }
-            const Doxygen::MemberDefTypePtr& SemberDef( ) const { return memberDef_; }
-
-            void Assign( const Doxygen::CompoundDefTypePtr& compoundDef, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
-            {
-                compoundDef_ = compoundDef;
-                sectionDef_ = sectionDef;
-                memberDef_ = memberDef;
-            }
-
         };
-
-        class Concept : public Internal::TypeContainerBase<Structure::MemberType::Concept>
+        class PropertyMemberDef : public MemberDef
         {
         public:
-            using Base = Internal::TypeContainerBase<Structure::MemberType::Concept>;
+            using Base = MemberDef;
 
-            explicit Concept( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            PropertyMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
             {
             }
-
         };
-
-        class Module : public Internal::TypeContainerBase<Structure::MemberType::Module>
+        class EventMemberDef : public MemberDef
         {
         public:
-            using Base = Internal::TypeContainerBase<Structure::MemberType::Module>;
+            using Base = MemberDef;
 
-            explicit Module( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            EventMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
             {
             }
-
         };
-
-        class Function : public Internal::ContainerBase<Structure::MemberType::Function>
+        class VariableMemberDef : public MemberDef
         {
         public:
-            using Base = Internal::ContainerBase<Structure::MemberType::Function>;
+            using Base = MemberDef;
 
-            explicit Function( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            VariableMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
             {
             }
-
-            bool IsMemberFunction( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
-            }
-
         };
-
-
-        class FunctionOverload : public Internal::MemberDefBase<Structure::MemberType::FunctionOverload>
+        class TypedefMemberDef : public MemberDef
         {
         public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::FunctionOverload>;
+            using Base = MemberDef;
 
-            explicit FunctionOverload( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            { }
-
-            bool Static( ) const
+            TypedefMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
             {
-                return MemberDefType( )->Static( );
             }
-
-            bool Extern( ) const
-            {
-                return MemberDefType( )->Extern( );
-            }
-
-            bool Const( ) const
-            {
-                return MemberDefType( )->Const( );
-            }
-
-            bool Explicit( ) const
-            {
-                return MemberDefType( )->Explicit( );
-            }
-
-            bool Inline( ) const
-            {
-                return MemberDefType( )->Inline( );
-            }
-
-            DoxRefQualifierKind RefQual( ) const 
-            { 
-                return MemberDefType( )->RefQual( );
-            }
-            DoxVirtualKind Virtual( ) const 
-            {
-                return MemberDefType( )->Virt( );
-            }
-            
-            bool NoExcept( ) const 
-            {
-                return MemberDefType( )->NoExcept( );
-            }
-            const std::string& NoexceptExpression( ) const 
-            {
-                return MemberDefType( )->NoexceptExpression( );
-            }
-            bool Nodiscard( ) const 
-            {
-                return MemberDefType( )->Nodiscard( );
-            }
-            bool Constexpr( ) const 
-            {
-                return MemberDefType( )->Constexpr( );
-            }
-            bool Consteval( ) const 
-            {
-                return MemberDefType( )->Consteval( );
-            }
-            
-            bool IsTemplate( ) const
-            {
-                return MemberDefType( )->TemplateParamList( ) != nullptr;
-            }
-
-            const TemplateParamListTypePtr& TemplateParameters( ) const
-            {
-                return MemberDefType( )->TemplateParamList( );
-            }
-
-            const LinkedTextTypePtr& RequiresClause( ) const
-            {
-                return MemberDefType( )->RequiresClause( );
-            }
-
-            const std::string& ArgsString( ) const 
-            {
-                return MemberDefType( )->ArgsString( );
-            }
-
-            const DescriptionTypePtr& BriefDescription( ) const 
-            {
-                return MemberDefType( )->BriefDescription( );
-            }
-            const DescriptionTypePtr& DetailedDescription( ) const 
-            {
-                return MemberDefType( )->DetailedDescription( );
-            }
-            const DescriptionTypePtr& InbodyDescription( ) const 
-            {
-                return MemberDefType( )->InbodyDescription( );
-            }
-
-
         };
-
-
-        class Define : public Internal::MemberDefBase<Structure::MemberType::Define>
+        class EnumMemberDef : public MemberDef
         {
         public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Define>;
+            using Base = MemberDef;
 
-            explicit Define( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            EnumMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class FunctionMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            FunctionMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class SignalMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            SignalMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class PrototypeMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            PrototypeMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class FriendMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            FriendMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class DCopMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            DCopMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class SlotMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            SlotMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class InterfaceMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            InterfaceMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
+            {
+            }
+        };
+        class ServiceMemberDef : public MemberDef
+        {
+        public:
+            using Base = MemberDef;
+
+            ServiceMemberDef( TypeSystem* typeSystem, const MemberDefTypePtr& memberDefType )
+                : Base( typeSystem, memberDefType )
             {
             }
         };
 
-        class Property : public Internal::MemberDefBase<Structure::MemberType::Property>
+        inline MemberDef* TypeSystem::AddMemberDef( const MemberDefTypePtr& memberDef )
         {
-        public:
-            
-
-            using Base = Internal::MemberDefBase<Structure::MemberType::Property>;
-
-            explicit Property( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
+            auto kind = memberDef->Kind( );
+            switch ( kind )
             {
-            }
-        };
-        class Event : public Internal::MemberDefBase<Structure::MemberType::Event>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Event>;
-
-            explicit Event( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-        class Variable : public Internal::MemberDefBase<Structure::MemberType::Variable>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Variable>;
-
-            explicit Variable( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-
-            bool Static( ) const
-            {
-                return MemberDefType( )->Static( );
-            }
-
-            bool IsMemberVariable( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
-            }
-        };
-        class Typedef : public Internal::MemberDefBase<Structure::MemberType::Typedef>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Typedef>;
-
-            explicit Typedef( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
+                case DoxMemberKind::Define:
+                    return AddMemberDef<DefineMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Property:
+                    return AddMemberDef<PropertyMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Event:
+                    return AddMemberDef<EventMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Variable:
+                    return AddMemberDef<VariableMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Typedef:
+                    return AddMemberDef<TypedefMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Enum:
+                    return AddMemberDef<EnumMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Function:
+                    return AddMemberDef<FunctionMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Signal:
+                    return AddMemberDef<SignalMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Prototype:
+                    return AddMemberDef<PrototypeMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Friend:
+                    return AddMemberDef<FriendMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::DCop:
+                    return AddMemberDef<DCopMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Slot:
+                    return AddMemberDef<SlotMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Interface:
+                    return AddMemberDef<InterfaceMemberDef>( memberDef );
+                    break;
+                case DoxMemberKind::Service:
+                    return AddMemberDef<ServiceMemberDef>( memberDef );
+                    break;
             }
 
-            bool IsNested( )
-            {
-                auto owner = Owner( );
-                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
-            }
-
-        };
-        class Signal : public Internal::MemberDefBase<Structure::MemberType::Signal>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Signal>;
-
-            explicit Signal( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-        class Prototype : public Internal::MemberDefBase<Structure::MemberType::Prototype>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Prototype>;
-
-            explicit Prototype( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-        class Friend : public Internal::MemberDefBase<Structure::MemberType::Friend>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Friend>;
-
-            explicit Friend( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-        class DCop : public Internal::MemberDefBase<Structure::MemberType::DCop>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::DCop>;
-
-            explicit DCop( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-        class Slot : public Internal::MemberDefBase<Structure::MemberType::Slot>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Slot>;
-
-            explicit Slot( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-        class InterfaceReference : public Internal::MemberDefBase<Structure::MemberType::InterfaceReference>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::InterfaceReference>;
-
-            explicit InterfaceReference( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-
-        class Service : public Internal::MemberDefBase<Structure::MemberType::Service>
-        {
-        public:
-            using Base = Internal::MemberDefBase<Structure::MemberType::Service>;
-
-            explicit Service( Structure::TypeSystem* typeSystem )
-                : Base( typeSystem )
-            {
-            }
-        };
-        
-
-        
-        template<typename MemberDefT>
-        inline MemberDefT* TypeSystem::AddMemberDef( const std::string& qualifiedName, const std::string& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
-        {
-            auto id = memberDef->Id( );
-            auto memberDefT = std::make_unique<MemberDefT>( this );
-            auto result = memberDefT.get( );
-            all_.emplace_back( std::move( memberDefT ) );
-            result->SetQualifiedName( qualifiedName );
-            result->SetName( name );
-            result->SetOwner( container );
-            result->SetId( id );
-            container->Add( result );
-            result->Assign( compoundDef, sectionDef, memberDef );
-            return result;
         }
 
     }
@@ -4646,59 +4516,6 @@ namespace Harlinn::Common::Core
     }
 
 
-    /////////
-    HCC_EXPORT std::string to_string( Doxygen::Structure::MemberType value );
-    HCC_EXPORT std::string to_string( Doxygen::Structure::MemberType value, const std::string& defaultResult );
-
-    inline std::wstring to_wstring( Doxygen::Structure::MemberType value )
-    {
-        return to_wstring( to_string( value ) );
-    }
-    inline std::wstring to_wstring( Doxygen::Structure::MemberType value, const std::wstring& defaultResult )
-    {
-        return to_wstring( to_string( value, to_string( defaultResult ) ) );
-    }
-
-    namespace Doxygen::Structure
-    {
-        HCC_EXPORT MemberType ParseMemberType( const std::string& str );
-        HCC_EXPORT MemberType ParseMemberType( const std::string& str, MemberType defaultResult );
-        HCC_EXPORT bool TryParseMemberType( const std::string& str, MemberType& value );
-
-        inline MemberType ParseMemberType( const std::wstring& str )
-        {
-            return ParseMemberType( to_string( str ) );
-        }
-        inline MemberType ParseMemberType( const std::wstring& str, MemberType defaultResult )
-        {
-            return ParseMemberType( to_string( str ), defaultResult );
-        }
-        inline bool TryParseMemberType( const std::wstring& str, MemberType& value )
-        {
-            return TryParseMemberType( to_string( str ), value );
-        }
-    }
-
-    template<typename StringT>
-        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
-    inline bool TryParse( const StringT& str, Doxygen::Structure::MemberType& value )
-    {
-        return Doxygen::Structure::TryParseMemberType( str, value );
-    }
-
-    template<typename T, typename StringT>
-        requires std::is_same_v<Doxygen::Structure::MemberType, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
-    inline T Parse( const StringT& str )
-    {
-        return Doxygen::Structure::ParseMemberType( str );
-    }
-
-    template<typename T, typename CharT>
-        requires std::is_same_v<Doxygen::Structure::MemberType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
-    inline T Parse( const CharT* str )
-    {
-        return Doxygen::Structure::ParseMemberType( std::basic_string<CharT>( str ) );
-    }
 
 
 }

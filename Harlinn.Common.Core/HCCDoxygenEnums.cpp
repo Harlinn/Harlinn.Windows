@@ -1449,70 +1449,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    /////////
-    namespace
-    {
-        using MemberType = Doxygen::Structure::MemberType;
-        class MemberTypeConverter : public Enum<MemberType, std::string>
-        {
-        public:
-            using Base = Enum<MemberType>;
-            MemberTypeConverter( )
-            {
-                Add( std::string( "Unknown" ), MemberType::Unknown );
-                Add( std::string( "Namespace" ), MemberType::Namespace );
-                Add( std::string( "Struct" ), MemberType::Struct );
-                Add( std::string( "Class" ), MemberType::Class );
-                Add( std::string( "Union" ), MemberType::Union );
-                Add( std::string( "Interface" ), MemberType::Interface );
-                Add( std::string( "Module" ), MemberType::Module );
-                Add( std::string( "Concept" ), MemberType::Concept );
-                Add( std::string( "Function" ), MemberType::Function );
-                Add( std::string( "FunctionOverload" ), MemberType::FunctionOverload );
-                Add( std::string( "Enum" ), MemberType::Enum );
-                Add( std::string( "Define" ), MemberType::Define );
-                Add( std::string( "Property" ), MemberType::Property );
-                Add( std::string( "Event" ), MemberType::Event );
-                Add( std::string( "Variable" ), MemberType::Variable );
-                Add( std::string( "Typedef" ), MemberType::Typedef );
-                Add( std::string( "Signal" ), MemberType::Signal );
-                Add( std::string( "Prototype" ), MemberType::Prototype );
-                Add( std::string( "Friend" ), MemberType::Friend );
-                Add( std::string( "DCop" ), MemberType::DCop );
-                Add( std::string( "Slot" ), MemberType::Slot );
-                Add( std::string( "InterfaceReference" ), MemberType::InterfaceReference );
-                Add( std::string( "Service" ), MemberType::Service );
-            }
-        };
-
-        MemberTypeConverter staticMemberTypeConverter;
-    }
-
-    std::string to_string( Doxygen::Structure::MemberType value )
-    {
-        return staticMemberTypeConverter.ToString( value );
-    }
-    std::string to_string( Doxygen::Structure::MemberType value, const std::string& defaultResult )
-    {
-        return staticMemberTypeConverter.ToString( value, defaultResult );
-    }
-    namespace Doxygen::Structure
-    {
-        MemberType ParseMemberType( const std::string& str )
-        {
-            return staticMemberTypeConverter.Parse( str );
-        }
-
-        MemberType ParseMemberType( const std::string& str, MemberType defaultResult )
-        {
-            return staticMemberTypeConverter.Parse( str, defaultResult );
-        }
-
-        bool TryParseMemberType( const std::string& str, MemberType& value )
-        {
-            return staticMemberTypeConverter.TryParse( str, value );
-        }
-    }
+    
 
 
 }
