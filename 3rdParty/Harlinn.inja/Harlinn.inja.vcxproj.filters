@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{3579685f-47e7-4f63-9108-e77101d869e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\inja">
+      <UniqueIdentifier>{16d33756-5ff5-479c-86c1-e736a7381cc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{a43e0603-f9cb-4486-a16a-b77257a2fda7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Harlinn.inja.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\inja\config.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\environment.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\exceptions.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\function_storage.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\inja.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\lexer.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\node.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\parser.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\renderer.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\statistics.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\template.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\token.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inja\utils.hpp">
+      <Filter>include\inja</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme\requirements.txt">
+      <Filter>Readme</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

@@ -116,15 +116,17 @@ namespace Harlinn::Common::Core::Doxygen::Structure
                 auto compoundDef = AddCompoundDef( compoundDefPtr );
                 if ( compoundDef )
                 {
-                    ScanSections( compoundDefPtr );
+                    ScanSections( compoundDefPtr, compoundDef );
                 }
                 auto newMemberDefCount = allMemberDefs_.size( );
-                if ( compoundDef->Kind( ) == DoxCompoundKind::Namespace && originalMemberDefCount == newMemberDefCount )
+                if ( compoundDef->Kind( ) == DoxCompoundKind::Namespace && originalMemberDefCount == newMemberDefCount && compoundDefPtr->HasChildren( ) == false )
                 {
                     allCompoundDefs_.erase( compoundDef->Id( ) );
                 }
             }
         }
+
+        //CreateMissingNamespaces( );
 
         for ( const auto& entry : allCompoundDefs_ )
         {
@@ -151,16 +153,38 @@ namespace Harlinn::Common::Core::Doxygen::Structure
                 auto kind = compoundDef->Kind( );
                 if ( kind != DoxCompoundKind::File && kind != DoxCompoundKind::Dir )
                 {
+                    auto& compoundName = compoundDef->CompoundName( );
+                    std::string ownerName;
+                    if ( ParentNamespaceName( compoundName, ownerName ) )
+                    {
+                        auto nspace = FindNamespace( ownerName );
+                        const auto& id = compoundDef->Id( );
+                        if ( nspace->childrenMap_.contains( id ) == false )
+                        {
+                            DoxProtectionKind prot = compoundDef->Protection( );
+                            bool isInline = compoundDef->Inline( );
+                            std::string_view content = compoundName;
+                            ChildEntry childEntry( compoundDef, prot, isInline, content );
+
+                            nspace->childrenMap_.emplace( id, childEntry );
+                            nspace->children_.emplace_back( childEntry );
+                            compoundDef->SetOwner( nspace );
+                            continue;
+                        }
+                    }
+
                     rootCompoundDefs_.emplace( compoundDef->Id( ), compoundDef );
                 }
             }
         }
 
+        
+
 
 
     }
 
-    void TypeSystem::ScanSections( const CompoundDefTypePtr& compoundDefTypePtr )
+    void TypeSystem::ScanSections( const CompoundDefTypePtr& compoundDefTypePtr, CompoundDef* compoundDef )
     {
         const auto& sections = compoundDefTypePtr->SectionDef( );
         for ( const auto& section : sections )
@@ -168,14 +192,37 @@ namespace Harlinn::Common::Core::Doxygen::Structure
             const auto& memberDefs = section->MemberDef( );
             for ( const auto& memberDef : memberDefs )
             {
-                AddMemberDef( memberDef );
+                MemberDefKey key( compoundDef->Id( ), memberDef->Id( ) );
+
+                auto newMemberDef = AddMemberDef( key, memberDef );
+                if ( newMemberDef )
+                {
+
+                    const auto& name = newMemberDef->Name( );
+                    const auto& scope = compoundDef->CompoundName( );
+                    const auto prot = newMemberDef->Protection( );
+                    const auto virt = newMemberDef->Virtual( );
+
+                    if ( compoundDef->membersMap_.contains( newMemberDef->Id( ) ) == false )
+                    {
+                        MemberEntry memberEntry( newMemberDef, name, scope, prot, virt );
+                        compoundDef->members_.emplace_back( memberEntry );
+                        compoundDef->membersMap_.emplace( newMemberDef->Id( ), memberEntry );
+                        newMemberDef->SetOwner( compoundDef );
+                    }
+                    else
+                    {
+                        throw std::exception( "Duplicates not allowed." );
+                    }
+                }
             }
         }
     }
 
     bool TypeSystem::ParentNamespaceName( std::string_view compoundName, std::string& parentCompoundName )
     {
-        auto offset = compoundName.rfind( "::" );
+        auto startOffset = compoundName.find( "<" );
+        auto offset = compoundName.rfind( "::", startOffset );
         if ( offset != std::string_view::npos )
         {
             parentCompoundName.assign( compoundName.data( ), offset );
@@ -184,7 +231,7 @@ namespace Harlinn::Common::Core::Doxygen::Structure
         return false;
     }
 
-    CompoundDef* TypeSystem::FindCompoundDefByName( const std::string& compoundName )
+    CompoundDef* TypeSystem::FindCompoundDefByName( const std::string_view& compoundName )
     {
         for ( auto entry : allCompoundDefs_ )
         {
@@ -197,18 +244,13 @@ namespace Harlinn::Common::Core::Doxygen::Structure
         return nullptr;
     }
 
-    NamespaceCompoundDef* TypeSystem::FindNamespace( const std::string& compoundName )
+    NamespaceCompoundDef* TypeSystem::FindNamespace( const std::string_view& compoundName )
     {
         auto compoundDef = FindCompoundDefByName( compoundName );
         if ( compoundDef && compoundDef->Kind( ) == DoxCompoundKind::Namespace )
         {
             return static_cast<NamespaceCompoundDef*>( compoundDef );
         }
-        return nullptr;
-    }
-
-    NamespaceCompoundDef* TypeSystem::CreateNamespace( const std::string& compoundName )
-    {
         return nullptr;
     }
 
@@ -251,34 +293,6 @@ namespace Harlinn::Common::Core::Doxygen::Structure
         ProcessChildren( innerPages );
         const std::vector<RefTypePtr>& innerGroups = def->InnerGroup( );
         ProcessChildren( innerGroups );
-
-        const auto& listOfallMembersPtr = def->ListOfallMembers( );
-        if ( listOfallMembersPtr )
-        {
-            const auto& listOfallMembers = *listOfallMembersPtr;
-            for ( auto& ptr : listOfallMembers )
-            {
-                const auto& refId = ptr->RefId( );
-                if ( membersMap_.contains( refId ) == false )
-                {
-                    auto memberDef = typeSystem->FindMemberDef( refId );
-                    if ( memberDef )
-                    {
-                        const auto& name = ptr->Name( );
-                        const auto& scope = ptr->Scope( );
-                        const auto prot = ptr->Prot( );
-                        const auto virt = ptr->Virt( );
-                        const auto& ambiguityScope = ptr->AmbiguityScope( );
-
-                        MemberEntry memberEntry( memberDef, name, scope, prot, virt, ambiguityScope );
-                        members_.emplace_back( memberEntry );
-                        membersMap_.emplace( refId, memberEntry );
-                        memberDef->SetOwner( this );
-                    }
-                }
-            }
-        }
-
 
     }
 

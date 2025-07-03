@@ -426,6 +426,12 @@ namespace Harlinn::Common::Core::IO::Blocks
             return ConvertTo<WideString>( );
         }
 
+        template<StringLike T>
+        T ToString( ) const
+        {
+            return ConvertTo<T>( );
+        }
+
 
 
         constexpr size_t position( ) const noexcept

@@ -30,12 +30,15 @@ namespace Doxygen2Md
         bool help_{};
         std::string inputDirectory_;
         std::string outputDirectory_;
+        std::string urlBase_;
+
+        std::string header_;
     public:
         Doxygen2MdOptions( ) = default;
 
         bool Help( ) const { return help_; }
-        const std::wstring InputDirectory( ) const { return to_wstring( inputDirectory_ ); }
-        const std::wstring OutputDirectory( ) const { return to_wstring( outputDirectory_ ); }
+        const std::string& InputDirectory( ) const { return inputDirectory_; }
+        const std::string& OutputDirectory( ) const { return outputDirectory_; }
 
 
         bool IsValid( ) const

@@ -1953,6 +1953,8 @@ namespace Harlinn::Common::Core::Doxygen
 
         LinkedTextType( ) = default;
         HCC_EXPORT explicit LinkedTextType( const XmlNode& xmlNode );
+
+        const std::vector<RefTextTypePtr>& Ref( ) const { return ref_; }
     };
 
     class ParamType : public Internal::DocBase<Doxygen::DoxType::ParamType>
@@ -2006,6 +2008,14 @@ namespace Harlinn::Common::Core::Doxygen
 
         EnumvalueType( ) = default;
         HCC_EXPORT explicit EnumvalueType( const XmlNode& xmlNode );
+
+        const std::string& Id( ) const { return id_; }
+        DoxProtectionKind Prot( ) const { return prot_; }
+        const std::string& Name( ) const { return name_; }
+        const LinkedTextTypePtr& Initializer( ) const { return initializer_; }
+        const DescriptionTypePtr& BriefDescription( ) const { return briefDescription_; }
+        const DescriptionTypePtr& DetailedDescription( ) const { return detailedDescription_; }
+
     };
 
     class DescriptionType : public Internal::DocBase<Doxygen::DoxType::DescriptionType>, public std::vector<DocBaseTypePtr>
@@ -2524,6 +2534,11 @@ namespace Harlinn::Common::Core::Doxygen
         const LocationTypePtr& Location() const { return location_; }
         const ListOfAllMembersTypePtr& ListOfallMembers( ) const { return listOfAllMembers_; }
 
+        bool HasChildren( ) const
+        {
+            return innerClass_.size() != 0 || innerConcept_.size( ) != 0 || innerNamespace_.size( ) != 0;
+        }
+
     };
 
     inline RefType::RefType( const CompoundDefType& compoundDefType )
@@ -2605,13 +2620,66 @@ namespace Harlinn::Common::Core::Doxygen
         class InterfaceMemberDef;
         class ServiceMemberDef;
 
+        class MemberDefKey
+        {
+            std::string_view compoundDefId_;
+            std::string_view memberDefId_;
+        public:
+            MemberDefKey( ) = default;
+            explicit MemberDefKey( const std::string_view& memberDefId )
+                : memberDefId_( memberDefId )
+            {
+            }
+            explicit MemberDefKey( const std::string_view& compoundDefId, const std::string_view& memberDefId )
+                : compoundDefId_( compoundDefId ), memberDefId_( memberDefId )
+            {
+            }
+
+            auto operator<=>( const MemberDefKey& ) const = default;
+
+            size_t Hash( ) const
+            {
+                XXH64Hasher hasher;
+                hasher.Add( compoundDefId_ );
+                hasher.Add( memberDefId_ );
+                return hasher.Digest( );
+            }
+
+            const std::string_view& CompoundDefId( ) const
+            {
+                return compoundDefId_;
+            }
+            const std::string_view& MemberDefId( ) const
+            {
+                return memberDefId_;
+            }
+
+        };
+    }
+}
+
+namespace std
+{
+    template<> struct hash<Harlinn::Common::Core::Doxygen::Structure::MemberDefKey>
+    {
+        std::size_t operator()( const Harlinn::Common::Core::Doxygen::Structure::MemberDefKey& key ) const noexcept
+        {
+            return key.Hash( );
+        }
+    };
+}
+
+namespace Harlinn::Common::Core::Doxygen
+{
+    namespace Structure
+    {
         class TypeSystem
         {
             friend class CompoundDef;
             std::vector<std::unique_ptr<BaseDef>> _all;
 
             std::unordered_map<std::string_view, CompoundDef*> allCompoundDefs_;
-            std::unordered_map<std::string_view, MemberDef*> allMemberDefs_;
+            std::unordered_map<MemberDefKey, MemberDef*> allMemberDefs_;
             std::unordered_map<std::string_view, CompoundDef*> rootCompoundDefs_;
             std::multimap<std::string_view, NamespaceCompoundDef*> namespaceMap_;
             std::vector<NamespaceCompoundDef*> namespaces_;
@@ -2621,17 +2689,19 @@ namespace Harlinn::Common::Core::Doxygen
             HCC_EXPORT void Process( const DocumentCollection& documentCollection );
 
             const std::unordered_map<std::string_view, CompoundDef*>& AllCompoundDefs( ) const { return allCompoundDefs_; }
-            const std::unordered_map<std::string_view, MemberDef*>& AllMemberDefs( ) const { return allMemberDefs_; }
+            const std::unordered_map<MemberDefKey, MemberDef*>& AllMemberDefs( ) const { return allMemberDefs_; }
             const std::unordered_map<std::string_view, CompoundDef*>& RootCompoundDefs( ) const { return rootCompoundDefs_; }
+
             const std::multimap<std::string_view, NamespaceCompoundDef*>& NamespaceMap( ) const { return namespaceMap_; }
             const std::vector<NamespaceCompoundDef*>& Namespaces( ) const { return namespaces_; }
         private:
-            void ScanSections( const CompoundDefTypePtr& compoundDefTypePtr );
+            void ScanSections( const CompoundDefTypePtr& compoundDefTypePtr, CompoundDef* compoundDef );
             
             static bool ParentNamespaceName( std::string_view compoundName, std::string& parentCompoundName );
-            CompoundDef* FindCompoundDefByName( const std::string& compoundName );
-            NamespaceCompoundDef* FindNamespace( const std::string& compoundName );
-            NamespaceCompoundDef* CreateNamespace( const std::string& compoundName );
+            CompoundDef* FindCompoundDefByName( const std::string_view& compoundName );
+            NamespaceCompoundDef* FindNamespace( const std::string_view& compoundName );
+            //NamespaceCompoundDef* CreateNamespace( const std::string_view& compoundName );
+            //void CreateMissingNamespaces( );
 
         private:
             template<typename T, typename ContainerT, typename DefPtrT>
@@ -2658,14 +2728,29 @@ namespace Harlinn::Common::Core::Doxygen
 
             CompoundDef* AddCompoundDef( const CompoundDefTypePtr& compoundDefPtr );
 
-
-            template<typename T>
-            T* AddMemberDef( const MemberDefTypePtr& memberDef )
+            CompoundDef* AddCompoundDef( const std::string& id, DoxCompoundKind kind, const std::string& compoundName, DoxLanguage language )
             {
-                return Add<T>( allMemberDefs_, memberDef );
+                return AddCompoundDef( std::make_shared<CompoundDefType>( id, kind, compoundName, language ) );
             }
 
-            MemberDef* AddMemberDef( const MemberDefTypePtr& memberDef );
+
+            template<typename T>
+            T* AddMemberDef(const MemberDefKey& key, const MemberDefTypePtr& memberDef )
+            {
+                auto it = allMemberDefs_.find( key );
+                if ( it != allMemberDefs_.end( ) )
+                {
+                    return nullptr;
+                    //throw std::exception( "Duplicate not allowed." );
+                }
+                auto ptr = std::make_unique<T>( this, memberDef );
+                auto result = ptr.get( );
+                _all.emplace_back( std::move( ptr ) );
+                allMemberDefs_.emplace( key, result );
+                return result;
+            }
+
+            MemberDef* AddMemberDef( const MemberDefKey& key, const MemberDefTypePtr& memberDef );
 
             CompoundDef* FindCompoundDef( const std::string_view& id ) const
             {
@@ -2677,9 +2762,9 @@ namespace Harlinn::Common::Core::Doxygen
                 return nullptr;
             }
 
-            MemberDef* FindMemberDef( const std::string_view& id ) const
+            MemberDef* FindMemberDef( const MemberDefKey& key ) const
             {
-                auto it = allMemberDefs_.find( id );
+                auto it = allMemberDefs_.find( key );
                 if ( it != allMemberDefs_.end( ) )
                 {
                     return it->second;
@@ -2700,6 +2785,8 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
             virtual ~BaseDef( ) = default;
+
+            virtual DoxLanguage Language( ) const = 0;
 
             TypeSystem* Types( ) const { return typeSystem_; }
 
@@ -2768,7 +2855,7 @@ namespace Harlinn::Common::Core::Doxygen
             DoxVirtualKind virt_{};
             std::string_view ambiguityScope_;
         public:
-            MemberEntry( MemberDef* memberDef, std::string_view name, std::string_view scope, DoxProtectionKind prot, DoxVirtualKind virt, std::string_view ambiguityScope )
+            MemberEntry( MemberDef* memberDef, std::string_view name, std::string_view scope, DoxProtectionKind prot, DoxVirtualKind virt, std::string_view ambiguityScope = std::string_view() )
                 : memberDef_( memberDef ), name_( name ), scope_( scope ), prot_( prot ), virt_( virt ), ambiguityScope_( ambiguityScope )
             { }
 
@@ -2801,6 +2888,8 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
 
+            
+
             const CompoundDefTypePtr& Def( ) const
             {
                 return compoundDefType_;
@@ -2819,7 +2908,16 @@ namespace Harlinn::Common::Core::Doxygen
 
             DoxLanguage Language( ) const
             {
-                return compoundDefType_->Language( );
+                auto result = compoundDefType_->Language( );
+                if ( result == DoxLanguage::Unknown )
+                {
+                    auto owner = static_cast< CompoundDef* >( Owner( ) );
+                    if ( owner )
+                    {
+                        result = owner->Language( );
+                    }
+                }
+                return result;
             }
 
             DoxProtectionKind Protection( ) const 
@@ -2846,12 +2944,69 @@ namespace Harlinn::Common::Core::Doxygen
             { 
                 return compoundDefType_->CompoundName( );
             }
+
+            std::string CompoundBaseName( ) const
+            {
+                auto owner = static_cast<CompoundDef*>( Owner( ) );
+                if ( owner )
+                {
+                    const std::string& ownerCompoundName = owner->CompoundName( );
+                    auto ownerCompoundNameLength = ownerCompoundName.length( );
+                    const std::string& compoundName = CompoundName( );
+                    auto index = compoundName.find_first_of( '<', ownerCompoundNameLength );
+                    if ( index != std::string::npos )
+                    {
+                        return compoundName.substr( 0, index );
+                    }
+                    return compoundName;
+                }
+                else
+                {
+
+                    const std::string& compoundName = CompoundName( );
+                    auto index = compoundName.find_first_of( '<' );
+                    if ( index != std::string::npos )
+                    {
+                        return compoundName.substr( 0, index );
+                    }
+                    return compoundName;
+                }
+            }
+
             const std::string& Title( ) const 
             { 
                 return compoundDefType_->Title( );
             }
-
+            const std::vector<std::string>& Qualifiers( ) const 
+            { 
+                return compoundDefType_->Qualifier( );
+            }
+            const TemplateParamListTypePtr& TemplateParamList( ) const 
+            { 
+                return compoundDefType_->TemplateParamList( );
+            }
             
+            const LinkedTextTypePtr& RequiresClause( ) const 
+            { 
+                return compoundDefType_->RequiresClause( );
+            }
+            const LinkedTextTypePtr& Initializer( ) const 
+            { 
+                return compoundDefType_->Initializer( );
+            }
+            const DescriptionTypePtr& BriefDescription( ) const 
+            { 
+                return compoundDefType_->BriefDescription( );
+            }
+            const DescriptionTypePtr& DetailedDescription( ) const 
+            { 
+                return compoundDefType_->DetailedDescription( );
+            }
+            const ExportsTypePtr& Exports( ) const 
+            { 
+                return compoundDefType_->Exports( );
+            }
+
 
 
         private:
@@ -3104,6 +3259,7 @@ namespace Harlinn::Common::Core::Doxygen
                     return AddCompoundDef<ConceptCompoundDef>( compoundDefPtr );
                     break;
             }
+            return nullptr;
         }
 
 
@@ -3118,10 +3274,301 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
 
+            virtual DoxLanguage Language( ) const override
+            {
+                auto owner = static_cast< CompoundDef* >( Owner( ) );
+                if ( owner )
+                {
+                    return owner->Language( );
+                }
+                return DoxLanguage::Unknown;
+            }
+
             const MemberDefTypePtr& Def( ) const
             {
                 return memberDefType_;
             }
+
+            DoxMemberKind Kind( ) const 
+            { 
+                return memberDefType_->Kind( );
+            }
+            const std::string& Id( ) const 
+            {
+                return memberDefType_->Id( );
+            }
+            DoxProtectionKind Protection( ) const 
+            { 
+                return memberDefType_->Prot( );
+            }
+            bool Static( ) const 
+            { 
+                return memberDefType_->Static( );
+            }
+            bool Extern( ) const 
+            { 
+                return memberDefType_->Extern( );
+            }
+            
+            bool Const( ) const 
+            { 
+                return memberDefType_->Const( );
+            }
+            bool Explicit( ) const 
+            { 
+                return memberDefType_->Explicit( );
+            }
+            bool Inline( ) const 
+            { 
+                return memberDefType_->Inline( );
+            }
+            DoxRefQualifierKind RefQual( ) const 
+            { 
+                return memberDefType_->RefQual( );
+            }
+            DoxVirtualKind Virtual( ) const 
+            { 
+                return memberDefType_->Virt( );
+            }
+            bool Volatile( ) const 
+            { 
+                return memberDefType_->Volatile( );
+            }
+            bool Mutable( ) const 
+            { 
+                return memberDefType_->Mutable( );
+            }
+            bool NoExcept( ) const 
+            { 
+                return memberDefType_->NoExcept( );
+            }
+            const std::string& NoexceptExpression( ) const 
+            { 
+                return memberDefType_->NoexceptExpression( );
+            }
+            bool Nodiscard( ) const 
+            { 
+                return memberDefType_->Nodiscard( );
+            }
+            bool Constexpr( ) const 
+            { 
+                return memberDefType_->Constexpr( );
+            }
+            bool Consteval( ) const 
+            { 
+                return memberDefType_->Consteval( );
+            }
+            bool Constinit( ) const 
+            { 
+                return memberDefType_->Constinit( );
+            }
+            bool Readable( ) const 
+            { 
+                return memberDefType_->Readable( );
+            }
+            bool Writable( ) const 
+            { 
+                return memberDefType_->Writable( );
+            }
+            bool InitOnly( ) const 
+            { 
+                return memberDefType_->InitOnly( );
+            }
+            bool Settable( ) const 
+            { 
+                return memberDefType_->Settable( );
+            }
+            bool PrivateSettable( ) const 
+            { 
+                return memberDefType_->PrivateSettable( );
+            }
+            bool ProtectedSettable( ) const 
+            { 
+                return memberDefType_->ProtectedSettable( );
+            }
+            bool Gettable( ) const 
+            { 
+                return memberDefType_->Gettable( );
+            }
+            bool PrivateGettable( ) const 
+            { 
+                return memberDefType_->PrivateGettable( );
+            }
+            bool ProtectedGettable( ) const 
+            { 
+                return memberDefType_->ProtectedGettable( );
+            }
+            bool Final( ) const 
+            { 
+                return memberDefType_->Final( );
+            }
+            bool Sealed( ) const 
+            { 
+                return memberDefType_->Sealed( );
+            }
+            bool New( ) const 
+            { 
+                return memberDefType_->New( );
+            }
+            bool Add( ) const 
+            { 
+                return memberDefType_->Add( );
+            }
+            bool Remove( ) const 
+            { 
+                return memberDefType_->Remove( );
+            }
+            bool Raise( ) const 
+            { 
+                return memberDefType_->Raise( );
+            }
+            bool Optional( ) const 
+            { 
+                return memberDefType_->Optional( );
+            }
+            bool Required( ) const 
+            { 
+                return memberDefType_->Required( );
+            }
+            bool Accessor( ) const 
+            { 
+                return memberDefType_->Accessor( );
+            }
+            bool Attribute( ) const 
+            { 
+                return memberDefType_->Attribute( );
+            }
+            bool Property( ) const 
+            { 
+                return memberDefType_->Property( );
+            }
+            bool Readonly( ) const 
+            { 
+                return memberDefType_->Readonly( );
+            }
+            bool Bound( ) const 
+            { 
+                return memberDefType_->Bound( );
+            }
+            bool Removable( ) const 
+            { 
+                return memberDefType_->Removable( );
+            }
+            bool Constrained( ) const 
+            { 
+                return memberDefType_->Constrained( );
+            }
+            bool Transient( ) const 
+            { 
+                return memberDefType_->Transient( );
+            }
+            bool MaybeVoid( ) const 
+            { 
+                return memberDefType_->MaybeVoid( );
+            }
+            bool MaybeDefault( ) const 
+            { 
+                return memberDefType_->MaybeDefault( );
+            }
+            bool MaybeAmbiguous( ) const 
+            { 
+                return memberDefType_->MaybeAmbiguous( );
+            }
+
+            const TemplateParamListTypePtr& TemplateParameterList( ) const 
+            { 
+                return memberDefType_->TemplateParamList( );
+            }
+            const LinkedTextTypePtr& Type( ) const 
+            { 
+                return memberDefType_->Type( );
+            }
+            const std::string& Definition( ) const 
+            { 
+                return memberDefType_->Definition( );
+            }
+            const std::string& ArgsString( ) const 
+            { 
+                return memberDefType_->ArgsString( );
+            }
+            const std::string& Name( ) const 
+            { 
+                return memberDefType_->Name( );
+            }
+            const std::string& QualifiedName( ) const 
+            { 
+                return memberDefType_->QualifiedName( );
+            }
+            const std::string& Read( ) const 
+            { 
+                return memberDefType_->Read( );
+            }
+            const std::string& Write( ) const 
+            { 
+                return memberDefType_->Write( );
+            }
+            const std::string& BitField( ) const 
+            { 
+                return memberDefType_->BitField( );
+            }
+            const std::vector<ReimplementTypePtr>& Reimplements( ) const 
+            { 
+                return memberDefType_->Reimplements( );
+            }
+
+            const std::vector<ReimplementTypePtr>& ReimplementedBy( ) const 
+            { 
+                return memberDefType_->ReimplementedBy( );
+            }
+            const std::string& Qualifier( ) const 
+            { 
+                return memberDefType_->Qualifier( );
+            }
+            const std::vector<ParamTypePtr>& Parameters( ) const 
+            { 
+                return memberDefType_->Param( );
+            }
+            const std::vector<EnumvalueTypePtr>& Enumvalues( ) const 
+            { 
+                return memberDefType_->Enumvalue( );
+            }
+            const LinkedTextTypePtr& RequiresClause( ) const 
+            { 
+                return memberDefType_->RequiresClause( );
+            }
+            const LinkedTextTypePtr& Initializer( ) const 
+            { 
+                return memberDefType_->Initializer( );
+            }
+            const LinkedTextTypePtr& Exceptions( ) const 
+            { 
+                return memberDefType_->Exceptions( );
+            }
+            const DescriptionTypePtr& BriefDescription( ) const 
+            { 
+                return memberDefType_->BriefDescription( );
+            }
+            const DescriptionTypePtr& DetailedDescription( ) const 
+            { 
+                return memberDefType_->DetailedDescription( );
+            }
+            const DescriptionTypePtr& InbodyDescription( ) const 
+            { 
+                return memberDefType_->InbodyDescription( );
+            }
+            const LocationTypePtr& Location( ) const 
+            { 
+                return memberDefType_->Location( );
+            }
+            const std::vector<ReferenceTypePtr>& References( ) const 
+            { 
+                return memberDefType_->References( );
+            }
+            const std::vector<ReferenceTypePtr>& ReferencedBy( ) const 
+            { 
+                return memberDefType_->ReferencedBy( );
+            }
+
         };
 
         class DefineMemberDef : public MemberDef
@@ -3265,55 +3712,55 @@ namespace Harlinn::Common::Core::Doxygen
             }
         };
 
-        inline MemberDef* TypeSystem::AddMemberDef( const MemberDefTypePtr& memberDef )
+        inline MemberDef* TypeSystem::AddMemberDef( const MemberDefKey& key, const MemberDefTypePtr& memberDef )
         {
             auto kind = memberDef->Kind( );
             switch ( kind )
             {
                 case DoxMemberKind::Define:
-                    return AddMemberDef<DefineMemberDef>( memberDef );
+                    return AddMemberDef<DefineMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Property:
-                    return AddMemberDef<PropertyMemberDef>( memberDef );
+                    return AddMemberDef<PropertyMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Event:
-                    return AddMemberDef<EventMemberDef>( memberDef );
+                    return AddMemberDef<EventMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Variable:
-                    return AddMemberDef<VariableMemberDef>( memberDef );
+                    return AddMemberDef<VariableMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Typedef:
-                    return AddMemberDef<TypedefMemberDef>( memberDef );
+                    return AddMemberDef<TypedefMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Enum:
-                    return AddMemberDef<EnumMemberDef>( memberDef );
+                    return AddMemberDef<EnumMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Function:
-                    return AddMemberDef<FunctionMemberDef>( memberDef );
+                    return AddMemberDef<FunctionMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Signal:
-                    return AddMemberDef<SignalMemberDef>( memberDef );
+                    return AddMemberDef<SignalMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Prototype:
-                    return AddMemberDef<PrototypeMemberDef>( memberDef );
+                    return AddMemberDef<PrototypeMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Friend:
-                    return AddMemberDef<FriendMemberDef>( memberDef );
+                    return AddMemberDef<FriendMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::DCop:
-                    return AddMemberDef<DCopMemberDef>( memberDef );
+                    return AddMemberDef<DCopMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Slot:
-                    return AddMemberDef<SlotMemberDef>( memberDef );
+                    return AddMemberDef<SlotMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Interface:
-                    return AddMemberDef<InterfaceMemberDef>( memberDef );
+                    return AddMemberDef<InterfaceMemberDef>( key, memberDef );
                     break;
                 case DoxMemberKind::Service:
-                    return AddMemberDef<ServiceMemberDef>( memberDef );
+                    return AddMemberDef<ServiceMemberDef>( key, memberDef );
                     break;
             }
-
+            return nullptr;
         }
 
     }
@@ -4514,10 +4961,7 @@ namespace Harlinn::Common::Core
     {
         return Doxygen::ParseDoxCmdGroupType( std::basic_string<CharT>( str ) );
     }
-
-
-
-
 }
+
 
 #endif

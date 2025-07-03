@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{cfbb8c57-6167-454a-a0ac-b411ebb714c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="doxygen2md.cpp">
@@ -29,5 +32,10 @@
     <ClInclude Include="D2MStructure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\header.md">
+      <Filter>Data</Filter>
+    </None>
   </ItemGroup>
 </Project>

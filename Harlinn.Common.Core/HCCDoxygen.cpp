@@ -1116,11 +1116,11 @@ namespace Harlinn::Common::Core::Doxygen
 
     ParamType::ParamType( const XmlNode& xmlNode )
     {
-        attributes_ = xmlNode.Child<std::string>( "attributes" );
+        attributes_ = DecodeHtml( xmlNode.Child<std::string>( "attributes" ) );
         type_ = xmlNode.Child<LinkedTextType>( "type" );
-        declName_ = xmlNode.Child<std::string>( "declname" );
-        defName_ = xmlNode.Child<std::string>( "defname" );
-        array_ = xmlNode.Child<std::string>( "array" );
+        declName_ = DecodeHtml( xmlNode.Child<std::string>( "declname" ) );
+        defName_ = DecodeHtml( xmlNode.Child<std::string>( "defname" ) );
+        array_ = DecodeHtml( xmlNode.Child<std::string>( "array" ) );
         defVal_ = xmlNode.Child<LinkedTextType>( "defval" );
         typeConstraint_ = xmlNode.Child<LinkedTextType>( "typeconstraint" );
         briefDescription_ = xmlNode.Child<DescriptionType>( "briefdescription" );
@@ -1251,10 +1251,10 @@ namespace Harlinn::Common::Core::Doxygen
 
         templateParamList_ = xmlNode.Child<TemplateParamListType>( "templateparamlist" );
         type_ = xmlNode.Child<LinkedTextType>( "type" );
-        definition_ = xmlNode.Child<std::string>( "definition" );
-        argsString_ = xmlNode.Child<std::string>( "argsstring" );
+        definition_ = DecodeHtml( xmlNode.Child<std::string>( "definition" ) );
+        argsString_ = DecodeHtml( xmlNode.Child<std::string>( "argsstring" ) );
         name_ = xmlNode.Child<std::string>( "name" );
-        qualifiedName_ = xmlNode.Child<std::string>( "qualifiedname" );
+        qualifiedName_ = DecodeHtml( xmlNode.Child<std::string>( "qualifiedname" ) );
         read_ = xmlNode.Child<std::string>( "read" );
         write_ = xmlNode.Child<std::string>( "write" );
         bitField_ = xmlNode.Child<std::string>( "bitfield" );

@@ -47,6 +47,14 @@ namespace Harlinn::Common::Core
             }
         }
 
+        template<StringLike StringT>
+            requires std::is_same_v<typename StringT::value_type, value_type>
+        StringT ToString( ) const
+        {
+            return stream_.ToString<StringT>( );
+        }
+
+
 
 
         void AppendLine( )

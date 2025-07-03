@@ -1469,9 +1469,22 @@ namespace Harlinn::Common::Core
         template<SimpleStringLike StringT>
         void Add( const StringT& str )
         {
-            Add( str.c_str( ), str.size( ) );
+            auto size = str.size( );
+            if ( size )
+            {
+                Add( static_cast< const Byte* >( str.c_str( ) ), size * sizeof( typename StringT::value_type ) );
+            }
         }
 
+        template<typename T>
+        void Add( const std::basic_string_view<T>& str )
+        {
+            auto size = str.size( );
+            if ( size )
+            {
+                Add( reinterpret_cast< const Byte* >( str.data( ) ), size * sizeof( T ) );
+            }
+        }
         
 
 
@@ -1486,12 +1499,6 @@ namespace Harlinn::Common::Core
             }
         }
 
-        template<typename T>
-            requires IsSpecializationOf<T, std::basic_string_view>
-        void Add( const T& str )
-        { 
-            Add( str.data(), str.size() );
-        }
     };
 
 #ifndef HCC_USE_COMMON
