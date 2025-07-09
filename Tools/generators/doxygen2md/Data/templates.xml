@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+  <header file="header.md"/>
+  <class_list file="class_list.md"/>
+  <class file="class.md"/>
+  <concept_list file="concept_list.md"/>
+  <concept file="concept.md"/>
+  <enum_list file="enum_list.md"/>
+  <enum file="enum.md"/>
+  <function_list file="function_list.md"/>
+  <function file="function.md"/>
+  <union_list file="union_list.md"/>
+  <union file="union.md"/>
+  <namespace_list file="namespace_list.md"/>
+  <namespace file="namespace.md"/>
+  <variable_list file="variable_list.md"/>
+  <typedef_list file="typedef_list.md"/>
+  
+</templates>

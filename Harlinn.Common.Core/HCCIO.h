@@ -3088,9 +3088,9 @@ namespace Harlinn::Common::Core::IO
             return RelativePath<StringT>( fromDirectory, fromAttributes, relativeToFilePath, toAttributes );
         }
         
-        template<typename CharT>
-            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )
-        inline BasicString<CharT> GetParentDirectory( const CharT* path )
+        template<StringLike StringT, typename CharT>
+            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> ) && std::is_same_v < CharT, typename StringT::value_type >
+        inline StringT GetParentDirectory( const CharT* path )
         {
             CharT drive[ _MAX_DRIVE + 1 ];
             CharT dir[ _MAX_DIR + 1 ];
@@ -3105,15 +3105,15 @@ namespace Harlinn::Common::Core::IO
             {
                 _splitpath_s( path, drive, dir, filename, ext );
             }
-            BasicString<CharT> result( drive );
+            StringT result( drive );
             result += dir;
             return result;
         }
 
         template<StringLike StringT>
-        inline BasicString<typename StringT::value_type> GetParentDirectory( const StringT& path )
+        inline StringT GetParentDirectory( const StringT& path )
         {
-            return GetParentDirectory( path.c_str() );
+            return GetParentDirectory<StringT>( path.c_str() );
         }
 
         // Compares two paths to determine if they share a common prefix. 

@@ -1450,6 +1450,135 @@ namespace Harlinn::Common::Core
     }
 
     
+    /////////
+    namespace
+    {
+        using DoxType = Doxygen::DoxType;
+        class DoxTypeConverter : public Enum<DoxType, std::string>
+        {
+        public:
+            using Base = Enum<DoxType>;
+            DoxTypeConverter( )
+            {
+                Add( std::string("Unknown" ), DoxType::Unknown );
+                Add( std::string("TextType" ), DoxType::TextType );
+                Add( std::string("TitleType" ), DoxType::TitleType );
+                Add( std::string("DocEmojiType" ), DoxType::DocEmojiType );
+                Add( std::string("TableOfContentsKindType" ), DoxType::TableOfContentsKindType );
+                Add( std::string("TableOfContentsType" ), DoxType::TableOfContentsType );
+                Add( std::string("DocEmptyType" ), DoxType::DocEmptyType );
+                Add( std::string("DocParBlockType" ), DoxType::DocParBlockType );
+                Add( std::string("DocBlockQuoteType" ), DoxType::DocBlockQuoteType );
+                Add( std::string("DocDetailsType" ), DoxType::DocDetailsType );
+                Add( std::string("DocCopyType" ), DoxType::DocCopyType );
+                Add( std::string("DocXRefSectType" ), DoxType::DocXRefSectType );
+                Add( std::string("DocParamName" ), DoxType::DocParamName );
+                Add( std::string("DocParamType" ), DoxType::DocParamType );
+                Add( std::string("DocParamNameList" ), DoxType::DocParamNameList );
+                Add( std::string("DocParamListItem" ), DoxType::DocParamListItem );
+                Add( std::string("DocParamListType" ), DoxType::DocParamListType );
+                Add( std::string("DocLanguageType" ), DoxType::DocLanguageType );
+                Add( std::string("DocTocListType" ), DoxType::DocTocListType );
+                Add( std::string("DocTocItemType" ), DoxType::DocTocItemType );
+                Add( std::string("DocPlantumlType" ), DoxType::DocPlantumlType );
+                Add( std::string("DocImageFileType" ), DoxType::DocImageFileType );
+                Add( std::string("DocDotMscType" ), DoxType::DocDotMscType );
+                Add( std::string("DocImageType" ), DoxType::DocImageType );
+                Add( std::string("DocHeadingType" ), DoxType::DocHeadingType );
+                Add( std::string("DocCaptionType" ), DoxType::DocCaptionType );
+                Add( std::string("DocEntryType" ), DoxType::DocEntryType );
+                Add( std::string("DocRowType" ), DoxType::DocRowType );
+                Add( std::string("DocTableType" ), DoxType::DocTableType );
+                Add( std::string("DocRefTextType" ), DoxType::DocRefTextType );
+                Add( std::string("DocVariableListType" ), DoxType::DocVariableListType );
+                Add( std::string("DocVarListEntryType" ), DoxType::DocVarListEntryType );
+                Add( std::string("DocSimpleSectType" ), DoxType::DocSimpleSectType );
+                Add( std::string("DocListItemType" ), DoxType::DocListItemType );
+                Add( std::string("DocListType" ), DoxType::DocListType );
+                Add( std::string("DocIndexEntryType" ), DoxType::DocIndexEntryType );
+                Add( std::string("DocFormulaType" ), DoxType::DocFormulaType );
+                Add( std::string("DocAnchorType" ), DoxType::DocAnchorType );
+                Add( std::string("DocURLLink" ), DoxType::DocURLLink );
+                Add( std::string("DocMarkupType" ), DoxType::DocMarkupType );
+                Add( std::string("DocParaType" ), DoxType::DocParaType );
+                Add( std::string("DocCmdGroup" ), DoxType::DocCmdGroup );
+                Add( std::string("DocSummaryType" ), DoxType::DocSummaryType );
+                Add( std::string("DocTitleType" ), DoxType::DocTitleType );
+                Add( std::string("DocTitleCmdGroup" ), DoxType::DocTitleCmdGroup );
+                Add( std::string("DocInternalS6Type" ), DoxType::DocInternalS6Type );
+                Add( std::string("DocInternalS5Type" ), DoxType::DocInternalS5Type );
+                Add( std::string("DocInternalS4Type" ), DoxType::DocInternalS4Type );
+                Add( std::string("DocInternalS3Type" ), DoxType::DocInternalS3Type );
+                Add( std::string("DocInternalS2Type" ), DoxType::DocInternalS2Type );
+                Add( std::string("DocInternalS1Type" ), DoxType::DocInternalS1Type );
+                Add( std::string("DocInternalType" ), DoxType::DocInternalType );
+                Add( std::string("DocSect6Type" ), DoxType::DocSect6Type );
+                Add( std::string("DocSect5Type" ), DoxType::DocSect5Type );
+                Add( std::string("DocSect4Type" ), DoxType::DocSect4Type );
+                Add( std::string("DocSect3Type" ), DoxType::DocSect3Type );
+                Add( std::string("DocSect2Type" ), DoxType::DocSect2Type );
+                Add( std::string("DocSect1Type" ), DoxType::DocSect1Type );
+                Add( std::string("LocationType" ), DoxType::LocationType );
+                Add( std::string("ReferenceType" ), DoxType::ReferenceType );
+                Add( std::string("SpType" ), DoxType::SpType );
+                Add( std::string("HighlightType" ), DoxType::HighlightType );
+                Add( std::string("CodeLineType" ), DoxType::CodeLineType );
+                Add( std::string("ListingType" ), DoxType::ListingType );
+                Add( std::string("LinkType" ), DoxType::LinkType );
+                Add( std::string("ChildNodeType" ), DoxType::ChildNodeType );
+                Add( std::string("NodeType" ), DoxType::NodeType );
+                Add( std::string("GraphType" ), DoxType::GraphType );
+                Add( std::string("LinkedTextType" ), DoxType::LinkedTextType );
+                Add( std::string("ParamType" ), DoxType::ParamType );
+                Add( std::string("TemplateParamListType" ), DoxType::TemplateParamListType );
+                Add( std::string("EnumvalueType" ), DoxType::EnumvalueType );
+                Add( std::string("DescriptionType" ), DoxType::DescriptionType );
+                Add( std::string("MemberDefType" ), DoxType::MemberDefType );
+                Add( std::string("SectionDefType" ), DoxType::SectionDefType );
+                Add( std::string("MemberType" ), DoxType::MemberType );
+                Add( std::string("RefTextType" ), DoxType::RefTextType );
+                Add( std::string("RefType" ), DoxType::RefType );
+                Add( std::string("ExportType" ), DoxType::ExportType );
+                Add( std::string("ExportsType" ), DoxType::ExportsType );
+                Add( std::string("IncType" ), DoxType::IncType );
+                Add( std::string("ReimplementType" ), DoxType::ReimplementType );
+                Add( std::string("CompoundRefType" ), DoxType::CompoundRefType );
+                Add( std::string("DocHtmlOnlyType" ), DoxType::DocHtmlOnlyType );
+                Add( std::string("MemberRefType" ), DoxType::MemberRefType );
+                Add( std::string("ListOfAllMembersType" ), DoxType::ListOfAllMembersType );
+                Add( std::string("CompoundDefType" ), DoxType::CompoundDefType );
+                Add( std::string("Document" ), DoxType::Document );
+                Add( std::string( "DocumentCollection" ), DoxType::DocumentCollection );
+            }
+        };
 
+        DoxTypeConverter staticDoxTypeConverter;
+    }
+
+    std::string to_string( Doxygen::DoxType value )
+    {
+        return staticDoxTypeConverter.ToString( value );
+    }
+    std::string to_string( Doxygen::DoxType value, const std::string& defaultResult )
+    {
+        return staticDoxTypeConverter.ToString( value, defaultResult );
+    }
+    namespace Doxygen
+    {
+        DoxType ParseDoxType( const std::string& str )
+        {
+            return staticDoxTypeConverter.Parse( str );
+        }
+
+        DoxType ParseDoxType( const std::string& str, DoxType defaultResult )
+        {
+            return staticDoxTypeConverter.Parse( str, defaultResult );
+        }
+
+        bool TryParseDoxType( const std::string& str, DoxType& value )
+        {
+            return staticDoxTypeConverter.TryParse( str, value );
+        }
+    }
 
 }

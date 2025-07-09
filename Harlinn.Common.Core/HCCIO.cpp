@@ -518,7 +518,7 @@ namespace Harlinn::Common::Core::IO
     {
         wchar_t buffer[MAX_PATH + 1] = { 0, };
         GetModuleFileNameW( nullptr, buffer, sizeof( buffer ) / sizeof( wchar_t ) );
-        return Path::GetParentDirectory( buffer );
+        return Path::GetParentDirectory<WideString>( buffer );
     }
     AnsiString Directory::GetExecutableDirectoryA( )
     {

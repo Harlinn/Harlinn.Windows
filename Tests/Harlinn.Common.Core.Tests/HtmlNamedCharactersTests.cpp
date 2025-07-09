@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( EncodeTest )
 {
     WideString expected( L"&amp;Smith &lt;&amp;&gt; Jones" );
     WideString str( L"&Smith <&> Jones" );
-    auto encodedStr = Html::Encode( str.c_str( ), str.size( ) );
+    auto encodedStr = Html::Encode<WideString>( str );
     bool asExpected = encodedStr == expected;
     BOOST_CHECK( asExpected );
 }
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE( DecodeTest )
     WideString expected( L"&Smith <&> Jones" );
     WideString str( L"&amp;Smith &lt;&amp;&gt; Jones" );
     
-    auto decodedStr = Html::Decode( str.c_str( ), str.size( ) );
+    auto decodedStr = Html::Decode<WideString>( str );
     bool asExpected = decodedStr == expected;
     BOOST_CHECK( asExpected );
 }

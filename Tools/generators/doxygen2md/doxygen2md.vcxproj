@@ -148,12 +148,31 @@
     <ClCompile Include="doxygen2md.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D2MStructure.h" />
+    <ClInclude Include="D2MMarkdownFormatter.h" />
+    <ClInclude Include="D2MTemplates.h" />
     <ClInclude Include="doxygen2mdOptions.h" />
     <ClInclude Include="MarkdownBase.h" />
+    <ClInclude Include="D2MPathBuilder.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\class.md" />
+    <None Include="Data\class_list.md" />
+    <None Include="Data\concept.md" />
+    <None Include="Data\concept_list.md" />
+    <None Include="Data\enum.md" />
+    <None Include="Data\enum_list.md" />
+    <None Include="Data\function.md" />
+    <None Include="Data\function_list.md" />
     <None Include="Data\header.md" />
+    <None Include="Data\namespace.md" />
+    <None Include="Data\namespace_list.md" />
+    <None Include="Data\typedef_list.md" />
+    <None Include="Data\union.md" />
+    <None Include="Data\union_list.md" />
+    <None Include="Data\variable_list.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Data\templates.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

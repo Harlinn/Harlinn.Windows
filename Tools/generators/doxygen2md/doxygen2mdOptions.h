@@ -20,17 +20,21 @@
 #include <HCCString.h>
 #include <HCCIO.h>
 
-using namespace Harlinn::Common;
-using namespace Harlinn::Common::Core;
 
 namespace Doxygen2Md
 {
+    using namespace Harlinn::Common;
+    using namespace Harlinn::Common::Core;
+
+
     class Doxygen2MdOptions
     {
         bool help_{};
         std::string inputDirectory_;
         std::string outputDirectory_;
-        std::string urlBase_;
+        std::string templates_;
+        std::string siteUrl_;
+        std::string relativeOutputUrl_;
 
         std::string header_;
     public:
@@ -39,7 +43,9 @@ namespace Doxygen2Md
         bool Help( ) const { return help_; }
         const std::string& InputDirectory( ) const { return inputDirectory_; }
         const std::string& OutputDirectory( ) const { return outputDirectory_; }
-
+        const std::string& Templates( ) const { return templates_; }
+        const std::string& SiteUrl( ) const { return siteUrl_; }
+        const std::string& RelativeOutputUrl( ) const { return relativeOutputUrl_; }
 
         bool IsValid( ) const
         {
@@ -58,6 +64,9 @@ namespace Doxygen2Md
                 ( "help", po::value<bool>( &help_ )->default_value( false ), "produce help message" )
                 ( "doxygen,I", po::value< std::string >( &inputDirectory_ ), "directory containing doxygen generated xml files." )
                 ( "md,O", po::value< std::string >( &outputDirectory_ ), "markdown destination directory." )
+                ( "templates,T", po::value< std::string >( &templates_ ), "template specification file." )
+                ( "site,S", po::value< std::string >( &siteUrl_ ), "Site url." )
+                ( "relative,R", po::value< std::string >( &relativeOutputUrl_ ), "Url of the markdown destination directory relative to the site url." )
                 ;
 
             po::variables_map vm;

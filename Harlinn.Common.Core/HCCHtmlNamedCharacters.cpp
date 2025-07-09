@@ -2332,7 +2332,8 @@ namespace Harlinn::Common::Core::Html
         }
     }
 
-    WideString Encode( const wchar_t* text, size_t textLength )
+    template<WideStringLike T>
+    T Encode( const wchar_t* text, size_t textLength )
     {
         if ( text && textLength )
         {
@@ -2377,10 +2378,14 @@ namespace Harlinn::Common::Core::Html
                 }
                 text = UtfTraits::Next( text );
             }
-            return sb.ToString( );
+            return sb.ToString<T>( );
         }
         return {};
     }
+
+    template WideString HCC_TEMPLATE_EXPORT Encode<WideString>( const wchar_t* text, size_t textLength );
+    template std::wstring HCC_TEMPLATE_EXPORT Encode<std::wstring>( const wchar_t* text, size_t textLength );
+
     namespace
     {
         std::wstring_view ExtractName( const wchar_t* text, size_t textLength )
@@ -2528,7 +2533,8 @@ namespace Harlinn::Common::Core::Html
 
     }
 
-    WideString Decode( const wchar_t* text, size_t textLength )
+    template<WideStringLike T>
+    T Decode( const wchar_t* text, size_t textLength )
     {
         if ( text && textLength )
         {
@@ -2582,16 +2588,21 @@ namespace Harlinn::Common::Core::Html
                         text = UtfTraits::Next( text );
                     }
                 }
-                return sb.ToString( );
+                return sb.ToString<T>( );
             }
             else
             {
-                return WideString{ text , textLength };
+                return T{ text , textLength };
             }
 
         }
-        return WideString{};
+        return T{};
     }
+
+    
+    template WideString HCC_TEMPLATE_EXPORT Decode<WideString>( const wchar_t* text, size_t textLength );
+    template std::wstring HCC_TEMPLATE_EXPORT Decode<std::wstring>( const wchar_t* text, size_t textLength );
+    
 
 }
 

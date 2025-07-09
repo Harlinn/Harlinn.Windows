@@ -236,6 +236,26 @@ namespace Harlinn::Common::Core
             }
         }
 
+        void Append( char c, size_t count )
+        {
+            if constexpr ( isWide )
+            {
+                std::string_view view( &c, 1 );
+                auto wstr = WideString::From( view );
+                for ( size_t i = 0; i < count; i++ )
+                {
+                    stream_.Write( wstr.c_str( ), wstr.Length( ) * sizeof( wchar_t ) );
+                }
+            }
+            else
+            {
+                for ( size_t i = 0; i < count; i++ )
+                {
+                    stream_.Write( &c, 1 );
+                }
+            }
+        }
+
         void Append( wchar_t c )
         {
             if constexpr ( isWide )
@@ -247,6 +267,26 @@ namespace Harlinn::Common::Core
                 std::wstring_view view( &c, 1 );
                 auto str = AnsiString::From( view );
                 stream_.Write( str, str.Length( ) );
+            }
+        }
+
+        void Append( wchar_t c, size_t count )
+        {
+            if constexpr ( isWide )
+            {
+                for ( size_t i = 0; i < count; i++ )
+                {
+                    stream_.Write( &c, sizeof( wchar_t ) );
+                }
+            }
+            else
+            {
+                std::wstring_view view( &c, 1 );
+                auto str = AnsiString::From( view );
+                for ( size_t i = 0; i < count; i++ )
+                {
+                    stream_.Write( str, str.Length( ) );
+                }
             }
         }
 

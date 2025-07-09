@@ -29,7 +29,13 @@
     <ClInclude Include="MarkdownBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D2MStructure.h">
+    <ClInclude Include="D2MMarkdownFormatter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D2MTemplates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D2MPathBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -37,5 +43,52 @@
     <None Include="Data\header.md">
       <Filter>Data</Filter>
     </None>
+    <None Include="Data\class_list.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\class.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\concept.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\concept_list.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\enum.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\enum_list.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\function.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\function_list.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\namespace.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\namespace_list.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\typedef_list.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\union.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\union_list.md">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\variable_list.md">
+      <Filter>Data</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Data\templates.xml">
+      <Filter>Data</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

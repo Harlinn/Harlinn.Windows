@@ -1,5 +1,5 @@
 ---
 layout: page
-title: {}
+title: {{page.title}}
 toplevel: false
 ---

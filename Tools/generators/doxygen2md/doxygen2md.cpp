@@ -14,249 +14,10 @@
    limitations under the License.
 */
 
-#include "D2MStructure.h"
+#include "D2MMarkdownFormatter.h"
 
 using namespace Doxygen2Md;
 using namespace Harlinn::Common::Core;
-
-class PathBuilder
-{
-    const std::string outputDirectory_;
-public:
-    PathBuilder( const std::string& outputDirectory )
-        : outputDirectory_( outputDirectory )
-    { }
-
-
-    std::string NameOf( Doxygen::Structure::CompoundDef* compoundDef )
-    {
-        const std::string& compoundName = compoundDef->CompoundName( );
-        auto owner = static_cast< Doxygen::Structure::CompoundDef* >( compoundDef->Owner( ) );
-        if ( owner )
-        {
-            const std::string& ownerCompoundName = owner->CompoundName( );
-            auto ownerCompoundNameLength = ownerCompoundName.length( );
-            auto compoundNameLength = compoundName.length( );
-            if ( compoundNameLength > ownerCompoundNameLength + 2 )
-            {
-                if ( compoundName[ ownerCompoundNameLength ] != ':' && compoundName[ ownerCompoundNameLength + 1 ] != ':' )
-                {
-                    throw std::exception( "Expected \"::\"" );
-                }
-                return compoundName.substr( ownerCompoundNameLength + 2 );
-            }
-            else
-            {
-                throw std::exception( "No room for \"::\" + name" );
-            }
-        }
-        else
-        {
-            return compoundName;
-        }
-    }
-
-    
-
-
-    static std::string FileSystemBaseName( const std::string& name )
-    {
-        StringBuilder<char> sb;
-        for ( const auto c : name )
-        {
-            if ( IsUpper( c ) )
-            {
-                sb.Append( '_' );
-                sb.Append( ToLower( c ) );
-            }
-            else if ( IsAlnum( c ) )
-            {
-                sb.Append( c );
-            }
-            else if(IsSpace( c ) == false)
-            {
-                switch ( c )
-                {
-                    case '_':
-                    {
-                        sb.Append( '_' );
-                        sb.Append( '_' );
-                    }
-                    break;
-                    case ':':
-                    {
-                        sb.Append( '_' );
-                        sb.Append( '1' );
-                    }
-                    break;
-                    case '<':
-                    {
-                        sb.Append( '_' );
-                        sb.Append( '2' );
-                    }
-                    break;
-                    case '>':
-                    {
-                        sb.Append( '_' );
-                        sb.Append( '3' );
-                    }
-                    break;
-                }
-            }
-        }
-        return sb.ToString<std::string>( );
-    }
-
-
-
-
-    std::string PathOf( Doxygen::Structure::CompoundDef* compoundDef, char separator = '\\' )
-    {
-        auto owner = static_cast< Doxygen::Structure::CompoundDef* >( compoundDef->Owner( ) );
-        if ( owner )
-        {
-            auto ownerPath = PathOf( owner );
-            auto compoundDefName = NameOf( compoundDef );
-            auto fileSystemBaseName = FileSystemBaseName( compoundDefName );
-
-            return std::format( "{}{}{}", ownerPath, separator, fileSystemBaseName );
-        }
-        else
-        {
-            auto compoundDefName = NameOf( compoundDef );
-            auto fileSystemBaseName = FileSystemBaseName( compoundDefName );
-            return fileSystemBaseName;
-        }
-
-    }
-
-    std::string PathOf( Doxygen::Structure::MemberDef* memberDef, char separator = '\\' )
-    {
-        auto owner = static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) );
-        if ( owner )
-        {
-            auto ownerPath = PathOf( owner );
-            auto memberDefName = memberDef->Name();
-            auto fileSystemBaseName = FileSystemBaseName( memberDefName );
-
-            return std::format( "{}{}{}", ownerPath, separator, fileSystemBaseName );
-        }
-        else
-        {
-            auto memberDefName = memberDef->Name( );
-            auto fileSystemBaseName = FileSystemBaseName( memberDefName );
-            return fileSystemBaseName;
-        }
-
-    }
-
-    private:
-        static std::string ToString( Doxygen::DoxLanguage language )
-        {
-            using DoxLanguage = Doxygen::DoxLanguage;
-            switch ( language )
-            {
-                case DoxLanguage::Unknown:
-                {
-                    return "cpp";
-                }
-                break;
-                case DoxLanguage::IDL:
-                {
-                    return "idl";
-                }
-                break;
-                case DoxLanguage::Java:
-                {
-                    return "java";
-                }
-                break;
-                case DoxLanguage::CSharp:
-                {
-                    return "csharp";
-                }
-                break;
-                case DoxLanguage::D:
-                {
-                    return "d";
-                }
-                break;
-                case DoxLanguage::PHP:
-                {
-                    return "php";
-                }
-                break;
-                case DoxLanguage::ObjectiveC:
-                {
-                    return "objectivec";
-                }
-                break;
-                case DoxLanguage::Cpp:
-                {
-                    return "cpp";
-                }
-                break; 
-                case DoxLanguage::JavaScript:
-                {
-                    return "javascript";
-                }
-                break;
-                case DoxLanguage::Python:
-                {
-                    return "python";
-                }
-                break;
-                case DoxLanguage::Fortran:
-                {
-                    return "fortran";
-                }
-                break; 
-                case DoxLanguage::VHDL:
-                {
-                    return "vhdl";
-                }
-                break;
-                case DoxLanguage::XML:
-                {
-                    return "xml";
-                }
-                break;
-                case DoxLanguage::SQL:
-                {
-                    return "sql";
-                }
-                break;
-                case DoxLanguage::Markdown:
-                {
-                    return "markdown";
-                }
-                break;
-                case DoxLanguage::Slice:
-                {
-                    return "slice";
-                }
-                break;
-                case DoxLanguage::Lex:
-                {
-                    return "lex";
-                }
-                break;
-            }
-            throw std::exception( "Unexpected language" );
-        }
-    public:
-
-    template<typename T>
-    std::string FilePathOf( T* compoundDef, char separator = '\\' )
-    {
-        auto path = PathOf( compoundDef, separator );
-        auto result = std::format( "{}\\{}\\{}", outputDirectory_, ToString( compoundDef->Language() ), path );
-        return result;
-    }
-
-
-
-};
 
 
 int main(int argc, char* argv[] )
@@ -276,7 +37,7 @@ int main(int argc, char* argv[] )
         const auto& allCompoundDefs = typeSystem->AllCompoundDefs( );
         auto allCompoundDefsSize = allCompoundDefs.size( );
         
-        PathBuilder pathBuilder( options.OutputDirectory( ) );
+        PathBuilder pathBuilder( options.OutputDirectory( ), options.SiteUrl( ), options.RelativeOutputUrl( ) );
         std::vector<std::string> paths;
         for ( const auto& entry : allCompoundDefs )
         {
@@ -347,6 +108,41 @@ int main(int argc, char* argv[] )
 
         PrintLn( "unexpectedCompoundName : {}", unexpectedCompoundName );
         PrintLn( "unnamedMemberDefs : {}", unnamedMemberDefs );
+
+        std::map<std::string, std::vector< Doxygen::Structure::MemberDef* > > memberFiles;
+
+        for ( const auto& entry : allMemberDefs )
+        {
+            auto memberDef = entry.second;
+            auto memberDefKind = memberDef->Kind( );
+            if ( ( memberDefKind == Doxygen::DoxMemberKind::Enum || memberDefKind == Doxygen::DoxMemberKind::Function ) &&  memberDef->Language( ) == Doxygen::DoxLanguage::Cpp )
+            {
+                if ( memberDef->QualifiedName( ).length( ) )
+                {
+                    auto owner = static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) );
+                    if ( owner->CompoundName( ) != memberDef->QualifiedName( ) )
+                    {
+                        auto fileName = pathBuilder.FilePathOf( memberDef );
+                        auto it = memberFiles.find( fileName );
+                        if ( it == memberFiles.end( ) )
+                        {
+                            memberFiles.emplace( fileName, std::vector< Doxygen::Structure::MemberDef* >{memberDef} );
+                        }
+                        else
+                        {
+                            it->second.emplace_back( memberDef );
+                        }
+                    }
+                }
+            }
+        }
+
+        PrintLn( "Member def count : {}", allMemberDefs.size( ) );
+        PrintLn( "Member file count : {}", memberFiles.size() );
+
+        auto templates = Templates::Load( options.Templates( ) );
+        auto header = templates.Header( );
+
 
 
     }

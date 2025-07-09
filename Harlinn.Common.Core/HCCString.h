@@ -6686,7 +6686,11 @@ namespace Harlinn::Common::Core
         /// <returns>
         /// The HTML-encoded string.
         /// </returns>
-        HCC_EXPORT WideString Encode( const wchar_t* text, size_t textLength );
+        template<WideStringLike T>
+        HCC_EXPORT T Encode( const wchar_t* text, size_t textLength );
+
+        
+
         /// <summary>
         /// Converts a string that has been HTML-encoded for HTTP transmission into a decoded string.
         /// </summary>
@@ -6698,69 +6702,74 @@ namespace Harlinn::Common::Core
         /// <returns>
         /// The HTML-decoded string.
         /// </returns>
-        HCC_EXPORT WideString Decode( const wchar_t* text, size_t textLength );
+        template<WideStringLike T>
+        HCC_EXPORT T Decode( const wchar_t* text, size_t textLength );
 
-        template<typename StringT>
-            requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, std::wstring> || std::is_same_v<StringT, std::wstring_view>
-        inline WideString Encode( const StringT& str )
+        
+        
+
+        template<WideStringLike StringT, typename ArgStringT>
+            requires std::is_same_v<ArgStringT, WideString> || std::is_same_v<ArgStringT, std::wstring> || std::is_same_v<ArgStringT, std::wstring_view>
+        inline StringT Encode( const ArgStringT& str )
         {
             if ( str.empty( ) == false )
             {
-                return Encode( str.data( ), str.size( ) );
+                return Encode<StringT>( str.data( ), str.size( ) );
             }
             return {};
         }
 
-        template<typename StringT>
-            requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, std::wstring> || std::is_same_v<StringT, std::wstring_view>
-        inline WideString Decode( const StringT& str )
+        template<WideStringLike StringT, typename ArgStringT>
+            requires std::is_same_v<ArgStringT, WideString> || std::is_same_v<ArgStringT, std::wstring> || std::is_same_v<ArgStringT, std::wstring_view>
+        inline StringT Decode( const ArgStringT& str )
         {
             if ( str.empty( ) == false )
             {
-                return Decode( str.data( ), str.size( ) );
+                return Decode<StringT>( str.data( ), str.size( ) );
             }
             return {};
         }
 
-
-        inline AnsiString Encode( const char* text, size_t textLength )
+        template<AnsiStringLike T>
+        inline T Encode( const char* text, size_t textLength )
         {
             WideString ws;
             ToWideString( text, textLength, ws );
-            auto encoded = Encode( ws );
-            AnsiString result;
+            auto encoded = Encode<WideString>( ws );
+            T result;
             ToAnsiString( encoded.c_str( ), encoded.size( ), result );
             return result;
         }
-        inline AnsiString Decode( const char* text, size_t textLength )
+        template<AnsiStringLike T>
+        inline T Decode( const char* text, size_t textLength )
         {
             WideString ws;
             ToWideString( text, textLength, ws );
-            auto decoded = Decode( ws );
-            AnsiString result;
+            auto decoded = Decode<WideString>( ws );
+            T result;
             ToAnsiString( decoded.c_str( ), decoded.size( ), result );
             return result;
         }
 
 
-        template<typename StringT>
-            requires std::is_same_v<StringT, AnsiString> || std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::string_view>
-        inline AnsiString Encode( const StringT& str )
+        template<AnsiStringLike StringT, typename ArgStringT>
+            requires std::is_same_v<ArgStringT, AnsiString> || std::is_same_v<ArgStringT, std::string> || std::is_same_v<ArgStringT, std::string_view>
+        inline StringT Encode( const ArgStringT& str )
         {
             if ( str.empty( ) == false )
             {
-                return Encode( str.data( ), str.size( ) );
+                return Encode<StringT>( str.data( ), str.size( ) );
             }
             return {};
         }
 
-        template<typename StringT>
-            requires std::is_same_v<StringT, AnsiString> || std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::string_view>
-        inline AnsiString Decode( const StringT& str )
+        template<AnsiStringLike StringT, typename ArgStringT>
+            requires std::is_same_v<ArgStringT, AnsiString> || std::is_same_v<ArgStringT, std::string> || std::is_same_v<ArgStringT, std::string_view>
+        inline StringT Decode( const ArgStringT& str )
         {
             if ( str.empty( ) == false )
             {
-                return Decode( str.data( ), str.size( ) );
+                return Decode<StringT>( str.data( ), str.size( ) );
             }
             return {};
         }

@@ -472,6 +472,7 @@ namespace Harlinn::Common::Core::RapidXml
     public:
         using Base = XmlBase<Ch>;
         using StringType = typename Base::StringType;
+        using StringView = typename Base::StringView;
     protected:
         using Base::data_;
     public:
@@ -492,10 +493,32 @@ namespace Harlinn::Common::Core::RapidXml
             return data->type( );
         }
 
+
+        bool HasAttribute( const Ch* name ) const
+        {
+            rapidxml::xml_node<Ch>* data = Data( );
+            auto attr = data->first_attribute( name );
+            return attr != nullptr;
+        }
+
+        bool HasAttribute( const StringView& name ) const
+        {
+            rapidxml::xml_node<Ch>* data = Data( );
+            auto attr = data->first_attribute( name.data( ), name.size( ) );
+            return attr != nullptr;
+        }
+
         XmlAttribute<Ch> Attribute( const Ch* name ) const
         {
             rapidxml::xml_node<Ch>* data = Data( );
             auto attr = data->first_attribute( name );
+            return XmlAttribute<Ch>( attr );
+        }
+
+        XmlAttribute<Ch> Attribute( const StringView& name ) const
+        {
+            rapidxml::xml_node<Ch>* data = Data( );
+            auto attr = data->first_attribute( name.data(), name.size() );
             return XmlAttribute<Ch>( attr );
         }
 
@@ -512,8 +535,33 @@ namespace Harlinn::Common::Core::RapidXml
         }
 
         template<typename T>
+            requires ( std::is_same_v<T, bool> || std::is_floating_point_v<T> || std::is_enum_v<T> )
+        T Read( const StringView& name ) const
+        {
+            auto attr = Attribute( name );
+            if ( attr )
+            {
+                return attr.Read<T>( );
+            }
+            return {};
+        }
+
+
+        template<typename T>
             requires std::is_integral_v<T> && ( std::is_same_v<T, bool> == false )
         T Read( const Ch* name, int radix = 10 ) const
+        {
+            auto attr = Attribute( name );
+            if ( attr )
+            {
+                return attr.Read<T>( radix );
+            }
+            return {};
+        }
+
+        template<typename T>
+            requires std::is_integral_v<T> && ( std::is_same_v<T, bool> == false )
+        T Read( const StringView& name, int radix = 10 ) const
         {
             auto attr = Attribute( name );
             if ( attr )
@@ -535,10 +583,30 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
+        template<StringLike T>
+        T Read( const StringView& name ) const
+        {
+            auto attr = Attribute( name );
+            if ( attr )
+            {
+                return attr.Read<T>( );
+            }
+            return {};
+        }
+
+
         XmlNode<Ch> Child( const Ch* name ) const
         {
             return FirstNode( name );
         }
+
+        XmlNode<Ch> Child( const StringView& name ) const
+        {
+            return FirstNode( name );
+        }
+
+
+
 
         template<typename T>
             requires std::is_constructible_v<T, XmlNode<Ch> >
@@ -552,6 +620,20 @@ namespace Harlinn::Common::Core::RapidXml
             }
             return {};
         }
+
+        template<typename T>
+            requires std::is_constructible_v<T, XmlNode<Ch> >
+        std::shared_ptr<T> Child( const StringView& name ) const
+        {
+            XmlNode<Ch> child = FirstNode( name );
+            if ( child )
+            {
+                auto result = std::make_shared<T>( child );
+                return result;
+            }
+            return {};
+        }
+
 
         template<WideStringLike T>
         T Child( const Ch* name ) const
@@ -574,6 +656,28 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
+        template<WideStringLike T>
+        T Child( const StringView& name ) const
+        {
+            XmlNode<Ch> child = FirstNode( name );
+            if ( child )
+            {
+                rapidxml::xml_node<Ch>* childData = static_cast< rapidxml::xml_node<Ch>* >( child.data_ );
+                if constexpr ( std::is_same_v<wchar_t, Ch> )
+                {
+                    return T( childData->value( ), childData->value_size( ) );
+                }
+                else
+                {
+                    T result;
+                    ToWideString( childData->value( ), childData->value_size( ), result );
+                    return result;
+                }
+            }
+            return {};
+        }
+
+
         template<AnsiStringLike T>
         T Child( const Ch* name ) const
         {
@@ -595,6 +699,28 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
+        template<AnsiStringLike T>
+        T Child( const StringView& name ) const
+        {
+            XmlNode<Ch> child = FirstNode( name );
+            if ( child )
+            {
+                rapidxml::xml_node<Ch>* childData = static_cast< rapidxml::xml_node<Ch>* >( child.data_ );
+                if constexpr ( std::is_same_v<char, Ch> )
+                {
+                    return T( childData->value( ), childData->value_size( ) );
+                }
+                else
+                {
+                    T result;
+                    ToAnsiString( childData->value( ), childData->value_size( ), result );
+                    return result;
+                }
+            }
+            return {};
+        }
+
+
 
 
         std::vector< XmlNode<Ch>> Children( const Ch* name ) const
@@ -611,6 +737,22 @@ namespace Harlinn::Common::Core::RapidXml
             }
             return result;
         }
+
+        std::vector< XmlNode<Ch>> Children( const StringView& name ) const
+        {
+            std::vector<XmlNode<Ch>> result;
+            auto childNode = FirstNode( name );
+            if ( childNode )
+            {
+                do
+                {
+                    result.emplace_back( childNode );
+                    childNode = childNode.NextSibling( name );
+                } while ( childNode );
+            }
+            return result;
+        }
+
 
         template<typename T>
             requires std::is_constructible_v<T, XmlNode<Ch> >
@@ -629,6 +771,25 @@ namespace Harlinn::Common::Core::RapidXml
             }
             return result;
         }
+
+        template<typename T>
+            requires std::is_constructible_v<T, XmlNode<Ch> >
+        std::vector<std::shared_ptr<T>> Children( const StringView& name ) const
+        {
+            std::vector<std::shared_ptr<T>> result;
+            auto childNode = FirstNode( name );
+            if ( childNode )
+            {
+                do
+                {
+                    auto element = std::make_shared<T>( childNode );
+                    result.emplace_back( std::move( element ) );
+                    childNode = childNode.NextSibling( name );
+                } while ( childNode );
+            }
+            return result;
+        }
+
 
 
         template<WideStringLike T>
@@ -649,6 +810,59 @@ namespace Harlinn::Common::Core::RapidXml
                     {
                         T s;
                         ToWideString( childData->value( ), childData->value_size( ), s );
+                        result.emplace_back( std::move( s ) );
+                    }
+                    child = child.NextSibling( name );
+                } while ( child );
+            }
+            return result;
+        }
+
+        template<WideStringLike T>
+        std::vector<T> Children( const StringView& name ) const
+        {
+            std::vector<T> result;
+            XmlNode<Ch> child = FirstNode( name );
+            if ( child )
+            {
+                do
+                {
+                    rapidxml::xml_node<Ch>* childData = static_cast< rapidxml::xml_node<Ch>* >( child.data_ );
+                    if constexpr ( std::is_same_v<wchar_t, Ch> )
+                    {
+                        result.emplace_back( T( childData->value( ), childData->value_size( ) ) );
+                    }
+                    else
+                    {
+                        T s;
+                        ToWideString( childData->value( ), childData->value_size( ), s );
+                        result.emplace_back( std::move( s ) );
+                    }
+                    child = child.NextSibling( name );
+                } while ( child );
+            }
+            return result;
+        }
+
+
+        template<AnsiStringLike T>
+        std::vector<T> Children( const StringView& name ) const
+        {
+            std::vector<T> result;
+            XmlNode<Ch> child = FirstNode( name );
+            if ( child )
+            {
+                do
+                {
+                    rapidxml::xml_node<Ch>* childData = static_cast< rapidxml::xml_node<Ch>* >( child.data_ );
+                    if constexpr ( std::is_same_v<char, Ch> )
+                    {
+                        result.emplace_back( T( childData->value( ), childData->value_size( ) ) );
+                    }
+                    else
+                    {
+                        T s;
+                        ToAnsiString( childData->value( ), childData->value_size( ), s );
                         result.emplace_back( std::move( s ) );
                     }
                     child = child.NextSibling( name );
@@ -682,6 +896,7 @@ namespace Harlinn::Common::Core::RapidXml
             }
             return result;
         }
+
 
         template<WideStringLike T>
         T Content( ) const

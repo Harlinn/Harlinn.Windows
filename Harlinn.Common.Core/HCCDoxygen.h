@@ -379,7 +379,7 @@ namespace Harlinn::Common::Core::Doxygen
         DocTableType,
         DocRefTextType,
         DocVariableListType,
-        DocVariableListGroup,
+        //DocVariableListGroup,
         DocVarListEntryType,
         DocSimpleSectType,
         DocListItemType,
@@ -473,7 +473,7 @@ namespace Harlinn::Common::Core::Doxygen
     class DocTableType;
     class DocRefTextType;
     class DocVariableListType;
-    class DocVariableListGroup;
+    //class DocVariableListGroup;
     class DocVarListEntryType;
     class DocSimpleSectType;
     class DocListItemType;
@@ -563,7 +563,7 @@ namespace Harlinn::Common::Core::Doxygen
     using DocTableTypePtr = std::shared_ptr<DocTableType>;
     using DocRefTextTypePtr = std::shared_ptr<DocRefTextType>;
     using DocVariableListTypePtr = std::shared_ptr<DocVariableListType>;
-    using DocVariableListGroupPtr = std::shared_ptr<DocVariableListGroup>;
+    //using DocVariableListGroupPtr = std::shared_ptr<DocVariableListGroup>;
     using DocVarListEntryTypePtr = std::shared_ptr<DocVarListEntryType>;
     using DocSimpleSectTypePtr = std::shared_ptr<DocSimpleSectType>;
     using DocListItemTypePtr = std::shared_ptr<DocListItemType>;
@@ -974,6 +974,7 @@ namespace Harlinn::Common::Core::Doxygen
         };
     }
 
+
     class TextType : public Internal::DocBase<Doxygen::DoxType::TextType>
     {
         std::string text_;
@@ -1106,51 +1107,61 @@ namespace Harlinn::Common::Core::Doxygen
     };
 
 
-    class DocEmptyType : public Internal::DocBase<Doxygen::DoxType::DocEmptyType>
+    class DocEmptyType : public Internal::DocBase<DoxType::DocEmptyType>
     {
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocEmptyType>;
+        using Base = Internal::DocBase<DoxType::DocEmptyType>;
 
         DocEmptyType( ) = default;
         HCC_EXPORT explicit DocEmptyType( const XmlNode& xmlNode );
     };
 
-    class DocParBlockType : public Internal::DocBase<Doxygen::DoxType::DocParBlockType>
+    class DocParBlockType : public Internal::DocBase<DoxType::DocParBlockType>, public std::vector<DocParaTypePtr>
     {
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocParBlockType>;
+        using Base = Internal::DocBase<DoxType::DocParBlockType>;
 
         DocParBlockType( ) = default;
         HCC_EXPORT explicit DocParBlockType( const XmlNode& xmlNode );
     };
 
-    class DocBlockQuoteType : public Internal::DocBase<Doxygen::DoxType::DocBlockQuoteType>
+    class DocBlockQuoteType : public Internal::DocBase<DoxType::DocBlockQuoteType>, public std::vector<DocParaTypePtr>
     {
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocBlockQuoteType>;
+        using Base = Internal::DocBase<DoxType::DocBlockQuoteType>;
 
         DocBlockQuoteType( ) = default;
         HCC_EXPORT explicit DocBlockQuoteType( const XmlNode& xmlNode );
     };
 
-    class DocDetailsType : public Internal::DocBase<Doxygen::DoxType::DocDetailsType>
+    class DocDetailsType : public Internal::DocBase<DoxType::DocDetailsType>, public std::vector<DocParaTypePtr>
     {
+        DocSummaryTypePtr summary_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocDetailsType>;
+        using Base = Internal::DocBase<DoxType::DocDetailsType>;
 
         DocDetailsType( ) = default;
         HCC_EXPORT explicit DocDetailsType( const XmlNode& xmlNode );
 
+        const DocSummaryTypePtr& Summary( ) const { return summary_; }
+
     };
 
 
-    class DocCopyType : public Internal::DocBase<Doxygen::DoxType::DocCopyType>
+    class DocCopyType : public Internal::DocBase<DoxType::DocCopyType>, public std::vector<DocParaTypePtr>
     {
+        std::string link_;
+        std::vector<DocSect1TypePtr> sect1_;
+        std::vector<DocInternalTypePtr> internal_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocCopyType>;
+        using Base = Internal::DocBase<DoxType::DocCopyType>;
 
         DocCopyType( ) = default;
         HCC_EXPORT explicit DocCopyType( const XmlNode& xmlNode );
+
+        const std::string& Link( ) const { return link_; }
+        const std::vector<DocSect1TypePtr>& Sect1( ) const { return sect1_; }
+        const std::vector<DocInternalTypePtr>& Internal( ) const { return internal_; }
 
     };
 
@@ -1164,58 +1175,90 @@ namespace Harlinn::Common::Core::Doxygen
 
     };
 
-    class DocParamName : public Internal::DocBase<Doxygen::DoxType::DocParamName>
+    /// <summary>
+    /// A sequence of TextType or RefTextType objects
+    /// </summary>
+    class DocParamName : public Internal::DocBase<DoxType::DocParamName>, public std::vector<DocBaseTypePtr>
     {
+        std::optional<DoxParamDir> direction_;
+        /// <summary>
+        ///  `ref_` is also stored in the vector
+        /// </summary>
+        RefTextTypePtr ref_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocParamName>;
+        using Base = Internal::DocBase<DoxType::DocParamName>;
 
         DocParamName( ) = default;
         HCC_EXPORT explicit DocParamName( const XmlNode& xmlNode );
+
+        const std::optional<DoxParamDir>& Direction( ) const { return direction_; }
+        const RefTextTypePtr& Ref( ) const { return ref_; }
     };
 
-    class DocParamType : public Internal::DocBase<Doxygen::DoxType::DocParamType>
+    class DocParamType : public Internal::DocBase<DoxType::DocParamType>, public std::vector<DocBaseTypePtr>
     {
+        /// <summary>
+        ///  `ref_` is also stored in the vector
+        /// </summary>
+        RefTextTypePtr ref_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocParamType>;
+        using Base = Internal::DocBase<DoxType::DocParamType>;
 
         DocParamType( ) = default;
         HCC_EXPORT explicit DocParamType( const XmlNode& xmlNode );
+
+        const RefTextTypePtr& Ref( ) const { return ref_; }
+
     };
 
-    class DocParamNameList : public Internal::DocBase<Doxygen::DoxType::DocParamNameList>
+    
+
+    class DocParamNameList : public Internal::DocBase<DoxType::DocParamNameList>, public std::vector<DocBaseTypePtr>
     {
+
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocParamNameList>;
+        using Base = Internal::DocBase<DoxType::DocParamNameList>;
 
         DocParamNameList( ) = default;
         HCC_EXPORT explicit DocParamNameList( const XmlNode& xmlNode );
     };
 
-    class DocParamListItem : public Internal::DocBase<Doxygen::DoxType::DocParamListItem>
+    class DocParamListItem : public Internal::DocBase<DoxType::DocParamListItem>, public std::vector<DocParamNameListPtr>
     {
+        DescriptionTypePtr parameterDescription_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocParamListItem>;
+        using Base = Internal::DocBase<DoxType::DocParamListItem>;
 
         DocParamListItem( ) = default;
         HCC_EXPORT explicit DocParamListItem( const XmlNode& xmlNode );
+
+        const DescriptionTypePtr& ParameterDescription( ) const { return parameterDescription_; }
+
     };
 
-    class DocParamListType : public Internal::DocBase<Doxygen::DoxType::DocParamListType>
+    class DocParamListType : public Internal::DocBase<DoxType::DocParamListType>, public std::vector<DocParamListItemPtr>
     {
+        DoxParamListKind kind_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocParamListType>;
+        using Base = Internal::DocBase<DoxType::DocParamListType>;
 
         DocParamListType( ) = default;
         HCC_EXPORT explicit DocParamListType( const XmlNode& xmlNode );
+
+        DoxParamListKind kind( ) const { return kind_; }
+
     };
 
-    class DocLanguageType : public Internal::DocBase<Doxygen::DoxType::DocLanguageType>
+    class DocLanguageType : public Internal::DocBase<DoxType::DocLanguageType>, public std::vector<DocParaTypePtr>
     {
+        std::string langid_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocLanguageType>;
+        using Base = Internal::DocBase<DoxType::DocLanguageType>;
 
         DocLanguageType( ) = default;
         HCC_EXPORT explicit DocLanguageType( const XmlNode& xmlNode );
+
+        const std::string& LangId( ) const { return langid_; }
     };
 
 
@@ -1275,13 +1318,20 @@ namespace Harlinn::Common::Core::Doxygen
     };
 
 
-    class DocHeadingType : public Internal::DocBase<Doxygen::DoxType::DocHeadingType>
+    class DocHeadingType : public Internal::DocBase<Doxygen::DoxType::DocHeadingType>, public std::vector<DocCmdGroupType>
     {
+        int level_ = 0;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocHeadingType>;
 
         DocHeadingType( ) = default;
         HCC_EXPORT explicit DocHeadingType( const XmlNode& xmlNode );
+
+        int Level( ) const
+        {
+            return level_;
+        }
+
 
     };
 
@@ -1338,7 +1388,7 @@ namespace Harlinn::Common::Core::Doxygen
 
     };
 
-    class DocVariableListType : public Internal::DocBase<Doxygen::DoxType::DocVariableListType>, public std::vector<DocVariableListGroupPtr>
+    class DocVariableListType : public Internal::DocBase<Doxygen::DoxType::DocVariableListType>, public std::vector<DocBaseTypePtr>
     {
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocVariableListType>;
@@ -1347,6 +1397,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit DocVariableListType( const XmlNode& xmlNode );
     };
 
+    /*
     class DocVariableListGroup : public Internal::DocBase<Doxygen::DoxType::DocVariableListGroup>
     {
         DocVarListEntryTypePtr varListEntry_;
@@ -1361,6 +1412,7 @@ namespace Harlinn::Common::Core::Doxygen
         const DocListItemTypePtr& ListItem( ) const { return listItem_; }
 
     };
+    */
 
     class DocVarListEntryType : public Internal::DocBase<Doxygen::DoxType::DocVarListEntryType>
     {
@@ -1493,7 +1545,7 @@ namespace Harlinn::Common::Core::Doxygen
         DocParaType( ) = default;
         HCC_EXPORT explicit DocParaType( const XmlNode& xmlNode );
     };
-    /*
+    
     class DocCmdGroup : public Internal::DocBase<Doxygen::DoxType::DocCmdGroup>
     {
     public:
@@ -1502,7 +1554,7 @@ namespace Harlinn::Common::Core::Doxygen
         DocCmdGroup( ) = default;
         HCC_EXPORT explicit DocCmdGroup( const XmlNode& xmlNode );
     };
-    */
+    
 
     class DocSummaryType : public Internal::DocBase<Doxygen::DoxType::DocSummaryType>, public std::vector<DocCmdGroupType>
     {
@@ -1522,7 +1574,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit DocTitleType( const XmlNode& xmlNode );
     };
 
-    /*
+    
     class DocTitleCmdGroup : public Internal::DocBase<Doxygen::DoxType::DocTitleCmdGroup>
     {
 
@@ -1532,7 +1584,7 @@ namespace Harlinn::Common::Core::Doxygen
         DocTitleCmdGroup( ) = default;
         HCC_EXPORT explicit DocTitleCmdGroup( const XmlNode& xmlNode );
     };
-    */
+    
     namespace Internal
     {
         template<Doxygen::DoxType doxType>
@@ -2018,22 +2070,21 @@ namespace Harlinn::Common::Core::Doxygen
 
     };
 
-    class DescriptionType : public Internal::DocBase<Doxygen::DoxType::DescriptionType>, public std::vector<DocBaseTypePtr>
+    class DescriptionType : public Internal::DocBase<DoxType::DescriptionType>, public std::vector<DocBaseTypePtr>
     {
         TitleTypePtr title_;
-        std::vector<DocParaTypePtr> para_;
         std::vector<DocInternalTypePtr> internal_;
         std::vector<DocSect1TypePtr> sect1_;
     public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DescriptionType>;
+        using Base = Internal::DocBase<DoxType::DescriptionType>;
 
         DescriptionType( ) = default;
         HCC_EXPORT explicit DescriptionType( const XmlNode& xmlNode );
 
         const TitleTypePtr& Title( ) const { return title_; }
-        const std::vector<DocParaTypePtr>& Para( ) const { return para_; }
         const std::vector<DocInternalTypePtr>& Internal( ) const { return internal_; }
         const std::vector<DocSect1TypePtr>& Sect1( ) const { return sect1_; }
+        
     };
 
 
@@ -2809,6 +2860,10 @@ namespace Harlinn::Common::Core::Doxygen
         };
 
 
+        
+
+
+
         class Inherit
         {
             CompoundDef* base_{};
@@ -2924,6 +2979,12 @@ namespace Harlinn::Common::Core::Doxygen
             { 
                 return compoundDefType_->Prot( );
             }
+
+            DoxProtectionKind AccessSpecifier( ) const
+            {
+                return Protection( );
+            }
+
             bool Final( ) const 
             { 
                 return compoundDefType_->Final();
@@ -2943,6 +3004,10 @@ namespace Harlinn::Common::Core::Doxygen
             const std::string& CompoundName( ) const 
             { 
                 return compoundDefType_->CompoundName( );
+            }
+            const std::string& QualifiedName( ) const
+            {
+                return CompoundName( );
             }
 
             std::string CompoundBaseName( ) const
@@ -2973,9 +3038,45 @@ namespace Harlinn::Common::Core::Doxygen
                 }
             }
 
+            std::string Name( ) const
+            {
+                auto owner = static_cast< CompoundDef* >( Owner( ) );
+                if ( owner )
+                {
+                    const std::string& ownerCompoundName = owner->CompoundName( );
+                    auto ownerCompoundNameLength = ownerCompoundName.length( );
+                    const std::string& compoundName = CompoundName( );
+                    
+                    if ( ownerCompoundNameLength > compoundName.length( ) + 2 )
+                    {
+                        auto start = ownerCompoundNameLength;
+                        if ( compoundName[ start ] == ':' || compoundName[ start ] == '.' )
+                        {
+                            start++;
+                        }
+                        if ( compoundName[ start ] == ':' )
+                        {
+                            start++;
+                        }
+                        return compoundName.substr( start );
+                    }
+                    return compoundName;
+                }
+                else
+                {
+                    return CompoundName( );
+                }
+            }
+
+
             const std::string& Title( ) const 
             { 
-                return compoundDefType_->Title( );
+                const std::string& title = compoundDefType_->Title( );
+                if ( title.length( ) == 0 )
+                {
+                    return CompoundName( );
+                }
+                return title;
             }
             const std::vector<std::string>& Qualifiers( ) const 
             { 
@@ -4961,6 +5062,61 @@ namespace Harlinn::Common::Core
     {
         return Doxygen::ParseDoxCmdGroupType( std::basic_string<CharT>( str ) );
     }
+
+    /////////
+    HCC_EXPORT std::string to_string( Doxygen::DoxType value );
+    HCC_EXPORT std::string to_string( Doxygen::DoxType value, const std::string& defaultResult );
+
+    inline std::wstring to_wstring( Doxygen::DoxType value )
+    {
+        return to_wstring( to_string( value ) );
+    }
+    inline std::wstring to_wstring( Doxygen::DoxType value, const std::wstring& defaultResult )
+    {
+        return to_wstring( to_string( value, to_string( defaultResult ) ) );
+    }
+
+    namespace Doxygen
+    {
+        HCC_EXPORT DoxType ParseDoxType( const std::string& str );
+        HCC_EXPORT DoxType ParseDoxType( const std::string& str, DoxType defaultResult );
+        HCC_EXPORT bool TryParseDoxType( const std::string& str, DoxType& value );
+
+        inline DoxType ParseDoxType( const std::wstring& str )
+        {
+            return ParseDoxType( to_string( str ) );
+        }
+        inline DoxType ParseDoxType( const std::wstring& str, DoxType defaultResult )
+        {
+            return ParseDoxType( to_string( str ), defaultResult );
+        }
+        inline bool TryParseDoxType( const std::wstring& str, DoxType& value )
+        {
+            return TryParseDoxType( to_string( str ), value );
+        }
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring>
+    inline bool TryParse( const StringT& str, Doxygen::DoxType& value )
+    {
+        return Doxygen::TryParseDoxType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Doxygen::DoxType, T> && ( std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::wstring> )
+    inline T Parse( const StringT& str )
+    {
+        return Doxygen::ParseDoxType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Doxygen::DoxType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Doxygen::ParseDoxType( std::basic_string<CharT>( str ) );
+    }
+
 }
 
 
