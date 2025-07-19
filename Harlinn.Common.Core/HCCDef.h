@@ -17,10 +17,6 @@
    limitations under the License.
 */
 
-#define HCC_WITH_BASIC_STRING 1
-
-
-
 #pragma warning(disable:4996)
 #pragma warning(disable:4091)
 #pragma warning(disable:4503)
@@ -302,14 +298,9 @@
 #include <Harlinn/Common/BasicTypes.h>
 
 #define HCC_USE_COMMON 1
-#define HCC_WITH_BASIC_STRING 1
 
 namespace Harlinn::Common::Core
 {
-
-
-
-#ifdef HCC_WITH_BASIC_STRING
     template<typename T>
     class BasicString;
 
@@ -321,12 +312,6 @@ namespace Harlinn::Common::Core
 
     using WideStringView = BasicStringView<wchar_t>;
     using AnsiStringView = BasicStringView<char>;
-#else
-    using WideString = std::wstring;
-    using AnsiString = std::string;
-    using WideStringView = std::wstring_view;
-    using AnsiStringView = std::string_view;
-#endif
 
     class Guid;
     class DateTime;

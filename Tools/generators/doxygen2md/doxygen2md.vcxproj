@@ -149,9 +149,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2MMarkdownFormatter.h" />
+    <ClInclude Include="D2MSubstitutionTable.h" />
     <ClInclude Include="D2MTemplates.h" />
     <ClInclude Include="doxygen2mdOptions.h" />
-    <ClInclude Include="MarkdownBase.h" />
+    <ClInclude Include="D2MMarkdownStream.h" />
     <ClInclude Include="D2MPathBuilder.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +173,7 @@
     <None Include="Data\variable_list.md" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="Data\substitution.xml" />
     <Xml Include="Data\templates.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

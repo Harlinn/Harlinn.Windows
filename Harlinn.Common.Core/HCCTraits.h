@@ -341,10 +341,8 @@ namespace Harlinn::Common::Core
                                 IsStdSpan<T> ||
                                 IsStdBasicString<T> ||
                                 IsStdBasicStringView<T> ||
-#ifdef HCC_WITH_BASIC_STRING
                                 IsBasicString<T> ||
                                 IsBasicStringView<T> ||
-#endif
                                 IsCoreVector<T>;
 
 
@@ -498,27 +496,6 @@ namespace Harlinn::Common::Core
 
     }
 
-#ifndef HCC_USE_COMMON
-    template<typename T>
-    inline constexpr bool IsNotBoolean = std::is_same_v<std::remove_cvref_t<T>, bool> == false;
-    template<typename T>
-    inline constexpr bool IsBoolean = std::is_same_v<std::remove_cvref_t<T>, bool>;
-    template<typename T>
-    inline constexpr bool IsInteger = std::is_integral_v<std::remove_cvref_t<T>> && IsBoolean<T> == false;
-
-    template<typename T>
-    inline constexpr bool IsSignedInteger = IsInteger<std::remove_cvref_t<T>> && std::is_signed_v<std::remove_cvref_t<T>>;
-
-    template<typename T>
-    inline constexpr bool IsUnsignedInteger = IsInteger<T> && std::is_unsigned_v<std::remove_cvref_t<T>>;
-
-    template<typename T>
-    inline constexpr bool IsFloatingPoint = std::is_floating_point_v<std::remove_cvref_t<T>>;
-
-    template<typename T>
-    inline constexpr bool IsArithmetic = IsInteger<T> || IsFloatingPoint<T>;
-#endif
-    
 
     template<typename T>
     inline constexpr bool IsComplex = std::is_same_v<std::remove_cvref_t<T>, std::complex<float>> || std::is_same_v<std::remove_cvref_t<T>, std::complex<double>>;

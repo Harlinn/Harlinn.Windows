@@ -1775,11 +1775,7 @@ namespace Harlinn::Common::Core
                     if ( length == sizeof( int ) )
                     {
                         auto data = ( const int* )theData.data( );
-#ifdef HCC_WITH_BASIC_STRING
                         result = ToWideString( *data );
-#else
-                        result = std::to_wstring( *data );
-#endif
                     }
                 }
 
@@ -1790,11 +1786,7 @@ namespace Harlinn::Common::Core
                     if ( length == sizeof( long long ) )
                     {
                         auto data = ( const long long* )theData.data( );
-#ifdef HCC_WITH_BASIC_STRING
                         result = ToWideString( *data );
-#else
-                        result = std::to_wstring( *data );
-#endif
                     }
                 }
                 break;

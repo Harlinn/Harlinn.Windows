@@ -20,7 +20,6 @@
 #include <HCCString.h>
 #include <HCCIO.h>
 
-
 namespace Doxygen2Md
 {
     using namespace Harlinn::Common;
@@ -32,6 +31,7 @@ namespace Doxygen2Md
         bool help_{};
         std::string inputDirectory_;
         std::string outputDirectory_;
+        std::string substitutionTable_;
         std::string templates_;
         std::string siteUrl_;
         std::string relativeOutputUrl_;
@@ -43,6 +43,11 @@ namespace Doxygen2Md
         bool Help( ) const { return help_; }
         const std::string& InputDirectory( ) const { return inputDirectory_; }
         const std::string& OutputDirectory( ) const { return outputDirectory_; }
+        const std::string& SubstitutionTable( ) const { return substitutionTable_; }
+        bool HasSubstitutionTable( ) const
+        {
+            return substitutionTable_.length( ) > 0 && IO::File::Exist( substitutionTable_ );
+        }
         const std::string& Templates( ) const { return templates_; }
         const std::string& SiteUrl( ) const { return siteUrl_; }
         const std::string& RelativeOutputUrl( ) const { return relativeOutputUrl_; }
@@ -64,8 +69,9 @@ namespace Doxygen2Md
                 ( "help", po::value<bool>( &help_ )->default_value( false ), "produce help message" )
                 ( "doxygen,I", po::value< std::string >( &inputDirectory_ ), "directory containing doxygen generated xml files." )
                 ( "md,O", po::value< std::string >( &outputDirectory_ ), "markdown destination directory." )
+                ( "substitution,S", po::value< std::string >( &substitutionTable_ ), "Substitution table." )
                 ( "templates,T", po::value< std::string >( &templates_ ), "template specification file." )
-                ( "site,S", po::value< std::string >( &siteUrl_ ), "Site url." )
+                ( "siteurl,U", po::value< std::string >( &siteUrl_ ), "Site url." )
                 ( "relative,R", po::value< std::string >( &relativeOutputUrl_ ), "Url of the markdown destination directory relative to the site url." )
                 ;
 

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef MARKDOWNBASE_H_
-#define MARKDOWNBASE_H_
+#ifndef D2MMARKDOWNSTREAM_H_
+#define D2MMARKDOWNSTREAM_H_
 /*
    Copyright 2024-2025 Espen Harlinn
 
@@ -17,7 +17,7 @@
    limitations under the License.
 */
 #include <HCCBlocks.h>
-#include <HCCDoxygen.h>
+#include "D2MMarkdownFormatter.h"
 
 namespace Doxygen2Md
 {
@@ -27,14 +27,14 @@ namespace Doxygen2Md
 
     class MarkdownStream
     {
-        WideString filename_;
+        std::string filename_;
         IO::Blocks::Stream stream_;
     public:
-        MarkdownStream( const WideString& filename )
+        MarkdownStream( const std::string& filename )
             : filename_( filename )
         {
             auto parentDirectory = IO::Path::GetParentDirectory( filename );
-            if ( parentDirectory )
+            if ( parentDirectory.size( ) )
             {
                 if ( IO::Directory::Exist( parentDirectory ) == false )
                 {
@@ -43,7 +43,7 @@ namespace Doxygen2Md
             }
         }
 
-        const WideString& Filename( ) const
+        const std::string& Filename( ) const
         {
             return filename_;
         }
@@ -103,6 +103,35 @@ namespace Doxygen2Md
         }
 
         void WriteLine( const AnsiString& str )
+        {
+            Write( str );
+            WriteLine( );
+        }
+
+        void Write( const std::wstring& wstr )
+        {
+            if ( wstr.length() )
+            {
+                auto str = to_string( wstr );
+                stream_.Write( str.c_str( ), str.length( ) );
+            }
+        }
+
+        void Write( const std::string& str )
+        {
+            if ( str.length( ) )
+            {
+                stream_.Write( str.c_str( ), str.length( ) );
+            }
+        }
+
+        void WriteLine( const std::wstring& wstr )
+        {
+            Write( wstr );
+            WriteLine( );
+        }
+
+        void WriteLine( const std::string& str )
         {
             Write( str );
             WriteLine( );

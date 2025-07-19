@@ -3718,8 +3718,7 @@ namespace Harlinn::Common::Core::IO
             return result;
         }
 
-        template<typename T>
-            requires IsBasicString<T>
+        template<StringLike T>
         static std::vector<Byte> ReadAllBytes( const T& filePath )
         {
             std::vector<Byte> result;
@@ -3733,11 +3732,15 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static void ReadAndAppendAllTextTo( const std::wstring& filePath, std::string& destination );
         HCC_EXPORT static void ReadAndAppendAllBytesTo( const AnsiString& filePath, std::vector<Byte> &destination );
         HCC_EXPORT static void ReadAndAppendAllBytesTo( const WideString& filePath, std::vector<Byte>& destination );
+        HCC_EXPORT static void ReadAndAppendAllBytesTo( const std::string& filePath, std::vector<Byte>& destination );
+        HCC_EXPORT static void ReadAndAppendAllBytesTo( const std::wstring& filePath, std::vector<Byte>& destination );
 
         HCC_EXPORT static void WriteAllText( const AnsiString& filePath, const AnsiString& contents );
         HCC_EXPORT static void WriteAllText( const WideString& filePath, const AnsiString& contents );
         HCC_EXPORT static void WriteAllBytes( const AnsiString& filePath, const std::vector<Byte>& contents );
         HCC_EXPORT static void WriteAllBytes( const WideString& filePath, const std::vector<Byte>& contents );
+        HCC_EXPORT static void WriteAllBytes( const std::string& filePath, const std::vector<Byte>& contents );
+        HCC_EXPORT static void WriteAllBytes( const std::wstring& filePath, const std::vector<Byte>& contents );
 
         HCC_EXPORT static WideString GetExecutableW( );
         HCC_EXPORT static AnsiString GetExecutableA( );

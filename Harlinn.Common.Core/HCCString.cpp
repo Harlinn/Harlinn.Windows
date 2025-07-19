@@ -34,7 +34,6 @@ namespace Harlinn::Common::Core
 
     }
 
-#ifdef HCC_WITH_BASIC_STRING
     namespace Internal
     {
         WideString From( const char* text, size_t textLength, unsigned codePage, unsigned flags )
@@ -82,7 +81,7 @@ namespace Harlinn::Common::Core
         }
 
     }
-#endif
+
 
     namespace Internal
     {
@@ -171,14 +170,10 @@ namespace Harlinn::Common::Core
 
     WideString ToWideString( Single value )
     {
-#ifdef HCC_WITH_BASIC_STRING
         const auto length = static_cast< size_t >( _scwprintf( L"%f", value ) );
         WideString str( length, L'\0' );
         swprintf_s( str.data(), length + 1, L"%f", value );
         return str;
-#else
-        return std::to_wstring( value );
-#endif
     }
 
     WideString ToWideString( Single value, int width, int precision )
@@ -199,14 +194,10 @@ namespace Harlinn::Common::Core
 
     WideString ToWideString( Double value )
     {
-#ifdef HCC_WITH_BASIC_STRING
         const auto length = static_cast< size_t >( _scwprintf( L"%f", value ) );
         WideString str( length, L'\0' );
         swprintf_s( str.data( ), length + 1, L"%f", value );
         return str;
-#else
-        return std::to_wstring( value );
-#endif
     }
     WideString ToWideString( const DateTime& value )
     {
@@ -292,14 +283,10 @@ namespace Harlinn::Common::Core
     }
     AnsiString ToAnsiString( Single value )
     {
-#ifdef HCC_WITH_BASIC_STRING
         const auto length = static_cast< size_t >( _scprintf( "%f", value ) );
         AnsiString str( length, '\0' );
         sprintf_s( str.data( ), length + 1, "%f", value );
         return str;
-#else
-        return std::to_string( value );
-#endif
     }
 
     AnsiString ToAnsiStringInvariant( Single value, int width, int precision )
@@ -337,14 +324,10 @@ namespace Harlinn::Common::Core
 
     AnsiString ToAnsiString( Double value )
     {
-#ifdef HCC_WITH_BASIC_STRING
         const auto length = static_cast< size_t >( _scprintf( "%f", value ) );
         AnsiString str( length, '\0' );
         sprintf_s( str.data( ), length + 1, "%f", value );
         return str;
-#else
-        return std::to_string( value );
-#endif
     }
 
     AnsiString ToAnsiString( Double value, const std::locale& locale )

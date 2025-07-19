@@ -23,6 +23,8 @@
 #include <HCCDoxygen.h>
 #include <HCCIO.h>
 
+#include "D2MSubstitutionTable.h"
+
 namespace Doxygen2Md
 {
     using namespace Harlinn::Common;
@@ -30,16 +32,18 @@ namespace Doxygen2Md
 
     class PathBuilder
     {
+        using StringBuilder = StringBuilder<char>;
         const std::string outputDirectory_;
         const std::string siteUrl_;
         const std::string relativeOutputUrl_;
+        const SubstitutionTable substitutionTable_;
     public:
-        PathBuilder( const std::string& outputDirectory, const std::string& siteUrl, const std::string& relativeOutputUrl )
-            : outputDirectory_( outputDirectory ), siteUrl_( siteUrl ), relativeOutputUrl_( relativeOutputUrl )
+        PathBuilder( const std::string& outputDirectory, const SubstitutionTable& substitutionTable, const std::string& siteUrl, const std::string& relativeOutputUrl )
+            : outputDirectory_( outputDirectory ), substitutionTable_( substitutionTable ), siteUrl_( siteUrl ), relativeOutputUrl_( relativeOutputUrl )
         {
         }
 
-
+    private:
         static std::string NameOf( Doxygen::Structure::CompoundDef* compoundDef )
         {
             const std::string& compoundName = compoundDef->CompoundName( );
@@ -87,6 +91,10 @@ namespace Doxygen2Md
                 }
                 else
                 {
+                    if ( owner->Kind( ) == Doxygen::DoxCompoundKind::File )
+                    {
+                        return qualifiedName;
+                    }
                     throw std::exception( "No room for \"::\" + name" );
                 }
             }
@@ -99,10 +107,11 @@ namespace Doxygen2Md
 
 
 
-
-        static std::string FileSystemBaseName( const std::string& name )
+        template<typename SpanT>
+            requires std::is_same_v<typename SpanT::value_type, char>
+        static std::string FileSystemBaseName( const SpanT& name )
         {
-            StringBuilder<char> sb;
+            StringBuilder sb;
             for ( const auto c : name )
             {
                 if ( IsUpper( c ) )
@@ -228,11 +237,20 @@ namespace Doxygen2Md
             return result;
         }
 
-        static std::string FileSystemBaseName( Doxygen::Structure::MemberDef* memberDef )
+        std::string MemberDefBaseName( Doxygen::Structure::MemberDef* memberDef ) const
         {
             auto memberDefName = NameOf( memberDef );
-            auto result = FileSystemBaseName( memberDefName );
-            return result;
+            std::string shortName;
+            if ( Substitute( memberDefName, shortName ) )
+            {
+                auto result = FileSystemBaseName( shortName );
+                return result;
+            }
+            else
+            {
+                auto result = FileSystemBaseName( memberDefName );
+                return result;
+            }
         }
 
 
@@ -253,8 +271,63 @@ namespace Doxygen2Md
                 auto fileSystemBaseName = FileSystemBaseName( compoundDefName );
                 return fileSystemBaseName;
             }
-
         }
+
+        static std::string PathOf( const std::string& shortName, char separator = '\\' )
+        {
+            std::vector<std::string_view> parts;
+            auto start = shortName.begin( );
+            auto it = start;
+            auto shortNameEnd = shortName.end( );
+            while ( it != shortNameEnd )
+            {
+                auto c = *it;
+                switch ( c )
+                {
+                    case '.':
+                    case ':':
+                    {
+                        if ( it != start )
+                        {
+                            std::string_view part( start, it );
+                            parts.emplace_back( part );
+                        }
+                        start = it + 1;
+                    }
+                    break;
+                    case '<':
+                    {
+                        std::string_view part( start, shortNameEnd );
+                        parts.emplace_back( part );
+                        start = shortNameEnd;
+                        it = shortNameEnd;
+                        continue;
+                    }
+                    break;
+                }
+                it++;
+            }
+            if ( start != shortNameEnd )
+            {
+                std::string_view part( start, shortNameEnd );
+                parts.emplace_back( part );
+            }
+            StringBuilder sb;
+            bool first = true;
+            for ( const auto& part : parts )
+            {
+                auto baseName = FileSystemBaseName( part );
+                if ( !first )
+                {
+                    sb.Append( separator );
+                }
+                sb.Append( baseName );
+                first = false;
+            }
+
+            return sb.ToString<std::string>( );
+        }
+
 
         static std::string PathOf( Doxygen::Structure::MemberDef* memberDef, char separator = '\\' )
         {
@@ -375,46 +448,78 @@ namespace Doxygen2Md
         template<typename T>
         std::string DirectoryPathOf( T* def, char separator = '\\' ) const
         {
-            auto path = PathOf( def, separator );
+            std::string path;
+            std::string shortName;
+            if ( Substitute( def->QualifiedName( ), shortName ) )
+            {
+                path = PathOf( shortName, separator );
+            }
+            else
+            {
+                path = PathOf( def, separator );
+            }
+            
             auto result = std::format( "{}{}{}{}{}", outputDirectory_, separator,ToString( def->Language( ) ), separator, path );
             return result;
         }
         template<typename T>
         std::string RelativeUrlOf( T* def, char separator = '/' ) const
         {
-            auto path = PathOf( def, separator );
+            std::string path;
+            std::string shortName;
+            if ( Substitute( def->QualifiedName( ), shortName ) )
+            {
+                path = PathOf( shortName, separator );
+            }
+            else
+            {
+                path = PathOf( def, separator );
+            }
             auto result = std::format( "{}{}{}{}{}", relativeOutputUrl_, separator, ToString( def->Language( ) ), separator, path );
             return result;
         }
-    public:
 
-        std::string FilePathOf( Doxygen::Structure::CompoundDef* compoundDef, bool ensureDirectoryExist = true, char separator = '\\' ) const
+        bool Substitute( const std::string& qualifiedName, std::string& shortName ) const
         {
-            auto directory = DirectoryPathOf( compoundDef, separator );
-            if ( ensureDirectoryExist )
+            std::string str = qualifiedName;
+            bool result = false;
+            for ( const auto& entry : substitutionTable_ )
             {
-                if ( IO::Directory::Exist( directory ) == false )
+                const auto& replace = entry.Replace( );
+                const auto& with = entry.With( );
+                auto offset = str.find( replace );
+                if ( offset != std::string::npos )
                 {
-                    IO::Directory::Create( directory );
+                    do
+                    {
+                        str.replace( offset, replace.length( ), with );
+                        result = true;
+                        offset = str.find( replace );
+                    } while ( offset != std::string::npos );
                 }
             }
-            auto baseName = FileSystemBaseName( compoundDef );
-            auto kind = ToLower( to_string( compoundDef->Kind( ) ) );
-            auto result = std::format( "{}\\{}_{}.md", directory, kind, baseName );
+            if ( result )
+            {
+                shortName = str;
+            }
             return result;
         }
 
-        std::string FilePathOf( Doxygen::Structure::MemberDef* memberDef, bool ensureDirectoryExist = true, char separator = '\\' ) const
+
+
+    public:
+
+        std::string FilePathOf( Doxygen::Structure::CompoundDef* compoundDef, char separator = '\\' ) const
+        {
+            auto directory = DirectoryPathOf( compoundDef, separator );
+            auto result = std::format( "{}\\index.md", directory );
+            return result;
+        }
+
+        std::string FilePathOf( Doxygen::Structure::MemberDef* memberDef, char separator = '\\' ) const
         {
             auto directory = DirectoryPathOf( static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner() ), separator );
-            if ( ensureDirectoryExist )
-            {
-                if ( IO::Directory::Exist( directory ) == false )
-                {
-                    IO::Directory::Create( directory );
-                }
-            }
-            auto baseName = FileSystemBaseName( memberDef );
+            auto baseName = MemberDefBaseName( memberDef );
             auto kind = ToLower( to_string( memberDef->Kind( ) ) );
             auto result = std::format( "{}\\{}_{}.md", directory, kind, baseName );
             return result;
@@ -423,15 +528,13 @@ namespace Doxygen2Md
         std::string FileRelativeUrlOf( Doxygen::Structure::CompoundDef* compoundDef, char separator = '/' ) const
         {
             auto directory = RelativeUrlOf( compoundDef, separator );
-            auto baseName = FileSystemBaseName( compoundDef );
-            auto kind = ToLower( to_string( compoundDef->Kind( ) ) );
-            auto result = std::format( "{}\\{}_{}.md", directory, kind, baseName );
+            auto result = std::format( "{}\\index.md", directory );
             return result;
         }
         std::string FileRelativeUrlOf( Doxygen::Structure::MemberDef* memberDef, char separator = '/' ) const
         {
             auto directory = RelativeUrlOf( static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) ), separator );
-            auto baseName = FileSystemBaseName( memberDef );
+            auto baseName = MemberDefBaseName( memberDef );
             auto kind = ToLower( to_string( memberDef->Kind( ) ) );
             auto result = std::format( "{}\\{}_{}.md", directory, kind, baseName );
             return result;

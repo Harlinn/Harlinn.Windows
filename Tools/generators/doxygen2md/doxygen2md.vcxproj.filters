@@ -26,7 +26,7 @@
     <ClInclude Include="doxygen2mdOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MarkdownBase.h">
+    <ClInclude Include="D2MMarkdownStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D2MMarkdownFormatter.h">
@@ -36,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D2MPathBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D2MSubstitutionTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -88,6 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Data\templates.xml">
+      <Filter>Data</Filter>
+    </Xml>
+    <Xml Include="Data\substitution.xml">
       <Filter>Data</Filter>
     </Xml>
   </ItemGroup>

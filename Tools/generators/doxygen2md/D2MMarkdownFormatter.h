@@ -36,6 +36,18 @@ namespace Doxygen2Md
         using CompoundDef = Doxygen::Structure::CompoundDef;
         using MemberDef = Doxygen::Structure::MemberDef;
 
+        using ClassCompoundDef = Doxygen::Structure::ClassCompoundDef;
+        using StructCompoundDef = Doxygen::Structure::StructCompoundDef;
+        using UnionCompoundDef = Doxygen::Structure::UnionCompoundDef;
+        using InterfaceCompoundDef = Doxygen::Structure::InterfaceCompoundDef;
+        using ConceptCompoundDef = Doxygen::Structure::ConceptCompoundDef;
+        using NamespaceCompoundDef = Doxygen::Structure::NamespaceCompoundDef;
+
+        using VariableMemberDef = Doxygen::Structure::VariableMemberDef;
+        using TypedefMemberDef = Doxygen::Structure::TypedefMemberDef;
+        using EnumMemberDef = Doxygen::Structure::EnumMemberDef;
+        using FunctionMemberDef = Doxygen::Structure::FunctionMemberDef;
+
 
         using DoxType = Doxygen::DoxType;
         using DoxCmdGroupType = Doxygen::DoxCmdGroupType;
@@ -82,10 +94,10 @@ namespace Doxygen2Md
         using DocURLLink = Doxygen::DocURLLink;
         using DocMarkupType = Doxygen::DocMarkupType;
         using DocParaType = Doxygen::DocParaType;
-        using DocCmdGroup = Doxygen::DocCmdGroup;
+        //using DocCmdGroup = Doxygen::DocCmdGroup;
         using DocSummaryType = Doxygen::DocSummaryType;
         using DocTitleType = Doxygen::DocTitleType;
-        using DocTitleCmdGroup = Doxygen::DocTitleCmdGroup;
+        //using DocTitleCmdGroup = Doxygen::DocTitleCmdGroup;
         using DocInternalS6Type = Doxygen::DocInternalS6Type;
         using DocInternalS5Type = Doxygen::DocInternalS5Type;
         using DocInternalS4Type = Doxygen::DocInternalS4Type;
@@ -137,7 +149,7 @@ namespace Doxygen2Md
         MarkdownFormatter( const TypeSystem& typeSystem, const PathBuilder& pathBuilder )
             : typeSystem_( typeSystem ), pathBuilder_( pathBuilder )
         { }
-
+    private:
         // Not in switch
         void FormatDocCmdGroupTypeTo( const BaseDef& context, size_t indentation, const DocCmdGroupType& source, StringBuilder& dest ) const
         {
@@ -727,12 +739,18 @@ namespace Doxygen2Md
 
         void FormatDocHeadingTypeTo( const BaseDef& context, size_t indentation, const DocHeadingType& source, StringBuilder& dest ) const
         {
-
+            for ( const auto& entry : source )
+            {
+                FormatDocCmdGroupTypeTo( context, indentation, entry, dest );
+            }
         }
 
         void FormatDocCaptionTypeTo( const BaseDef& context, size_t indentation, const DocCaptionType& source, StringBuilder& dest ) const
         {
-
+            for ( const auto& entry : source )
+            {
+                FormatDocCmdGroupTypeTo( context, indentation, entry, dest );
+            }
         }
 
         void FormatDocEntryTypeTo( const BaseDef& context, size_t indentation, const DocEntryType& source, StringBuilder& dest ) const
@@ -752,12 +770,38 @@ namespace Doxygen2Md
 
         void FormatDocRefTextTypeTo( const BaseDef& context, size_t indentation, const DocRefTextType& source, StringBuilder& dest ) const
         {
-
+            for ( const auto& entry : source )
+            {
+                FormatDocCmdGroupTypeTo( context, indentation, entry, dest );
+            }
         }
 
         void FormatDocVariableListTypeTo( const BaseDef& context, size_t indentation, const DocVariableListType& source, StringBuilder& dest ) const
         {
-
+            using DoxType = Doxygen::DoxType;
+            for ( const auto& ptr : source )
+            {
+                auto doxType = ptr->DoxType( );
+                switch ( doxType )
+                {
+                    case DoxType::DocListItemType:
+                    {
+                        FormatDocListItemTypeTo( context, indentation, static_cast< const DocListItemType& >( *ptr ), dest );
+                    }
+                    break;
+                    case DoxType::DocVarListEntryType:
+                    {
+                        FormatDocVarListEntryTypeTo( context, indentation, static_cast< const DocVarListEntryType& >( *ptr ), dest );
+                    }
+                    break;
+                    default:
+                    {
+                        auto message = std::format( "Unexpected {}", to_string( doxType ) );
+                        throw std::exception( message.c_str( ) );
+                    }
+                    break;
+                }
+            }
         }
 
         void FormatDocVarListEntryTypeTo( const BaseDef& context, size_t indentation, const DocVarListEntryType& source, StringBuilder& dest ) const
@@ -813,10 +857,12 @@ namespace Doxygen2Md
             }
         }
 
+        /*
         void FormatDocCmdGroupTo( const BaseDef& context, size_t indentation, const DocCmdGroup& source, StringBuilder& dest ) const
         {
 
         }
+        */
 
         void FormatDocSummaryTypeTo( const BaseDef& context, size_t indentation, const DocSummaryType& source, StringBuilder& dest ) const
         {
@@ -828,10 +874,12 @@ namespace Doxygen2Md
 
         }
 
+        /*
         void FormatDocTitleCmdGroupTo( const BaseDef& context, size_t indentation, const DocTitleCmdGroup& source, StringBuilder& dest ) const
         {
 
         }
+        */
 
         void FormatDocInternalS6TypeTo( const BaseDef& context, size_t indentation, const DocInternalS6Type& source, StringBuilder& dest ) const
         {
@@ -1044,7 +1092,7 @@ namespace Doxygen2Md
         }
 
 
-
+    
         void FormatTo( const BaseDef& context, size_t indentation, const DocBaseType& source, StringBuilder& dest ) const
         {
             auto type = source.DoxType( );
@@ -1250,11 +1298,13 @@ namespace Doxygen2Md
                     FormatDocParaTypeTo( context, indentation, static_cast< const DocParaType& >( source ), dest );
                 }
                 break;
+                /*
                 case DoxType::DocCmdGroup:
                 {
                     FormatDocCmdGroupTo( context, indentation, static_cast< const DocCmdGroup& >( source ), dest );
                 }
                 break;
+                */
                 case DoxType::DocSummaryType:
                 {
                     FormatDocSummaryTypeTo( context, indentation, static_cast< const DocSummaryType& >( source ), dest );
@@ -1265,11 +1315,13 @@ namespace Doxygen2Md
                     FormatDocTitleTypeTo( context, indentation, static_cast< const DocTitleType& >( source ), dest );
                 }
                 break;
+                /*
                 case DoxType::DocTitleCmdGroup:
                 {
                     FormatDocTitleCmdGroupTo( context, indentation, static_cast< const DocTitleCmdGroup& >( source ), dest );
                 }
                 break;
+                */
                 case DoxType::DocInternalS6Type:
                 {
                     FormatDocInternalS6TypeTo( context, indentation, static_cast< const DocInternalS6Type& >( source ), dest );
@@ -1483,6 +1535,77 @@ namespace Doxygen2Md
 
             }
         }
+
+    
+
+        std::string Format( const CompoundDef& context )
+        {
+            return {};
+        }
+
+        std::string Format( const MemberDef& context )
+        {
+            return {};
+        }
+
+        template<typename T>
+        std::string FormatClass( const T& context )
+        {
+            return {};
+        }
+    public:
+        std::string Format( const ClassCompoundDef& compoundDef )
+        {
+            return compoundDef.QualifiedName( );
+        }
+
+        std::string Format( const StructCompoundDef& compoundDef )
+        {
+            return compoundDef.QualifiedName( );
+        }
+
+        std::string Format( const InterfaceCompoundDef& compoundDef )
+        {
+            return compoundDef.QualifiedName( );
+        }
+
+        std::string Format( const UnionCompoundDef& compoundDef )
+        {
+            return compoundDef.QualifiedName( );
+        }
+
+        std::string Format( const ConceptCompoundDef& compoundDef )
+        {
+            return compoundDef.QualifiedName( );
+        }
+
+        std::string Format( const NamespaceCompoundDef& compoundDef )
+        {
+            return compoundDef.QualifiedName( );
+        }
+
+        std::string Format( const VariableMemberDef& memberDef )
+        {
+            return {};
+        }
+
+        std::string Format( const TypedefMemberDef& memberDef )
+        {
+            return {};
+        }
+
+        std::string Format( const EnumMemberDef& memberDef )
+        {
+            return {};
+        }
+
+        std::string Format( const FunctionMemberDef& memberDef )
+        {
+            return {};
+        }
+
+        
+
 
     };
 

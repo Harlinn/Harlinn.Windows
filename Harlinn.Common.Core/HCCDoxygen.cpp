@@ -695,7 +695,25 @@ namespace Harlinn::Common::Core::Doxygen
 
     DocCaptionType::DocCaptionType( const XmlNode& xmlNode )
     {
-
+        static constexpr auto id = "id"sv;
+        auto idAttribute = xmlNode.Attribute( id );
+        if ( idAttribute )
+        {
+            id_ = idAttribute.Read<int>( );
+        }
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                DocCmdGroupType nodeValue;
+                if ( TryParseTextOrCmdGroupType( childNode, nodeValue ) )
+                {
+                    emplace_back( nodeValue );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     DocEntryType::DocEntryType( const XmlNode& xmlNode )

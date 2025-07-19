@@ -24,6 +24,7 @@
 
 #include <HCCDef.h>
 #include <HCCString.h>
+#include <HCCStringBuilder.h>
 
 namespace Harlinn::Common::Core::RapidXml
 {
@@ -390,10 +391,10 @@ namespace Harlinn::Common::Core::Doxygen
         DocURLLink,
         DocMarkupType,
         DocParaType,
-        DocCmdGroup,
+        //DocCmdGroup,
         DocSummaryType,
         DocTitleType,
-        DocTitleCmdGroup,
+        //DocTitleCmdGroup,
         DocInternalS6Type,
         DocInternalS5Type,
         DocInternalS4Type,
@@ -484,10 +485,10 @@ namespace Harlinn::Common::Core::Doxygen
     class DocURLLink;
     class DocMarkupType;
     class DocParaType;
-    class DocCmdGroup;
+    //class DocCmdGroup;
     class DocSummaryType;
     class DocTitleType;
-    class DocTitleCmdGroup;
+    //class DocTitleCmdGroup;
     class DocInternalS6Type;
     class DocInternalS5Type;
     class DocInternalS4Type;
@@ -574,10 +575,10 @@ namespace Harlinn::Common::Core::Doxygen
     using DocURLLinkPtr = std::shared_ptr<DocURLLink>;
     using DocMarkupTypePtr = std::shared_ptr<DocMarkupType>;
     using DocParaTypePtr = std::shared_ptr<DocParaType>;
-    using DocCmdGroupPtr = std::shared_ptr<DocCmdGroup>;
+    //using DocCmdGroupPtr = std::shared_ptr<DocCmdGroup>;
     using DocSummaryTypePtr = std::shared_ptr<DocSummaryType>;
     using DocTitleTypePtr = std::shared_ptr<DocTitleType>;
-    using DocTitleCmdGroupPtr = std::shared_ptr<DocTitleCmdGroup>;
+    //using DocTitleCmdGroupPtr = std::shared_ptr<DocTitleCmdGroup>;
     using DocInternalS6TypePtr = std::shared_ptr<DocInternalS6Type>;
     using DocInternalS5TypePtr = std::shared_ptr<DocInternalS5Type>;
     using DocInternalS4TypePtr = std::shared_ptr<DocInternalS4Type>;
@@ -1335,13 +1336,17 @@ namespace Harlinn::Common::Core::Doxygen
 
     };
 
-    class DocCaptionType : public Internal::DocBase<Doxygen::DoxType::DocCaptionType>
+    class DocCaptionType : public Internal::DocBase<Doxygen::DoxType::DocCaptionType>, public std::vector<DocCmdGroupType>
     {
+        std::string id_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocCaptionType>;
 
         DocCaptionType( ) = default;
         HCC_EXPORT explicit DocCaptionType( const XmlNode& xmlNode );
+
+        const std::string& Id( ) const { return id_; }
+
     };
 
     class DocEntryType : public Internal::DocBase<Doxygen::DoxType::DocEntryType>
@@ -1546,6 +1551,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit DocParaType( const XmlNode& xmlNode );
     };
     
+    /*
     class DocCmdGroup : public Internal::DocBase<Doxygen::DoxType::DocCmdGroup>
     {
     public:
@@ -1554,7 +1560,7 @@ namespace Harlinn::Common::Core::Doxygen
         DocCmdGroup( ) = default;
         HCC_EXPORT explicit DocCmdGroup( const XmlNode& xmlNode );
     };
-    
+    */
 
     class DocSummaryType : public Internal::DocBase<Doxygen::DoxType::DocSummaryType>, public std::vector<DocCmdGroupType>
     {
@@ -1574,7 +1580,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit DocTitleType( const XmlNode& xmlNode );
     };
 
-    
+    /*
     class DocTitleCmdGroup : public Internal::DocBase<Doxygen::DoxType::DocTitleCmdGroup>
     {
 
@@ -1584,7 +1590,8 @@ namespace Harlinn::Common::Core::Doxygen
         DocTitleCmdGroup( ) = default;
         HCC_EXPORT explicit DocTitleCmdGroup( const XmlNode& xmlNode );
     };
-    
+    */
+
     namespace Internal
     {
         template<Doxygen::DoxType doxType>
@@ -2724,6 +2731,19 @@ namespace Harlinn::Common::Core::Doxygen
 {
     namespace Structure
     {
+
+        struct Identifier
+        {
+
+        };
+
+        struct Template
+        {
+
+        };
+
+
+
         class TypeSystem
         {
             friend class CompoundDef;
@@ -3067,6 +3087,25 @@ namespace Harlinn::Common::Core::Doxygen
                     return CompoundName( );
                 }
             }
+
+            std::string NamespaceName( ) const
+            {
+                auto owner = static_cast< CompoundDef* >( Owner( ) );
+                if ( owner )
+                {
+                    if ( owner->Kind( ) == DoxCompoundKind::Namespace )
+                    {
+                        return owner->QualifiedName( );
+                    }
+                    else
+                    {
+                        return owner->NamespaceName( );
+                    }
+                }
+                return {};
+            }
+
+
 
 
             const std::string& Title( ) const 
@@ -3732,6 +3771,9 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
         };
+
+
+
         class FunctionMemberDef : public MemberDef
         {
         public:

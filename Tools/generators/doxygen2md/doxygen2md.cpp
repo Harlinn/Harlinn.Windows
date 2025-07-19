@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-#include "D2MMarkdownFormatter.h"
+#include "D2MMarkdownStream.h"
 
 using namespace Doxygen2Md;
 using namespace Harlinn::Common::Core;
@@ -30,118 +30,127 @@ int main(int argc, char* argv[] )
 
     if ( options.Parse( argc, argv ) )
     {
+        SubstitutionTable substitutionTable;
+        if ( options.HasSubstitutionTable( ) )
+        {
+            substitutionTable = SubstitutionTable::Load( options.SubstitutionTable( ) );
+        }
+
+
         Doxygen::DocumentCollection documentCollection;
         auto directory = options.InputDirectory();
         documentCollection.AddDirectory( to_wstring( directory ) );
         auto typeSystem = documentCollection.TypeSystem( );
         const auto& allCompoundDefs = typeSystem->AllCompoundDefs( );
-        auto allCompoundDefsSize = allCompoundDefs.size( );
+        const auto& allMemberDefs = typeSystem->AllMemberDefs( );
         
-        PathBuilder pathBuilder( options.OutputDirectory( ), options.SiteUrl( ), options.RelativeOutputUrl( ) );
-        std::vector<std::string> paths;
-        for ( const auto& entry : allCompoundDefs )
-        {
-            auto compoundDef = entry.second;
-            auto kind = compoundDef->Kind( );
-            if ( kind != Doxygen::DoxCompoundKind::Dir && kind != Doxygen::DoxCompoundKind::File )
-            {
-                auto path = pathBuilder.FilePathOf( compoundDef );
-                paths.emplace_back( path );
-            }
-        }
+        
+        PathBuilder pathBuilder( options.OutputDirectory( ), substitutionTable, options.SiteUrl( ), options.RelativeOutputUrl( ) );
+        MarkdownFormatter markdownFormatter( *typeSystem, pathBuilder );
 
-        size_t unexpectedCompoundName = 0;
-        std::multimap<std::string, std::string> unexpectedCompoundNames;
         for ( const auto& entry : allCompoundDefs )
         {
-            auto compoundDef = entry.second;
-            
-            auto kind = compoundDef->Kind( );
-            
-            if ( compoundDef->Language() == Doxygen::DoxLanguage::Cpp && kind != Doxygen::DoxCompoundKind::Dir && kind != Doxygen::DoxCompoundKind::File )
+            auto* compoundDef = entry.second;
+
+            if ( compoundDef->Language( ) == Doxygen::DoxLanguage::Cpp )
             {
-                const std::string& compoundName = compoundDef->CompoundName( );
-                const auto& members = compoundDef->Members( );
-                for ( const auto& member : members )
+                auto compoundDefFilename = pathBuilder.FilePathOf( compoundDef );
+
+                auto compoundDefKind = compoundDef->Kind( );
+                switch ( compoundDefKind )
                 {
-                    auto memberDef = member.MemberDef( );
-                    const std::string& qualifiedName = member.MemberDef( )->QualifiedName( );
-                    
-                    if ( compoundName.length() > 0 &&  qualifiedName.starts_with( compoundName ) == false )
+                    case Doxygen::DoxCompoundKind::Class:
                     {
-                        unexpectedCompoundNames.emplace( compoundName, qualifiedName );
-                        unexpectedCompoundName++;
+                        const Doxygen::Structure::ClassCompoundDef& classCompoundDef = static_cast< const Doxygen::Structure::ClassCompoundDef& >( *compoundDef );
+                        auto text = markdownFormatter.Format( classCompoundDef );
+                        MarkdownStream stream( compoundDefFilename );
+                        stream.WriteLine( text );
+                        stream.Flush( );
                     }
+                    break;
+                    case Doxygen::DoxCompoundKind::Struct:
+                    {
+                        const Doxygen::Structure::StructCompoundDef& structCompoundDef = static_cast< const Doxygen::Structure::StructCompoundDef& >( *compoundDef );
+                        auto text = markdownFormatter.Format( structCompoundDef );
+                        MarkdownStream stream( compoundDefFilename );
+                        stream.WriteLine( text );
+                        stream.Flush( );
+                    }
+                    break;
+                    case Doxygen::DoxCompoundKind::Union:
+                    {
+                        const Doxygen::Structure::UnionCompoundDef& unionCompoundDef = static_cast< const Doxygen::Structure::UnionCompoundDef& >( *compoundDef );
+                        auto text = markdownFormatter.Format( unionCompoundDef );
+                        MarkdownStream stream( compoundDefFilename );
+                        stream.WriteLine( text );
+                        stream.Flush( );
+                    }
+                    break;
+                    case Doxygen::DoxCompoundKind::Concept:
+                    {
+                        const Doxygen::Structure::ConceptCompoundDef& conceptCompoundDef = static_cast< const Doxygen::Structure::ConceptCompoundDef& >( *compoundDef );
+                        auto text = markdownFormatter.Format( conceptCompoundDef );
+                        MarkdownStream stream( compoundDefFilename );
+                        stream.WriteLine( text );
+                        stream.Flush( );
+                    }
+                    break;
+                    case Doxygen::DoxCompoundKind::Namespace:
+                    {
+                        const Doxygen::Structure::NamespaceCompoundDef& namespaceCompoundDef = static_cast< const Doxygen::Structure::NamespaceCompoundDef& >( *compoundDef );
+                        auto text = markdownFormatter.Format( namespaceCompoundDef );
+                        MarkdownStream stream( compoundDefFilename );
+                        stream.WriteLine( text );
+                        stream.Flush( );
+                    }
+                    break;
                 }
             }
         }
 
-        for ( const auto& entry : unexpectedCompoundNames )
-        {
-            PrintLn( "\"{}\"", entry.first );
-            PrintLn( "\"{}\"\n", entry.second );
-            
-        }
 
 
-
-        /*
-        std::ranges::sort( paths );
-
-        for ( const auto& path : paths )
-        {
-            PrintLn( "{}", path );
-        }
-        */
-
-        size_t unnamedMemberDefs = 0;
-        const auto& allMemberDefs = typeSystem->AllMemberDefs( );
-        for ( const auto& entry : allMemberDefs )
-        {
-            auto memberDef = entry.second;
-            const auto name = memberDef->Name( );
-            if ( name.length( ) == 0 )
-            {
-                unnamedMemberDefs++;
-            }
-        }
-
-        PrintLn( "unexpectedCompoundName : {}", unexpectedCompoundName );
-        PrintLn( "unnamedMemberDefs : {}", unnamedMemberDefs );
-
-        std::map<std::string, std::vector< Doxygen::Structure::MemberDef* > > memberFiles;
+        std::unordered_map<std::string, std::vector<Doxygen::Structure::FunctionMemberDef*> > functions;
 
         for ( const auto& entry : allMemberDefs )
         {
-            auto memberDef = entry.second;
-            auto memberDefKind = memberDef->Kind( );
-            if ( ( memberDefKind == Doxygen::DoxMemberKind::Enum || memberDefKind == Doxygen::DoxMemberKind::Function ) &&  memberDef->Language( ) == Doxygen::DoxLanguage::Cpp )
+            auto* memberDef = entry.second;
+            if ( memberDef->Language( ) == Doxygen::DoxLanguage::Cpp )
             {
-                if ( memberDef->QualifiedName( ).length( ) )
+                auto memberDefKind = memberDef->Kind( );
+                if ( memberDefKind == Doxygen::DoxMemberKind::Function )
                 {
                     auto owner = static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) );
-                    if ( owner->CompoundName( ) != memberDef->QualifiedName( ) )
+                    if ( owner && owner->Kind( ) != Doxygen::DoxCompoundKind::File )
                     {
-                        auto fileName = pathBuilder.FilePathOf( memberDef );
-                        auto it = memberFiles.find( fileName );
-                        if ( it == memberFiles.end( ) )
+                        auto functionMemberDef = static_cast< Doxygen::Structure::FunctionMemberDef* >( memberDef );
+                        std::string functionMemberDefFilename = pathBuilder.FilePathOf( functionMemberDef );
+                        auto it = functions.find( functionMemberDefFilename );
+                        if ( it != functions.end( ) )
                         {
-                            memberFiles.emplace( fileName, std::vector< Doxygen::Structure::MemberDef* >{memberDef} );
+                            it->second.push_back( functionMemberDef );
                         }
                         else
                         {
-                            it->second.emplace_back( memberDef );
+                            functions.emplace( functionMemberDefFilename, std::vector<Doxygen::Structure::FunctionMemberDef*>{ functionMemberDef } );
                         }
                     }
                 }
             }
         }
 
-        PrintLn( "Member def count : {}", allMemberDefs.size( ) );
-        PrintLn( "Member file count : {}", memberFiles.size() );
+        for ( auto entry : functions )
+        {
+            const auto& functionMemberDefFilename = entry.first;
+            MarkdownStream stream( functionMemberDefFilename );
+            for ( auto function : entry.second )
+            {
+                stream.WriteLine( function->QualifiedName( ) );
+            }
+            stream.Flush( );
+        }
 
-        auto templates = Templates::Load( options.Templates( ) );
-        auto header = templates.Header( );
+
 
 
 

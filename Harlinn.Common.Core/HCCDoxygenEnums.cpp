@@ -1501,10 +1501,10 @@ namespace Harlinn::Common::Core
                 Add( std::string("DocURLLink" ), DoxType::DocURLLink );
                 Add( std::string("DocMarkupType" ), DoxType::DocMarkupType );
                 Add( std::string("DocParaType" ), DoxType::DocParaType );
-                Add( std::string("DocCmdGroup" ), DoxType::DocCmdGroup );
+                //Add( std::string("DocCmdGroup" ), DoxType::DocCmdGroup );
                 Add( std::string("DocSummaryType" ), DoxType::DocSummaryType );
                 Add( std::string("DocTitleType" ), DoxType::DocTitleType );
-                Add( std::string("DocTitleCmdGroup" ), DoxType::DocTitleCmdGroup );
+                //Add( std::string("DocTitleCmdGroup" ), DoxType::DocTitleCmdGroup );
                 Add( std::string("DocInternalS6Type" ), DoxType::DocInternalS6Type );
                 Add( std::string("DocInternalS5Type" ), DoxType::DocInternalS5Type );
                 Add( std::string("DocInternalS4Type" ), DoxType::DocInternalS4Type );

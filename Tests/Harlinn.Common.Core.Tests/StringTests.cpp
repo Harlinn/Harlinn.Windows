@@ -30,7 +30,7 @@ namespace
 
 BOOST_FIXTURE_TEST_SUITE( StringTests, LocalFixture )
 
-#ifdef HCC_WITH_BASIC_STRING
+
 
 // --run_test=StringTests/BufferHeaderSizeTest1
 BOOST_AUTO_TEST_CASE( BufferHeaderSizeTest1 )
@@ -9772,7 +9772,7 @@ BOOST_AUTO_TEST_CASE( SplitTest4A )
 }
 
 
-#endif
+
 
 
 // --run_test=StringTests/FormatWStringTest

@@ -456,6 +456,18 @@ namespace Harlinn::Common::Core::IO
         fileStream.ReadFile( destination );
     }
 
+    void File::ReadAndAppendAllBytesTo( const std::string& filePath, std::vector<Byte>& destination )
+    {
+        FileStream fileStream( filePath.c_str( ), FileAccess::Read, FileShare::Read, nullptr, FileMode::Open, FileAttributes::Normal, FileOptions::Default );
+        fileStream.ReadFile( destination );
+    }
+
+    void File::ReadAndAppendAllBytesTo( const std::wstring& filePath, std::vector<Byte>& destination )
+    {
+        FileStream fileStream( filePath.c_str( ), FileAccess::Read, FileShare::Read, nullptr, FileMode::Open, FileAttributes::Normal, FileOptions::Default );
+        fileStream.ReadFile( destination );
+    }
+
 
     void File::WriteAllText( const AnsiString& filePath, const AnsiString& contents )
     {
@@ -481,6 +493,20 @@ namespace Harlinn::Common::Core::IO
         fileStream.SetSize( 0 );
         fileStream.Write( contents.data( ), contents.size( ) );
     }
+
+    void File::WriteAllBytes( const std::string& filePath, const std::vector<Byte>& contents )
+    {
+        FileStream fileStream( filePath.c_str( ), FileAccess::ReadWrite, FileShare::None, nullptr, FileMode::OpenOrCreate, FileAttributes::Normal, FileOptions::SequentialScan );
+        fileStream.SetSize( 0 );
+        fileStream.Write( contents.data( ), contents.size( ) );
+    }
+    void File::WriteAllBytes( const std::wstring& filePath, const std::vector<Byte>& contents )
+    {
+        FileStream fileStream( filePath.c_str( ), FileAccess::ReadWrite, FileShare::None, nullptr, FileMode::OpenOrCreate, FileAttributes::Normal, FileOptions::SequentialScan );
+        fileStream.SetSize( 0 );
+        fileStream.Write( contents.data( ), contents.size( ) );
+    }
+
 
     WideString File::GetExecutableW( )
     {

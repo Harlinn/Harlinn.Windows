@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<substitutions>
+  <substitution replace="Harlinn::Common::Core::Internal" with="hcci" />
+  <substitution replace="Harlinn::Common::Core" with="hcc" />
+  <substitution replace="Harlinn::Common::Internal" with="hci" />
+  <substitution replace="Harlinn::Common" with="hc" />
+  <substitution replace="Harlinn::Math::Internal::OpenLibM" with="hmio" />
+  <substitution replace="Harlinn::Math::Internal" with="hmi" />
+  <substitution replace="Harlinn::Math" with="hm" />
+  <substitution replace="Harlinn::Windows::Internal" with="hwi" />
+  <substitution replace="Harlinn::Windows" with="hw" />
+  <substitution replace="Harlinn::OCI::Internal" with="hocii" />
+  <substitution replace="Harlinn::OCI" with="hoci" />
+  <substitution replace="Harlinn::AI::Internal" with="haii" />
+  <substitution replace="Harlinn::AI" with="hai" />
+  <substitution replace="Harlinn::ODBC::Internal" with="hodbci" />
+  <substitution replace="Harlinn::ODBC" with="hodbc" />
+</substitutions>

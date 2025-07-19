@@ -6585,6 +6585,21 @@ namespace Harlinn::Common::Core
     }
 
 
+    template<typename CharT>
+    std::basic_string<CharT> FindAndReplace( const std::basic_string<CharT>& str, const std::basic_string<CharT>& what, const std::basic_string<CharT>& with )
+    {
+        if ( what.length( ) )
+        {
+
+        }
+        else
+        {
+            return str;
+        }
+    }
+
+
+
 
 
     inline [[nodiscard]] AnsiString FormatV( const std::string_view fmt, const std::format_args args )
