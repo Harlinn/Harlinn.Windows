@@ -51,6 +51,7 @@ namespace Doxygen2Md
 
         using DoxType = Doxygen::DoxType;
         using DoxCmdGroupType = Doxygen::DoxCmdGroupType;
+        using DoxRefKind = Doxygen::DoxRefKind;
 
         using DocBaseType = Doxygen::DocBaseType;
 
@@ -150,6 +151,48 @@ namespace Doxygen2Md
             : typeSystem_( typeSystem ), pathBuilder_( pathBuilder )
         { }
     private:
+        BaseDef* Find( const BaseDef& context, const DocRefTextType& docRefTextType ) const
+        {
+            const auto& refId = docRefTextType.RefId( );
+            const auto kind = docRefTextType.KindRef( );
+            if ( kind == DoxRefKind::Compound )
+            {
+                auto compoundDef = typeSystem_.FindCompoundDef( refId );
+                return compoundDef;
+            }
+            else
+            {
+                auto memberDef = typeSystem_.FindMemberDef( docRefTextType.RefId( ) );
+                return memberDef;
+            }
+        }
+
+        std::string ToUrl( const BaseDef& context, const DocRefTextType& docRefTextType ) const
+        {
+            const auto& refId = docRefTextType.RefId( );
+            const auto kind = docRefTextType.KindRef( );
+            if ( kind == DoxRefKind::Compound )
+            {
+                auto compoundDef = typeSystem_.FindCompoundDef( refId );
+                if ( compoundDef )
+                {
+                    auto result = pathBuilder_.FileRelativeUrlOf( compoundDef );
+                    return result;
+                }
+            }
+            else
+            {
+                auto memberDef = typeSystem_.FindMemberDef( docRefTextType.RefId( ) );
+                if ( memberDef )
+                {
+                    auto result = pathBuilder_.FileRelativeUrlOf( memberDef );
+                    return result;
+                }
+            }
+            return {};
+        }
+
+
         // Not in switch
         void FormatDocCmdGroupTypeTo( const BaseDef& context, size_t indentation, const DocCmdGroupType& source, StringBuilder& dest ) const
         {
@@ -770,9 +813,25 @@ namespace Doxygen2Md
 
         void FormatDocRefTextTypeTo( const BaseDef& context, size_t indentation, const DocRefTextType& source, StringBuilder& dest ) const
         {
-            for ( const auto& entry : source )
+            auto url = ToUrl( context, source );
+
+            if ( url.length( ) )
             {
-                FormatDocCmdGroupTypeTo( context, indentation, entry, dest );
+                dest.Append( '[' );
+                for ( const auto& entry : source )
+                {
+                    FormatDocCmdGroupTypeTo( context, indentation, entry, dest );
+                }
+                dest.Append( "](" );
+                dest.Append( url );
+                dest.Append( ')' );
+            }
+            else
+            {
+                for ( const auto& entry : source )
+                {
+                    FormatDocCmdGroupTypeTo( context, indentation, entry, dest );
+                }
             }
         }
 
@@ -1018,7 +1077,10 @@ namespace Doxygen2Md
 
         void FormatDescriptionTypeTo( const BaseDef& context, size_t indentation, const DescriptionType& source, StringBuilder& dest ) const
         {
-
+            for ( const auto& ptr : source )
+            {
+                FormatTo( context, indentation, *ptr, dest );
+            }
         }
 
         void FormatMemberDefTypeTo( const BaseDef& context, size_t indentation, const MemberDefType& source, StringBuilder& dest ) const
@@ -1536,70 +1598,141 @@ namespace Doxygen2Md
             }
         }
 
+
+        static std::string FormatHeader( const std::string& title )
+        {
+            return std::format( "---\nlayout: page\ntitle: {}\ntoplevel: false\n---\n", title );
+        }
     
-
-        std::string Format( const CompoundDef& context )
+        std::string FormatLink( const CompoundDef* compoundDef ) const
         {
-            return {};
+            auto path = pathBuilder_.FileRelativeUrlOf( compoundDef );
+            auto name = Encode( compoundDef->Name( ) );
+            auto result = std::format( "[{}]({})", name, path );
+            return result;
         }
 
-        std::string Format( const MemberDef& context )
+        std::string FormatBreadcrumbs( const CompoundDef* compoundDef ) const
         {
-            return {};
+            std::vector<std::string> parts;
+            auto owner = static_cast< const CompoundDef* >( compoundDef->Owner( ) );
+            while ( owner )
+            {
+                auto part = FormatLink( owner );
+                parts.push_back( std::move( part ) );
+                owner = static_cast< const CompoundDef* >( owner->Owner( ) );
+            }
+            std::ranges::reverse( parts );
+            parts.push_back( Encode( compoundDef->Name( ) ) );
+
+            std::string result = std::ranges::fold_left( parts, std::string{}, []( std::string acc, const std::string& s ) 
+                {
+                    if ( !acc.empty( ) )
+                    {
+                        acc += " &gt; ";
+                    }
+                    return acc + s;
+                } );
+            return result;
+
         }
 
-        template<typename T>
-        std::string FormatClass( const T& context )
+        static std::string Encode( const std::string& str )
         {
-            return {};
+            return Html::Encode<std::string>( str );
+        }
+
+
+
+        std::string FormatDescription( const CompoundDef& compoundDef ) const
+        {
+            auto briefDescription = compoundDef.BriefDescription( );
+            StringBuilder sb;
+            if ( briefDescription )
+            {
+                FormatTo( compoundDef,0,*briefDescription, sb );
+                sb.AppendLine( );
+            }
+
+            auto detailedDescription = compoundDef.DetailedDescription( );
+            if ( detailedDescription )
+            {
+                FormatTo( compoundDef, 0, *detailedDescription, sb );
+                sb.AppendLine( );
+            }
+            return sb.ToString<std::string>( );
+        }
+
+        
+
+        std::string FormatClass( const std::string& typeStr,const CompoundDef& compoundDef ) const
+        {
+            auto header = FormatHeader( typeStr + " " + Encode( compoundDef.Title( ) ) );
+            auto breadcrumbs = FormatBreadcrumbs( &compoundDef );
+            auto description = FormatDescription( compoundDef );
+            auto result = std::format( "{}\n{}\n\n{}\n", header, breadcrumbs, description );
+
+            
+
+
+            return result;
         }
     public:
-        std::string Format( const ClassCompoundDef& compoundDef )
+        std::string Format( const ClassCompoundDef& compoundDef ) const
         {
-            return compoundDef.QualifiedName( );
+            return FormatClass( "class", compoundDef );
         }
 
-        std::string Format( const StructCompoundDef& compoundDef )
+        std::string Format( const StructCompoundDef& compoundDef ) const
         {
-            return compoundDef.QualifiedName( );
+            return FormatClass( "struct", compoundDef );
         }
 
-        std::string Format( const InterfaceCompoundDef& compoundDef )
+        std::string Format( const InterfaceCompoundDef& compoundDef ) const
         {
-            return compoundDef.QualifiedName( );
+            return FormatClass( "interface", compoundDef );
         }
 
-        std::string Format( const UnionCompoundDef& compoundDef )
+        std::string Format( const UnionCompoundDef& compoundDef ) const
         {
-            return compoundDef.QualifiedName( );
+            auto header = FormatHeader( "union " + compoundDef.Name( ) );
+            auto breadcrumbs = FormatBreadcrumbs( &compoundDef );
+            auto result = std::format( "{}\n{}\n\n", header, breadcrumbs );
+            return result;
         }
 
-        std::string Format( const ConceptCompoundDef& compoundDef )
+        std::string Format( const ConceptCompoundDef& compoundDef ) const
         {
-            return compoundDef.QualifiedName( );
+            auto header = FormatHeader( "concept " + compoundDef.Name( ) );
+            auto breadcrumbs = FormatBreadcrumbs( &compoundDef );
+            auto result = std::format( "{}\n{}\n\n", header, breadcrumbs );
+            return result;
         }
 
-        std::string Format( const NamespaceCompoundDef& compoundDef )
+        std::string Format( const NamespaceCompoundDef& compoundDef ) const
         {
-            return compoundDef.QualifiedName( );
+            auto header = FormatHeader( "namespace " + compoundDef.Name( ) );
+            auto breadcrumbs = FormatBreadcrumbs( &compoundDef );
+            auto result = std::format( "{}\n{}\n\n", header, breadcrumbs );
+            return result;
         }
 
-        std::string Format( const VariableMemberDef& memberDef )
+        std::string Format( const VariableMemberDef& memberDef ) const
         {
             return {};
         }
 
-        std::string Format( const TypedefMemberDef& memberDef )
+        std::string Format( const TypedefMemberDef& memberDef ) const
         {
             return {};
         }
 
-        std::string Format( const EnumMemberDef& memberDef )
+        std::string Format( const EnumMemberDef& memberDef ) const
         {
             return {};
         }
 
-        std::string Format( const FunctionMemberDef& memberDef )
+        std::string Format( const FunctionMemberDef& memberDef ) const
         {
             return {};
         }

@@ -227,7 +227,7 @@ class Sample final : public DX::IDeviceNotify
     std::shared_ptr<ONNX::DirectML::Model > model_;
     DateTime frameTime_;
     DateTime nextCompute_;
-    TimeSpan computeInterval_{ TimeSpan::TicksPerSecond / 3 };
+    TimeSpan computeInterval_{ TimeSpan::TicksPerSecond / 10 };
     
 
 public:

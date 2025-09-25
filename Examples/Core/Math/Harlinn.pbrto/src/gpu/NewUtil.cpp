@@ -52,11 +52,14 @@ PBRTO_EXPORT void GPUInit() {
         NCUDA_CHECK(cudaGetDeviceProperties(&deviceProperties, i));
         NCHECK(deviceProperties.canMapHostMemory);
 
+        int clockRateKHz;
+        cudaDeviceGetAttribute(&clockRateKHz, cudaDevAttrClockRate, i);
+
         std::string deviceString = StringPrintf(
             "CUDA device %d (%s) with %f MiB, %d SMs running at %f MHz "
             "with shader model %d.%d",
             i, deviceProperties.name, deviceProperties.totalGlobalMem / (1024. * 1024.),
-            deviceProperties.multiProcessorCount, deviceProperties.clockRate / 1000.,
+            deviceProperties.multiProcessorCount, clockRateKHz /*deviceProperties.clockRate*/ / 1000.,
             deviceProperties.major, deviceProperties.minor);
         NLOG_VERBOSE("%s", deviceString);
         devices += deviceString + "\n";

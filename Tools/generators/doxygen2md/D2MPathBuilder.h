@@ -44,10 +44,10 @@ namespace Doxygen2Md
         }
 
     private:
-        static std::string NameOf( Doxygen::Structure::CompoundDef* compoundDef )
+        static std::string NameOf( const Doxygen::Structure::CompoundDef* compoundDef )
         {
             const std::string& compoundName = compoundDef->CompoundName( );
-            auto owner = static_cast< Doxygen::Structure::CompoundDef* >( compoundDef->Owner( ) );
+            auto owner = static_cast< const Doxygen::Structure::CompoundDef* >( compoundDef->Owner( ) );
             if ( owner )
             {
                 const std::string& ownerCompoundName = owner->CompoundName( );
@@ -72,10 +72,10 @@ namespace Doxygen2Md
             }
         }
 
-        static std::string NameOf( Doxygen::Structure::MemberDef* memberDef )
+        static std::string NameOf( const Doxygen::Structure::MemberDef* memberDef )
         {
             const std::string& qualifiedName = memberDef->QualifiedName( );
-            auto owner = static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) );
+            auto owner = static_cast< const Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) );
             if ( owner )
             {
                 const std::string& ownerCompoundName = owner->CompoundName( );
@@ -230,14 +230,14 @@ namespace Doxygen2Md
         }
 
 
-        static std::string FileSystemBaseName( Doxygen::Structure::CompoundDef* compoundDef )
+        static std::string FileSystemBaseName( const Doxygen::Structure::CompoundDef* compoundDef )
         {
             auto compoundDefName = NameOf( compoundDef );
             auto result = FileSystemBaseName( compoundDefName );
             return result;
         }
 
-        std::string MemberDefBaseName( Doxygen::Structure::MemberDef* memberDef ) const
+        std::string MemberDefBaseName( const Doxygen::Structure::MemberDef* memberDef ) const
         {
             auto memberDefName = NameOf( memberDef );
             std::string shortName;
@@ -254,12 +254,12 @@ namespace Doxygen2Md
         }
 
 
-        static std::string PathOf( Doxygen::Structure::CompoundDef* compoundDef, char separator = '\\' )
+        static std::string PathOf( const Doxygen::Structure::CompoundDef* compoundDef, char separator = '\\' )
         {
             auto owner = static_cast< Doxygen::Structure::CompoundDef* >( compoundDef->Owner( ) );
             if ( owner )
             {
-                auto ownerPath = PathOf( owner );
+                auto ownerPath = PathOf( owner, separator );
                 auto compoundDefName = NameOf( compoundDef );
                 auto fileSystemBaseName = FileSystemBaseName( compoundDefName );
 
@@ -329,7 +329,7 @@ namespace Doxygen2Md
         }
 
 
-        static std::string PathOf( Doxygen::Structure::MemberDef* memberDef, char separator = '\\' )
+        static std::string PathOf( const Doxygen::Structure::MemberDef* memberDef, char separator = '\\' )
         {
             auto owner = static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) );
             if ( owner )
@@ -446,7 +446,7 @@ namespace Doxygen2Md
     
 
         template<typename T>
-        std::string DirectoryPathOf( T* def, char separator = '\\' ) const
+        std::string DirectoryPathOf( const T* def, char separator = '\\' ) const
         {
             std::string path;
             std::string shortName;
@@ -463,7 +463,7 @@ namespace Doxygen2Md
             return result;
         }
         template<typename T>
-        std::string RelativeUrlOf( T* def, char separator = '/' ) const
+        std::string RelativeUrlOf( const T* def, char separator = '/' ) const
         {
             std::string path;
             std::string shortName;
@@ -512,7 +512,7 @@ namespace Doxygen2Md
         std::string FilePathOf( Doxygen::Structure::CompoundDef* compoundDef, char separator = '\\' ) const
         {
             auto directory = DirectoryPathOf( compoundDef, separator );
-            auto result = std::format( "{}\\index.md", directory );
+            auto result = std::format( "{}{}index.md", directory, separator );
             return result;
         }
 
@@ -521,22 +521,22 @@ namespace Doxygen2Md
             auto directory = DirectoryPathOf( static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner() ), separator );
             auto baseName = MemberDefBaseName( memberDef );
             auto kind = ToLower( to_string( memberDef->Kind( ) ) );
-            auto result = std::format( "{}\\{}_{}.md", directory, kind, baseName );
+            auto result = std::format( "{}{}{}_{}.md", directory, separator, kind, baseName );
             return result;
         }
 
-        std::string FileRelativeUrlOf( Doxygen::Structure::CompoundDef* compoundDef, char separator = '/' ) const
+        std::string FileRelativeUrlOf( const Doxygen::Structure::CompoundDef* compoundDef, char separator = '/' ) const
         {
             auto directory = RelativeUrlOf( compoundDef, separator );
-            auto result = std::format( "{}\\index.md", directory );
+            auto result = std::format( "{}{}index.html", directory, separator );
             return result;
         }
-        std::string FileRelativeUrlOf( Doxygen::Structure::MemberDef* memberDef, char separator = '/' ) const
+        std::string FileRelativeUrlOf( const Doxygen::Structure::MemberDef* memberDef, char separator = '/' ) const
         {
             auto directory = RelativeUrlOf( static_cast< Doxygen::Structure::CompoundDef* >( memberDef->Owner( ) ), separator );
             auto baseName = MemberDefBaseName( memberDef );
             auto kind = ToLower( to_string( memberDef->Kind( ) ) );
-            auto result = std::format( "{}\\{}_{}.md", directory, kind, baseName );
+            auto result = std::format( "{}{}{}_{}.html", directory, separator, kind, baseName );
             return result;
         }
 

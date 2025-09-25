@@ -2732,18 +2732,6 @@ namespace Harlinn::Common::Core::Doxygen
     namespace Structure
     {
 
-        struct Identifier
-        {
-
-        };
-
-        struct Template
-        {
-
-        };
-
-
-
         class TypeSystem
         {
             friend class CompoundDef;
@@ -2751,6 +2739,7 @@ namespace Harlinn::Common::Core::Doxygen
 
             std::unordered_map<std::string_view, CompoundDef*> allCompoundDefs_;
             std::unordered_map<MemberDefKey, MemberDef*> allMemberDefs_;
+            std::multimap < std::string_view, MemberDef*> allMemberDefsById_;
             std::unordered_map<std::string_view, CompoundDef*> rootCompoundDefs_;
             std::multimap<std::string_view, NamespaceCompoundDef*> namespaceMap_;
             std::vector<NamespaceCompoundDef*> namespaces_;
@@ -2771,8 +2760,6 @@ namespace Harlinn::Common::Core::Doxygen
             static bool ParentNamespaceName( std::string_view compoundName, std::string& parentCompoundName );
             CompoundDef* FindCompoundDefByName( const std::string_view& compoundName );
             NamespaceCompoundDef* FindNamespace( const std::string_view& compoundName );
-            //NamespaceCompoundDef* CreateNamespace( const std::string_view& compoundName );
-            //void CreateMissingNamespaces( );
 
         private:
             template<typename T, typename ContainerT, typename DefPtrT>
@@ -2818,11 +2805,12 @@ namespace Harlinn::Common::Core::Doxygen
                 auto result = ptr.get( );
                 _all.emplace_back( std::move( ptr ) );
                 allMemberDefs_.emplace( key, result );
+                allMemberDefsById_.emplace( key.MemberDefId( ), result );
                 return result;
             }
 
             MemberDef* AddMemberDef( const MemberDefKey& key, const MemberDefTypePtr& memberDef );
-
+        public:
             CompoundDef* FindCompoundDef( const std::string_view& id ) const
             {
                 auto it = allCompoundDefs_.find( id );
@@ -2843,13 +2831,23 @@ namespace Harlinn::Common::Core::Doxygen
                 return nullptr;
             }
 
+            MemberDef* FindMemberDef( const std::string_view& id ) const
+            {
+                auto it = allMemberDefsById_.find( id );
+                if ( it != allMemberDefsById_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
         };
 
         class BaseDef
         {
             TypeSystem* typeSystem_{};
             std::string_view id_;
-            BaseDef* owner_{};
+            CompoundDef* owner_{};
         public:
             BaseDef( TypeSystem* typeSystem, const std::string_view& id )
                 : typeSystem_( typeSystem ), id_( id )
@@ -2867,15 +2865,19 @@ namespace Harlinn::Common::Core::Doxygen
             }
 
 
-            BaseDef* Owner( ) const
+            CompoundDef* Owner( ) const
             {
                 return owner_;
             }
 
-            void SetOwner( BaseDef* owner )
+            void SetOwner( CompoundDef* owner )
             {
                 owner_ = owner;
             }
+
+            virtual bool IsCompoundDef( ) const = 0;
+
+        
 
         };
 
@@ -2969,6 +2971,8 @@ namespace Harlinn::Common::Core::Doxygen
             {
                 return compoundDefType_;
             }
+
+            virtual bool IsCompoundDef( ) const { return true; }
 
             const std::vector<Inherit>& Inherits( ) const { return inherits_; }
             const std::vector<MemberEntry>& Members( ) const { return members_; }
@@ -3067,7 +3071,7 @@ namespace Harlinn::Common::Core::Doxygen
                     auto ownerCompoundNameLength = ownerCompoundName.length( );
                     const std::string& compoundName = CompoundName( );
                     
-                    if ( ownerCompoundNameLength > compoundName.length( ) + 2 )
+                    if ( ownerCompoundNameLength < compoundName.length( ) + 2 )
                     {
                         auto start = ownerCompoundNameLength;
                         if ( compoundName[ start ] == ':' || compoundName[ start ] == '.' )
@@ -3105,15 +3109,32 @@ namespace Harlinn::Common::Core::Doxygen
                 return {};
             }
 
+        private:
+            void GetPathParts( std::vector<CompoundDef*>& parts ) const
+            {
+                auto owner = Owner( );
+                if ( owner )
+                {
+                    owner->GetPathParts( parts );
+                }
+                parts.emplace_back( const_cast< CompoundDef* >(this) );
+            }
+        public:
+            std::vector<CompoundDef*> GetPathParts( ) const
+            {
+                std::vector<CompoundDef*> result;
+                GetPathParts( result );
+                return result;
+            }
 
 
 
-            const std::string& Title( ) const 
+            const std::string Title( ) const 
             { 
                 const std::string& title = compoundDefType_->Title( );
                 if ( title.length( ) == 0 )
                 {
-                    return CompoundName( );
+                    return Name( );
                 }
                 return title;
             }
@@ -3423,6 +3444,9 @@ namespace Harlinn::Common::Core::Doxygen
                 }
                 return DoxLanguage::Unknown;
             }
+
+            virtual bool IsCompoundDef( ) const { return false; }
+
 
             const MemberDefTypePtr& Def( ) const
             {

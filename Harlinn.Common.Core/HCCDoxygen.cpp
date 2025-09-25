@@ -308,9 +308,11 @@ namespace Harlinn::Common::Core::Doxygen
                     default:
                     {
                         result.Value.reset( );
+                        return false;
                     }
                     break;
                 }
+                return true;
             }
         }
         return false;
@@ -322,9 +324,10 @@ namespace Harlinn::Common::Core::Doxygen
         {
             if ( xmlNode.NodeType( ) == XmlNodeType::node_data )
             {
-                auto text = Trim( xmlNode.ToString( ) );
+                auto text = xmlNode.ToString( );
                 if ( text.size( ) )
                 {
+                    result.Type = DoxCmdGroupType::text;
                     auto decoded = DecodeHtml( text );
                     result.Value = std::make_shared<TextType>( decoded );
                     return true;
