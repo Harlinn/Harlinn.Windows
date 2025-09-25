@@ -17,7 +17,7 @@ To build the solution you need:
 - [perl](https://www.perl.org/)
 - [OpenSSL](https://www.openssl.org/)
 - [nVidia CUDA toolkit](https://developer.nvidia.com/cuda-toolkit)
-- [XDP and XDP devkit](https://github.com/microsoft/xdp-for-windows)
+- [International Components for Unicode](https://github.com/unicode-org/icu)
 
 Make sure you install 64-bit binaries, libraries and headers.
 
@@ -34,11 +34,11 @@ Before building you need to set a few environment variables:
 - **HCC_HOME** must point to the directory containing Harlinn.Windows.sln.
 - **PROJ_LIB** must point to ***%HCC_HOME%**\\Share\\proj*
 - **GDAL_DATA** must point to ***%HCC_HOME%**\\Share\\gdal*
+- **ICU4C_HOME** must point to the root directory of your ICU installation
 - **OPENSSL_HOME** must point to the root of your openssl 3.x installation, which is the directory containing the bin, include and lib directories.
 - **INTEL_MKL_INCLUDE** must point to the directory containing the Intel Math Kernel Library include files
 - **INTEL_MKL_LIB** must point to the directory containing the Intel Math Kernel Library *.lib files
 - **PYTHON_HOME** must point to the root folder of your python installation.
-- **XDP_DEVKIT_HOME** must point to the root folder of your XDP Devkit installation.
 
 The PATH environment variable must be updated to reference:
 - **%BOOST_ROOT%**\stage\lib
