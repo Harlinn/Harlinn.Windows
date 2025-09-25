@@ -99,7 +99,7 @@
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python3.lib;python313.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>python3.dll;python39.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
@@ -127,7 +127,7 @@
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python3.lib;python313.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>python3.dll;python39.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
@@ -152,7 +152,7 @@
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python3.lib;python313.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
@@ -182,7 +182,7 @@
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python3.lib;python313.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
