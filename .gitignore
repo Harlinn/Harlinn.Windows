@@ -779,3 +779,5 @@ MigrationBackup/
 /Examples/3rdParty/grpc/helloworld/grpc-helloworld-greeter-server/helloworld.grpc.pb.h
 /Examples/3rdParty/grpc/helloworld/grpc-helloworld-greeter-server/helloworld.pb.cc
 /Examples/3rdParty/grpc/helloworld/grpc-helloworld-greeter-server/helloworld.pb.h
+/Java/Examples/harlinn.common/.settings/org.eclipse.buildship.core.prefs
+/Java/Examples/harlinn.common/.settings/org.eclipse.core.resources.prefs
