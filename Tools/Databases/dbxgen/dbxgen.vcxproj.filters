@@ -79,6 +79,21 @@
     <Filter Include="Include\CodeGenerators\CSharp\Databases\MsSql">
       <UniqueIdentifier>{75857baf-d9bd-4777-b85d-c82bf9a32113}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\CodeGenerators\Java">
+      <UniqueIdentifier>{1405c1b9-4343-4330-b3ed-ae77378dd1b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\Java">
+      <UniqueIdentifier>{f2e7198b-cf9a-493b-a2df-0bf70cad7f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\Java\Databases">
+      <UniqueIdentifier>{416d4fa5-8e28-4d21-a4a3-4ba440a798dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\Java\Databases\MsSql">
+      <UniqueIdentifier>{ba61ee4d-7531-4c2b-b912-4942f65e45a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\Java\Databases">
+      <UniqueIdentifier>{bf5fff85-cf44-4e95-95f8-aa999d33214c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CodeGenerators\Cpp\CppHelper.h">

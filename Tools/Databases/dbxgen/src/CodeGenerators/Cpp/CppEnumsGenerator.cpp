@@ -37,6 +37,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
         WriteLine( );
         WriteLine( L"namespace {}", nspace );
         WriteLine( L"{" );
+        WriteLine( L"    using namespace Harlinn::Common;" );
         WriteLine( L"    using namespace Harlinn::Common::Core;" );
         WriteLine( );
         CreateKind( );

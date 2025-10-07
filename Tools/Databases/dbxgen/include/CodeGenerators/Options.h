@@ -1008,6 +1008,307 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         };
     }
 
+    namespace Java
+    {
+        class JavaOptions;
+
+        namespace Databases
+        {
+            class JavaDatabasesOptions;
+            namespace MsSql
+            {
+                class JavaMsSqlOptions;
+                class JavaMsSqlSimpleDatabaseReadersOptions : public OptionsFile<JavaMsSqlOptions>
+                {
+                public:
+                    using Base = OptionsFile<JavaMsSqlOptions>;
+                    JavaMsSqlSimpleDatabaseReadersOptions(const JavaMsSqlOptions& owner)
+                        : Base(owner, L"MsSqlSimpleDatabaseReaders.java")
+                    {
+                    }
+                };
+
+
+                class JavaMsSqlComplexDatabaseReadersOptions : public OptionsFile<JavaMsSqlOptions>
+                {
+                public:
+                    using Base = OptionsFile<JavaMsSqlOptions>;
+                    JavaMsSqlComplexDatabaseReadersOptions(const JavaMsSqlOptions& owner)
+                        : Base(owner, L"MsSqlComplexDatabaseReaders.java")
+                    {
+                    }
+                };
+
+                class JavaMsSqlStoredProceduresOptions : public OptionsFile<JavaMsSqlOptions>
+                {
+                public:
+                    using Base = OptionsFile<JavaMsSqlOptions>;
+                    JavaMsSqlStoredProceduresOptions(const JavaMsSqlOptions& owner)
+                        : Base(owner, L"MsSqlStoredProcedures.java")
+                    {
+                    }
+                };
+
+                class JavaMsSqlDataContextOptions : public OptionsFile<JavaMsSqlOptions>
+                {
+                public:
+                    using Base = OptionsFile<JavaMsSqlOptions>;
+                    JavaMsSqlDataContextOptions(const JavaMsSqlOptions& owner)
+                        : Base(owner, L"MsSqlDataContext.java")
+                    {
+                    }
+                };
+
+                class JavaMsSqlUpdateNodesOptions : public OptionsFile<JavaMsSqlOptions>
+                {
+                public:
+                    using Base = OptionsFile<JavaMsSqlOptions>;
+                    JavaMsSqlUpdateNodesOptions(const JavaMsSqlOptions& owner)
+                        : Base(owner, L"MsSqlUpdateNodes.java")
+                    {
+                    }
+                };
+
+
+
+                class JavaMsSqlOptions : public OptionsContainer<JavaDatabasesOptions>
+                {
+                    JavaMsSqlSimpleDatabaseReadersOptions simpleDatabaseReaders_;
+                    JavaMsSqlComplexDatabaseReadersOptions complexDatabaseReaders_;
+                    JavaMsSqlStoredProceduresOptions storedProcedures_;
+                    JavaMsSqlDataContextOptions dataContext_;
+                    JavaMsSqlUpdateNodesOptions updateNodes_;
+                public:
+                    using Base = OptionsContainer<JavaDatabasesOptions>;
+                    JavaMsSqlOptions(const JavaDatabasesOptions& owner)
+                        : Base(owner, L"MsSql"), simpleDatabaseReaders_(*this), complexDatabaseReaders_(*this), storedProcedures_(*this), dataContext_(*this), updateNodes_(*this)
+                    {
+                    }
+
+                    const JavaMsSqlSimpleDatabaseReadersOptions& DatabaseReaders() const
+                    {
+                        return simpleDatabaseReaders_;
+                    }
+
+                    const JavaMsSqlComplexDatabaseReadersOptions& ComplexDatabaseReaders() const
+                    {
+                        return complexDatabaseReaders_;
+                    }
+
+                    const JavaMsSqlStoredProceduresOptions& StoredProcedures() const
+                    {
+                        return storedProcedures_;
+                    }
+
+                    const JavaMsSqlDataContextOptions& DataContext() const
+                    {
+                        return dataContext_;
+                    }
+
+                    const JavaMsSqlUpdateNodesOptions& UpdateNodes() const
+                    {
+                        return updateNodes_;
+                    }
+
+                };
+            }
+
+            class JavaDatabasesOptions : public OptionsContainer<JavaOptions>
+            {
+                MsSql::JavaMsSqlOptions msSql_;
+            public:
+                using Base = OptionsContainer<JavaOptions>;
+                JavaDatabasesOptions(const JavaOptions& owner)
+                    : Base(owner, L"Databases"), msSql_(*this)
+                {
+                }
+
+                const MsSql::JavaMsSqlOptions& MsSql() const
+                {
+                    return msSql_;
+                }
+            };
+        }
+
+
+        class JavaDataOptions;
+
+        class JavaEnumsOptions : public OptionsFile<JavaDataOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaDataOptions>;
+            JavaEnumsOptions(const JavaDataOptions& owner)
+                : Base(owner, L"Enums.java")
+            {
+            }
+        };
+
+        class JavaDataTypesOptions : public OptionsFile<JavaDataOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaDataOptions>;
+            JavaDataTypesOptions(const JavaDataOptions& owner)
+                : Base(owner, L"DataTypes.java")
+            {
+            }
+        };
+
+        class JavaIDataContextOptions : public OptionsFile<JavaDataOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaDataOptions>;
+            JavaIDataContextOptions(const JavaDataOptions& owner)
+                : Base(owner, L"IDataContext.java")
+            {
+            }
+        };
+
+
+
+
+        class JavaDataOptions : public OptionsContainer<JavaOptions>
+        {
+            JavaEnumsOptions enums_;
+            JavaDataTypesOptions dataTypes_;
+            JavaIDataContextOptions dataContext_;
+        public:
+            using Base = OptionsContainer<JavaOptions>;
+
+            JavaDataOptions(const JavaOptions& owner)
+                : Base(owner, L"Types"), enums_(*this), dataTypes_(*this), dataContext_(*this)
+            {
+            }
+
+            const JavaEnumsOptions& Enums() const
+            {
+                return enums_;
+            }
+            const JavaDataTypesOptions& DataTypes() const
+            {
+                return dataTypes_;
+            }
+
+            const JavaIDataContextOptions& DataContext() const
+            {
+                return dataContext_;
+            }
+
+        };
+
+        class JavaEntitiesOptions;
+        class JavaEntityTypesOptions : public OptionsFile<JavaEntitiesOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaEntitiesOptions>;
+            JavaEntityTypesOptions(const JavaEntitiesOptions& owner)
+                : Base(owner, L"EntityTypes.java")
+            {
+            }
+        };
+
+        class JavaEntityChangesOptions : public OptionsFile<JavaEntitiesOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaEntitiesOptions>;
+            JavaEntityChangesOptions(const JavaEntitiesOptions& owner)
+                : Base(owner, L"EntityChanges.java")
+            {
+            }
+        };
+
+        class JavaEntityContextOptions : public OptionsFile<JavaEntitiesOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaEntitiesOptions>;
+            JavaEntityContextOptions(const JavaEntitiesOptions& owner)
+                : Base(owner, L"EntityContext.java")
+            {
+            }
+        };
+
+
+        class JavaEntitiesOptions : public OptionsContainer<JavaOptions>
+        {
+            JavaEntityTypesOptions entityTypes_;
+            JavaEntityContextOptions entityContext_;
+            JavaEntityChangesOptions entityChanges_;
+        public:
+            using Base = OptionsContainer<JavaOptions>;
+
+            JavaEntitiesOptions(const JavaOptions& owner)
+                : Base(owner, L"entities"), entityTypes_(*this), entityContext_(*this), entityChanges_(*this)
+            {
+            }
+
+            const JavaEntityTypesOptions& EntityTypes() const
+            {
+                return entityTypes_;
+            }
+
+            const JavaEntityContextOptions& EntityContext() const
+            {
+                return entityContext_;
+            }
+
+            const JavaEntityChangesOptions& EntityChanges() const
+            {
+                return entityChanges_;
+            }
+
+        };
+
+
+        class JavaOptions
+        {
+            const Options& owner_;
+            WideString outputDirectory_{ L"%HCC_HOME%\\Java\\Examples\\Barrelman\\Barrelman.Data" };
+            WideString namespace_{ L"barrelman" };
+            JavaDataOptions data_;
+            Databases::JavaDatabasesOptions databases_;
+            JavaEntitiesOptions entities_;
+        public:
+            using XmlElement = Common::Core::Xml::Dom::Element;
+
+            JavaOptions(const Options& owner)
+                : owner_(owner), data_(*this), databases_(*this), entities_(*this)
+            {
+            }
+
+            const Options& Owner() const
+            {
+                return owner_;
+            }
+
+            WideString OutputDirectory() const
+            {
+                return Harlinn::Common::Core::Environment::Expand(outputDirectory_);
+            }
+
+            WideString Namespace(const WideString& separator) const
+            {
+                return namespace_;
+            }
+
+            const JavaDataOptions& Data() const
+            {
+                return data_;
+            }
+
+            const Databases::JavaDatabasesOptions& Databases() const
+            {
+                return databases_;
+            }
+
+            const JavaEntitiesOptions& Entities() const
+            {
+                return entities_;
+            }
+
+            void Load(const XmlElement& element);
+
+        };
+    }
+
     
 
 
@@ -1018,10 +1319,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         Cpp::CppOptions cpp_;
         Cpp::CppTestOptions cppTest_;
         CSharp::CSharpOptions csharp_;
+        Java::JavaOptions java_;
     public:
         using XmlElement = Common::Core::Xml::Dom::Element;
         Options()
-            : databases_(*this), cpp_(*this), cppTest_(*this), csharp_( *this )
+            : databases_(*this), cpp_(*this), cppTest_(*this), csharp_( *this ), java_( *this )
         { }
 
         const WideString& ModelFilename( ) const
@@ -1047,6 +1349,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         const CSharp::CSharpOptions& CSharp( ) const
         {
             return csharp_;
+        }
+
+        const Java::JavaOptions& Java( ) const
+        {
+            return java_;
         }
 
         void Load( const XmlElement& element );
