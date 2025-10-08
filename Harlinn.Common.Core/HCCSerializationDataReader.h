@@ -420,6 +420,114 @@ namespace Harlinn::Common::Core::IO::Serialization
         }
 
         template<typename T>
+            requires IsCurrency<T>
+        T Read()
+        {
+            using ValueType = std::remove_cvref_t<T>;
+
+            auto dataType = ReadDataType();
+            switch (dataType)
+            {
+                case DataType::MinCurrency:
+                {
+                    return Currency::fromValue(std::numeric_limits<typename Currency::value_type>::lowest());
+                }
+                break;
+                case DataType::MinusOneCurrency:
+                {
+                    return Currency(-1LL);
+                }
+                break;
+                case DataType::ZeroCurrency:
+                {
+                    return Currency(0LL);
+                }
+                break;
+                case DataType::OneCurrency:
+                {
+                    return Currency(1LL);
+                }
+                break;
+                case DataType::MaxCurrency:
+                {
+                    return Currency::fromValue(std::numeric_limits<typename Currency::value_type>::max());
+                }
+                break;
+                case DataType::Currency:
+                {
+                    auto value = reader_.Read<typename Currency::value_type>();
+                    return Currency::fromValue(value);
+                }
+                break;
+                default:
+                {
+                    auto typeName = ToWideString(typeid(ValueType).name());
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast<Int32>(dataType), typeName);
+                    HCC_THROW(Exception, message);
+                }
+                break;
+            }
+        }
+
+        template<typename T>
+            requires (IsStdOptional<std::remove_cvref_t<T>> && IsCurrency<typename T::value_type> )
+        T Read()
+        {
+            using OptionalType = std::remove_cvref_t<T>;
+            using ValueType = std::remove_cvref_t<typename T::value_type>;
+
+            auto dataType = ReadDataType();
+            switch (dataType)
+            {
+                case DataType::Null:
+                {
+                    return OptionalType();
+                }
+                break;
+                case DataType::MinCurrency:
+                {
+                    return Currency::fromValue(std::numeric_limits<typename Currency::value_type>::lowest());
+                }
+                break;
+                case DataType::MinusOneCurrency:
+                {
+                    return Currency(-1LL);
+                }
+                break;
+                case DataType::ZeroCurrency:
+                {
+                    return Currency(0LL);
+                }
+                break;
+                case DataType::OneCurrency:
+                {
+                    return Currency(1LL);
+                }
+                break;
+                case DataType::MaxCurrency:
+                {
+                    return Currency::fromValue(std::numeric_limits<typename Currency::value_type>::max());
+                }
+                break;
+                case DataType::Currency:
+                {
+                    auto value = reader_.Read<typename Currency::value_type>();
+                    return Currency::fromValue(value);
+                }
+                break;
+                default:
+                {
+                    auto typeName = ToWideString(typeid(ValueType).name());
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast<Int32>(dataType), typeName);
+                    HCC_THROW(Exception, message);
+                }
+                break;
+            }
+        }
+
+
+
+        template<typename T>
             requires Serialization::Internal::FloatDataTypeResolver<std::remove_cvref_t<T>>::value
         T Read()
         {

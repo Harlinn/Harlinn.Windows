@@ -116,7 +116,14 @@ namespace Harlinn::Common::Core::IO::Serialization
         String,
         EmptyString,
 
-        SmallBooleanArray,
+        MinCurrency,
+        MinusOneCurrency,
+        ZeroCurrency,
+        OneCurrency,
+        MaxCurrency,
+        Currency,
+
+        SmallBooleanArray = 0x80,
         BooleanArray,
         LargeBooleanArray,
         EmptyBooleanArray,
@@ -201,6 +208,9 @@ namespace Harlinn::Common::Core::IO::Serialization
         LargeByteArrayList,
         EmptyByteArrayList,
     };
+
+    
+
 
     namespace Internal
     {

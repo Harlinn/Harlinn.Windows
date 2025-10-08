@@ -67,6 +67,11 @@ namespace Harlinn::Common::Core
             return value_;
         }
 
+        constexpr static Currency fromValue(value_type value) noexcept
+        {
+            return Currency(value, false);
+        }
+
         constexpr Currency& operator++( ) noexcept
         {
             value_ += Scale;
