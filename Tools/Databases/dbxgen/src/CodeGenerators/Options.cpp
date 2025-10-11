@@ -82,6 +82,21 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         }
     }
 
+    namespace Java
+    {
+        void JavaOptions::Load(const XmlElement& element)
+        {
+            if (element.HasAttribute(L"outdir"))
+            {
+                outputDirectory_ = element.Read<WideString>(L"outdir");
+            }
+            if (element.HasAttribute(L"namespace"))
+            {
+                namespace_ = element.Read<WideString>(L"namespace");
+            }
+        }
+    }
+
 
     void Options::Load( const XmlElement& element )
     {
@@ -108,6 +123,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         if ( csharpElement )
         {
             csharp_.Load( csharpElement );
+        }
+        auto javaElement = element.Read<XmlElement>(L"java");
+        if (javaElement)
+        {
+            java_.Load(javaElement);
         }
     }
     std::unique_ptr<Options> Options::LoadFromFile( const WideString& optionsFilename )

@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.harlinn.common.util.Currency;
 import com.harlinn.common.util.DateTime;
 import com.harlinn.common.util.TimeBase;
 import com.harlinn.common.util.TimeSpan;
@@ -20,7 +21,7 @@ public abstract class AbstractDataReader {
 	protected abstract byte readByte( );
 	protected abstract ByteBuffer readBuffer( int size );
 	
-	private final long Read7BitEncodedUInt64( ) {
+	public final long Read7BitEncodedUInt64( ) {
 	    long resultValue = 0;
 	    byte byteValue = readByte( );
 	    resultValue = byteValue & 0x7F;
@@ -59,7 +60,7 @@ public abstract class AbstractDataReader {
 	    return resultValue;
 	}
 	
-	private final long Read7BitEncodedInt64( ) {
+	public final long Read7BitEncodedInt64( ) {
 	    long resVal = Read7BitEncodedUInt64( );
 	    long resultValue = ( resVal >>> 1 ) | ( resVal << 63 );
 	    return resultValue;
@@ -648,6 +649,55 @@ public abstract class AbstractDataReader {
 		var milliSeconds = ticks / TimeBase.TicksPerMillisecond;
 		return new java.sql.Time(milliSeconds);
 	}
+	
+	public final Currency readCurrency( ) {
+		var dataType = readDataType();
+		switch (dataType) {
+			case DataType.MinCurrency:
+		        return Currency.fromValue( Long.MIN_VALUE );
+			case DataType.MinusOneCurrency:
+		    	return new Currency(-1L);
+		    case DataType.ZeroCurrency:
+		        return new Currency( 0 );
+		    case DataType.OneCurrency:
+		    	return new Currency( 1 );
+		    case DataType.MaxCurrency:
+		    	return Currency.fromValue( Long.MAX_VALUE );
+		    case DataType.Currency:
+		    	var buffer = readBuffer(8);
+		    	var longBuffer = buffer.asLongBuffer();
+		    	return Currency.fromValue( longBuffer.get() );
+		    default:
+		        throw new UnexpectedDataTypeException(dataType);
+		}
+	}
+	
+	public final Optional<Currency> readOptionalCurrency( ) {
+		var dataType = readDataType();
+		switch (dataType) {
+			case DataType.Null:
+				return Optional.empty();
+			case DataType.MinCurrency:
+		        return Optional.of( Currency.fromValue( Long.MIN_VALUE ) );
+			case DataType.MinusOneCurrency:
+		    	return Optional.of( new Currency(-1L) );
+		    case DataType.ZeroCurrency:
+		        return Optional.of( new Currency( 0 ) );
+		    case DataType.OneCurrency:
+		    	return Optional.of( new Currency( 1 ) );
+		    case DataType.MaxCurrency:
+		    	return Optional.of( Currency.fromValue( Long.MAX_VALUE ) );
+		    case DataType.Currency:
+		    	var buffer = readBuffer(8);
+		    	var longBuffer = buffer.asLongBuffer();
+		    	return Optional.of( Currency.fromValue( longBuffer.get() ) );
+		    default:
+		        throw new UnexpectedDataTypeException(dataType);
+		}
+	}
+	
+	
+	
 	
 	public final byte[] readGuidAsBytes( ) {
 		var dataType = readDataType();

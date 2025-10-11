@@ -700,6 +700,17 @@ struct JNINativeInterface_
 
     jobject( JNICALL* GetModule )
         ( JNIEnv* env, jclass clazz );
+
+    /* Virtual threads */
+
+    jboolean(JNICALL* IsVirtualThread)
+        (JNIEnv* env, jobject obj);
+
+    /* Large UTF8 Support */
+
+    jlong(JNICALL* GetStringUTFLengthAsLong)
+        (JNIEnv* env, jstring str);
+
 };
 
 struct JNIEnv
@@ -2015,6 +2026,13 @@ struct JNIEnv
         return functions->GetModule( this, clazz );
     }
 
+    /* Virtual threads */
+
+    jboolean IsVirtualThread(jobject obj) 
+    {
+        return functions->IsVirtualThread(this, obj);
+    }
+
 };
 
 typedef struct JavaVMOption
@@ -2095,6 +2113,10 @@ struct JavaVM
 #define JNI_VERSION_1_8 0x00010008
 #define JNI_VERSION_9   0x00090000
 #define JNI_VERSION_10  0x000a0000
+#define JNI_VERSION_19  0x00130000
+#define JNI_VERSION_20  0x00140000
+#define JNI_VERSION_21  0x00150000
+#define JNI_VERSION_24  0x00180000
 
 
 HJ_EXPORT jint JNI_GetDefaultJavaVMInitArgs( void* args );

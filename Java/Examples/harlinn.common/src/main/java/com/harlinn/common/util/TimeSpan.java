@@ -2,6 +2,9 @@ package com.harlinn.common.util;
 
 import java.io.Serializable;
 
+/**
+ * Represents a time interval.
+ */
 public class TimeSpan extends TimeBase implements Comparable<TimeSpan>, Serializable, Cloneable {
 	private static final long serialVersionUID = 4876775050401345933L;
 	

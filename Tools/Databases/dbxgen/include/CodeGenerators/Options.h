@@ -21,6 +21,8 @@
 #include <HCCIO.h>
 #include <HCCEnvironment.h>
 
+#include "Metadata/ModelInfo.h"
+
 namespace Harlinn::Tools::DbXGen
 {
     using namespace Harlinn::Common::Core;
@@ -127,7 +129,6 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         {
             return Internal::GetDllExport( owner_ );
         }
-
     };
 
     template<typename OwnerT>
@@ -198,8 +199,48 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         {
             return Internal::GetDllExport( owner_ );
         }
+    };
+
+    template<typename OwnerT>
+    class OptionsFileGroup
+    {
+    public:
+        using OwnerType = OwnerT;
+        using XmlElement = Common::Core::Xml::Dom::Element;
+    private:
+        const OwnerType& owner_;
+    public:
+        OptionsFileGroup(const OwnerType& owner)
+            : owner_(owner)
+        { }
+
+        const OwnerType& Owner() const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory() const
+        {
+            return owner_.OutputDirectory();
+        }
+
+        WideString Namespace(const WideString& separator) const
+        {
+            return owner_.Namespace(separator);
+        }
+
+        WideString Namespace(const wchar_t* separator) const
+        {
+            return Namespace(WideString(separator));
+        }
+
+        const WideString& DllExport() const
+        {
+            return Internal::GetDllExport(owner_);
+        }
 
     };
+
 
     class Options;
     namespace Databases
@@ -1130,17 +1171,74 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             };
         }
 
-
-        class JavaDataOptions;
-
-        class JavaEnumsOptions : public OptionsFile<JavaDataOptions>
+        class JavaEnumsOptions;
+        class JavaEnumOptions : public OptionsFile<JavaEnumsOptions>
         {
         public:
-            using Base = OptionsFile<JavaDataOptions>;
-            JavaEnumsOptions(const JavaDataOptions& owner)
-                : Base(owner, L"Enums.java")
+            using Base = OptionsFile<JavaEnumsOptions>;
+            JavaEnumOptions(const JavaEnumsOptions& owner, const WideString& filename)
+                : Base(owner, filename)
+            { }
+        };
+
+        class JavaKindOptions : public OptionsFile<JavaEnumsOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaEnumsOptions>;
+            JavaKindOptions(const JavaEnumsOptions& owner)
+                : Base(owner, L"Kind.java")
             {
             }
+        };
+
+        class JavaDataOptions;
+        class JavaEnumsOptions : public OptionsFileGroup<JavaDataOptions>
+        {
+            mutable std::map<WideString, std::unique_ptr<JavaEnumOptions>> enums_;
+            JavaKindOptions kind_;
+        public:
+            using Base = OptionsFileGroup<JavaDataOptions>;
+            JavaEnumsOptions(const JavaDataOptions& owner)
+                : Base(owner), kind_(*this)
+            { }
+
+            const JavaKindOptions& Kind() const
+            {
+                return kind_;
+            }
+
+
+            bool Contains(const WideString& enumTypeName) const
+            {
+                return enums_.contains(enumTypeName);
+            }
+
+            JavaEnumOptions* Find(const WideString& enumTypeName) const
+            {
+                auto it = enums_.find(enumTypeName);
+                if (it != enums_.end())
+                {
+                    return it->second.get();
+                }
+                return nullptr;
+            }
+
+            JavaEnumOptions* Add(const Metadata::EnumInfo& enumInfo) const
+            {
+                const auto& name = enumInfo.Name( );
+                auto result = Find(name);
+                if (result == nullptr)
+                {
+                    WideString filename = name + L".java";
+                    auto javaEnumOptions = std::make_unique<JavaEnumOptions>(*this, filename);
+                    result = javaEnumOptions.get();
+                    enums_.emplace(name, std::move(javaEnumOptions));
+                    
+                }
+                return result;
+
+            }
+
         };
 
         class JavaDataTypesOptions : public OptionsFile<JavaDataOptions>
@@ -1175,7 +1273,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             using Base = OptionsContainer<JavaOptions>;
 
             JavaDataOptions(const JavaOptions& owner)
-                : Base(owner, L"Types"), enums_(*this), dataTypes_(*this), dataContext_(*this)
+                : Base(owner, L"types"), enums_(*this), dataTypes_(*this), dataContext_(*this)
             {
             }
 
@@ -1261,8 +1359,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         class JavaOptions
         {
             const Options& owner_;
-            WideString outputDirectory_{ L"%HCC_HOME%\\Java\\Examples\\Barrelman\\Barrelman.Data" };
-            WideString namespace_{ L"barrelman" };
+            WideString outputDirectory_{ L"%HCC_HOME%\\Java\\Examples\\harlinn.barrelman\\src\\main\\java\\com\\harlinn\\barrelman" };
+            WideString namespace_{ L"com.harlinn.barrelman" };
             JavaDataOptions data_;
             Databases::JavaDatabasesOptions databases_;
             JavaEntitiesOptions entities_;

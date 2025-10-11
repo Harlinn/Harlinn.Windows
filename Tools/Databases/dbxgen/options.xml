@@ -12,7 +12,7 @@
   <csharp outdir="%HCC_HOME%\DotNet\Examples\Barrelman\Barrelman.Data" namespace="Barrelman.Data">
     
   </csharp>
-  <java outdir="%HCC_HOME%\Java\Examples\Barrelman\Barrelman.Data" namespace="Barrelman.Data">
+  <java outdir="%HCC_HOME%\Java\Examples\harlinn.barrelman\src\main\java\com\harlinn\barrelman" namespace="com.harlinn.barrelman">
 
   </java>
 </options>

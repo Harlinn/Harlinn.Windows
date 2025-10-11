@@ -1,23 +1,28 @@
 package com.harlinn.common.io;
 
-import java.io.OutputStream;
-import java.io.Closeable;
-import java.io.IOException;
 
-public class BinaryWriter implements Closeable {
-	OutputStream output;
+
+public abstract class AbstractBinaryWriter {
 	
-	public BinaryWriter(OutputStream output) {
-		this.output = output;
-	}
-
-	@Override
-	public void close() throws IOException {
-		this.output.close();
+	public abstract void writeInt8(byte value);
+	public abstract void writeInt16(short value);
+	public abstract void writeInt32(int value);
+	public abstract void writeInt64(long value);
+	
+	public final void writeBoolean(boolean value) {
+		writeInt8(value?(byte)1:(byte)0);
 	}
 	
-	public final void Write(int value) {
+	public final void writeNullableBoolean(Boolean value) {
+		if(value != null) {
+			writeBoolean(true);
+			writeBoolean(value);
+		}
+		else {
+			writeBoolean(false);
+		}
 	}
+	
 	
 	
 }

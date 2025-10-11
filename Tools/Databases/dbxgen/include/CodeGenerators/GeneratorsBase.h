@@ -59,6 +59,21 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         }
     }
 
+    namespace Java
+    {
+        class JavaDataGenerator;
+        class JavaGenerator;
+        namespace Databases
+        {
+            class JavaDatabasesGenerator;
+            namespace MsSql
+            {
+                class JavaMsSqlGenerator;
+            }
+        }
+    }
+
+
     template<typename OwnerT, typename OptionsT>
     class GeneratorContainer
     {

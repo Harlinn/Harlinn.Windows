@@ -85,16 +85,16 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 		return (int)hash();
 	}
 
-	private static long getRawOfset() {
+	public static long getRawOfset() {
 		return (((long)TimeZone.getDefault().getRawOffset())*TicksPerMillisecond);
 	}
 	
 	
-	private static long toLocalTicks( long ticksInUtc ) {
-		return ticksInUtc + getRawOfset(); 
+	public static long toLocalTicks( long ticksInUtc ) {
+		return com.harlinn.common.platform.Kernel32.FileTimeToLocalFileTime(ticksInUtc - FileTimeOffset) + FileTimeOffset;
 	}
-	private static long toUniversalTicks( long ticksInLocalTime ) {
-		return ticksInLocalTime - getRawOfset();
+	public static long toUniversalTicks( long ticksInLocalTime ) {
+		return com.harlinn.common.platform.Kernel32.LocalFileTimeToFileTime(ticksInLocalTime - FileTimeOffset) + FileTimeOffset;
 	}
 	
 	private static long toTicks( long secondsSince1970, int nanoSeconds ) {
@@ -238,8 +238,17 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 	
 	
 	public static DateTime now() {
-		return new DateTime(Instant.now());
+		return new DateTime(com.harlinn.common.platform.Kernel32.GetSystemTimePreciseAsFileTime() + FileTimeOffset);
 	}
+	
+	public DateTime toLocalTime() {
+		return new DateTime(com.harlinn.common.platform.Kernel32.FileTimeToLocalFileTime(ticks - FileTimeOffset) + FileTimeOffset);
+	}
+	
+	public DateTime toUniversalTime() {
+		return new DateTime(com.harlinn.common.platform.Kernel32.LocalFileTimeToFileTime(ticks - FileTimeOffset) + FileTimeOffset);
+	}
+	
 	
 	
 	public java.util.Date toDate() {
@@ -269,13 +278,7 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 		return ticks;
 	}
 	
-	public DateTime toLocalTime( ) {
-		return new DateTime(toLocalTicks( ticks ));
-	}
 	
-	public DateTime toUniversalTime( ) {
-		return new DateTime(toUniversalTicks( ticks ));
-	}
 	
 	public static int compare( DateTime first, DateTime second)	{
 	    if ( first.ticks < second.ticks ) {

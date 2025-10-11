@@ -167,6 +167,8 @@
     <ClInclude Include="include\CodeGenerators\Databases\MsSql\MsSqlHelper.h" />
     <ClInclude Include="include\CodeGenerators\Generator.h" />
     <ClInclude Include="include\CodeGenerators\GeneratorsBase.h" />
+    <ClInclude Include="include\CodeGenerators\Java\JavaGenerators.h" />
+    <ClInclude Include="include\CodeGenerators\Java\JavaHelper.h" />
     <ClInclude Include="include\CodeGenerators\Options.h" />
     <ClInclude Include="include\dbxgen.h" />
     <ClInclude Include="include\Metadata\ClassInfo.h" />
@@ -211,6 +213,10 @@
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateUpdateProceduresGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateViewsGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaEnumGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaEnumsGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaKindGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Options.cpp" />
     <ClCompile Include="src\dbxgen.cpp" />
     <ClCompile Include="src\Metadata\BinaryMemberInfo.cpp" />

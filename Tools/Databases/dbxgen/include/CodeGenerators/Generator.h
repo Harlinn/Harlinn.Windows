@@ -21,6 +21,7 @@
 #include "CodeGenerators/Databases/DatabasesGenerator.h"
 #include "CodeGenerators/Cpp/CppGenerators.h"
 #include "CodeGenerators/CSharp/CSharpGenerators.h"
+#include "CodeGenerators/Java/JavaGenerators.h"
 
 namespace Harlinn::Tools::DbXGen::CodeGenerators
 {
@@ -35,9 +36,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         Cpp::CppGenerator cpp_;
         Cpp::CppTestGenerator cppTest_;
         CSharp::CSharpGenerator csharp_;
+        Java::JavaGenerator java_;
     public:
         Generator( const CodeGenerators::Options& options, const Metadata::ModelInfo& model )
-            : options_( options ), model_( model ), databases_( *this ), cpp_(*this), cppTest_(*this), csharp_(*this)
+            : options_( options ), model_( model ), databases_( *this ), cpp_(*this), cppTest_(*this), csharp_(*this), java_(*this)
         { }
 
         const CodeGenerators::Options& Options( ) const
@@ -56,6 +58,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             cpp_.Run( );
             cppTest_.Run( );
             csharp_.Run( );
+            java_.Run( );
         }
     };
 
@@ -86,6 +89,14 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         {
         }
     }
+
+    namespace Java
+    {
+        inline JavaGenerator::JavaGenerator(const Generator& owner)
+            : Base(owner, owner.Options().Java()), data_(*this)//, databases_(*this), entities_(*this)
+        { }
+    }
+
 
 
 }

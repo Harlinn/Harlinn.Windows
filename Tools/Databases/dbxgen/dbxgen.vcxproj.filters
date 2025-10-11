@@ -159,6 +159,12 @@
     <ClInclude Include="include\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlGenerators.h">
       <Filter>Include\CodeGenerators\CSharp\Databases\MsSql</Filter>
     </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Java\JavaHelper.h">
+      <Filter>Include\CodeGenerators\Java</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Java\JavaGenerators.h">
+      <Filter>Include\CodeGenerators\Java</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="TestModel.xml" />
@@ -291,6 +297,18 @@
     </ClCompile>
     <ClCompile Include="src\CodeGenerators\Cpp\CppIDataContextGenerator.cpp">
       <Filter>Src\CodeGenerators\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaEnumsGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaEnumGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaHelper.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaKindGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

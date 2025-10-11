@@ -1,0 +1,33 @@
+plugins {
+	id 'java-library'
+}
+
+group = 'com.harlinn'
+version = '0.0.1-SNAPSHOT'
+description = 'Barrelman classes'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+	implementation 'org.slf4j:slf4j-api:2.0.17'
+	testImplementation(platform('org.junit:junit-bom:6.0.0'))
+	testImplementation('org.junit.jupiter:junit-jupiter')
+	testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+	
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}

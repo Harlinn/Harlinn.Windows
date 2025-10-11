@@ -1,5 +1,8 @@
 package com.harlinn.common.util;
 
+/**
+ * Specifies the day of the week.
+ */
 public enum DayOfWeek {
 	Sunday,
 	Monday,

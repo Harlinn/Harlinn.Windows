@@ -1,5 +1,8 @@
 package com.harlinn.common.util;
 
+/**
+ * Holds constants that are useful for working with dates and time.
+ */
 public abstract class TimeBase {
 	public static final long TicksPerMicrosecond = 10;
 	public static final long TicksPerMillisecond = 10000;
