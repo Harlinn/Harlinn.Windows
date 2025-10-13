@@ -18,6 +18,7 @@
 */
 
 #include "CodeGenerators/GeneratorsBase.h"
+#include "CodeGenerators/Java/JavaHelper.h"
 
 namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 {
@@ -66,19 +67,46 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     };
 
     inline JavaEnumGenerator::JavaEnumGenerator(const JavaEnumsGenerator& owner, const Metadata::EnumInfo& enumInfo)
-        : Base(owner, *owner.Options().Add(enumInfo)), enumInfo_(enumInfo)
+        : Base(owner, *owner.Options( ).Add( enumInfo ) ), enumInfo_(enumInfo)
     { }
 
     inline JavaKindGenerator::JavaKindGenerator(const JavaEnumsGenerator& owner)
         : Base(owner, owner.Options().Kind())
     { }
 
+    class JavaDataTypesGenerator;
+    class JavaDataTypeGenerator : public CodeGenerator<JavaDataTypesGenerator, JavaDataTypeOptions>
+    {
+        const Metadata::ClassInfo& classInfo_;
+    public:
+        using Base = CodeGenerator<JavaDataTypesGenerator, JavaDataTypeOptions>;
 
-    /*
-    class JavaDataTypesGenerator : public CodeGenerator<JavaDataGenerator, JavaDataTypesOptions>
+        inline JavaDataTypeGenerator( const JavaDataTypesGenerator& owner, const Metadata::ClassInfo& classInfo );
+
+        void Run( );
+
+        static WideString GetUnderlyingType( const Metadata::EnumInfo& enumInfo );
+
+    };
+
+    
+    class JavaDataTypeFactoryGenerator : public CodeGenerator<JavaDataTypesGenerator, JavaDataTypeFactoryOptions>
     {
     public:
-        using Base = CodeGenerator<JavaDataGenerator, JavaDataTypesOptions>;
+        using Base = CodeGenerator<JavaDataTypesGenerator, JavaDataTypeFactoryOptions>;
+
+        inline JavaDataTypeFactoryGenerator( const JavaDataTypesGenerator& owner );
+
+        void Run( );
+
+    };
+
+
+    
+    class JavaDataTypesGenerator : public GeneratorContainer<JavaDataGenerator, JavaDataTypesOptions>
+    {
+    public:
+        using Base = GeneratorContainer<JavaDataGenerator, JavaDataTypesOptions>;
 
         inline JavaDataTypesGenerator(const JavaDataGenerator& owner);
 
@@ -87,7 +115,15 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         void CreateDataType(const Metadata::ClassInfo& classInfo);
         void CreateFactory();
     };
-    */
+    
+    inline JavaDataTypeGenerator::JavaDataTypeGenerator( const JavaDataTypesGenerator& owner, const Metadata::ClassInfo& classInfo )
+        : Base( owner, *owner.Options( ).Add( JavaHelper::GetDataType( classInfo ) + L".java", classInfo ) ), classInfo_( classInfo )
+    { }
+
+    inline JavaDataTypeFactoryGenerator::JavaDataTypeFactoryGenerator( const JavaDataTypesGenerator& owner )
+        : Base( owner, owner.Options( ).Factory( ) )
+    { }
+
 
     /*
     class JavaIDataContextGenerator : public CodeGenerator<JavaDataGenerator, JavaIDataContextOptions>
@@ -117,7 +153,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     class JavaDataGenerator : public GeneratorContainer<JavaGenerator, JavaDataOptions>
     {
         JavaEnumsGenerator enums_;
-        //JavaDataTypesGenerator dataTypes_;
+        JavaDataTypesGenerator dataTypes_;
         //JavaIDataContextGenerator dataContext_;
     public:
         using Base = GeneratorContainer<JavaGenerator, JavaDataOptions>;
@@ -127,7 +163,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         void Run()
         {
             enums_.Run();
-            //dataTypes_.Run();
+            dataTypes_.Run();
             //dataContext_.Run();
         }
     };
@@ -137,12 +173,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     {
     }
 
-    /*
+    
     inline JavaDataTypesGenerator::JavaDataTypesGenerator(const JavaDataGenerator& owner)
         : Base(owner, owner.Options().DataTypes())
     {
     }
-    */
+    
 
     /*
     inline JavaIDataContextGenerator::JavaIDataContextGenerator(const JavaDataGenerator& owner)
@@ -299,7 +335,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
 
     inline JavaDataGenerator::JavaDataGenerator(const JavaGenerator& owner)
-        : Base(owner, owner.Options().Data()), enums_(*this)//, dataTypes_(*this), dataContext_(*this)
+        : Base(owner, owner.Options().Data()), enums_(*this), dataTypes_(*this)//, dataContext_(*this)
     { }
 
     namespace Databases

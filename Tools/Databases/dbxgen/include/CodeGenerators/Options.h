@@ -201,14 +201,17 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         }
     };
 
-    template<typename OwnerT>
+    template<typename OwnerT, typename DerivedT, typename ElementT>
     class OptionsFileGroup
     {
     public:
         using OwnerType = OwnerT;
         using XmlElement = Common::Core::Xml::Dom::Element;
+        using DerivedType = DerivedT;
+        using ElementType = ElementT;
     private:
         const OwnerType& owner_;
+        mutable std::map<WideString, std::unique_ptr<ElementT>> elements_;
     public:
         OptionsFileGroup(const OwnerType& owner)
             : owner_(owner)
@@ -237,6 +240,54 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         const WideString& DllExport() const
         {
             return Internal::GetDllExport(owner_);
+        }
+
+        bool Contains( const WideString& name ) const
+        {
+            return elements_.contains( name );
+        }
+
+        ElementType* Find( const WideString& name ) const
+        {
+            auto it = elements_.find( name );
+            if ( it != elements_.end( ) )
+            {
+                return it->second.get( );
+            }
+            return nullptr;
+        }
+
+        template<typename MetedataT>
+        ElementType* Add( const MetedataT& metedata ) const
+        {
+            const auto& name = metedata.Name( );
+            auto result = Find( name );
+            if ( result == nullptr )
+            {
+                WideString filename = name + L".java";
+                auto element = std::make_unique<ElementType>( static_cast<const DerivedType&>( *this ), filename );
+                result = element.get( );
+                elements_.emplace( name, std::move( element ) );
+
+            }
+            return result;
+
+        }
+
+        template<typename MetedataT>
+        ElementType* Add( const WideString& filename, const MetedataT& metedata ) const
+        {
+            const auto& name = metedata.Name( );
+            auto result = Find( name );
+            if ( result == nullptr )
+            {
+                auto element = std::make_unique<ElementType>( static_cast<const DerivedType&>( *this ), filename );
+                result = element.get( );
+                elements_.emplace( name, std::move( element ) );
+
+            }
+            return result;
+
         }
 
     };
@@ -1192,12 +1243,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         };
 
         class JavaDataOptions;
-        class JavaEnumsOptions : public OptionsFileGroup<JavaDataOptions>
+        class JavaEnumsOptions : public OptionsFileGroup<JavaDataOptions, JavaEnumsOptions, JavaEnumOptions>
         {
-            mutable std::map<WideString, std::unique_ptr<JavaEnumOptions>> enums_;
             JavaKindOptions kind_;
         public:
-            using Base = OptionsFileGroup<JavaDataOptions>;
+            using Base = OptionsFileGroup<JavaDataOptions, JavaEnumsOptions, JavaEnumOptions>;
             JavaEnumsOptions(const JavaDataOptions& owner)
                 : Base(owner), kind_(*this)
             { }
@@ -1207,48 +1257,45 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                 return kind_;
             }
 
-
-            bool Contains(const WideString& enumTypeName) const
-            {
-                return enums_.contains(enumTypeName);
-            }
-
-            JavaEnumOptions* Find(const WideString& enumTypeName) const
-            {
-                auto it = enums_.find(enumTypeName);
-                if (it != enums_.end())
-                {
-                    return it->second.get();
-                }
-                return nullptr;
-            }
-
-            JavaEnumOptions* Add(const Metadata::EnumInfo& enumInfo) const
-            {
-                const auto& name = enumInfo.Name( );
-                auto result = Find(name);
-                if (result == nullptr)
-                {
-                    WideString filename = name + L".java";
-                    auto javaEnumOptions = std::make_unique<JavaEnumOptions>(*this, filename);
-                    result = javaEnumOptions.get();
-                    enums_.emplace(name, std::move(javaEnumOptions));
-                    
-                }
-                return result;
-
-            }
-
         };
 
-        class JavaDataTypesOptions : public OptionsFile<JavaDataOptions>
+        class JavaDataTypesOptions;
+
+        class JavaDataTypeOptions : public OptionsFile<JavaDataTypesOptions>
         {
         public:
-            using Base = OptionsFile<JavaDataOptions>;
+            using Base = OptionsFile<JavaDataTypesOptions>;
+            JavaDataTypeOptions( const JavaDataTypesOptions& owner, const WideString& filename )
+                : Base( owner, filename )
+            { }
+        };
+
+        class JavaDataTypeFactoryOptions : public OptionsFile<JavaDataTypesOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaDataTypesOptions>;
+            JavaDataTypeFactoryOptions( const JavaDataTypesOptions& owner )
+                : Base( owner, L"DataObjectFactory.java" )
+            { }
+        };
+
+
+
+        class JavaDataTypesOptions : public OptionsFileGroup<JavaDataOptions, JavaDataTypesOptions, JavaDataTypeOptions>
+        {
+            mutable std::map<WideString, std::unique_ptr<JavaDataTypeOptions>> types_;
+            JavaDataTypeFactoryOptions factory_;
+        public:
+            using Base = OptionsFileGroup<JavaDataOptions, JavaDataTypesOptions, JavaDataTypeOptions>;
             JavaDataTypesOptions(const JavaDataOptions& owner)
-                : Base(owner, L"DataTypes.java")
+                : Base(owner), factory_(*this)
+            { }
+
+            const JavaDataTypeFactoryOptions& Factory( ) const
             {
+                return factory_;
             }
+
         };
 
         class JavaIDataContextOptions : public OptionsFile<JavaDataOptions>

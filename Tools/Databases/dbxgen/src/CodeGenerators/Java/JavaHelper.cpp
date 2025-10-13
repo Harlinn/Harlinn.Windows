@@ -198,19 +198,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         break;
         case MemberInfoType::Enum:
         {
-            const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>(member);
-            auto enumType = enumMemberInfo.EnumType();
-            if (enumType)
-            {
-                if (member.Nullable())
-                {
-                    result = Format(L"Types.{}?", enumType->Name());
-                }
-                else
-                {
-                    result = Format(L"Types.{}", enumType->Name());
-                }
-            }
+            result = JavaHelper::GetUnderlyingType( member );
         }
         break;
         case MemberInfoType::Single:
@@ -397,7 +385,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 auto defaultValue = enumType->Default();
                 if (defaultValue)
                 {
-                    result = Format(L"Types.{}.{}", enumName, defaultValue->Name());
+                    result = Format(L"{}.{}", enumName, defaultValue->Name());
                 }
             }
         }
@@ -832,10 +820,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 switch (primaryKeyType)
                 {
                 case MemberInfoType::Int64:
-                    result = L"BaseDataInt64<Kind>";
+                    result = L"AbstractDataObjectWithInt64Key";
                     break;
                 case MemberInfoType::Guid:
-                    result = L"BaseDataGuid<Kind>";
+                    result = L"AbstractDataObjectWithGuidKey";
                     break;
                 }
             }

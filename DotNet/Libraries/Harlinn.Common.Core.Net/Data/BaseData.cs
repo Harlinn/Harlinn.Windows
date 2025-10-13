@@ -42,7 +42,7 @@ namespace Harlinn.Common.Core.Net.Data
 
         public BaseData(ObjectState objectState)
         {
-            objectState_ = ObjectState;
+            objectState_ = objectState;
         }
 
         protected void OnPropertyChanged()

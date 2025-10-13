@@ -267,8 +267,15 @@ namespace Harlinn::Common::Core::IO::Serialization
             }
             else
             {
-                WriteDataType(DataType::String);
-                writer_.Write(v);
+                if constexpr ( sizeof( typename T::value_type ) == 1 )
+                {
+                    WriteDataType( DataType::StringUTF8 );
+                }
+                else
+                {
+                    WriteDataType( DataType::StringUTF16LE );
+                }
+                writer_.Write( v );
             }
         }
 
@@ -289,7 +296,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 }
                 else
                 {
-                    WriteDataType(DataType::String);
+                    WriteDataType(DataType::StringUTF16LE );
                     writer_.Write(v);
                 }
             }

@@ -87,18 +87,26 @@ public class DataType {
     public final static byte TimeSpan = 69;
     public final static byte ZeroTimeSpan = 70;
 
-    public final static byte Guid = 71;
-    public final static byte EmptyGuid = 72;
-
-    public final static byte String = 73;
-    public final static byte EmptyString = 74;
+    public final static byte EmptyGuid = 71;
+    public final static byte Guid = 72;
     
-    public final static byte MinCurrency = 75;
-    public final static byte MinusOneCurrency = 76;
-    public final static byte ZeroCurrency = 77;
-    public final static byte OneCurrency = 78;
-    public final static byte MaxCurrency = 79;
-    public final static byte Currency = 80;
+
+    public final static byte EmptyString = 73;
+    // 7-bit encoded byte length. then the bytes of the string prefixed with the BOM
+    public final static byte StringUTF = 74; // <-- reserved for future  
+    // 7-bit encoded byte length. then the bytes of the utf 8 string
+    public final static byte StringUTF8 = 75;
+    // 7-bit encoded byte length. then the bytes of the utf 16 string
+    public final static byte StringUTF16LE = 76;
+    // UInt16 code page id, then 7-bit encoded byte length. then the bytes of the string 
+    public final static byte StringInCodePage = 77; // <-- reserved for future
+    
+    public final static byte MinCurrency = 78;
+    public final static byte MinusOneCurrency = 79;
+    public final static byte ZeroCurrency = 80;
+    public final static byte OneCurrency = 81;
+    public final static byte MaxCurrency = 82;
+    public final static byte Currency = 83;
 
     public final static byte SmallBooleanArray = (byte) 0x80;
     public final static byte BooleanArray = (byte) 0x81;
@@ -351,10 +359,16 @@ public class DataType {
     		case EmptyGuid:
     			return "EmptyGuid";
 	
-    		case String:
-    			return "String";
     		case EmptyString:
     			return "EmptyString";
+    		case StringUTF:
+    			return "StringUTF";
+    		case StringUTF8:
+    			return "StringUTF8";
+    		case StringUTF16LE:
+    			return "StringUTF16LE";
+    		case StringInCodePage:	
+    			return "StringInCodePage";
 	
     		case SmallBooleanArray:
     			return "SmallBooleanArray";
@@ -678,10 +692,16 @@ public class DataType {
     		case "EmptyGuid":
     			return EmptyGuid;
 	
-    		case "String":
-    			return String;
     		case "EmptyString":
     			return EmptyString;
+    		case "StringUTF":
+    			return StringUTF;
+    		case "StringUTF8":
+    			return StringUTF8;
+    		case "StringUTF16LE":
+    			return StringUTF16LE;
+    		case "StringInCodePage":	
+    			return StringInCodePage;
 	
     		case "SmallBooleanArray":
     			return SmallBooleanArray;

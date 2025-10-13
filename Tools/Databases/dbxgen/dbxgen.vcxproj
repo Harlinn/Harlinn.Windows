@@ -213,6 +213,9 @@
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateUpdateProceduresGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateViewsGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaDataTypeFactoryGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaDataTypeGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaDataTypesGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaEnumGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaEnumsGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaHelper.cpp" />

@@ -1,6 +1,8 @@
 package com.harlinn.common.util;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.UUID;
 
 /**
@@ -163,6 +165,20 @@ public class Guid implements Serializable, Comparable<Guid> {
 		return result;
 	}
 	
+	public boolean isEmpty() {
+		return a == 0 &&
+				b == 0 &&
+				c == 0 &&
+				d == 0 &&
+				e == 0 &&
+				f == 0 &&
+				g == 0 &&
+				h == 0 &&
+				i == 0 &&
+				j == 0 &&
+				k == 0;
+	}
+	
 	public byte[] toArray() {
 		byte[] result = new byte[16];
 		var data1 = BitConverter.getBytes(a);
@@ -190,6 +206,38 @@ public class Guid implements Serializable, Comparable<Guid> {
 		result[15] = k;
 		
 		return result;
+	}
+	
+	public void copyTo(byte[] bytes, int offset) {
+		if(bytes == null) {
+			throw new IllegalArgumentException("bytes cannot be null.");
+		}
+		if(bytes.length < offset + 16) {
+			throw new IllegalArgumentException("bytes.length("+bytes.length+") cannot be less than offset("+offset+") + 16.");
+		}
+		var data1 = BitConverter.getBytes(a);
+		var data2 = BitConverter.getBytes(b);
+		var data3 = BitConverter.getBytes(c);
+		
+		bytes[offset] = data1[0]; 
+		bytes[offset + 1] = data1[1];
+		bytes[offset + 2] = data1[2];
+		bytes[offset + 3] = data1[3];
+		
+		bytes[offset + 4] = data2[0]; 
+		bytes[offset + 5] = data2[1];
+		
+		bytes[offset + 6] = data3[0]; 
+		bytes[offset + 7] = data3[1];
+		
+		bytes[offset + 8] = d;
+		bytes[offset + 9] = e;
+		bytes[offset + 10] = f;
+		bytes[offset + 11] = g;
+		bytes[offset + 12] = h;
+		bytes[offset + 13] = i;
+		bytes[offset + 14] = j;
+		bytes[offset + 15] = k;
 	}
 	
 	
@@ -223,6 +271,67 @@ public class Guid implements Serializable, Comparable<Guid> {
         var lsb = BitConverter.toInt64(bytes, 8);
 		
         return new UUID(msb, lsb);
+	}
+	
+	public static byte[] toByteArray(UUID uuid) {
+        byte[] uuidBytes = new byte[16];
+        ByteBuffer.wrap(uuidBytes)
+                .order(ByteOrder.BIG_ENDIAN) 
+                .putLong(uuid.getMostSignificantBits())
+                .putLong(uuid.getLeastSignificantBits());
+        
+        byte a0 = uuidBytes[3];
+        byte a1 = uuidBytes[2];
+        byte a2 = uuidBytes[1];
+        byte a3 = uuidBytes[0];
+        
+        byte b0 = uuidBytes[5];
+        byte b1 = uuidBytes[4];
+        
+        byte c0 = uuidBytes[7];
+        byte c1 = uuidBytes[6];
+        
+        uuidBytes[0] = a0;
+        uuidBytes[1] = a1;
+        uuidBytes[2] = a2;
+        uuidBytes[3] = a3;
+        
+        uuidBytes[4] = b0;
+        uuidBytes[5] = b1;
+        
+        uuidBytes[6] = c0;
+        uuidBytes[7] = c1;
+        
+        return uuidBytes;
+    }
+	
+	public static void copyTo(UUID uuid, byte[] uuidBytes, int offset) {
+		ByteBuffer.wrap(uuidBytes,offset,16)
+        .order(ByteOrder.BIG_ENDIAN) 
+        .putLong(uuid.getMostSignificantBits())
+        .putLong(uuid.getLeastSignificantBits());
+
+		byte a0 = uuidBytes[offset + 3];
+		byte a1 = uuidBytes[offset + 2];
+		byte a2 = uuidBytes[offset + 1];
+		byte a3 = uuidBytes[offset + 0];
+		
+		byte b0 = uuidBytes[offset + 5];
+		byte b1 = uuidBytes[offset + 4];
+		
+		byte c0 = uuidBytes[offset + 7];
+		byte c1 = uuidBytes[offset + 6];
+		
+		uuidBytes[offset + 0] = a0;
+		uuidBytes[offset + 1] = a1;
+		uuidBytes[offset + 2] = a2;
+		uuidBytes[offset + 3] = a3;
+		
+		uuidBytes[offset + 4] = b0;
+		uuidBytes[offset + 5] = b1;
+		
+		uuidBytes[offset + 6] = c0;
+		uuidBytes[offset + 7] = c1;
 	}
 
 	@Override

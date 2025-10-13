@@ -1,0 +1,53 @@
+package com.harlinn.barrelman.types;
+
+import com.harlinn.common.io.*;
+import com.harlinn.common.types.*;
+import com.harlinn.common.util.*;
+
+public class LogHostObject extends AbstractDataObjectWithGuidKey {
+
+    private long _rowVersion = 0;
+    private String _computerName = "";
+    private String _description = "";
+
+    @Override
+    public int getObjectType( ) {
+        return Kind.LogHost;
+    }
+    @Override
+    protected AbstractDataObject create( ) {
+        return new LogHostObject( );
+    }
+
+    public long getRowVersion( ) {
+        return _rowVersion;
+    }
+    public void setRowVersion( long value ) {
+        if( _rowVersion != value ) {
+            this._rowVersion = value;
+            onPropertyChanged( );
+        }
+    }
+
+    public String getComputerName( ) {
+        return _computerName;
+    }
+    public void setComputerName( String value ) {
+        if( _computerName != value ) {
+            this._computerName = value;
+            onPropertyChanged( );
+        }
+    }
+
+    public String getDescription( ) {
+        return _description;
+    }
+    public void setDescription( String value ) {
+        if( _description != value ) {
+            this._description = value;
+            onPropertyChanged( );
+        }
+    }
+
+
+}

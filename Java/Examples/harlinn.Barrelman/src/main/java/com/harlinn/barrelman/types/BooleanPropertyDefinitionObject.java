@@ -1,0 +1,31 @@
+package com.harlinn.barrelman.types;
+
+import com.harlinn.common.io.*;
+import com.harlinn.common.types.*;
+import com.harlinn.common.util.*;
+
+public class BooleanPropertyDefinitionObject extends PropertyDefinitionObject {
+
+    private boolean _defaultValue = false;
+
+    @Override
+    public int getObjectType( ) {
+        return Kind.BooleanPropertyDefinition;
+    }
+    @Override
+    protected AbstractDataObject create( ) {
+        return new BooleanPropertyDefinitionObject( );
+    }
+
+    public boolean getDefaultValue( ) {
+        return _defaultValue;
+    }
+    public void setDefaultValue( boolean value ) {
+        if( _defaultValue != value ) {
+            this._defaultValue = value;
+            onPropertyChanged( );
+        }
+    }
+
+
+}

@@ -739,7 +739,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                     return ValueType();
                 }
                 break;
-                case DataType::String:
+                case DataType::StringUTF16LE:
                 {
                     return reader_.Read<ValueType>();
                 }
@@ -749,6 +749,34 @@ namespace Harlinn::Common::Core::IO::Serialization
                     auto typeName = ToWideString(typeid(ValueType).name());
                     auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
+                }
+                break;
+            }
+        }
+
+        template<typename T>
+            requires IsAnsiString<std::remove_cvref_t<T>>
+        T Read( )
+        {
+            using ValueType = std::remove_cvref_t<T>;
+            auto dataType = ReadDataType( );
+            switch ( dataType )
+            {
+                case DataType::EmptyString:
+                {
+                    return ValueType( );
+                }
+                break;
+                case DataType::StringUTF8:
+                {
+                    return reader_.Read<ValueType>( );
+                }
+                break;
+                default:
+                {
+                    auto typeName = ToWideString( typeid( ValueType ).name( ) );
+                    auto message = Format( L"Invalid data type: {} while reading {}.", static_cast<Int32>( dataType ), typeName );
+                    HCC_THROW( Exception, message );
                 }
                 break;
             }

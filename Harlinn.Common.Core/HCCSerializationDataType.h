@@ -110,11 +110,19 @@ namespace Harlinn::Common::Core::IO::Serialization
         TimeSpan,
         ZeroTimeSpan,
 
-        Guid,
         EmptyGuid,
+        Guid,
+        
 
-        String,
         EmptyString,
+        // 7-bit encoded byte length. then the bytes of the string prefixed with the BOM
+        StringUTF,  // <-- reserved for future
+        // 7-bit encoded byte length. then the bytes of the utf 8 string
+        StringUTF8,
+        // 7-bit encoded byte length. then the bytes of the utf 16 string
+        StringUTF16LE,
+        // UInt16 code page id, then 7-bit encoded byte length. then the bytes of the string
+        StringInCodePage,  // <-- reserved for future
 
         MinCurrency,
         MinusOneCurrency,

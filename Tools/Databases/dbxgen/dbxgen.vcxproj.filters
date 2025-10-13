@@ -310,5 +310,14 @@
     <ClCompile Include="src\CodeGenerators\Java\JavaKindGenerator.cpp">
       <Filter>Src\CodeGenerators\Java</Filter>
     </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaDataTypesGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaDataTypeGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaDataTypeFactoryGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

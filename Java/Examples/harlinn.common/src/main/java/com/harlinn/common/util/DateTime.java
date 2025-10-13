@@ -97,7 +97,7 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 		return com.harlinn.common.platform.Kernel32.LocalFileTimeToFileTime(ticksInLocalTime - FileTimeOffset) + FileTimeOffset;
 	}
 	
-	private static long toTicks( long secondsSince1970, int nanoSeconds ) {
+	public static long toTicks( long secondsSince1970, int nanoSeconds ) {
 		return (secondsSince1970 * TicksPerSecond + nanoSeconds / 100) + UnixEpoch;
 	}
 	
@@ -275,6 +275,9 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 	}
 	
 	public long toTicks() {
+		return ticks;
+	}
+	public long getTicks() {
 		return ticks;
 	}
 	

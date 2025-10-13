@@ -3,6 +3,7 @@
 	<name>harlinn.barrelman</name>
 	<comment>Project harlinn.Barrelman created by Buildship.</comment>
 	<projects>
+		<project>harlinn.common</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
