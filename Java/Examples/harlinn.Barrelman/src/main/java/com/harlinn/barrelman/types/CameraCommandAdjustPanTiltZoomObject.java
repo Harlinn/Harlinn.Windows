@@ -23,8 +23,8 @@ public class CameraCommandAdjustPanTiltZoomObject extends CameraCommandObject {
         return _x;
     }
     public void setX( Double value ) {
-        if( _x != value ) {
-            this._x = value;
+        if( !Comparer.equalsNullableDouble( _x, value ) ) {
+            _x = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class CameraCommandAdjustPanTiltZoomObject extends CameraCommandObject {
         return _y;
     }
     public void setY( Double value ) {
-        if( _y != value ) {
-            this._y = value;
+        if( !Comparer.equalsNullableDouble( _y, value ) ) {
+            _y = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class CameraCommandAdjustPanTiltZoomObject extends CameraCommandObject {
         return _z;
     }
     public void setZ( Double value ) {
-        if( _z != value ) {
-            this._z = value;
+        if( !Comparer.equalsNullableDouble( _z, value ) ) {
+            _z = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableDouble( _x );
+        destination.writeNullableDouble( _y );
+        destination.writeNullableDouble( _z );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _x = source.readNullableDouble( );
+        _y = source.readNullableDouble( );
+        _z = source.readNullableDouble( );
+    }
 
 }

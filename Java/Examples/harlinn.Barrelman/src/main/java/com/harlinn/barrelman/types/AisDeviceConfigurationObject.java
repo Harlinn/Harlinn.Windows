@@ -41,8 +41,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -51,8 +51,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _aisDevice;
     }
     public void setAisDevice( Guid value ) {
-        if( _aisDevice != value ) {
-            this._aisDevice = value;
+        if( !Comparer.equalsGuid( _aisDevice, value ) ) {
+            _aisDevice = value;
             onPropertyChanged( );
         }
     }
@@ -61,8 +61,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -71,8 +71,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _filter;
     }
     public void setFilter( boolean value ) {
-        if( _filter != value ) {
-            this._filter = value;
+        if( !Comparer.equalsBoolean( _filter, value ) ) {
+            _filter = value;
             onPropertyChanged( );
         }
     }
@@ -81,8 +81,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _northWestLatitude;
     }
     public void setNorthWestLatitude( double value ) {
-        if( _northWestLatitude != value ) {
-            this._northWestLatitude = value;
+        if( !Comparer.equalsDouble( _northWestLatitude, value ) ) {
+            _northWestLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -91,8 +91,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _northWestLongitude;
     }
     public void setNorthWestLongitude( double value ) {
-        if( _northWestLongitude != value ) {
-            this._northWestLongitude = value;
+        if( !Comparer.equalsDouble( _northWestLongitude, value ) ) {
+            _northWestLongitude = value;
             onPropertyChanged( );
         }
     }
@@ -101,8 +101,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _southEastLatitude;
     }
     public void setSouthEastLatitude( double value ) {
-        if( _southEastLatitude != value ) {
-            this._southEastLatitude = value;
+        if( !Comparer.equalsDouble( _southEastLatitude, value ) ) {
+            _southEastLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -111,8 +111,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _southEastLongitude;
     }
     public void setSouthEastLongitude( double value ) {
-        if( _southEastLongitude != value ) {
-            this._southEastLongitude = value;
+        if( !Comparer.equalsDouble( _southEastLongitude, value ) ) {
+            _southEastLongitude = value;
             onPropertyChanged( );
         }
     }
@@ -121,8 +121,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _comPort;
     }
     public void setComPort( String value ) {
-        if( _comPort != value ) {
-            this._comPort = value;
+        if( !Comparer.equalsString( _comPort, value ) ) {
+            _comPort = value;
             onPropertyChanged( );
         }
     }
@@ -131,8 +131,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _baudRate;
     }
     public void setBaudRate( int value ) {
-        if( _baudRate != value ) {
-            this._baudRate = value;
+        if( !Comparer.equalsInt32( _baudRate, value ) ) {
+            _baudRate = value;
             onPropertyChanged( );
         }
     }
@@ -141,8 +141,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _iPAddress;
     }
     public void setIPAddress( String value ) {
-        if( _iPAddress != value ) {
-            this._iPAddress = value;
+        if( !Comparer.equalsString( _iPAddress, value ) ) {
+            _iPAddress = value;
             onPropertyChanged( );
         }
     }
@@ -151,8 +151,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _port;
     }
     public void setPort( int value ) {
-        if( _port != value ) {
-            this._port = value;
+        if( !Comparer.equalsInt32( _port, value ) ) {
+            _port = value;
             onPropertyChanged( );
         }
     }
@@ -161,8 +161,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _udpPort;
     }
     public void setUdpPort( int value ) {
-        if( _udpPort != value ) {
-            this._udpPort = value;
+        if( !Comparer.equalsInt32( _udpPort, value ) ) {
+            _udpPort = value;
             onPropertyChanged( );
         }
     }
@@ -171,8 +171,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _authenticate;
     }
     public void setAuthenticate( boolean value ) {
-        if( _authenticate != value ) {
-            this._authenticate = value;
+        if( !Comparer.equalsBoolean( _authenticate, value ) ) {
+            _authenticate = value;
             onPropertyChanged( );
         }
     }
@@ -181,8 +181,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _userName;
     }
     public void setUserName( String value ) {
-        if( _userName != value ) {
-            this._userName = value;
+        if( !Comparer.equalsString( _userName, value ) ) {
+            _userName = value;
             onPropertyChanged( );
         }
     }
@@ -191,8 +191,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _password;
     }
     public void setPassword( String value ) {
-        if( _password != value ) {
-            this._password = value;
+        if( !Comparer.equalsString( _password, value ) ) {
+            _password = value;
             onPropertyChanged( );
         }
     }
@@ -201,8 +201,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _authenticationURL;
     }
     public void setAuthenticationURL( String value ) {
-        if( _authenticationURL != value ) {
-            this._authenticationURL = value;
+        if( !Comparer.equalsString( _authenticationURL, value ) ) {
+            _authenticationURL = value;
             onPropertyChanged( );
         }
     }
@@ -211,8 +211,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _connectionType;
     }
     public void setConnectionType( int value ) {
-        if( _connectionType != value ) {
-            this._connectionType = value;
+        if( !Comparer.equalsInt32( _connectionType, value ) ) {
+            _connectionType = value;
             onPropertyChanged( );
         }
     }
@@ -221,8 +221,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _sourceUpdateRate;
     }
     public void setSourceUpdateRate( int value ) {
-        if( _sourceUpdateRate != value ) {
-            this._sourceUpdateRate = value;
+        if( !Comparer.equalsInt32( _sourceUpdateRate, value ) ) {
+            _sourceUpdateRate = value;
             onPropertyChanged( );
         }
     }
@@ -231,8 +231,8 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _configurationURL;
     }
     public void setConfigurationURL( String value ) {
-        if( _configurationURL != value ) {
-            this._configurationURL = value;
+        if( !Comparer.equalsString( _configurationURL, value ) ) {
+            _configurationURL = value;
             onPropertyChanged( );
         }
     }
@@ -241,11 +241,64 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
         return _storeReceivedSentences;
     }
     public void setStoreReceivedSentences( boolean value ) {
-        if( _storeReceivedSentences != value ) {
-            this._storeReceivedSentences = value;
+        if( !Comparer.equalsBoolean( _storeReceivedSentences, value ) ) {
+            _storeReceivedSentences = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _aisDevice );
+        destination.writeDateTime( _timestamp );
+        destination.writeBoolean( _filter );
+        destination.writeDouble( _northWestLatitude );
+        destination.writeDouble( _northWestLongitude );
+        destination.writeDouble( _southEastLatitude );
+        destination.writeDouble( _southEastLongitude );
+        destination.writeStringUtf8( _comPort );
+        destination.writeInt32( _baudRate );
+        destination.writeStringUtf8( _iPAddress );
+        destination.writeInt32( _port );
+        destination.writeInt32( _udpPort );
+        destination.writeBoolean( _authenticate );
+        destination.writeStringUtf8( _userName );
+        destination.writeStringUtf8( _password );
+        destination.writeStringUtf8( _authenticationURL );
+        destination.writeInt32( _connectionType );
+        destination.writeInt32( _sourceUpdateRate );
+        destination.writeStringUtf8( _configurationURL );
+        destination.writeBoolean( _storeReceivedSentences );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _aisDevice = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _filter = source.readBoolean( );
+        _northWestLatitude = source.readDouble( );
+        _northWestLongitude = source.readDouble( );
+        _southEastLatitude = source.readDouble( );
+        _southEastLongitude = source.readDouble( );
+        _comPort = source.readString( );
+        _baudRate = source.readInt32( );
+        _iPAddress = source.readString( );
+        _port = source.readInt32( );
+        _udpPort = source.readInt32( );
+        _authenticate = source.readBoolean( );
+        _userName = source.readString( );
+        _password = source.readString( );
+        _authenticationURL = source.readString( );
+        _connectionType = source.readInt32( );
+        _sourceUpdateRate = source.readInt32( );
+        _configurationURL = source.readString( );
+        _storeReceivedSentences = source.readBoolean( );
+    }
 
 }

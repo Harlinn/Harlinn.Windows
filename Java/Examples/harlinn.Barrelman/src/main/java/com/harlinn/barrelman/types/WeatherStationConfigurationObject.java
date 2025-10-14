@@ -30,8 +30,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -40,8 +40,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _weatherStation;
     }
     public void setWeatherStation( Guid value ) {
-        if( _weatherStation != value ) {
-            this._weatherStation = value;
+        if( !Comparer.equalsGuid( _weatherStation, value ) ) {
+            _weatherStation = value;
             onPropertyChanged( );
         }
     }
@@ -50,8 +50,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -60,8 +60,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _noDataTimeOut;
     }
     public void setNoDataTimeOut( TimeSpan value ) {
-        if( _noDataTimeOut != value ) {
-            this._noDataTimeOut = value;
+        if( !Comparer.equalsTimeSpan( _noDataTimeOut, value ) ) {
+            _noDataTimeOut = value;
             onPropertyChanged( );
         }
     }
@@ -70,8 +70,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _sendInterval;
     }
     public void setSendInterval( TimeSpan value ) {
-        if( _sendInterval != value ) {
-            this._sendInterval = value;
+        if( !Comparer.equalsTimeSpan( _sendInterval, value ) ) {
+            _sendInterval = value;
             onPropertyChanged( );
         }
     }
@@ -80,8 +80,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _gyroOffset;
     }
     public void setGyroOffset( double value ) {
-        if( _gyroOffset != value ) {
-            this._gyroOffset = value;
+        if( !Comparer.equalsDouble( _gyroOffset, value ) ) {
+            _gyroOffset = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _enableAveraging;
     }
     public void setEnableAveraging( boolean value ) {
-        if( _enableAveraging != value ) {
-            this._enableAveraging = value;
+        if( !Comparer.equalsBoolean( _enableAveraging, value ) ) {
+            _enableAveraging = value;
             onPropertyChanged( );
         }
     }
@@ -120,11 +120,42 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
         return _averagingInterval;
     }
     public void setAveragingInterval( TimeSpan value ) {
-        if( _averagingInterval != value ) {
-            this._averagingInterval = value;
+        if( !Comparer.equalsTimeSpan( _averagingInterval, value ) ) {
+            _averagingInterval = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _weatherStation );
+        destination.writeDateTime( _timestamp );
+        destination.writeTimeSpan( _noDataTimeOut );
+        destination.writeTimeSpan( _sendInterval );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _gyroOffset );
+        destination.writeBoolean( _enableAveraging );
+        destination.writeTimeSpan( _averagingInterval );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _weatherStation = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _noDataTimeOut = source.readTimeSpan( );
+        _sendInterval = source.readTimeSpan( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _gyroOffset = source.readDouble( );
+        _enableAveraging = source.readBoolean( );
+        _averagingInterval = source.readTimeSpan( );
+    }
 
 }

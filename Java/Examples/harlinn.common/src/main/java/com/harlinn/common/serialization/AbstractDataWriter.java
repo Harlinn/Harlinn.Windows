@@ -868,10 +868,10 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		
 	}
 	
-	public final void writeInt8ListArray(byte[][] values ) {
+	public final void writeUInt8ListArray(byte[][] values ) {
 		
 	}
-	public final void writeNullableInt8ListArray(byte[][] values ) {
+	public final void writeUNullableInt8ListArray(byte[][] values ) {
 		
 	}
 	

@@ -24,8 +24,8 @@ public class AlarmStateChangeObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -34,8 +34,8 @@ public class AlarmStateChangeObject extends AbstractDataObjectWithGuidKey {
         return _alarm;
     }
     public void setAlarm( Guid value ) {
-        if( _alarm != value ) {
-            this._alarm = value;
+        if( !Comparer.equalsGuid( _alarm, value ) ) {
+            _alarm = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class AlarmStateChangeObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -54,11 +54,30 @@ public class AlarmStateChangeObject extends AbstractDataObjectWithGuidKey {
         return _state;
     }
     public void setState( int value ) {
-        if( _state != value ) {
-            this._state = value;
+        if( !Comparer.equalsInt32( _state, value ) ) {
+            _state = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _alarm );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _state );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _alarm = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _state = source.readInt32( );
+    }
 
 }

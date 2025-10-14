@@ -21,7 +21,7 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
     private int _sectorCount = 0;
     private int _sectorOffset = 0;
     private int _imageColor = 0;
-    private UnsignedInteger _imageSubstitutionColor;
+    private Integer _imageSubstitutionColor;
     private int _transparentColor = 0;
     private double _imageScaleFactorX = 0.0;
     private double _imageOffsetX = 0.0;
@@ -48,8 +48,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radar;
     }
     public void setRadar( Guid value ) {
-        if( _radar != value ) {
-            this._radar = value;
+        if( !Comparer.equalsGuid( _radar, value ) ) {
+            _radar = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radarProtocolVersion;
     }
     public void setRadarProtocolVersion( int value ) {
-        if( _radarProtocolVersion != value ) {
-            this._radarProtocolVersion = value;
+        if( !Comparer.equalsInt32( _radarProtocolVersion, value ) ) {
+            _radarProtocolVersion = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radarIPAddress;
     }
     public void setRadarIPAddress( String value ) {
-        if( _radarIPAddress != value ) {
-            this._radarIPAddress = value;
+        if( !Comparer.equalsString( _radarIPAddress, value ) ) {
+            _radarIPAddress = value;
             onPropertyChanged( );
         }
     }
@@ -98,8 +98,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radarPort;
     }
     public void setRadarPort( int value ) {
-        if( _radarPort != value ) {
-            this._radarPort = value;
+        if( !Comparer.equalsInt32( _radarPort, value ) ) {
+            _radarPort = value;
             onPropertyChanged( );
         }
     }
@@ -108,8 +108,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radarConfigurationPort;
     }
     public void setRadarConfigurationPort( int value ) {
-        if( _radarConfigurationPort != value ) {
-            this._radarConfigurationPort = value;
+        if( !Comparer.equalsInt32( _radarConfigurationPort, value ) ) {
+            _radarConfigurationPort = value;
             onPropertyChanged( );
         }
     }
@@ -118,8 +118,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _skipMagicTimeout;
     }
     public void setSkipMagicTimeout( TimeSpan value ) {
-        if( _skipMagicTimeout != value ) {
-            this._skipMagicTimeout = value;
+        if( !Comparer.equalsTimeSpan( _skipMagicTimeout, value ) ) {
+            _skipMagicTimeout = value;
             onPropertyChanged( );
         }
     }
@@ -128,8 +128,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _readTimeout;
     }
     public void setReadTimeout( TimeSpan value ) {
-        if( _readTimeout != value ) {
-            this._readTimeout = value;
+        if( !Comparer.equalsTimeSpan( _readTimeout, value ) ) {
+            _readTimeout = value;
             onPropertyChanged( );
         }
     }
@@ -138,8 +138,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _synchronizationInterval;
     }
     public void setSynchronizationInterval( TimeSpan value ) {
-        if( _synchronizationInterval != value ) {
-            this._synchronizationInterval = value;
+        if( !Comparer.equalsTimeSpan( _synchronizationInterval, value ) ) {
+            _synchronizationInterval = value;
             onPropertyChanged( );
         }
     }
@@ -148,8 +148,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _targetsRefreshRate;
     }
     public void setTargetsRefreshRate( int value ) {
-        if( _targetsRefreshRate != value ) {
-            this._targetsRefreshRate = value;
+        if( !Comparer.equalsInt32( _targetsRefreshRate, value ) ) {
+            _targetsRefreshRate = value;
             onPropertyChanged( );
         }
     }
@@ -158,8 +158,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _range;
     }
     public void setRange( int value ) {
-        if( _range != value ) {
-            this._range = value;
+        if( !Comparer.equalsInt32( _range, value ) ) {
+            _range = value;
             onPropertyChanged( );
         }
     }
@@ -168,8 +168,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _sectorCount;
     }
     public void setSectorCount( int value ) {
-        if( _sectorCount != value ) {
-            this._sectorCount = value;
+        if( !Comparer.equalsInt32( _sectorCount, value ) ) {
+            _sectorCount = value;
             onPropertyChanged( );
         }
     }
@@ -178,8 +178,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _sectorOffset;
     }
     public void setSectorOffset( int value ) {
-        if( _sectorOffset != value ) {
-            this._sectorOffset = value;
+        if( !Comparer.equalsInt32( _sectorOffset, value ) ) {
+            _sectorOffset = value;
             onPropertyChanged( );
         }
     }
@@ -188,18 +188,18 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _imageColor;
     }
     public void setImageColor( int value ) {
-        if( _imageColor != value ) {
-            this._imageColor = value;
+        if( !Comparer.equalsUInt32( _imageColor, value ) ) {
+            _imageColor = value;
             onPropertyChanged( );
         }
     }
 
-    public UnsignedInteger getImageSubstitutionColor( ) {
+    public Integer getImageSubstitutionColor( ) {
         return _imageSubstitutionColor;
     }
-    public void setImageSubstitutionColor( UnsignedInteger value ) {
-        if( _imageSubstitutionColor != value ) {
-            this._imageSubstitutionColor = value;
+    public void setImageSubstitutionColor( Integer value ) {
+        if( !Comparer.equalsNullableUInt32( _imageSubstitutionColor, value ) ) {
+            _imageSubstitutionColor = value;
             onPropertyChanged( );
         }
     }
@@ -208,8 +208,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _transparentColor;
     }
     public void setTransparentColor( int value ) {
-        if( _transparentColor != value ) {
-            this._transparentColor = value;
+        if( !Comparer.equalsUInt32( _transparentColor, value ) ) {
+            _transparentColor = value;
             onPropertyChanged( );
         }
     }
@@ -218,8 +218,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _imageScaleFactorX;
     }
     public void setImageScaleFactorX( double value ) {
-        if( _imageScaleFactorX != value ) {
-            this._imageScaleFactorX = value;
+        if( !Comparer.equalsDouble( _imageScaleFactorX, value ) ) {
+            _imageScaleFactorX = value;
             onPropertyChanged( );
         }
     }
@@ -228,8 +228,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _imageOffsetX;
     }
     public void setImageOffsetX( double value ) {
-        if( _imageOffsetX != value ) {
-            this._imageOffsetX = value;
+        if( !Comparer.equalsDouble( _imageOffsetX, value ) ) {
+            _imageOffsetX = value;
             onPropertyChanged( );
         }
     }
@@ -238,8 +238,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _imageScaleFactorY;
     }
     public void setImageScaleFactorY( double value ) {
-        if( _imageScaleFactorY != value ) {
-            this._imageScaleFactorY = value;
+        if( !Comparer.equalsDouble( _imageScaleFactorY, value ) ) {
+            _imageScaleFactorY = value;
             onPropertyChanged( );
         }
     }
@@ -248,8 +248,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _imageOffsetY;
     }
     public void setImageOffsetY( double value ) {
-        if( _imageOffsetY != value ) {
-            this._imageOffsetY = value;
+        if( !Comparer.equalsDouble( _imageOffsetY, value ) ) {
+            _imageOffsetY = value;
             onPropertyChanged( );
         }
     }
@@ -258,8 +258,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radarImageType;
     }
     public void setRadarImageType( int value ) {
-        if( _radarImageType != value ) {
-            this._radarImageType = value;
+        if( !Comparer.equalsInt32( _radarImageType, value ) ) {
+            _radarImageType = value;
             onPropertyChanged( );
         }
     }
@@ -268,8 +268,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _trackColor;
     }
     public void setTrackColor( int value ) {
-        if( _trackColor != value ) {
-            this._trackColor = value;
+        if( !Comparer.equalsUInt32( _trackColor, value ) ) {
+            _trackColor = value;
             onPropertyChanged( );
         }
     }
@@ -278,8 +278,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _vectorColor;
     }
     public void setVectorColor( int value ) {
-        if( _vectorColor != value ) {
-            this._vectorColor = value;
+        if( !Comparer.equalsUInt32( _vectorColor, value ) ) {
+            _vectorColor = value;
             onPropertyChanged( );
         }
     }
@@ -288,8 +288,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _enableNmea;
     }
     public void setEnableNmea( boolean value ) {
-        if( _enableNmea != value ) {
-            this._enableNmea = value;
+        if( !Comparer.equalsBoolean( _enableNmea, value ) ) {
+            _enableNmea = value;
             onPropertyChanged( );
         }
     }
@@ -298,8 +298,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _nmeaReceiverIPAddress;
     }
     public void setNmeaReceiverIPAddress( String value ) {
-        if( _nmeaReceiverIPAddress != value ) {
-            this._nmeaReceiverIPAddress = value;
+        if( !Comparer.equalsString( _nmeaReceiverIPAddress, value ) ) {
+            _nmeaReceiverIPAddress = value;
             onPropertyChanged( );
         }
     }
@@ -308,8 +308,8 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _nmeaReceiverPort;
     }
     public void setNmeaReceiverPort( int value ) {
-        if( _nmeaReceiverPort != value ) {
-            this._nmeaReceiverPort = value;
+        if( !Comparer.equalsInt32( _nmeaReceiverPort, value ) ) {
+            _nmeaReceiverPort = value;
             onPropertyChanged( );
         }
     }
@@ -318,11 +318,78 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _nmeaReceiverSourceId;
     }
     public void setNmeaReceiverSourceId( String value ) {
-        if( _nmeaReceiverSourceId != value ) {
-            this._nmeaReceiverSourceId = value;
+        if( !Comparer.equalsString( _nmeaReceiverSourceId, value ) ) {
+            _nmeaReceiverSourceId = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _radar );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _radarProtocolVersion );
+        destination.writeStringUtf8( _radarIPAddress );
+        destination.writeInt32( _radarPort );
+        destination.writeInt32( _radarConfigurationPort );
+        destination.writeTimeSpan( _skipMagicTimeout );
+        destination.writeTimeSpan( _readTimeout );
+        destination.writeTimeSpan( _synchronizationInterval );
+        destination.writeInt32( _targetsRefreshRate );
+        destination.writeInt32( _range );
+        destination.writeInt32( _sectorCount );
+        destination.writeInt32( _sectorOffset );
+        destination.writeUInt32( _imageColor );
+        destination.writeNullableUInt32( _imageSubstitutionColor );
+        destination.writeUInt32( _transparentColor );
+        destination.writeDouble( _imageScaleFactorX );
+        destination.writeDouble( _imageOffsetX );
+        destination.writeDouble( _imageScaleFactorY );
+        destination.writeDouble( _imageOffsetY );
+        destination.writeInt32( _radarImageType );
+        destination.writeUInt32( _trackColor );
+        destination.writeUInt32( _vectorColor );
+        destination.writeBoolean( _enableNmea );
+        destination.writeStringUtf8( _nmeaReceiverIPAddress );
+        destination.writeInt32( _nmeaReceiverPort );
+        destination.writeStringUtf8( _nmeaReceiverSourceId );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _radar = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _radarProtocolVersion = source.readInt32( );
+        _radarIPAddress = source.readString( );
+        _radarPort = source.readInt32( );
+        _radarConfigurationPort = source.readInt32( );
+        _skipMagicTimeout = source.readTimeSpan( );
+        _readTimeout = source.readTimeSpan( );
+        _synchronizationInterval = source.readTimeSpan( );
+        _targetsRefreshRate = source.readInt32( );
+        _range = source.readInt32( );
+        _sectorCount = source.readInt32( );
+        _sectorOffset = source.readInt32( );
+        _imageColor = source.readUInt32( );
+        _imageSubstitutionColor = source.readNullableUInt32( );
+        _transparentColor = source.readUInt32( );
+        _imageScaleFactorX = source.readDouble( );
+        _imageOffsetX = source.readDouble( );
+        _imageScaleFactorY = source.readDouble( );
+        _imageOffsetY = source.readDouble( );
+        _radarImageType = source.readInt32( );
+        _trackColor = source.readUInt32( );
+        _vectorColor = source.readUInt32( );
+        _enableNmea = source.readBoolean( );
+        _nmeaReceiverIPAddress = source.readString( );
+        _nmeaReceiverPort = source.readInt32( );
+        _nmeaReceiverSourceId = source.readString( );
+    }
 
 }

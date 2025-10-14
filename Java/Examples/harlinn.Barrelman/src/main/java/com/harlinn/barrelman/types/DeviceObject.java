@@ -16,8 +16,8 @@ public abstract class DeviceObject extends ItemObject {
         return _host;
     }
     public void setHost( Guid value ) {
-        if( _host != value ) {
-            this._host = value;
+        if( !Comparer.equalsGuid( _host, value ) ) {
+            _host = value;
             onPropertyChanged( );
         }
     }
@@ -26,8 +26,8 @@ public abstract class DeviceObject extends ItemObject {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -36,8 +36,8 @@ public abstract class DeviceObject extends ItemObject {
         return _description;
     }
     public void setDescription( String value ) {
-        if( _description != value ) {
-            this._description = value;
+        if( !Comparer.equalsString( _description, value ) ) {
+            _description = value;
             onPropertyChanged( );
         }
     }
@@ -46,11 +46,30 @@ public abstract class DeviceObject extends ItemObject {
         return _enabledTimeseries;
     }
     public void setEnabledTimeseries( Guid value ) {
-        if( _enabledTimeseries != value ) {
-            this._enabledTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _enabledTimeseries, value ) ) {
+            _enabledTimeseries = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeGuid( _host );
+        destination.writeStringUtf8( _name );
+        destination.writeStringUtf8( _description );
+        destination.writeNullableGuid( _enabledTimeseries );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _host = source.readGuid( );
+        _name = source.readString( );
+        _description = source.readString( );
+        _enabledTimeseries = source.readNullableGuid( );
+    }
 
 }

@@ -21,11 +21,24 @@ public class BooleanPropertyDefinitionObject extends PropertyDefinitionObject {
         return _defaultValue;
     }
     public void setDefaultValue( boolean value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsBoolean( _defaultValue, value ) ) {
+            _defaultValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeBoolean( _defaultValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readBoolean( );
+    }
 
 }

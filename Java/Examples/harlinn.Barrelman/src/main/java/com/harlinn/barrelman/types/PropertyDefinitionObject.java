@@ -16,8 +16,8 @@ public abstract class PropertyDefinitionObject extends AbstractDataObjectWithGui
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -26,8 +26,8 @@ public abstract class PropertyDefinitionObject extends AbstractDataObjectWithGui
         return _elementType;
     }
     public void setElementType( Guid value ) {
-        if( _elementType != value ) {
-            this._elementType = value;
+        if( !Comparer.equalsGuid( _elementType, value ) ) {
+            _elementType = value;
             onPropertyChanged( );
         }
     }
@@ -36,8 +36,8 @@ public abstract class PropertyDefinitionObject extends AbstractDataObjectWithGui
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -46,11 +46,30 @@ public abstract class PropertyDefinitionObject extends AbstractDataObjectWithGui
         return _description;
     }
     public void setDescription( String value ) {
-        if( _description != value ) {
-            this._description = value;
+        if( !Comparer.equalsString( _description, value ) ) {
+            _description = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _elementType );
+        destination.writeStringUtf8( _name );
+        destination.writeStringUtf8( _description );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _elementType = source.readGuid( );
+        _name = source.readString( );
+        _description = source.readString( );
+    }
 
 }

@@ -25,8 +25,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _navigationStatus;
     }
     public void setNavigationStatus( int value ) {
-        if( _navigationStatus != value ) {
-            this._navigationStatus = value;
+        if( !Comparer.equalsInt32( _navigationStatus, value ) ) {
+            _navigationStatus = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _rateOfTurn;
     }
     public void setRateOfTurn( Integer value ) {
-        if( _rateOfTurn != value ) {
-            this._rateOfTurn = value;
+        if( !Comparer.equalsNullableInt32( _rateOfTurn, value ) ) {
+            _rateOfTurn = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _speedOverGround;
     }
     public void setSpeedOverGround( double value ) {
-        if( _speedOverGround != value ) {
-            this._speedOverGround = value;
+        if( !Comparer.equalsDouble( _speedOverGround, value ) ) {
+            _speedOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _positionAccuracy;
     }
     public void setPositionAccuracy( int value ) {
-        if( _positionAccuracy != value ) {
-            this._positionAccuracy = value;
+        if( !Comparer.equalsInt32( _positionAccuracy, value ) ) {
+            _positionAccuracy = value;
             onPropertyChanged( );
         }
     }
@@ -65,8 +65,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -75,8 +75,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -85,8 +85,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _courseOverGround;
     }
     public void setCourseOverGround( double value ) {
-        if( _courseOverGround != value ) {
-            this._courseOverGround = value;
+        if( !Comparer.equalsDouble( _courseOverGround, value ) ) {
+            _courseOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -95,8 +95,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _trueHeading;
     }
     public void setTrueHeading( Integer value ) {
-        if( _trueHeading != value ) {
-            this._trueHeading = value;
+        if( !Comparer.equalsNullableInt32( _trueHeading, value ) ) {
+            _trueHeading = value;
             onPropertyChanged( );
         }
     }
@@ -105,8 +105,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _timestamp;
     }
     public void setTimestamp( int value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsInt32( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -115,8 +115,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _maneuverIndicator;
     }
     public void setManeuverIndicator( int value ) {
-        if( _maneuverIndicator != value ) {
-            this._maneuverIndicator = value;
+        if( !Comparer.equalsInt32( _maneuverIndicator, value ) ) {
+            _maneuverIndicator = value;
             onPropertyChanged( );
         }
     }
@@ -125,8 +125,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -135,8 +135,8 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _raim;
     }
     public void setRaim( int value ) {
-        if( _raim != value ) {
-            this._raim = value;
+        if( !Comparer.equalsInt32( _raim, value ) ) {
+            _raim = value;
             onPropertyChanged( );
         }
     }
@@ -145,11 +145,48 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
         return _radioStatus;
     }
     public void setRadioStatus( int value ) {
-        if( _radioStatus != value ) {
-            this._radioStatus = value;
+        if( !Comparer.equalsInt32( _radioStatus, value ) ) {
+            _radioStatus = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _navigationStatus );
+        destination.writeNullableInt32( _rateOfTurn );
+        destination.writeDouble( _speedOverGround );
+        destination.writeInt32( _positionAccuracy );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _courseOverGround );
+        destination.writeNullableInt32( _trueHeading );
+        destination.writeInt32( _timestamp );
+        destination.writeInt32( _maneuverIndicator );
+        destination.writeInt32( _spare );
+        destination.writeInt32( _raim );
+        destination.writeInt32( _radioStatus );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _navigationStatus = source.readInt32( );
+        _rateOfTurn = source.readNullableInt32( );
+        _speedOverGround = source.readDouble( );
+        _positionAccuracy = source.readInt32( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _courseOverGround = source.readDouble( );
+        _trueHeading = source.readNullableInt32( );
+        _timestamp = source.readInt32( );
+        _maneuverIndicator = source.readInt32( );
+        _spare = source.readInt32( );
+        _raim = source.readInt32( );
+        _radioStatus = source.readInt32( );
+    }
 
 }

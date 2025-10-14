@@ -22,8 +22,8 @@ public class VehicleObject extends TrackableItemObject {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class VehicleObject extends TrackableItemObject {
         return _type;
     }
     public void setType( Guid value ) {
-        if( _type != value ) {
-            this._type = value;
+        if( !Comparer.equalsNullableGuid( _type, value ) ) {
+            _type = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _name );
+        destination.writeNullableGuid( _type );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _name = source.readString( );
+        _type = source.readNullableGuid( );
+    }
 
 }

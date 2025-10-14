@@ -21,11 +21,24 @@ public class UInt16PropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( short value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsUInt16( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeUInt16( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readUInt16( );
+    }
 
 }

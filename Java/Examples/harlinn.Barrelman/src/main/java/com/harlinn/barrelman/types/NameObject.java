@@ -21,11 +21,24 @@ public class NameObject extends IdentityObject {
         return _text;
     }
     public void setText( String value ) {
-        if( _text != value ) {
-            this._text = value;
+        if( !Comparer.equalsString( _text, value ) ) {
+            _text = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _text );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _text = source.readString( );
+    }
 
 }

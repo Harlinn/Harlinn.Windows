@@ -21,11 +21,24 @@ public class GyroHeadingTrueNorthTimeseriesObject extends DoubleTimeseriesObject
         return _gyroDevice;
     }
     public void setGyroDevice( Guid value ) {
-        if( _gyroDevice != value ) {
-            this._gyroDevice = value;
+        if( !Comparer.equalsNullableGuid( _gyroDevice, value ) ) {
+            _gyroDevice = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _gyroDevice );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _gyroDevice = source.readNullableGuid( );
+    }
 
 }

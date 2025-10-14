@@ -26,8 +26,8 @@ public class RadomeCommandObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -36,8 +36,8 @@ public class RadomeCommandObject extends AbstractDataObjectWithGuidKey {
         return _radome;
     }
     public void setRadome( Guid value ) {
-        if( _radome != value ) {
-            this._radome = value;
+        if( !Comparer.equalsGuid( _radome, value ) ) {
+            _radome = value;
             onPropertyChanged( );
         }
     }
@@ -46,8 +46,8 @@ public class RadomeCommandObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -56,8 +56,8 @@ public class RadomeCommandObject extends AbstractDataObjectWithGuidKey {
         return _deviceCommandSourceType;
     }
     public void setDeviceCommandSourceType( int value ) {
-        if( _deviceCommandSourceType != value ) {
-            this._deviceCommandSourceType = value;
+        if( !Comparer.equalsInt32( _deviceCommandSourceType, value ) ) {
+            _deviceCommandSourceType = value;
             onPropertyChanged( );
         }
     }
@@ -66,8 +66,8 @@ public class RadomeCommandObject extends AbstractDataObjectWithGuidKey {
         return _deviceCommandSourceId;
     }
     public void setDeviceCommandSourceId( Guid value ) {
-        if( _deviceCommandSourceId != value ) {
-            this._deviceCommandSourceId = value;
+        if( !Comparer.equalsGuid( _deviceCommandSourceId, value ) ) {
+            _deviceCommandSourceId = value;
             onPropertyChanged( );
         }
     }
@@ -76,11 +76,34 @@ public class RadomeCommandObject extends AbstractDataObjectWithGuidKey {
         return _reply;
     }
     public void setReply( Guid value ) {
-        if( _reply != value ) {
-            this._reply = value;
+        if( !Comparer.equalsNullableGuid( _reply, value ) ) {
+            _reply = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _radome );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _deviceCommandSourceType );
+        destination.writeGuid( _deviceCommandSourceId );
+        destination.writeNullableGuid( _reply );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _radome = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _deviceCommandSourceType = source.readInt32( );
+        _deviceCommandSourceId = source.readGuid( );
+        _reply = source.readNullableGuid( );
+    }
 
 }

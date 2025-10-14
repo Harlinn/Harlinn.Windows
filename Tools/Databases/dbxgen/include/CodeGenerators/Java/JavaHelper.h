@@ -36,6 +36,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         static WideString GetUnderlyingType(const EnumInfo& enumInfo);
         static WideString GetUnderlyingType(const MemberInfo& member);
         static WideString GetToIntMethodName(const EnumInfo& enumInfo);
+
+        static WideString GetEquals( const MemberInfo& member, const WideString& first, const WideString& second );
+        static WideString GetCompareTo( const MemberInfo& member, const WideString& first, const WideString& second );
+        static WideString GetDeepCopy( const MemberInfo& member, const WideString& source, const WideString& destination );
+
         static WideString GetInputArgumentType(const MemberInfo& member);
         static WideString GetInputArgumentName(const MemberInfo& member);
         static WideString GetDataTypeBaseClassName(const ClassInfo& classInfo);

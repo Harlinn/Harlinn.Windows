@@ -26,8 +26,8 @@ public class LineInputDeviceCommandReplyObject extends AbstractDataObjectWithGui
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -36,8 +36,8 @@ public class LineInputDeviceCommandReplyObject extends AbstractDataObjectWithGui
         return _lineInputDevice;
     }
     public void setLineInputDevice( Guid value ) {
-        if( _lineInputDevice != value ) {
-            this._lineInputDevice = value;
+        if( !Comparer.equalsGuid( _lineInputDevice, value ) ) {
+            _lineInputDevice = value;
             onPropertyChanged( );
         }
     }
@@ -46,8 +46,8 @@ public class LineInputDeviceCommandReplyObject extends AbstractDataObjectWithGui
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -56,8 +56,8 @@ public class LineInputDeviceCommandReplyObject extends AbstractDataObjectWithGui
         return _command;
     }
     public void setCommand( Guid value ) {
-        if( _command != value ) {
-            this._command = value;
+        if( !Comparer.equalsNullableGuid( _command, value ) ) {
+            _command = value;
             onPropertyChanged( );
         }
     }
@@ -66,8 +66,8 @@ public class LineInputDeviceCommandReplyObject extends AbstractDataObjectWithGui
         return _status;
     }
     public void setStatus( int value ) {
-        if( _status != value ) {
-            this._status = value;
+        if( !Comparer.equalsInt32( _status, value ) ) {
+            _status = value;
             onPropertyChanged( );
         }
     }
@@ -76,11 +76,34 @@ public class LineInputDeviceCommandReplyObject extends AbstractDataObjectWithGui
         return _message;
     }
     public void setMessage( String value ) {
-        if( _message != value ) {
-            this._message = value;
+        if( !Comparer.equalsString( _message, value ) ) {
+            _message = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _lineInputDevice );
+        destination.writeDateTime( _timestamp );
+        destination.writeNullableGuid( _command );
+        destination.writeInt32( _status );
+        destination.writeStringUtf8( _message );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _lineInputDevice = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _command = source.readNullableGuid( );
+        _status = source.readInt32( );
+        _message = source.readString( );
+    }
 
 }

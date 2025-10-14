@@ -22,8 +22,8 @@ public class DateTimeTimeseriesPropertyDefinitionObject extends TimeseriesProper
         return _minValue;
     }
     public void setMinValue( String value ) {
-        if( _minValue != value ) {
-            this._minValue = value;
+        if( !Comparer.equalsString( _minValue, value ) ) {
+            _minValue = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class DateTimeTimeseriesPropertyDefinitionObject extends TimeseriesProper
         return _maxValue;
     }
     public void setMaxValue( String value ) {
-        if( _maxValue != value ) {
-            this._maxValue = value;
+        if( !Comparer.equalsString( _maxValue, value ) ) {
+            _maxValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _minValue );
+        destination.writeStringUtf8( _maxValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _minValue = source.readString( );
+        _maxValue = source.readString( );
+    }
 
 }

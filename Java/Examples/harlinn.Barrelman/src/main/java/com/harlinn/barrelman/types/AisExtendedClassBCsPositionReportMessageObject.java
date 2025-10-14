@@ -40,8 +40,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _reserved;
     }
     public void setReserved( int value ) {
-        if( _reserved != value ) {
-            this._reserved = value;
+        if( !Comparer.equalsInt32( _reserved, value ) ) {
+            _reserved = value;
             onPropertyChanged( );
         }
     }
@@ -50,8 +50,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _speedOverGround;
     }
     public void setSpeedOverGround( double value ) {
-        if( _speedOverGround != value ) {
-            this._speedOverGround = value;
+        if( !Comparer.equalsDouble( _speedOverGround, value ) ) {
+            _speedOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -60,8 +60,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _positionAccuracy;
     }
     public void setPositionAccuracy( int value ) {
-        if( _positionAccuracy != value ) {
-            this._positionAccuracy = value;
+        if( !Comparer.equalsInt32( _positionAccuracy, value ) ) {
+            _positionAccuracy = value;
             onPropertyChanged( );
         }
     }
@@ -70,8 +70,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -80,8 +80,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _courseOverGround;
     }
     public void setCourseOverGround( double value ) {
-        if( _courseOverGround != value ) {
-            this._courseOverGround = value;
+        if( !Comparer.equalsDouble( _courseOverGround, value ) ) {
+            _courseOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _trueHeading;
     }
     public void setTrueHeading( Integer value ) {
-        if( _trueHeading != value ) {
-            this._trueHeading = value;
+        if( !Comparer.equalsNullableInt32( _trueHeading, value ) ) {
+            _trueHeading = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _timestamp;
     }
     public void setTimestamp( int value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsInt32( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -120,8 +120,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _regionalReserved;
     }
     public void setRegionalReserved( int value ) {
-        if( _regionalReserved != value ) {
-            this._regionalReserved = value;
+        if( !Comparer.equalsInt32( _regionalReserved, value ) ) {
+            _regionalReserved = value;
             onPropertyChanged( );
         }
     }
@@ -130,8 +130,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _name;
     }
     public void setName( Guid value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsNullableGuid( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -140,8 +140,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _shipType;
     }
     public void setShipType( int value ) {
-        if( _shipType != value ) {
-            this._shipType = value;
+        if( !Comparer.equalsInt32( _shipType, value ) ) {
+            _shipType = value;
             onPropertyChanged( );
         }
     }
@@ -150,8 +150,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _dimensionToBow;
     }
     public void setDimensionToBow( int value ) {
-        if( _dimensionToBow != value ) {
-            this._dimensionToBow = value;
+        if( !Comparer.equalsInt32( _dimensionToBow, value ) ) {
+            _dimensionToBow = value;
             onPropertyChanged( );
         }
     }
@@ -160,8 +160,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _dimensionToStern;
     }
     public void setDimensionToStern( int value ) {
-        if( _dimensionToStern != value ) {
-            this._dimensionToStern = value;
+        if( !Comparer.equalsInt32( _dimensionToStern, value ) ) {
+            _dimensionToStern = value;
             onPropertyChanged( );
         }
     }
@@ -170,8 +170,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _dimensionToPort;
     }
     public void setDimensionToPort( int value ) {
-        if( _dimensionToPort != value ) {
-            this._dimensionToPort = value;
+        if( !Comparer.equalsInt32( _dimensionToPort, value ) ) {
+            _dimensionToPort = value;
             onPropertyChanged( );
         }
     }
@@ -180,8 +180,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _dimensionToStarboard;
     }
     public void setDimensionToStarboard( int value ) {
-        if( _dimensionToStarboard != value ) {
-            this._dimensionToStarboard = value;
+        if( !Comparer.equalsInt32( _dimensionToStarboard, value ) ) {
+            _dimensionToStarboard = value;
             onPropertyChanged( );
         }
     }
@@ -190,8 +190,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _positionFixType;
     }
     public void setPositionFixType( int value ) {
-        if( _positionFixType != value ) {
-            this._positionFixType = value;
+        if( !Comparer.equalsInt32( _positionFixType, value ) ) {
+            _positionFixType = value;
             onPropertyChanged( );
         }
     }
@@ -200,8 +200,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _raim;
     }
     public void setRaim( int value ) {
-        if( _raim != value ) {
-            this._raim = value;
+        if( !Comparer.equalsInt32( _raim, value ) ) {
+            _raim = value;
             onPropertyChanged( );
         }
     }
@@ -210,8 +210,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _dataTerminalReady;
     }
     public void setDataTerminalReady( boolean value ) {
-        if( _dataTerminalReady != value ) {
-            this._dataTerminalReady = value;
+        if( !Comparer.equalsBoolean( _dataTerminalReady, value ) ) {
+            _dataTerminalReady = value;
             onPropertyChanged( );
         }
     }
@@ -220,8 +220,8 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _assigned;
     }
     public void setAssigned( boolean value ) {
-        if( _assigned != value ) {
-            this._assigned = value;
+        if( !Comparer.equalsBoolean( _assigned, value ) ) {
+            _assigned = value;
             onPropertyChanged( );
         }
     }
@@ -230,11 +230,62 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _reserved );
+        destination.writeDouble( _speedOverGround );
+        destination.writeInt32( _positionAccuracy );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _courseOverGround );
+        destination.writeNullableInt32( _trueHeading );
+        destination.writeInt32( _timestamp );
+        destination.writeInt32( _regionalReserved );
+        destination.writeNullableGuid( _name );
+        destination.writeInt32( _shipType );
+        destination.writeInt32( _dimensionToBow );
+        destination.writeInt32( _dimensionToStern );
+        destination.writeInt32( _dimensionToPort );
+        destination.writeInt32( _dimensionToStarboard );
+        destination.writeInt32( _positionFixType );
+        destination.writeInt32( _raim );
+        destination.writeBoolean( _dataTerminalReady );
+        destination.writeBoolean( _assigned );
+        destination.writeInt32( _spare );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _reserved = source.readInt32( );
+        _speedOverGround = source.readDouble( );
+        _positionAccuracy = source.readInt32( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _courseOverGround = source.readDouble( );
+        _trueHeading = source.readNullableInt32( );
+        _timestamp = source.readInt32( );
+        _regionalReserved = source.readInt32( );
+        _name = source.readNullableGuid( );
+        _shipType = source.readInt32( );
+        _dimensionToBow = source.readInt32( );
+        _dimensionToStern = source.readInt32( );
+        _dimensionToPort = source.readInt32( );
+        _dimensionToStarboard = source.readInt32( );
+        _positionFixType = source.readInt32( );
+        _raim = source.readInt32( );
+        _dataTerminalReady = source.readBoolean( );
+        _assigned = source.readBoolean( );
+        _spare = source.readInt32( );
+    }
 
 }

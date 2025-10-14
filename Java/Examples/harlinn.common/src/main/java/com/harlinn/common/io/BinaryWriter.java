@@ -129,7 +129,7 @@ public interface BinaryWriter {
 	void writeStringArray(String[] values );
 	void writeNullableStringArray(String[] values );
 	
-	void writeInt8ListArray(byte[][] values );
-	void writeNullableInt8ListArray(byte[][] values );
+	void writeUInt8ListArray(byte[][] values );
+	void writeNullableUInt8ListArray(byte[][] values );
 	
 }

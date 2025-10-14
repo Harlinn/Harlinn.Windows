@@ -23,8 +23,8 @@ public class SBytePropertyDefinitionObject extends PropertyDefinitionObject {
         return _defaultValue;
     }
     public void setDefaultValue( byte value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsInt8( _defaultValue, value ) ) {
+            _defaultValue = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class SBytePropertyDefinitionObject extends PropertyDefinitionObject {
         return _minValue;
     }
     public void setMinValue( byte value ) {
-        if( _minValue != value ) {
-            this._minValue = value;
+        if( !Comparer.equalsInt8( _minValue, value ) ) {
+            _minValue = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class SBytePropertyDefinitionObject extends PropertyDefinitionObject {
         return _maxValue;
     }
     public void setMaxValue( byte value ) {
-        if( _maxValue != value ) {
-            this._maxValue = value;
+        if( !Comparer.equalsInt8( _maxValue, value ) ) {
+            _maxValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt8( _defaultValue );
+        destination.writeInt8( _minValue );
+        destination.writeInt8( _maxValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readInt8( );
+        _minValue = source.readInt8( );
+        _maxValue = source.readInt8( );
+    }
 
 }

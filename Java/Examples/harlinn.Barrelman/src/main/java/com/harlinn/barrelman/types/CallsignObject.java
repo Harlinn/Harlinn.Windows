@@ -21,11 +21,24 @@ public class CallsignObject extends IdentityObject {
         return _identifier;
     }
     public void setIdentifier( String value ) {
-        if( _identifier != value ) {
-            this._identifier = value;
+        if( !Comparer.equalsString( _identifier, value ) ) {
+            _identifier = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _identifier );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _identifier = source.readString( );
+    }
 
 }

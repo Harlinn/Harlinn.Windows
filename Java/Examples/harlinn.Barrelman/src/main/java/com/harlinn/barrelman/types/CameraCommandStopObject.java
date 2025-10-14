@@ -22,8 +22,8 @@ public class CameraCommandStopObject extends CameraCommandObject {
         return _panTilt;
     }
     public void setPanTilt( boolean value ) {
-        if( _panTilt != value ) {
-            this._panTilt = value;
+        if( !Comparer.equalsBoolean( _panTilt, value ) ) {
+            _panTilt = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class CameraCommandStopObject extends CameraCommandObject {
         return _zoom;
     }
     public void setZoom( boolean value ) {
-        if( _zoom != value ) {
-            this._zoom = value;
+        if( !Comparer.equalsBoolean( _zoom, value ) ) {
+            _zoom = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeBoolean( _panTilt );
+        destination.writeBoolean( _zoom );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _panTilt = source.readBoolean( );
+        _zoom = source.readBoolean( );
+    }
 
 }

@@ -24,8 +24,8 @@ public class ItemParentChildLinkObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -34,8 +34,8 @@ public class ItemParentChildLinkObject extends AbstractDataObjectWithGuidKey {
         return _parent;
     }
     public void setParent( Guid value ) {
-        if( _parent != value ) {
-            this._parent = value;
+        if( !Comparer.equalsGuid( _parent, value ) ) {
+            _parent = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class ItemParentChildLinkObject extends AbstractDataObjectWithGuidKey {
         return _child;
     }
     public void setChild( Guid value ) {
-        if( _child != value ) {
-            this._child = value;
+        if( !Comparer.equalsGuid( _child, value ) ) {
+            _child = value;
             onPropertyChanged( );
         }
     }
@@ -54,11 +54,30 @@ public class ItemParentChildLinkObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _parent );
+        destination.writeGuid( _child );
+        destination.writeDateTime( _timestamp );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _parent = source.readGuid( );
+        _child = source.readGuid( );
+        _timestamp = source.readDateTime( );
+    }
 
 }

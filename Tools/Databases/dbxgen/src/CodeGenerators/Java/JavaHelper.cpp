@@ -79,9 +79,34 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>(member);
 
             auto enumType = enumMemberInfo.EnumType();
-            if (enumType)
+
+            auto valueType = enumType->ValueType( );
+            switch ( valueType )
             {
-                result = Format(L"Types.{}", enumType->Name());
+                case MemberInfoType::SByte:
+                    result = L"byte";
+                    break;
+                case MemberInfoType::Byte:
+                    result = L"byte";
+                    break;
+                case MemberInfoType::Int16:
+                    result = L"short";
+                    break;
+                case MemberInfoType::UInt16:
+                    result = L"short";
+                    break;
+                case MemberInfoType::Int32:
+                    result = L"int";
+                    break;
+                case MemberInfoType::UInt32:
+                    result = L"int";
+                    break;
+                case MemberInfoType::Int64:
+                    result = L"long";
+                    break;
+                case MemberInfoType::UInt64:
+                    result = L"long";
+                    break;
             }
         }
         break;
@@ -163,7 +188,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         break;
         case MemberInfoType::Byte:
         {
-            result = member.Nullable() ? L"UnsignedByte" : L"byte";
+            result = member.Nullable() ? L"Byte" : L"byte";
         }
         break;
         case MemberInfoType::Int16:
@@ -173,7 +198,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         break;
         case MemberInfoType::UInt16:
         {
-            result = member.Nullable() ? L"UnsignedShort" : L"short";
+            result = member.Nullable() ? L"Short" : L"short";
         }
         break;
         case MemberInfoType::Int32:
@@ -183,7 +208,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         break;
         case MemberInfoType::UInt32:
         {
-            result = member.Nullable() ? L"UnsignedInteger" : L"int";
+            result = member.Nullable() ? L"Integer" : L"int";
         }
         break;
         case MemberInfoType::Int64:
@@ -193,7 +218,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         break;
         case MemberInfoType::UInt64:
         {
-            result = member.Nullable() ? L"UnsignedLong" : L"long";
+            result = member.Nullable() ? L"Long" : L"long";
         }
         break;
         case MemberInfoType::Enum:
@@ -594,7 +619,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             {
                 if (enumMemberInfo.Nullable())
                 {
-                    result = L"UnsignedByte";
+                    result = L"Byte";
                 }
                 else
                 {
@@ -618,7 +643,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             {
                 if (enumMemberInfo.Nullable())
                 {
-                    result = L"UnsignedShort";
+                    result = L"Short";
                 }
                 else
                 {
@@ -642,7 +667,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             {
                 if (enumMemberInfo.Nullable())
                 {
-                    result = L"UnsignedInteger";
+                    result = L"Integer";
                 }
                 else
                 {
@@ -666,7 +691,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             {
                 if (enumMemberInfo.Nullable())
                 {
-                    result = L"UnsignedLong";
+                    result = L"Long";
                 }
                 else
                 {
@@ -712,6 +737,314 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         return result;
     }
+
+    WideString JavaHelper::GetEquals( const MemberInfo& member, const WideString& first, const WideString& second )
+    {
+        WideString memberFunction;
+        auto memberInfoType = member.Type( );
+        switch ( memberInfoType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableBoolean" : L"equalsBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableInt8" : L"equalsInt8";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableUInt8" : L"equalsUInt8";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableInt16" : L"equalsInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableUInt16" : L"equalsUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableInt32" : L"equalsInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableUInt32" : L"equalsUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableInt64" : L"equalsInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableUInt64" : L"equalsUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    auto valueType = enumType->ValueType( );
+                    switch ( valueType )
+                    {
+                        case MemberInfoType::SByte:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableInt8" : L"equalsInt8";
+                            break;
+                        case MemberInfoType::Byte:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableUInt8" : L"equalsUInt8";
+                            break;
+                        case MemberInfoType::Int16:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableInt16" : L"equalsInt16";
+                            break;
+                        case MemberInfoType::UInt16:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableUInt16" : L"equalsUInt16";
+                            break;
+                        case MemberInfoType::Int32:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableInt32" : L"equalsInt32";
+                            break;
+                        case MemberInfoType::UInt32:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableUInt32" : L"equalsUInt32";
+                            break;
+                        case MemberInfoType::Int64:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableInt64" : L"equalsInt64";
+                            break;
+                        case MemberInfoType::UInt64:
+                            memberFunction = member.Nullable( ) ? L"equalsNullableUInt64" : L"equalsUInt64";
+                            break;
+                    }
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableSingle" : L"equalsSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableDouble" : L"equalsDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableCurrency" : L"equalsCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableDateTime" : L"equalsDateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableTimeSpan" : L"equalsTimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableGuid" : L"equalsGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableString" : L"equalsString";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableUInt8Array" : L"equalsUInt8Array";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableInt64" : L"equalsInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableGuid" : L"equalsGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                memberFunction = member.Nullable( ) ? L"equalsNullableGuid" : L"equalsGuid";
+            }
+            break;
+        }
+        auto result = Format( L"Comparer.{}( {}, {} )", memberFunction, first, second );
+        return result;
+    }
+    WideString JavaHelper::GetCompareTo( const MemberInfo& member, const WideString& first, const WideString& second )
+    {
+        WideString memberFunction;
+        auto memberInfoType = member.Type( );
+        switch ( memberInfoType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableBoolean" : L"compareBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableInt8" : L"compareInt8";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableUInt8" : L"compareUInt8";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableInt16" : L"compareInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableUInt16" : L"compareUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableInt32" : L"compareInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableUInt32" : L"compareUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableInt64" : L"compareInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableUInt64" : L"compareUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    auto valueType = enumType->ValueType( );
+                    switch ( valueType )
+                    {
+                        case MemberInfoType::SByte:
+                            memberFunction = member.Nullable( ) ? L"compareNullableInt8" : L"compareInt8";
+                            break;
+                        case MemberInfoType::Byte:
+                            memberFunction = member.Nullable( ) ? L"compareNullableUInt8" : L"compareUInt8";
+                            break;
+                        case MemberInfoType::Int16:
+                            memberFunction = member.Nullable( ) ? L"compareNullableInt16" : L"compareInt16";
+                            break;
+                        case MemberInfoType::UInt16:
+                            memberFunction = member.Nullable( ) ? L"compareNullableUInt16" : L"compareUInt16";
+                            break;
+                        case MemberInfoType::Int32:
+                            memberFunction = member.Nullable( ) ? L"compareNullableInt32" : L"compareInt32";
+                            break;
+                        case MemberInfoType::UInt32:
+                            memberFunction = member.Nullable( ) ? L"compareNullableUInt32" : L"compareUInt32";
+                            break;
+                        case MemberInfoType::Int64:
+                            memberFunction = member.Nullable( ) ? L"compareNullableInt64" : L"compareInt64";
+                            break;
+                        case MemberInfoType::UInt64:
+                            memberFunction = member.Nullable( ) ? L"compareNullableUInt64" : L"compareUInt64";
+                            break;
+                    }
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableSingle" : L"compareSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableDouble" : L"compareDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableCurrency" : L"compareCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableDateTime" : L"compareDateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableTimeSpan" : L"compareTimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableGuid" : L"compareGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableString" : L"compareString";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableUInt8Array" : L"compareUInt8Array";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableInt64" : L"compareInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableGuid" : L"compareGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                memberFunction = member.Nullable( ) ? L"compareNullableGuid" : L"compareGuid";
+            }
+            break;
+        }
+        auto result = Format(L"Comparer.{}( {}, {} )", memberFunction, first, second );
+        return result;
+    }
+    WideString JavaHelper::GetDeepCopy( const MemberInfo& member, const WideString& source, const WideString& destination )
+    {
+        auto memberInfoType = member.Type( );
+        if ( memberInfoType == MemberInfoType::Binary )
+        {
+            return Format( L"{} = {} != null ? {}.clone() : {};", destination, source, source, source );
+        }
+        else
+        {
+            return Format( L"{} = {}", destination, source );
+        }
+    }
+
 
 
     WideString JavaHelper::GetInputArgumentType(const MemberInfo& member)
@@ -904,11 +1237,147 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
     WideString JavaHelper::GetSerializationWriteFunction(const MemberInfo& member)
     {
-        WideString result(L"Write");
-        auto memberType = member.Type();
-        if (memberType == MemberInfoType::Binary)
+        WideString result( L"<unknown>" );
+        auto memberInfoType = member.Type( );
+        switch ( memberInfoType )
         {
-            result = L"WriteArray";
+            case MemberInfoType::Boolean:
+            {
+                result = member.Nullable( ) ? L"writeNullableBoolean" : L"writeBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = member.Nullable( ) ? L"writeNullableInt8" : L"writeInt8";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = member.Nullable( ) ? L"writeNullableUInt8" : L"writeUInt8";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = member.Nullable( ) ? L"writeNullableInt16" : L"writeInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = member.Nullable( ) ? L"writeNullableUInt16" : L"writeUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = member.Nullable( ) ? L"writeNullableInt32" : L"writeInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = member.Nullable( ) ? L"writeNullableUInt32" : L"writeUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = member.Nullable( ) ? L"writeNullableInt64" : L"writeInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = member.Nullable( ) ? L"writeNullableUInt64" : L"writeUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    auto valueType = enumType->ValueType( );
+                    switch ( valueType )
+                    {
+                        case MemberInfoType::SByte:
+                            result = member.Nullable( ) ? L"writeNullableInt8" : L"writeInt8";
+                            break;
+                        case MemberInfoType::Byte:
+                            result = member.Nullable( ) ? L"writeNullableUInt8" : L"writeUInt8";
+                            break;
+                        case MemberInfoType::Int16:
+                            result = member.Nullable( ) ? L"writeNullableInt16" : L"writeInt16";
+                            break;
+                        case MemberInfoType::UInt16:
+                            result = member.Nullable( ) ? L"writeNullableUInt16" : L"writeUInt16";
+                            break;
+                        case MemberInfoType::Int32:
+                            result = member.Nullable( ) ? L"writeNullableInt32" : L"writeInt32";
+                            break;
+                        case MemberInfoType::UInt32:
+                            result = member.Nullable( ) ? L"writeNullableUInt32" : L"writeUInt32";
+                            break;
+                        case MemberInfoType::Int64:
+                            result = member.Nullable( ) ? L"writeNullableInt64" : L"writeInt64";
+                            break;
+                        case MemberInfoType::UInt64:
+                            result = member.Nullable( ) ? L"writeNullableUInt64" : L"writeUInt64";
+                            break;
+                    }
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = member.Nullable( ) ? L"writeNullableSingle" : L"writeSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = member.Nullable( ) ? L"writeNullableDouble" : L"writeDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = member.Nullable( ) ? L"writeNullableCurrency" : L"writeCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = member.Nullable( ) ? L"writeNullableDateTime" : L"writeDateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = member.Nullable( ) ? L"writeNullableTimeSpan" : L"writeTimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = member.Nullable( ) ? L"writeNullableGuid" : L"writeGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                result = member.Nullable( ) ? L"writeNullableStringUtf8" : L"writeStringUtf8";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                result = member.Nullable( ) ? L"writeNullableUInt8Array" : L"writeUInt8Array";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = member.Nullable( ) ? L"writeNullableInt64" : L"writeInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = member.Nullable( ) ? L"writeNullableGuid" : L"writeGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = member.Nullable( ) ? L"writeNullableGuid" : L"writeGuid";
+            }
+            break;
         }
         return result;
     }
@@ -918,123 +1387,141 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         auto memberInfoType = member.Type();
         switch (memberInfoType)
         {
-        case MemberInfoType::Boolean:
-        {
-            result = member.Nullable() ? L"ReadNullableBoolean" : L"ReadBoolean";
-        }
-        break;
-        case MemberInfoType::SByte:
-        {
-            result = member.Nullable() ? L"ReadNullableSByte" : L"ReadSByte";
-        }
-        break;
-        case MemberInfoType::Byte:
-        {
-            result = member.Nullable() ? L"ReadNullableByte" : L"ReadByte";
-        }
-        break;
-        case MemberInfoType::Int16:
-        {
-            result = member.Nullable() ? L"ReadNullableInt16" : L"ReadInt16";
-        }
-        break;
-        case MemberInfoType::UInt16:
-        {
-            result = member.Nullable() ? L"ReadNullableUInt16" : L"ReadUInt16";
-        }
-        break;
-        case MemberInfoType::Int32:
-        {
-            result = member.Nullable() ? L"ReadNullableInt32" : L"ReadInt32";
-        }
-        break;
-        case MemberInfoType::UInt32:
-        {
-            result = member.Nullable() ? L"ReadNullableUInt32" : L"ReadUInt32";
-        }
-        break;
-        case MemberInfoType::Int64:
-        {
-            result = member.Nullable() ? L"ReadNullableInt64" : L"ReadInt64";
-        }
-        break;
-        case MemberInfoType::UInt64:
-        {
-            result = member.Nullable() ? L"ReadNullableUInt64" : L"ReadUInt64";
-        }
-        break;
-        case MemberInfoType::Enum:
-        {
-            const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>(member);
-            auto enumType = enumMemberInfo.EnumType();
-            if (enumType)
+            case MemberInfoType::Boolean:
             {
-                if (member.Nullable())
+                result = member.Nullable() ? L"readNullableBoolean" : L"readBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = member.Nullable() ? L"readNullableInt8" : L"readInt8";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = member.Nullable() ? L"readNullableUInt8" : L"readUInt8";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = member.Nullable() ? L"readNullableInt16" : L"readInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = member.Nullable() ? L"readNullableUInt16" : L"readUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = member.Nullable() ? L"readNullableInt32" : L"readInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = member.Nullable() ? L"readNullableUInt32" : L"readUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = member.Nullable() ? L"readNullableInt64" : L"readInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = member.Nullable() ? L"readNullableUInt64" : L"readUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>(member);
+                auto enumType = enumMemberInfo.EnumType();
+
+                auto valueType = enumType->ValueType( );
+                switch ( valueType )
                 {
-                    result = Format(L"ReadNullableEnum<Types.{}>", enumType->Name());
-                }
-                else
-                {
-                    result = Format(L"ReadEnum<Types.{}>", enumType->Name());
+                    case MemberInfoType::SByte:
+                        result = member.Nullable( ) ? L"readNullableInt8" : L"readInt8";
+                        break;
+                    case MemberInfoType::Byte:
+                        result = member.Nullable( ) ? L"readNullableUInt8" : L"readUInt8";
+                        break;
+                    case MemberInfoType::Int16:
+                        result = member.Nullable( ) ? L"readNullableInt16" : L"readInt16";
+                        break;
+                    case MemberInfoType::UInt16:
+                        result = member.Nullable( ) ? L"readNullableUInt16" : L"readUInt16";
+                        break;
+                    case MemberInfoType::Int32:
+                        result = member.Nullable( ) ? L"readNullableInt32" : L"readInt32";
+                        break;
+                    case MemberInfoType::UInt32:
+                        result = member.Nullable( ) ? L"readNullableUInt32" : L"readUInt32";
+                        break;
+                    case MemberInfoType::Int64:
+                        result = member.Nullable( ) ? L"readNullableInt64" : L"readInt64";
+                        break;
+                    case MemberInfoType::UInt64:
+                        result = member.Nullable( ) ? L"readNullableUInt64" : L"readUInt64";
+                        break;
                 }
             }
-        }
-        break;
-        case MemberInfoType::Single:
-        {
-            result = member.Nullable() ? L"ReadNullableSingle" : L"ReadSingle";
-        }
-        break;
-        case MemberInfoType::Double:
-        {
-            result = member.Nullable() ? L"ReadNullableDouble" : L"ReadDouble";
-        }
-        break;
-        case MemberInfoType::Currency:
-        {
-            result = member.Nullable() ? L"ReadNullableCurrency" : L"ReadCurrency";
-        }
-        break;
-        case MemberInfoType::DateTime:
-        {
-            result = member.Nullable() ? L"ReadNullableDateTime" : L"ReadDateTime";
-        }
-        break;
-        case MemberInfoType::TimeSpan:
-        {
-            result = member.Nullable() ? L"ReadNullableTimeSpan" : L"ReadTimeSpan";
-        }
-        break;
-        case MemberInfoType::Guid:
-        {
-            result = member.Nullable() ? L"ReadNullableGuid" : L"ReadGuid";
-        }
-        break;
-        case MemberInfoType::String:
-        {
-            result = L"ReadString";
-        }
-        break;
-        case MemberInfoType::Binary:
-        {
-            result = L"ReadByteArray";
-        }
-        break;
-        case MemberInfoType::RowVersion:
-        {
-            result = member.Nullable() ? L"ReadNullableInt64" : L"ReadInt64";
-        }
-        break;
-        case MemberInfoType::Reference:
-        {
-            result = member.Nullable() ? L"ReadNullableGuid" : L"ReadGuid";
-        }
-        break;
-        case MemberInfoType::TimeSeries:
-        {
-            result = member.Nullable() ? L"ReadNullableGuid" : L"ReadGuid";
-        }
-        break;
+            break;
+            case MemberInfoType::Single:
+            {
+                result = member.Nullable() ? L"readNullableSingle" : L"readSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = member.Nullable() ? L"readNullableDouble" : L"readDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = member.Nullable() ? L"readNullableCurrency" : L"readCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = member.Nullable() ? L"readNullableDateTime" : L"readDateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = member.Nullable() ? L"readNullableTimeSpan" : L"readTimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = member.Nullable() ? L"readNullableGuid" : L"readGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                result = member.Nullable( ) ? L"readNullableString" : L"readString";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                result = member.Nullable( ) ? L"readNullableUInt8Array" : L"readUInt8Array";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = member.Nullable() ? L"readNullableInt64" : L"readInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = member.Nullable() ? L"readNullableGuid" : L"readGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = member.Nullable() ? L"readNullableGuid" : L"readGuid";
+            }
+            break;
         }
         return result;
     }

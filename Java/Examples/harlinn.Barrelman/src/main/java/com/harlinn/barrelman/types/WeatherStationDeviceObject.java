@@ -29,8 +29,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _barometricPressureTimeseries;
     }
     public void setBarometricPressureTimeseries( Guid value ) {
-        if( _barometricPressureTimeseries != value ) {
-            this._barometricPressureTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _barometricPressureTimeseries, value ) ) {
+            _barometricPressureTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _airTemperatureTimeseries;
     }
     public void setAirTemperatureTimeseries( Guid value ) {
-        if( _airTemperatureTimeseries != value ) {
-            this._airTemperatureTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _airTemperatureTimeseries, value ) ) {
+            _airTemperatureTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _waterTemperatureTimeseries;
     }
     public void setWaterTemperatureTimeseries( Guid value ) {
-        if( _waterTemperatureTimeseries != value ) {
-            this._waterTemperatureTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _waterTemperatureTimeseries, value ) ) {
+            _waterTemperatureTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _relativeHumidityTimeseries;
     }
     public void setRelativeHumidityTimeseries( Guid value ) {
-        if( _relativeHumidityTimeseries != value ) {
-            this._relativeHumidityTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _relativeHumidityTimeseries, value ) ) {
+            _relativeHumidityTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _absoluteHumidityTimeseries;
     }
     public void setAbsoluteHumidityTimeseries( Guid value ) {
-        if( _absoluteHumidityTimeseries != value ) {
-            this._absoluteHumidityTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _absoluteHumidityTimeseries, value ) ) {
+            _absoluteHumidityTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _dewPointTimeseries;
     }
     public void setDewPointTimeseries( Guid value ) {
-        if( _dewPointTimeseries != value ) {
-            this._dewPointTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _dewPointTimeseries, value ) ) {
+            _dewPointTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _windDirectionTimeseries;
     }
     public void setWindDirectionTimeseries( Guid value ) {
-        if( _windDirectionTimeseries != value ) {
-            this._windDirectionTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _windDirectionTimeseries, value ) ) {
+            _windDirectionTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _windSpeedTimeseries;
     }
     public void setWindSpeedTimeseries( Guid value ) {
-        if( _windSpeedTimeseries != value ) {
-            this._windSpeedTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _windSpeedTimeseries, value ) ) {
+            _windSpeedTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class WeatherStationDeviceObject extends DeviceObject {
         return _gyro;
     }
     public void setGyro( Guid value ) {
-        if( _gyro != value ) {
-            this._gyro = value;
+        if( !Comparer.equalsNullableGuid( _gyro, value ) ) {
+            _gyro = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _barometricPressureTimeseries );
+        destination.writeNullableGuid( _airTemperatureTimeseries );
+        destination.writeNullableGuid( _waterTemperatureTimeseries );
+        destination.writeNullableGuid( _relativeHumidityTimeseries );
+        destination.writeNullableGuid( _absoluteHumidityTimeseries );
+        destination.writeNullableGuid( _dewPointTimeseries );
+        destination.writeNullableGuid( _windDirectionTimeseries );
+        destination.writeNullableGuid( _windSpeedTimeseries );
+        destination.writeNullableGuid( _gyro );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _barometricPressureTimeseries = source.readNullableGuid( );
+        _airTemperatureTimeseries = source.readNullableGuid( );
+        _waterTemperatureTimeseries = source.readNullableGuid( );
+        _relativeHumidityTimeseries = source.readNullableGuid( );
+        _absoluteHumidityTimeseries = source.readNullableGuid( );
+        _dewPointTimeseries = source.readNullableGuid( );
+        _windDirectionTimeseries = source.readNullableGuid( );
+        _windSpeedTimeseries = source.readNullableGuid( );
+        _gyro = source.readNullableGuid( );
+    }
 
 }

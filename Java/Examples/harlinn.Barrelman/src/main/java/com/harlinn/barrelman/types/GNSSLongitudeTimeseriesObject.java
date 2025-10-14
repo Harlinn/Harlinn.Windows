@@ -21,11 +21,24 @@ public class GNSSLongitudeTimeseriesObject extends DoubleTimeseriesObject {
         return _gNSSDevice;
     }
     public void setGNSSDevice( Guid value ) {
-        if( _gNSSDevice != value ) {
-            this._gNSSDevice = value;
+        if( !Comparer.equalsNullableGuid( _gNSSDevice, value ) ) {
+            _gNSSDevice = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _gNSSDevice );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _gNSSDevice = source.readNullableGuid( );
+    }
 
 }

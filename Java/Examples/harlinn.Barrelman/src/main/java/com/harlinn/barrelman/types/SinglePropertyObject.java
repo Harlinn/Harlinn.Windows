@@ -21,11 +21,24 @@ public class SinglePropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( float value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsSingle( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeSingle( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readSingle( );
+    }
 
 }

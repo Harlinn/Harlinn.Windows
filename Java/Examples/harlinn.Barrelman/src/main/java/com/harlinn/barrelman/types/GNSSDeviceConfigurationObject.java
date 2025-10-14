@@ -29,8 +29,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _gNSSDevice;
     }
     public void setGNSSDevice( Guid value ) {
-        if( _gNSSDevice != value ) {
-            this._gNSSDevice = value;
+        if( !Comparer.equalsGuid( _gNSSDevice, value ) ) {
+            _gNSSDevice = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _defaultLatitude;
     }
     public void setDefaultLatitude( double value ) {
-        if( _defaultLatitude != value ) {
-            this._defaultLatitude = value;
+        if( !Comparer.equalsDouble( _defaultLatitude, value ) ) {
+            _defaultLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _defaultLongitude;
     }
     public void setDefaultLongitude( double value ) {
-        if( _defaultLongitude != value ) {
-            this._defaultLongitude = value;
+        if( !Comparer.equalsDouble( _defaultLongitude, value ) ) {
+            _defaultLongitude = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _defaultAltitude;
     }
     public void setDefaultAltitude( double value ) {
-        if( _defaultAltitude != value ) {
-            this._defaultAltitude = value;
+        if( !Comparer.equalsDouble( _defaultAltitude, value ) ) {
+            _defaultAltitude = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _latitudeOffset;
     }
     public void setLatitudeOffset( double value ) {
-        if( _latitudeOffset != value ) {
-            this._latitudeOffset = value;
+        if( !Comparer.equalsDouble( _latitudeOffset, value ) ) {
+            _latitudeOffset = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _longitudeOffset;
     }
     public void setLongitudeOffset( double value ) {
-        if( _longitudeOffset != value ) {
-            this._longitudeOffset = value;
+        if( !Comparer.equalsDouble( _longitudeOffset, value ) ) {
+            _longitudeOffset = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _altitudeOffset;
     }
     public void setAltitudeOffset( double value ) {
-        if( _altitudeOffset != value ) {
-            this._altitudeOffset = value;
+        if( !Comparer.equalsDouble( _altitudeOffset, value ) ) {
+            _altitudeOffset = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _gNSSDevice );
+        destination.writeDateTime( _timestamp );
+        destination.writeDouble( _defaultLatitude );
+        destination.writeDouble( _defaultLongitude );
+        destination.writeDouble( _defaultAltitude );
+        destination.writeDouble( _latitudeOffset );
+        destination.writeDouble( _longitudeOffset );
+        destination.writeDouble( _altitudeOffset );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _gNSSDevice = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _defaultLatitude = source.readDouble( );
+        _defaultLongitude = source.readDouble( );
+        _defaultAltitude = source.readDouble( );
+        _latitudeOffset = source.readDouble( );
+        _longitudeOffset = source.readDouble( );
+        _altitudeOffset = source.readDouble( );
+    }
 
 }

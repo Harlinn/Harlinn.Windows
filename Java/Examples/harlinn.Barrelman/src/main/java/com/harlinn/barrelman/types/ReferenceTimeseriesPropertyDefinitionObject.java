@@ -21,11 +21,24 @@ public class ReferenceTimeseriesPropertyDefinitionObject extends TimeseriesPrope
         return _referencedElementType;
     }
     public void setReferencedElementType( Guid value ) {
-        if( _referencedElementType != value ) {
-            this._referencedElementType = value;
+        if( !Comparer.equalsNullableGuid( _referencedElementType, value ) ) {
+            _referencedElementType = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _referencedElementType );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _referencedElementType = source.readNullableGuid( );
+    }
 
 }

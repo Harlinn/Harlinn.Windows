@@ -23,8 +23,8 @@ public class TimeSpanPropertyDefinitionObject extends PropertyDefinitionObject {
         return _defaultValue;
     }
     public void setDefaultValue( TimeSpan value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsTimeSpan( _defaultValue, value ) ) {
+            _defaultValue = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class TimeSpanPropertyDefinitionObject extends PropertyDefinitionObject {
         return _minValue;
     }
     public void setMinValue( TimeSpan value ) {
-        if( _minValue != value ) {
-            this._minValue = value;
+        if( !Comparer.equalsTimeSpan( _minValue, value ) ) {
+            _minValue = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class TimeSpanPropertyDefinitionObject extends PropertyDefinitionObject {
         return _maxValue;
     }
     public void setMaxValue( TimeSpan value ) {
-        if( _maxValue != value ) {
-            this._maxValue = value;
+        if( !Comparer.equalsTimeSpan( _maxValue, value ) ) {
+            _maxValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeTimeSpan( _defaultValue );
+        destination.writeTimeSpan( _minValue );
+        destination.writeTimeSpan( _maxValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readTimeSpan( );
+        _minValue = source.readTimeSpan( );
+        _maxValue = source.readTimeSpan( );
+    }
 
 }

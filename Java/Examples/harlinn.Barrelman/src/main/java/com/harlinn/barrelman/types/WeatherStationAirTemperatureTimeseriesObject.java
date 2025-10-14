@@ -21,11 +21,24 @@ public class WeatherStationAirTemperatureTimeseriesObject extends DoubleTimeseri
         return _weatherStation;
     }
     public void setWeatherStation( Guid value ) {
-        if( _weatherStation != value ) {
-            this._weatherStation = value;
+        if( !Comparer.equalsNullableGuid( _weatherStation, value ) ) {
+            _weatherStation = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _weatherStation );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _weatherStation = source.readNullableGuid( );
+    }
 
 }

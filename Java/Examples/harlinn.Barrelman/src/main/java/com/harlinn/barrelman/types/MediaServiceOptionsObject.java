@@ -25,8 +25,8 @@ public class MediaServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class MediaServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _mediaService;
     }
     public void setMediaService( Guid value ) {
-        if( _mediaService != value ) {
-            this._mediaService = value;
+        if( !Comparer.equalsGuid( _mediaService, value ) ) {
+            _mediaService = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class MediaServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class MediaServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _rtspPortNumber;
     }
     public void setRtspPortNumber( int value ) {
-        if( _rtspPortNumber != value ) {
-            this._rtspPortNumber = value;
+        if( !Comparer.equalsInt32( _rtspPortNumber, value ) ) {
+            _rtspPortNumber = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class MediaServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _httpPortNumber;
     }
     public void setHttpPortNumber( int value ) {
-        if( _httpPortNumber != value ) {
-            this._httpPortNumber = value;
+        if( !Comparer.equalsInt32( _httpPortNumber, value ) ) {
+            _httpPortNumber = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _mediaService );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _rtspPortNumber );
+        destination.writeInt32( _httpPortNumber );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _mediaService = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _rtspPortNumber = source.readInt32( );
+        _httpPortNumber = source.readInt32( );
+    }
 
 }

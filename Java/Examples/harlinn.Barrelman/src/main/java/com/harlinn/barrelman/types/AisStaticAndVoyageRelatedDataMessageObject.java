@@ -35,8 +35,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _aisVersion;
     }
     public void setAisVersion( int value ) {
-        if( _aisVersion != value ) {
-            this._aisVersion = value;
+        if( !Comparer.equalsInt32( _aisVersion, value ) ) {
+            _aisVersion = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _imoNumber;
     }
     public void setImoNumber( Guid value ) {
-        if( _imoNumber != value ) {
-            this._imoNumber = value;
+        if( !Comparer.equalsNullableGuid( _imoNumber, value ) ) {
+            _imoNumber = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _callsign;
     }
     public void setCallsign( Guid value ) {
-        if( _callsign != value ) {
-            this._callsign = value;
+        if( !Comparer.equalsNullableGuid( _callsign, value ) ) {
+            _callsign = value;
             onPropertyChanged( );
         }
     }
@@ -65,8 +65,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _shipName;
     }
     public void setShipName( Guid value ) {
-        if( _shipName != value ) {
-            this._shipName = value;
+        if( !Comparer.equalsNullableGuid( _shipName, value ) ) {
+            _shipName = value;
             onPropertyChanged( );
         }
     }
@@ -75,8 +75,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _shipType;
     }
     public void setShipType( int value ) {
-        if( _shipType != value ) {
-            this._shipType = value;
+        if( !Comparer.equalsInt32( _shipType, value ) ) {
+            _shipType = value;
             onPropertyChanged( );
         }
     }
@@ -85,8 +85,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _dimensionToBow;
     }
     public void setDimensionToBow( int value ) {
-        if( _dimensionToBow != value ) {
-            this._dimensionToBow = value;
+        if( !Comparer.equalsInt32( _dimensionToBow, value ) ) {
+            _dimensionToBow = value;
             onPropertyChanged( );
         }
     }
@@ -95,8 +95,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _dimensionToStern;
     }
     public void setDimensionToStern( int value ) {
-        if( _dimensionToStern != value ) {
-            this._dimensionToStern = value;
+        if( !Comparer.equalsInt32( _dimensionToStern, value ) ) {
+            _dimensionToStern = value;
             onPropertyChanged( );
         }
     }
@@ -105,8 +105,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _dimensionToPort;
     }
     public void setDimensionToPort( int value ) {
-        if( _dimensionToPort != value ) {
-            this._dimensionToPort = value;
+        if( !Comparer.equalsInt32( _dimensionToPort, value ) ) {
+            _dimensionToPort = value;
             onPropertyChanged( );
         }
     }
@@ -115,8 +115,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _dimensionToStarboard;
     }
     public void setDimensionToStarboard( int value ) {
-        if( _dimensionToStarboard != value ) {
-            this._dimensionToStarboard = value;
+        if( !Comparer.equalsInt32( _dimensionToStarboard, value ) ) {
+            _dimensionToStarboard = value;
             onPropertyChanged( );
         }
     }
@@ -125,8 +125,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _positionFixType;
     }
     public void setPositionFixType( int value ) {
-        if( _positionFixType != value ) {
-            this._positionFixType = value;
+        if( !Comparer.equalsInt32( _positionFixType, value ) ) {
+            _positionFixType = value;
             onPropertyChanged( );
         }
     }
@@ -135,8 +135,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _estimatedTimeOfArrival;
     }
     public void setEstimatedTimeOfArrival( DateTime value ) {
-        if( _estimatedTimeOfArrival != value ) {
-            this._estimatedTimeOfArrival = value;
+        if( !Comparer.equalsNullableDateTime( _estimatedTimeOfArrival, value ) ) {
+            _estimatedTimeOfArrival = value;
             onPropertyChanged( );
         }
     }
@@ -145,8 +145,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _draught;
     }
     public void setDraught( double value ) {
-        if( _draught != value ) {
-            this._draught = value;
+        if( !Comparer.equalsDouble( _draught, value ) ) {
+            _draught = value;
             onPropertyChanged( );
         }
     }
@@ -155,8 +155,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _destination;
     }
     public void setDestination( String value ) {
-        if( _destination != value ) {
-            this._destination = value;
+        if( !Comparer.equalsString( _destination, value ) ) {
+            _destination = value;
             onPropertyChanged( );
         }
     }
@@ -165,8 +165,8 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _dataTerminalReady;
     }
     public void setDataTerminalReady( boolean value ) {
-        if( _dataTerminalReady != value ) {
-            this._dataTerminalReady = value;
+        if( !Comparer.equalsBoolean( _dataTerminalReady, value ) ) {
+            _dataTerminalReady = value;
             onPropertyChanged( );
         }
     }
@@ -175,11 +175,52 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _aisVersion );
+        destination.writeNullableGuid( _imoNumber );
+        destination.writeNullableGuid( _callsign );
+        destination.writeNullableGuid( _shipName );
+        destination.writeInt32( _shipType );
+        destination.writeInt32( _dimensionToBow );
+        destination.writeInt32( _dimensionToStern );
+        destination.writeInt32( _dimensionToPort );
+        destination.writeInt32( _dimensionToStarboard );
+        destination.writeInt32( _positionFixType );
+        destination.writeNullableDateTime( _estimatedTimeOfArrival );
+        destination.writeDouble( _draught );
+        destination.writeStringUtf8( _destination );
+        destination.writeBoolean( _dataTerminalReady );
+        destination.writeInt32( _spare );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _aisVersion = source.readInt32( );
+        _imoNumber = source.readNullableGuid( );
+        _callsign = source.readNullableGuid( );
+        _shipName = source.readNullableGuid( );
+        _shipType = source.readInt32( );
+        _dimensionToBow = source.readInt32( );
+        _dimensionToStern = source.readInt32( );
+        _dimensionToPort = source.readInt32( );
+        _dimensionToStarboard = source.readInt32( );
+        _positionFixType = source.readInt32( );
+        _estimatedTimeOfArrival = source.readNullableDateTime( );
+        _draught = source.readDouble( );
+        _destination = source.readString( );
+        _dataTerminalReady = source.readBoolean( );
+        _spare = source.readInt32( );
+    }
 
 }

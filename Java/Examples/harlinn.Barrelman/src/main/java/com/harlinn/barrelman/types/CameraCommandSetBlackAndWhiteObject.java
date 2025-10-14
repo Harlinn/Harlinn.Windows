@@ -21,11 +21,24 @@ public class CameraCommandSetBlackAndWhiteObject extends CameraCommandObject {
         return _enabled;
     }
     public void setEnabled( boolean value ) {
-        if( _enabled != value ) {
-            this._enabled = value;
+        if( !Comparer.equalsBoolean( _enabled, value ) ) {
+            _enabled = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeBoolean( _enabled );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _enabled = source.readBoolean( );
+    }
 
 }

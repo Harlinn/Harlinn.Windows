@@ -21,11 +21,24 @@ public class SecurityRoleObject extends SecurityIdentifierObject {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _name );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _name = source.readString( );
+    }
 
 }

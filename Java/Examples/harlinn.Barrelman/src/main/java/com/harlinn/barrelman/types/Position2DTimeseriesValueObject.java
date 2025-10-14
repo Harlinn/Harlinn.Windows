@@ -25,8 +25,8 @@ public class Position2DTimeseriesValueObject extends AbstractDataObjectWithGuidK
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class Position2DTimeseriesValueObject extends AbstractDataObjectWithGuidK
         return _timeseries;
     }
     public void setTimeseries( Guid value ) {
-        if( _timeseries != value ) {
-            this._timeseries = value;
+        if( !Comparer.equalsGuid( _timeseries, value ) ) {
+            _timeseries = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class Position2DTimeseriesValueObject extends AbstractDataObjectWithGuidK
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class Position2DTimeseriesValueObject extends AbstractDataObjectWithGuidK
         return _x;
     }
     public void setX( Double value ) {
-        if( _x != value ) {
-            this._x = value;
+        if( !Comparer.equalsNullableDouble( _x, value ) ) {
+            _x = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class Position2DTimeseriesValueObject extends AbstractDataObjectWithGuidK
         return _y;
     }
     public void setY( Double value ) {
-        if( _y != value ) {
-            this._y = value;
+        if( !Comparer.equalsNullableDouble( _y, value ) ) {
+            _y = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _timeseries );
+        destination.writeDateTime( _timestamp );
+        destination.writeNullableDouble( _x );
+        destination.writeNullableDouble( _y );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _timeseries = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _x = source.readNullableDouble( );
+        _y = source.readNullableDouble( );
+    }
 
 }

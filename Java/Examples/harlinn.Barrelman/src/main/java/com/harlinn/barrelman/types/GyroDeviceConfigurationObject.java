@@ -29,8 +29,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _gyroDevice;
     }
     public void setGyroDevice( Guid value ) {
-        if( _gyroDevice != value ) {
-            this._gyroDevice = value;
+        if( !Comparer.equalsGuid( _gyroDevice, value ) ) {
+            _gyroDevice = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _defaultHeadingTrueNorth;
     }
     public void setDefaultHeadingTrueNorth( double value ) {
-        if( _defaultHeadingTrueNorth != value ) {
-            this._defaultHeadingTrueNorth = value;
+        if( !Comparer.equalsDouble( _defaultHeadingTrueNorth, value ) ) {
+            _defaultHeadingTrueNorth = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _defaultMagneticTrueNorth;
     }
     public void setDefaultMagneticTrueNorth( double value ) {
-        if( _defaultMagneticTrueNorth != value ) {
-            this._defaultMagneticTrueNorth = value;
+        if( !Comparer.equalsDouble( _defaultMagneticTrueNorth, value ) ) {
+            _defaultMagneticTrueNorth = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _headingTrueNorthOffset;
     }
     public void setHeadingTrueNorthOffset( double value ) {
-        if( _headingTrueNorthOffset != value ) {
-            this._headingTrueNorthOffset = value;
+        if( !Comparer.equalsDouble( _headingTrueNorthOffset, value ) ) {
+            _headingTrueNorthOffset = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _headingMagneticNorthOffset;
     }
     public void setHeadingMagneticNorthOffset( double value ) {
-        if( _headingMagneticNorthOffset != value ) {
-            this._headingMagneticNorthOffset = value;
+        if( !Comparer.equalsDouble( _headingMagneticNorthOffset, value ) ) {
+            _headingMagneticNorthOffset = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _pitchTransducerName;
     }
     public void setPitchTransducerName( String value ) {
-        if( _pitchTransducerName != value ) {
-            this._pitchTransducerName = value;
+        if( !Comparer.equalsString( _pitchTransducerName, value ) ) {
+            _pitchTransducerName = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
         return _rollTransducerName;
     }
     public void setRollTransducerName( String value ) {
-        if( _rollTransducerName != value ) {
-            this._rollTransducerName = value;
+        if( !Comparer.equalsString( _rollTransducerName, value ) ) {
+            _rollTransducerName = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _gyroDevice );
+        destination.writeDateTime( _timestamp );
+        destination.writeDouble( _defaultHeadingTrueNorth );
+        destination.writeDouble( _defaultMagneticTrueNorth );
+        destination.writeDouble( _headingTrueNorthOffset );
+        destination.writeDouble( _headingMagneticNorthOffset );
+        destination.writeStringUtf8( _pitchTransducerName );
+        destination.writeStringUtf8( _rollTransducerName );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _gyroDevice = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _defaultHeadingTrueNorth = source.readDouble( );
+        _defaultMagneticTrueNorth = source.readDouble( );
+        _headingTrueNorthOffset = source.readDouble( );
+        _headingMagneticNorthOffset = source.readDouble( );
+        _pitchTransducerName = source.readString( );
+        _rollTransducerName = source.readString( );
+    }
 
 }

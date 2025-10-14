@@ -127,8 +127,8 @@ public interface BinaryReader {
 	String[] readStringArray();
 	String[] readNullableStringArray();
 	
-	byte[][] readInt8ListArray();
-	byte[][] readNullableInt8ListArray();
+	byte[][] readUInt8ListArray();
+	byte[][] readNullableUInt8ListArray();
 	
 	
 }

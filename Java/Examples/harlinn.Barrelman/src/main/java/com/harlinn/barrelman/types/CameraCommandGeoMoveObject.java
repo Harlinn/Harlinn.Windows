@@ -25,8 +25,8 @@ public class CameraCommandGeoMoveObject extends CameraCommandObject {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class CameraCommandGeoMoveObject extends CameraCommandObject {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class CameraCommandGeoMoveObject extends CameraCommandObject {
         return _altitude;
     }
     public void setAltitude( Double value ) {
-        if( _altitude != value ) {
-            this._altitude = value;
+        if( !Comparer.equalsNullableDouble( _altitude, value ) ) {
+            _altitude = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class CameraCommandGeoMoveObject extends CameraCommandObject {
         return _viewportWidth;
     }
     public void setViewportWidth( Double value ) {
-        if( _viewportWidth != value ) {
-            this._viewportWidth = value;
+        if( !Comparer.equalsNullableDouble( _viewportWidth, value ) ) {
+            _viewportWidth = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class CameraCommandGeoMoveObject extends CameraCommandObject {
         return _viewportHeight;
     }
     public void setViewportHeight( Double value ) {
-        if( _viewportHeight != value ) {
-            this._viewportHeight = value;
+        if( !Comparer.equalsNullableDouble( _viewportHeight, value ) ) {
+            _viewportHeight = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeNullableDouble( _altitude );
+        destination.writeNullableDouble( _viewportWidth );
+        destination.writeNullableDouble( _viewportHeight );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _altitude = source.readNullableDouble( );
+        _viewportWidth = source.readNullableDouble( );
+        _viewportHeight = source.readNullableDouble( );
+    }
 
 }

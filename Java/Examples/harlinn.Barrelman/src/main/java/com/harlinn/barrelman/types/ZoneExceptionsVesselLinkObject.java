@@ -23,8 +23,8 @@ public class ZoneExceptionsVesselLinkObject extends AbstractDataObjectWithGuidKe
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class ZoneExceptionsVesselLinkObject extends AbstractDataObjectWithGuidKe
         return _zoneExceptions;
     }
     public void setZoneExceptions( Guid value ) {
-        if( _zoneExceptions != value ) {
-            this._zoneExceptions = value;
+        if( !Comparer.equalsGuid( _zoneExceptions, value ) ) {
+            _zoneExceptions = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class ZoneExceptionsVesselLinkObject extends AbstractDataObjectWithGuidKe
         return _vessel;
     }
     public void setVessel( Guid value ) {
-        if( _vessel != value ) {
-            this._vessel = value;
+        if( !Comparer.equalsGuid( _vessel, value ) ) {
+            _vessel = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _zoneExceptions );
+        destination.writeGuid( _vessel );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _zoneExceptions = source.readGuid( );
+        _vessel = source.readGuid( );
+    }
 
 }

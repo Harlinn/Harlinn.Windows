@@ -21,11 +21,24 @@ public class MediaProxySessionEnabledTimeseriesObject extends BooleanTimeseriesO
         return _proxySession;
     }
     public void setProxySession( Guid value ) {
-        if( _proxySession != value ) {
-            this._proxySession = value;
+        if( !Comparer.equalsNullableGuid( _proxySession, value ) ) {
+            _proxySession = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _proxySession );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _proxySession = source.readNullableGuid( );
+    }
 
 }

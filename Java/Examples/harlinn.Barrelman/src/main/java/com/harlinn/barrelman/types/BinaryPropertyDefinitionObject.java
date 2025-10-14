@@ -21,11 +21,24 @@ public class BinaryPropertyDefinitionObject extends PropertyDefinitionObject {
         return _defaultValue;
     }
     public void setDefaultValue( byte[] value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsUInt8Array( _defaultValue, value ) ) {
+            _defaultValue = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeUInt8Array( _defaultValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readUInt8Array( );
+    }
 
 }

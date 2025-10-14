@@ -21,11 +21,24 @@ public class UInt32PropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( int value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsUInt32( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeUInt32( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readUInt32( );
+    }
 
 }

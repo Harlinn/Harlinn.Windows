@@ -22,8 +22,8 @@ public class ReferencePropertyDefinitionObject extends PropertyDefinitionObject 
         return _defaultValue;
     }
     public void setDefaultValue( Guid value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsNullableGuid( _defaultValue, value ) ) {
+            _defaultValue = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class ReferencePropertyDefinitionObject extends PropertyDefinitionObject 
         return _referencedElementType;
     }
     public void setReferencedElementType( Guid value ) {
-        if( _referencedElementType != value ) {
-            this._referencedElementType = value;
+        if( !Comparer.equalsNullableGuid( _referencedElementType, value ) ) {
+            _referencedElementType = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _defaultValue );
+        destination.writeNullableGuid( _referencedElementType );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readNullableGuid( );
+        _referencedElementType = source.readNullableGuid( );
+    }
 
 }

@@ -25,8 +25,8 @@ public class SecurityIdentifierRoleLinkObject extends AbstractDataObjectWithGuid
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class SecurityIdentifierRoleLinkObject extends AbstractDataObjectWithGuid
         return _member;
     }
     public void setMember( Guid value ) {
-        if( _member != value ) {
-            this._member = value;
+        if( !Comparer.equalsGuid( _member, value ) ) {
+            _member = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class SecurityIdentifierRoleLinkObject extends AbstractDataObjectWithGuid
         return _role;
     }
     public void setRole( Guid value ) {
-        if( _role != value ) {
-            this._role = value;
+        if( !Comparer.equalsGuid( _role, value ) ) {
+            _role = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class SecurityIdentifierRoleLinkObject extends AbstractDataObjectWithGuid
         return _start;
     }
     public void setStart( DateTime value ) {
-        if( _start != value ) {
-            this._start = value;
+        if( !Comparer.equalsDateTime( _start, value ) ) {
+            _start = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class SecurityIdentifierRoleLinkObject extends AbstractDataObjectWithGuid
         return _end;
     }
     public void setEnd( DateTime value ) {
-        if( _end != value ) {
-            this._end = value;
+        if( !Comparer.equalsNullableDateTime( _end, value ) ) {
+            _end = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _member );
+        destination.writeGuid( _role );
+        destination.writeDateTime( _start );
+        destination.writeNullableDateTime( _end );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _member = source.readGuid( );
+        _role = source.readGuid( );
+        _start = source.readDateTime( );
+        _end = source.readNullableDateTime( );
+    }
 
 }

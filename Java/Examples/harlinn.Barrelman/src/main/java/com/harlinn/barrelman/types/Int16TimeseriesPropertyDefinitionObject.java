@@ -22,8 +22,8 @@ public class Int16TimeseriesPropertyDefinitionObject extends TimeseriesPropertyD
         return _minValue;
     }
     public void setMinValue( short value ) {
-        if( _minValue != value ) {
-            this._minValue = value;
+        if( !Comparer.equalsInt16( _minValue, value ) ) {
+            _minValue = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class Int16TimeseriesPropertyDefinitionObject extends TimeseriesPropertyD
         return _maxValue;
     }
     public void setMaxValue( short value ) {
-        if( _maxValue != value ) {
-            this._maxValue = value;
+        if( !Comparer.equalsInt16( _maxValue, value ) ) {
+            _maxValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt16( _minValue );
+        destination.writeInt16( _maxValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _minValue = source.readInt16( );
+        _maxValue = source.readInt16( );
+    }
 
 }

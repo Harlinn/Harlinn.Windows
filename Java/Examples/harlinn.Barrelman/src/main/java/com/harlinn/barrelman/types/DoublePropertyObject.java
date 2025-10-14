@@ -21,11 +21,24 @@ public class DoublePropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( double value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsDouble( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeDouble( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readDouble( );
+    }
 
 }

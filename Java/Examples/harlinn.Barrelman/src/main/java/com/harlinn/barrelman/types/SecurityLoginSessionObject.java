@@ -27,8 +27,8 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -37,8 +37,8 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
         return _login;
     }
     public void setLogin( Guid value ) {
-        if( _login != value ) {
-            this._login = value;
+        if( !Comparer.equalsGuid( _login, value ) ) {
+            _login = value;
             onPropertyChanged( );
         }
     }
@@ -47,8 +47,8 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
         return _fromTime;
     }
     public void setFromTime( DateTime value ) {
-        if( _fromTime != value ) {
-            this._fromTime = value;
+        if( !Comparer.equalsDateTime( _fromTime, value ) ) {
+            _fromTime = value;
             onPropertyChanged( );
         }
     }
@@ -57,8 +57,8 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
         return _throughTime;
     }
     public void setThroughTime( DateTime value ) {
-        if( _throughTime != value ) {
-            this._throughTime = value;
+        if( !Comparer.equalsNullableDateTime( _throughTime, value ) ) {
+            _throughTime = value;
             onPropertyChanged( );
         }
     }
@@ -67,8 +67,8 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
         return _clientSession;
     }
     public void setClientSession( Guid value ) {
-        if( _clientSession != value ) {
-            this._clientSession = value;
+        if( !Comparer.equalsGuid( _clientSession, value ) ) {
+            _clientSession = value;
             onPropertyChanged( );
         }
     }
@@ -77,8 +77,8 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
         return _notificationQueueName;
     }
     public void setNotificationQueueName( String value ) {
-        if( _notificationQueueName != value ) {
-            this._notificationQueueName = value;
+        if( !Comparer.equalsString( _notificationQueueName, value ) ) {
+            _notificationQueueName = value;
             onPropertyChanged( );
         }
     }
@@ -87,11 +87,36 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
         return _messageQueueName;
     }
     public void setMessageQueueName( String value ) {
-        if( _messageQueueName != value ) {
-            this._messageQueueName = value;
+        if( !Comparer.equalsString( _messageQueueName, value ) ) {
+            _messageQueueName = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _login );
+        destination.writeDateTime( _fromTime );
+        destination.writeNullableDateTime( _throughTime );
+        destination.writeGuid( _clientSession );
+        destination.writeStringUtf8( _notificationQueueName );
+        destination.writeStringUtf8( _messageQueueName );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _login = source.readGuid( );
+        _fromTime = source.readDateTime( );
+        _throughTime = source.readNullableDateTime( );
+        _clientSession = source.readGuid( );
+        _notificationQueueName = source.readString( );
+        _messageQueueName = source.readString( );
+    }
 
 }

@@ -23,8 +23,8 @@ public class ZoneExceptionsObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class ZoneExceptionsObject extends AbstractDataObjectWithGuidKey {
         return _zone;
     }
     public void setZone( Guid value ) {
-        if( _zone != value ) {
-            this._zone = value;
+        if( !Comparer.equalsGuid( _zone, value ) ) {
+            _zone = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class ZoneExceptionsObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _zone );
+        destination.writeDateTime( _timestamp );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _zone = source.readGuid( );
+        _timestamp = source.readDateTime( );
+    }
 
 }

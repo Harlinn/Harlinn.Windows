@@ -25,8 +25,8 @@ public class CountryObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class CountryObject extends AbstractDataObjectWithGuidKey {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class CountryObject extends AbstractDataObjectWithGuidKey {
         return _code;
     }
     public void setCode( int value ) {
-        if( _code != value ) {
-            this._code = value;
+        if( !Comparer.equalsInt32( _code, value ) ) {
+            _code = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class CountryObject extends AbstractDataObjectWithGuidKey {
         return _alpha2;
     }
     public void setAlpha2( String value ) {
-        if( _alpha2 != value ) {
-            this._alpha2 = value;
+        if( !Comparer.equalsString( _alpha2, value ) ) {
+            _alpha2 = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class CountryObject extends AbstractDataObjectWithGuidKey {
         return _alpha3;
     }
     public void setAlpha3( String value ) {
-        if( _alpha3 != value ) {
-            this._alpha3 = value;
+        if( !Comparer.equalsString( _alpha3, value ) ) {
+            _alpha3 = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeStringUtf8( _name );
+        destination.writeInt32( _code );
+        destination.writeStringUtf8( _alpha2 );
+        destination.writeStringUtf8( _alpha3 );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _name = source.readString( );
+        _code = source.readInt32( );
+        _alpha2 = source.readString( );
+        _alpha3 = source.readString( );
+    }
 
 }

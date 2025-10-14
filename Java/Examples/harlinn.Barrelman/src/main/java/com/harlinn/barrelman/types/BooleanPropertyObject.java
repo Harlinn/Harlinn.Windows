@@ -21,11 +21,24 @@ public class BooleanPropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( boolean value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsBoolean( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeBoolean( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readBoolean( );
+    }
 
 }

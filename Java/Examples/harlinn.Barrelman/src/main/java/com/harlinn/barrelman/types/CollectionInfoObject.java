@@ -22,8 +22,8 @@ public class CollectionInfoObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class CollectionInfoObject extends AbstractDataObjectWithGuidKey {
         return _count;
     }
     public void setCount( long value ) {
-        if( _count != value ) {
-            this._count = value;
+        if( !Comparer.equalsInt64( _count, value ) ) {
+            _count = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeInt64( _count );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _count = source.readInt64( );
+    }
 
 }

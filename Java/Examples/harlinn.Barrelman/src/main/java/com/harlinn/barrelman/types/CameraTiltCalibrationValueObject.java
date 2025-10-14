@@ -24,8 +24,8 @@ public class CameraTiltCalibrationValueObject extends AbstractDataObjectWithGuid
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -34,8 +34,8 @@ public class CameraTiltCalibrationValueObject extends AbstractDataObjectWithGuid
         return _tiltCalibration;
     }
     public void setTiltCalibration( Guid value ) {
-        if( _tiltCalibration != value ) {
-            this._tiltCalibration = value;
+        if( !Comparer.equalsGuid( _tiltCalibration, value ) ) {
+            _tiltCalibration = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class CameraTiltCalibrationValueObject extends AbstractDataObjectWithGuid
         return _panAngle;
     }
     public void setPanAngle( double value ) {
-        if( _panAngle != value ) {
-            this._panAngle = value;
+        if( !Comparer.equalsDouble( _panAngle, value ) ) {
+            _panAngle = value;
             onPropertyChanged( );
         }
     }
@@ -54,11 +54,30 @@ public class CameraTiltCalibrationValueObject extends AbstractDataObjectWithGuid
         return _tiltOffset;
     }
     public void setTiltOffset( double value ) {
-        if( _tiltOffset != value ) {
-            this._tiltOffset = value;
+        if( !Comparer.equalsDouble( _tiltOffset, value ) ) {
+            _tiltOffset = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _tiltCalibration );
+        destination.writeDouble( _panAngle );
+        destination.writeDouble( _tiltOffset );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _tiltCalibration = source.readGuid( );
+        _panAngle = source.readDouble( );
+        _tiltOffset = source.readDouble( );
+    }
 
 }

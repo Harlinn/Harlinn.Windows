@@ -45,8 +45,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _oilSpillDetector;
     }
     public void setOilSpillDetector( Guid value ) {
-        if( _oilSpillDetector != value ) {
-            this._oilSpillDetector = value;
+        if( !Comparer.equalsGuid( _oilSpillDetector, value ) ) {
+            _oilSpillDetector = value;
             onPropertyChanged( );
         }
     }
@@ -65,8 +65,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -75,8 +75,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _range;
     }
     public void setRange( double value ) {
-        if( _range != value ) {
-            this._range = value;
+        if( !Comparer.equalsDouble( _range, value ) ) {
+            _range = value;
             onPropertyChanged( );
         }
     }
@@ -85,8 +85,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _startAngle;
     }
     public void setStartAngle( double value ) {
-        if( _startAngle != value ) {
-            this._startAngle = value;
+        if( !Comparer.equalsDouble( _startAngle, value ) ) {
+            _startAngle = value;
             onPropertyChanged( );
         }
     }
@@ -95,8 +95,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _endAngle;
     }
     public void setEndAngle( double value ) {
-        if( _endAngle != value ) {
-            this._endAngle = value;
+        if( !Comparer.equalsDouble( _endAngle, value ) ) {
+            _endAngle = value;
             onPropertyChanged( );
         }
     }
@@ -105,8 +105,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _startRange;
     }
     public void setStartRange( double value ) {
-        if( _startRange != value ) {
-            this._startRange = value;
+        if( !Comparer.equalsDouble( _startRange, value ) ) {
+            _startRange = value;
             onPropertyChanged( );
         }
     }
@@ -115,8 +115,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _endRange;
     }
     public void setEndRange( double value ) {
-        if( _endRange != value ) {
-            this._endRange = value;
+        if( !Comparer.equalsDouble( _endRange, value ) ) {
+            _endRange = value;
             onPropertyChanged( );
         }
     }
@@ -125,8 +125,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _updateRate;
     }
     public void setUpdateRate( int value ) {
-        if( _updateRate != value ) {
-            this._updateRate = value;
+        if( !Comparer.equalsInt32( _updateRate, value ) ) {
+            _updateRate = value;
             onPropertyChanged( );
         }
     }
@@ -135,8 +135,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _statusSendTime;
     }
     public void setStatusSendTime( TimeSpan value ) {
-        if( _statusSendTime != value ) {
-            this._statusSendTime = value;
+        if( !Comparer.equalsTimeSpan( _statusSendTime, value ) ) {
+            _statusSendTime = value;
             onPropertyChanged( );
         }
     }
@@ -145,8 +145,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _drawBorder;
     }
     public void setDrawBorder( boolean value ) {
-        if( _drawBorder != value ) {
-            this._drawBorder = value;
+        if( !Comparer.equalsBoolean( _drawBorder, value ) ) {
+            _drawBorder = value;
             onPropertyChanged( );
         }
     }
@@ -155,8 +155,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _colors;
     }
     public void setColors( byte[] value ) {
-        if( _colors != value ) {
-            this._colors = value;
+        if( !Comparer.equalsUInt8Array( _colors, value ) ) {
+            _colors = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
@@ -165,8 +165,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _sendToServer;
     }
     public void setSendToServer( boolean value ) {
-        if( _sendToServer != value ) {
-            this._sendToServer = value;
+        if( !Comparer.equalsBoolean( _sendToServer, value ) ) {
+            _sendToServer = value;
             onPropertyChanged( );
         }
     }
@@ -175,8 +175,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _directory;
     }
     public void setDirectory( String value ) {
-        if( _directory != value ) {
-            this._directory = value;
+        if( !Comparer.equalsString( _directory, value ) ) {
+            _directory = value;
             onPropertyChanged( );
         }
     }
@@ -185,8 +185,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _transparentWater;
     }
     public void setTransparentWater( boolean value ) {
-        if( _transparentWater != value ) {
-            this._transparentWater = value;
+        if( !Comparer.equalsBoolean( _transparentWater, value ) ) {
+            _transparentWater = value;
             onPropertyChanged( );
         }
     }
@@ -195,8 +195,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _savePictures;
     }
     public void setSavePictures( boolean value ) {
-        if( _savePictures != value ) {
-            this._savePictures = value;
+        if( !Comparer.equalsBoolean( _savePictures, value ) ) {
+            _savePictures = value;
             onPropertyChanged( );
         }
     }
@@ -205,8 +205,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _sendAsTarget;
     }
     public void setSendAsTarget( boolean value ) {
-        if( _sendAsTarget != value ) {
-            this._sendAsTarget = value;
+        if( !Comparer.equalsBoolean( _sendAsTarget, value ) ) {
+            _sendAsTarget = value;
             onPropertyChanged( );
         }
     }
@@ -215,8 +215,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _writeLog;
     }
     public void setWriteLog( boolean value ) {
-        if( _writeLog != value ) {
-            this._writeLog = value;
+        if( !Comparer.equalsBoolean( _writeLog, value ) ) {
+            _writeLog = value;
             onPropertyChanged( );
         }
     }
@@ -225,8 +225,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _targetFilePrefix;
     }
     public void setTargetFilePrefix( String value ) {
-        if( _targetFilePrefix != value ) {
-            this._targetFilePrefix = value;
+        if( !Comparer.equalsString( _targetFilePrefix, value ) ) {
+            _targetFilePrefix = value;
             onPropertyChanged( );
         }
     }
@@ -235,8 +235,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _targetMMSI;
     }
     public void setTargetMMSI( Guid value ) {
-        if( _targetMMSI != value ) {
-            this._targetMMSI = value;
+        if( !Comparer.equalsNullableGuid( _targetMMSI, value ) ) {
+            _targetMMSI = value;
             onPropertyChanged( );
         }
     }
@@ -245,8 +245,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -255,8 +255,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -265,8 +265,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _testSourceEnabled;
     }
     public void setTestSourceEnabled( boolean value ) {
-        if( _testSourceEnabled != value ) {
-            this._testSourceEnabled = value;
+        if( !Comparer.equalsBoolean( _testSourceEnabled, value ) ) {
+            _testSourceEnabled = value;
             onPropertyChanged( );
         }
     }
@@ -275,8 +275,8 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _proxyServer;
     }
     public void setProxyServer( String value ) {
-        if( _proxyServer != value ) {
-            this._proxyServer = value;
+        if( !Comparer.equalsString( _proxyServer, value ) ) {
+            _proxyServer = value;
             onPropertyChanged( );
         }
     }
@@ -285,11 +285,72 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
         return _useProxyServer;
     }
     public void setUseProxyServer( boolean value ) {
-        if( _useProxyServer != value ) {
-            this._useProxyServer = value;
+        if( !Comparer.equalsBoolean( _useProxyServer, value ) ) {
+            _useProxyServer = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _oilSpillDetector );
+        destination.writeDateTime( _timestamp );
+        destination.writeDouble( _range );
+        destination.writeDouble( _startAngle );
+        destination.writeDouble( _endAngle );
+        destination.writeDouble( _startRange );
+        destination.writeDouble( _endRange );
+        destination.writeInt32( _updateRate );
+        destination.writeTimeSpan( _statusSendTime );
+        destination.writeBoolean( _drawBorder );
+        destination.writeUInt8Array( _colors );
+        destination.writeBoolean( _sendToServer );
+        destination.writeStringUtf8( _directory );
+        destination.writeBoolean( _transparentWater );
+        destination.writeBoolean( _savePictures );
+        destination.writeBoolean( _sendAsTarget );
+        destination.writeBoolean( _writeLog );
+        destination.writeStringUtf8( _targetFilePrefix );
+        destination.writeNullableGuid( _targetMMSI );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeBoolean( _testSourceEnabled );
+        destination.writeStringUtf8( _proxyServer );
+        destination.writeBoolean( _useProxyServer );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _oilSpillDetector = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _range = source.readDouble( );
+        _startAngle = source.readDouble( );
+        _endAngle = source.readDouble( );
+        _startRange = source.readDouble( );
+        _endRange = source.readDouble( );
+        _updateRate = source.readInt32( );
+        _statusSendTime = source.readTimeSpan( );
+        _drawBorder = source.readBoolean( );
+        _colors = source.readUInt8Array( );
+        _sendToServer = source.readBoolean( );
+        _directory = source.readString( );
+        _transparentWater = source.readBoolean( );
+        _savePictures = source.readBoolean( );
+        _sendAsTarget = source.readBoolean( );
+        _writeLog = source.readBoolean( );
+        _targetFilePrefix = source.readString( );
+        _targetMMSI = source.readNullableGuid( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _testSourceEnabled = source.readBoolean( );
+        _proxyServer = source.readString( );
+        _useProxyServer = source.readBoolean( );
+    }
 
 }

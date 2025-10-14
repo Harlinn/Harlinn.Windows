@@ -30,8 +30,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -40,8 +40,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _mMSI;
     }
     public void setMMSI( Guid value ) {
-        if( _mMSI != value ) {
-            this._mMSI = value;
+        if( !Comparer.equalsNullableGuid( _mMSI, value ) ) {
+            _mMSI = value;
             onPropertyChanged( );
         }
     }
@@ -50,8 +50,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _navigationalAidType;
     }
     public void setNavigationalAidType( int value ) {
-        if( _navigationalAidType != value ) {
-            this._navigationalAidType = value;
+        if( !Comparer.equalsInt32( _navigationalAidType, value ) ) {
+            _navigationalAidType = value;
             onPropertyChanged( );
         }
     }
@@ -60,8 +60,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _position;
     }
     public void setPosition( Guid value ) {
-        if( _position != value ) {
-            this._position = value;
+        if( !Comparer.equalsNullableGuid( _position, value ) ) {
+            _position = value;
             onPropertyChanged( );
         }
     }
@@ -70,8 +70,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _isVirtual;
     }
     public void setIsVirtual( boolean value ) {
-        if( _isVirtual != value ) {
-            this._isVirtual = value;
+        if( !Comparer.equalsBoolean( _isVirtual, value ) ) {
+            _isVirtual = value;
             onPropertyChanged( );
         }
     }
@@ -80,8 +80,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _toBow;
     }
     public void setToBow( int value ) {
-        if( _toBow != value ) {
-            this._toBow = value;
+        if( !Comparer.equalsInt32( _toBow, value ) ) {
+            _toBow = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _toStern;
     }
     public void setToStern( int value ) {
-        if( _toStern != value ) {
-            this._toStern = value;
+        if( !Comparer.equalsInt32( _toStern, value ) ) {
+            _toStern = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _toPort;
     }
     public void setToPort( int value ) {
-        if( _toPort != value ) {
-            this._toPort = value;
+        if( !Comparer.equalsInt32( _toPort, value ) ) {
+            _toPort = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _toStarboard;
     }
     public void setToStarboard( int value ) {
-        if( _toStarboard != value ) {
-            this._toStarboard = value;
+        if( !Comparer.equalsInt32( _toStarboard, value ) ) {
+            _toStarboard = value;
             onPropertyChanged( );
         }
     }
@@ -120,11 +120,42 @@ public class AisAidToNavigationObject extends TrackableItemObject {
         return _offPositionTimeseries;
     }
     public void setOffPositionTimeseries( Guid value ) {
-        if( _offPositionTimeseries != value ) {
-            this._offPositionTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _offPositionTimeseries, value ) ) {
+            _offPositionTimeseries = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _name );
+        destination.writeNullableGuid( _mMSI );
+        destination.writeInt32( _navigationalAidType );
+        destination.writeNullableGuid( _position );
+        destination.writeBoolean( _isVirtual );
+        destination.writeInt32( _toBow );
+        destination.writeInt32( _toStern );
+        destination.writeInt32( _toPort );
+        destination.writeInt32( _toStarboard );
+        destination.writeNullableGuid( _offPositionTimeseries );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _name = source.readString( );
+        _mMSI = source.readNullableGuid( );
+        _navigationalAidType = source.readInt32( );
+        _position = source.readNullableGuid( );
+        _isVirtual = source.readBoolean( );
+        _toBow = source.readInt32( );
+        _toStern = source.readInt32( );
+        _toPort = source.readInt32( );
+        _toStarboard = source.readInt32( );
+        _offPositionTimeseries = source.readNullableGuid( );
+    }
 
 }

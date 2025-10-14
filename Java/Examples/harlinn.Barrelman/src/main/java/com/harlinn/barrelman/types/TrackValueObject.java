@@ -30,8 +30,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -40,8 +40,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _track;
     }
     public void setTrack( Guid value ) {
-        if( _track != value ) {
-            this._track = value;
+        if( !Comparer.equalsGuid( _track, value ) ) {
+            _track = value;
             onPropertyChanged( );
         }
     }
@@ -50,8 +50,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -60,8 +60,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _flags;
     }
     public void setFlags( int value ) {
-        if( _flags != value ) {
-            this._flags = value;
+        if( !Comparer.equalsInt32( _flags, value ) ) {
+            _flags = value;
             onPropertyChanged( );
         }
     }
@@ -70,8 +70,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _status;
     }
     public void setStatus( int value ) {
-        if( _status != value ) {
-            this._status = value;
+        if( !Comparer.equalsInt32( _status, value ) ) {
+            _status = value;
             onPropertyChanged( );
         }
     }
@@ -80,8 +80,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _speed;
     }
     public void setSpeed( double value ) {
-        if( _speed != value ) {
-            this._speed = value;
+        if( !Comparer.equalsDouble( _speed, value ) ) {
+            _speed = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _course;
     }
     public void setCourse( double value ) {
-        if( _course != value ) {
-            this._course = value;
+        if( !Comparer.equalsDouble( _course, value ) ) {
+            _course = value;
             onPropertyChanged( );
         }
     }
@@ -120,11 +120,42 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
         return _heading;
     }
     public void setHeading( double value ) {
-        if( _heading != value ) {
-            this._heading = value;
+        if( !Comparer.equalsDouble( _heading, value ) ) {
+            _heading = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _track );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _flags );
+        destination.writeInt32( _status );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _speed );
+        destination.writeDouble( _course );
+        destination.writeDouble( _heading );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _track = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _flags = source.readInt32( );
+        _status = source.readInt32( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _speed = source.readDouble( );
+        _course = source.readDouble( );
+        _heading = source.readDouble( );
+    }
 
 }

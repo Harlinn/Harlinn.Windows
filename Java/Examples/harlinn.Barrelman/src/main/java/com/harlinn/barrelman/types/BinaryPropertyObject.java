@@ -21,11 +21,24 @@ public class BinaryPropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( byte[] value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsUInt8Array( _value, value ) ) {
+            _value = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeUInt8Array( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readUInt8Array( );
+    }
 
 }

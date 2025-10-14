@@ -23,8 +23,8 @@ public class LineInputMessageRoutingDestinationObject extends AbstractDataObject
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class LineInputMessageRoutingDestinationObject extends AbstractDataObject
         return _routing;
     }
     public void setRouting( Guid value ) {
-        if( _routing != value ) {
-            this._routing = value;
+        if( !Comparer.equalsGuid( _routing, value ) ) {
+            _routing = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class LineInputMessageRoutingDestinationObject extends AbstractDataObject
         return _listener;
     }
     public void setListener( Guid value ) {
-        if( _listener != value ) {
-            this._listener = value;
+        if( !Comparer.equalsNullableGuid( _listener, value ) ) {
+            _listener = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _routing );
+        destination.writeNullableGuid( _listener );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _routing = source.readGuid( );
+        _listener = source.readNullableGuid( );
+    }
 
 }

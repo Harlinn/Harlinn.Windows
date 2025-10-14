@@ -21,11 +21,24 @@ public class RadarBlankSector1TimeseriesObject extends BooleanTimeseriesObject {
         return _radar;
     }
     public void setRadar( Guid value ) {
-        if( _radar != value ) {
-            this._radar = value;
+        if( !Comparer.equalsNullableGuid( _radar, value ) ) {
+            _radar = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _radar );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _radar = source.readNullableGuid( );
+    }
 
 }

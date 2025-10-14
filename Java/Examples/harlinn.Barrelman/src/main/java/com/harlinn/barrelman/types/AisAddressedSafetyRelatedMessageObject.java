@@ -25,8 +25,8 @@ public class AisAddressedSafetyRelatedMessageObject extends AisMessageObject {
         return _sequenceNumber;
     }
     public void setSequenceNumber( int value ) {
-        if( _sequenceNumber != value ) {
-            this._sequenceNumber = value;
+        if( !Comparer.equalsInt32( _sequenceNumber, value ) ) {
+            _sequenceNumber = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class AisAddressedSafetyRelatedMessageObject extends AisMessageObject {
         return _destinationMmsi;
     }
     public void setDestinationMmsi( Guid value ) {
-        if( _destinationMmsi != value ) {
-            this._destinationMmsi = value;
+        if( !Comparer.equalsNullableGuid( _destinationMmsi, value ) ) {
+            _destinationMmsi = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class AisAddressedSafetyRelatedMessageObject extends AisMessageObject {
         return _retransmitFlag;
     }
     public void setRetransmitFlag( boolean value ) {
-        if( _retransmitFlag != value ) {
-            this._retransmitFlag = value;
+        if( !Comparer.equalsBoolean( _retransmitFlag, value ) ) {
+            _retransmitFlag = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class AisAddressedSafetyRelatedMessageObject extends AisMessageObject {
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class AisAddressedSafetyRelatedMessageObject extends AisMessageObject {
         return _text;
     }
     public void setText( String value ) {
-        if( _text != value ) {
-            this._text = value;
+        if( !Comparer.equalsString( _text, value ) ) {
+            _text = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _sequenceNumber );
+        destination.writeNullableGuid( _destinationMmsi );
+        destination.writeBoolean( _retransmitFlag );
+        destination.writeInt32( _spare );
+        destination.writeStringUtf8( _text );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _sequenceNumber = source.readInt32( );
+        _destinationMmsi = source.readNullableGuid( );
+        _retransmitFlag = source.readBoolean( );
+        _spare = source.readInt32( );
+        _text = source.readString( );
+    }
 
 }

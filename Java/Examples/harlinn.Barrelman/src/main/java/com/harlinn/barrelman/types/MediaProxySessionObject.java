@@ -24,8 +24,8 @@ public class MediaProxySessionObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -34,8 +34,8 @@ public class MediaProxySessionObject extends AbstractDataObjectWithGuidKey {
         return _service;
     }
     public void setService( Guid value ) {
-        if( _service != value ) {
-            this._service = value;
+        if( !Comparer.equalsGuid( _service, value ) ) {
+            _service = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class MediaProxySessionObject extends AbstractDataObjectWithGuidKey {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -54,11 +54,30 @@ public class MediaProxySessionObject extends AbstractDataObjectWithGuidKey {
         return _enabledTimeseries;
     }
     public void setEnabledTimeseries( Guid value ) {
-        if( _enabledTimeseries != value ) {
-            this._enabledTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _enabledTimeseries, value ) ) {
+            _enabledTimeseries = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _service );
+        destination.writeStringUtf8( _name );
+        destination.writeNullableGuid( _enabledTimeseries );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _service = source.readGuid( );
+        _name = source.readString( );
+        _enabledTimeseries = source.readNullableGuid( );
+    }
 
 }

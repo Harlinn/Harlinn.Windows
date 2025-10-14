@@ -6,7 +6,7 @@ import java.math.BigDecimal;
  * A Currency number stored as a long, scaled by 10,000 to give a fixed-point 
  * number with 15 digits to the left of the decimal point and 4 digits to the right.
  */
-public class Currency {
+public class Currency implements Cloneable, Comparable<Currency> {
 	public static final long Scale = 10000;
 	static final float ScaleFloat = 10000.0f;
 	static final double ScaleDouble = 10000.0;
@@ -36,6 +36,19 @@ public class Currency {
 	
 	public long getValue() {
 		return value;
+	}
+
+	@Override 
+	public Currency clone() throws CloneNotSupportedException {
+		return fromValue(value);
+	}
+	
+	@Override
+	public int compareTo(Currency o) {
+		return Long.compare(value, o.value);
+	}
+	public static int compare(Currency first, Currency second) {
+		return first.compareTo(second);
 	}
 	
 }

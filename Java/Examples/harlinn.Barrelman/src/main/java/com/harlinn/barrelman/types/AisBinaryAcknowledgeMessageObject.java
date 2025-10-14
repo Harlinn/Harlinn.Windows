@@ -29,8 +29,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _sequenceNumber1;
     }
     public void setSequenceNumber1( int value ) {
-        if( _sequenceNumber1 != value ) {
-            this._sequenceNumber1 = value;
+        if( !Comparer.equalsInt32( _sequenceNumber1, value ) ) {
+            _sequenceNumber1 = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _mmsi1;
     }
     public void setMmsi1( Guid value ) {
-        if( _mmsi1 != value ) {
-            this._mmsi1 = value;
+        if( !Comparer.equalsNullableGuid( _mmsi1, value ) ) {
+            _mmsi1 = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _sequenceNumber2;
     }
     public void setSequenceNumber2( Integer value ) {
-        if( _sequenceNumber2 != value ) {
-            this._sequenceNumber2 = value;
+        if( !Comparer.equalsNullableInt32( _sequenceNumber2, value ) ) {
+            _sequenceNumber2 = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _mmsi2;
     }
     public void setMmsi2( Guid value ) {
-        if( _mmsi2 != value ) {
-            this._mmsi2 = value;
+        if( !Comparer.equalsNullableGuid( _mmsi2, value ) ) {
+            _mmsi2 = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _sequenceNumber3;
     }
     public void setSequenceNumber3( Integer value ) {
-        if( _sequenceNumber3 != value ) {
-            this._sequenceNumber3 = value;
+        if( !Comparer.equalsNullableInt32( _sequenceNumber3, value ) ) {
+            _sequenceNumber3 = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _mmsi3;
     }
     public void setMmsi3( Guid value ) {
-        if( _mmsi3 != value ) {
-            this._mmsi3 = value;
+        if( !Comparer.equalsNullableGuid( _mmsi3, value ) ) {
+            _mmsi3 = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _sequenceNumber4;
     }
     public void setSequenceNumber4( Integer value ) {
-        if( _sequenceNumber4 != value ) {
-            this._sequenceNumber4 = value;
+        if( !Comparer.equalsNullableInt32( _sequenceNumber4, value ) ) {
+            _sequenceNumber4 = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class AisBinaryAcknowledgeMessageObject extends AisMessageObject {
         return _mmsi4;
     }
     public void setMmsi4( Guid value ) {
-        if( _mmsi4 != value ) {
-            this._mmsi4 = value;
+        if( !Comparer.equalsNullableGuid( _mmsi4, value ) ) {
+            _mmsi4 = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _spare );
+        destination.writeInt32( _sequenceNumber1 );
+        destination.writeNullableGuid( _mmsi1 );
+        destination.writeNullableInt32( _sequenceNumber2 );
+        destination.writeNullableGuid( _mmsi2 );
+        destination.writeNullableInt32( _sequenceNumber3 );
+        destination.writeNullableGuid( _mmsi3 );
+        destination.writeNullableInt32( _sequenceNumber4 );
+        destination.writeNullableGuid( _mmsi4 );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _spare = source.readInt32( );
+        _sequenceNumber1 = source.readInt32( );
+        _mmsi1 = source.readNullableGuid( );
+        _sequenceNumber2 = source.readNullableInt32( );
+        _mmsi2 = source.readNullableGuid( );
+        _sequenceNumber3 = source.readNullableInt32( );
+        _mmsi3 = source.readNullableGuid( );
+        _sequenceNumber4 = source.readNullableInt32( );
+        _mmsi4 = source.readNullableGuid( );
+    }
 
 }

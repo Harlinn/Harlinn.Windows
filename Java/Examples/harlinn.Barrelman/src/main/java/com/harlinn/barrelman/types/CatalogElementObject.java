@@ -15,8 +15,8 @@ public abstract class CatalogElementObject extends AbstractDataObjectWithGuidKey
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -25,8 +25,8 @@ public abstract class CatalogElementObject extends AbstractDataObjectWithGuidKey
         return _catalog;
     }
     public void setCatalog( Guid value ) {
-        if( _catalog != value ) {
-            this._catalog = value;
+        if( !Comparer.equalsNullableGuid( _catalog, value ) ) {
+            _catalog = value;
             onPropertyChanged( );
         }
     }
@@ -35,11 +35,28 @@ public abstract class CatalogElementObject extends AbstractDataObjectWithGuidKey
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeNullableGuid( _catalog );
+        destination.writeStringUtf8( _name );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _catalog = source.readNullableGuid( );
+        _name = source.readString( );
+    }
 
 }

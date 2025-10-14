@@ -22,8 +22,8 @@ public class StringPropertyDefinitionObject extends PropertyDefinitionObject {
         return _defaultValue;
     }
     public void setDefaultValue( String value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsString( _defaultValue, value ) ) {
+            _defaultValue = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class StringPropertyDefinitionObject extends PropertyDefinitionObject {
         return _pattern;
     }
     public void setPattern( String value ) {
-        if( _pattern != value ) {
-            this._pattern = value;
+        if( !Comparer.equalsString( _pattern, value ) ) {
+            _pattern = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _defaultValue );
+        destination.writeStringUtf8( _pattern );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readString( );
+        _pattern = source.readString( );
+    }
 
 }

@@ -13,11 +13,24 @@ public abstract class TimeseriesObject extends TimeseriesCatalogElementObject {
         return _maxRetention;
     }
     public void setMaxRetention( TimeSpan value ) {
-        if( _maxRetention != value ) {
-            this._maxRetention = value;
+        if( !Comparer.equalsTimeSpan( _maxRetention, value ) ) {
+            _maxRetention = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeTimeSpan( _maxRetention );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _maxRetention = source.readTimeSpan( );
+    }
 
 }

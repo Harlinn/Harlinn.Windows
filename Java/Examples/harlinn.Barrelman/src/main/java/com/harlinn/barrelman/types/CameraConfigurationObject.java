@@ -80,8 +80,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _camera;
     }
     public void setCamera( Guid value ) {
-        if( _camera != value ) {
-            this._camera = value;
+        if( !Comparer.equalsGuid( _camera, value ) ) {
+            _camera = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _cameraControlProtocol;
     }
     public void setCameraControlProtocol( int value ) {
-        if( _cameraControlProtocol != value ) {
-            this._cameraControlProtocol = value;
+        if( !Comparer.equalsInt32( _cameraControlProtocol, value ) ) {
+            _cameraControlProtocol = value;
             onPropertyChanged( );
         }
     }
@@ -120,8 +120,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _cameraURL;
     }
     public void setCameraURL( String value ) {
-        if( _cameraURL != value ) {
-            this._cameraURL = value;
+        if( !Comparer.equalsString( _cameraURL, value ) ) {
+            _cameraURL = value;
             onPropertyChanged( );
         }
     }
@@ -130,8 +130,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _configurationURL;
     }
     public void setConfigurationURL( String value ) {
-        if( _configurationURL != value ) {
-            this._configurationURL = value;
+        if( !Comparer.equalsString( _configurationURL, value ) ) {
+            _configurationURL = value;
             onPropertyChanged( );
         }
     }
@@ -140,8 +140,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _userName;
     }
     public void setUserName( String value ) {
-        if( _userName != value ) {
-            this._userName = value;
+        if( !Comparer.equalsString( _userName, value ) ) {
+            _userName = value;
             onPropertyChanged( );
         }
     }
@@ -150,8 +150,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _password;
     }
     public void setPassword( String value ) {
-        if( _password != value ) {
-            this._password = value;
+        if( !Comparer.equalsString( _password, value ) ) {
+            _password = value;
             onPropertyChanged( );
         }
     }
@@ -160,8 +160,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _useRtspUriOverride;
     }
     public void setUseRtspUriOverride( boolean value ) {
-        if( _useRtspUriOverride != value ) {
-            this._useRtspUriOverride = value;
+        if( !Comparer.equalsBoolean( _useRtspUriOverride, value ) ) {
+            _useRtspUriOverride = value;
             onPropertyChanged( );
         }
     }
@@ -170,8 +170,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _rtspUriOverride;
     }
     public void setRtspUriOverride( String value ) {
-        if( _rtspUriOverride != value ) {
-            this._rtspUriOverride = value;
+        if( !Comparer.equalsString( _rtspUriOverride, value ) ) {
+            _rtspUriOverride = value;
             onPropertyChanged( );
         }
     }
@@ -180,8 +180,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -190,8 +190,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -200,8 +200,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _altitude;
     }
     public void setAltitude( double value ) {
-        if( _altitude != value ) {
-            this._altitude = value;
+        if( !Comparer.equalsDouble( _altitude, value ) ) {
+            _altitude = value;
             onPropertyChanged( );
         }
     }
@@ -210,8 +210,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _useRelativePosition;
     }
     public void setUseRelativePosition( boolean value ) {
-        if( _useRelativePosition != value ) {
-            this._useRelativePosition = value;
+        if( !Comparer.equalsBoolean( _useRelativePosition, value ) ) {
+            _useRelativePosition = value;
             onPropertyChanged( );
         }
     }
@@ -220,8 +220,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _panTiltMode;
     }
     public void setPanTiltMode( int value ) {
-        if( _panTiltMode != value ) {
-            this._panTiltMode = value;
+        if( !Comparer.equalsInt32( _panTiltMode, value ) ) {
+            _panTiltMode = value;
             onPropertyChanged( );
         }
     }
@@ -230,8 +230,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minTiltAngle;
     }
     public void setMinTiltAngle( double value ) {
-        if( _minTiltAngle != value ) {
-            this._minTiltAngle = value;
+        if( !Comparer.equalsDouble( _minTiltAngle, value ) ) {
+            _minTiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -240,8 +240,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxTiltAngle;
     }
     public void setMaxTiltAngle( double value ) {
-        if( _maxTiltAngle != value ) {
-            this._maxTiltAngle = value;
+        if( !Comparer.equalsDouble( _maxTiltAngle, value ) ) {
+            _maxTiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -250,8 +250,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minTiltScaleAngle;
     }
     public void setMinTiltScaleAngle( double value ) {
-        if( _minTiltScaleAngle != value ) {
-            this._minTiltScaleAngle = value;
+        if( !Comparer.equalsDouble( _minTiltScaleAngle, value ) ) {
+            _minTiltScaleAngle = value;
             onPropertyChanged( );
         }
     }
@@ -260,8 +260,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxTiltScaleAngle;
     }
     public void setMaxTiltScaleAngle( double value ) {
-        if( _maxTiltScaleAngle != value ) {
-            this._maxTiltScaleAngle = value;
+        if( !Comparer.equalsDouble( _maxTiltScaleAngle, value ) ) {
+            _maxTiltScaleAngle = value;
             onPropertyChanged( );
         }
     }
@@ -270,8 +270,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _useReverseTiltAngle;
     }
     public void setUseReverseTiltAngle( boolean value ) {
-        if( _useReverseTiltAngle != value ) {
-            this._useReverseTiltAngle = value;
+        if( !Comparer.equalsBoolean( _useReverseTiltAngle, value ) ) {
+            _useReverseTiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -280,8 +280,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _useReverseNormalizedTiltAngle;
     }
     public void setUseReverseNormalizedTiltAngle( boolean value ) {
-        if( _useReverseNormalizedTiltAngle != value ) {
-            this._useReverseNormalizedTiltAngle = value;
+        if( !Comparer.equalsBoolean( _useReverseNormalizedTiltAngle, value ) ) {
+            _useReverseNormalizedTiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -290,8 +290,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minTiltVelocity;
     }
     public void setMinTiltVelocity( double value ) {
-        if( _minTiltVelocity != value ) {
-            this._minTiltVelocity = value;
+        if( !Comparer.equalsDouble( _minTiltVelocity, value ) ) {
+            _minTiltVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -300,8 +300,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxTiltVelocity;
     }
     public void setMaxTiltVelocity( double value ) {
-        if( _maxTiltVelocity != value ) {
-            this._maxTiltVelocity = value;
+        if( !Comparer.equalsDouble( _maxTiltVelocity, value ) ) {
+            _maxTiltVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -310,8 +310,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minTiltSpeed;
     }
     public void setMinTiltSpeed( double value ) {
-        if( _minTiltSpeed != value ) {
-            this._minTiltSpeed = value;
+        if( !Comparer.equalsDouble( _minTiltSpeed, value ) ) {
+            _minTiltSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -320,8 +320,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxTiltSpeed;
     }
     public void setMaxTiltSpeed( double value ) {
-        if( _maxTiltSpeed != value ) {
-            this._maxTiltSpeed = value;
+        if( !Comparer.equalsDouble( _maxTiltSpeed, value ) ) {
+            _maxTiltSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -330,8 +330,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minPanAngle;
     }
     public void setMinPanAngle( double value ) {
-        if( _minPanAngle != value ) {
-            this._minPanAngle = value;
+        if( !Comparer.equalsDouble( _minPanAngle, value ) ) {
+            _minPanAngle = value;
             onPropertyChanged( );
         }
     }
@@ -340,8 +340,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxPanAngle;
     }
     public void setMaxPanAngle( double value ) {
-        if( _maxPanAngle != value ) {
-            this._maxPanAngle = value;
+        if( !Comparer.equalsDouble( _maxPanAngle, value ) ) {
+            _maxPanAngle = value;
             onPropertyChanged( );
         }
     }
@@ -350,8 +350,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minPanScaleAngle;
     }
     public void setMinPanScaleAngle( double value ) {
-        if( _minPanScaleAngle != value ) {
-            this._minPanScaleAngle = value;
+        if( !Comparer.equalsDouble( _minPanScaleAngle, value ) ) {
+            _minPanScaleAngle = value;
             onPropertyChanged( );
         }
     }
@@ -360,8 +360,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxPanScaleAngle;
     }
     public void setMaxPanScaleAngle( double value ) {
-        if( _maxPanScaleAngle != value ) {
-            this._maxPanScaleAngle = value;
+        if( !Comparer.equalsDouble( _maxPanScaleAngle, value ) ) {
+            _maxPanScaleAngle = value;
             onPropertyChanged( );
         }
     }
@@ -370,8 +370,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _useReversePanAngle;
     }
     public void setUseReversePanAngle( boolean value ) {
-        if( _useReversePanAngle != value ) {
-            this._useReversePanAngle = value;
+        if( !Comparer.equalsBoolean( _useReversePanAngle, value ) ) {
+            _useReversePanAngle = value;
             onPropertyChanged( );
         }
     }
@@ -380,8 +380,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _useReverseNormalizedPanAngle;
     }
     public void setUseReverseNormalizedPanAngle( boolean value ) {
-        if( _useReverseNormalizedPanAngle != value ) {
-            this._useReverseNormalizedPanAngle = value;
+        if( !Comparer.equalsBoolean( _useReverseNormalizedPanAngle, value ) ) {
+            _useReverseNormalizedPanAngle = value;
             onPropertyChanged( );
         }
     }
@@ -390,8 +390,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minPanVelocity;
     }
     public void setMinPanVelocity( double value ) {
-        if( _minPanVelocity != value ) {
-            this._minPanVelocity = value;
+        if( !Comparer.equalsDouble( _minPanVelocity, value ) ) {
+            _minPanVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -400,8 +400,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxPanVelocity;
     }
     public void setMaxPanVelocity( double value ) {
-        if( _maxPanVelocity != value ) {
-            this._maxPanVelocity = value;
+        if( !Comparer.equalsDouble( _maxPanVelocity, value ) ) {
+            _maxPanVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -410,8 +410,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minPanSpeed;
     }
     public void setMinPanSpeed( double value ) {
-        if( _minPanSpeed != value ) {
-            this._minPanSpeed = value;
+        if( !Comparer.equalsDouble( _minPanSpeed, value ) ) {
+            _minPanSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -420,8 +420,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxPanSpeed;
     }
     public void setMaxPanSpeed( double value ) {
-        if( _maxPanSpeed != value ) {
-            this._maxPanSpeed = value;
+        if( !Comparer.equalsDouble( _maxPanSpeed, value ) ) {
+            _maxPanSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -430,8 +430,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _focalLengthMode;
     }
     public void setFocalLengthMode( int value ) {
-        if( _focalLengthMode != value ) {
-            this._focalLengthMode = value;
+        if( !Comparer.equalsInt32( _focalLengthMode, value ) ) {
+            _focalLengthMode = value;
             onPropertyChanged( );
         }
     }
@@ -440,8 +440,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minFocalLength;
     }
     public void setMinFocalLength( double value ) {
-        if( _minFocalLength != value ) {
-            this._minFocalLength = value;
+        if( !Comparer.equalsDouble( _minFocalLength, value ) ) {
+            _minFocalLength = value;
             onPropertyChanged( );
         }
     }
@@ -450,8 +450,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxFocalLength;
     }
     public void setMaxFocalLength( double value ) {
-        if( _maxFocalLength != value ) {
-            this._maxFocalLength = value;
+        if( !Comparer.equalsDouble( _maxFocalLength, value ) ) {
+            _maxFocalLength = value;
             onPropertyChanged( );
         }
     }
@@ -460,8 +460,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minFocalLengthScale;
     }
     public void setMinFocalLengthScale( double value ) {
-        if( _minFocalLengthScale != value ) {
-            this._minFocalLengthScale = value;
+        if( !Comparer.equalsDouble( _minFocalLengthScale, value ) ) {
+            _minFocalLengthScale = value;
             onPropertyChanged( );
         }
     }
@@ -470,8 +470,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxFocalLengthScale;
     }
     public void setMaxFocalLengthScale( double value ) {
-        if( _maxFocalLengthScale != value ) {
-            this._maxFocalLengthScale = value;
+        if( !Comparer.equalsDouble( _maxFocalLengthScale, value ) ) {
+            _maxFocalLengthScale = value;
             onPropertyChanged( );
         }
     }
@@ -480,8 +480,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minZoomVelocity;
     }
     public void setMinZoomVelocity( double value ) {
-        if( _minZoomVelocity != value ) {
-            this._minZoomVelocity = value;
+        if( !Comparer.equalsDouble( _minZoomVelocity, value ) ) {
+            _minZoomVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -490,8 +490,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxZoomVelocity;
     }
     public void setMaxZoomVelocity( double value ) {
-        if( _maxZoomVelocity != value ) {
-            this._maxZoomVelocity = value;
+        if( !Comparer.equalsDouble( _maxZoomVelocity, value ) ) {
+            _maxZoomVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -500,8 +500,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minZoomSpeed;
     }
     public void setMinZoomSpeed( double value ) {
-        if( _minZoomSpeed != value ) {
-            this._minZoomSpeed = value;
+        if( !Comparer.equalsDouble( _minZoomSpeed, value ) ) {
+            _minZoomSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -510,8 +510,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _maxZoomSpeed;
     }
     public void setMaxZoomSpeed( double value ) {
-        if( _maxZoomSpeed != value ) {
-            this._maxZoomSpeed = value;
+        if( !Comparer.equalsDouble( _maxZoomSpeed, value ) ) {
+            _maxZoomSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -520,8 +520,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _imageSensorWidth;
     }
     public void setImageSensorWidth( double value ) {
-        if( _imageSensorWidth != value ) {
-            this._imageSensorWidth = value;
+        if( !Comparer.equalsDouble( _imageSensorWidth, value ) ) {
+            _imageSensorWidth = value;
             onPropertyChanged( );
         }
     }
@@ -530,8 +530,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _imageSensorHeight;
     }
     public void setImageSensorHeight( double value ) {
-        if( _imageSensorHeight != value ) {
-            this._imageSensorHeight = value;
+        if( !Comparer.equalsDouble( _imageSensorHeight, value ) ) {
+            _imageSensorHeight = value;
             onPropertyChanged( );
         }
     }
@@ -540,8 +540,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _homePanAngle;
     }
     public void setHomePanAngle( double value ) {
-        if( _homePanAngle != value ) {
-            this._homePanAngle = value;
+        if( !Comparer.equalsDouble( _homePanAngle, value ) ) {
+            _homePanAngle = value;
             onPropertyChanged( );
         }
     }
@@ -550,8 +550,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _homeTiltAngle;
     }
     public void setHomeTiltAngle( double value ) {
-        if( _homeTiltAngle != value ) {
-            this._homeTiltAngle = value;
+        if( !Comparer.equalsDouble( _homeTiltAngle, value ) ) {
+            _homeTiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -560,8 +560,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _homeFocalLength;
     }
     public void setHomeFocalLength( double value ) {
-        if( _homeFocalLength != value ) {
-            this._homeFocalLength = value;
+        if( !Comparer.equalsDouble( _homeFocalLength, value ) ) {
+            _homeFocalLength = value;
             onPropertyChanged( );
         }
     }
@@ -570,8 +570,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _panOffset;
     }
     public void setPanOffset( double value ) {
-        if( _panOffset != value ) {
-            this._panOffset = value;
+        if( !Comparer.equalsDouble( _panOffset, value ) ) {
+            _panOffset = value;
             onPropertyChanged( );
         }
     }
@@ -580,8 +580,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _tiltOffset;
     }
     public void setTiltOffset( double value ) {
-        if( _tiltOffset != value ) {
-            this._tiltOffset = value;
+        if( !Comparer.equalsDouble( _tiltOffset, value ) ) {
+            _tiltOffset = value;
             onPropertyChanged( );
         }
     }
@@ -590,8 +590,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _aimAltitude;
     }
     public void setAimAltitude( double value ) {
-        if( _aimAltitude != value ) {
-            this._aimAltitude = value;
+        if( !Comparer.equalsDouble( _aimAltitude, value ) ) {
+            _aimAltitude = value;
             onPropertyChanged( );
         }
     }
@@ -600,8 +600,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _minimumTargetWidth;
     }
     public void setMinimumTargetWidth( double value ) {
-        if( _minimumTargetWidth != value ) {
-            this._minimumTargetWidth = value;
+        if( !Comparer.equalsDouble( _minimumTargetWidth, value ) ) {
+            _minimumTargetWidth = value;
             onPropertyChanged( );
         }
     }
@@ -610,8 +610,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _targetLockTimeout;
     }
     public void setTargetLockTimeout( TimeSpan value ) {
-        if( _targetLockTimeout != value ) {
-            this._targetLockTimeout = value;
+        if( !Comparer.equalsTimeSpan( _targetLockTimeout, value ) ) {
+            _targetLockTimeout = value;
             onPropertyChanged( );
         }
     }
@@ -620,8 +620,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _updateStatusInterval;
     }
     public void setUpdateStatusInterval( TimeSpan value ) {
-        if( _updateStatusInterval != value ) {
-            this._updateStatusInterval = value;
+        if( !Comparer.equalsTimeSpan( _updateStatusInterval, value ) ) {
+            _updateStatusInterval = value;
             onPropertyChanged( );
         }
     }
@@ -630,8 +630,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _readTimeout;
     }
     public void setReadTimeout( TimeSpan value ) {
-        if( _readTimeout != value ) {
-            this._readTimeout = value;
+        if( !Comparer.equalsTimeSpan( _readTimeout, value ) ) {
+            _readTimeout = value;
             onPropertyChanged( );
         }
     }
@@ -640,8 +640,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _moveCommandStatusDelay;
     }
     public void setMoveCommandStatusDelay( TimeSpan value ) {
-        if( _moveCommandStatusDelay != value ) {
-            this._moveCommandStatusDelay = value;
+        if( !Comparer.equalsTimeSpan( _moveCommandStatusDelay, value ) ) {
+            _moveCommandStatusDelay = value;
             onPropertyChanged( );
         }
     }
@@ -650,8 +650,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _ptzProfileName;
     }
     public void setPtzProfileName( String value ) {
-        if( _ptzProfileName != value ) {
-            this._ptzProfileName = value;
+        if( !Comparer.equalsString( _ptzProfileName, value ) ) {
+            _ptzProfileName = value;
             onPropertyChanged( );
         }
     }
@@ -660,8 +660,8 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _ptzConfigurationToken;
     }
     public void setPtzConfigurationToken( String value ) {
-        if( _ptzConfigurationToken != value ) {
-            this._ptzConfigurationToken = value;
+        if( !Comparer.equalsString( _ptzConfigurationToken, value ) ) {
+            _ptzConfigurationToken = value;
             onPropertyChanged( );
         }
     }
@@ -670,11 +670,142 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _videoSourceToken;
     }
     public void setVideoSourceToken( String value ) {
-        if( _videoSourceToken != value ) {
-            this._videoSourceToken = value;
+        if( !Comparer.equalsString( _videoSourceToken, value ) ) {
+            _videoSourceToken = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _camera );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _cameraControlProtocol );
+        destination.writeStringUtf8( _cameraURL );
+        destination.writeStringUtf8( _configurationURL );
+        destination.writeStringUtf8( _userName );
+        destination.writeStringUtf8( _password );
+        destination.writeBoolean( _useRtspUriOverride );
+        destination.writeStringUtf8( _rtspUriOverride );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _altitude );
+        destination.writeBoolean( _useRelativePosition );
+        destination.writeInt32( _panTiltMode );
+        destination.writeDouble( _minTiltAngle );
+        destination.writeDouble( _maxTiltAngle );
+        destination.writeDouble( _minTiltScaleAngle );
+        destination.writeDouble( _maxTiltScaleAngle );
+        destination.writeBoolean( _useReverseTiltAngle );
+        destination.writeBoolean( _useReverseNormalizedTiltAngle );
+        destination.writeDouble( _minTiltVelocity );
+        destination.writeDouble( _maxTiltVelocity );
+        destination.writeDouble( _minTiltSpeed );
+        destination.writeDouble( _maxTiltSpeed );
+        destination.writeDouble( _minPanAngle );
+        destination.writeDouble( _maxPanAngle );
+        destination.writeDouble( _minPanScaleAngle );
+        destination.writeDouble( _maxPanScaleAngle );
+        destination.writeBoolean( _useReversePanAngle );
+        destination.writeBoolean( _useReverseNormalizedPanAngle );
+        destination.writeDouble( _minPanVelocity );
+        destination.writeDouble( _maxPanVelocity );
+        destination.writeDouble( _minPanSpeed );
+        destination.writeDouble( _maxPanSpeed );
+        destination.writeInt32( _focalLengthMode );
+        destination.writeDouble( _minFocalLength );
+        destination.writeDouble( _maxFocalLength );
+        destination.writeDouble( _minFocalLengthScale );
+        destination.writeDouble( _maxFocalLengthScale );
+        destination.writeDouble( _minZoomVelocity );
+        destination.writeDouble( _maxZoomVelocity );
+        destination.writeDouble( _minZoomSpeed );
+        destination.writeDouble( _maxZoomSpeed );
+        destination.writeDouble( _imageSensorWidth );
+        destination.writeDouble( _imageSensorHeight );
+        destination.writeDouble( _homePanAngle );
+        destination.writeDouble( _homeTiltAngle );
+        destination.writeDouble( _homeFocalLength );
+        destination.writeDouble( _panOffset );
+        destination.writeDouble( _tiltOffset );
+        destination.writeDouble( _aimAltitude );
+        destination.writeDouble( _minimumTargetWidth );
+        destination.writeTimeSpan( _targetLockTimeout );
+        destination.writeTimeSpan( _updateStatusInterval );
+        destination.writeTimeSpan( _readTimeout );
+        destination.writeTimeSpan( _moveCommandStatusDelay );
+        destination.writeStringUtf8( _ptzProfileName );
+        destination.writeStringUtf8( _ptzConfigurationToken );
+        destination.writeStringUtf8( _videoSourceToken );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _camera = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _cameraControlProtocol = source.readInt32( );
+        _cameraURL = source.readString( );
+        _configurationURL = source.readString( );
+        _userName = source.readString( );
+        _password = source.readString( );
+        _useRtspUriOverride = source.readBoolean( );
+        _rtspUriOverride = source.readString( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _altitude = source.readDouble( );
+        _useRelativePosition = source.readBoolean( );
+        _panTiltMode = source.readInt32( );
+        _minTiltAngle = source.readDouble( );
+        _maxTiltAngle = source.readDouble( );
+        _minTiltScaleAngle = source.readDouble( );
+        _maxTiltScaleAngle = source.readDouble( );
+        _useReverseTiltAngle = source.readBoolean( );
+        _useReverseNormalizedTiltAngle = source.readBoolean( );
+        _minTiltVelocity = source.readDouble( );
+        _maxTiltVelocity = source.readDouble( );
+        _minTiltSpeed = source.readDouble( );
+        _maxTiltSpeed = source.readDouble( );
+        _minPanAngle = source.readDouble( );
+        _maxPanAngle = source.readDouble( );
+        _minPanScaleAngle = source.readDouble( );
+        _maxPanScaleAngle = source.readDouble( );
+        _useReversePanAngle = source.readBoolean( );
+        _useReverseNormalizedPanAngle = source.readBoolean( );
+        _minPanVelocity = source.readDouble( );
+        _maxPanVelocity = source.readDouble( );
+        _minPanSpeed = source.readDouble( );
+        _maxPanSpeed = source.readDouble( );
+        _focalLengthMode = source.readInt32( );
+        _minFocalLength = source.readDouble( );
+        _maxFocalLength = source.readDouble( );
+        _minFocalLengthScale = source.readDouble( );
+        _maxFocalLengthScale = source.readDouble( );
+        _minZoomVelocity = source.readDouble( );
+        _maxZoomVelocity = source.readDouble( );
+        _minZoomSpeed = source.readDouble( );
+        _maxZoomSpeed = source.readDouble( );
+        _imageSensorWidth = source.readDouble( );
+        _imageSensorHeight = source.readDouble( );
+        _homePanAngle = source.readDouble( );
+        _homeTiltAngle = source.readDouble( );
+        _homeFocalLength = source.readDouble( );
+        _panOffset = source.readDouble( );
+        _tiltOffset = source.readDouble( );
+        _aimAltitude = source.readDouble( );
+        _minimumTargetWidth = source.readDouble( );
+        _targetLockTimeout = source.readTimeSpan( );
+        _updateStatusInterval = source.readTimeSpan( );
+        _readTimeout = source.readTimeSpan( );
+        _moveCommandStatusDelay = source.readTimeSpan( );
+        _ptzProfileName = source.readString( );
+        _ptzConfigurationToken = source.readString( );
+        _videoSourceToken = source.readString( );
+    }
 
 }

@@ -1615,7 +1615,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 		}
 	}
 	
-	public final byte[][] readInt8ListArray() {
+	public final byte[][] readUInt8ListArray() {
 		var count = readSize(DataType.SmallByteArrayList);
 		if(count > 0) {
 			var result = new byte[count][];
@@ -1628,7 +1628,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return new byte[0][];
 		}
 	}
-	public final byte[][] readNullableInt8ListArray() {
+	public final byte[][] readNullableUInt8ListArray() {
 		var count = readNullableSize(DataType.SmallByteArrayList);
 		if(count < 0) {
 			return null;

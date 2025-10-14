@@ -37,8 +37,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _reserved;
     }
     public void setReserved( int value ) {
-        if( _reserved != value ) {
-            this._reserved = value;
+        if( !Comparer.equalsInt32( _reserved, value ) ) {
+            _reserved = value;
             onPropertyChanged( );
         }
     }
@@ -47,8 +47,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _speedOverGround;
     }
     public void setSpeedOverGround( double value ) {
-        if( _speedOverGround != value ) {
-            this._speedOverGround = value;
+        if( !Comparer.equalsDouble( _speedOverGround, value ) ) {
+            _speedOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -57,8 +57,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _positionAccuracy;
     }
     public void setPositionAccuracy( int value ) {
-        if( _positionAccuracy != value ) {
-            this._positionAccuracy = value;
+        if( !Comparer.equalsInt32( _positionAccuracy, value ) ) {
+            _positionAccuracy = value;
             onPropertyChanged( );
         }
     }
@@ -67,8 +67,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -77,8 +77,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -87,8 +87,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _courseOverGround;
     }
     public void setCourseOverGround( double value ) {
-        if( _courseOverGround != value ) {
-            this._courseOverGround = value;
+        if( !Comparer.equalsDouble( _courseOverGround, value ) ) {
+            _courseOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -97,8 +97,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _trueHeading;
     }
     public void setTrueHeading( Integer value ) {
-        if( _trueHeading != value ) {
-            this._trueHeading = value;
+        if( !Comparer.equalsNullableInt32( _trueHeading, value ) ) {
+            _trueHeading = value;
             onPropertyChanged( );
         }
     }
@@ -107,8 +107,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _timestamp;
     }
     public void setTimestamp( int value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsInt32( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -117,8 +117,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _regionalReserved;
     }
     public void setRegionalReserved( int value ) {
-        if( _regionalReserved != value ) {
-            this._regionalReserved = value;
+        if( !Comparer.equalsInt32( _regionalReserved, value ) ) {
+            _regionalReserved = value;
             onPropertyChanged( );
         }
     }
@@ -127,8 +127,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _isCsUnit;
     }
     public void setIsCsUnit( boolean value ) {
-        if( _isCsUnit != value ) {
-            this._isCsUnit = value;
+        if( !Comparer.equalsBoolean( _isCsUnit, value ) ) {
+            _isCsUnit = value;
             onPropertyChanged( );
         }
     }
@@ -137,8 +137,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _hasDisplay;
     }
     public void setHasDisplay( boolean value ) {
-        if( _hasDisplay != value ) {
-            this._hasDisplay = value;
+        if( !Comparer.equalsBoolean( _hasDisplay, value ) ) {
+            _hasDisplay = value;
             onPropertyChanged( );
         }
     }
@@ -147,8 +147,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _hasDscCapability;
     }
     public void setHasDscCapability( boolean value ) {
-        if( _hasDscCapability != value ) {
-            this._hasDscCapability = value;
+        if( !Comparer.equalsBoolean( _hasDscCapability, value ) ) {
+            _hasDscCapability = value;
             onPropertyChanged( );
         }
     }
@@ -157,8 +157,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _band;
     }
     public void setBand( boolean value ) {
-        if( _band != value ) {
-            this._band = value;
+        if( !Comparer.equalsBoolean( _band, value ) ) {
+            _band = value;
             onPropertyChanged( );
         }
     }
@@ -167,8 +167,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _canAcceptMessage22;
     }
     public void setCanAcceptMessage22( boolean value ) {
-        if( _canAcceptMessage22 != value ) {
-            this._canAcceptMessage22 = value;
+        if( !Comparer.equalsBoolean( _canAcceptMessage22, value ) ) {
+            _canAcceptMessage22 = value;
             onPropertyChanged( );
         }
     }
@@ -177,8 +177,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _assigned;
     }
     public void setAssigned( boolean value ) {
-        if( _assigned != value ) {
-            this._assigned = value;
+        if( !Comparer.equalsBoolean( _assigned, value ) ) {
+            _assigned = value;
             onPropertyChanged( );
         }
     }
@@ -187,8 +187,8 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _raim;
     }
     public void setRaim( int value ) {
-        if( _raim != value ) {
-            this._raim = value;
+        if( !Comparer.equalsInt32( _raim, value ) ) {
+            _raim = value;
             onPropertyChanged( );
         }
     }
@@ -197,11 +197,56 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
         return _radioStatus;
     }
     public void setRadioStatus( int value ) {
-        if( _radioStatus != value ) {
-            this._radioStatus = value;
+        if( !Comparer.equalsInt32( _radioStatus, value ) ) {
+            _radioStatus = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _reserved );
+        destination.writeDouble( _speedOverGround );
+        destination.writeInt32( _positionAccuracy );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _courseOverGround );
+        destination.writeNullableInt32( _trueHeading );
+        destination.writeInt32( _timestamp );
+        destination.writeInt32( _regionalReserved );
+        destination.writeBoolean( _isCsUnit );
+        destination.writeBoolean( _hasDisplay );
+        destination.writeBoolean( _hasDscCapability );
+        destination.writeBoolean( _band );
+        destination.writeBoolean( _canAcceptMessage22 );
+        destination.writeBoolean( _assigned );
+        destination.writeInt32( _raim );
+        destination.writeInt32( _radioStatus );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _reserved = source.readInt32( );
+        _speedOverGround = source.readDouble( );
+        _positionAccuracy = source.readInt32( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _courseOverGround = source.readDouble( );
+        _trueHeading = source.readNullableInt32( );
+        _timestamp = source.readInt32( );
+        _regionalReserved = source.readInt32( );
+        _isCsUnit = source.readBoolean( );
+        _hasDisplay = source.readBoolean( );
+        _hasDscCapability = source.readBoolean( );
+        _band = source.readBoolean( );
+        _canAcceptMessage22 = source.readBoolean( );
+        _assigned = source.readBoolean( );
+        _raim = source.readInt32( );
+        _radioStatus = source.readInt32( );
+    }
 
 }

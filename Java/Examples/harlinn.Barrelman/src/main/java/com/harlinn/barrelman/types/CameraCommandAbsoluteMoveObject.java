@@ -30,8 +30,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _positionPanTiltMode;
     }
     public void setPositionPanTiltMode( int value ) {
-        if( _positionPanTiltMode != value ) {
-            this._positionPanTiltMode = value;
+        if( !Comparer.equalsInt32( _positionPanTiltMode, value ) ) {
+            _positionPanTiltMode = value;
             onPropertyChanged( );
         }
     }
@@ -40,8 +40,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _panAngle;
     }
     public void setPanAngle( Double value ) {
-        if( _panAngle != value ) {
-            this._panAngle = value;
+        if( !Comparer.equalsNullableDouble( _panAngle, value ) ) {
+            _panAngle = value;
             onPropertyChanged( );
         }
     }
@@ -50,8 +50,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _tiltAngle;
     }
     public void setTiltAngle( Double value ) {
-        if( _tiltAngle != value ) {
-            this._tiltAngle = value;
+        if( !Comparer.equalsNullableDouble( _tiltAngle, value ) ) {
+            _tiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -60,8 +60,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _positionFocalLengthMode;
     }
     public void setPositionFocalLengthMode( int value ) {
-        if( _positionFocalLengthMode != value ) {
-            this._positionFocalLengthMode = value;
+        if( !Comparer.equalsInt32( _positionFocalLengthMode, value ) ) {
+            _positionFocalLengthMode = value;
             onPropertyChanged( );
         }
     }
@@ -70,8 +70,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _focalLength;
     }
     public void setFocalLength( Double value ) {
-        if( _focalLength != value ) {
-            this._focalLength = value;
+        if( !Comparer.equalsNullableDouble( _focalLength, value ) ) {
+            _focalLength = value;
             onPropertyChanged( );
         }
     }
@@ -80,8 +80,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _speedPanTiltMode;
     }
     public void setSpeedPanTiltMode( int value ) {
-        if( _speedPanTiltMode != value ) {
-            this._speedPanTiltMode = value;
+        if( !Comparer.equalsInt32( _speedPanTiltMode, value ) ) {
+            _speedPanTiltMode = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _panSpeed;
     }
     public void setPanSpeed( Double value ) {
-        if( _panSpeed != value ) {
-            this._panSpeed = value;
+        if( !Comparer.equalsNullableDouble( _panSpeed, value ) ) {
+            _panSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _tiltSpeed;
     }
     public void setTiltSpeed( Double value ) {
-        if( _tiltSpeed != value ) {
-            this._tiltSpeed = value;
+        if( !Comparer.equalsNullableDouble( _tiltSpeed, value ) ) {
+            _tiltSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _speedFocalLengthMode;
     }
     public void setSpeedFocalLengthMode( int value ) {
-        if( _speedFocalLengthMode != value ) {
-            this._speedFocalLengthMode = value;
+        if( !Comparer.equalsInt32( _speedFocalLengthMode, value ) ) {
+            _speedFocalLengthMode = value;
             onPropertyChanged( );
         }
     }
@@ -120,11 +120,42 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
         return _zoomSpeed;
     }
     public void setZoomSpeed( Double value ) {
-        if( _zoomSpeed != value ) {
-            this._zoomSpeed = value;
+        if( !Comparer.equalsNullableDouble( _zoomSpeed, value ) ) {
+            _zoomSpeed = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _positionPanTiltMode );
+        destination.writeNullableDouble( _panAngle );
+        destination.writeNullableDouble( _tiltAngle );
+        destination.writeInt32( _positionFocalLengthMode );
+        destination.writeNullableDouble( _focalLength );
+        destination.writeInt32( _speedPanTiltMode );
+        destination.writeNullableDouble( _panSpeed );
+        destination.writeNullableDouble( _tiltSpeed );
+        destination.writeInt32( _speedFocalLengthMode );
+        destination.writeNullableDouble( _zoomSpeed );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _positionPanTiltMode = source.readInt32( );
+        _panAngle = source.readNullableDouble( );
+        _tiltAngle = source.readNullableDouble( );
+        _positionFocalLengthMode = source.readInt32( );
+        _focalLength = source.readNullableDouble( );
+        _speedPanTiltMode = source.readInt32( );
+        _panSpeed = source.readNullableDouble( );
+        _tiltSpeed = source.readNullableDouble( );
+        _speedFocalLengthMode = source.readInt32( );
+        _zoomSpeed = source.readNullableDouble( );
+    }
 
 }

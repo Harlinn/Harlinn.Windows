@@ -21,11 +21,24 @@ public class DateTimePropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( DateTime value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsDateTime( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeDateTime( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readDateTime( );
+    }
 
 }

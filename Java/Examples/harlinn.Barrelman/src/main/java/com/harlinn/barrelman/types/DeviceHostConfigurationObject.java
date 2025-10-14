@@ -26,8 +26,8 @@ public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -36,8 +36,8 @@ public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey
         return _host;
     }
     public void setHost( Guid value ) {
-        if( _host != value ) {
-            this._host = value;
+        if( !Comparer.equalsGuid( _host, value ) ) {
+            _host = value;
             onPropertyChanged( );
         }
     }
@@ -46,8 +46,8 @@ public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -56,8 +56,8 @@ public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey
         return _hostname;
     }
     public void setHostname( String value ) {
-        if( _hostname != value ) {
-            this._hostname = value;
+        if( !Comparer.equalsString( _hostname, value ) ) {
+            _hostname = value;
             onPropertyChanged( );
         }
     }
@@ -66,8 +66,8 @@ public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey
         return _port;
     }
     public void setPort( int value ) {
-        if( _port != value ) {
-            this._port = value;
+        if( !Comparer.equalsInt32( _port, value ) ) {
+            _port = value;
             onPropertyChanged( );
         }
     }
@@ -76,11 +76,34 @@ public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey
         return _queueName;
     }
     public void setQueueName( String value ) {
-        if( _queueName != value ) {
-            this._queueName = value;
+        if( !Comparer.equalsString( _queueName, value ) ) {
+            _queueName = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _host );
+        destination.writeDateTime( _timestamp );
+        destination.writeStringUtf8( _hostname );
+        destination.writeInt32( _port );
+        destination.writeStringUtf8( _queueName );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _host = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _hostname = source.readString( );
+        _port = source.readInt32( );
+        _queueName = source.readString( );
+    }
 
 }

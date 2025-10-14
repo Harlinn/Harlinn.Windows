@@ -23,8 +23,8 @@ public class UInt32PropertyDefinitionObject extends PropertyDefinitionObject {
         return _defaultValue;
     }
     public void setDefaultValue( int value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsUInt32( _defaultValue, value ) ) {
+            _defaultValue = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class UInt32PropertyDefinitionObject extends PropertyDefinitionObject {
         return _minValue;
     }
     public void setMinValue( int value ) {
-        if( _minValue != value ) {
-            this._minValue = value;
+        if( !Comparer.equalsUInt32( _minValue, value ) ) {
+            _minValue = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class UInt32PropertyDefinitionObject extends PropertyDefinitionObject {
         return _maxValue;
     }
     public void setMaxValue( int value ) {
-        if( _maxValue != value ) {
-            this._maxValue = value;
+        if( !Comparer.equalsUInt32( _maxValue, value ) ) {
+            _maxValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeUInt32( _defaultValue );
+        destination.writeUInt32( _minValue );
+        destination.writeUInt32( _maxValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readUInt32( );
+        _minValue = source.readUInt32( );
+        _maxValue = source.readUInt32( );
+    }
 
 }

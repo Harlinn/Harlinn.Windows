@@ -25,8 +25,8 @@ public class GeoPosition2DTimeseriesValueObject extends AbstractDataObjectWithGu
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class GeoPosition2DTimeseriesValueObject extends AbstractDataObjectWithGu
         return _timeseries;
     }
     public void setTimeseries( Guid value ) {
-        if( _timeseries != value ) {
-            this._timeseries = value;
+        if( !Comparer.equalsGuid( _timeseries, value ) ) {
+            _timeseries = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class GeoPosition2DTimeseriesValueObject extends AbstractDataObjectWithGu
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class GeoPosition2DTimeseriesValueObject extends AbstractDataObjectWithGu
         return _latitude;
     }
     public void setLatitude( Double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsNullableDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class GeoPosition2DTimeseriesValueObject extends AbstractDataObjectWithGu
         return _longitude;
     }
     public void setLongitude( Double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsNullableDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _timeseries );
+        destination.writeDateTime( _timestamp );
+        destination.writeNullableDouble( _latitude );
+        destination.writeNullableDouble( _longitude );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _timeseries = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _latitude = source.readNullableDouble( );
+        _longitude = source.readNullableDouble( );
+    }
 
 }

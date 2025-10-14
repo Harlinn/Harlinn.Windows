@@ -24,8 +24,8 @@ public class AisBinaryBroadcastMessageObject extends AisMessageObject {
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -34,8 +34,8 @@ public class AisBinaryBroadcastMessageObject extends AisMessageObject {
         return _designatedAreaCode;
     }
     public void setDesignatedAreaCode( int value ) {
-        if( _designatedAreaCode != value ) {
-            this._designatedAreaCode = value;
+        if( !Comparer.equalsInt32( _designatedAreaCode, value ) ) {
+            _designatedAreaCode = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class AisBinaryBroadcastMessageObject extends AisMessageObject {
         return _functionalId;
     }
     public void setFunctionalId( int value ) {
-        if( _functionalId != value ) {
-            this._functionalId = value;
+        if( !Comparer.equalsInt32( _functionalId, value ) ) {
+            _functionalId = value;
             onPropertyChanged( );
         }
     }
@@ -54,11 +54,30 @@ public class AisBinaryBroadcastMessageObject extends AisMessageObject {
         return _data;
     }
     public void setData( String value ) {
-        if( _data != value ) {
-            this._data = value;
+        if( !Comparer.equalsString( _data, value ) ) {
+            _data = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _spare );
+        destination.writeInt32( _designatedAreaCode );
+        destination.writeInt32( _functionalId );
+        destination.writeStringUtf8( _data );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _spare = source.readInt32( );
+        _designatedAreaCode = source.readInt32( );
+        _functionalId = source.readInt32( );
+        _data = source.readString( );
+    }
 
 }

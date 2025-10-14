@@ -32,8 +32,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _shipType;
     }
     public void setShipType( int value ) {
-        if( _shipType != value ) {
-            this._shipType = value;
+        if( !Comparer.equalsInt32( _shipType, value ) ) {
+            _shipType = value;
             onPropertyChanged( );
         }
     }
@@ -42,8 +42,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _vendorId;
     }
     public void setVendorId( String value ) {
-        if( _vendorId != value ) {
-            this._vendorId = value;
+        if( !Comparer.equalsString( _vendorId, value ) ) {
+            _vendorId = value;
             onPropertyChanged( );
         }
     }
@@ -52,8 +52,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _unitModelCode;
     }
     public void setUnitModelCode( int value ) {
-        if( _unitModelCode != value ) {
-            this._unitModelCode = value;
+        if( !Comparer.equalsInt32( _unitModelCode, value ) ) {
+            _unitModelCode = value;
             onPropertyChanged( );
         }
     }
@@ -62,8 +62,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _serialNumber;
     }
     public void setSerialNumber( int value ) {
-        if( _serialNumber != value ) {
-            this._serialNumber = value;
+        if( !Comparer.equalsInt32( _serialNumber, value ) ) {
+            _serialNumber = value;
             onPropertyChanged( );
         }
     }
@@ -72,8 +72,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _callsign;
     }
     public void setCallsign( Guid value ) {
-        if( _callsign != value ) {
-            this._callsign = value;
+        if( !Comparer.equalsNullableGuid( _callsign, value ) ) {
+            _callsign = value;
             onPropertyChanged( );
         }
     }
@@ -82,8 +82,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _dimensionToBow;
     }
     public void setDimensionToBow( int value ) {
-        if( _dimensionToBow != value ) {
-            this._dimensionToBow = value;
+        if( !Comparer.equalsInt32( _dimensionToBow, value ) ) {
+            _dimensionToBow = value;
             onPropertyChanged( );
         }
     }
@@ -92,8 +92,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _dimensionToStern;
     }
     public void setDimensionToStern( int value ) {
-        if( _dimensionToStern != value ) {
-            this._dimensionToStern = value;
+        if( !Comparer.equalsInt32( _dimensionToStern, value ) ) {
+            _dimensionToStern = value;
             onPropertyChanged( );
         }
     }
@@ -102,8 +102,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _dimensionToPort;
     }
     public void setDimensionToPort( int value ) {
-        if( _dimensionToPort != value ) {
-            this._dimensionToPort = value;
+        if( !Comparer.equalsInt32( _dimensionToPort, value ) ) {
+            _dimensionToPort = value;
             onPropertyChanged( );
         }
     }
@@ -112,8 +112,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _dimensionToStarboard;
     }
     public void setDimensionToStarboard( int value ) {
-        if( _dimensionToStarboard != value ) {
-            this._dimensionToStarboard = value;
+        if( !Comparer.equalsInt32( _dimensionToStarboard, value ) ) {
+            _dimensionToStarboard = value;
             onPropertyChanged( );
         }
     }
@@ -122,8 +122,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _mothershipMmsi;
     }
     public void setMothershipMmsi( Guid value ) {
-        if( _mothershipMmsi != value ) {
-            this._mothershipMmsi = value;
+        if( !Comparer.equalsNullableGuid( _mothershipMmsi, value ) ) {
+            _mothershipMmsi = value;
             onPropertyChanged( );
         }
     }
@@ -132,8 +132,8 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _positionFixType;
     }
     public void setPositionFixType( int value ) {
-        if( _positionFixType != value ) {
-            this._positionFixType = value;
+        if( !Comparer.equalsInt32( _positionFixType, value ) ) {
+            _positionFixType = value;
             onPropertyChanged( );
         }
     }
@@ -142,11 +142,46 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _shipType );
+        destination.writeStringUtf8( _vendorId );
+        destination.writeInt32( _unitModelCode );
+        destination.writeInt32( _serialNumber );
+        destination.writeNullableGuid( _callsign );
+        destination.writeInt32( _dimensionToBow );
+        destination.writeInt32( _dimensionToStern );
+        destination.writeInt32( _dimensionToPort );
+        destination.writeInt32( _dimensionToStarboard );
+        destination.writeNullableGuid( _mothershipMmsi );
+        destination.writeInt32( _positionFixType );
+        destination.writeInt32( _spare );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _shipType = source.readInt32( );
+        _vendorId = source.readString( );
+        _unitModelCode = source.readInt32( );
+        _serialNumber = source.readInt32( );
+        _callsign = source.readNullableGuid( );
+        _dimensionToBow = source.readInt32( );
+        _dimensionToStern = source.readInt32( );
+        _dimensionToPort = source.readInt32( );
+        _dimensionToStarboard = source.readInt32( );
+        _mothershipMmsi = source.readNullableGuid( );
+        _positionFixType = source.readInt32( );
+        _spare = source.readInt32( );
+    }
 
 }

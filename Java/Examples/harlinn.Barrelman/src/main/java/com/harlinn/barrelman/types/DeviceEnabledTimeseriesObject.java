@@ -21,11 +21,24 @@ public class DeviceEnabledTimeseriesObject extends BooleanTimeseriesObject {
         return _device;
     }
     public void setDevice( Guid value ) {
-        if( _device != value ) {
-            this._device = value;
+        if( !Comparer.equalsNullableGuid( _device, value ) ) {
+            _device = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _device );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _device = source.readNullableGuid( );
+    }
 
 }

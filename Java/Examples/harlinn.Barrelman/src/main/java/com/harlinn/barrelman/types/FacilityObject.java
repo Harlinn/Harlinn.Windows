@@ -25,8 +25,8 @@ public class FacilityObject extends ItemObject {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class FacilityObject extends ItemObject {
         return _type;
     }
     public void setType( Guid value ) {
-        if( _type != value ) {
-            this._type = value;
+        if( !Comparer.equalsNullableGuid( _type, value ) ) {
+            _type = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class FacilityObject extends ItemObject {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class FacilityObject extends ItemObject {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class FacilityObject extends ItemObject {
         return _altitude;
     }
     public void setAltitude( double value ) {
-        if( _altitude != value ) {
-            this._altitude = value;
+        if( !Comparer.equalsDouble( _altitude, value ) ) {
+            _altitude = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _name );
+        destination.writeNullableGuid( _type );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _altitude );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _name = source.readString( );
+        _type = source.readNullableGuid( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _altitude = source.readDouble( );
+    }
 
 }

@@ -35,8 +35,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _host;
     }
     public void setHost( Guid value ) {
-        if( _host != value ) {
-            this._host = value;
+        if( !Comparer.equalsGuid( _host, value ) ) {
+            _host = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -65,8 +65,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _finest;
     }
     public void setFinest( boolean value ) {
-        if( _finest != value ) {
-            this._finest = value;
+        if( !Comparer.equalsBoolean( _finest, value ) ) {
+            _finest = value;
             onPropertyChanged( );
         }
     }
@@ -75,8 +75,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _finer;
     }
     public void setFiner( boolean value ) {
-        if( _finer != value ) {
-            this._finer = value;
+        if( !Comparer.equalsBoolean( _finer, value ) ) {
+            _finer = value;
             onPropertyChanged( );
         }
     }
@@ -85,8 +85,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _fine;
     }
     public void setFine( boolean value ) {
-        if( _fine != value ) {
-            this._fine = value;
+        if( !Comparer.equalsBoolean( _fine, value ) ) {
+            _fine = value;
             onPropertyChanged( );
         }
     }
@@ -95,8 +95,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _info;
     }
     public void setInfo( boolean value ) {
-        if( _info != value ) {
-            this._info = value;
+        if( !Comparer.equalsBoolean( _info, value ) ) {
+            _info = value;
             onPropertyChanged( );
         }
     }
@@ -105,8 +105,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _notice;
     }
     public void setNotice( boolean value ) {
-        if( _notice != value ) {
-            this._notice = value;
+        if( !Comparer.equalsBoolean( _notice, value ) ) {
+            _notice = value;
             onPropertyChanged( );
         }
     }
@@ -115,8 +115,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _warn;
     }
     public void setWarn( boolean value ) {
-        if( _warn != value ) {
-            this._warn = value;
+        if( !Comparer.equalsBoolean( _warn, value ) ) {
+            _warn = value;
             onPropertyChanged( );
         }
     }
@@ -125,8 +125,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _error;
     }
     public void setError( boolean value ) {
-        if( _error != value ) {
-            this._error = value;
+        if( !Comparer.equalsBoolean( _error, value ) ) {
+            _error = value;
             onPropertyChanged( );
         }
     }
@@ -135,8 +135,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _severe;
     }
     public void setSevere( boolean value ) {
-        if( _severe != value ) {
-            this._severe = value;
+        if( !Comparer.equalsBoolean( _severe, value ) ) {
+            _severe = value;
             onPropertyChanged( );
         }
     }
@@ -145,8 +145,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _critical;
     }
     public void setCritical( boolean value ) {
-        if( _critical != value ) {
-            this._critical = value;
+        if( !Comparer.equalsBoolean( _critical, value ) ) {
+            _critical = value;
             onPropertyChanged( );
         }
     }
@@ -155,8 +155,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _alert;
     }
     public void setAlert( boolean value ) {
-        if( _alert != value ) {
-            this._alert = value;
+        if( !Comparer.equalsBoolean( _alert, value ) ) {
+            _alert = value;
             onPropertyChanged( );
         }
     }
@@ -165,8 +165,8 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _fatal;
     }
     public void setFatal( boolean value ) {
-        if( _fatal != value ) {
-            this._fatal = value;
+        if( !Comparer.equalsBoolean( _fatal, value ) ) {
+            _fatal = value;
             onPropertyChanged( );
         }
     }
@@ -175,11 +175,52 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _emergency;
     }
     public void setEmergency( boolean value ) {
-        if( _emergency != value ) {
-            this._emergency = value;
+        if( !Comparer.equalsBoolean( _emergency, value ) ) {
+            _emergency = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _host );
+        destination.writeDateTime( _timestamp );
+        destination.writeBoolean( _finest );
+        destination.writeBoolean( _finer );
+        destination.writeBoolean( _fine );
+        destination.writeBoolean( _info );
+        destination.writeBoolean( _notice );
+        destination.writeBoolean( _warn );
+        destination.writeBoolean( _error );
+        destination.writeBoolean( _severe );
+        destination.writeBoolean( _critical );
+        destination.writeBoolean( _alert );
+        destination.writeBoolean( _fatal );
+        destination.writeBoolean( _emergency );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _host = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _finest = source.readBoolean( );
+        _finer = source.readBoolean( );
+        _fine = source.readBoolean( );
+        _info = source.readBoolean( );
+        _notice = source.readBoolean( );
+        _warn = source.readBoolean( );
+        _error = source.readBoolean( );
+        _severe = source.readBoolean( );
+        _critical = source.readBoolean( );
+        _alert = source.readBoolean( );
+        _fatal = source.readBoolean( );
+        _emergency = source.readBoolean( );
+    }
 
 }

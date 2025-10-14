@@ -21,11 +21,24 @@ public class ElementObject extends CatalogElementObject {
         return _elementType;
     }
     public void setElementType( Guid value ) {
-        if( _elementType != value ) {
-            this._elementType = value;
+        if( !Comparer.equalsNullableGuid( _elementType, value ) ) {
+            _elementType = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _elementType );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _elementType = source.readNullableGuid( );
+    }
 
 }

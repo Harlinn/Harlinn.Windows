@@ -21,11 +21,24 @@ public class ByteTimeseriesPropertyObject extends TimeseriesPropertyObject {
         return _timeseries;
     }
     public void setTimeseries( Guid value ) {
-        if( _timeseries != value ) {
-            this._timeseries = value;
+        if( !Comparer.equalsNullableGuid( _timeseries, value ) ) {
+            _timeseries = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _timeseries );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _timeseries = source.readNullableGuid( );
+    }
 
 }

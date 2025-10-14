@@ -28,8 +28,8 @@ public class GyroDeviceObject extends DeviceObject {
         return _headingTrueNorthTimeseries;
     }
     public void setHeadingTrueNorthTimeseries( Guid value ) {
-        if( _headingTrueNorthTimeseries != value ) {
-            this._headingTrueNorthTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _headingTrueNorthTimeseries, value ) ) {
+            _headingTrueNorthTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class GyroDeviceObject extends DeviceObject {
         return _headingMagneticNorthTimeseries;
     }
     public void setHeadingMagneticNorthTimeseries( Guid value ) {
-        if( _headingMagneticNorthTimeseries != value ) {
-            this._headingMagneticNorthTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _headingMagneticNorthTimeseries, value ) ) {
+            _headingMagneticNorthTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class GyroDeviceObject extends DeviceObject {
         return _pitchTimeseries;
     }
     public void setPitchTimeseries( Guid value ) {
-        if( _pitchTimeseries != value ) {
-            this._pitchTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _pitchTimeseries, value ) ) {
+            _pitchTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class GyroDeviceObject extends DeviceObject {
         return _rateOfTurnTimeseries;
     }
     public void setRateOfTurnTimeseries( Guid value ) {
-        if( _rateOfTurnTimeseries != value ) {
-            this._rateOfTurnTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _rateOfTurnTimeseries, value ) ) {
+            _rateOfTurnTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class GyroDeviceObject extends DeviceObject {
         return _rollTimeseries;
     }
     public void setRollTimeseries( Guid value ) {
-        if( _rollTimeseries != value ) {
-            this._rollTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _rollTimeseries, value ) ) {
+            _rollTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class GyroDeviceObject extends DeviceObject {
         return _courseTimeseries;
     }
     public void setCourseTimeseries( Guid value ) {
-        if( _courseTimeseries != value ) {
-            this._courseTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _courseTimeseries, value ) ) {
+            _courseTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class GyroDeviceObject extends DeviceObject {
         return _speedTimeseries;
     }
     public void setSpeedTimeseries( Guid value ) {
-        if( _speedTimeseries != value ) {
-            this._speedTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _speedTimeseries, value ) ) {
+            _speedTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class GyroDeviceObject extends DeviceObject {
         return _gNSSDevice;
     }
     public void setGNSSDevice( Guid value ) {
-        if( _gNSSDevice != value ) {
-            this._gNSSDevice = value;
+        if( !Comparer.equalsNullableGuid( _gNSSDevice, value ) ) {
+            _gNSSDevice = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _headingTrueNorthTimeseries );
+        destination.writeNullableGuid( _headingMagneticNorthTimeseries );
+        destination.writeNullableGuid( _pitchTimeseries );
+        destination.writeNullableGuid( _rateOfTurnTimeseries );
+        destination.writeNullableGuid( _rollTimeseries );
+        destination.writeNullableGuid( _courseTimeseries );
+        destination.writeNullableGuid( _speedTimeseries );
+        destination.writeNullableGuid( _gNSSDevice );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _headingTrueNorthTimeseries = source.readNullableGuid( );
+        _headingMagneticNorthTimeseries = source.readNullableGuid( );
+        _pitchTimeseries = source.readNullableGuid( );
+        _rateOfTurnTimeseries = source.readNullableGuid( );
+        _rollTimeseries = source.readNullableGuid( );
+        _courseTimeseries = source.readNullableGuid( );
+        _speedTimeseries = source.readNullableGuid( );
+        _gNSSDevice = source.readNullableGuid( );
+    }
 
 }

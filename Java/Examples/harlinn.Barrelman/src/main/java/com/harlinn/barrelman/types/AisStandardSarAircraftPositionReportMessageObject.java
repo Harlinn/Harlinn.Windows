@@ -33,8 +33,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _altitude;
     }
     public void setAltitude( int value ) {
-        if( _altitude != value ) {
-            this._altitude = value;
+        if( !Comparer.equalsInt32( _altitude, value ) ) {
+            _altitude = value;
             onPropertyChanged( );
         }
     }
@@ -43,8 +43,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _speedOverGround;
     }
     public void setSpeedOverGround( int value ) {
-        if( _speedOverGround != value ) {
-            this._speedOverGround = value;
+        if( !Comparer.equalsInt32( _speedOverGround, value ) ) {
+            _speedOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -53,8 +53,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _positionAccuracy;
     }
     public void setPositionAccuracy( int value ) {
-        if( _positionAccuracy != value ) {
-            this._positionAccuracy = value;
+        if( !Comparer.equalsInt32( _positionAccuracy, value ) ) {
+            _positionAccuracy = value;
             onPropertyChanged( );
         }
     }
@@ -63,8 +63,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -73,8 +73,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -83,8 +83,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _courseOverGround;
     }
     public void setCourseOverGround( double value ) {
-        if( _courseOverGround != value ) {
-            this._courseOverGround = value;
+        if( !Comparer.equalsDouble( _courseOverGround, value ) ) {
+            _courseOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -93,8 +93,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _timestamp;
     }
     public void setTimestamp( int value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsInt32( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -103,8 +103,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _reserved;
     }
     public void setReserved( int value ) {
-        if( _reserved != value ) {
-            this._reserved = value;
+        if( !Comparer.equalsInt32( _reserved, value ) ) {
+            _reserved = value;
             onPropertyChanged( );
         }
     }
@@ -113,8 +113,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _dataTerminalReady;
     }
     public void setDataTerminalReady( boolean value ) {
-        if( _dataTerminalReady != value ) {
-            this._dataTerminalReady = value;
+        if( !Comparer.equalsBoolean( _dataTerminalReady, value ) ) {
+            _dataTerminalReady = value;
             onPropertyChanged( );
         }
     }
@@ -123,8 +123,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -133,8 +133,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _assigned;
     }
     public void setAssigned( boolean value ) {
-        if( _assigned != value ) {
-            this._assigned = value;
+        if( !Comparer.equalsBoolean( _assigned, value ) ) {
+            _assigned = value;
             onPropertyChanged( );
         }
     }
@@ -143,8 +143,8 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _raim;
     }
     public void setRaim( int value ) {
-        if( _raim != value ) {
-            this._raim = value;
+        if( !Comparer.equalsInt32( _raim, value ) ) {
+            _raim = value;
             onPropertyChanged( );
         }
     }
@@ -153,11 +153,48 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
         return _radioStatus;
     }
     public void setRadioStatus( int value ) {
-        if( _radioStatus != value ) {
-            this._radioStatus = value;
+        if( !Comparer.equalsInt32( _radioStatus, value ) ) {
+            _radioStatus = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _altitude );
+        destination.writeInt32( _speedOverGround );
+        destination.writeInt32( _positionAccuracy );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _courseOverGround );
+        destination.writeInt32( _timestamp );
+        destination.writeInt32( _reserved );
+        destination.writeBoolean( _dataTerminalReady );
+        destination.writeInt32( _spare );
+        destination.writeBoolean( _assigned );
+        destination.writeInt32( _raim );
+        destination.writeInt32( _radioStatus );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _altitude = source.readInt32( );
+        _speedOverGround = source.readInt32( );
+        _positionAccuracy = source.readInt32( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _courseOverGround = source.readDouble( );
+        _timestamp = source.readInt32( );
+        _reserved = source.readInt32( );
+        _dataTerminalReady = source.readBoolean( );
+        _spare = source.readInt32( );
+        _assigned = source.readBoolean( );
+        _raim = source.readInt32( );
+        _radioStatus = source.readInt32( );
+    }
 
 }

@@ -23,8 +23,8 @@ public class VesselTypeObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class VesselTypeObject extends AbstractDataObjectWithGuidKey {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class VesselTypeObject extends AbstractDataObjectWithGuidKey {
         return _code;
     }
     public void setCode( int value ) {
-        if( _code != value ) {
-            this._code = value;
+        if( !Comparer.equalsInt32( _code, value ) ) {
+            _code = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeStringUtf8( _name );
+        destination.writeInt32( _code );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _name = source.readString( );
+        _code = source.readInt32( );
+    }
 
 }

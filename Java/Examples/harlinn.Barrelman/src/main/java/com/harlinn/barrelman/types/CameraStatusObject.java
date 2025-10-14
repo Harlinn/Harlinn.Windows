@@ -38,8 +38,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _camera;
     }
     public void setCamera( Guid value ) {
-        if( _camera != value ) {
-            this._camera = value;
+        if( !Comparer.equalsGuid( _camera, value ) ) {
+            _camera = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _track;
     }
     public void setTrack( Guid value ) {
-        if( _track != value ) {
-            this._track = value;
+        if( !Comparer.equalsNullableGuid( _track, value ) ) {
+            _track = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _positionPanTiltMode;
     }
     public void setPositionPanTiltMode( int value ) {
-        if( _positionPanTiltMode != value ) {
-            this._positionPanTiltMode = value;
+        if( !Comparer.equalsInt32( _positionPanTiltMode, value ) ) {
+            _positionPanTiltMode = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _panAngle;
     }
     public void setPanAngle( double value ) {
-        if( _panAngle != value ) {
-            this._panAngle = value;
+        if( !Comparer.equalsDouble( _panAngle, value ) ) {
+            _panAngle = value;
             onPropertyChanged( );
         }
     }
@@ -98,8 +98,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _tiltAngle;
     }
     public void setTiltAngle( double value ) {
-        if( _tiltAngle != value ) {
-            this._tiltAngle = value;
+        if( !Comparer.equalsDouble( _tiltAngle, value ) ) {
+            _tiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -108,8 +108,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _positionFocalLengthMode;
     }
     public void setPositionFocalLengthMode( int value ) {
-        if( _positionFocalLengthMode != value ) {
-            this._positionFocalLengthMode = value;
+        if( !Comparer.equalsInt32( _positionFocalLengthMode, value ) ) {
+            _positionFocalLengthMode = value;
             onPropertyChanged( );
         }
     }
@@ -118,8 +118,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _focalLength;
     }
     public void setFocalLength( double value ) {
-        if( _focalLength != value ) {
-            this._focalLength = value;
+        if( !Comparer.equalsDouble( _focalLength, value ) ) {
+            _focalLength = value;
             onPropertyChanged( );
         }
     }
@@ -128,8 +128,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _panTiltMoveStatus;
     }
     public void setPanTiltMoveStatus( int value ) {
-        if( _panTiltMoveStatus != value ) {
-            this._panTiltMoveStatus = value;
+        if( !Comparer.equalsInt32( _panTiltMoveStatus, value ) ) {
+            _panTiltMoveStatus = value;
             onPropertyChanged( );
         }
     }
@@ -138,8 +138,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _zoomMoveStatus;
     }
     public void setZoomMoveStatus( int value ) {
-        if( _zoomMoveStatus != value ) {
-            this._zoomMoveStatus = value;
+        if( !Comparer.equalsInt32( _zoomMoveStatus, value ) ) {
+            _zoomMoveStatus = value;
             onPropertyChanged( );
         }
     }
@@ -148,8 +148,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _velocityPanTiltMode;
     }
     public void setVelocityPanTiltMode( int value ) {
-        if( _velocityPanTiltMode != value ) {
-            this._velocityPanTiltMode = value;
+        if( !Comparer.equalsInt32( _velocityPanTiltMode, value ) ) {
+            _velocityPanTiltMode = value;
             onPropertyChanged( );
         }
     }
@@ -158,8 +158,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _panVelocity;
     }
     public void setPanVelocity( Double value ) {
-        if( _panVelocity != value ) {
-            this._panVelocity = value;
+        if( !Comparer.equalsNullableDouble( _panVelocity, value ) ) {
+            _panVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -168,8 +168,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _tiltVelocity;
     }
     public void setTiltVelocity( Double value ) {
-        if( _tiltVelocity != value ) {
-            this._tiltVelocity = value;
+        if( !Comparer.equalsNullableDouble( _tiltVelocity, value ) ) {
+            _tiltVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -178,8 +178,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _velocityFocalLengthMode;
     }
     public void setVelocityFocalLengthMode( int value ) {
-        if( _velocityFocalLengthMode != value ) {
-            this._velocityFocalLengthMode = value;
+        if( !Comparer.equalsInt32( _velocityFocalLengthMode, value ) ) {
+            _velocityFocalLengthMode = value;
             onPropertyChanged( );
         }
     }
@@ -188,8 +188,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _zoomVelocity;
     }
     public void setZoomVelocity( Double value ) {
-        if( _zoomVelocity != value ) {
-            this._zoomVelocity = value;
+        if( !Comparer.equalsNullableDouble( _zoomVelocity, value ) ) {
+            _zoomVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -198,8 +198,8 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _activeFeatures;
     }
     public void setActiveFeatures( int value ) {
-        if( _activeFeatures != value ) {
-            this._activeFeatures = value;
+        if( !Comparer.equalsInt32( _activeFeatures, value ) ) {
+            _activeFeatures = value;
             onPropertyChanged( );
         }
     }
@@ -208,11 +208,58 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
         return _error;
     }
     public void setError( String value ) {
-        if( _error != value ) {
-            this._error = value;
+        if( !Comparer.equalsString( _error, value ) ) {
+            _error = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _camera );
+        destination.writeNullableGuid( _track );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _positionPanTiltMode );
+        destination.writeDouble( _panAngle );
+        destination.writeDouble( _tiltAngle );
+        destination.writeInt32( _positionFocalLengthMode );
+        destination.writeDouble( _focalLength );
+        destination.writeInt32( _panTiltMoveStatus );
+        destination.writeInt32( _zoomMoveStatus );
+        destination.writeInt32( _velocityPanTiltMode );
+        destination.writeNullableDouble( _panVelocity );
+        destination.writeNullableDouble( _tiltVelocity );
+        destination.writeInt32( _velocityFocalLengthMode );
+        destination.writeNullableDouble( _zoomVelocity );
+        destination.writeInt32( _activeFeatures );
+        destination.writeStringUtf8( _error );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _camera = source.readGuid( );
+        _track = source.readNullableGuid( );
+        _timestamp = source.readDateTime( );
+        _positionPanTiltMode = source.readInt32( );
+        _panAngle = source.readDouble( );
+        _tiltAngle = source.readDouble( );
+        _positionFocalLengthMode = source.readInt32( );
+        _focalLength = source.readDouble( );
+        _panTiltMoveStatus = source.readInt32( );
+        _zoomMoveStatus = source.readInt32( );
+        _velocityPanTiltMode = source.readInt32( );
+        _panVelocity = source.readNullableDouble( );
+        _tiltVelocity = source.readNullableDouble( );
+        _velocityFocalLengthMode = source.readInt32( );
+        _zoomVelocity = source.readNullableDouble( );
+        _activeFeatures = source.readInt32( );
+        _error = source.readString( );
+    }
 
 }

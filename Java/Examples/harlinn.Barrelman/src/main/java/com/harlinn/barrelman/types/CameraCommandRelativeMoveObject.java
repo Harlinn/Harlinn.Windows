@@ -27,8 +27,8 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
         return _normalized;
     }
     public void setNormalized( boolean value ) {
-        if( _normalized != value ) {
-            this._normalized = value;
+        if( !Comparer.equalsBoolean( _normalized, value ) ) {
+            _normalized = value;
             onPropertyChanged( );
         }
     }
@@ -37,8 +37,8 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
         return _panAngle;
     }
     public void setPanAngle( Double value ) {
-        if( _panAngle != value ) {
-            this._panAngle = value;
+        if( !Comparer.equalsNullableDouble( _panAngle, value ) ) {
+            _panAngle = value;
             onPropertyChanged( );
         }
     }
@@ -47,8 +47,8 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
         return _tiltAngle;
     }
     public void setTiltAngle( Double value ) {
-        if( _tiltAngle != value ) {
-            this._tiltAngle = value;
+        if( !Comparer.equalsNullableDouble( _tiltAngle, value ) ) {
+            _tiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -57,8 +57,8 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
         return _focalLength;
     }
     public void setFocalLength( Double value ) {
-        if( _focalLength != value ) {
-            this._focalLength = value;
+        if( !Comparer.equalsNullableDouble( _focalLength, value ) ) {
+            _focalLength = value;
             onPropertyChanged( );
         }
     }
@@ -67,8 +67,8 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
         return _panSpeed;
     }
     public void setPanSpeed( Double value ) {
-        if( _panSpeed != value ) {
-            this._panSpeed = value;
+        if( !Comparer.equalsNullableDouble( _panSpeed, value ) ) {
+            _panSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -77,8 +77,8 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
         return _tiltSpeed;
     }
     public void setTiltSpeed( Double value ) {
-        if( _tiltSpeed != value ) {
-            this._tiltSpeed = value;
+        if( !Comparer.equalsNullableDouble( _tiltSpeed, value ) ) {
+            _tiltSpeed = value;
             onPropertyChanged( );
         }
     }
@@ -87,11 +87,36 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
         return _zoomSpeed;
     }
     public void setZoomSpeed( Double value ) {
-        if( _zoomSpeed != value ) {
-            this._zoomSpeed = value;
+        if( !Comparer.equalsNullableDouble( _zoomSpeed, value ) ) {
+            _zoomSpeed = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeBoolean( _normalized );
+        destination.writeNullableDouble( _panAngle );
+        destination.writeNullableDouble( _tiltAngle );
+        destination.writeNullableDouble( _focalLength );
+        destination.writeNullableDouble( _panSpeed );
+        destination.writeNullableDouble( _tiltSpeed );
+        destination.writeNullableDouble( _zoomSpeed );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _normalized = source.readBoolean( );
+        _panAngle = source.readNullableDouble( );
+        _tiltAngle = source.readNullableDouble( );
+        _focalLength = source.readNullableDouble( );
+        _panSpeed = source.readNullableDouble( );
+        _tiltSpeed = source.readNullableDouble( );
+        _zoomSpeed = source.readNullableDouble( );
+    }
 
 }

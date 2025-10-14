@@ -28,8 +28,8 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _application;
     }
     public void setApplication( Guid value ) {
-        if( _application != value ) {
-            this._application = value;
+        if( !Comparer.equalsGuid( _application, value ) ) {
+            _application = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _host;
     }
     public void setHost( Guid value ) {
-        if( _host != value ) {
-            this._host = value;
+        if( !Comparer.equalsNullableGuid( _host, value ) ) {
+            _host = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _started;
     }
     public void setStarted( DateTime value ) {
-        if( _started != value ) {
-            this._started = value;
+        if( !Comparer.equalsDateTime( _started, value ) ) {
+            _started = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _stopped;
     }
     public void setStopped( DateTime value ) {
-        if( _stopped != value ) {
-            this._stopped = value;
+        if( !Comparer.equalsNullableDateTime( _stopped, value ) ) {
+            _stopped = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _processId;
     }
     public void setProcessId( long value ) {
-        if( _processId != value ) {
-            this._processId = value;
+        if( !Comparer.equalsInt64( _processId, value ) ) {
+            _processId = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _path;
     }
     public void setPath( String value ) {
-        if( _path != value ) {
-            this._path = value;
+        if( !Comparer.equalsString( _path, value ) ) {
+            _path = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
         return _identity;
     }
     public void setIdentity( String value ) {
-        if( _identity != value ) {
-            this._identity = value;
+        if( !Comparer.equalsString( _identity, value ) ) {
+            _identity = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _application );
+        destination.writeNullableGuid( _host );
+        destination.writeDateTime( _started );
+        destination.writeNullableDateTime( _stopped );
+        destination.writeInt64( _processId );
+        destination.writeStringUtf8( _path );
+        destination.writeStringUtf8( _identity );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _application = source.readGuid( );
+        _host = source.readNullableGuid( );
+        _started = source.readDateTime( );
+        _stopped = source.readNullableDateTime( );
+        _processId = source.readInt64( );
+        _path = source.readString( );
+        _identity = source.readString( );
+    }
 
 }

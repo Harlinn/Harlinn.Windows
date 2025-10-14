@@ -21,11 +21,24 @@ public class VesselDraughtTimeseriesObject extends DoubleTimeseriesObject {
         return _vessel;
     }
     public void setVessel( Guid value ) {
-        if( _vessel != value ) {
-            this._vessel = value;
+        if( !Comparer.equalsNullableGuid( _vessel, value ) ) {
+            _vessel = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _vessel );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _vessel = source.readNullableGuid( );
+    }
 
 }

@@ -28,8 +28,8 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _oilSpillDetector;
     }
     public void setOilSpillDetector( Guid value ) {
-        if( _oilSpillDetector != value ) {
-            this._oilSpillDetector = value;
+        if( !Comparer.equalsGuid( _oilSpillDetector, value ) ) {
+            _oilSpillDetector = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _oilArea;
     }
     public void setOilArea( double value ) {
-        if( _oilArea != value ) {
-            this._oilArea = value;
+        if( !Comparer.equalsDouble( _oilArea, value ) ) {
+            _oilArea = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _shape;
     }
     public void setShape( byte[] value ) {
-        if( _shape != value ) {
-            this._shape = value;
+        if( !Comparer.equalsUInt8Array( _shape, value ) ) {
+            _shape = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _bSI;
     }
     public void setBSI( byte[] value ) {
-        if( _bSI != value ) {
-            this._bSI = value;
+        if( !Comparer.equalsUInt8Array( _bSI, value ) ) {
+            _bSI = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _oil;
     }
     public void setOil( byte[] value ) {
-        if( _oil != value ) {
-            this._oil = value;
+        if( !Comparer.equalsUInt8Array( _oil, value ) ) {
+            _oil = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
         return _trace;
     }
     public void setTrace( byte[] value ) {
-        if( _trace != value ) {
-            this._trace = value;
+        if( !Comparer.equalsUInt8Array( _trace, value ) ) {
+            _trace = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _oilSpillDetector );
+        destination.writeDateTime( _timestamp );
+        destination.writeDouble( _oilArea );
+        destination.writeUInt8Array( _shape );
+        destination.writeUInt8Array( _bSI );
+        destination.writeUInt8Array( _oil );
+        destination.writeUInt8Array( _trace );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _oilSpillDetector = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _oilArea = source.readDouble( );
+        _shape = source.readUInt8Array( );
+        _bSI = source.readUInt8Array( );
+        _oil = source.readUInt8Array( );
+        _trace = source.readUInt8Array( );
+    }
 
 }

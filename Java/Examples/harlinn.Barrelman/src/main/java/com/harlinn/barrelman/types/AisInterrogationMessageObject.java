@@ -28,8 +28,8 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _interrogatedMmsi;
     }
     public void setInterrogatedMmsi( Guid value ) {
-        if( _interrogatedMmsi != value ) {
-            this._interrogatedMmsi = value;
+        if( !Comparer.equalsNullableGuid( _interrogatedMmsi, value ) ) {
+            _interrogatedMmsi = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _firstMessageType;
     }
     public void setFirstMessageType( int value ) {
-        if( _firstMessageType != value ) {
-            this._firstMessageType = value;
+        if( !Comparer.equalsInt32( _firstMessageType, value ) ) {
+            _firstMessageType = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _firstSlotOffset;
     }
     public void setFirstSlotOffset( int value ) {
-        if( _firstSlotOffset != value ) {
-            this._firstSlotOffset = value;
+        if( !Comparer.equalsInt32( _firstSlotOffset, value ) ) {
+            _firstSlotOffset = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _secondMessageType;
     }
     public void setSecondMessageType( Integer value ) {
-        if( _secondMessageType != value ) {
-            this._secondMessageType = value;
+        if( !Comparer.equalsNullableInt32( _secondMessageType, value ) ) {
+            _secondMessageType = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _secondSlotOffset;
     }
     public void setSecondSlotOffset( Integer value ) {
-        if( _secondSlotOffset != value ) {
-            this._secondSlotOffset = value;
+        if( !Comparer.equalsNullableInt32( _secondSlotOffset, value ) ) {
+            _secondSlotOffset = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _secondStationInterrogationMmsi;
     }
     public void setSecondStationInterrogationMmsi( Guid value ) {
-        if( _secondStationInterrogationMmsi != value ) {
-            this._secondStationInterrogationMmsi = value;
+        if( !Comparer.equalsNullableGuid( _secondStationInterrogationMmsi, value ) ) {
+            _secondStationInterrogationMmsi = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _secondStationFirstMessageType;
     }
     public void setSecondStationFirstMessageType( Integer value ) {
-        if( _secondStationFirstMessageType != value ) {
-            this._secondStationFirstMessageType = value;
+        if( !Comparer.equalsNullableInt32( _secondStationFirstMessageType, value ) ) {
+            _secondStationFirstMessageType = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class AisInterrogationMessageObject extends AisMessageObject {
         return _secondStationFirstSlotOffset;
     }
     public void setSecondStationFirstSlotOffset( Integer value ) {
-        if( _secondStationFirstSlotOffset != value ) {
-            this._secondStationFirstSlotOffset = value;
+        if( !Comparer.equalsNullableInt32( _secondStationFirstSlotOffset, value ) ) {
+            _secondStationFirstSlotOffset = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _interrogatedMmsi );
+        destination.writeInt32( _firstMessageType );
+        destination.writeInt32( _firstSlotOffset );
+        destination.writeNullableInt32( _secondMessageType );
+        destination.writeNullableInt32( _secondSlotOffset );
+        destination.writeNullableGuid( _secondStationInterrogationMmsi );
+        destination.writeNullableInt32( _secondStationFirstMessageType );
+        destination.writeNullableInt32( _secondStationFirstSlotOffset );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _interrogatedMmsi = source.readNullableGuid( );
+        _firstMessageType = source.readInt32( );
+        _firstSlotOffset = source.readInt32( );
+        _secondMessageType = source.readNullableInt32( );
+        _secondSlotOffset = source.readNullableInt32( );
+        _secondStationInterrogationMmsi = source.readNullableGuid( );
+        _secondStationFirstMessageType = source.readNullableInt32( );
+        _secondStationFirstSlotOffset = source.readNullableInt32( );
+    }
 
 }

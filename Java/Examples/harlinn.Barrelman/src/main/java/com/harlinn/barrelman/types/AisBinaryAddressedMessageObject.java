@@ -27,8 +27,8 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
         return _sequenceNumber;
     }
     public void setSequenceNumber( int value ) {
-        if( _sequenceNumber != value ) {
-            this._sequenceNumber = value;
+        if( !Comparer.equalsInt32( _sequenceNumber, value ) ) {
+            _sequenceNumber = value;
             onPropertyChanged( );
         }
     }
@@ -37,8 +37,8 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
         return _destinationMmsi;
     }
     public void setDestinationMmsi( Guid value ) {
-        if( _destinationMmsi != value ) {
-            this._destinationMmsi = value;
+        if( !Comparer.equalsNullableGuid( _destinationMmsi, value ) ) {
+            _destinationMmsi = value;
             onPropertyChanged( );
         }
     }
@@ -47,8 +47,8 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
         return _retransmitFlag;
     }
     public void setRetransmitFlag( boolean value ) {
-        if( _retransmitFlag != value ) {
-            this._retransmitFlag = value;
+        if( !Comparer.equalsBoolean( _retransmitFlag, value ) ) {
+            _retransmitFlag = value;
             onPropertyChanged( );
         }
     }
@@ -57,8 +57,8 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -67,8 +67,8 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
         return _designatedAreaCode;
     }
     public void setDesignatedAreaCode( int value ) {
-        if( _designatedAreaCode != value ) {
-            this._designatedAreaCode = value;
+        if( !Comparer.equalsInt32( _designatedAreaCode, value ) ) {
+            _designatedAreaCode = value;
             onPropertyChanged( );
         }
     }
@@ -77,8 +77,8 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
         return _functionalId;
     }
     public void setFunctionalId( int value ) {
-        if( _functionalId != value ) {
-            this._functionalId = value;
+        if( !Comparer.equalsInt32( _functionalId, value ) ) {
+            _functionalId = value;
             onPropertyChanged( );
         }
     }
@@ -87,11 +87,36 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
         return _data;
     }
     public void setData( String value ) {
-        if( _data != value ) {
-            this._data = value;
+        if( !Comparer.equalsString( _data, value ) ) {
+            _data = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _sequenceNumber );
+        destination.writeNullableGuid( _destinationMmsi );
+        destination.writeBoolean( _retransmitFlag );
+        destination.writeInt32( _spare );
+        destination.writeInt32( _designatedAreaCode );
+        destination.writeInt32( _functionalId );
+        destination.writeStringUtf8( _data );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _sequenceNumber = source.readInt32( );
+        _destinationMmsi = source.readNullableGuid( );
+        _retransmitFlag = source.readBoolean( );
+        _spare = source.readInt32( );
+        _designatedAreaCode = source.readInt32( );
+        _functionalId = source.readInt32( );
+        _data = source.readString( );
+    }
 
 }

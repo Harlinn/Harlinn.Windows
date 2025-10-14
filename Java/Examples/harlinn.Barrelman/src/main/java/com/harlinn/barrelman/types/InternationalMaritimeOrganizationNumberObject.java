@@ -21,11 +21,24 @@ public class InternationalMaritimeOrganizationNumberObject extends IdentityObjec
         return _identifier;
     }
     public void setIdentifier( long value ) {
-        if( _identifier != value ) {
-            this._identifier = value;
+        if( !Comparer.equalsInt64( _identifier, value ) ) {
+            _identifier = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _identifier );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _identifier = source.readInt64( );
+    }
 
 }

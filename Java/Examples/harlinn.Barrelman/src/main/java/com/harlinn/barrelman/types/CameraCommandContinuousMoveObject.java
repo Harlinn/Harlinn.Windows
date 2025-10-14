@@ -25,8 +25,8 @@ public class CameraCommandContinuousMoveObject extends CameraCommandObject {
         return _normalized;
     }
     public void setNormalized( boolean value ) {
-        if( _normalized != value ) {
-            this._normalized = value;
+        if( !Comparer.equalsBoolean( _normalized, value ) ) {
+            _normalized = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class CameraCommandContinuousMoveObject extends CameraCommandObject {
         return _panVelocity;
     }
     public void setPanVelocity( Double value ) {
-        if( _panVelocity != value ) {
-            this._panVelocity = value;
+        if( !Comparer.equalsNullableDouble( _panVelocity, value ) ) {
+            _panVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class CameraCommandContinuousMoveObject extends CameraCommandObject {
         return _tiltVelocity;
     }
     public void setTiltVelocity( Double value ) {
-        if( _tiltVelocity != value ) {
-            this._tiltVelocity = value;
+        if( !Comparer.equalsNullableDouble( _tiltVelocity, value ) ) {
+            _tiltVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class CameraCommandContinuousMoveObject extends CameraCommandObject {
         return _zoomVelocity;
     }
     public void setZoomVelocity( Double value ) {
-        if( _zoomVelocity != value ) {
-            this._zoomVelocity = value;
+        if( !Comparer.equalsNullableDouble( _zoomVelocity, value ) ) {
+            _zoomVelocity = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class CameraCommandContinuousMoveObject extends CameraCommandObject {
         return _duration;
     }
     public void setDuration( TimeSpan value ) {
-        if( _duration != value ) {
-            this._duration = value;
+        if( !Comparer.equalsNullableTimeSpan( _duration, value ) ) {
+            _duration = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeBoolean( _normalized );
+        destination.writeNullableDouble( _panVelocity );
+        destination.writeNullableDouble( _tiltVelocity );
+        destination.writeNullableDouble( _zoomVelocity );
+        destination.writeNullableTimeSpan( _duration );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _normalized = source.readBoolean( );
+        _panVelocity = source.readNullableDouble( );
+        _tiltVelocity = source.readNullableDouble( );
+        _zoomVelocity = source.readNullableDouble( );
+        _duration = source.readNullableTimeSpan( );
+    }
 
 }

@@ -21,11 +21,24 @@ public class AisStaticDataReportMessageObject extends AisMessageObject {
         return _partNumber;
     }
     public void setPartNumber( int value ) {
-        if( _partNumber != value ) {
-            this._partNumber = value;
+        if( !Comparer.equalsInt32( _partNumber, value ) ) {
+            _partNumber = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _partNumber );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _partNumber = source.readInt32( );
+    }
 
 }

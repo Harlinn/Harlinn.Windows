@@ -21,11 +21,24 @@ public class AisAidToNavigationPositionTimeseriesObject extends GeoPosition2DTim
         return _aidToNavigation;
     }
     public void setAidToNavigation( Guid value ) {
-        if( _aidToNavigation != value ) {
-            this._aidToNavigation = value;
+        if( !Comparer.equalsNullableGuid( _aidToNavigation, value ) ) {
+            _aidToNavigation = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _aidToNavigation );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _aidToNavigation = source.readNullableGuid( );
+    }
 
 }

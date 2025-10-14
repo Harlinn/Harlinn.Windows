@@ -22,8 +22,8 @@ public class CameraCommandSetFollowedObject extends CameraCommandObject {
         return _trackId;
     }
     public void setTrackId( Guid value ) {
-        if( _trackId != value ) {
-            this._trackId = value;
+        if( !Comparer.equalsGuid( _trackId, value ) ) {
+            _trackId = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class CameraCommandSetFollowedObject extends CameraCommandObject {
         return _reason;
     }
     public void setReason( int value ) {
-        if( _reason != value ) {
-            this._reason = value;
+        if( !Comparer.equalsInt32( _reason, value ) ) {
+            _reason = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeGuid( _trackId );
+        destination.writeInt32( _reason );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _trackId = source.readGuid( );
+        _reason = source.readInt32( );
+    }
 
 }

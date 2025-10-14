@@ -29,8 +29,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _positionAccuracy;
     }
     public void setPositionAccuracy( int value ) {
-        if( _positionAccuracy != value ) {
-            this._positionAccuracy = value;
+        if( !Comparer.equalsInt32( _positionAccuracy, value ) ) {
+            _positionAccuracy = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _raim;
     }
     public void setRaim( int value ) {
-        if( _raim != value ) {
-            this._raim = value;
+        if( !Comparer.equalsInt32( _raim, value ) ) {
+            _raim = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _navigationStatus;
     }
     public void setNavigationStatus( int value ) {
-        if( _navigationStatus != value ) {
-            this._navigationStatus = value;
+        if( !Comparer.equalsInt32( _navigationStatus, value ) ) {
+            _navigationStatus = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _speedOverGround;
     }
     public void setSpeedOverGround( double value ) {
-        if( _speedOverGround != value ) {
-            this._speedOverGround = value;
+        if( !Comparer.equalsDouble( _speedOverGround, value ) ) {
+            _speedOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _courseOverGround;
     }
     public void setCourseOverGround( double value ) {
-        if( _courseOverGround != value ) {
-            this._courseOverGround = value;
+        if( !Comparer.equalsDouble( _courseOverGround, value ) ) {
+            _courseOverGround = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _gnssPositionStatus;
     }
     public void setGnssPositionStatus( int value ) {
-        if( _gnssPositionStatus != value ) {
-            this._gnssPositionStatus = value;
+        if( !Comparer.equalsInt32( _gnssPositionStatus, value ) ) {
+            _gnssPositionStatus = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _positionAccuracy );
+        destination.writeInt32( _raim );
+        destination.writeInt32( _navigationStatus );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _speedOverGround );
+        destination.writeDouble( _courseOverGround );
+        destination.writeInt32( _gnssPositionStatus );
+        destination.writeInt32( _spare );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _positionAccuracy = source.readInt32( );
+        _raim = source.readInt32( );
+        _navigationStatus = source.readInt32( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _speedOverGround = source.readDouble( );
+        _courseOverGround = source.readDouble( );
+        _gnssPositionStatus = source.readInt32( );
+        _spare = source.readInt32( );
+    }
 
 }

@@ -25,8 +25,8 @@ public class RadarRawTrackTableObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class RadarRawTrackTableObject extends AbstractDataObjectWithGuidKey {
         return _radar;
     }
     public void setRadar( Guid value ) {
-        if( _radar != value ) {
-            this._radar = value;
+        if( !Comparer.equalsGuid( _radar, value ) ) {
+            _radar = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class RadarRawTrackTableObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class RadarRawTrackTableObject extends AbstractDataObjectWithGuidKey {
         return _count;
     }
     public void setCount( int value ) {
-        if( _count != value ) {
-            this._count = value;
+        if( !Comparer.equalsInt32( _count, value ) ) {
+            _count = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class RadarRawTrackTableObject extends AbstractDataObjectWithGuidKey {
         return _table;
     }
     public void setTable( byte[] value ) {
-        if( _table != value ) {
-            this._table = value;
+        if( !Comparer.equalsUInt8Array( _table, value ) ) {
+            _table = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _radar );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _count );
+        destination.writeUInt8Array( _table );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _radar = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _count = source.readInt32( );
+        _table = source.readUInt8Array( );
+    }
 
 }

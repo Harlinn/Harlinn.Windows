@@ -29,8 +29,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _camera;
     }
     public void setCamera( Guid value ) {
-        if( _camera != value ) {
-            this._camera = value;
+        if( !Comparer.equalsGuid( _camera, value ) ) {
+            _camera = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _command;
     }
     public void setCommand( Guid value ) {
-        if( _command != value ) {
-            this._command = value;
+        if( !Comparer.equalsNullableGuid( _command, value ) ) {
+            _command = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _status;
     }
     public void setStatus( int value ) {
-        if( _status != value ) {
-            this._status = value;
+        if( !Comparer.equalsInt32( _status, value ) ) {
+            _status = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _message;
     }
     public void setMessage( String value ) {
-        if( _message != value ) {
-            this._message = value;
+        if( !Comparer.equalsString( _message, value ) ) {
+            _message = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _panAngle;
     }
     public void setPanAngle( double value ) {
-        if( _panAngle != value ) {
-            this._panAngle = value;
+        if( !Comparer.equalsDouble( _panAngle, value ) ) {
+            _panAngle = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _tiltAngle;
     }
     public void setTiltAngle( double value ) {
-        if( _tiltAngle != value ) {
-            this._tiltAngle = value;
+        if( !Comparer.equalsDouble( _tiltAngle, value ) ) {
+            _tiltAngle = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
         return _focalLength;
     }
     public void setFocalLength( double value ) {
-        if( _focalLength != value ) {
-            this._focalLength = value;
+        if( !Comparer.equalsDouble( _focalLength, value ) ) {
+            _focalLength = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _camera );
+        destination.writeDateTime( _timestamp );
+        destination.writeNullableGuid( _command );
+        destination.writeInt32( _status );
+        destination.writeStringUtf8( _message );
+        destination.writeDouble( _panAngle );
+        destination.writeDouble( _tiltAngle );
+        destination.writeDouble( _focalLength );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _camera = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _command = source.readNullableGuid( );
+        _status = source.readInt32( );
+        _message = source.readString( );
+        _panAngle = source.readDouble( );
+        _tiltAngle = source.readDouble( );
+        _focalLength = source.readDouble( );
+    }
 
 }

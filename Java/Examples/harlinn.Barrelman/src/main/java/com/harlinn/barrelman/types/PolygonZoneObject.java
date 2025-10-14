@@ -21,11 +21,24 @@ public class PolygonZoneObject extends ZoneObject {
         return _polygon;
     }
     public void setPolygon( byte[] value ) {
-        if( _polygon != value ) {
-            this._polygon = value;
+        if( !Comparer.equalsUInt8Array( _polygon, value ) ) {
+            _polygon = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeUInt8Array( _polygon );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _polygon = source.readUInt8Array( );
+    }
 
 }

@@ -21,11 +21,24 @@ public class StringTimeseriesPropertyDefinitionObject extends TimeseriesProperty
         return _pattern;
     }
     public void setPattern( String value ) {
-        if( _pattern != value ) {
-            this._pattern = value;
+        if( !Comparer.equalsString( _pattern, value ) ) {
+            _pattern = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _pattern );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _pattern = source.readString( );
+    }
 
 }

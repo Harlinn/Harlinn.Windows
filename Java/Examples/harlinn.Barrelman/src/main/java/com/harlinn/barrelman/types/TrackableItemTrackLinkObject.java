@@ -25,8 +25,8 @@ public class TrackableItemTrackLinkObject extends AbstractDataObjectWithGuidKey 
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class TrackableItemTrackLinkObject extends AbstractDataObjectWithGuidKey 
         return _item;
     }
     public void setItem( Guid value ) {
-        if( _item != value ) {
-            this._item = value;
+        if( !Comparer.equalsGuid( _item, value ) ) {
+            _item = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class TrackableItemTrackLinkObject extends AbstractDataObjectWithGuidKey 
         return _track;
     }
     public void setTrack( Guid value ) {
-        if( _track != value ) {
-            this._track = value;
+        if( !Comparer.equalsGuid( _track, value ) ) {
+            _track = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class TrackableItemTrackLinkObject extends AbstractDataObjectWithGuidKey 
         return _start;
     }
     public void setStart( DateTime value ) {
-        if( _start != value ) {
-            this._start = value;
+        if( !Comparer.equalsDateTime( _start, value ) ) {
+            _start = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class TrackableItemTrackLinkObject extends AbstractDataObjectWithGuidKey 
         return _end;
     }
     public void setEnd( DateTime value ) {
-        if( _end != value ) {
-            this._end = value;
+        if( !Comparer.equalsNullableDateTime( _end, value ) ) {
+            _end = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _item );
+        destination.writeGuid( _track );
+        destination.writeDateTime( _start );
+        destination.writeNullableDateTime( _end );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _item = source.readGuid( );
+        _track = source.readGuid( );
+        _start = source.readDateTime( );
+        _end = source.readNullableDateTime( );
+    }
 
 }

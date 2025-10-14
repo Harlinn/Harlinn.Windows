@@ -26,8 +26,8 @@ public class LogLocationObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -36,8 +36,8 @@ public class LogLocationObject extends AbstractDataObjectWithGuidKey {
         return _fileName;
     }
     public void setFileName( String value ) {
-        if( _fileName != value ) {
-            this._fileName = value;
+        if( !Comparer.equalsString( _fileName, value ) ) {
+            _fileName = value;
             onPropertyChanged( );
         }
     }
@@ -46,8 +46,8 @@ public class LogLocationObject extends AbstractDataObjectWithGuidKey {
         return _lineNumber;
     }
     public void setLineNumber( int value ) {
-        if( _lineNumber != value ) {
-            this._lineNumber = value;
+        if( !Comparer.equalsInt32( _lineNumber, value ) ) {
+            _lineNumber = value;
             onPropertyChanged( );
         }
     }
@@ -56,8 +56,8 @@ public class LogLocationObject extends AbstractDataObjectWithGuidKey {
         return _namespace;
     }
     public void setNamespace( String value ) {
-        if( _namespace != value ) {
-            this._namespace = value;
+        if( !Comparer.equalsString( _namespace, value ) ) {
+            _namespace = value;
             onPropertyChanged( );
         }
     }
@@ -66,8 +66,8 @@ public class LogLocationObject extends AbstractDataObjectWithGuidKey {
         return _className;
     }
     public void setClassName( String value ) {
-        if( _className != value ) {
-            this._className = value;
+        if( !Comparer.equalsString( _className, value ) ) {
+            _className = value;
             onPropertyChanged( );
         }
     }
@@ -76,11 +76,34 @@ public class LogLocationObject extends AbstractDataObjectWithGuidKey {
         return _methodName;
     }
     public void setMethodName( String value ) {
-        if( _methodName != value ) {
-            this._methodName = value;
+        if( !Comparer.equalsString( _methodName, value ) ) {
+            _methodName = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeStringUtf8( _fileName );
+        destination.writeInt32( _lineNumber );
+        destination.writeStringUtf8( _namespace );
+        destination.writeStringUtf8( _className );
+        destination.writeStringUtf8( _methodName );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _fileName = source.readString( );
+        _lineNumber = source.readInt32( );
+        _namespace = source.readString( );
+        _className = source.readString( );
+        _methodName = source.readString( );
+    }
 
 }

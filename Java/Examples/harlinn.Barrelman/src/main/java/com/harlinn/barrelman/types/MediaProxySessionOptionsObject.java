@@ -34,8 +34,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _proxySession;
     }
     public void setProxySession( Guid value ) {
-        if( _proxySession != value ) {
-            this._proxySession = value;
+        if( !Comparer.equalsGuid( _proxySession, value ) ) {
+            _proxySession = value;
             onPropertyChanged( );
         }
     }
@@ -54,8 +54,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -64,8 +64,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _sourceStreamUrl;
     }
     public void setSourceStreamUrl( String value ) {
-        if( _sourceStreamUrl != value ) {
-            this._sourceStreamUrl = value;
+        if( !Comparer.equalsString( _sourceStreamUrl, value ) ) {
+            _sourceStreamUrl = value;
             onPropertyChanged( );
         }
     }
@@ -74,8 +74,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _streamName;
     }
     public void setStreamName( String value ) {
-        if( _streamName != value ) {
-            this._streamName = value;
+        if( !Comparer.equalsString( _streamName, value ) ) {
+            _streamName = value;
             onPropertyChanged( );
         }
     }
@@ -84,8 +84,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _mode;
     }
     public void setMode( int value ) {
-        if( _mode != value ) {
-            this._mode = value;
+        if( !Comparer.equalsInt32( _mode, value ) ) {
+            _mode = value;
             onPropertyChanged( );
         }
     }
@@ -94,8 +94,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _tunnelOverHTTPPortNumber;
     }
     public void setTunnelOverHTTPPortNumber( int value ) {
-        if( _tunnelOverHTTPPortNumber != value ) {
-            this._tunnelOverHTTPPortNumber = value;
+        if( !Comparer.equalsInt32( _tunnelOverHTTPPortNumber, value ) ) {
+            _tunnelOverHTTPPortNumber = value;
             onPropertyChanged( );
         }
     }
@@ -104,8 +104,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _username;
     }
     public void setUsername( String value ) {
-        if( _username != value ) {
-            this._username = value;
+        if( !Comparer.equalsString( _username, value ) ) {
+            _username = value;
             onPropertyChanged( );
         }
     }
@@ -114,8 +114,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _password;
     }
     public void setPassword( String value ) {
-        if( _password != value ) {
-            this._password = value;
+        if( !Comparer.equalsString( _password, value ) ) {
+            _password = value;
             onPropertyChanged( );
         }
     }
@@ -124,8 +124,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _recorderPortNumber;
     }
     public void setRecorderPortNumber( int value ) {
-        if( _recorderPortNumber != value ) {
-            this._recorderPortNumber = value;
+        if( !Comparer.equalsInt32( _recorderPortNumber, value ) ) {
+            _recorderPortNumber = value;
             onPropertyChanged( );
         }
     }
@@ -134,8 +134,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _sessionType;
     }
     public void setSessionType( int value ) {
-        if( _sessionType != value ) {
-            this._sessionType = value;
+        if( !Comparer.equalsInt32( _sessionType, value ) ) {
+            _sessionType = value;
             onPropertyChanged( );
         }
     }
@@ -144,8 +144,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _maxFileTime;
     }
     public void setMaxFileTime( TimeSpan value ) {
-        if( _maxFileTime != value ) {
-            this._maxFileTime = value;
+        if( !Comparer.equalsTimeSpan( _maxFileTime, value ) ) {
+            _maxFileTime = value;
             onPropertyChanged( );
         }
     }
@@ -154,8 +154,8 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _maxFileRetention;
     }
     public void setMaxFileRetention( TimeSpan value ) {
-        if( _maxFileRetention != value ) {
-            this._maxFileRetention = value;
+        if( !Comparer.equalsTimeSpan( _maxFileRetention, value ) ) {
+            _maxFileRetention = value;
             onPropertyChanged( );
         }
     }
@@ -164,11 +164,50 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
         return _videoDirectory;
     }
     public void setVideoDirectory( String value ) {
-        if( _videoDirectory != value ) {
-            this._videoDirectory = value;
+        if( !Comparer.equalsString( _videoDirectory, value ) ) {
+            _videoDirectory = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _proxySession );
+        destination.writeDateTime( _timestamp );
+        destination.writeStringUtf8( _sourceStreamUrl );
+        destination.writeStringUtf8( _streamName );
+        destination.writeInt32( _mode );
+        destination.writeInt32( _tunnelOverHTTPPortNumber );
+        destination.writeStringUtf8( _username );
+        destination.writeStringUtf8( _password );
+        destination.writeInt32( _recorderPortNumber );
+        destination.writeInt32( _sessionType );
+        destination.writeTimeSpan( _maxFileTime );
+        destination.writeTimeSpan( _maxFileRetention );
+        destination.writeStringUtf8( _videoDirectory );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _proxySession = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _sourceStreamUrl = source.readString( );
+        _streamName = source.readString( );
+        _mode = source.readInt32( );
+        _tunnelOverHTTPPortNumber = source.readInt32( );
+        _username = source.readString( );
+        _password = source.readString( );
+        _recorderPortNumber = source.readInt32( );
+        _sessionType = source.readInt32( );
+        _maxFileTime = source.readTimeSpan( );
+        _maxFileRetention = source.readTimeSpan( );
+        _videoDirectory = source.readString( );
+    }
 
 }

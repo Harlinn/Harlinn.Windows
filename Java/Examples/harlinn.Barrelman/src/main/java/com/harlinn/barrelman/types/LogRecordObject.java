@@ -30,8 +30,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -40,8 +40,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _thread;
     }
     public void setThread( Guid value ) {
-        if( _thread != value ) {
-            this._thread = value;
+        if( !Comparer.equalsGuid( _thread, value ) ) {
+            _thread = value;
             onPropertyChanged( );
         }
     }
@@ -50,8 +50,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _sequenceNumber;
     }
     public void setSequenceNumber( long value ) {
-        if( _sequenceNumber != value ) {
-            this._sequenceNumber = value;
+        if( !Comparer.equalsInt64( _sequenceNumber, value ) ) {
+            _sequenceNumber = value;
             onPropertyChanged( );
         }
     }
@@ -60,8 +60,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _level;
     }
     public void setLevel( int value ) {
-        if( _level != value ) {
-            this._level = value;
+        if( !Comparer.equalsInt32( _level, value ) ) {
+            _level = value;
             onPropertyChanged( );
         }
     }
@@ -70,8 +70,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -80,8 +80,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _depth;
     }
     public void setDepth( int value ) {
-        if( _depth != value ) {
-            this._depth = value;
+        if( !Comparer.equalsInt32( _depth, value ) ) {
+            _depth = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _location;
     }
     public void setLocation( Guid value ) {
-        if( _location != value ) {
-            this._location = value;
+        if( !Comparer.equalsGuid( _location, value ) ) {
+            _location = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _message;
     }
     public void setMessage( String value ) {
-        if( _message != value ) {
-            this._message = value;
+        if( !Comparer.equalsString( _message, value ) ) {
+            _message = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _exceptionString;
     }
     public void setExceptionString( String value ) {
-        if( _exceptionString != value ) {
-            this._exceptionString = value;
+        if( !Comparer.equalsString( _exceptionString, value ) ) {
+            _exceptionString = value;
             onPropertyChanged( );
         }
     }
@@ -120,11 +120,42 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
         return _propertiesData;
     }
     public void setPropertiesData( byte[] value ) {
-        if( _propertiesData != value ) {
-            this._propertiesData = value;
+        if( !Comparer.equalsUInt8Array( _propertiesData, value ) ) {
+            _propertiesData = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _thread );
+        destination.writeInt64( _sequenceNumber );
+        destination.writeInt32( _level );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _depth );
+        destination.writeGuid( _location );
+        destination.writeStringUtf8( _message );
+        destination.writeStringUtf8( _exceptionString );
+        destination.writeUInt8Array( _propertiesData );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _thread = source.readGuid( );
+        _sequenceNumber = source.readInt64( );
+        _level = source.readInt32( );
+        _timestamp = source.readDateTime( );
+        _depth = source.readInt32( );
+        _location = source.readGuid( );
+        _message = source.readString( );
+        _exceptionString = source.readString( );
+        _propertiesData = source.readUInt8Array( );
+    }
 
 }

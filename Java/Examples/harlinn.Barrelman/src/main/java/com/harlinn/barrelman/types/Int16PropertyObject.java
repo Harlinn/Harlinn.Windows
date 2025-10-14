@@ -21,11 +21,24 @@ public class Int16PropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( short value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsInt16( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt16( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readInt16( );
+    }
 
 }

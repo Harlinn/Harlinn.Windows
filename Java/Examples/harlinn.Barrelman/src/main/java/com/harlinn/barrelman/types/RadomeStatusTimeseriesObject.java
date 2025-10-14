@@ -21,11 +21,24 @@ public class RadomeStatusTimeseriesObject extends UInt32TimeseriesObject {
         return _radome;
     }
     public void setRadome( Guid value ) {
-        if( _radome != value ) {
-            this._radome = value;
+        if( !Comparer.equalsNullableGuid( _radome, value ) ) {
+            _radome = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _radome );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _radome = source.readNullableGuid( );
+    }
 
 }

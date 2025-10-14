@@ -22,8 +22,8 @@ public class TimeSpanTimeseriesPropertyDefinitionObject extends TimeseriesProper
         return _minValue;
     }
     public void setMinValue( TimeSpan value ) {
-        if( _minValue != value ) {
-            this._minValue = value;
+        if( !Comparer.equalsTimeSpan( _minValue, value ) ) {
+            _minValue = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class TimeSpanTimeseriesPropertyDefinitionObject extends TimeseriesProper
         return _maxValue;
     }
     public void setMaxValue( TimeSpan value ) {
-        if( _maxValue != value ) {
-            this._maxValue = value;
+        if( !Comparer.equalsTimeSpan( _maxValue, value ) ) {
+            _maxValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeTimeSpan( _minValue );
+        destination.writeTimeSpan( _maxValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _minValue = source.readTimeSpan( );
+        _maxValue = source.readTimeSpan( );
+    }
 
 }

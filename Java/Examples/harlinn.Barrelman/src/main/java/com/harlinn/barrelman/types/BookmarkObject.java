@@ -27,8 +27,8 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -37,8 +37,8 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
         return _view;
     }
     public void setView( Guid value ) {
-        if( _view != value ) {
-            this._view = value;
+        if( !Comparer.equalsGuid( _view, value ) ) {
+            _view = value;
             onPropertyChanged( );
         }
     }
@@ -47,8 +47,8 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -57,8 +57,8 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsNullableDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -67,8 +67,8 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -77,8 +77,8 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -87,11 +87,36 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
         return _zoomLevel;
     }
     public void setZoomLevel( double value ) {
-        if( _zoomLevel != value ) {
-            this._zoomLevel = value;
+        if( !Comparer.equalsDouble( _zoomLevel, value ) ) {
+            _zoomLevel = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _view );
+        destination.writeStringUtf8( _name );
+        destination.writeNullableDateTime( _timestamp );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _zoomLevel );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _view = source.readGuid( );
+        _name = source.readString( );
+        _timestamp = source.readNullableDateTime( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _zoomLevel = source.readDouble( );
+    }
 
 }

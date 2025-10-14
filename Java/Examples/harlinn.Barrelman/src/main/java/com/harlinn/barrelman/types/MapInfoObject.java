@@ -29,8 +29,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _scale;
     }
     public void setScale( int value ) {
-        if( _scale != value ) {
-            this._scale = value;
+        if( !Comparer.equalsInt32( _scale, value ) ) {
+            _scale = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _northWestLatitude;
     }
     public void setNorthWestLatitude( double value ) {
-        if( _northWestLatitude != value ) {
-            this._northWestLatitude = value;
+        if( !Comparer.equalsDouble( _northWestLatitude, value ) ) {
+            _northWestLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _northWestLongitude;
     }
     public void setNorthWestLongitude( double value ) {
-        if( _northWestLongitude != value ) {
-            this._northWestLongitude = value;
+        if( !Comparer.equalsDouble( _northWestLongitude, value ) ) {
+            _northWestLongitude = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _southEastLatitude;
     }
     public void setSouthEastLatitude( double value ) {
-        if( _southEastLatitude != value ) {
-            this._southEastLatitude = value;
+        if( !Comparer.equalsDouble( _southEastLatitude, value ) ) {
+            _southEastLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _southEastLongitude;
     }
     public void setSouthEastLongitude( double value ) {
-        if( _southEastLongitude != value ) {
-            this._southEastLongitude = value;
+        if( !Comparer.equalsDouble( _southEastLongitude, value ) ) {
+            _southEastLongitude = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
         return _image;
     }
     public void setImage( byte[] value ) {
-        if( _image != value ) {
-            this._image = value;
+        if( !Comparer.equalsUInt8Array( _image, value ) ) {
+            _image = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeInt32( _scale );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _northWestLatitude );
+        destination.writeDouble( _northWestLongitude );
+        destination.writeDouble( _southEastLatitude );
+        destination.writeDouble( _southEastLongitude );
+        destination.writeUInt8Array( _image );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _scale = source.readInt32( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _northWestLatitude = source.readDouble( );
+        _northWestLongitude = source.readDouble( );
+        _southEastLatitude = source.readDouble( );
+        _southEastLongitude = source.readDouble( );
+        _image = source.readUInt8Array( );
+    }
 
 }

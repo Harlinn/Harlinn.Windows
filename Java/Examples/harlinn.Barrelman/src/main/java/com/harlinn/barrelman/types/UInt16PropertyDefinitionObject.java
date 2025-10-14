@@ -23,8 +23,8 @@ public class UInt16PropertyDefinitionObject extends PropertyDefinitionObject {
         return _defaultValue;
     }
     public void setDefaultValue( short value ) {
-        if( _defaultValue != value ) {
-            this._defaultValue = value;
+        if( !Comparer.equalsUInt16( _defaultValue, value ) ) {
+            _defaultValue = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class UInt16PropertyDefinitionObject extends PropertyDefinitionObject {
         return _minValue;
     }
     public void setMinValue( short value ) {
-        if( _minValue != value ) {
-            this._minValue = value;
+        if( !Comparer.equalsUInt16( _minValue, value ) ) {
+            _minValue = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class UInt16PropertyDefinitionObject extends PropertyDefinitionObject {
         return _maxValue;
     }
     public void setMaxValue( short value ) {
-        if( _maxValue != value ) {
-            this._maxValue = value;
+        if( !Comparer.equalsUInt16( _maxValue, value ) ) {
+            _maxValue = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeUInt16( _defaultValue );
+        destination.writeUInt16( _minValue );
+        destination.writeUInt16( _maxValue );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _defaultValue = source.readUInt16( );
+        _minValue = source.readUInt16( );
+        _maxValue = source.readUInt16( );
+    }
 
 }

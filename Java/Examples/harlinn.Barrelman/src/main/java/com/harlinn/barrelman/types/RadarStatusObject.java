@@ -29,8 +29,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -39,8 +39,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _radar;
     }
     public void setRadar( Guid value ) {
-        if( _radar != value ) {
-            this._radar = value;
+        if( !Comparer.equalsGuid( _radar, value ) ) {
+            _radar = value;
             onPropertyChanged( );
         }
     }
@@ -49,8 +49,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -59,8 +59,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _azimuthCount;
     }
     public void setAzimuthCount( int value ) {
-        if( _azimuthCount != value ) {
-            this._azimuthCount = value;
+        if( !Comparer.equalsInt32( _azimuthCount, value ) ) {
+            _azimuthCount = value;
             onPropertyChanged( );
         }
     }
@@ -69,8 +69,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _triggerCount;
     }
     public void setTriggerCount( int value ) {
-        if( _triggerCount != value ) {
-            this._triggerCount = value;
+        if( !Comparer.equalsInt32( _triggerCount, value ) ) {
+            _triggerCount = value;
             onPropertyChanged( );
         }
     }
@@ -79,8 +79,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _rotationTime;
     }
     public void setRotationTime( TimeSpan value ) {
-        if( _rotationTime != value ) {
-            this._rotationTime = value;
+        if( !Comparer.equalsTimeSpan( _rotationTime, value ) ) {
+            _rotationTime = value;
             onPropertyChanged( );
         }
     }
@@ -89,8 +89,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _pulse;
     }
     public void setPulse( int value ) {
-        if( _pulse != value ) {
-            this._pulse = value;
+        if( !Comparer.equalsInt32( _pulse, value ) ) {
+            _pulse = value;
             onPropertyChanged( );
         }
     }
@@ -99,8 +99,8 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _tx;
     }
     public void setTx( boolean value ) {
-        if( _tx != value ) {
-            this._tx = value;
+        if( !Comparer.equalsBoolean( _tx, value ) ) {
+            _tx = value;
             onPropertyChanged( );
         }
     }
@@ -109,11 +109,40 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
         return _tracking;
     }
     public void setTracking( boolean value ) {
-        if( _tracking != value ) {
-            this._tracking = value;
+        if( !Comparer.equalsBoolean( _tracking, value ) ) {
+            _tracking = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _radar );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _azimuthCount );
+        destination.writeInt32( _triggerCount );
+        destination.writeTimeSpan( _rotationTime );
+        destination.writeInt32( _pulse );
+        destination.writeBoolean( _tx );
+        destination.writeBoolean( _tracking );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _radar = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _azimuthCount = source.readInt32( );
+        _triggerCount = source.readInt32( );
+        _rotationTime = source.readTimeSpan( );
+        _pulse = source.readInt32( );
+        _tx = source.readBoolean( );
+        _tracking = source.readBoolean( );
+    }
 
 }

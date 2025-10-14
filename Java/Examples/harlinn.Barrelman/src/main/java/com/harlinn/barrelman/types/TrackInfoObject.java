@@ -28,8 +28,8 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _firstTimestamp;
     }
     public void setFirstTimestamp( DateTime value ) {
-        if( _firstTimestamp != value ) {
-            this._firstTimestamp = value;
+        if( !Comparer.equalsNullableDateTime( _firstTimestamp, value ) ) {
+            _firstTimestamp = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _lastTimestamp;
     }
     public void setLastTimestamp( DateTime value ) {
-        if( _lastTimestamp != value ) {
-            this._lastTimestamp = value;
+        if( !Comparer.equalsNullableDateTime( _lastTimestamp, value ) ) {
+            _lastTimestamp = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _count;
     }
     public void setCount( long value ) {
-        if( _count != value ) {
-            this._count = value;
+        if( !Comparer.equalsInt64( _count, value ) ) {
+            _count = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _northWestLatitude;
     }
     public void setNorthWestLatitude( Double value ) {
-        if( _northWestLatitude != value ) {
-            this._northWestLatitude = value;
+        if( !Comparer.equalsNullableDouble( _northWestLatitude, value ) ) {
+            _northWestLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _northWestLongitude;
     }
     public void setNorthWestLongitude( Double value ) {
-        if( _northWestLongitude != value ) {
-            this._northWestLongitude = value;
+        if( !Comparer.equalsNullableDouble( _northWestLongitude, value ) ) {
+            _northWestLongitude = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _southEastLatitude;
     }
     public void setSouthEastLatitude( Double value ) {
-        if( _southEastLatitude != value ) {
-            this._southEastLatitude = value;
+        if( !Comparer.equalsNullableDouble( _southEastLatitude, value ) ) {
+            _southEastLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
         return _southEastLongitude;
     }
     public void setSouthEastLongitude( Double value ) {
-        if( _southEastLongitude != value ) {
-            this._southEastLongitude = value;
+        if( !Comparer.equalsNullableDouble( _southEastLongitude, value ) ) {
+            _southEastLongitude = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeNullableDateTime( _firstTimestamp );
+        destination.writeNullableDateTime( _lastTimestamp );
+        destination.writeInt64( _count );
+        destination.writeNullableDouble( _northWestLatitude );
+        destination.writeNullableDouble( _northWestLongitude );
+        destination.writeNullableDouble( _southEastLatitude );
+        destination.writeNullableDouble( _southEastLongitude );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _firstTimestamp = source.readNullableDateTime( );
+        _lastTimestamp = source.readNullableDateTime( );
+        _count = source.readInt64( );
+        _northWestLatitude = source.readNullableDouble( );
+        _northWestLongitude = source.readNullableDouble( );
+        _southEastLatitude = source.readNullableDouble( );
+        _southEastLongitude = source.readNullableDouble( );
+    }
 
 }

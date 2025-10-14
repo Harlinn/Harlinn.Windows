@@ -32,8 +32,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -42,8 +42,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -52,8 +52,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _timerInterval;
     }
     public void setTimerInterval( TimeSpan value ) {
-        if( _timerInterval != value ) {
-            this._timerInterval = value;
+        if( !Comparer.equalsTimeSpan( _timerInterval, value ) ) {
+            _timerInterval = value;
             onPropertyChanged( );
         }
     }
@@ -62,8 +62,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _maxAgeOfCurrentTrackValue;
     }
     public void setMaxAgeOfCurrentTrackValue( TimeSpan value ) {
-        if( _maxAgeOfCurrentTrackValue != value ) {
-            this._maxAgeOfCurrentTrackValue = value;
+        if( !Comparer.equalsTimeSpan( _maxAgeOfCurrentTrackValue, value ) ) {
+            _maxAgeOfCurrentTrackValue = value;
             onPropertyChanged( );
         }
     }
@@ -72,8 +72,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _falseThreshold;
     }
     public void setFalseThreshold( double value ) {
-        if( _falseThreshold != value ) {
-            this._falseThreshold = value;
+        if( !Comparer.equalsDouble( _falseThreshold, value ) ) {
+            _falseThreshold = value;
             onPropertyChanged( );
         }
     }
@@ -82,8 +82,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _distanceThreshold;
     }
     public void setDistanceThreshold( double value ) {
-        if( _distanceThreshold != value ) {
-            this._distanceThreshold = value;
+        if( !Comparer.equalsDouble( _distanceThreshold, value ) ) {
+            _distanceThreshold = value;
             onPropertyChanged( );
         }
     }
@@ -92,8 +92,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _distanceUnmergeThreshold;
     }
     public void setDistanceUnmergeThreshold( double value ) {
-        if( _distanceUnmergeThreshold != value ) {
-            this._distanceUnmergeThreshold = value;
+        if( !Comparer.equalsDouble( _distanceUnmergeThreshold, value ) ) {
+            _distanceUnmergeThreshold = value;
             onPropertyChanged( );
         }
     }
@@ -102,8 +102,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _unmergeLatency;
     }
     public void setUnmergeLatency( long value ) {
-        if( _unmergeLatency != value ) {
-            this._unmergeLatency = value;
+        if( !Comparer.equalsInt64( _unmergeLatency, value ) ) {
+            _unmergeLatency = value;
             onPropertyChanged( );
         }
     }
@@ -112,8 +112,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _kalmanFiltering;
     }
     public void setKalmanFiltering( boolean value ) {
-        if( _kalmanFiltering != value ) {
-            this._kalmanFiltering = value;
+        if( !Comparer.equalsBoolean( _kalmanFiltering, value ) ) {
+            _kalmanFiltering = value;
             onPropertyChanged( );
         }
     }
@@ -122,8 +122,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _maxCourseDeviation;
     }
     public void setMaxCourseDeviation( double value ) {
-        if( _maxCourseDeviation != value ) {
-            this._maxCourseDeviation = value;
+        if( !Comparer.equalsDouble( _maxCourseDeviation, value ) ) {
+            _maxCourseDeviation = value;
             onPropertyChanged( );
         }
     }
@@ -132,8 +132,8 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _maxSpeedDeviation;
     }
     public void setMaxSpeedDeviation( double value ) {
-        if( _maxSpeedDeviation != value ) {
-            this._maxSpeedDeviation = value;
+        if( !Comparer.equalsDouble( _maxSpeedDeviation, value ) ) {
+            _maxSpeedDeviation = value;
             onPropertyChanged( );
         }
     }
@@ -142,11 +142,46 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
         return _minimumSpeedThreshold;
     }
     public void setMinimumSpeedThreshold( double value ) {
-        if( _minimumSpeedThreshold != value ) {
-            this._minimumSpeedThreshold = value;
+        if( !Comparer.equalsDouble( _minimumSpeedThreshold, value ) ) {
+            _minimumSpeedThreshold = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeDateTime( _timestamp );
+        destination.writeTimeSpan( _timerInterval );
+        destination.writeTimeSpan( _maxAgeOfCurrentTrackValue );
+        destination.writeDouble( _falseThreshold );
+        destination.writeDouble( _distanceThreshold );
+        destination.writeDouble( _distanceUnmergeThreshold );
+        destination.writeInt64( _unmergeLatency );
+        destination.writeBoolean( _kalmanFiltering );
+        destination.writeDouble( _maxCourseDeviation );
+        destination.writeDouble( _maxSpeedDeviation );
+        destination.writeDouble( _minimumSpeedThreshold );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _timestamp = source.readDateTime( );
+        _timerInterval = source.readTimeSpan( );
+        _maxAgeOfCurrentTrackValue = source.readTimeSpan( );
+        _falseThreshold = source.readDouble( );
+        _distanceThreshold = source.readDouble( );
+        _distanceUnmergeThreshold = source.readDouble( );
+        _unmergeLatency = source.readInt64( );
+        _kalmanFiltering = source.readBoolean( );
+        _maxCourseDeviation = source.readDouble( );
+        _maxSpeedDeviation = source.readDouble( );
+        _minimumSpeedThreshold = source.readDouble( );
+    }
 
 }

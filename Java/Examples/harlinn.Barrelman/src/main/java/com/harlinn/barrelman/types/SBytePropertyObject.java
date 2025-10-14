@@ -21,11 +21,24 @@ public class SBytePropertyObject extends PropertyObject {
         return _value;
     }
     public void setValue( byte value ) {
-        if( _value != value ) {
-            this._value = value;
+        if( !Comparer.equalsInt8( _value, value ) ) {
+            _value = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt8( _value );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _value = source.readInt8( );
+    }
 
 }

@@ -30,8 +30,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -40,8 +40,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radio;
     }
     public void setRadio( Guid value ) {
-        if( _radio != value ) {
-            this._radio = value;
+        if( !Comparer.equalsGuid( _radio, value ) ) {
+            _radio = value;
             onPropertyChanged( );
         }
     }
@@ -50,8 +50,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -60,8 +60,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -70,8 +70,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -80,8 +80,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _playbackUrl;
     }
     public void setPlaybackUrl( String value ) {
-        if( _playbackUrl != value ) {
-            this._playbackUrl = value;
+        if( !Comparer.equalsString( _playbackUrl, value ) ) {
+            _playbackUrl = value;
             onPropertyChanged( );
         }
     }
@@ -90,8 +90,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radioIPAddress;
     }
     public void setRadioIPAddress( String value ) {
-        if( _radioIPAddress != value ) {
-            this._radioIPAddress = value;
+        if( !Comparer.equalsString( _radioIPAddress, value ) ) {
+            _radioIPAddress = value;
             onPropertyChanged( );
         }
     }
@@ -100,8 +100,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radioPort;
     }
     public void setRadioPort( int value ) {
-        if( _radioPort != value ) {
-            this._radioPort = value;
+        if( !Comparer.equalsInt32( _radioPort, value ) ) {
+            _radioPort = value;
             onPropertyChanged( );
         }
     }
@@ -110,8 +110,8 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _ed137IPAddress;
     }
     public void setEd137IPAddress( String value ) {
-        if( _ed137IPAddress != value ) {
-            this._ed137IPAddress = value;
+        if( !Comparer.equalsString( _ed137IPAddress, value ) ) {
+            _ed137IPAddress = value;
             onPropertyChanged( );
         }
     }
@@ -120,11 +120,42 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _ed137Port;
     }
     public void setEd137Port( int value ) {
-        if( _ed137Port != value ) {
-            this._ed137Port = value;
+        if( !Comparer.equalsInt32( _ed137Port, value ) ) {
+            _ed137Port = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _radio );
+        destination.writeDateTime( _timestamp );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeStringUtf8( _playbackUrl );
+        destination.writeStringUtf8( _radioIPAddress );
+        destination.writeInt32( _radioPort );
+        destination.writeStringUtf8( _ed137IPAddress );
+        destination.writeInt32( _ed137Port );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _radio = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _playbackUrl = source.readString( );
+        _radioIPAddress = source.readString( );
+        _radioPort = source.readInt32( );
+        _ed137IPAddress = source.readString( );
+        _ed137Port = source.readInt32( );
+    }
 
 }

@@ -25,8 +25,8 @@ public class RadarCommandReplyGetStatusObject extends RadarCommandReplyObject {
         return _azimuthCount;
     }
     public void setAzimuthCount( int value ) {
-        if( _azimuthCount != value ) {
-            this._azimuthCount = value;
+        if( !Comparer.equalsInt32( _azimuthCount, value ) ) {
+            _azimuthCount = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class RadarCommandReplyGetStatusObject extends RadarCommandReplyObject {
         return _triggerCount;
     }
     public void setTriggerCount( int value ) {
-        if( _triggerCount != value ) {
-            this._triggerCount = value;
+        if( !Comparer.equalsInt32( _triggerCount, value ) ) {
+            _triggerCount = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class RadarCommandReplyGetStatusObject extends RadarCommandReplyObject {
         return _rotationCount;
     }
     public void setRotationCount( TimeSpan value ) {
-        if( _rotationCount != value ) {
-            this._rotationCount = value;
+        if( !Comparer.equalsTimeSpan( _rotationCount, value ) ) {
+            _rotationCount = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class RadarCommandReplyGetStatusObject extends RadarCommandReplyObject {
         return _pulse;
     }
     public void setPulse( int value ) {
-        if( _pulse != value ) {
-            this._pulse = value;
+        if( !Comparer.equalsInt32( _pulse, value ) ) {
+            _pulse = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class RadarCommandReplyGetStatusObject extends RadarCommandReplyObject {
         return _tx;
     }
     public void setTx( boolean value ) {
-        if( _tx != value ) {
-            this._tx = value;
+        if( !Comparer.equalsBoolean( _tx, value ) ) {
+            _tx = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _azimuthCount );
+        destination.writeInt32( _triggerCount );
+        destination.writeTimeSpan( _rotationCount );
+        destination.writeInt32( _pulse );
+        destination.writeBoolean( _tx );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _azimuthCount = source.readInt32( );
+        _triggerCount = source.readInt32( );
+        _rotationCount = source.readTimeSpan( );
+        _pulse = source.readInt32( );
+        _tx = source.readBoolean( );
+    }
 
 }

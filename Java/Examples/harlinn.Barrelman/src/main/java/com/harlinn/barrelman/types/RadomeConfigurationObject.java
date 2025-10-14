@@ -28,8 +28,8 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _radome;
     }
     public void setRadome( Guid value ) {
-        if( _radome != value ) {
-            this._radome = value;
+        if( !Comparer.equalsGuid( _radome, value ) ) {
+            _radome = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _interval;
     }
     public void setInterval( TimeSpan value ) {
-        if( _interval != value ) {
-            this._interval = value;
+        if( !Comparer.equalsTimeSpan( _interval, value ) ) {
+            _interval = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _lowPressureLimit;
     }
     public void setLowPressureLimit( double value ) {
-        if( _lowPressureLimit != value ) {
-            this._lowPressureLimit = value;
+        if( !Comparer.equalsDouble( _lowPressureLimit, value ) ) {
+            _lowPressureLimit = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _highPressureLimit;
     }
     public void setHighPressureLimit( double value ) {
-        if( _highPressureLimit != value ) {
-            this._highPressureLimit = value;
+        if( !Comparer.equalsDouble( _highPressureLimit, value ) ) {
+            _highPressureLimit = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _lowTemperatureLimit;
     }
     public void setLowTemperatureLimit( double value ) {
-        if( _lowTemperatureLimit != value ) {
-            this._lowTemperatureLimit = value;
+        if( !Comparer.equalsDouble( _lowTemperatureLimit, value ) ) {
+            _lowTemperatureLimit = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
         return _highTemperatureLimit;
     }
     public void setHighTemperatureLimit( double value ) {
-        if( _highTemperatureLimit != value ) {
-            this._highTemperatureLimit = value;
+        if( !Comparer.equalsDouble( _highTemperatureLimit, value ) ) {
+            _highTemperatureLimit = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _radome );
+        destination.writeDateTime( _timestamp );
+        destination.writeTimeSpan( _interval );
+        destination.writeDouble( _lowPressureLimit );
+        destination.writeDouble( _highPressureLimit );
+        destination.writeDouble( _lowTemperatureLimit );
+        destination.writeDouble( _highTemperatureLimit );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _radome = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _interval = source.readTimeSpan( );
+        _lowPressureLimit = source.readDouble( );
+        _highPressureLimit = source.readDouble( );
+        _lowTemperatureLimit = source.readDouble( );
+        _highTemperatureLimit = source.readDouble( );
+    }
 
 }

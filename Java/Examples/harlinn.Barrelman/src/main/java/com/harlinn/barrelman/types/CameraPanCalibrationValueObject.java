@@ -24,8 +24,8 @@ public class CameraPanCalibrationValueObject extends AbstractDataObjectWithGuidK
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -34,8 +34,8 @@ public class CameraPanCalibrationValueObject extends AbstractDataObjectWithGuidK
         return _panCalibration;
     }
     public void setPanCalibration( Guid value ) {
-        if( _panCalibration != value ) {
-            this._panCalibration = value;
+        if( !Comparer.equalsGuid( _panCalibration, value ) ) {
+            _panCalibration = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class CameraPanCalibrationValueObject extends AbstractDataObjectWithGuidK
         return _panAngle;
     }
     public void setPanAngle( double value ) {
-        if( _panAngle != value ) {
-            this._panAngle = value;
+        if( !Comparer.equalsDouble( _panAngle, value ) ) {
+            _panAngle = value;
             onPropertyChanged( );
         }
     }
@@ -54,11 +54,30 @@ public class CameraPanCalibrationValueObject extends AbstractDataObjectWithGuidK
         return _panOffset;
     }
     public void setPanOffset( double value ) {
-        if( _panOffset != value ) {
-            this._panOffset = value;
+        if( !Comparer.equalsDouble( _panOffset, value ) ) {
+            _panOffset = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _panCalibration );
+        destination.writeDouble( _panAngle );
+        destination.writeDouble( _panOffset );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _panCalibration = source.readGuid( );
+        _panAngle = source.readDouble( );
+        _panOffset = source.readDouble( );
+    }
 
 }

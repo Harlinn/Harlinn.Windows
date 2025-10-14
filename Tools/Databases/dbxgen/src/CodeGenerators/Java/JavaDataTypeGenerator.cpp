@@ -87,13 +87,15 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                     auto typeName = JavaHelper::GetMemberFieldType( *member );
                     auto fieldName = JavaHelper::GetMemberFieldName( *member );
                     auto propertyName = member->Name( ).FirstToUpper( );
+                    auto equals = JavaHelper::GetEquals( *member, fieldName, L"value" );
+                    auto deepCopy = JavaHelper::GetDeepCopy( *member, L"value", fieldName );
 
                     WriteLine( L"    public {} get{}( ) {{", typeName, propertyName );
                     WriteLine( L"        return {};", fieldName );
                     WriteLine( L"    }" );
                     WriteLine( L"    public void set{}( {} value ) {{", propertyName, typeName );
-                    WriteLine( L"        if( {} != value ) {{", fieldName );
-                    WriteLine( L"            this.{} = value;", fieldName );
+                    WriteLine( L"        if( !{} ) {{", equals );
+                    WriteLine( L"            {};", deepCopy );
                     WriteLine( L"            onPropertyChanged( );" );
                     WriteLine( L"        }" );
                     WriteLine( L"    }" );
@@ -101,6 +103,39 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 }
             }
             WriteLine( );
+
+            WriteLine( );
+            WriteLine( L"    @Override" );
+            WriteLine( L"    public void writeTo( BinaryWriter destination ) {" );
+            WriteLine( L"        super.writeTo( destination );" );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto fieldName = JavaHelper::GetMemberFieldName( *member );
+                    auto writeFunctionName = JavaHelper::GetSerializationWriteFunction( *member );
+
+                    WriteLine( L"        destination.{}( {} );", writeFunctionName, fieldName );
+                }
+            }
+            WriteLine( L"    }" );
+            WriteLine( );
+            WriteLine( L"    @Override" );
+            WriteLine( L"    public void readFrom(BinaryReader source) {" );
+            WriteLine( L"        super.readFrom( source );" );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto fieldName = JavaHelper::GetMemberFieldName( *member );
+                    auto readFunctionName = JavaHelper::GetSerializationReadFunction( *member );
+
+                    WriteLine( L"        {} = source.{}( );", fieldName, readFunctionName );
+                }
+            }
+            WriteLine( L"    }" );
+            WriteLine( );
+
         }
         WriteLine( L"}" );
 

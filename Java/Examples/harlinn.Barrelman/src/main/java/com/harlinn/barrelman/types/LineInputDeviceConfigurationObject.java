@@ -56,8 +56,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -66,8 +66,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _lineInputDevice;
     }
     public void setLineInputDevice( Guid value ) {
-        if( _lineInputDevice != value ) {
-            this._lineInputDevice = value;
+        if( !Comparer.equalsGuid( _lineInputDevice, value ) ) {
+            _lineInputDevice = value;
             onPropertyChanged( );
         }
     }
@@ -76,8 +76,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -86,8 +86,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _storeReceivedSentences;
     }
     public void setStoreReceivedSentences( boolean value ) {
-        if( _storeReceivedSentences != value ) {
-            this._storeReceivedSentences = value;
+        if( !Comparer.equalsBoolean( _storeReceivedSentences, value ) ) {
+            _storeReceivedSentences = value;
             onPropertyChanged( );
         }
     }
@@ -96,8 +96,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _storeSentMessages;
     }
     public void setStoreSentMessages( boolean value ) {
-        if( _storeSentMessages != value ) {
-            this._storeSentMessages = value;
+        if( !Comparer.equalsBoolean( _storeSentMessages, value ) ) {
+            _storeSentMessages = value;
             onPropertyChanged( );
         }
     }
@@ -106,8 +106,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _storeUnsentMessages;
     }
     public void setStoreUnsentMessages( boolean value ) {
-        if( _storeUnsentMessages != value ) {
-            this._storeUnsentMessages = value;
+        if( !Comparer.equalsBoolean( _storeUnsentMessages, value ) ) {
+            _storeUnsentMessages = value;
             onPropertyChanged( );
         }
     }
@@ -116,8 +116,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _nMEA;
     }
     public void setNMEA( boolean value ) {
-        if( _nMEA != value ) {
-            this._nMEA = value;
+        if( !Comparer.equalsBoolean( _nMEA, value ) ) {
+            _nMEA = value;
             onPropertyChanged( );
         }
     }
@@ -126,8 +126,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _strictNMEA;
     }
     public void setStrictNMEA( boolean value ) {
-        if( _strictNMEA != value ) {
-            this._strictNMEA = value;
+        if( !Comparer.equalsBoolean( _strictNMEA, value ) ) {
+            _strictNMEA = value;
             onPropertyChanged( );
         }
     }
@@ -136,8 +136,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _connectionType;
     }
     public void setConnectionType( int value ) {
-        if( _connectionType != value ) {
-            this._connectionType = value;
+        if( !Comparer.equalsInt32( _connectionType, value ) ) {
+            _connectionType = value;
             onPropertyChanged( );
         }
     }
@@ -146,8 +146,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _udpReceivePort;
     }
     public void setUdpReceivePort( int value ) {
-        if( _udpReceivePort != value ) {
-            this._udpReceivePort = value;
+        if( !Comparer.equalsInt32( _udpReceivePort, value ) ) {
+            _udpReceivePort = value;
             onPropertyChanged( );
         }
     }
@@ -156,8 +156,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _udpSendHostname;
     }
     public void setUdpSendHostname( String value ) {
-        if( _udpSendHostname != value ) {
-            this._udpSendHostname = value;
+        if( !Comparer.equalsString( _udpSendHostname, value ) ) {
+            _udpSendHostname = value;
             onPropertyChanged( );
         }
     }
@@ -166,8 +166,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _udpSendPort;
     }
     public void setUdpSendPort( int value ) {
-        if( _udpSendPort != value ) {
-            this._udpSendPort = value;
+        if( !Comparer.equalsInt32( _udpSendPort, value ) ) {
+            _udpSendPort = value;
             onPropertyChanged( );
         }
     }
@@ -176,8 +176,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _tcpHostname;
     }
     public void setTcpHostname( String value ) {
-        if( _tcpHostname != value ) {
-            this._tcpHostname = value;
+        if( !Comparer.equalsString( _tcpHostname, value ) ) {
+            _tcpHostname = value;
             onPropertyChanged( );
         }
     }
@@ -186,8 +186,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _tcpPort;
     }
     public void setTcpPort( int value ) {
-        if( _tcpPort != value ) {
-            this._tcpPort = value;
+        if( !Comparer.equalsInt32( _tcpPort, value ) ) {
+            _tcpPort = value;
             onPropertyChanged( );
         }
     }
@@ -196,8 +196,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _useHttpLogin;
     }
     public void setUseHttpLogin( boolean value ) {
-        if( _useHttpLogin != value ) {
-            this._useHttpLogin = value;
+        if( !Comparer.equalsBoolean( _useHttpLogin, value ) ) {
+            _useHttpLogin = value;
             onPropertyChanged( );
         }
     }
@@ -206,8 +206,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _loginHostname;
     }
     public void setLoginHostname( String value ) {
-        if( _loginHostname != value ) {
-            this._loginHostname = value;
+        if( !Comparer.equalsString( _loginHostname, value ) ) {
+            _loginHostname = value;
             onPropertyChanged( );
         }
     }
@@ -216,8 +216,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _loginPort;
     }
     public void setLoginPort( int value ) {
-        if( _loginPort != value ) {
-            this._loginPort = value;
+        if( !Comparer.equalsInt32( _loginPort, value ) ) {
+            _loginPort = value;
             onPropertyChanged( );
         }
     }
@@ -226,8 +226,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _userName;
     }
     public void setUserName( String value ) {
-        if( _userName != value ) {
-            this._userName = value;
+        if( !Comparer.equalsString( _userName, value ) ) {
+            _userName = value;
             onPropertyChanged( );
         }
     }
@@ -236,8 +236,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _password;
     }
     public void setPassword( String value ) {
-        if( _password != value ) {
-            this._password = value;
+        if( !Comparer.equalsString( _password, value ) ) {
+            _password = value;
             onPropertyChanged( );
         }
     }
@@ -246,8 +246,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _comPort;
     }
     public void setComPort( String value ) {
-        if( _comPort != value ) {
-            this._comPort = value;
+        if( !Comparer.equalsString( _comPort, value ) ) {
+            _comPort = value;
             onPropertyChanged( );
         }
     }
@@ -256,8 +256,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _baudRate;
     }
     public void setBaudRate( int value ) {
-        if( _baudRate != value ) {
-            this._baudRate = value;
+        if( !Comparer.equalsInt32( _baudRate, value ) ) {
+            _baudRate = value;
             onPropertyChanged( );
         }
     }
@@ -266,8 +266,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _dataBits;
     }
     public void setDataBits( int value ) {
-        if( _dataBits != value ) {
-            this._dataBits = value;
+        if( !Comparer.equalsInt32( _dataBits, value ) ) {
+            _dataBits = value;
             onPropertyChanged( );
         }
     }
@@ -276,8 +276,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _discardNull;
     }
     public void setDiscardNull( boolean value ) {
-        if( _discardNull != value ) {
-            this._discardNull = value;
+        if( !Comparer.equalsBoolean( _discardNull, value ) ) {
+            _discardNull = value;
             onPropertyChanged( );
         }
     }
@@ -286,8 +286,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _dtrEnable;
     }
     public void setDtrEnable( boolean value ) {
-        if( _dtrEnable != value ) {
-            this._dtrEnable = value;
+        if( !Comparer.equalsBoolean( _dtrEnable, value ) ) {
+            _dtrEnable = value;
             onPropertyChanged( );
         }
     }
@@ -296,8 +296,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _handshake;
     }
     public void setHandshake( int value ) {
-        if( _handshake != value ) {
-            this._handshake = value;
+        if( !Comparer.equalsInt32( _handshake, value ) ) {
+            _handshake = value;
             onPropertyChanged( );
         }
     }
@@ -306,8 +306,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _newLine;
     }
     public void setNewLine( String value ) {
-        if( _newLine != value ) {
-            this._newLine = value;
+        if( !Comparer.equalsString( _newLine, value ) ) {
+            _newLine = value;
             onPropertyChanged( );
         }
     }
@@ -316,8 +316,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _parity;
     }
     public void setParity( int value ) {
-        if( _parity != value ) {
-            this._parity = value;
+        if( !Comparer.equalsInt32( _parity, value ) ) {
+            _parity = value;
             onPropertyChanged( );
         }
     }
@@ -326,8 +326,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _parityReplace;
     }
     public void setParityReplace( byte value ) {
-        if( _parityReplace != value ) {
-            this._parityReplace = value;
+        if( !Comparer.equalsUInt8( _parityReplace, value ) ) {
+            _parityReplace = value;
             onPropertyChanged( );
         }
     }
@@ -336,8 +336,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _readBufferSize;
     }
     public void setReadBufferSize( int value ) {
-        if( _readBufferSize != value ) {
-            this._readBufferSize = value;
+        if( !Comparer.equalsInt32( _readBufferSize, value ) ) {
+            _readBufferSize = value;
             onPropertyChanged( );
         }
     }
@@ -346,8 +346,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _readTimeout;
     }
     public void setReadTimeout( TimeSpan value ) {
-        if( _readTimeout != value ) {
-            this._readTimeout = value;
+        if( !Comparer.equalsTimeSpan( _readTimeout, value ) ) {
+            _readTimeout = value;
             onPropertyChanged( );
         }
     }
@@ -356,8 +356,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _receivedBytesThreshold;
     }
     public void setReceivedBytesThreshold( int value ) {
-        if( _receivedBytesThreshold != value ) {
-            this._receivedBytesThreshold = value;
+        if( !Comparer.equalsInt32( _receivedBytesThreshold, value ) ) {
+            _receivedBytesThreshold = value;
             onPropertyChanged( );
         }
     }
@@ -366,8 +366,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _rtsEnable;
     }
     public void setRtsEnable( boolean value ) {
-        if( _rtsEnable != value ) {
-            this._rtsEnable = value;
+        if( !Comparer.equalsBoolean( _rtsEnable, value ) ) {
+            _rtsEnable = value;
             onPropertyChanged( );
         }
     }
@@ -376,8 +376,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _stopBits;
     }
     public void setStopBits( int value ) {
-        if( _stopBits != value ) {
-            this._stopBits = value;
+        if( !Comparer.equalsInt32( _stopBits, value ) ) {
+            _stopBits = value;
             onPropertyChanged( );
         }
     }
@@ -386,8 +386,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _writeBufferSize;
     }
     public void setWriteBufferSize( int value ) {
-        if( _writeBufferSize != value ) {
-            this._writeBufferSize = value;
+        if( !Comparer.equalsInt32( _writeBufferSize, value ) ) {
+            _writeBufferSize = value;
             onPropertyChanged( );
         }
     }
@@ -396,8 +396,8 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _writeTimeout;
     }
     public void setWriteTimeout( TimeSpan value ) {
-        if( _writeTimeout != value ) {
-            this._writeTimeout = value;
+        if( !Comparer.equalsTimeSpan( _writeTimeout, value ) ) {
+            _writeTimeout = value;
             onPropertyChanged( );
         }
     }
@@ -406,11 +406,94 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
         return _pairedComPort;
     }
     public void setPairedComPort( String value ) {
-        if( _pairedComPort != value ) {
-            this._pairedComPort = value;
+        if( !Comparer.equalsString( _pairedComPort, value ) ) {
+            _pairedComPort = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _lineInputDevice );
+        destination.writeDateTime( _timestamp );
+        destination.writeBoolean( _storeReceivedSentences );
+        destination.writeBoolean( _storeSentMessages );
+        destination.writeBoolean( _storeUnsentMessages );
+        destination.writeBoolean( _nMEA );
+        destination.writeBoolean( _strictNMEA );
+        destination.writeInt32( _connectionType );
+        destination.writeInt32( _udpReceivePort );
+        destination.writeStringUtf8( _udpSendHostname );
+        destination.writeInt32( _udpSendPort );
+        destination.writeStringUtf8( _tcpHostname );
+        destination.writeInt32( _tcpPort );
+        destination.writeBoolean( _useHttpLogin );
+        destination.writeStringUtf8( _loginHostname );
+        destination.writeInt32( _loginPort );
+        destination.writeStringUtf8( _userName );
+        destination.writeStringUtf8( _password );
+        destination.writeStringUtf8( _comPort );
+        destination.writeInt32( _baudRate );
+        destination.writeInt32( _dataBits );
+        destination.writeBoolean( _discardNull );
+        destination.writeBoolean( _dtrEnable );
+        destination.writeInt32( _handshake );
+        destination.writeStringUtf8( _newLine );
+        destination.writeInt32( _parity );
+        destination.writeUInt8( _parityReplace );
+        destination.writeInt32( _readBufferSize );
+        destination.writeTimeSpan( _readTimeout );
+        destination.writeInt32( _receivedBytesThreshold );
+        destination.writeBoolean( _rtsEnable );
+        destination.writeInt32( _stopBits );
+        destination.writeInt32( _writeBufferSize );
+        destination.writeTimeSpan( _writeTimeout );
+        destination.writeStringUtf8( _pairedComPort );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _lineInputDevice = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _storeReceivedSentences = source.readBoolean( );
+        _storeSentMessages = source.readBoolean( );
+        _storeUnsentMessages = source.readBoolean( );
+        _nMEA = source.readBoolean( );
+        _strictNMEA = source.readBoolean( );
+        _connectionType = source.readInt32( );
+        _udpReceivePort = source.readInt32( );
+        _udpSendHostname = source.readString( );
+        _udpSendPort = source.readInt32( );
+        _tcpHostname = source.readString( );
+        _tcpPort = source.readInt32( );
+        _useHttpLogin = source.readBoolean( );
+        _loginHostname = source.readString( );
+        _loginPort = source.readInt32( );
+        _userName = source.readString( );
+        _password = source.readString( );
+        _comPort = source.readString( );
+        _baudRate = source.readInt32( );
+        _dataBits = source.readInt32( );
+        _discardNull = source.readBoolean( );
+        _dtrEnable = source.readBoolean( );
+        _handshake = source.readInt32( );
+        _newLine = source.readString( );
+        _parity = source.readInt32( );
+        _parityReplace = source.readUInt8( );
+        _readBufferSize = source.readInt32( );
+        _readTimeout = source.readTimeSpan( );
+        _receivedBytesThreshold = source.readInt32( );
+        _rtsEnable = source.readBoolean( );
+        _stopBits = source.readInt32( );
+        _writeBufferSize = source.readInt32( );
+        _writeTimeout = source.readTimeSpan( );
+        _pairedComPort = source.readString( );
+    }
 
 }

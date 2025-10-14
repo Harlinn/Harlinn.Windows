@@ -28,8 +28,8 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _positionAccuracy;
     }
     public void setPositionAccuracy( int value ) {
-        if( _positionAccuracy != value ) {
-            this._positionAccuracy = value;
+        if( !Comparer.equalsInt32( _positionAccuracy, value ) ) {
+            _positionAccuracy = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _positionFixType;
     }
     public void setPositionFixType( int value ) {
-        if( _positionFixType != value ) {
-            this._positionFixType = value;
+        if( !Comparer.equalsInt32( _positionFixType, value ) ) {
+            _positionFixType = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _raim;
     }
     public void setRaim( int value ) {
-        if( _raim != value ) {
-            this._raim = value;
+        if( !Comparer.equalsInt32( _raim, value ) ) {
+            _raim = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
         return _radioStatus;
     }
     public void setRadioStatus( int value ) {
-        if( _radioStatus != value ) {
-            this._radioStatus = value;
+        if( !Comparer.equalsInt32( _radioStatus, value ) ) {
+            _radioStatus = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _positionAccuracy );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeInt32( _positionFixType );
+        destination.writeInt32( _spare );
+        destination.writeInt32( _raim );
+        destination.writeInt32( _radioStatus );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _timestamp = source.readDateTime( );
+        _positionAccuracy = source.readInt32( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _positionFixType = source.readInt32( );
+        _spare = source.readInt32( );
+        _raim = source.readInt32( );
+        _radioStatus = source.readInt32( );
+    }
 
 }

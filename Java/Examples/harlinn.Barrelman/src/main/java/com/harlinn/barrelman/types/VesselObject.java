@@ -28,8 +28,8 @@ public class VesselObject extends TrackableItemObject {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class VesselObject extends TrackableItemObject {
         return _type;
     }
     public void setType( Guid value ) {
-        if( _type != value ) {
-            this._type = value;
+        if( !Comparer.equalsNullableGuid( _type, value ) ) {
+            _type = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class VesselObject extends TrackableItemObject {
         return _toBow;
     }
     public void setToBow( int value ) {
-        if( _toBow != value ) {
-            this._toBow = value;
+        if( !Comparer.equalsInt32( _toBow, value ) ) {
+            _toBow = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class VesselObject extends TrackableItemObject {
         return _toStern;
     }
     public void setToStern( int value ) {
-        if( _toStern != value ) {
-            this._toStern = value;
+        if( !Comparer.equalsInt32( _toStern, value ) ) {
+            _toStern = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class VesselObject extends TrackableItemObject {
         return _toPort;
     }
     public void setToPort( int value ) {
-        if( _toPort != value ) {
-            this._toPort = value;
+        if( !Comparer.equalsInt32( _toPort, value ) ) {
+            _toPort = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class VesselObject extends TrackableItemObject {
         return _toStarboard;
     }
     public void setToStarboard( int value ) {
-        if( _toStarboard != value ) {
-            this._toStarboard = value;
+        if( !Comparer.equalsInt32( _toStarboard, value ) ) {
+            _toStarboard = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class VesselObject extends TrackableItemObject {
         return _draughtTimeseries;
     }
     public void setDraughtTimeseries( Guid value ) {
-        if( _draughtTimeseries != value ) {
-            this._draughtTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _draughtTimeseries, value ) ) {
+            _draughtTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class VesselObject extends TrackableItemObject {
         return _personsOnBoardTimeseries;
     }
     public void setPersonsOnBoardTimeseries( Guid value ) {
-        if( _personsOnBoardTimeseries != value ) {
-            this._personsOnBoardTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _personsOnBoardTimeseries, value ) ) {
+            _personsOnBoardTimeseries = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeStringUtf8( _name );
+        destination.writeNullableGuid( _type );
+        destination.writeInt32( _toBow );
+        destination.writeInt32( _toStern );
+        destination.writeInt32( _toPort );
+        destination.writeInt32( _toStarboard );
+        destination.writeNullableGuid( _draughtTimeseries );
+        destination.writeNullableGuid( _personsOnBoardTimeseries );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _name = source.readString( );
+        _type = source.readNullableGuid( );
+        _toBow = source.readInt32( );
+        _toStern = source.readInt32( );
+        _toPort = source.readInt32( );
+        _toStarboard = source.readInt32( );
+        _draughtTimeseries = source.readNullableGuid( );
+        _personsOnBoardTimeseries = source.readNullableGuid( );
+    }
 
 }

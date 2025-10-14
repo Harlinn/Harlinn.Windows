@@ -16,8 +16,8 @@ public abstract class SecurityIdentifierObject extends AbstractDataObjectWithGui
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -26,8 +26,8 @@ public abstract class SecurityIdentifierObject extends AbstractDataObjectWithGui
         return _domain;
     }
     public void setDomain( Guid value ) {
-        if( _domain != value ) {
-            this._domain = value;
+        if( !Comparer.equalsGuid( _domain, value ) ) {
+            _domain = value;
             onPropertyChanged( );
         }
     }
@@ -36,8 +36,8 @@ public abstract class SecurityIdentifierObject extends AbstractDataObjectWithGui
         return _identity;
     }
     public void setIdentity( String value ) {
-        if( _identity != value ) {
-            this._identity = value;
+        if( !Comparer.equalsString( _identity, value ) ) {
+            _identity = value;
             onPropertyChanged( );
         }
     }
@@ -46,11 +46,30 @@ public abstract class SecurityIdentifierObject extends AbstractDataObjectWithGui
         return _description;
     }
     public void setDescription( String value ) {
-        if( _description != value ) {
-            this._description = value;
+        if( !Comparer.equalsString( _description, value ) ) {
+            _description = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _domain );
+        destination.writeStringUtf8( _identity );
+        destination.writeStringUtf8( _description );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _domain = source.readGuid( );
+        _identity = source.readString( );
+        _description = source.readString( );
+    }
 
 }

@@ -28,8 +28,8 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _ipAddress;
     }
     public void setIpAddress( String value ) {
-        if( _ipAddress != value ) {
-            this._ipAddress = value;
+        if( !Comparer.equalsString( _ipAddress, value ) ) {
+            _ipAddress = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _port;
     }
     public void setPort( int value ) {
-        if( _port != value ) {
-            this._port = value;
+        if( !Comparer.equalsInt32( _port, value ) ) {
+            _port = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _imageScaleFactorX;
     }
     public void setImageScaleFactorX( double value ) {
-        if( _imageScaleFactorX != value ) {
-            this._imageScaleFactorX = value;
+        if( !Comparer.equalsDouble( _imageScaleFactorX, value ) ) {
+            _imageScaleFactorX = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _imageOffsetX;
     }
     public void setImageOffsetX( double value ) {
-        if( _imageOffsetX != value ) {
-            this._imageOffsetX = value;
+        if( !Comparer.equalsDouble( _imageOffsetX, value ) ) {
+            _imageOffsetX = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _imageScaleFactorY;
     }
     public void setImageScaleFactorY( double value ) {
-        if( _imageScaleFactorY != value ) {
-            this._imageScaleFactorY = value;
+        if( !Comparer.equalsDouble( _imageScaleFactorY, value ) ) {
+            _imageScaleFactorY = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
         return _imageOffsetY;
     }
     public void setImageOffsetY( double value ) {
-        if( _imageOffsetY != value ) {
-            this._imageOffsetY = value;
+        if( !Comparer.equalsDouble( _imageOffsetY, value ) ) {
+            _imageOffsetY = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeDateTime( _timestamp );
+        destination.writeStringUtf8( _ipAddress );
+        destination.writeInt32( _port );
+        destination.writeDouble( _imageScaleFactorX );
+        destination.writeDouble( _imageOffsetX );
+        destination.writeDouble( _imageScaleFactorY );
+        destination.writeDouble( _imageOffsetY );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _timestamp = source.readDateTime( );
+        _ipAddress = source.readString( );
+        _port = source.readInt32( );
+        _imageScaleFactorX = source.readDouble( );
+        _imageOffsetX = source.readDouble( );
+        _imageScaleFactorY = source.readDouble( );
+        _imageOffsetY = source.readDouble( );
+    }
 
 }

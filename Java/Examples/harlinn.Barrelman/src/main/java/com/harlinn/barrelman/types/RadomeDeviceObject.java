@@ -25,8 +25,8 @@ public class RadomeDeviceObject extends DeviceObject {
         return _radar;
     }
     public void setRadar( Guid value ) {
-        if( _radar != value ) {
-            this._radar = value;
+        if( !Comparer.equalsNullableGuid( _radar, value ) ) {
+            _radar = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class RadomeDeviceObject extends DeviceObject {
         return _pressureTimeseries;
     }
     public void setPressureTimeseries( Guid value ) {
-        if( _pressureTimeseries != value ) {
-            this._pressureTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _pressureTimeseries, value ) ) {
+            _pressureTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class RadomeDeviceObject extends DeviceObject {
         return _temperatureTimeseries;
     }
     public void setTemperatureTimeseries( Guid value ) {
-        if( _temperatureTimeseries != value ) {
-            this._temperatureTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _temperatureTimeseries, value ) ) {
+            _temperatureTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class RadomeDeviceObject extends DeviceObject {
         return _dewPointTimeseries;
     }
     public void setDewPointTimeseries( Guid value ) {
-        if( _dewPointTimeseries != value ) {
-            this._dewPointTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _dewPointTimeseries, value ) ) {
+            _dewPointTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class RadomeDeviceObject extends DeviceObject {
         return _statusTimeseries;
     }
     public void setStatusTimeseries( Guid value ) {
-        if( _statusTimeseries != value ) {
-            this._statusTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _statusTimeseries, value ) ) {
+            _statusTimeseries = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _radar );
+        destination.writeNullableGuid( _pressureTimeseries );
+        destination.writeNullableGuid( _temperatureTimeseries );
+        destination.writeNullableGuid( _dewPointTimeseries );
+        destination.writeNullableGuid( _statusTimeseries );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _radar = source.readNullableGuid( );
+        _pressureTimeseries = source.readNullableGuid( );
+        _temperatureTimeseries = source.readNullableGuid( );
+        _dewPointTimeseries = source.readNullableGuid( );
+        _statusTimeseries = source.readNullableGuid( );
+    }
 
 }

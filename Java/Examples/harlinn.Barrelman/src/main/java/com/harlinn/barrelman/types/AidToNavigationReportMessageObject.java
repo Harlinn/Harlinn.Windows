@@ -38,8 +38,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _navigationalAidType;
     }
     public void setNavigationalAidType( int value ) {
-        if( _navigationalAidType != value ) {
-            this._navigationalAidType = value;
+        if( !Comparer.equalsInt32( _navigationalAidType, value ) ) {
+            _navigationalAidType = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _positionAccuracy;
     }
     public void setPositionAccuracy( int value ) {
-        if( _positionAccuracy != value ) {
-            this._positionAccuracy = value;
+        if( !Comparer.equalsInt32( _positionAccuracy, value ) ) {
+            _positionAccuracy = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _dimensionToBow;
     }
     public void setDimensionToBow( int value ) {
-        if( _dimensionToBow != value ) {
-            this._dimensionToBow = value;
+        if( !Comparer.equalsInt32( _dimensionToBow, value ) ) {
+            _dimensionToBow = value;
             onPropertyChanged( );
         }
     }
@@ -98,8 +98,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _dimensionToStern;
     }
     public void setDimensionToStern( int value ) {
-        if( _dimensionToStern != value ) {
-            this._dimensionToStern = value;
+        if( !Comparer.equalsInt32( _dimensionToStern, value ) ) {
+            _dimensionToStern = value;
             onPropertyChanged( );
         }
     }
@@ -108,8 +108,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _dimensionToPort;
     }
     public void setDimensionToPort( int value ) {
-        if( _dimensionToPort != value ) {
-            this._dimensionToPort = value;
+        if( !Comparer.equalsInt32( _dimensionToPort, value ) ) {
+            _dimensionToPort = value;
             onPropertyChanged( );
         }
     }
@@ -118,8 +118,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _dimensionToStarboard;
     }
     public void setDimensionToStarboard( int value ) {
-        if( _dimensionToStarboard != value ) {
-            this._dimensionToStarboard = value;
+        if( !Comparer.equalsInt32( _dimensionToStarboard, value ) ) {
+            _dimensionToStarboard = value;
             onPropertyChanged( );
         }
     }
@@ -128,8 +128,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _positionFixType;
     }
     public void setPositionFixType( int value ) {
-        if( _positionFixType != value ) {
-            this._positionFixType = value;
+        if( !Comparer.equalsInt32( _positionFixType, value ) ) {
+            _positionFixType = value;
             onPropertyChanged( );
         }
     }
@@ -138,8 +138,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _timestamp;
     }
     public void setTimestamp( int value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsInt32( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -148,8 +148,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _offPosition;
     }
     public void setOffPosition( boolean value ) {
-        if( _offPosition != value ) {
-            this._offPosition = value;
+        if( !Comparer.equalsBoolean( _offPosition, value ) ) {
+            _offPosition = value;
             onPropertyChanged( );
         }
     }
@@ -158,8 +158,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _regionalReserved;
     }
     public void setRegionalReserved( int value ) {
-        if( _regionalReserved != value ) {
-            this._regionalReserved = value;
+        if( !Comparer.equalsInt32( _regionalReserved, value ) ) {
+            _regionalReserved = value;
             onPropertyChanged( );
         }
     }
@@ -168,8 +168,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _raim;
     }
     public void setRaim( int value ) {
-        if( _raim != value ) {
-            this._raim = value;
+        if( !Comparer.equalsInt32( _raim, value ) ) {
+            _raim = value;
             onPropertyChanged( );
         }
     }
@@ -178,8 +178,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _virtualAid;
     }
     public void setVirtualAid( boolean value ) {
-        if( _virtualAid != value ) {
-            this._virtualAid = value;
+        if( !Comparer.equalsBoolean( _virtualAid, value ) ) {
+            _virtualAid = value;
             onPropertyChanged( );
         }
     }
@@ -188,8 +188,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _assigned;
     }
     public void setAssigned( boolean value ) {
-        if( _assigned != value ) {
-            this._assigned = value;
+        if( !Comparer.equalsBoolean( _assigned, value ) ) {
+            _assigned = value;
             onPropertyChanged( );
         }
     }
@@ -198,8 +198,8 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -208,11 +208,58 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
         return _nameExtension;
     }
     public void setNameExtension( String value ) {
-        if( _nameExtension != value ) {
-            this._nameExtension = value;
+        if( !Comparer.equalsString( _nameExtension, value ) ) {
+            _nameExtension = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _navigationalAidType );
+        destination.writeStringUtf8( _name );
+        destination.writeInt32( _positionAccuracy );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeInt32( _dimensionToBow );
+        destination.writeInt32( _dimensionToStern );
+        destination.writeInt32( _dimensionToPort );
+        destination.writeInt32( _dimensionToStarboard );
+        destination.writeInt32( _positionFixType );
+        destination.writeInt32( _timestamp );
+        destination.writeBoolean( _offPosition );
+        destination.writeInt32( _regionalReserved );
+        destination.writeInt32( _raim );
+        destination.writeBoolean( _virtualAid );
+        destination.writeBoolean( _assigned );
+        destination.writeInt32( _spare );
+        destination.writeStringUtf8( _nameExtension );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _navigationalAidType = source.readInt32( );
+        _name = source.readString( );
+        _positionAccuracy = source.readInt32( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _dimensionToBow = source.readInt32( );
+        _dimensionToStern = source.readInt32( );
+        _dimensionToPort = source.readInt32( );
+        _dimensionToStarboard = source.readInt32( );
+        _positionFixType = source.readInt32( );
+        _timestamp = source.readInt32( );
+        _offPosition = source.readBoolean( );
+        _regionalReserved = source.readInt32( );
+        _raim = source.readInt32( );
+        _virtualAid = source.readBoolean( );
+        _assigned = source.readBoolean( );
+        _spare = source.readInt32( );
+        _nameExtension = source.readString( );
+    }
 
 }

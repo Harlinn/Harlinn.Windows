@@ -22,8 +22,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -32,8 +32,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -42,8 +42,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -52,8 +52,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -62,8 +62,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _alarmType;
     }
     public void setAlarmType( int value ) {
-        if( _alarmType != value ) {
-            this._alarmType = value;
+        if( !Comparer.equalsInt32( _alarmType, value ) ) {
+            _alarmType = value;
             onPropertyChanged( );
         }
     }
@@ -72,8 +72,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _alarmTime;
     }
     public void setAlarmTime( TimeSpan value ) {
-        if( _alarmTime != value ) {
-            this._alarmTime = value;
+        if( !Comparer.equalsTimeSpan( _alarmTime, value ) ) {
+            _alarmTime = value;
             onPropertyChanged( );
         }
     }
@@ -82,8 +82,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _radarTrackMinimumLifetime;
     }
     public void setRadarTrackMinimumLifetime( TimeSpan value ) {
-        if( _radarTrackMinimumLifetime != value ) {
-            this._radarTrackMinimumLifetime = value;
+        if( !Comparer.equalsTimeSpan( _radarTrackMinimumLifetime, value ) ) {
+            _radarTrackMinimumLifetime = value;
             onPropertyChanged( );
         }
     }
@@ -92,8 +92,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _speed;
     }
     public void setSpeed( double value ) {
-        if( _speed != value ) {
-            this._speed = value;
+        if( !Comparer.equalsDouble( _speed, value ) ) {
+            _speed = value;
             onPropertyChanged( );
         }
     }
@@ -102,8 +102,8 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _strokeColor;
     }
     public void setStrokeColor( int value ) {
-        if( _strokeColor != value ) {
-            this._strokeColor = value;
+        if( !Comparer.equalsUInt32( _strokeColor, value ) ) {
+            _strokeColor = value;
             onPropertyChanged( );
         }
     }
@@ -112,11 +112,42 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
         return _fillColor;
     }
     public void setFillColor( int value ) {
-        if( _fillColor != value ) {
-            this._fillColor = value;
+        if( !Comparer.equalsUInt32( _fillColor, value ) ) {
+            _fillColor = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeStringUtf8( _name );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _latitude );
+        destination.writeInt32( _alarmType );
+        destination.writeTimeSpan( _alarmTime );
+        destination.writeTimeSpan( _radarTrackMinimumLifetime );
+        destination.writeDouble( _speed );
+        destination.writeUInt32( _strokeColor );
+        destination.writeUInt32( _fillColor );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _name = source.readString( );
+        _longitude = source.readDouble( );
+        _latitude = source.readDouble( );
+        _alarmType = source.readInt32( );
+        _alarmTime = source.readTimeSpan( );
+        _radarTrackMinimumLifetime = source.readTimeSpan( );
+        _speed = source.readDouble( );
+        _strokeColor = source.readUInt32( );
+        _fillColor = source.readUInt32( );
+    }
 
 }

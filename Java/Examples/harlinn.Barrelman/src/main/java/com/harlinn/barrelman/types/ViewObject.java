@@ -25,8 +25,8 @@ public class ViewObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -35,8 +35,8 @@ public class ViewObject extends AbstractDataObjectWithGuidKey {
         return _name;
     }
     public void setName( String value ) {
-        if( _name != value ) {
-            this._name = value;
+        if( !Comparer.equalsString( _name, value ) ) {
+            _name = value;
             onPropertyChanged( );
         }
     }
@@ -45,8 +45,8 @@ public class ViewObject extends AbstractDataObjectWithGuidKey {
         return _latitudeTimeseries;
     }
     public void setLatitudeTimeseries( Guid value ) {
-        if( _latitudeTimeseries != value ) {
-            this._latitudeTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _latitudeTimeseries, value ) ) {
+            _latitudeTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -55,8 +55,8 @@ public class ViewObject extends AbstractDataObjectWithGuidKey {
         return _longitudeTimeseries;
     }
     public void setLongitudeTimeseries( Guid value ) {
-        if( _longitudeTimeseries != value ) {
-            this._longitudeTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _longitudeTimeseries, value ) ) {
+            _longitudeTimeseries = value;
             onPropertyChanged( );
         }
     }
@@ -65,11 +65,32 @@ public class ViewObject extends AbstractDataObjectWithGuidKey {
         return _zoomLevelTimeseries;
     }
     public void setZoomLevelTimeseries( Guid value ) {
-        if( _zoomLevelTimeseries != value ) {
-            this._zoomLevelTimeseries = value;
+        if( !Comparer.equalsNullableGuid( _zoomLevelTimeseries, value ) ) {
+            _zoomLevelTimeseries = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeStringUtf8( _name );
+        destination.writeNullableGuid( _latitudeTimeseries );
+        destination.writeNullableGuid( _longitudeTimeseries );
+        destination.writeNullableGuid( _zoomLevelTimeseries );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _name = source.readString( );
+        _latitudeTimeseries = source.readNullableGuid( );
+        _longitudeTimeseries = source.readNullableGuid( );
+        _zoomLevelTimeseries = source.readNullableGuid( );
+    }
 
 }

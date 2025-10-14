@@ -37,8 +37,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
@@ -47,8 +47,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _offset1;
     }
     public void setOffset1( int value ) {
-        if( _offset1 != value ) {
-            this._offset1 = value;
+        if( !Comparer.equalsInt32( _offset1, value ) ) {
+            _offset1 = value;
             onPropertyChanged( );
         }
     }
@@ -57,8 +57,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _reservedSlots1;
     }
     public void setReservedSlots1( int value ) {
-        if( _reservedSlots1 != value ) {
-            this._reservedSlots1 = value;
+        if( !Comparer.equalsInt32( _reservedSlots1, value ) ) {
+            _reservedSlots1 = value;
             onPropertyChanged( );
         }
     }
@@ -67,8 +67,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _timeout1;
     }
     public void setTimeout1( int value ) {
-        if( _timeout1 != value ) {
-            this._timeout1 = value;
+        if( !Comparer.equalsInt32( _timeout1, value ) ) {
+            _timeout1 = value;
             onPropertyChanged( );
         }
     }
@@ -77,8 +77,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _increment1;
     }
     public void setIncrement1( int value ) {
-        if( _increment1 != value ) {
-            this._increment1 = value;
+        if( !Comparer.equalsInt32( _increment1, value ) ) {
+            _increment1 = value;
             onPropertyChanged( );
         }
     }
@@ -87,8 +87,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _offset2;
     }
     public void setOffset2( Integer value ) {
-        if( _offset2 != value ) {
-            this._offset2 = value;
+        if( !Comparer.equalsNullableInt32( _offset2, value ) ) {
+            _offset2 = value;
             onPropertyChanged( );
         }
     }
@@ -97,8 +97,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _reservedSlots2;
     }
     public void setReservedSlots2( Integer value ) {
-        if( _reservedSlots2 != value ) {
-            this._reservedSlots2 = value;
+        if( !Comparer.equalsNullableInt32( _reservedSlots2, value ) ) {
+            _reservedSlots2 = value;
             onPropertyChanged( );
         }
     }
@@ -107,8 +107,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _timeout2;
     }
     public void setTimeout2( Integer value ) {
-        if( _timeout2 != value ) {
-            this._timeout2 = value;
+        if( !Comparer.equalsNullableInt32( _timeout2, value ) ) {
+            _timeout2 = value;
             onPropertyChanged( );
         }
     }
@@ -117,8 +117,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _increment2;
     }
     public void setIncrement2( Integer value ) {
-        if( _increment2 != value ) {
-            this._increment2 = value;
+        if( !Comparer.equalsNullableInt32( _increment2, value ) ) {
+            _increment2 = value;
             onPropertyChanged( );
         }
     }
@@ -127,8 +127,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _offset3;
     }
     public void setOffset3( Integer value ) {
-        if( _offset3 != value ) {
-            this._offset3 = value;
+        if( !Comparer.equalsNullableInt32( _offset3, value ) ) {
+            _offset3 = value;
             onPropertyChanged( );
         }
     }
@@ -137,8 +137,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _reservedSlots3;
     }
     public void setReservedSlots3( Integer value ) {
-        if( _reservedSlots3 != value ) {
-            this._reservedSlots3 = value;
+        if( !Comparer.equalsNullableInt32( _reservedSlots3, value ) ) {
+            _reservedSlots3 = value;
             onPropertyChanged( );
         }
     }
@@ -147,8 +147,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _timeout3;
     }
     public void setTimeout3( Integer value ) {
-        if( _timeout3 != value ) {
-            this._timeout3 = value;
+        if( !Comparer.equalsNullableInt32( _timeout3, value ) ) {
+            _timeout3 = value;
             onPropertyChanged( );
         }
     }
@@ -157,8 +157,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _increment3;
     }
     public void setIncrement3( Integer value ) {
-        if( _increment3 != value ) {
-            this._increment3 = value;
+        if( !Comparer.equalsNullableInt32( _increment3, value ) ) {
+            _increment3 = value;
             onPropertyChanged( );
         }
     }
@@ -167,8 +167,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _offset4;
     }
     public void setOffset4( Integer value ) {
-        if( _offset4 != value ) {
-            this._offset4 = value;
+        if( !Comparer.equalsNullableInt32( _offset4, value ) ) {
+            _offset4 = value;
             onPropertyChanged( );
         }
     }
@@ -177,8 +177,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _reservedSlots4;
     }
     public void setReservedSlots4( Integer value ) {
-        if( _reservedSlots4 != value ) {
-            this._reservedSlots4 = value;
+        if( !Comparer.equalsNullableInt32( _reservedSlots4, value ) ) {
+            _reservedSlots4 = value;
             onPropertyChanged( );
         }
     }
@@ -187,8 +187,8 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _timeout4;
     }
     public void setTimeout4( Integer value ) {
-        if( _timeout4 != value ) {
-            this._timeout4 = value;
+        if( !Comparer.equalsNullableInt32( _timeout4, value ) ) {
+            _timeout4 = value;
             onPropertyChanged( );
         }
     }
@@ -197,11 +197,56 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
         return _increment4;
     }
     public void setIncrement4( Integer value ) {
-        if( _increment4 != value ) {
-            this._increment4 = value;
+        if( !Comparer.equalsNullableInt32( _increment4, value ) ) {
+            _increment4 = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt32( _spare );
+        destination.writeInt32( _offset1 );
+        destination.writeInt32( _reservedSlots1 );
+        destination.writeInt32( _timeout1 );
+        destination.writeInt32( _increment1 );
+        destination.writeNullableInt32( _offset2 );
+        destination.writeNullableInt32( _reservedSlots2 );
+        destination.writeNullableInt32( _timeout2 );
+        destination.writeNullableInt32( _increment2 );
+        destination.writeNullableInt32( _offset3 );
+        destination.writeNullableInt32( _reservedSlots3 );
+        destination.writeNullableInt32( _timeout3 );
+        destination.writeNullableInt32( _increment3 );
+        destination.writeNullableInt32( _offset4 );
+        destination.writeNullableInt32( _reservedSlots4 );
+        destination.writeNullableInt32( _timeout4 );
+        destination.writeNullableInt32( _increment4 );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _spare = source.readInt32( );
+        _offset1 = source.readInt32( );
+        _reservedSlots1 = source.readInt32( );
+        _timeout1 = source.readInt32( );
+        _increment1 = source.readInt32( );
+        _offset2 = source.readNullableInt32( );
+        _reservedSlots2 = source.readNullableInt32( );
+        _timeout2 = source.readNullableInt32( );
+        _increment2 = source.readNullableInt32( );
+        _offset3 = source.readNullableInt32( );
+        _reservedSlots3 = source.readNullableInt32( );
+        _timeout3 = source.readNullableInt32( );
+        _increment3 = source.readNullableInt32( );
+        _offset4 = source.readNullableInt32( );
+        _reservedSlots4 = source.readNullableInt32( );
+        _timeout4 = source.readNullableInt32( );
+        _increment4 = source.readNullableInt32( );
+    }
 
 }

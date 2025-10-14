@@ -24,8 +24,8 @@ public class MediaProxySessionFileObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -34,8 +34,8 @@ public class MediaProxySessionFileObject extends AbstractDataObjectWithGuidKey {
         return _proxySession;
     }
     public void setProxySession( Guid value ) {
-        if( _proxySession != value ) {
-            this._proxySession = value;
+        if( !Comparer.equalsGuid( _proxySession, value ) ) {
+            _proxySession = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class MediaProxySessionFileObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -54,11 +54,30 @@ public class MediaProxySessionFileObject extends AbstractDataObjectWithGuidKey {
         return _streamName;
     }
     public void setStreamName( String value ) {
-        if( _streamName != value ) {
-            this._streamName = value;
+        if( !Comparer.equalsString( _streamName, value ) ) {
+            _streamName = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _proxySession );
+        destination.writeDateTime( _timestamp );
+        destination.writeStringUtf8( _streamName );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _proxySession = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _streamName = source.readString( );
+    }
 
 }

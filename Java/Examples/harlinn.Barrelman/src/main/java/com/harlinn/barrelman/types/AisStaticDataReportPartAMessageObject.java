@@ -22,8 +22,8 @@ public class AisStaticDataReportPartAMessageObject extends AisStaticDataReportMe
         return _shipName;
     }
     public void setShipName( Guid value ) {
-        if( _shipName != value ) {
-            this._shipName = value;
+        if( !Comparer.equalsNullableGuid( _shipName, value ) ) {
+            _shipName = value;
             onPropertyChanged( );
         }
     }
@@ -32,11 +32,26 @@ public class AisStaticDataReportPartAMessageObject extends AisStaticDataReportMe
         return _spare;
     }
     public void setSpare( int value ) {
-        if( _spare != value ) {
-            this._spare = value;
+        if( !Comparer.equalsInt32( _spare, value ) ) {
+            _spare = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _shipName );
+        destination.writeInt32( _spare );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _shipName = source.readNullableGuid( );
+        _spare = source.readInt32( );
+    }
 
 }

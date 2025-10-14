@@ -28,8 +28,8 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -38,8 +38,8 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _identifier;
     }
     public void setIdentifier( Guid value ) {
-        if( _identifier != value ) {
-            this._identifier = value;
+        if( !Comparer.equalsGuid( _identifier, value ) ) {
+            _identifier = value;
             onPropertyChanged( );
         }
     }
@@ -48,8 +48,8 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -58,8 +58,8 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _typeCode;
     }
     public void setTypeCode( int value ) {
-        if( _typeCode != value ) {
-            this._typeCode = value;
+        if( !Comparer.equalsInt32( _typeCode, value ) ) {
+            _typeCode = value;
             onPropertyChanged( );
         }
     }
@@ -68,8 +68,8 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _canCreate;
     }
     public void setCanCreate( boolean value ) {
-        if( _canCreate != value ) {
-            this._canCreate = value;
+        if( !Comparer.equalsBoolean( _canCreate, value ) ) {
+            _canCreate = value;
             onPropertyChanged( );
         }
     }
@@ -78,8 +78,8 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _canRead;
     }
     public void setCanRead( boolean value ) {
-        if( _canRead != value ) {
-            this._canRead = value;
+        if( !Comparer.equalsBoolean( _canRead, value ) ) {
+            _canRead = value;
             onPropertyChanged( );
         }
     }
@@ -88,8 +88,8 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _canUpdate;
     }
     public void setCanUpdate( boolean value ) {
-        if( _canUpdate != value ) {
-            this._canUpdate = value;
+        if( !Comparer.equalsBoolean( _canUpdate, value ) ) {
+            _canUpdate = value;
             onPropertyChanged( );
         }
     }
@@ -98,11 +98,38 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
         return _canDelete;
     }
     public void setCanDelete( boolean value ) {
-        if( _canDelete != value ) {
-            this._canDelete = value;
+        if( !Comparer.equalsBoolean( _canDelete, value ) ) {
+            _canDelete = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _identifier );
+        destination.writeDateTime( _timestamp );
+        destination.writeInt32( _typeCode );
+        destination.writeBoolean( _canCreate );
+        destination.writeBoolean( _canRead );
+        destination.writeBoolean( _canUpdate );
+        destination.writeBoolean( _canDelete );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _identifier = source.readGuid( );
+        _timestamp = source.readDateTime( );
+        _typeCode = source.readInt32( );
+        _canCreate = source.readBoolean( );
+        _canRead = source.readBoolean( );
+        _canUpdate = source.readBoolean( );
+        _canDelete = source.readBoolean( );
+    }
 
 }

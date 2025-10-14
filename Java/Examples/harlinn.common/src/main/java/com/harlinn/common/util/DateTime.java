@@ -69,7 +69,7 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public DateTime clone() throws CloneNotSupportedException {
 		return new DateTime(ticks);
 	}
 	

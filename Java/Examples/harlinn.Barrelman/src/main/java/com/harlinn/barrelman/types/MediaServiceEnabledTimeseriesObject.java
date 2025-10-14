@@ -21,11 +21,24 @@ public class MediaServiceEnabledTimeseriesObject extends BooleanTimeseriesObject
         return _service;
     }
     public void setService( Guid value ) {
-        if( _service != value ) {
-            this._service = value;
+        if( !Comparer.equalsNullableGuid( _service, value ) ) {
+            _service = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _service );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _service = source.readNullableGuid( );
+    }
 
 }

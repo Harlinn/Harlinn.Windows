@@ -21,11 +21,24 @@ public class ViewLatitudeTimeseriesObject extends DoubleTimeseriesObject {
         return _view;
     }
     public void setView( Guid value ) {
-        if( _view != value ) {
-            this._view = value;
+        if( !Comparer.equalsNullableGuid( _view, value ) ) {
+            _view = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeNullableGuid( _view );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _view = source.readNullableGuid( );
+    }
 
 }

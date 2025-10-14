@@ -23,8 +23,8 @@ public class MaritimeIdentificationDigitsObject extends AbstractDataObjectWithGu
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -33,8 +33,8 @@ public class MaritimeIdentificationDigitsObject extends AbstractDataObjectWithGu
         return _code;
     }
     public void setCode( int value ) {
-        if( _code != value ) {
-            this._code = value;
+        if( !Comparer.equalsInt32( _code, value ) ) {
+            _code = value;
             onPropertyChanged( );
         }
     }
@@ -43,11 +43,28 @@ public class MaritimeIdentificationDigitsObject extends AbstractDataObjectWithGu
         return _country;
     }
     public void setCountry( Guid value ) {
-        if( _country != value ) {
-            this._country = value;
+        if( !Comparer.equalsGuid( _country, value ) ) {
+            _country = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeInt32( _code );
+        destination.writeGuid( _country );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _code = source.readInt32( );
+        _country = source.readGuid( );
+    }
 
 }

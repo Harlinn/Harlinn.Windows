@@ -32,8 +32,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -42,8 +42,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _item;
     }
     public void setItem( Guid value ) {
-        if( _item != value ) {
-            this._item = value;
+        if( !Comparer.equalsGuid( _item, value ) ) {
+            _item = value;
             onPropertyChanged( );
         }
     }
@@ -52,8 +52,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _elementType;
     }
     public void setElementType( int value ) {
-        if( _elementType != value ) {
-            this._elementType = value;
+        if( !Comparer.equalsInt32( _elementType, value ) ) {
+            _elementType = value;
             onPropertyChanged( );
         }
     }
@@ -62,8 +62,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -72,8 +72,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -82,8 +82,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _angle;
     }
     public void setAngle( double value ) {
-        if( _angle != value ) {
-            this._angle = value;
+        if( !Comparer.equalsDouble( _angle, value ) ) {
+            _angle = value;
             onPropertyChanged( );
         }
     }
@@ -92,8 +92,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _left;
     }
     public void setLeft( double value ) {
-        if( _left != value ) {
-            this._left = value;
+        if( !Comparer.equalsDouble( _left, value ) ) {
+            _left = value;
             onPropertyChanged( );
         }
     }
@@ -102,8 +102,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _top;
     }
     public void setTop( double value ) {
-        if( _top != value ) {
-            this._top = value;
+        if( !Comparer.equalsDouble( _top, value ) ) {
+            _top = value;
             onPropertyChanged( );
         }
     }
@@ -112,8 +112,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _width;
     }
     public void setWidth( double value ) {
-        if( _width != value ) {
-            this._width = value;
+        if( !Comparer.equalsDouble( _width, value ) ) {
+            _width = value;
             onPropertyChanged( );
         }
     }
@@ -122,8 +122,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _height;
     }
     public void setHeight( double value ) {
-        if( _height != value ) {
-            this._height = value;
+        if( !Comparer.equalsDouble( _height, value ) ) {
+            _height = value;
             onPropertyChanged( );
         }
     }
@@ -132,8 +132,8 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _label;
     }
     public void setLabel( String value ) {
-        if( _label != value ) {
-            this._label = value;
+        if( !Comparer.equalsString( _label, value ) ) {
+            _label = value;
             onPropertyChanged( );
         }
     }
@@ -142,11 +142,46 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
         return _data;
     }
     public void setData( byte[] value ) {
-        if( _data != value ) {
-            this._data = value;
+        if( !Comparer.equalsUInt8Array( _data, value ) ) {
+            _data = value != null ? value.clone() : value;;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _item );
+        destination.writeInt32( _elementType );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _angle );
+        destination.writeDouble( _left );
+        destination.writeDouble( _top );
+        destination.writeDouble( _width );
+        destination.writeDouble( _height );
+        destination.writeStringUtf8( _label );
+        destination.writeUInt8Array( _data );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _item = source.readGuid( );
+        _elementType = source.readInt32( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _angle = source.readDouble( );
+        _left = source.readDouble( );
+        _top = source.readDouble( );
+        _width = source.readDouble( );
+        _height = source.readDouble( );
+        _label = source.readString( );
+        _data = source.readUInt8Array( );
+    }
 
 }

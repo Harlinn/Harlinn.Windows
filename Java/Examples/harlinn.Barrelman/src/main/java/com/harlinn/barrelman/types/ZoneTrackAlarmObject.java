@@ -34,8 +34,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _rowVersion;
     }
     public void setRowVersion( long value ) {
-        if( _rowVersion != value ) {
-            this._rowVersion = value;
+        if( !Comparer.equalsInt64( _rowVersion, value ) ) {
+            _rowVersion = value;
             onPropertyChanged( );
         }
     }
@@ -44,8 +44,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _track;
     }
     public void setTrack( Guid value ) {
-        if( _track != value ) {
-            this._track = value;
+        if( !Comparer.equalsGuid( _track, value ) ) {
+            _track = value;
             onPropertyChanged( );
         }
     }
@@ -54,8 +54,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _zone;
     }
     public void setZone( Guid value ) {
-        if( _zone != value ) {
-            this._zone = value;
+        if( !Comparer.equalsGuid( _zone, value ) ) {
+            _zone = value;
             onPropertyChanged( );
         }
     }
@@ -64,8 +64,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _radarTrack;
     }
     public void setRadarTrack( Guid value ) {
-        if( _radarTrack != value ) {
-            this._radarTrack = value;
+        if( !Comparer.equalsNullableGuid( _radarTrack, value ) ) {
+            _radarTrack = value;
             onPropertyChanged( );
         }
     }
@@ -74,8 +74,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _timestamp;
     }
     public void setTimestamp( DateTime value ) {
-        if( _timestamp != value ) {
-            this._timestamp = value;
+        if( !Comparer.equalsDateTime( _timestamp, value ) ) {
+            _timestamp = value;
             onPropertyChanged( );
         }
     }
@@ -84,8 +84,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _latitude;
     }
     public void setLatitude( double value ) {
-        if( _latitude != value ) {
-            this._latitude = value;
+        if( !Comparer.equalsDouble( _latitude, value ) ) {
+            _latitude = value;
             onPropertyChanged( );
         }
     }
@@ -94,8 +94,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _longitude;
     }
     public void setLongitude( double value ) {
-        if( _longitude != value ) {
-            this._longitude = value;
+        if( !Comparer.equalsDouble( _longitude, value ) ) {
+            _longitude = value;
             onPropertyChanged( );
         }
     }
@@ -104,8 +104,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _speed;
     }
     public void setSpeed( double value ) {
-        if( _speed != value ) {
-            this._speed = value;
+        if( !Comparer.equalsDouble( _speed, value ) ) {
+            _speed = value;
             onPropertyChanged( );
         }
     }
@@ -114,8 +114,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _course;
     }
     public void setCourse( Double value ) {
-        if( _course != value ) {
-            this._course = value;
+        if( !Comparer.equalsNullableDouble( _course, value ) ) {
+            _course = value;
             onPropertyChanged( );
         }
     }
@@ -124,8 +124,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _heading;
     }
     public void setHeading( Double value ) {
-        if( _heading != value ) {
-            this._heading = value;
+        if( !Comparer.equalsNullableDouble( _heading, value ) ) {
+            _heading = value;
             onPropertyChanged( );
         }
     }
@@ -134,8 +134,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _enterLatitude;
     }
     public void setEnterLatitude( double value ) {
-        if( _enterLatitude != value ) {
-            this._enterLatitude = value;
+        if( !Comparer.equalsDouble( _enterLatitude, value ) ) {
+            _enterLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -144,8 +144,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _enterLongitude;
     }
     public void setEnterLongitude( double value ) {
-        if( _enterLongitude != value ) {
-            this._enterLongitude = value;
+        if( !Comparer.equalsDouble( _enterLongitude, value ) ) {
+            _enterLongitude = value;
             onPropertyChanged( );
         }
     }
@@ -154,8 +154,8 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _leaveLatitude;
     }
     public void setLeaveLatitude( Double value ) {
-        if( _leaveLatitude != value ) {
-            this._leaveLatitude = value;
+        if( !Comparer.equalsNullableDouble( _leaveLatitude, value ) ) {
+            _leaveLatitude = value;
             onPropertyChanged( );
         }
     }
@@ -164,11 +164,50 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
         return _leaveLongitude;
     }
     public void setLeaveLongitude( Double value ) {
-        if( _leaveLongitude != value ) {
-            this._leaveLongitude = value;
+        if( !Comparer.equalsNullableDouble( _leaveLongitude, value ) ) {
+            _leaveLongitude = value;
             onPropertyChanged( );
         }
     }
 
+
+
+    @Override
+    public void writeTo( BinaryWriter destination ) {
+        super.writeTo( destination );
+        destination.writeInt64( _rowVersion );
+        destination.writeGuid( _track );
+        destination.writeGuid( _zone );
+        destination.writeNullableGuid( _radarTrack );
+        destination.writeDateTime( _timestamp );
+        destination.writeDouble( _latitude );
+        destination.writeDouble( _longitude );
+        destination.writeDouble( _speed );
+        destination.writeNullableDouble( _course );
+        destination.writeNullableDouble( _heading );
+        destination.writeDouble( _enterLatitude );
+        destination.writeDouble( _enterLongitude );
+        destination.writeNullableDouble( _leaveLatitude );
+        destination.writeNullableDouble( _leaveLongitude );
+    }
+
+    @Override
+    public void readFrom(BinaryReader source) {
+        super.readFrom( source );
+        _rowVersion = source.readInt64( );
+        _track = source.readGuid( );
+        _zone = source.readGuid( );
+        _radarTrack = source.readNullableGuid( );
+        _timestamp = source.readDateTime( );
+        _latitude = source.readDouble( );
+        _longitude = source.readDouble( );
+        _speed = source.readDouble( );
+        _course = source.readNullableDouble( );
+        _heading = source.readNullableDouble( );
+        _enterLatitude = source.readDouble( );
+        _enterLongitude = source.readDouble( );
+        _leaveLatitude = source.readNullableDouble( );
+        _leaveLongitude = source.readNullableDouble( );
+    }
 
 }

@@ -390,6 +390,10 @@ public class Guid implements Serializable, Comparable<Guid> {
 		return result;
 	}
 	
+	public static final int compare(Guid first, Guid second) {
+		return first.compareTo(second);
+	}
+	
 	
 	public static final Guid newGuid()	{
 		var bytes = com.harlinn.common.platform.Ole32.CoCreateGuid();
