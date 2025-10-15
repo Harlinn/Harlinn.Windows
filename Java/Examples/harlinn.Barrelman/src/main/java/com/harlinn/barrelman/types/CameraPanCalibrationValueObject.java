@@ -63,6 +63,38 @@ public class CameraPanCalibrationValueObject extends AbstractDataObjectWithGuidK
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraPanCalibrationValueObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._panCalibration = this._panCalibration;
+        targetObject._panAngle = this._panAngle;
+        targetObject._panOffset = this._panOffset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraPanCalibrationValueObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._panCalibration, other._panCalibration ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._panAngle, other._panAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._panOffset, other._panOffset ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

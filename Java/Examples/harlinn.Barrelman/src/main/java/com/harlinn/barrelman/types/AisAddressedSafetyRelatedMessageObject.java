@@ -74,6 +74,42 @@ public class AisAddressedSafetyRelatedMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisAddressedSafetyRelatedMessageObject )target;
+        targetObject._sequenceNumber = this._sequenceNumber;
+        targetObject._destinationMmsi = this._destinationMmsi;
+        targetObject._retransmitFlag = this._retransmitFlag;
+        targetObject._spare = this._spare;
+        targetObject._text = this._text;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisAddressedSafetyRelatedMessageObject)obj;
+        if( !Comparer.equalsInt32( this._sequenceNumber, other._sequenceNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._destinationMmsi, other._destinationMmsi ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._retransmitFlag, other._retransmitFlag ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._text, other._text ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _sequenceNumber );

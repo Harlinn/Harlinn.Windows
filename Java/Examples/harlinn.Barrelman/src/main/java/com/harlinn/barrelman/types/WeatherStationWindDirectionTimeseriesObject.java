@@ -30,6 +30,26 @@ public class WeatherStationWindDirectionTimeseriesObject extends DoubleTimeserie
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( WeatherStationWindDirectionTimeseriesObject )target;
+        targetObject._weatherStation = this._weatherStation;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (WeatherStationWindDirectionTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._weatherStation, other._weatherStation ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _weatherStation );

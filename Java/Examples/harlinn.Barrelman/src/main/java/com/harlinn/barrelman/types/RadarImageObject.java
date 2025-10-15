@@ -96,6 +96,50 @@ public class RadarImageObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadarImageObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._radar = this._radar;
+        targetObject._timestamp = this._timestamp;
+        targetObject._depth = this._depth;
+        targetObject._resolution = this._resolution;
+        targetObject._range = this._range;
+        targetObject._image = this._image != null ? this._image.clone() : this._image;;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadarImageObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._radar, other._radar ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._depth, other._depth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._resolution, other._resolution ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._range, other._range ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._image, other._image ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

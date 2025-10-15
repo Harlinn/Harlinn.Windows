@@ -206,6 +206,90 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisDataLinkManagementMessageObject )target;
+        targetObject._spare = this._spare;
+        targetObject._offset1 = this._offset1;
+        targetObject._reservedSlots1 = this._reservedSlots1;
+        targetObject._timeout1 = this._timeout1;
+        targetObject._increment1 = this._increment1;
+        targetObject._offset2 = this._offset2;
+        targetObject._reservedSlots2 = this._reservedSlots2;
+        targetObject._timeout2 = this._timeout2;
+        targetObject._increment2 = this._increment2;
+        targetObject._offset3 = this._offset3;
+        targetObject._reservedSlots3 = this._reservedSlots3;
+        targetObject._timeout3 = this._timeout3;
+        targetObject._increment3 = this._increment3;
+        targetObject._offset4 = this._offset4;
+        targetObject._reservedSlots4 = this._reservedSlots4;
+        targetObject._timeout4 = this._timeout4;
+        targetObject._increment4 = this._increment4;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisDataLinkManagementMessageObject)obj;
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._offset1, other._offset1 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._reservedSlots1, other._reservedSlots1 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._timeout1, other._timeout1 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._increment1, other._increment1 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._offset2, other._offset2 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._reservedSlots2, other._reservedSlots2 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._timeout2, other._timeout2 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._increment2, other._increment2 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._offset3, other._offset3 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._reservedSlots3, other._reservedSlots3 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._timeout3, other._timeout3 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._increment3, other._increment3 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._offset4, other._offset4 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._reservedSlots4, other._reservedSlots4 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._timeout4, other._timeout4 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._increment4, other._increment4 ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _spare );

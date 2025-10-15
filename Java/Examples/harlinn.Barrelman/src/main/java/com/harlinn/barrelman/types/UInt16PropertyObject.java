@@ -30,6 +30,26 @@ public class UInt16PropertyObject extends PropertyObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( UInt16PropertyObject )target;
+        targetObject._value = this._value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (UInt16PropertyObject)obj;
+        if( !Comparer.equalsUInt16( this._value, other._value ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeUInt16( _value );

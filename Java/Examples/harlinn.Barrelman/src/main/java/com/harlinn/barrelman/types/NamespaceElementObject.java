@@ -55,6 +55,38 @@ public abstract class NamespaceElementObject extends AbstractDataObjectWithGuidK
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( NamespaceElementObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._namespace = this._namespace;
+        targetObject._name = this._name;
+        targetObject._description = this._description;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (NamespaceElementObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._namespace, other._namespace ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._description, other._description ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

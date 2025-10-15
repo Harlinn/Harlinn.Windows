@@ -30,6 +30,26 @@ public class GyroHeadingTrueNorthTimeseriesObject extends DoubleTimeseriesObject
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( GyroHeadingTrueNorthTimeseriesObject )target;
+        targetObject._gyroDevice = this._gyroDevice;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (GyroHeadingTrueNorthTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._gyroDevice, other._gyroDevice ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _gyroDevice );

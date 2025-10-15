@@ -96,6 +96,50 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandRelativeMoveObject )target;
+        targetObject._normalized = this._normalized;
+        targetObject._panAngle = this._panAngle;
+        targetObject._tiltAngle = this._tiltAngle;
+        targetObject._focalLength = this._focalLength;
+        targetObject._panSpeed = this._panSpeed;
+        targetObject._tiltSpeed = this._tiltSpeed;
+        targetObject._zoomSpeed = this._zoomSpeed;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandRelativeMoveObject)obj;
+        if( !Comparer.equalsBoolean( this._normalized, other._normalized ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._panAngle, other._panAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._tiltAngle, other._tiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._focalLength, other._focalLength ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._panSpeed, other._panSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._tiltSpeed, other._tiltSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._zoomSpeed, other._zoomSpeed ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeBoolean( _normalized );

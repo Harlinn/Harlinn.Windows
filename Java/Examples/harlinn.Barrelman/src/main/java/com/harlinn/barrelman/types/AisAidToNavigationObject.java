@@ -129,6 +129,62 @@ public class AisAidToNavigationObject extends TrackableItemObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisAidToNavigationObject )target;
+        targetObject._name = this._name;
+        targetObject._mMSI = this._mMSI;
+        targetObject._navigationalAidType = this._navigationalAidType;
+        targetObject._position = this._position;
+        targetObject._isVirtual = this._isVirtual;
+        targetObject._toBow = this._toBow;
+        targetObject._toStern = this._toStern;
+        targetObject._toPort = this._toPort;
+        targetObject._toStarboard = this._toStarboard;
+        targetObject._offPositionTimeseries = this._offPositionTimeseries;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisAidToNavigationObject)obj;
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._mMSI, other._mMSI ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._navigationalAidType, other._navigationalAidType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._position, other._position ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._isVirtual, other._isVirtual ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toBow, other._toBow ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toStern, other._toStern ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toPort, other._toPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toStarboard, other._toStarboard ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._offPositionTimeseries, other._offPositionTimeseries ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeStringUtf8( _name );

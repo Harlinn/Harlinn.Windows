@@ -173,6 +173,78 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( MediaProxySessionOptionsObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._proxySession = this._proxySession;
+        targetObject._timestamp = this._timestamp;
+        targetObject._sourceStreamUrl = this._sourceStreamUrl;
+        targetObject._streamName = this._streamName;
+        targetObject._mode = this._mode;
+        targetObject._tunnelOverHTTPPortNumber = this._tunnelOverHTTPPortNumber;
+        targetObject._username = this._username;
+        targetObject._password = this._password;
+        targetObject._recorderPortNumber = this._recorderPortNumber;
+        targetObject._sessionType = this._sessionType;
+        targetObject._maxFileTime = this._maxFileTime;
+        targetObject._maxFileRetention = this._maxFileRetention;
+        targetObject._videoDirectory = this._videoDirectory;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (MediaProxySessionOptionsObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._proxySession, other._proxySession ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._sourceStreamUrl, other._sourceStreamUrl ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._streamName, other._streamName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._mode, other._mode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._tunnelOverHTTPPortNumber, other._tunnelOverHTTPPortNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._username, other._username ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._password, other._password ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._recorderPortNumber, other._recorderPortNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._sessionType, other._sessionType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._maxFileTime, other._maxFileTime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._maxFileRetention, other._maxFileRetention ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._videoDirectory, other._videoDirectory ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

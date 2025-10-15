@@ -129,6 +129,62 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( WeatherStationConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._weatherStation = this._weatherStation;
+        targetObject._timestamp = this._timestamp;
+        targetObject._noDataTimeOut = this._noDataTimeOut;
+        targetObject._sendInterval = this._sendInterval;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+        targetObject._gyroOffset = this._gyroOffset;
+        targetObject._enableAveraging = this._enableAveraging;
+        targetObject._averagingInterval = this._averagingInterval;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (WeatherStationConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._weatherStation, other._weatherStation ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._noDataTimeOut, other._noDataTimeOut ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._sendInterval, other._sendInterval ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._gyroOffset, other._gyroOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._enableAveraging, other._enableAveraging ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._averagingInterval, other._averagingInterval ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

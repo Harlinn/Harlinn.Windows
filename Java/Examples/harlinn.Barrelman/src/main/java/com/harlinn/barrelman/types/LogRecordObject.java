@@ -129,6 +129,62 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LogRecordObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._thread = this._thread;
+        targetObject._sequenceNumber = this._sequenceNumber;
+        targetObject._level = this._level;
+        targetObject._timestamp = this._timestamp;
+        targetObject._depth = this._depth;
+        targetObject._location = this._location;
+        targetObject._message = this._message;
+        targetObject._exceptionString = this._exceptionString;
+        targetObject._propertiesData = this._propertiesData != null ? this._propertiesData.clone() : this._propertiesData;;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LogRecordObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._thread, other._thread ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._sequenceNumber, other._sequenceNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._level, other._level ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._depth, other._depth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._location, other._location ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._message, other._message ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._exceptionString, other._exceptionString ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._propertiesData, other._propertiesData ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

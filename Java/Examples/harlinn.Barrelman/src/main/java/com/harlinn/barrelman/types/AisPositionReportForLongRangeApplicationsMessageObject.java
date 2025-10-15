@@ -118,6 +118,58 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisPositionReportForLongRangeApplicationsMessageObject )target;
+        targetObject._positionAccuracy = this._positionAccuracy;
+        targetObject._raim = this._raim;
+        targetObject._navigationStatus = this._navigationStatus;
+        targetObject._longitude = this._longitude;
+        targetObject._latitude = this._latitude;
+        targetObject._speedOverGround = this._speedOverGround;
+        targetObject._courseOverGround = this._courseOverGround;
+        targetObject._gnssPositionStatus = this._gnssPositionStatus;
+        targetObject._spare = this._spare;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisPositionReportForLongRangeApplicationsMessageObject)obj;
+        if( !Comparer.equalsInt32( this._positionAccuracy, other._positionAccuracy ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._raim, other._raim ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._navigationStatus, other._navigationStatus ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._speedOverGround, other._speedOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._courseOverGround, other._courseOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._gnssPositionStatus, other._gnssPositionStatus ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _positionAccuracy );

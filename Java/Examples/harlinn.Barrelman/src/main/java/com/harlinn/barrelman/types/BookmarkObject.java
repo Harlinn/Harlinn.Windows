@@ -96,6 +96,50 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( BookmarkObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._view = this._view;
+        targetObject._name = this._name;
+        targetObject._timestamp = this._timestamp;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+        targetObject._zoomLevel = this._zoomLevel;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (BookmarkObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._view, other._view ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._zoomLevel, other._zoomLevel ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

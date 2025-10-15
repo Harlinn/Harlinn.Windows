@@ -52,6 +52,34 @@ public class UInt32PropertyDefinitionObject extends PropertyDefinitionObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( UInt32PropertyDefinitionObject )target;
+        targetObject._defaultValue = this._defaultValue;
+        targetObject._minValue = this._minValue;
+        targetObject._maxValue = this._maxValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (UInt32PropertyDefinitionObject)obj;
+        if( !Comparer.equalsUInt32( this._defaultValue, other._defaultValue ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._minValue, other._minValue ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._maxValue, other._maxValue ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeUInt32( _defaultValue );

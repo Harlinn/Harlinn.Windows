@@ -41,6 +41,30 @@ public class VehicleObject extends TrackableItemObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( VehicleObject )target;
+        targetObject._name = this._name;
+        targetObject._type = this._type;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (VehicleObject)obj;
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._type, other._type ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeStringUtf8( _name );

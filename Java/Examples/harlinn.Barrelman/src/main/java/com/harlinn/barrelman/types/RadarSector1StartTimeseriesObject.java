@@ -30,6 +30,26 @@ public class RadarSector1StartTimeseriesObject extends Int32TimeseriesObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadarSector1StartTimeseriesObject )target;
+        targetObject._radar = this._radar;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadarSector1StartTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._radar, other._radar ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _radar );

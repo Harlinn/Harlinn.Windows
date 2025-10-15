@@ -151,6 +151,70 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( MapElementObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._item = this._item;
+        targetObject._elementType = this._elementType;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+        targetObject._angle = this._angle;
+        targetObject._left = this._left;
+        targetObject._top = this._top;
+        targetObject._width = this._width;
+        targetObject._height = this._height;
+        targetObject._label = this._label;
+        targetObject._data = this._data != null ? this._data.clone() : this._data;;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (MapElementObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._item, other._item ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._elementType, other._elementType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._angle, other._angle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._left, other._left ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._top, other._top ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._width, other._width ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._height, other._height ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._label, other._label ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._data, other._data ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

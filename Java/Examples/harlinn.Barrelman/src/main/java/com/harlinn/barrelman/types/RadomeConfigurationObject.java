@@ -107,6 +107,54 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadomeConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._radome = this._radome;
+        targetObject._timestamp = this._timestamp;
+        targetObject._interval = this._interval;
+        targetObject._lowPressureLimit = this._lowPressureLimit;
+        targetObject._highPressureLimit = this._highPressureLimit;
+        targetObject._lowTemperatureLimit = this._lowTemperatureLimit;
+        targetObject._highTemperatureLimit = this._highTemperatureLimit;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadomeConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._radome, other._radome ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._interval, other._interval ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._lowPressureLimit, other._lowPressureLimit ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._highPressureLimit, other._highPressureLimit ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._lowTemperatureLimit, other._lowTemperatureLimit ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._highTemperatureLimit, other._highTemperatureLimit ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

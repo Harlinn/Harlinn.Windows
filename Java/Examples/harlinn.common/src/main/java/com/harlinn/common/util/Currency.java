@@ -51,4 +51,19 @@ public class Currency implements Cloneable, Comparable<Currency> {
 		return first.compareTo(second);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if ( this == obj ) {
+			return true;
+		}
+		if(obj == null ) {
+			return false;
+		}
+		if ((obj instanceof Currency) == false ) {
+            return false;
+        }
+		var other = (Currency)obj;
+		return other.value == this.value; 
+	}
+	
 }

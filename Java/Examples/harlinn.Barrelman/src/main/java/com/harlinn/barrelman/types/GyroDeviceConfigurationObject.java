@@ -118,6 +118,58 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( GyroDeviceConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._gyroDevice = this._gyroDevice;
+        targetObject._timestamp = this._timestamp;
+        targetObject._defaultHeadingTrueNorth = this._defaultHeadingTrueNorth;
+        targetObject._defaultMagneticTrueNorth = this._defaultMagneticTrueNorth;
+        targetObject._headingTrueNorthOffset = this._headingTrueNorthOffset;
+        targetObject._headingMagneticNorthOffset = this._headingMagneticNorthOffset;
+        targetObject._pitchTransducerName = this._pitchTransducerName;
+        targetObject._rollTransducerName = this._rollTransducerName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (GyroDeviceConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._gyroDevice, other._gyroDevice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._defaultHeadingTrueNorth, other._defaultHeadingTrueNorth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._defaultMagneticTrueNorth, other._defaultMagneticTrueNorth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._headingTrueNorthOffset, other._headingTrueNorthOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._headingMagneticNorthOffset, other._headingMagneticNorthOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._pitchTransducerName, other._pitchTransducerName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._rollTransducerName, other._rollTransducerName ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

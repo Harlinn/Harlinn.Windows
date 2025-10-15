@@ -106,6 +106,48 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
             WriteLine( );
             WriteLine( L"    @Override" );
+            WriteLine( L"    public void assignTo( AbstractDataObject target ) {" );
+            WriteLine( L"        super.assignTo( target );" );
+            WriteLine( L"        var targetObject = ( {} )target;", className );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto fieldName = JavaHelper::GetMemberFieldName( *member );
+                    auto sourceField = Format( L"this.{}", fieldName );
+                    auto targetField = Format( L"targetObject.{}", fieldName );
+                    auto deepCopy = JavaHelper::GetDeepCopy( *member, sourceField, targetField );
+                    WriteLine( L"        {};", deepCopy );
+                }
+            }
+            WriteLine( L"    }" );
+            WriteLine( );
+
+            WriteLine( L"    @Override" );
+            WriteLine( L"    public boolean equals(Object obj) {" );
+            WriteLine( L"        var result = super.equals( obj );" );
+            WriteLine( L"        if( !result ) {" );
+            WriteLine( L"            return false;" );
+            WriteLine( L"        }" );
+            WriteLine( L"        var other = ({})obj;", className );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto fieldName = JavaHelper::GetMemberFieldName( *member );
+                    auto thisField = Format( L"this.{}", fieldName );
+                    auto otherField = Format( L"other.{}", fieldName );
+                    auto equals = JavaHelper::GetEquals( *member, thisField, otherField );
+                    WriteLine( L"        if( !{} ) {{", equals );
+                    WriteLine( L"            return false;" );
+                    WriteLine( L"        }" );
+                }
+            }
+            WriteLine( L"        return true;" );
+            WriteLine( L"    }" );
+
+            WriteLine( );
+            WriteLine( L"    @Override" );
             WriteLine( L"    public void writeTo( BinaryWriter destination ) {" );
             WriteLine( L"        super.writeTo( destination );" );
             for ( const auto& member : persistentMembers )

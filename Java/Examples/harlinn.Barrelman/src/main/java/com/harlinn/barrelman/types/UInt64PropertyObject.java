@@ -30,6 +30,26 @@ public class UInt64PropertyObject extends PropertyObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( UInt64PropertyObject )target;
+        targetObject._value = this._value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (UInt64PropertyObject)obj;
+        if( !Comparer.equalsInt64( this._value, other._value ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _value );

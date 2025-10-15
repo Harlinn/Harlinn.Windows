@@ -118,6 +118,58 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandReplyObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._camera = this._camera;
+        targetObject._timestamp = this._timestamp;
+        targetObject._command = this._command;
+        targetObject._status = this._status;
+        targetObject._message = this._message;
+        targetObject._panAngle = this._panAngle;
+        targetObject._tiltAngle = this._tiltAngle;
+        targetObject._focalLength = this._focalLength;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandReplyObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._camera, other._camera ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._command, other._command ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._status, other._status ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._message, other._message ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._panAngle, other._panAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._tiltAngle, other._tiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._focalLength, other._focalLength ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

@@ -58,14 +58,19 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 		this.ticks = (date.getTime()*TicksPerMillisecond) + UnixEpoch;
 	}
 	
-	
 	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-            return true;
+	public boolean equals(Object obj) {
+		if ( this == obj ) {
+			return true;
+		}
+		if(obj == null ) {
+			return false;
+		}
+		if ((obj instanceof DateTime) == false ) {
+            return false;
         }
-        return (other instanceof DateTime otherDateTime)
-                && this.ticks == otherDateTime.ticks;
+		var other = (DateTime)obj;
+		return other.ticks == this.ticks; 
 	}
 
 	@Override

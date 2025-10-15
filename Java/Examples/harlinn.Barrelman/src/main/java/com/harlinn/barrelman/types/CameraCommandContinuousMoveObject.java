@@ -74,6 +74,42 @@ public class CameraCommandContinuousMoveObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandContinuousMoveObject )target;
+        targetObject._normalized = this._normalized;
+        targetObject._panVelocity = this._panVelocity;
+        targetObject._tiltVelocity = this._tiltVelocity;
+        targetObject._zoomVelocity = this._zoomVelocity;
+        targetObject._duration = this._duration;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandContinuousMoveObject)obj;
+        if( !Comparer.equalsBoolean( this._normalized, other._normalized ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._panVelocity, other._panVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._tiltVelocity, other._tiltVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._zoomVelocity, other._zoomVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableTimeSpan( this._duration, other._duration ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeBoolean( _normalized );

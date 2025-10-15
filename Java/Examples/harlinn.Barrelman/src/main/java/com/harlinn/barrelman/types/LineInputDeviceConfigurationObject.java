@@ -415,6 +415,166 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LineInputDeviceConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._lineInputDevice = this._lineInputDevice;
+        targetObject._timestamp = this._timestamp;
+        targetObject._storeReceivedSentences = this._storeReceivedSentences;
+        targetObject._storeSentMessages = this._storeSentMessages;
+        targetObject._storeUnsentMessages = this._storeUnsentMessages;
+        targetObject._nMEA = this._nMEA;
+        targetObject._strictNMEA = this._strictNMEA;
+        targetObject._connectionType = this._connectionType;
+        targetObject._udpReceivePort = this._udpReceivePort;
+        targetObject._udpSendHostname = this._udpSendHostname;
+        targetObject._udpSendPort = this._udpSendPort;
+        targetObject._tcpHostname = this._tcpHostname;
+        targetObject._tcpPort = this._tcpPort;
+        targetObject._useHttpLogin = this._useHttpLogin;
+        targetObject._loginHostname = this._loginHostname;
+        targetObject._loginPort = this._loginPort;
+        targetObject._userName = this._userName;
+        targetObject._password = this._password;
+        targetObject._comPort = this._comPort;
+        targetObject._baudRate = this._baudRate;
+        targetObject._dataBits = this._dataBits;
+        targetObject._discardNull = this._discardNull;
+        targetObject._dtrEnable = this._dtrEnable;
+        targetObject._handshake = this._handshake;
+        targetObject._newLine = this._newLine;
+        targetObject._parity = this._parity;
+        targetObject._parityReplace = this._parityReplace;
+        targetObject._readBufferSize = this._readBufferSize;
+        targetObject._readTimeout = this._readTimeout;
+        targetObject._receivedBytesThreshold = this._receivedBytesThreshold;
+        targetObject._rtsEnable = this._rtsEnable;
+        targetObject._stopBits = this._stopBits;
+        targetObject._writeBufferSize = this._writeBufferSize;
+        targetObject._writeTimeout = this._writeTimeout;
+        targetObject._pairedComPort = this._pairedComPort;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LineInputDeviceConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._lineInputDevice, other._lineInputDevice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._storeReceivedSentences, other._storeReceivedSentences ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._storeSentMessages, other._storeSentMessages ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._storeUnsentMessages, other._storeUnsentMessages ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._nMEA, other._nMEA ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._strictNMEA, other._strictNMEA ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._connectionType, other._connectionType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._udpReceivePort, other._udpReceivePort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._udpSendHostname, other._udpSendHostname ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._udpSendPort, other._udpSendPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._tcpHostname, other._tcpHostname ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._tcpPort, other._tcpPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useHttpLogin, other._useHttpLogin ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._loginHostname, other._loginHostname ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._loginPort, other._loginPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._userName, other._userName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._password, other._password ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._comPort, other._comPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._baudRate, other._baudRate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dataBits, other._dataBits ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._discardNull, other._discardNull ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._dtrEnable, other._dtrEnable ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._handshake, other._handshake ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._newLine, other._newLine ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._parity, other._parity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8( this._parityReplace, other._parityReplace ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._readBufferSize, other._readBufferSize ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._readTimeout, other._readTimeout ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._receivedBytesThreshold, other._receivedBytesThreshold ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._rtsEnable, other._rtsEnable ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._stopBits, other._stopBits ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._writeBufferSize, other._writeBufferSize ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._writeTimeout, other._writeTimeout ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._pairedComPort, other._pairedComPort ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

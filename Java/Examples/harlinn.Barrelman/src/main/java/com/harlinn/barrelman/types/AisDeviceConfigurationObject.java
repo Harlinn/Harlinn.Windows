@@ -250,6 +250,106 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisDeviceConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._aisDevice = this._aisDevice;
+        targetObject._timestamp = this._timestamp;
+        targetObject._filter = this._filter;
+        targetObject._northWestLatitude = this._northWestLatitude;
+        targetObject._northWestLongitude = this._northWestLongitude;
+        targetObject._southEastLatitude = this._southEastLatitude;
+        targetObject._southEastLongitude = this._southEastLongitude;
+        targetObject._comPort = this._comPort;
+        targetObject._baudRate = this._baudRate;
+        targetObject._iPAddress = this._iPAddress;
+        targetObject._port = this._port;
+        targetObject._udpPort = this._udpPort;
+        targetObject._authenticate = this._authenticate;
+        targetObject._userName = this._userName;
+        targetObject._password = this._password;
+        targetObject._authenticationURL = this._authenticationURL;
+        targetObject._connectionType = this._connectionType;
+        targetObject._sourceUpdateRate = this._sourceUpdateRate;
+        targetObject._configurationURL = this._configurationURL;
+        targetObject._storeReceivedSentences = this._storeReceivedSentences;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisDeviceConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._aisDevice, other._aisDevice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._filter, other._filter ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._northWestLatitude, other._northWestLatitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._northWestLongitude, other._northWestLongitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._southEastLatitude, other._southEastLatitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._southEastLongitude, other._southEastLongitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._comPort, other._comPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._baudRate, other._baudRate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._iPAddress, other._iPAddress ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._port, other._port ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._udpPort, other._udpPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._authenticate, other._authenticate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._userName, other._userName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._password, other._password ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._authenticationURL, other._authenticationURL ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._connectionType, other._connectionType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._sourceUpdateRate, other._sourceUpdateRate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._configurationURL, other._configurationURL ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._storeReceivedSentences, other._storeReceivedSentences ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

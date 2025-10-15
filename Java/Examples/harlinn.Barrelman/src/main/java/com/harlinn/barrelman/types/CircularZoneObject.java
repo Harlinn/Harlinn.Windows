@@ -30,6 +30,26 @@ public class CircularZoneObject extends ZoneObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CircularZoneObject )target;
+        targetObject._radius = this._radius;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CircularZoneObject)obj;
+        if( !Comparer.equalsDouble( this._radius, other._radius ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeDouble( _radius );

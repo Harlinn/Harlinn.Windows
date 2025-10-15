@@ -151,6 +151,70 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( TrackingServiceOptionsObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._timestamp = this._timestamp;
+        targetObject._timerInterval = this._timerInterval;
+        targetObject._maxAgeOfCurrentTrackValue = this._maxAgeOfCurrentTrackValue;
+        targetObject._falseThreshold = this._falseThreshold;
+        targetObject._distanceThreshold = this._distanceThreshold;
+        targetObject._distanceUnmergeThreshold = this._distanceUnmergeThreshold;
+        targetObject._unmergeLatency = this._unmergeLatency;
+        targetObject._kalmanFiltering = this._kalmanFiltering;
+        targetObject._maxCourseDeviation = this._maxCourseDeviation;
+        targetObject._maxSpeedDeviation = this._maxSpeedDeviation;
+        targetObject._minimumSpeedThreshold = this._minimumSpeedThreshold;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (TrackingServiceOptionsObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._timerInterval, other._timerInterval ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._maxAgeOfCurrentTrackValue, other._maxAgeOfCurrentTrackValue ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._falseThreshold, other._falseThreshold ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._distanceThreshold, other._distanceThreshold ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._distanceUnmergeThreshold, other._distanceUnmergeThreshold ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._unmergeLatency, other._unmergeLatency ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._kalmanFiltering, other._kalmanFiltering ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxCourseDeviation, other._maxCourseDeviation ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxSpeedDeviation, other._maxSpeedDeviation ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minimumSpeedThreshold, other._minimumSpeedThreshold ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

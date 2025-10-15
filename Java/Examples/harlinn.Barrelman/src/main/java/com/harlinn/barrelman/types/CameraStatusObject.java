@@ -217,6 +217,94 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraStatusObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._camera = this._camera;
+        targetObject._track = this._track;
+        targetObject._timestamp = this._timestamp;
+        targetObject._positionPanTiltMode = this._positionPanTiltMode;
+        targetObject._panAngle = this._panAngle;
+        targetObject._tiltAngle = this._tiltAngle;
+        targetObject._positionFocalLengthMode = this._positionFocalLengthMode;
+        targetObject._focalLength = this._focalLength;
+        targetObject._panTiltMoveStatus = this._panTiltMoveStatus;
+        targetObject._zoomMoveStatus = this._zoomMoveStatus;
+        targetObject._velocityPanTiltMode = this._velocityPanTiltMode;
+        targetObject._panVelocity = this._panVelocity;
+        targetObject._tiltVelocity = this._tiltVelocity;
+        targetObject._velocityFocalLengthMode = this._velocityFocalLengthMode;
+        targetObject._zoomVelocity = this._zoomVelocity;
+        targetObject._activeFeatures = this._activeFeatures;
+        targetObject._error = this._error;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraStatusObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._camera, other._camera ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._track, other._track ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionPanTiltMode, other._positionPanTiltMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._panAngle, other._panAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._tiltAngle, other._tiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionFocalLengthMode, other._positionFocalLengthMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._focalLength, other._focalLength ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._panTiltMoveStatus, other._panTiltMoveStatus ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._zoomMoveStatus, other._zoomMoveStatus ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._velocityPanTiltMode, other._velocityPanTiltMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._panVelocity, other._panVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._tiltVelocity, other._tiltVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._velocityFocalLengthMode, other._velocityFocalLengthMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._zoomVelocity, other._zoomVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._activeFeatures, other._activeFeatures ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._error, other._error ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

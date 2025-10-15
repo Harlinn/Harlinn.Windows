@@ -30,6 +30,26 @@ public class MediaServiceEnabledTimeseriesObject extends BooleanTimeseriesObject
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( MediaServiceEnabledTimeseriesObject )target;
+        targetObject._service = this._service;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (MediaServiceEnabledTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._service, other._service ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _service );

@@ -30,6 +30,26 @@ public class VesselDraughtTimeseriesObject extends DoubleTimeseriesObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( VesselDraughtTimeseriesObject )target;
+        targetObject._vessel = this._vessel;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (VesselDraughtTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._vessel, other._vessel ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _vessel );

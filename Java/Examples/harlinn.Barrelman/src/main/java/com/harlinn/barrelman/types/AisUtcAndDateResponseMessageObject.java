@@ -107,6 +107,54 @@ public class AisUtcAndDateResponseMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisUtcAndDateResponseMessageObject )target;
+        targetObject._datetime = this._datetime;
+        targetObject._positionAccuracy = this._positionAccuracy;
+        targetObject._longitude = this._longitude;
+        targetObject._latitude = this._latitude;
+        targetObject._positionFixType = this._positionFixType;
+        targetObject._spare = this._spare;
+        targetObject._raim = this._raim;
+        targetObject._radioStatus = this._radioStatus;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisUtcAndDateResponseMessageObject)obj;
+        if( !Comparer.equalsDateTime( this._datetime, other._datetime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionAccuracy, other._positionAccuracy ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionFixType, other._positionFixType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._raim, other._raim ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._radioStatus, other._radioStatus ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeDateTime( _datetime );

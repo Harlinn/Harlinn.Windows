@@ -74,6 +74,42 @@ public class SecurityIdentifierRoleLinkObject extends AbstractDataObjectWithGuid
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( SecurityIdentifierRoleLinkObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._member = this._member;
+        targetObject._role = this._role;
+        targetObject._start = this._start;
+        targetObject._end = this._end;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (SecurityIdentifierRoleLinkObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._member, other._member ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._role, other._role ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._start, other._start ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._end, other._end ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

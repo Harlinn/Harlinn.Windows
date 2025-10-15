@@ -272,6 +272,114 @@ public class RadarDeviceObject extends TrackerDeviceObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadarDeviceObject )target;
+        targetObject._saveSettingsTimeseries = this._saveSettingsTimeseries;
+        targetObject._powerOnTimeseries = this._powerOnTimeseries;
+        targetObject._trackingOnTimeseries = this._trackingOnTimeseries;
+        targetObject._radarPulseTimeseries = this._radarPulseTimeseries;
+        targetObject._tuningTimeseries = this._tuningTimeseries;
+        targetObject._blankSector1Timeseries = this._blankSector1Timeseries;
+        targetObject._sector1StartTimeseries = this._sector1StartTimeseries;
+        targetObject._sector1EndTimeseries = this._sector1EndTimeseries;
+        targetObject._blankSector2Timeseries = this._blankSector2Timeseries;
+        targetObject._sector2StartTimeseries = this._sector2StartTimeseries;
+        targetObject._sector2EndTimeseries = this._sector2EndTimeseries;
+        targetObject._enableAutomaticFrequencyControlTimeseries = this._enableAutomaticFrequencyControlTimeseries;
+        targetObject._azimuthOffsetTimeseries = this._azimuthOffsetTimeseries;
+        targetObject._enableSensitivityTimeControlTimeseries = this._enableSensitivityTimeControlTimeseries;
+        targetObject._automaticSensitivityTimeControlTimeseries = this._automaticSensitivityTimeControlTimeseries;
+        targetObject._sensitivityTimeControlLevelTimeseries = this._sensitivityTimeControlLevelTimeseries;
+        targetObject._enableFastTimeConstantTimeseries = this._enableFastTimeConstantTimeseries;
+        targetObject._fastTimeConstantLevelTimeseries = this._fastTimeConstantLevelTimeseries;
+        targetObject._fastTimeConstantModeTimeseries = this._fastTimeConstantModeTimeseries;
+        targetObject._latitudeTimeseries = this._latitudeTimeseries;
+        targetObject._longitudeTimeseries = this._longitudeTimeseries;
+        targetObject._radome = this._radome;
+        targetObject._gNSSDevice = this._gNSSDevice;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadarDeviceObject)obj;
+        if( !Comparer.equalsNullableGuid( this._saveSettingsTimeseries, other._saveSettingsTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._powerOnTimeseries, other._powerOnTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._trackingOnTimeseries, other._trackingOnTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._radarPulseTimeseries, other._radarPulseTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._tuningTimeseries, other._tuningTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._blankSector1Timeseries, other._blankSector1Timeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._sector1StartTimeseries, other._sector1StartTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._sector1EndTimeseries, other._sector1EndTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._blankSector2Timeseries, other._blankSector2Timeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._sector2StartTimeseries, other._sector2StartTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._sector2EndTimeseries, other._sector2EndTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._enableAutomaticFrequencyControlTimeseries, other._enableAutomaticFrequencyControlTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._azimuthOffsetTimeseries, other._azimuthOffsetTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._enableSensitivityTimeControlTimeseries, other._enableSensitivityTimeControlTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._automaticSensitivityTimeControlTimeseries, other._automaticSensitivityTimeControlTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._sensitivityTimeControlLevelTimeseries, other._sensitivityTimeControlLevelTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._enableFastTimeConstantTimeseries, other._enableFastTimeConstantTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._fastTimeConstantLevelTimeseries, other._fastTimeConstantLevelTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._fastTimeConstantModeTimeseries, other._fastTimeConstantModeTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._latitudeTimeseries, other._latitudeTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._longitudeTimeseries, other._longitudeTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._radome, other._radome ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._gNSSDevice, other._gNSSDevice ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _saveSettingsTimeseries );

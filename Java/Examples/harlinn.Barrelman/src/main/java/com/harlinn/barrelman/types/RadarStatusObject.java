@@ -118,6 +118,58 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadarStatusObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._radar = this._radar;
+        targetObject._timestamp = this._timestamp;
+        targetObject._azimuthCount = this._azimuthCount;
+        targetObject._triggerCount = this._triggerCount;
+        targetObject._rotationTime = this._rotationTime;
+        targetObject._pulse = this._pulse;
+        targetObject._tx = this._tx;
+        targetObject._tracking = this._tracking;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadarStatusObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._radar, other._radar ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._azimuthCount, other._azimuthCount ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._triggerCount, other._triggerCount ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._rotationTime, other._rotationTime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._pulse, other._pulse ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._tx, other._tx ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._tracking, other._tracking ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

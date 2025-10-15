@@ -107,6 +107,54 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( TrackInfoObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._firstTimestamp = this._firstTimestamp;
+        targetObject._lastTimestamp = this._lastTimestamp;
+        targetObject._count = this._count;
+        targetObject._northWestLatitude = this._northWestLatitude;
+        targetObject._northWestLongitude = this._northWestLongitude;
+        targetObject._southEastLatitude = this._southEastLatitude;
+        targetObject._southEastLongitude = this._southEastLongitude;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (TrackInfoObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._firstTimestamp, other._firstTimestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._lastTimestamp, other._lastTimestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._count, other._count ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._northWestLatitude, other._northWestLatitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._northWestLongitude, other._northWestLongitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._southEastLatitude, other._southEastLatitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._southEastLongitude, other._southEastLongitude ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

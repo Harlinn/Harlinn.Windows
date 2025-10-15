@@ -118,6 +118,58 @@ public class WeatherStationDeviceObject extends DeviceObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( WeatherStationDeviceObject )target;
+        targetObject._barometricPressureTimeseries = this._barometricPressureTimeseries;
+        targetObject._airTemperatureTimeseries = this._airTemperatureTimeseries;
+        targetObject._waterTemperatureTimeseries = this._waterTemperatureTimeseries;
+        targetObject._relativeHumidityTimeseries = this._relativeHumidityTimeseries;
+        targetObject._absoluteHumidityTimeseries = this._absoluteHumidityTimeseries;
+        targetObject._dewPointTimeseries = this._dewPointTimeseries;
+        targetObject._windDirectionTimeseries = this._windDirectionTimeseries;
+        targetObject._windSpeedTimeseries = this._windSpeedTimeseries;
+        targetObject._gyro = this._gyro;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (WeatherStationDeviceObject)obj;
+        if( !Comparer.equalsNullableGuid( this._barometricPressureTimeseries, other._barometricPressureTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._airTemperatureTimeseries, other._airTemperatureTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._waterTemperatureTimeseries, other._waterTemperatureTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._relativeHumidityTimeseries, other._relativeHumidityTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._absoluteHumidityTimeseries, other._absoluteHumidityTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._dewPointTimeseries, other._dewPointTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._windDirectionTimeseries, other._windDirectionTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._windSpeedTimeseries, other._windSpeedTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._gyro, other._gyro ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _barometricPressureTimeseries );

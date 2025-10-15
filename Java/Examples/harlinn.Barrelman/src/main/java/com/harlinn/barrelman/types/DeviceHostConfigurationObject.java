@@ -85,6 +85,46 @@ public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( DeviceHostConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._host = this._host;
+        targetObject._timestamp = this._timestamp;
+        targetObject._hostname = this._hostname;
+        targetObject._port = this._port;
+        targetObject._queueName = this._queueName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (DeviceHostConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._host, other._host ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._hostname, other._hostname ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._port, other._port ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._queueName, other._queueName ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

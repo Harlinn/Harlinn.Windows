@@ -30,6 +30,26 @@ public class ReferencePropertyObject extends PropertyObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ReferencePropertyObject )target;
+        targetObject._value = this._value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ReferencePropertyObject)obj;
+        if( !Comparer.equalsNullableGuid( this._value, other._value ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _value );

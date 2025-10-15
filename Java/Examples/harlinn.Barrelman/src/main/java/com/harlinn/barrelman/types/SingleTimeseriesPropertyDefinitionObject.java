@@ -41,6 +41,30 @@ public class SingleTimeseriesPropertyDefinitionObject extends TimeseriesProperty
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( SingleTimeseriesPropertyDefinitionObject )target;
+        targetObject._minValue = this._minValue;
+        targetObject._maxValue = this._maxValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (SingleTimeseriesPropertyDefinitionObject)obj;
+        if( !Comparer.equalsSingle( this._minValue, other._minValue ) ) {
+            return false;
+        }
+        if( !Comparer.equalsSingle( this._maxValue, other._maxValue ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeSingle( _minValue );

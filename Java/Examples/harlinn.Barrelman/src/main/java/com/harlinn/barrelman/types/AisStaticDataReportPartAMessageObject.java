@@ -41,6 +41,30 @@ public class AisStaticDataReportPartAMessageObject extends AisStaticDataReportMe
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisStaticDataReportPartAMessageObject )target;
+        targetObject._shipName = this._shipName;
+        targetObject._spare = this._spare;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisStaticDataReportPartAMessageObject)obj;
+        if( !Comparer.equalsNullableGuid( this._shipName, other._shipName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _shipName );

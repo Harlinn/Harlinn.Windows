@@ -30,6 +30,26 @@ public class CallsignObject extends IdentityObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CallsignObject )target;
+        targetObject._identifier = this._identifier;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CallsignObject)obj;
+        if( !Comparer.equalsString( this._identifier, other._identifier ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeStringUtf8( _identifier );

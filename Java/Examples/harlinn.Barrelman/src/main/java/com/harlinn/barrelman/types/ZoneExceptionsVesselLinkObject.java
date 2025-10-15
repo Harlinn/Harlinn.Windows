@@ -52,6 +52,34 @@ public class ZoneExceptionsVesselLinkObject extends AbstractDataObjectWithGuidKe
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ZoneExceptionsVesselLinkObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._zoneExceptions = this._zoneExceptions;
+        targetObject._vessel = this._vessel;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ZoneExceptionsVesselLinkObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._zoneExceptions, other._zoneExceptions ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._vessel, other._vessel ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

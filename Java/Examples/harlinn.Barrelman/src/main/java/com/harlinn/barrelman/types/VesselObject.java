@@ -107,6 +107,54 @@ public class VesselObject extends TrackableItemObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( VesselObject )target;
+        targetObject._name = this._name;
+        targetObject._type = this._type;
+        targetObject._toBow = this._toBow;
+        targetObject._toStern = this._toStern;
+        targetObject._toPort = this._toPort;
+        targetObject._toStarboard = this._toStarboard;
+        targetObject._draughtTimeseries = this._draughtTimeseries;
+        targetObject._personsOnBoardTimeseries = this._personsOnBoardTimeseries;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (VesselObject)obj;
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._type, other._type ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toBow, other._toBow ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toStern, other._toStern ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toPort, other._toPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._toStarboard, other._toStarboard ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._draughtTimeseries, other._draughtTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._personsOnBoardTimeseries, other._personsOnBoardTimeseries ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeStringUtf8( _name );

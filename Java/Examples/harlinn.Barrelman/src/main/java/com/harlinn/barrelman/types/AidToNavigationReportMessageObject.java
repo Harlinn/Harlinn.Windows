@@ -217,6 +217,94 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AidToNavigationReportMessageObject )target;
+        targetObject._navigationalAidType = this._navigationalAidType;
+        targetObject._name = this._name;
+        targetObject._positionAccuracy = this._positionAccuracy;
+        targetObject._longitude = this._longitude;
+        targetObject._latitude = this._latitude;
+        targetObject._dimensionToBow = this._dimensionToBow;
+        targetObject._dimensionToStern = this._dimensionToStern;
+        targetObject._dimensionToPort = this._dimensionToPort;
+        targetObject._dimensionToStarboard = this._dimensionToStarboard;
+        targetObject._positionFixType = this._positionFixType;
+        targetObject._timestamp = this._timestamp;
+        targetObject._offPosition = this._offPosition;
+        targetObject._regionalReserved = this._regionalReserved;
+        targetObject._raim = this._raim;
+        targetObject._virtualAid = this._virtualAid;
+        targetObject._assigned = this._assigned;
+        targetObject._spare = this._spare;
+        targetObject._nameExtension = this._nameExtension;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AidToNavigationReportMessageObject)obj;
+        if( !Comparer.equalsInt32( this._navigationalAidType, other._navigationalAidType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionAccuracy, other._positionAccuracy ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToBow, other._dimensionToBow ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToStern, other._dimensionToStern ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToPort, other._dimensionToPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToStarboard, other._dimensionToStarboard ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionFixType, other._positionFixType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._offPosition, other._offPosition ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._regionalReserved, other._regionalReserved ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._raim, other._raim ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._virtualAid, other._virtualAid ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._assigned, other._assigned ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._nameExtension, other._nameExtension ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _navigationalAidType );

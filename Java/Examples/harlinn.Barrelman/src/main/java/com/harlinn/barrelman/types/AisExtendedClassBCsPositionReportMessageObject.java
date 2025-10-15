@@ -239,6 +239,102 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisExtendedClassBCsPositionReportMessageObject )target;
+        targetObject._reserved = this._reserved;
+        targetObject._speedOverGround = this._speedOverGround;
+        targetObject._positionAccuracy = this._positionAccuracy;
+        targetObject._longitude = this._longitude;
+        targetObject._latitude = this._latitude;
+        targetObject._courseOverGround = this._courseOverGround;
+        targetObject._trueHeading = this._trueHeading;
+        targetObject._timestamp = this._timestamp;
+        targetObject._regionalReserved = this._regionalReserved;
+        targetObject._name = this._name;
+        targetObject._shipType = this._shipType;
+        targetObject._dimensionToBow = this._dimensionToBow;
+        targetObject._dimensionToStern = this._dimensionToStern;
+        targetObject._dimensionToPort = this._dimensionToPort;
+        targetObject._dimensionToStarboard = this._dimensionToStarboard;
+        targetObject._positionFixType = this._positionFixType;
+        targetObject._raim = this._raim;
+        targetObject._dataTerminalReady = this._dataTerminalReady;
+        targetObject._assigned = this._assigned;
+        targetObject._spare = this._spare;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisExtendedClassBCsPositionReportMessageObject)obj;
+        if( !Comparer.equalsInt32( this._reserved, other._reserved ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._speedOverGround, other._speedOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionAccuracy, other._positionAccuracy ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._courseOverGround, other._courseOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._trueHeading, other._trueHeading ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._regionalReserved, other._regionalReserved ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._shipType, other._shipType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToBow, other._dimensionToBow ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToStern, other._dimensionToStern ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToPort, other._dimensionToPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToStarboard, other._dimensionToStarboard ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionFixType, other._positionFixType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._raim, other._raim ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._dataTerminalReady, other._dataTerminalReady ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._assigned, other._assigned ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _reserved );

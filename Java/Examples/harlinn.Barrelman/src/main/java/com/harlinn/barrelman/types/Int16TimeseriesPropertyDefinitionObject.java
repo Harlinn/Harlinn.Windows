@@ -41,6 +41,30 @@ public class Int16TimeseriesPropertyDefinitionObject extends TimeseriesPropertyD
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( Int16TimeseriesPropertyDefinitionObject )target;
+        targetObject._minValue = this._minValue;
+        targetObject._maxValue = this._maxValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (Int16TimeseriesPropertyDefinitionObject)obj;
+        if( !Comparer.equalsInt16( this._minValue, other._minValue ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt16( this._maxValue, other._maxValue ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt16( _minValue );

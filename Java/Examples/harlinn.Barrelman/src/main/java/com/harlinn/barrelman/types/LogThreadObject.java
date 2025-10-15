@@ -85,6 +85,46 @@ public class LogThreadObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LogThreadObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._process = this._process;
+        targetObject._started = this._started;
+        targetObject._stopped = this._stopped;
+        targetObject._threadId = this._threadId;
+        targetObject._name = this._name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LogThreadObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._process, other._process ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._started, other._started ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._stopped, other._stopped ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._threadId, other._threadId ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

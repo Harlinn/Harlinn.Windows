@@ -107,6 +107,54 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( OilSpillObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._oilSpillDetector = this._oilSpillDetector;
+        targetObject._timestamp = this._timestamp;
+        targetObject._oilArea = this._oilArea;
+        targetObject._shape = this._shape != null ? this._shape.clone() : this._shape;;
+        targetObject._bSI = this._bSI != null ? this._bSI.clone() : this._bSI;;
+        targetObject._oil = this._oil != null ? this._oil.clone() : this._oil;;
+        targetObject._trace = this._trace != null ? this._trace.clone() : this._trace;;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (OilSpillObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._oilSpillDetector, other._oilSpillDetector ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._oilArea, other._oilArea ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._shape, other._shape ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._bSI, other._bSI ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._oil, other._oil ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._trace, other._trace ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

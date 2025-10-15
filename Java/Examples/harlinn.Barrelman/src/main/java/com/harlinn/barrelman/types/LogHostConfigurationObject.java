@@ -184,6 +184,82 @@ public class LogHostConfigurationObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LogHostConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._host = this._host;
+        targetObject._timestamp = this._timestamp;
+        targetObject._finest = this._finest;
+        targetObject._finer = this._finer;
+        targetObject._fine = this._fine;
+        targetObject._info = this._info;
+        targetObject._notice = this._notice;
+        targetObject._warn = this._warn;
+        targetObject._error = this._error;
+        targetObject._severe = this._severe;
+        targetObject._critical = this._critical;
+        targetObject._alert = this._alert;
+        targetObject._fatal = this._fatal;
+        targetObject._emergency = this._emergency;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LogHostConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._host, other._host ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._finest, other._finest ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._finer, other._finer ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._fine, other._fine ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._info, other._info ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._notice, other._notice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._warn, other._warn ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._error, other._error ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._severe, other._severe ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._critical, other._critical ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._alert, other._alert ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._fatal, other._fatal ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._emergency, other._emergency ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

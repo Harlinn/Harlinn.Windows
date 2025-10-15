@@ -52,6 +52,34 @@ public class LineInputMessageRoutingObject extends AbstractDataObjectWithGuidKey
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LineInputMessageRoutingObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._lineInputDevice = this._lineInputDevice;
+        targetObject._type = this._type;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LineInputMessageRoutingObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._lineInputDevice, other._lineInputDevice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._type, other._type ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

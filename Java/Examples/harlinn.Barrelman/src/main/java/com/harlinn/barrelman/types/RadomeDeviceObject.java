@@ -74,6 +74,42 @@ public class RadomeDeviceObject extends DeviceObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadomeDeviceObject )target;
+        targetObject._radar = this._radar;
+        targetObject._pressureTimeseries = this._pressureTimeseries;
+        targetObject._temperatureTimeseries = this._temperatureTimeseries;
+        targetObject._dewPointTimeseries = this._dewPointTimeseries;
+        targetObject._statusTimeseries = this._statusTimeseries;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadomeDeviceObject)obj;
+        if( !Comparer.equalsNullableGuid( this._radar, other._radar ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._pressureTimeseries, other._pressureTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._temperatureTimeseries, other._temperatureTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._dewPointTimeseries, other._dewPointTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._statusTimeseries, other._statusTimeseries ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _radar );

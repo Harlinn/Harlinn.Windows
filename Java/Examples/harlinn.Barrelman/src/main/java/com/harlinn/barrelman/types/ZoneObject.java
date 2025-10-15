@@ -121,6 +121,62 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ZoneObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._name = this._name;
+        targetObject._longitude = this._longitude;
+        targetObject._latitude = this._latitude;
+        targetObject._alarmType = this._alarmType;
+        targetObject._alarmTime = this._alarmTime;
+        targetObject._radarTrackMinimumLifetime = this._radarTrackMinimumLifetime;
+        targetObject._speed = this._speed;
+        targetObject._strokeColor = this._strokeColor;
+        targetObject._fillColor = this._fillColor;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ZoneObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._alarmType, other._alarmType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._alarmTime, other._alarmTime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._radarTrackMinimumLifetime, other._radarTrackMinimumLifetime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._speed, other._speed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._strokeColor, other._strokeColor ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._fillColor, other._fillColor ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

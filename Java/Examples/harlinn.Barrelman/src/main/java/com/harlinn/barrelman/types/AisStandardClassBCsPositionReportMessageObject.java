@@ -206,6 +206,90 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisStandardClassBCsPositionReportMessageObject )target;
+        targetObject._reserved = this._reserved;
+        targetObject._speedOverGround = this._speedOverGround;
+        targetObject._positionAccuracy = this._positionAccuracy;
+        targetObject._longitude = this._longitude;
+        targetObject._latitude = this._latitude;
+        targetObject._courseOverGround = this._courseOverGround;
+        targetObject._trueHeading = this._trueHeading;
+        targetObject._timestamp = this._timestamp;
+        targetObject._regionalReserved = this._regionalReserved;
+        targetObject._isCsUnit = this._isCsUnit;
+        targetObject._hasDisplay = this._hasDisplay;
+        targetObject._hasDscCapability = this._hasDscCapability;
+        targetObject._band = this._band;
+        targetObject._canAcceptMessage22 = this._canAcceptMessage22;
+        targetObject._assigned = this._assigned;
+        targetObject._raim = this._raim;
+        targetObject._radioStatus = this._radioStatus;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisStandardClassBCsPositionReportMessageObject)obj;
+        if( !Comparer.equalsInt32( this._reserved, other._reserved ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._speedOverGround, other._speedOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionAccuracy, other._positionAccuracy ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._courseOverGround, other._courseOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._trueHeading, other._trueHeading ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._regionalReserved, other._regionalReserved ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._isCsUnit, other._isCsUnit ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._hasDisplay, other._hasDisplay ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._hasDscCapability, other._hasDscCapability ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._band, other._band ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._canAcceptMessage22, other._canAcceptMessage22 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._assigned, other._assigned ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._raim, other._raim ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._radioStatus, other._radioStatus ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _reserved );

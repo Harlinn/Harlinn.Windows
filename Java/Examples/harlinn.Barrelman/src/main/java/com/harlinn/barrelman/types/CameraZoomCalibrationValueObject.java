@@ -63,6 +63,38 @@ public class CameraZoomCalibrationValueObject extends AbstractDataObjectWithGuid
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraZoomCalibrationValueObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._zoomCalibration = this._zoomCalibration;
+        targetObject._focalLength = this._focalLength;
+        targetObject._focalLengthOffset = this._focalLengthOffset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraZoomCalibrationValueObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._zoomCalibration, other._zoomCalibration ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._focalLength, other._focalLength ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._focalLengthOffset, other._focalLengthOffset ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

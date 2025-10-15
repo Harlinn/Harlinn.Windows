@@ -30,6 +30,26 @@ public class WeatherStationBarometricPressureTimeseriesObject extends DoubleTime
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( WeatherStationBarometricPressureTimeseriesObject )target;
+        targetObject._weatherStation = this._weatherStation;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (WeatherStationBarometricPressureTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._weatherStation, other._weatherStation ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _weatherStation );

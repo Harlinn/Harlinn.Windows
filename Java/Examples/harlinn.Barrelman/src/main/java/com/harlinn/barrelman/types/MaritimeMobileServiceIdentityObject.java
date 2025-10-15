@@ -30,6 +30,26 @@ public class MaritimeMobileServiceIdentityObject extends IdentityObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( MaritimeMobileServiceIdentityObject )target;
+        targetObject._identifier = this._identifier;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (MaritimeMobileServiceIdentityObject)obj;
+        if( !Comparer.equalsInt64( this._identifier, other._identifier ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _identifier );

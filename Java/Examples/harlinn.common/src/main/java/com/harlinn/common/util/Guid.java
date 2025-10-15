@@ -394,6 +394,31 @@ public class Guid implements Serializable, Comparable<Guid> {
 		return first.compareTo(second);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if ( this == obj ) {
+			return true;
+		}
+		if(obj == null ) {
+			return false;
+		}
+		if ((obj instanceof Guid) == false ) {
+            return false;
+        }
+		var other = (Guid)obj;
+		return other.a == this.a &&
+				other.b == this.b &&
+				other.c == this.c &&
+				other.d == this.d &&
+				other.e == this.e &&
+				other.f == this.f &&
+				other.g == this.g &&
+				other.h == this.h &&
+				other.i == this.i &&
+				other.j == this.j &&
+				other.k == this.k; 
+	}
+	
 	
 	public static final Guid newGuid()	{
 		var bytes = com.harlinn.common.platform.Ole32.CoCreateGuid();

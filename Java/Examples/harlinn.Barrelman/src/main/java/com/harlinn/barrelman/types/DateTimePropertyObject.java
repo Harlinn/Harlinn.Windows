@@ -30,6 +30,26 @@ public class DateTimePropertyObject extends PropertyObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( DateTimePropertyObject )target;
+        targetObject._value = this._value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (DateTimePropertyObject)obj;
+        if( !Comparer.equalsDateTime( this._value, other._value ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeDateTime( _value );

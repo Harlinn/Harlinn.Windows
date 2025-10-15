@@ -74,6 +74,42 @@ public class AisDeviceRawMessageObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisDeviceRawMessageObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._aisDevice = this._aisDevice;
+        targetObject._timestamp = this._timestamp;
+        targetObject._isSent = this._isSent;
+        targetObject._message = this._message;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisDeviceRawMessageObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._aisDevice, other._aisDevice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._isSent, other._isSent ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._message, other._message ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

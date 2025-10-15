@@ -30,6 +30,26 @@ public class BooleanPropertyDefinitionObject extends PropertyDefinitionObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( BooleanPropertyDefinitionObject )target;
+        targetObject._defaultValue = this._defaultValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (BooleanPropertyDefinitionObject)obj;
+        if( !Comparer.equalsBoolean( this._defaultValue, other._defaultValue ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeBoolean( _defaultValue );

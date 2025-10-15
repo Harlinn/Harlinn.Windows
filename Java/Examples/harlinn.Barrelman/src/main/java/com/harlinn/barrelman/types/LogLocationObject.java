@@ -85,6 +85,46 @@ public class LogLocationObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LogLocationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._fileName = this._fileName;
+        targetObject._lineNumber = this._lineNumber;
+        targetObject._namespace = this._namespace;
+        targetObject._className = this._className;
+        targetObject._methodName = this._methodName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LogLocationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._fileName, other._fileName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._lineNumber, other._lineNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._namespace, other._namespace ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._className, other._className ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._methodName, other._methodName ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

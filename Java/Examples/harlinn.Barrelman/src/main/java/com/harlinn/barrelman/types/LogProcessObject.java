@@ -107,6 +107,54 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LogProcessObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._application = this._application;
+        targetObject._host = this._host;
+        targetObject._started = this._started;
+        targetObject._stopped = this._stopped;
+        targetObject._processId = this._processId;
+        targetObject._path = this._path;
+        targetObject._identity = this._identity;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LogProcessObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._application, other._application ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._host, other._host ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._started, other._started ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._stopped, other._stopped ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._processId, other._processId ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._path, other._path ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._identity, other._identity ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

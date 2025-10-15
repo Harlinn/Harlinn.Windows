@@ -74,6 +74,42 @@ public class TrackLinkObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( TrackLinkObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._primary = this._primary;
+        targetObject._secondary = this._secondary;
+        targetObject._start = this._start;
+        targetObject._end = this._end;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (TrackLinkObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._primary, other._primary ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._secondary, other._secondary ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._start, other._start ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._end, other._end ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

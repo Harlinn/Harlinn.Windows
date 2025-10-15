@@ -30,6 +30,26 @@ public class ViewZoomLevelTimeseriesObject extends DoubleTimeseriesObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ViewZoomLevelTimeseriesObject )target;
+        targetObject._view = this._view;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ViewZoomLevelTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._view, other._view ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _view );

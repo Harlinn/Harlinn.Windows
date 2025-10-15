@@ -129,6 +129,62 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandAbsoluteMoveObject )target;
+        targetObject._positionPanTiltMode = this._positionPanTiltMode;
+        targetObject._panAngle = this._panAngle;
+        targetObject._tiltAngle = this._tiltAngle;
+        targetObject._positionFocalLengthMode = this._positionFocalLengthMode;
+        targetObject._focalLength = this._focalLength;
+        targetObject._speedPanTiltMode = this._speedPanTiltMode;
+        targetObject._panSpeed = this._panSpeed;
+        targetObject._tiltSpeed = this._tiltSpeed;
+        targetObject._speedFocalLengthMode = this._speedFocalLengthMode;
+        targetObject._zoomSpeed = this._zoomSpeed;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandAbsoluteMoveObject)obj;
+        if( !Comparer.equalsInt32( this._positionPanTiltMode, other._positionPanTiltMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._panAngle, other._panAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._tiltAngle, other._tiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionFocalLengthMode, other._positionFocalLengthMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._focalLength, other._focalLength ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._speedPanTiltMode, other._speedPanTiltMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._panSpeed, other._panSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._tiltSpeed, other._tiltSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._speedFocalLengthMode, other._speedFocalLengthMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._zoomSpeed, other._zoomSpeed ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _positionPanTiltMode );

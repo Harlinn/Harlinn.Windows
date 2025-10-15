@@ -55,6 +55,38 @@ public abstract class DeviceObject extends ItemObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( DeviceObject )target;
+        targetObject._host = this._host;
+        targetObject._name = this._name;
+        targetObject._description = this._description;
+        targetObject._enabledTimeseries = this._enabledTimeseries;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (DeviceObject)obj;
+        if( !Comparer.equalsGuid( this._host, other._host ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._description, other._description ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._enabledTimeseries, other._enabledTimeseries ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeGuid( _host );

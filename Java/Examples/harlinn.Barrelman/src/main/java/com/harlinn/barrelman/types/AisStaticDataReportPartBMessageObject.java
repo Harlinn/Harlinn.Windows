@@ -151,6 +151,70 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisStaticDataReportPartBMessageObject )target;
+        targetObject._shipType = this._shipType;
+        targetObject._vendorId = this._vendorId;
+        targetObject._unitModelCode = this._unitModelCode;
+        targetObject._serialNumber = this._serialNumber;
+        targetObject._callsign = this._callsign;
+        targetObject._dimensionToBow = this._dimensionToBow;
+        targetObject._dimensionToStern = this._dimensionToStern;
+        targetObject._dimensionToPort = this._dimensionToPort;
+        targetObject._dimensionToStarboard = this._dimensionToStarboard;
+        targetObject._mothershipMmsi = this._mothershipMmsi;
+        targetObject._positionFixType = this._positionFixType;
+        targetObject._spare = this._spare;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisStaticDataReportPartBMessageObject)obj;
+        if( !Comparer.equalsInt32( this._shipType, other._shipType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._vendorId, other._vendorId ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._unitModelCode, other._unitModelCode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._serialNumber, other._serialNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._callsign, other._callsign ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToBow, other._dimensionToBow ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToStern, other._dimensionToStern ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToPort, other._dimensionToPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._dimensionToStarboard, other._dimensionToStarboard ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._mothershipMmsi, other._mothershipMmsi ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionFixType, other._positionFixType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _shipType );

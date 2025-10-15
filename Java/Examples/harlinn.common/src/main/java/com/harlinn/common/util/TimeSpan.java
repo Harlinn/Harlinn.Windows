@@ -30,13 +30,20 @@ public class TimeSpan extends TimeBase implements Comparable<TimeSpan>, Serializ
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-            return true;
+	public boolean equals(Object obj) {
+		if ( this == obj ) {
+			return true;
+		}
+		if(obj == null ) {
+			return false;
+		}
+		if ((obj instanceof TimeSpan) == false ) {
+            return false;
         }
-        return (other instanceof TimeSpan otherTimeSpan)
-                && this.ticks == otherTimeSpan.ticks;
+		var other = (TimeSpan)obj;
+		return other.ticks == this.ticks; 
 	}
+	
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {

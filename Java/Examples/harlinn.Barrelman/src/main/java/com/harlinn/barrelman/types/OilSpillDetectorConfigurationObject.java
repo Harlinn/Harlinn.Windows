@@ -294,6 +294,122 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( OilSpillDetectorConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._oilSpillDetector = this._oilSpillDetector;
+        targetObject._timestamp = this._timestamp;
+        targetObject._range = this._range;
+        targetObject._startAngle = this._startAngle;
+        targetObject._endAngle = this._endAngle;
+        targetObject._startRange = this._startRange;
+        targetObject._endRange = this._endRange;
+        targetObject._updateRate = this._updateRate;
+        targetObject._statusSendTime = this._statusSendTime;
+        targetObject._drawBorder = this._drawBorder;
+        targetObject._colors = this._colors != null ? this._colors.clone() : this._colors;;
+        targetObject._sendToServer = this._sendToServer;
+        targetObject._directory = this._directory;
+        targetObject._transparentWater = this._transparentWater;
+        targetObject._savePictures = this._savePictures;
+        targetObject._sendAsTarget = this._sendAsTarget;
+        targetObject._writeLog = this._writeLog;
+        targetObject._targetFilePrefix = this._targetFilePrefix;
+        targetObject._targetMMSI = this._targetMMSI;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+        targetObject._testSourceEnabled = this._testSourceEnabled;
+        targetObject._proxyServer = this._proxyServer;
+        targetObject._useProxyServer = this._useProxyServer;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (OilSpillDetectorConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._oilSpillDetector, other._oilSpillDetector ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._range, other._range ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._startAngle, other._startAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._endAngle, other._endAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._startRange, other._startRange ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._endRange, other._endRange ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._updateRate, other._updateRate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._statusSendTime, other._statusSendTime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._drawBorder, other._drawBorder ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt8Array( this._colors, other._colors ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._sendToServer, other._sendToServer ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._directory, other._directory ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._transparentWater, other._transparentWater ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._savePictures, other._savePictures ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._sendAsTarget, other._sendAsTarget ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._writeLog, other._writeLog ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._targetFilePrefix, other._targetFilePrefix ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._targetMMSI, other._targetMMSI ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._testSourceEnabled, other._testSourceEnabled ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._proxyServer, other._proxyServer ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useProxyServer, other._useProxyServer ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

@@ -140,6 +140,66 @@ public class TrackValue3DObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( TrackValue3DObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._track = this._track;
+        targetObject._timestamp = this._timestamp;
+        targetObject._flags = this._flags;
+        targetObject._status = this._status;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+        targetObject._altitude = this._altitude;
+        targetObject._speed = this._speed;
+        targetObject._course = this._course;
+        targetObject._rateOfClimb = this._rateOfClimb;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (TrackValue3DObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._track, other._track ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._flags, other._flags ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._status, other._status ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._altitude, other._altitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._speed, other._speed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._course, other._course ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._rateOfClimb, other._rateOfClimb ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

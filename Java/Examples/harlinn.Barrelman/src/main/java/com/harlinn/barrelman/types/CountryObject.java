@@ -74,6 +74,42 @@ public class CountryObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CountryObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._name = this._name;
+        targetObject._code = this._code;
+        targetObject._alpha2 = this._alpha2;
+        targetObject._alpha3 = this._alpha3;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CountryObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._code, other._code ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._alpha2, other._alpha2 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._alpha3, other._alpha3 ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

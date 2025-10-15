@@ -30,6 +30,26 @@ public class GNSSLatitudeTimeseriesObject extends DoubleTimeseriesObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( GNSSLatitudeTimeseriesObject )target;
+        targetObject._gNSSDevice = this._gNSSDevice;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (GNSSLatitudeTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._gNSSDevice, other._gNSSDevice ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _gNSSDevice );

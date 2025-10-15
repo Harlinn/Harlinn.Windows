@@ -30,6 +30,26 @@ public class DeviceEnabledTimeseriesObject extends BooleanTimeseriesObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( DeviceEnabledTimeseriesObject )target;
+        targetObject._device = this._device;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (DeviceEnabledTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._device, other._device ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _device );

@@ -30,6 +30,26 @@ public class ByteTimeseriesPropertyObject extends TimeseriesPropertyObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ByteTimeseriesPropertyObject )target;
+        targetObject._timeseries = this._timeseries;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ByteTimeseriesPropertyObject)obj;
+        if( !Comparer.equalsNullableGuid( this._timeseries, other._timeseries ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _timeseries );

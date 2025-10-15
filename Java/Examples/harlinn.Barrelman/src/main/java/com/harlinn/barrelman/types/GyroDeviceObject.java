@@ -107,6 +107,54 @@ public class GyroDeviceObject extends DeviceObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( GyroDeviceObject )target;
+        targetObject._headingTrueNorthTimeseries = this._headingTrueNorthTimeseries;
+        targetObject._headingMagneticNorthTimeseries = this._headingMagneticNorthTimeseries;
+        targetObject._pitchTimeseries = this._pitchTimeseries;
+        targetObject._rateOfTurnTimeseries = this._rateOfTurnTimeseries;
+        targetObject._rollTimeseries = this._rollTimeseries;
+        targetObject._courseTimeseries = this._courseTimeseries;
+        targetObject._speedTimeseries = this._speedTimeseries;
+        targetObject._gNSSDevice = this._gNSSDevice;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (GyroDeviceObject)obj;
+        if( !Comparer.equalsNullableGuid( this._headingTrueNorthTimeseries, other._headingTrueNorthTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._headingMagneticNorthTimeseries, other._headingMagneticNorthTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._pitchTimeseries, other._pitchTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._rateOfTurnTimeseries, other._rateOfTurnTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._rollTimeseries, other._rollTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._courseTimeseries, other._courseTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._speedTimeseries, other._speedTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._gNSSDevice, other._gNSSDevice ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _headingTrueNorthTimeseries );

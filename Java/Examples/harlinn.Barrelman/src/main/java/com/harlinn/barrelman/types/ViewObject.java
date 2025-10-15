@@ -74,6 +74,42 @@ public class ViewObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ViewObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._name = this._name;
+        targetObject._latitudeTimeseries = this._latitudeTimeseries;
+        targetObject._longitudeTimeseries = this._longitudeTimeseries;
+        targetObject._zoomLevelTimeseries = this._zoomLevelTimeseries;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ViewObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._name, other._name ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._latitudeTimeseries, other._latitudeTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._longitudeTimeseries, other._longitudeTimeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._zoomLevelTimeseries, other._zoomLevelTimeseries ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

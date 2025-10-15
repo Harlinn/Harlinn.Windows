@@ -162,6 +162,74 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisStandardSarAircraftPositionReportMessageObject )target;
+        targetObject._altitude = this._altitude;
+        targetObject._speedOverGround = this._speedOverGround;
+        targetObject._positionAccuracy = this._positionAccuracy;
+        targetObject._longitude = this._longitude;
+        targetObject._latitude = this._latitude;
+        targetObject._courseOverGround = this._courseOverGround;
+        targetObject._timestamp = this._timestamp;
+        targetObject._reserved = this._reserved;
+        targetObject._dataTerminalReady = this._dataTerminalReady;
+        targetObject._spare = this._spare;
+        targetObject._assigned = this._assigned;
+        targetObject._raim = this._raim;
+        targetObject._radioStatus = this._radioStatus;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisStandardSarAircraftPositionReportMessageObject)obj;
+        if( !Comparer.equalsInt32( this._altitude, other._altitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._speedOverGround, other._speedOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._positionAccuracy, other._positionAccuracy ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._courseOverGround, other._courseOverGround ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._reserved, other._reserved ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._dataTerminalReady, other._dataTerminalReady ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._assigned, other._assigned ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._raim, other._raim ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._radioStatus, other._radioStatus ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _altitude );

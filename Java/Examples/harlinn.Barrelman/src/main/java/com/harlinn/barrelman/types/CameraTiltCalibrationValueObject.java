@@ -63,6 +63,38 @@ public class CameraTiltCalibrationValueObject extends AbstractDataObjectWithGuid
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraTiltCalibrationValueObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._tiltCalibration = this._tiltCalibration;
+        targetObject._panAngle = this._panAngle;
+        targetObject._tiltOffset = this._tiltOffset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraTiltCalibrationValueObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._tiltCalibration, other._tiltCalibration ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._panAngle, other._panAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._tiltOffset, other._tiltOffset ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

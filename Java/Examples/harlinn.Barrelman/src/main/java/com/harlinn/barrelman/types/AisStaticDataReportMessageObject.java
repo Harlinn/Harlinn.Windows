@@ -30,6 +30,26 @@ public class AisStaticDataReportMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisStaticDataReportMessageObject )target;
+        targetObject._partNumber = this._partNumber;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisStaticDataReportMessageObject)obj;
+        if( !Comparer.equalsInt32( this._partNumber, other._partNumber ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _partNumber );

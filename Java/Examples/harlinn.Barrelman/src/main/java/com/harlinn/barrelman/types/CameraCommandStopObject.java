@@ -41,6 +41,30 @@ public class CameraCommandStopObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandStopObject )target;
+        targetObject._panTilt = this._panTilt;
+        targetObject._zoom = this._zoom;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandStopObject)obj;
+        if( !Comparer.equalsBoolean( this._panTilt, other._panTilt ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._zoom, other._zoom ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeBoolean( _panTilt );

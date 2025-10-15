@@ -96,6 +96,50 @@ public class LogTraceEntryObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LogTraceEntryObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._thread = this._thread;
+        targetObject._sequenceNumber = this._sequenceNumber;
+        targetObject._location = this._location;
+        targetObject._depth = this._depth;
+        targetObject._entered = this._entered;
+        targetObject._ended = this._ended;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LogTraceEntryObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._thread, other._thread ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._sequenceNumber, other._sequenceNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._location, other._location ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._depth, other._depth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._entered, other._entered ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._ended, other._ended ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

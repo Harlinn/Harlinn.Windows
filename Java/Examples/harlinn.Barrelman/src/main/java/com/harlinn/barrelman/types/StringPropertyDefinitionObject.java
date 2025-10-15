@@ -41,6 +41,30 @@ public class StringPropertyDefinitionObject extends PropertyDefinitionObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( StringPropertyDefinitionObject )target;
+        targetObject._defaultValue = this._defaultValue;
+        targetObject._pattern = this._pattern;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (StringPropertyDefinitionObject)obj;
+        if( !Comparer.equalsString( this._defaultValue, other._defaultValue ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._pattern, other._pattern ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeStringUtf8( _defaultValue );

@@ -44,6 +44,34 @@ public abstract class PropertyObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( PropertyObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._element = this._element;
+        targetObject._definition = this._definition;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (PropertyObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._element, other._element ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._definition, other._definition ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

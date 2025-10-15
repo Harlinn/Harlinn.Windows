@@ -74,6 +74,42 @@ public class ItemIdentityLinkObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ItemIdentityLinkObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._item = this._item;
+        targetObject._identity = this._identity;
+        targetObject._start = this._start;
+        targetObject._end = this._end;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ItemIdentityLinkObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._item, other._item ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._identity, other._identity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._start, other._start ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._end, other._end ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

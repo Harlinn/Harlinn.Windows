@@ -52,6 +52,34 @@ public class AisUtcAndDateInquiryMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisUtcAndDateInquiryMessageObject )target;
+        targetObject._spare1 = this._spare1;
+        targetObject._destinationMmsi = this._destinationMmsi;
+        targetObject._spare2 = this._spare2;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisUtcAndDateInquiryMessageObject)obj;
+        if( !Comparer.equalsInt32( this._spare1, other._spare1 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._destinationMmsi, other._destinationMmsi ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare2, other._spare2 ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _spare1 );

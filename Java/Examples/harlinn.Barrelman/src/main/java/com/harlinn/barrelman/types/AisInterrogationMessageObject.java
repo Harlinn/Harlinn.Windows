@@ -107,6 +107,54 @@ public class AisInterrogationMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisInterrogationMessageObject )target;
+        targetObject._interrogatedMmsi = this._interrogatedMmsi;
+        targetObject._firstMessageType = this._firstMessageType;
+        targetObject._firstSlotOffset = this._firstSlotOffset;
+        targetObject._secondMessageType = this._secondMessageType;
+        targetObject._secondSlotOffset = this._secondSlotOffset;
+        targetObject._secondStationInterrogationMmsi = this._secondStationInterrogationMmsi;
+        targetObject._secondStationFirstMessageType = this._secondStationFirstMessageType;
+        targetObject._secondStationFirstSlotOffset = this._secondStationFirstSlotOffset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisInterrogationMessageObject)obj;
+        if( !Comparer.equalsNullableGuid( this._interrogatedMmsi, other._interrogatedMmsi ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._firstMessageType, other._firstMessageType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._firstSlotOffset, other._firstSlotOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._secondMessageType, other._secondMessageType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._secondSlotOffset, other._secondSlotOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._secondStationInterrogationMmsi, other._secondStationInterrogationMmsi ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._secondStationFirstMessageType, other._secondStationFirstMessageType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._secondStationFirstSlotOffset, other._secondStationFirstSlotOffset ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _interrogatedMmsi );

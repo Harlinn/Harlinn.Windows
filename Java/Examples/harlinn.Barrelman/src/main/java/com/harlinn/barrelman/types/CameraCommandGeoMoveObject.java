@@ -74,6 +74,42 @@ public class CameraCommandGeoMoveObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandGeoMoveObject )target;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+        targetObject._altitude = this._altitude;
+        targetObject._viewportWidth = this._viewportWidth;
+        targetObject._viewportHeight = this._viewportHeight;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandGeoMoveObject)obj;
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._altitude, other._altitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._viewportWidth, other._viewportWidth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._viewportHeight, other._viewportHeight ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeDouble( _latitude );

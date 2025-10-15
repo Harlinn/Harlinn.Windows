@@ -85,6 +85,46 @@ public class RadioCommandReplyObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadioCommandReplyObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._radio = this._radio;
+        targetObject._timestamp = this._timestamp;
+        targetObject._command = this._command;
+        targetObject._status = this._status;
+        targetObject._message = this._message;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadioCommandReplyObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._radio, other._radio ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._command, other._command ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._status, other._status ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._message, other._message ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

@@ -30,6 +30,26 @@ public class CameraCommandSetWiperObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandSetWiperObject )target;
+        targetObject._enabled = this._enabled;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandSetWiperObject)obj;
+        if( !Comparer.equalsBoolean( this._enabled, other._enabled ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeBoolean( _enabled );

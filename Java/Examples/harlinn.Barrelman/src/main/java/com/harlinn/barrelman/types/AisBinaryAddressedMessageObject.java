@@ -96,6 +96,50 @@ public class AisBinaryAddressedMessageObject extends AisMessageObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisBinaryAddressedMessageObject )target;
+        targetObject._sequenceNumber = this._sequenceNumber;
+        targetObject._destinationMmsi = this._destinationMmsi;
+        targetObject._retransmitFlag = this._retransmitFlag;
+        targetObject._spare = this._spare;
+        targetObject._designatedAreaCode = this._designatedAreaCode;
+        targetObject._functionalId = this._functionalId;
+        targetObject._data = this._data;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisBinaryAddressedMessageObject)obj;
+        if( !Comparer.equalsInt32( this._sequenceNumber, other._sequenceNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._destinationMmsi, other._destinationMmsi ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._retransmitFlag, other._retransmitFlag ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._designatedAreaCode, other._designatedAreaCode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._functionalId, other._functionalId ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._data, other._data ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _sequenceNumber );

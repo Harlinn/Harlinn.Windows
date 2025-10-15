@@ -52,6 +52,34 @@ public class LogHostObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LogHostObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._computerName = this._computerName;
+        targetObject._description = this._description;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LogHostObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._computerName, other._computerName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._description, other._description ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

@@ -25,6 +25,21 @@ public abstract class AbstractDataObjectWithGuidKey extends AbstractDataObjectWi
 		var key = getId();
 		destination.writeGuid(key);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if ( this == obj ) {
+			return true;
+		}
+		if(obj == null ) {
+			return false;
+		}
+		if ((obj instanceof AbstractDataObjectWithGuidKey) == false ) {
+            return false;
+        }
+		var other = (AbstractDataObjectWithGuidKey)obj;
+		return other.getId().equals(getId()); 
+	}
 
 
 }

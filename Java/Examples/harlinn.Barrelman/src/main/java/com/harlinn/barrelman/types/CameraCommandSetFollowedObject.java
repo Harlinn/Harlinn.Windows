@@ -41,6 +41,30 @@ public class CameraCommandSetFollowedObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandSetFollowedObject )target;
+        targetObject._trackId = this._trackId;
+        targetObject._reason = this._reason;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandSetFollowedObject)obj;
+        if( !Comparer.equalsGuid( this._trackId, other._trackId ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._reason, other._reason ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeGuid( _trackId );

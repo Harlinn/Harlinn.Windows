@@ -30,6 +30,26 @@ public class ReferenceTimeseriesPropertyDefinitionObject extends TimeseriesPrope
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ReferenceTimeseriesPropertyDefinitionObject )target;
+        targetObject._referencedElementType = this._referencedElementType;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ReferenceTimeseriesPropertyDefinitionObject)obj;
+        if( !Comparer.equalsNullableGuid( this._referencedElementType, other._referencedElementType ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _referencedElementType );

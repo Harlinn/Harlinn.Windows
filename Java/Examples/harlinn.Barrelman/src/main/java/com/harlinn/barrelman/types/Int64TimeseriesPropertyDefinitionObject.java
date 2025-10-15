@@ -41,6 +41,30 @@ public class Int64TimeseriesPropertyDefinitionObject extends TimeseriesPropertyD
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( Int64TimeseriesPropertyDefinitionObject )target;
+        targetObject._minValue = this._minValue;
+        targetObject._maxValue = this._maxValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (Int64TimeseriesPropertyDefinitionObject)obj;
+        if( !Comparer.equalsInt64( this._minValue, other._minValue ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._maxValue, other._maxValue ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _minValue );

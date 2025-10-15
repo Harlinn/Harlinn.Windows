@@ -30,6 +30,26 @@ public class MediaProxySessionEnabledTimeseriesObject extends BooleanTimeseriesO
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( MediaProxySessionEnabledTimeseriesObject )target;
+        targetObject._proxySession = this._proxySession;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (MediaProxySessionEnabledTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._proxySession, other._proxySession ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _proxySession );

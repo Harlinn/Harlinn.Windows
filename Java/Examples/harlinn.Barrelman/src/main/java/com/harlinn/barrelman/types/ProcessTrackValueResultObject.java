@@ -52,6 +52,34 @@ public class ProcessTrackValueResultObject extends AbstractDataObjectWithGuidKey
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ProcessTrackValueResultObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._createdNewTrack = this._createdNewTrack;
+        targetObject._trackId = this._trackId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ProcessTrackValueResultObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._createdNewTrack, other._createdNewTrack ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._trackId, other._trackId ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

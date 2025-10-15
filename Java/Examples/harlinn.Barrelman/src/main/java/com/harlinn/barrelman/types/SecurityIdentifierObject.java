@@ -55,6 +55,38 @@ public abstract class SecurityIdentifierObject extends AbstractDataObjectWithGui
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( SecurityIdentifierObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._domain = this._domain;
+        targetObject._identity = this._identity;
+        targetObject._description = this._description;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (SecurityIdentifierObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._domain, other._domain ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._identity, other._identity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._description, other._description ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

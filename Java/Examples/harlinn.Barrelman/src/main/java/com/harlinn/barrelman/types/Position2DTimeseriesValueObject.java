@@ -74,6 +74,42 @@ public class Position2DTimeseriesValueObject extends AbstractDataObjectWithGuidK
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( Position2DTimeseriesValueObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._timeseries = this._timeseries;
+        targetObject._timestamp = this._timestamp;
+        targetObject._x = this._x;
+        targetObject._y = this._y;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (Position2DTimeseriesValueObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._timeseries, other._timeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._x, other._x ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._y, other._y ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

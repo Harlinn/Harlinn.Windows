@@ -30,6 +30,26 @@ public class AisAidToNavigationOffPositionTimeseriesObject extends BooleanTimese
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisAidToNavigationOffPositionTimeseriesObject )target;
+        targetObject._aidToNavigation = this._aidToNavigation;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisAidToNavigationOffPositionTimeseriesObject)obj;
+        if( !Comparer.equalsNullableGuid( this._aidToNavigation, other._aidToNavigation ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _aidToNavigation );

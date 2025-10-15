@@ -96,6 +96,50 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( SecurityLoginSessionObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._login = this._login;
+        targetObject._fromTime = this._fromTime;
+        targetObject._throughTime = this._throughTime;
+        targetObject._clientSession = this._clientSession;
+        targetObject._notificationQueueName = this._notificationQueueName;
+        targetObject._messageQueueName = this._messageQueueName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (SecurityLoginSessionObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._login, other._login ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._fromTime, other._fromTime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDateTime( this._throughTime, other._throughTime ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._clientSession, other._clientSession ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._notificationQueueName, other._notificationQueueName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._messageQueueName, other._messageQueueName ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

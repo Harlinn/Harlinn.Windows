@@ -679,6 +679,262 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._camera = this._camera;
+        targetObject._timestamp = this._timestamp;
+        targetObject._cameraControlProtocol = this._cameraControlProtocol;
+        targetObject._cameraURL = this._cameraURL;
+        targetObject._configurationURL = this._configurationURL;
+        targetObject._userName = this._userName;
+        targetObject._password = this._password;
+        targetObject._useRtspUriOverride = this._useRtspUriOverride;
+        targetObject._rtspUriOverride = this._rtspUriOverride;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+        targetObject._altitude = this._altitude;
+        targetObject._useRelativePosition = this._useRelativePosition;
+        targetObject._panTiltMode = this._panTiltMode;
+        targetObject._minTiltAngle = this._minTiltAngle;
+        targetObject._maxTiltAngle = this._maxTiltAngle;
+        targetObject._minTiltScaleAngle = this._minTiltScaleAngle;
+        targetObject._maxTiltScaleAngle = this._maxTiltScaleAngle;
+        targetObject._useReverseTiltAngle = this._useReverseTiltAngle;
+        targetObject._useReverseNormalizedTiltAngle = this._useReverseNormalizedTiltAngle;
+        targetObject._minTiltVelocity = this._minTiltVelocity;
+        targetObject._maxTiltVelocity = this._maxTiltVelocity;
+        targetObject._minTiltSpeed = this._minTiltSpeed;
+        targetObject._maxTiltSpeed = this._maxTiltSpeed;
+        targetObject._minPanAngle = this._minPanAngle;
+        targetObject._maxPanAngle = this._maxPanAngle;
+        targetObject._minPanScaleAngle = this._minPanScaleAngle;
+        targetObject._maxPanScaleAngle = this._maxPanScaleAngle;
+        targetObject._useReversePanAngle = this._useReversePanAngle;
+        targetObject._useReverseNormalizedPanAngle = this._useReverseNormalizedPanAngle;
+        targetObject._minPanVelocity = this._minPanVelocity;
+        targetObject._maxPanVelocity = this._maxPanVelocity;
+        targetObject._minPanSpeed = this._minPanSpeed;
+        targetObject._maxPanSpeed = this._maxPanSpeed;
+        targetObject._focalLengthMode = this._focalLengthMode;
+        targetObject._minFocalLength = this._minFocalLength;
+        targetObject._maxFocalLength = this._maxFocalLength;
+        targetObject._minFocalLengthScale = this._minFocalLengthScale;
+        targetObject._maxFocalLengthScale = this._maxFocalLengthScale;
+        targetObject._minZoomVelocity = this._minZoomVelocity;
+        targetObject._maxZoomVelocity = this._maxZoomVelocity;
+        targetObject._minZoomSpeed = this._minZoomSpeed;
+        targetObject._maxZoomSpeed = this._maxZoomSpeed;
+        targetObject._imageSensorWidth = this._imageSensorWidth;
+        targetObject._imageSensorHeight = this._imageSensorHeight;
+        targetObject._homePanAngle = this._homePanAngle;
+        targetObject._homeTiltAngle = this._homeTiltAngle;
+        targetObject._homeFocalLength = this._homeFocalLength;
+        targetObject._panOffset = this._panOffset;
+        targetObject._tiltOffset = this._tiltOffset;
+        targetObject._aimAltitude = this._aimAltitude;
+        targetObject._minimumTargetWidth = this._minimumTargetWidth;
+        targetObject._targetLockTimeout = this._targetLockTimeout;
+        targetObject._updateStatusInterval = this._updateStatusInterval;
+        targetObject._readTimeout = this._readTimeout;
+        targetObject._moveCommandStatusDelay = this._moveCommandStatusDelay;
+        targetObject._ptzProfileName = this._ptzProfileName;
+        targetObject._ptzConfigurationToken = this._ptzConfigurationToken;
+        targetObject._videoSourceToken = this._videoSourceToken;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._camera, other._camera ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._cameraControlProtocol, other._cameraControlProtocol ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._cameraURL, other._cameraURL ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._configurationURL, other._configurationURL ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._userName, other._userName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._password, other._password ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useRtspUriOverride, other._useRtspUriOverride ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._rtspUriOverride, other._rtspUriOverride ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._altitude, other._altitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useRelativePosition, other._useRelativePosition ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._panTiltMode, other._panTiltMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minTiltAngle, other._minTiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxTiltAngle, other._maxTiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minTiltScaleAngle, other._minTiltScaleAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxTiltScaleAngle, other._maxTiltScaleAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useReverseTiltAngle, other._useReverseTiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useReverseNormalizedTiltAngle, other._useReverseNormalizedTiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minTiltVelocity, other._minTiltVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxTiltVelocity, other._maxTiltVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minTiltSpeed, other._minTiltSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxTiltSpeed, other._maxTiltSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minPanAngle, other._minPanAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxPanAngle, other._maxPanAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minPanScaleAngle, other._minPanScaleAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxPanScaleAngle, other._maxPanScaleAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useReversePanAngle, other._useReversePanAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useReverseNormalizedPanAngle, other._useReverseNormalizedPanAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minPanVelocity, other._minPanVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxPanVelocity, other._maxPanVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minPanSpeed, other._minPanSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxPanSpeed, other._maxPanSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._focalLengthMode, other._focalLengthMode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minFocalLength, other._minFocalLength ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxFocalLength, other._maxFocalLength ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minFocalLengthScale, other._minFocalLengthScale ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxFocalLengthScale, other._maxFocalLengthScale ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minZoomVelocity, other._minZoomVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxZoomVelocity, other._maxZoomVelocity ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minZoomSpeed, other._minZoomSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._maxZoomSpeed, other._maxZoomSpeed ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._imageSensorWidth, other._imageSensorWidth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._imageSensorHeight, other._imageSensorHeight ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._homePanAngle, other._homePanAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._homeTiltAngle, other._homeTiltAngle ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._homeFocalLength, other._homeFocalLength ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._panOffset, other._panOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._tiltOffset, other._tiltOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._aimAltitude, other._aimAltitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._minimumTargetWidth, other._minimumTargetWidth ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._targetLockTimeout, other._targetLockTimeout ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._updateStatusInterval, other._updateStatusInterval ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._readTimeout, other._readTimeout ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._moveCommandStatusDelay, other._moveCommandStatusDelay ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._ptzProfileName, other._ptzProfileName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._ptzConfigurationToken, other._ptzConfigurationToken ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._videoSourceToken, other._videoSourceToken ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

@@ -74,6 +74,42 @@ public class GeoPosition2DTimeseriesValueObject extends AbstractDataObjectWithGu
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( GeoPosition2DTimeseriesValueObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._timeseries = this._timeseries;
+        targetObject._timestamp = this._timestamp;
+        targetObject._latitude = this._latitude;
+        targetObject._longitude = this._longitude;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (GeoPosition2DTimeseriesValueObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._timeseries, other._timeseries ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._latitude, other._latitude ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._longitude, other._longitude ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

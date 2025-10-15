@@ -30,6 +30,26 @@ public class PolygonZoneObject extends ZoneObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( PolygonZoneObject )target;
+        targetObject._polygon = this._polygon != null ? this._polygon.clone() : this._polygon;;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (PolygonZoneObject)obj;
+        if( !Comparer.equalsUInt8Array( this._polygon, other._polygon ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeUInt8Array( _polygon );

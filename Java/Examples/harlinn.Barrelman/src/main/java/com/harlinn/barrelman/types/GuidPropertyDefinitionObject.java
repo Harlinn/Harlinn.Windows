@@ -30,6 +30,26 @@ public class GuidPropertyDefinitionObject extends PropertyDefinitionObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( GuidPropertyDefinitionObject )target;
+        targetObject._defaultValue = this._defaultValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (GuidPropertyDefinitionObject)obj;
+        if( !Comparer.equalsGuid( this._defaultValue, other._defaultValue ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeGuid( _defaultValue );

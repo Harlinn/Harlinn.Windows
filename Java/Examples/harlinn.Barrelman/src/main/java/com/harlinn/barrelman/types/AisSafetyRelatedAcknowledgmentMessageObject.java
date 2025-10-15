@@ -118,6 +118,58 @@ public class AisSafetyRelatedAcknowledgmentMessageObject extends AisMessageObjec
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisSafetyRelatedAcknowledgmentMessageObject )target;
+        targetObject._spare = this._spare;
+        targetObject._sequenceNumber1 = this._sequenceNumber1;
+        targetObject._mmsi1 = this._mmsi1;
+        targetObject._sequenceNumber2 = this._sequenceNumber2;
+        targetObject._mmsi2 = this._mmsi2;
+        targetObject._sequenceNumber3 = this._sequenceNumber3;
+        targetObject._mmsi3 = this._mmsi3;
+        targetObject._sequenceNumber4 = this._sequenceNumber4;
+        targetObject._mmsi4 = this._mmsi4;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisSafetyRelatedAcknowledgmentMessageObject)obj;
+        if( !Comparer.equalsInt32( this._spare, other._spare ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._sequenceNumber1, other._sequenceNumber1 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._mmsi1, other._mmsi1 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._sequenceNumber2, other._sequenceNumber2 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._mmsi2, other._mmsi2 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._sequenceNumber3, other._sequenceNumber3 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._mmsi3, other._mmsi3 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableInt32( this._sequenceNumber4, other._sequenceNumber4 ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._mmsi4, other._mmsi4 ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt32( _spare );

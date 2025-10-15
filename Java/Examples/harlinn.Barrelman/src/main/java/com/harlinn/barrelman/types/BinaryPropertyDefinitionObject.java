@@ -30,6 +30,26 @@ public class BinaryPropertyDefinitionObject extends PropertyDefinitionObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( BinaryPropertyDefinitionObject )target;
+        targetObject._defaultValue = this._defaultValue != null ? this._defaultValue.clone() : this._defaultValue;;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (BinaryPropertyDefinitionObject)obj;
+        if( !Comparer.equalsUInt8Array( this._defaultValue, other._defaultValue ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeUInt8Array( _defaultValue );

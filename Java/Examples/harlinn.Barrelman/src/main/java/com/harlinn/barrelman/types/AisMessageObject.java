@@ -77,6 +77,46 @@ public abstract class AisMessageObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( AisMessageObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._aisDevice = this._aisDevice;
+        targetObject._receivedTimestamp = this._receivedTimestamp;
+        targetObject._messageSequenceNumber = this._messageSequenceNumber;
+        targetObject._repeat = this._repeat;
+        targetObject._mmsi = this._mmsi;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (AisMessageObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._aisDevice, other._aisDevice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._receivedTimestamp, other._receivedTimestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt64( this._messageSequenceNumber, other._messageSequenceNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._repeat, other._repeat ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableGuid( this._mmsi, other._mmsi ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

@@ -327,6 +327,134 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( RadarConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._radar = this._radar;
+        targetObject._timestamp = this._timestamp;
+        targetObject._radarProtocolVersion = this._radarProtocolVersion;
+        targetObject._radarIPAddress = this._radarIPAddress;
+        targetObject._radarPort = this._radarPort;
+        targetObject._radarConfigurationPort = this._radarConfigurationPort;
+        targetObject._skipMagicTimeout = this._skipMagicTimeout;
+        targetObject._readTimeout = this._readTimeout;
+        targetObject._synchronizationInterval = this._synchronizationInterval;
+        targetObject._targetsRefreshRate = this._targetsRefreshRate;
+        targetObject._range = this._range;
+        targetObject._sectorCount = this._sectorCount;
+        targetObject._sectorOffset = this._sectorOffset;
+        targetObject._imageColor = this._imageColor;
+        targetObject._imageSubstitutionColor = this._imageSubstitutionColor;
+        targetObject._transparentColor = this._transparentColor;
+        targetObject._imageScaleFactorX = this._imageScaleFactorX;
+        targetObject._imageOffsetX = this._imageOffsetX;
+        targetObject._imageScaleFactorY = this._imageScaleFactorY;
+        targetObject._imageOffsetY = this._imageOffsetY;
+        targetObject._radarImageType = this._radarImageType;
+        targetObject._trackColor = this._trackColor;
+        targetObject._vectorColor = this._vectorColor;
+        targetObject._enableNmea = this._enableNmea;
+        targetObject._nmeaReceiverIPAddress = this._nmeaReceiverIPAddress;
+        targetObject._nmeaReceiverPort = this._nmeaReceiverPort;
+        targetObject._nmeaReceiverSourceId = this._nmeaReceiverSourceId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (RadarConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._radar, other._radar ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._radarProtocolVersion, other._radarProtocolVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._radarIPAddress, other._radarIPAddress ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._radarPort, other._radarPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._radarConfigurationPort, other._radarConfigurationPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._skipMagicTimeout, other._skipMagicTimeout ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._readTimeout, other._readTimeout ) ) {
+            return false;
+        }
+        if( !Comparer.equalsTimeSpan( this._synchronizationInterval, other._synchronizationInterval ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._targetsRefreshRate, other._targetsRefreshRate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._range, other._range ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._sectorCount, other._sectorCount ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._sectorOffset, other._sectorOffset ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._imageColor, other._imageColor ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableUInt32( this._imageSubstitutionColor, other._imageSubstitutionColor ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._transparentColor, other._transparentColor ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._imageScaleFactorX, other._imageScaleFactorX ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._imageOffsetX, other._imageOffsetX ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._imageScaleFactorY, other._imageScaleFactorY ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._imageOffsetY, other._imageOffsetY ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._radarImageType, other._radarImageType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._trackColor, other._trackColor ) ) {
+            return false;
+        }
+        if( !Comparer.equalsUInt32( this._vectorColor, other._vectorColor ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._enableNmea, other._enableNmea ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._nmeaReceiverIPAddress, other._nmeaReceiverIPAddress ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._nmeaReceiverPort, other._nmeaReceiverPort ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._nmeaReceiverSourceId, other._nmeaReceiverSourceId ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

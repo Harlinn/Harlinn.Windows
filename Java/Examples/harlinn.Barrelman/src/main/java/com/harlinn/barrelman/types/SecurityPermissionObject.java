@@ -107,6 +107,54 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( SecurityPermissionObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._identifier = this._identifier;
+        targetObject._timestamp = this._timestamp;
+        targetObject._typeCode = this._typeCode;
+        targetObject._canCreate = this._canCreate;
+        targetObject._canRead = this._canRead;
+        targetObject._canUpdate = this._canUpdate;
+        targetObject._canDelete = this._canDelete;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (SecurityPermissionObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._identifier, other._identifier ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._typeCode, other._typeCode ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._canCreate, other._canCreate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._canRead, other._canRead ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._canUpdate, other._canUpdate ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._canDelete, other._canDelete ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

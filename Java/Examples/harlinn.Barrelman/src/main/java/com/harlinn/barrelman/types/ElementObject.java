@@ -30,6 +30,26 @@ public class ElementObject extends CatalogElementObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( ElementObject )target;
+        targetObject._elementType = this._elementType;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (ElementObject)obj;
+        if( !Comparer.equalsNullableGuid( this._elementType, other._elementType ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableGuid( _elementType );

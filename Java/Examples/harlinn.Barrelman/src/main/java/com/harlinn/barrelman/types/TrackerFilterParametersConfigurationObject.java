@@ -195,6 +195,86 @@ public class TrackerFilterParametersConfigurationObject extends AbstractDataObje
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( TrackerFilterParametersConfigurationObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._parameters = this._parameters;
+        targetObject._timestamp = this._timestamp;
+        targetObject._useNaivePredictor = this._useNaivePredictor;
+        targetObject._numberOfPoints = this._numberOfPoints;
+        targetObject._windowSize = this._windowSize;
+        targetObject._stabilizeCount = this._stabilizeCount;
+        targetObject._maxBadPoints = this._maxBadPoints;
+        targetObject._modelType = this._modelType;
+        targetObject._sigmaR = this._sigmaR;
+        targetObject._sigmaAcc = this._sigmaAcc;
+        targetObject._tauVel = this._tauVel;
+        targetObject._tauAcc = this._tauAcc;
+        targetObject._deltaRMin = this._deltaRMin;
+        targetObject._deltaVMax = this._deltaVMax;
+        targetObject._deltaAMax = this._deltaAMax;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (TrackerFilterParametersConfigurationObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._parameters, other._parameters ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsBoolean( this._useNaivePredictor, other._useNaivePredictor ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._numberOfPoints, other._numberOfPoints ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._windowSize, other._windowSize ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._stabilizeCount, other._stabilizeCount ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._maxBadPoints, other._maxBadPoints ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._modelType, other._modelType ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._sigmaR, other._sigmaR ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._sigmaAcc, other._sigmaAcc ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._tauVel, other._tauVel ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._tauAcc, other._tauAcc ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._deltaRMin, other._deltaRMin ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._deltaVMax, other._deltaVMax ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDouble( this._deltaAMax, other._deltaAMax ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

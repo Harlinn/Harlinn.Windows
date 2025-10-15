@@ -63,6 +63,38 @@ public class LineInputWhiteListEntryObject extends AbstractDataObjectWithGuidKey
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( LineInputWhiteListEntryObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._lineInputDevice = this._lineInputDevice;
+        targetObject._hostName = this._hostName;
+        targetObject._port = this._port;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (LineInputWhiteListEntryObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._lineInputDevice, other._lineInputDevice ) ) {
+            return false;
+        }
+        if( !Comparer.equalsString( this._hostName, other._hostName ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._port, other._port ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );

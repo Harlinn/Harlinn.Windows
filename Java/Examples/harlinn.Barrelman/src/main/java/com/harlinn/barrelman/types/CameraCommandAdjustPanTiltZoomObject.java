@@ -52,6 +52,34 @@ public class CameraCommandAdjustPanTiltZoomObject extends CameraCommandObject {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( CameraCommandAdjustPanTiltZoomObject )target;
+        targetObject._x = this._x;
+        targetObject._y = this._y;
+        targetObject._z = this._z;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (CameraCommandAdjustPanTiltZoomObject)obj;
+        if( !Comparer.equalsNullableDouble( this._x, other._x ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._y, other._y ) ) {
+            return false;
+        }
+        if( !Comparer.equalsNullableDouble( this._z, other._z ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeNullableDouble( _x );

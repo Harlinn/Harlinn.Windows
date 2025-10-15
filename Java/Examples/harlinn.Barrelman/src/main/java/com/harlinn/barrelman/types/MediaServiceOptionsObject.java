@@ -74,6 +74,42 @@ public class MediaServiceOptionsObject extends AbstractDataObjectWithGuidKey {
 
 
     @Override
+    public void assignTo( AbstractDataObject target ) {
+        super.assignTo( target );
+        var targetObject = ( MediaServiceOptionsObject )target;
+        targetObject._rowVersion = this._rowVersion;
+        targetObject._mediaService = this._mediaService;
+        targetObject._timestamp = this._timestamp;
+        targetObject._rtspPortNumber = this._rtspPortNumber;
+        targetObject._httpPortNumber = this._httpPortNumber;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var result = super.equals( obj );
+        if( !result ) {
+            return false;
+        }
+        var other = (MediaServiceOptionsObject)obj;
+        if( !Comparer.equalsInt64( this._rowVersion, other._rowVersion ) ) {
+            return false;
+        }
+        if( !Comparer.equalsGuid( this._mediaService, other._mediaService ) ) {
+            return false;
+        }
+        if( !Comparer.equalsDateTime( this._timestamp, other._timestamp ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._rtspPortNumber, other._rtspPortNumber ) ) {
+            return false;
+        }
+        if( !Comparer.equalsInt32( this._httpPortNumber, other._httpPortNumber ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void writeTo( BinaryWriter destination ) {
         super.writeTo( destination );
         destination.writeInt64( _rowVersion );
