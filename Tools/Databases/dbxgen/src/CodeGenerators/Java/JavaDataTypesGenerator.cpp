@@ -32,6 +32,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             const auto& classInfo = *classes[ i ];
             CreateDataType( classInfo );
         }
+        CreateFactory( );
     }
 
     void JavaDataTypesGenerator::CreateDataType( const Metadata::ClassInfo& classInfo )

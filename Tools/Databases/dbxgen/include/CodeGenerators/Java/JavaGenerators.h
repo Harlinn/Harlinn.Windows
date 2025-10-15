@@ -125,14 +125,14 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     { }
 
 
-    /*
-    class JavaIDataContextGenerator : public CodeGenerator<JavaDataGenerator, JavaIDataContextOptions>
+    
+    class JavaDataContextGenerator : public CodeGenerator<JavaDataGenerator, JavaDataContextOptions>
     {
         std::set<WideString> functions_;
     public:
-        using Base = CodeGenerator<JavaDataGenerator, JavaIDataContextOptions>;
+        using Base = CodeGenerator<JavaDataGenerator, JavaDataContextOptions>;
 
-        inline JavaIDataContextGenerator(const JavaDataGenerator& owner);
+        inline JavaDataContextGenerator(const JavaDataGenerator& owner);
 
         void Run();
     private:
@@ -147,14 +147,14 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         void CreateGetByIndexUntil(const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount);
         void CreateGetByIndexOver(const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount);
     };
-    */
+    
 
 
     class JavaDataGenerator : public GeneratorContainer<JavaGenerator, JavaDataOptions>
     {
         JavaEnumsGenerator enums_;
         JavaDataTypesGenerator dataTypes_;
-        //JavaIDataContextGenerator dataContext_;
+        JavaDataContextGenerator dataContext_;
     public:
         using Base = GeneratorContainer<JavaGenerator, JavaDataOptions>;
 
@@ -164,7 +164,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         {
             enums_.Run();
             dataTypes_.Run();
-            //dataContext_.Run();
+            dataContext_.Run();
         }
     };
 
@@ -180,12 +180,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     }
     
 
-    /*
-    inline JavaIDataContextGenerator::JavaIDataContextGenerator(const JavaDataGenerator& owner)
+    
+    inline JavaDataContextGenerator::JavaDataContextGenerator(const JavaDataGenerator& owner)
         : Base(owner, owner.Options().DataContext())
     {
     }
-    */
+    
 
     /*
     class JavaEntitiesGenerator;
@@ -335,7 +335,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
 
     inline JavaDataGenerator::JavaDataGenerator(const JavaGenerator& owner)
-        : Base(owner, owner.Options().Data()), enums_(*this), dataTypes_(*this)//, dataContext_(*this)
+        : Base(owner, owner.Options().Data()), enums_(*this), dataTypes_(*this), dataContext_(*this)
     { }
 
     namespace Databases

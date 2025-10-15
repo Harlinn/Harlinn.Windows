@@ -1298,12 +1298,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
 
         };
 
-        class JavaIDataContextOptions : public OptionsFile<JavaDataOptions>
+        class JavaDataContextOptions : public OptionsFile<JavaDataOptions>
         {
         public:
             using Base = OptionsFile<JavaDataOptions>;
-            JavaIDataContextOptions(const JavaDataOptions& owner)
-                : Base(owner, L"IDataContext.java")
+            JavaDataContextOptions(const JavaDataOptions& owner)
+                : Base(owner, L"DataContext.java")
             {
             }
         };
@@ -1315,7 +1315,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         {
             JavaEnumsOptions enums_;
             JavaDataTypesOptions dataTypes_;
-            JavaIDataContextOptions dataContext_;
+            JavaDataContextOptions dataContext_;
         public:
             using Base = OptionsContainer<JavaOptions>;
 
@@ -1333,7 +1333,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                 return dataTypes_;
             }
 
-            const JavaIDataContextOptions& DataContext() const
+            const JavaDataContextOptions& DataContext() const
             {
                 return dataContext_;
             }

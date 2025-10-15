@@ -2282,12 +2282,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
     WideString JavaHelper::GetByIdFunctionName(const ClassInfo& classInfo)
     {
-        auto result = Format(L"Get{}ById", classInfo.Name());
+        auto result = Format(L"get{}ById", classInfo.Name());
         return result;
     }
     WideString JavaHelper::GetAllFunctionName(const ClassInfo& classInfo)
     {
-        auto result = Format(L"Get{}Collection", classInfo.Name());
+        auto result = Format(L"get{}Collection", classInfo.Name());
         return result;
     }
     WideString JavaHelper::GetByIndexFunctionName(const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount)
@@ -2316,12 +2316,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         if (indexInfo.Unique() && indexMemberCount == indexMembers.size())
         {
-            auto result = Format(L"Get{}By{}", classInfo.Name(), sb.ToString());
+            auto result = Format(L"get{}By{}", classInfo.Name(), sb.ToString());
             return result;
         }
         else
         {
-            auto result = Format(L"Get{}CollectionBy{}", classInfo.Name(), sb.ToString());
+            auto result = Format(L"get{}CollectionBy{}", classInfo.Name(), sb.ToString());
             return result;
         }
     }
@@ -2372,7 +2372,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 sb.Append(indexMembers[0]->Name());
             }
         }
-        auto result = Format(L"Get{}CollectionBy{}", classInfo.Name(), sb.ToString());
+        auto result = Format(L"qet{}CollectionBy{}", classInfo.Name(), sb.ToString());
         return result;
     }
 
@@ -2480,12 +2480,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             }
             if (indexInfo.Unique() && indexMemberCount == indexMembers.size())
             {
-                auto result = Format(L"Get{}By{}", classInfo.Name(), sb.ToString());
+                auto result = Format(L"get{}By{}", classInfo.Name(), sb.ToString());
                 return result;
             }
             else
             {
-                auto result = Format(L"Get{}CollectionBy{}", classInfo.Name(), sb.ToString());
+                auto result = Format(L"get{}CollectionBy{}", classInfo.Name(), sb.ToString());
                 return result;
             }
         }
@@ -2493,12 +2493,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         {
             if (indexInfo.Unique() && indexMemberCount == indexMembers.size())
             {
-                auto result = Format(L"Get{}{}{}", classInfo.Name(), lastFieldPrefix, indexMembers[0]->Name());
+                auto result = Format(L"get{}{}{}", classInfo.Name(), lastFieldPrefix, indexMembers[0]->Name());
                 return result;
             }
             else
             {
-                auto result = Format(L"Get{}Collection{}{}", classInfo.Name(), lastFieldPrefix, indexMembers[0]->Name());
+                auto result = Format(L"get{}Collection{}{}", classInfo.Name(), lastFieldPrefix, indexMembers[0]->Name());
                 return result;
             }
         }

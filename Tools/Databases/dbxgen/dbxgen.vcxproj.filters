@@ -165,6 +165,9 @@
     <ClInclude Include="include\CodeGenerators\Java\JavaGenerators.h">
       <Filter>Include\CodeGenerators\Java</Filter>
     </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Java\Databases\MsSql\JavaMsSqlGenerators.h">
+      <Filter>Include\CodeGenerators\Java\Databases\MsSql</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="TestModel.xml" />
@@ -317,6 +320,9 @@
       <Filter>Src\CodeGenerators\Java</Filter>
     </ClCompile>
     <ClCompile Include="src\CodeGenerators\Java\JavaDataTypeFactoryGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaDataContextGenerator.cpp">
       <Filter>Src\CodeGenerators\Java</Filter>
     </ClCompile>
   </ItemGroup>
