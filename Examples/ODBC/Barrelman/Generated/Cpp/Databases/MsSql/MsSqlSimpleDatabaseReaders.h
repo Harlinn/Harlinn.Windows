@@ -1289,24 +1289,24 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAVIGATIONALAIDTYPE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT OFFPOSITION_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT REGIONALRESERVED_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT VIRTUALAID_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT NAMEEXTENSION_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT NAVIGATIONALAIDTYPE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT OFFPOSITION_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT REGIONALRESERVED_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT VIRTUALAID_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT NAMEEXTENSION_FIELD_ID = 26;
 
         AidToNavigationReportMessageColumnData( ) = default;
 
@@ -1546,11 +1546,11 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SEQUENCENUMBER_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT RETRANSMITFLAG_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT TEXT_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RETRANSMITFLAG_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT TEXT_FIELD_ID = 13;
 
         AisAddressedSafetyRelatedMessageColumnData( ) = default;
 
@@ -1650,14 +1650,14 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 16;
 
         AisBaseStationReportMessageColumnData( ) = default;
 
@@ -1791,15 +1791,15 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER1_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT MMSI1_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER2_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT MMSI2_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER3_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT MMSI3_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER4_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT MMSI4_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER1_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT MMSI1_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER2_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT MMSI2_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER3_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT MMSI3_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER4_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT MMSI4_FIELD_ID = 17;
 
         AisBinaryAcknowledgeMessageColumnData( ) = default;
 
@@ -1943,13 +1943,13 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SEQUENCENUMBER_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT RETRANSMITFLAG_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT DESIGNATEDAREACODE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT FUNCTIONALID_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT DATA_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RETRANSMITFLAG_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT DESIGNATEDAREACODE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT FUNCTIONALID_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT DATA_FIELD_ID = 15;
 
         AisBinaryAddressedMessageColumnData( ) = default;
 
@@ -2073,10 +2073,10 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT DESIGNATEDAREACODE_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT FUNCTIONALID_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT DATA_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT DESIGNATEDAREACODE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT FUNCTIONALID_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT DATA_FIELD_ID = 12;
 
         AisBinaryBroadcastMessageColumnData( ) = default;
 
@@ -2179,23 +2179,23 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT OFFSET1_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT RESERVEDSLOTS1_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT TIMEOUT1_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT INCREMENT1_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT OFFSET2_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT RESERVEDSLOTS2_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT TIMEOUT2_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT INCREMENT2_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT OFFSET3_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT RESERVEDSLOTS3_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT TIMEOUT3_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT INCREMENT3_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT OFFSET4_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT RESERVEDSLOTS4_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT TIMEOUT4_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT INCREMENT4_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT OFFSET1_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RESERVEDSLOTS1_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT TIMEOUT1_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT INCREMENT1_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT OFFSET2_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT RESERVEDSLOTS2_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT TIMEOUT2_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT INCREMENT2_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT OFFSET3_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT RESERVEDSLOTS3_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT TIMEOUT3_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT INCREMENT3_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT OFFSET4_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT RESERVEDSLOTS4_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT TIMEOUT4_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT INCREMENT4_FIELD_ID = 25;
 
         AisDataLinkManagementMessageColumnData( ) = default;
 
@@ -2439,26 +2439,26 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT TRUEHEADING_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT REGIONALRESERVED_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT SHIPTYPE_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT DATATERMINALREADY_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT TRUEHEADING_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT REGIONALRESERVED_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT SHIPTYPE_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT DATATERMINALREADY_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 28;
 
         AisExtendedClassBCsPositionReportMessageColumnData( ) = default;
 
@@ -2723,14 +2723,14 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT INTERROGATEDMMSI_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT FIRSTMESSAGETYPE_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT FIRSTSLOTOFFSET_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT SECONDMESSAGETYPE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT SECONDSLOTOFFSET_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SECONDSTATIONINTERROGATIONMMSI_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT SECONDSTATIONFIRSTMESSAGETYPE_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT INTERROGATEDMMSI_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT FIRSTMESSAGETYPE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT FIRSTSLOTOFFSET_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT SECONDMESSAGETYPE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT SECONDSLOTOFFSET_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SECONDSTATIONINTERROGATIONMMSI_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT SECONDSTATIONFIRSTMESSAGETYPE_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID = 16;
 
         AisInterrogationMessageColumnData( ) = default;
 
@@ -2868,19 +2868,19 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAVIGATIONSTATUS_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT RATEOFTURN_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT TRUEHEADING_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT MANEUVERINDICATOR_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT NAVIGATIONSTATUS_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT RATEOFTURN_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT TRUEHEADING_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT MANEUVERINDICATOR_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 21;
 
         AisPositionReportClassAMessageBaseColumnData( ) = default;
 
@@ -3156,15 +3156,15 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT NAVIGATIONSTATUS_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT GNSSPOSITIONSTATUS_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT NAVIGATIONSTATUS_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT GNSSPOSITIONSTATUS_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 17;
 
         AisPositionReportForLongRangeApplicationsMessageColumnData( ) = default;
 
@@ -3309,15 +3309,15 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER1_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT MMSI1_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER2_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT MMSI2_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER3_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT MMSI3_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT SEQUENCENUMBER4_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT MMSI4_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER1_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT MMSI1_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER2_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT MMSI2_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER3_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT MMSI3_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT SEQUENCENUMBER4_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT MMSI4_FIELD_ID = 17;
 
         AisSafetyRelatedAcknowledgmentMessageColumnData( ) = default;
 
@@ -3470,23 +3470,23 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT TRUEHEADING_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT REGIONALRESERVED_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT ISCSUNIT_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT HASDISPLAY_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT HASDSCCAPABILITY_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT BAND_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT CANACCEPTMESSAGE22_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT TRUEHEADING_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT REGIONALRESERVED_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT ISCSUNIT_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT HASDISPLAY_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT HASDSCCAPABILITY_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT BAND_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT CANACCEPTMESSAGE22_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 25;
 
         AisStandardClassBCsPositionReportMessageColumnData( ) = default;
 
@@ -3723,19 +3723,19 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT DATATERMINALREADY_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT COURSEOVERGROUND_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT DATATERMINALREADY_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT ASSIGNED_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 21;
 
         AisStandardSarAircraftPositionReportMessageColumnData( ) = default;
 
@@ -3930,21 +3930,21 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT AISVERSION_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT IMONUMBER_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT CALLSIGN_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT SHIPNAME_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT SHIPTYPE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT ESTIMATEDTIMEOFARRIVAL_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT DRAUGHT_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT DESTINATION_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT DATATERMINALREADY_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT AISVERSION_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT IMONUMBER_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT CALLSIGN_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT SHIPNAME_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT SHIPTYPE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT ESTIMATEDTIMEOFARRIVAL_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT DRAUGHT_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT DESTINATION_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT DATATERMINALREADY_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 23;
 
         AisStaticAndVoyageRelatedDataMessageColumnData( ) = default;
 
@@ -4147,7 +4147,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT PARTNUMBER_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT PARTNUMBER_FIELD_ID = 9;
 
         AisStaticDataReportMessageColumnData( ) = default;
 
@@ -4197,8 +4197,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SHIPNAME_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT SHIPNAME_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 11;
 
         AisStaticDataReportPartAMessageColumnData( ) = default;
 
@@ -4269,18 +4269,18 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SHIPTYPE_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT VENDORID_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT UNITMODELCODE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT SERIALNUMBER_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT CALLSIGN_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT MOTHERSHIPMMSI_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT SHIPTYPE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT VENDORID_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT UNITMODELCODE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT SERIALNUMBER_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT CALLSIGN_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT DIMENSIONTOBOW_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTERN_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT DIMENSIONTOPORT_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT DIMENSIONTOSTARBOARD_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT MOTHERSHIPMMSI_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 21;
 
         AisStaticDataReportPartBMessageColumnData( ) = default;
 
@@ -4452,9 +4452,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SPARE1_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT SPARE2_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT SPARE1_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT SPARE2_FIELD_ID = 11;
 
         AisUtcAndDateInquiryMessageColumnData( ) = default;
 
@@ -4532,14 +4532,14 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DATETIME_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT DATETIME_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT POSITIONFIXTYPE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SPARE_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT RAIM_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT RADIOSTATUS_FIELD_ID = 16;
 
         AisUtcAndDateResponseMessageColumnData( ) = default;
 
@@ -5412,16 +5412,16 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT POSITIONPANTILTMODE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT PANANGLE_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT TILTANGLE_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT POSITIONFOCALLENGTHMODE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT FOCALLENGTH_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SPEEDPANTILTMODE_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT PANSPEED_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT TILTSPEED_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT SPEEDFOCALLENGTHMODE_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT ZOOMSPEED_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT POSITIONPANTILTMODE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT PANANGLE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT TILTANGLE_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT POSITIONFOCALLENGTHMODE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT FOCALLENGTH_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SPEEDPANTILTMODE_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT PANSPEED_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT TILTSPEED_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT SPEEDFOCALLENGTHMODE_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT ZOOMSPEED_FIELD_ID = 18;
 
         CameraCommandAbsoluteMoveColumnData( ) = default;
 
@@ -5571,9 +5571,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT X_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT Y_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT Z_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT X_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT Y_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT Z_FIELD_ID = 11;
 
         CameraCommandAdjustPanTiltZoomColumnData( ) = default;
 
@@ -5648,11 +5648,11 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NORMALIZED_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT PANVELOCITY_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT TILTVELOCITY_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT ZOOMVELOCITY_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT DURATION_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT NORMALIZED_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT PANVELOCITY_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT TILTVELOCITY_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT ZOOMVELOCITY_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT DURATION_FIELD_ID = 13;
 
         CameraCommandContinuousMoveColumnData( ) = default;
 
@@ -5749,11 +5749,11 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT VIEWPORTWIDTH_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT VIEWPORTHEIGHT_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT VIEWPORTWIDTH_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT VIEWPORTHEIGHT_FIELD_ID = 13;
 
         CameraCommandGeoMoveColumnData( ) = default;
 
@@ -5852,13 +5852,13 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NORMALIZED_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT PANANGLE_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT TILTANGLE_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT FOCALLENGTH_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT PANSPEED_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT TILTSPEED_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT ZOOMSPEED_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT NORMALIZED_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT PANANGLE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT TILTANGLE_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT FOCALLENGTH_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT PANSPEED_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT TILTSPEED_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT ZOOMSPEED_FIELD_ID = 15;
 
         CameraCommandRelativeMoveColumnData( ) = default;
 
@@ -6031,7 +6031,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 9;
 
         CameraCommandSetAutoFocusColumnData( ) = default;
 
@@ -6080,7 +6080,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 9;
 
         CameraCommandSetBlackAndWhiteColumnData( ) = default;
 
@@ -6130,8 +6130,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TRACKID_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT REASON_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT TRACKID_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT REASON_FIELD_ID = 10;
 
         CameraCommandSetFollowedColumnData( ) = default;
 
@@ -6191,7 +6191,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 9;
 
         CameraCommandSetInfraRedLampColumnData( ) = default;
 
@@ -6240,7 +6240,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 9;
 
         CameraCommandSetWasherColumnData( ) = default;
 
@@ -6289,7 +6289,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 9;
 
         CameraCommandSetWiperColumnData( ) = default;
 
@@ -6339,8 +6339,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT PANTILT_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT ZOOM_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT PANTILT_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT ZOOM_FIELD_ID = 10;
 
         CameraCommandStopColumnData( ) = default;
 
@@ -8351,7 +8351,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT ELEMENTTYPE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT ELEMENTTYPE_FIELD_ID = 6;
 
         ElementColumnData( ) = default;
 
@@ -10352,7 +10352,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 4;
 
         CallsignColumnData( ) = default;
 
@@ -10401,7 +10401,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 4;
 
         InternationalMaritimeOrganizationNumberColumnData( ) = default;
 
@@ -10450,7 +10450,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 4;
 
         MaritimeMobileServiceIdentityColumnData( ) = default;
 
@@ -10499,7 +10499,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TEXT_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TEXT_FIELD_ID = 4;
 
         NameColumnData( ) = default;
 
@@ -10909,8 +10909,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 5;
 
         BaseStationColumnData( ) = default;
 
@@ -10974,10 +10974,10 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT HOST_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT ENABLEDTIMESERIES_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT HOST_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT ENABLEDTIMESERIES_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 7;
 
         DeviceColumnData( ) = default;
 
@@ -11095,9 +11095,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT ALTITUDETIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT ALTITUDETIMESERIES_FIELD_ID = 10;
 
         GNSSDeviceColumnData( ) = default;
 
@@ -11175,14 +11175,14 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT HEADINGTRUENORTHTIMESERIES_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT PITCHTIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT RATEOFTURNTIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT ROLLTIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT COURSETIMESERIES_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SPEEDTIMESERIES_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT HEADINGTRUENORTHTIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT PITCHTIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RATEOFTURNTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT ROLLTIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT COURSETIMESERIES_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SPEEDTIMESERIES_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 15;
 
         GyroDeviceColumnData( ) = default;
 
@@ -11399,11 +11399,11 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT PRESSURETIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT TEMPERATURETIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT STATUSTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT PRESSURETIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT TEMPERATURETIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT STATUSTIMESERIES_FIELD_ID = 12;
 
         RadomeDeviceColumnData( ) = default;
 
@@ -11576,29 +11576,29 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SAVESETTINGSTIMESERIES_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT POWERONTIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT TRACKINGONTIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT RADARPULSETIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT TUNINGTIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT BLANKSECTOR1TIMESERIES_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT SECTOR1STARTTIMESERIES_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT SECTOR1ENDTIMESERIES_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT BLANKSECTOR2TIMESERIES_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT SECTOR2STARTTIMESERIES_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT SECTOR2ENDTIMESERIES_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT AZIMUTHOFFSETTIMESERIES_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 29;
+        static constexpr SQLUSMALLINT SAVESETTINGSTIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT POWERONTIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT TRACKINGONTIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RADARPULSETIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT TUNINGTIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT BLANKSECTOR1TIMESERIES_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SECTOR1STARTTIMESERIES_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT SECTOR1ENDTIMESERIES_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT BLANKSECTOR2TIMESERIES_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT SECTOR2STARTTIMESERIES_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT SECTOR2ENDTIMESERIES_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT AZIMUTHOFFSETTIMESERIES_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 28;
+        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 29;
+        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 30;
 
         RadarDeviceColumnData( ) = default;
 
@@ -11897,15 +11897,15 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT BAROMETRICPRESSURETIMESERIES_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT AIRTEMPERATURETIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT WATERTEMPERATURETIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT WINDDIRECTIONTIMESERIES_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT WINDSPEEDTIMESERIES_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT GYRO_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT BAROMETRICPRESSURETIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT AIRTEMPERATURETIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT WATERTEMPERATURETIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT WINDDIRECTIONTIMESERIES_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT WINDSPEEDTIMESERIES_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT GYRO_FIELD_ID = 16;
 
         WeatherStationDeviceColumnData( ) = default;
 
@@ -12046,11 +12046,11 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 8;
 
         FacilityColumnData( ) = default;
 
@@ -12173,8 +12173,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 5;
 
         AircraftColumnData( ) = default;
 
@@ -12243,16 +12243,16 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT MMSI_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT NAVIGATIONALAIDTYPE_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT POSITION_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT ISVIRTUAL_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT TOBOW_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT TOSTERN_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT TOPORT_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT TOSTARBOARD_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT OFFPOSITIONTIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT MMSI_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT NAVIGATIONALAIDTYPE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT POSITION_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT ISVIRTUAL_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT TOBOW_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT TOSTERN_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT TOPORT_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT TOSTARBOARD_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT OFFPOSITIONTIMESERIES_FIELD_ID = 13;
 
         AisAidToNavigationColumnData( ) = default;
 
@@ -12401,8 +12401,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 5;
 
         VehicleColumnData( ) = default;
 
@@ -12469,14 +12469,14 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT TOBOW_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT TOSTERN_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT TOPORT_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT TOSTARBOARD_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT DRAUGHTTIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT PERSONSONBOARDTIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TOBOW_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT TOSTERN_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT TOPORT_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT TOSTARBOARD_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT DRAUGHTTIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT PERSONSONBOARDTIMESERIES_FIELD_ID = 11;
 
         VesselColumnData( ) = default;
 
@@ -17834,7 +17834,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         BinaryPropertyColumnData( ) = default;
 
@@ -17888,7 +17888,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         BooleanPropertyColumnData( ) = default;
 
@@ -17937,7 +17937,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         BytePropertyColumnData( ) = default;
 
@@ -17986,7 +17986,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         DateTimePropertyColumnData( ) = default;
 
@@ -18035,7 +18035,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         DoublePropertyColumnData( ) = default;
 
@@ -18084,7 +18084,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         GuidPropertyColumnData( ) = default;
 
@@ -18133,7 +18133,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         Int16PropertyColumnData( ) = default;
 
@@ -18182,7 +18182,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         Int32PropertyColumnData( ) = default;
 
@@ -18231,7 +18231,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         Int64PropertyColumnData( ) = default;
 
@@ -18280,7 +18280,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         ReferencePropertyColumnData( ) = default;
 
@@ -18329,7 +18329,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         SBytePropertyColumnData( ) = default;
 
@@ -18378,7 +18378,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         SinglePropertyColumnData( ) = default;
 
@@ -18427,7 +18427,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         StringPropertyColumnData( ) = default;
 
@@ -18505,7 +18505,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         BinaryTimeseriesPropertyColumnData( ) = default;
 
@@ -18554,7 +18554,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         BooleanTimeseriesPropertyColumnData( ) = default;
 
@@ -18603,7 +18603,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         ByteTimeseriesPropertyColumnData( ) = default;
 
@@ -18652,7 +18652,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         DateTimeTimeseriesPropertyColumnData( ) = default;
 
@@ -18701,7 +18701,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         DoubleTimeseriesPropertyColumnData( ) = default;
 
@@ -18750,7 +18750,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         GuidTimeseriesPropertyColumnData( ) = default;
 
@@ -18799,7 +18799,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         Int16TimeseriesPropertyColumnData( ) = default;
 
@@ -18848,7 +18848,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         Int32TimeseriesPropertyColumnData( ) = default;
 
@@ -18897,7 +18897,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         Int64TimeseriesPropertyColumnData( ) = default;
 
@@ -18946,7 +18946,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         ReferenceTimeseriesPropertyColumnData( ) = default;
 
@@ -18995,7 +18995,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         SByteTimeseriesPropertyColumnData( ) = default;
 
@@ -19044,7 +19044,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         SingleTimeseriesPropertyColumnData( ) = default;
 
@@ -19093,7 +19093,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         StringTimeseriesPropertyColumnData( ) = default;
 
@@ -19142,7 +19142,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         TimeSpanTimeseriesPropertyColumnData( ) = default;
 
@@ -19191,7 +19191,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         UInt16TimeseriesPropertyColumnData( ) = default;
 
@@ -19240,7 +19240,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         UInt32TimeseriesPropertyColumnData( ) = default;
 
@@ -19289,7 +19289,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 6;
 
         UInt64TimeseriesPropertyColumnData( ) = default;
 
@@ -19338,7 +19338,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         TimeSpanPropertyColumnData( ) = default;
 
@@ -19387,7 +19387,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         UInt16PropertyColumnData( ) = default;
 
@@ -19436,7 +19436,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         UInt32PropertyColumnData( ) = default;
 
@@ -19485,7 +19485,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT VALUE_FIELD_ID = 6;
 
         UInt64PropertyColumnData( ) = default;
 
@@ -19646,7 +19646,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
 
         BinaryPropertyDefinitionColumnData( ) = default;
 
@@ -19700,7 +19700,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
 
         BooleanPropertyDefinitionColumnData( ) = default;
 
@@ -19751,9 +19751,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         BytePropertyDefinitionColumnData( ) = default;
 
@@ -19826,9 +19826,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         DateTimePropertyDefinitionColumnData( ) = default;
 
@@ -19901,9 +19901,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         DoublePropertyDefinitionColumnData( ) = default;
 
@@ -19974,7 +19974,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
 
         GuidPropertyDefinitionColumnData( ) = default;
 
@@ -20025,9 +20025,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         Int16PropertyDefinitionColumnData( ) = default;
 
@@ -20100,9 +20100,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         Int32PropertyDefinitionColumnData( ) = default;
 
@@ -20175,9 +20175,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         Int64PropertyDefinitionColumnData( ) = default;
 
@@ -20249,8 +20249,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT REFERENCEDELEMENTTYPE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT REFERENCEDELEMENTTYPE_FIELD_ID = 8;
 
         ReferencePropertyDefinitionColumnData( ) = default;
 
@@ -20312,9 +20312,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         SBytePropertyDefinitionColumnData( ) = default;
 
@@ -20387,9 +20387,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         SinglePropertyDefinitionColumnData( ) = default;
 
@@ -20461,8 +20461,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT PATTERN_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT PATTERN_FIELD_ID = 8;
 
         StringPropertyDefinitionColumnData( ) = default;
 
@@ -20610,8 +20610,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         ByteTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20672,8 +20672,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         DateTimeTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20734,8 +20734,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         DoubleTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20825,8 +20825,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         Int16TimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20887,8 +20887,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         Int32TimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20949,8 +20949,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         Int64TimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21010,7 +21010,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT REFERENCEDELEMENTTYPE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT REFERENCEDELEMENTTYPE_FIELD_ID = 7;
 
         ReferenceTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21060,8 +21060,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         SByteTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21122,8 +21122,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         SingleTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21183,7 +21183,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT PATTERN_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT PATTERN_FIELD_ID = 7;
 
         StringTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21233,8 +21233,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         TimeSpanTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21295,8 +21295,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         UInt16TimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21357,8 +21357,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         UInt32TimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21419,8 +21419,8 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
 
         UInt64TimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -21482,9 +21482,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         TimeSpanPropertyDefinitionColumnData( ) = default;
 
@@ -21557,9 +21557,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         UInt16PropertyDefinitionColumnData( ) = default;
 
@@ -21632,9 +21632,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         UInt32PropertyDefinitionColumnData( ) = default;
 
@@ -21707,9 +21707,9 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 9;
 
         UInt64PropertyDefinitionColumnData( ) = default;
 
@@ -22179,11 +22179,11 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT AZIMUTHCOUNT_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT TRIGGERCOUNT_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT ROTATIONCOUNT_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT PULSE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT TX_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT AZIMUTHCOUNT_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT TRIGGERCOUNT_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT ROTATIONCOUNT_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT PULSE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT TX_FIELD_ID = 13;
 
         RadarCommandReplyGetStatusColumnData( ) = default;
 
@@ -24370,7 +24370,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
 
         SecurityRoleColumnData( ) = default;
 
@@ -25111,7 +25111,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT MAXRETENTION_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT MAXRETENTION_FIELD_ID = 6;
 
         TimeseriesColumnData( ) = default;
 
@@ -25218,7 +25218,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT AIDTONAVIGATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT AIDTONAVIGATION_FIELD_ID = 7;
 
         AisAidToNavigationOffPositionTimeseriesColumnData( ) = default;
 
@@ -25267,7 +25267,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT DEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT DEVICE_FIELD_ID = 7;
 
         DeviceEnabledTimeseriesColumnData( ) = default;
 
@@ -25316,7 +25316,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarAutomaticSensitivityTimeControlTimeseriesColumnData( ) = default;
 
@@ -25365,7 +25365,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarBlankSector1TimeseriesColumnData( ) = default;
 
@@ -25414,7 +25414,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarBlankSector2TimeseriesColumnData( ) = default;
 
@@ -25463,7 +25463,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarEnableAutomaticFrequencyControlTimeseriesColumnData( ) = default;
 
@@ -25512,7 +25512,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarEnableFastTimeConstantTimeseriesColumnData( ) = default;
 
@@ -25561,7 +25561,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarEnableSensitivityTimeControlTimeseriesColumnData( ) = default;
 
@@ -25610,7 +25610,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarPowerOnTimeseriesColumnData( ) = default;
 
@@ -25659,7 +25659,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarSaveSettingsTimeseriesColumnData( ) = default;
 
@@ -25708,7 +25708,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarTrackingTimeseriesColumnData( ) = default;
 
@@ -25757,7 +25757,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT PROXYSESSION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT PROXYSESSION_FIELD_ID = 7;
 
         MediaProxySessionEnabledTimeseriesColumnData( ) = default;
 
@@ -25806,7 +25806,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT SERVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT SERVICE_FIELD_ID = 7;
 
         MediaServiceEnabledTimeseriesColumnData( ) = default;
 
@@ -25942,7 +25942,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 7;
 
         GNSSAltitudeTimeseriesColumnData( ) = default;
 
@@ -25991,7 +25991,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 7;
 
         GNSSLatitudeTimeseriesColumnData( ) = default;
 
@@ -26040,7 +26040,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 7;
 
         GNSSLongitudeTimeseriesColumnData( ) = default;
 
@@ -26089,7 +26089,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 7;
 
         GyroCourseTimeseriesColumnData( ) = default;
 
@@ -26138,7 +26138,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 7;
 
         GyroHeadingMagneticNorthTimeseriesColumnData( ) = default;
 
@@ -26187,7 +26187,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 7;
 
         GyroHeadingTrueNorthTimeseriesColumnData( ) = default;
 
@@ -26236,7 +26236,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 7;
 
         GyroPitchTimeseriesColumnData( ) = default;
 
@@ -26285,7 +26285,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 7;
 
         GyroRateOfTurnTimeseriesColumnData( ) = default;
 
@@ -26334,7 +26334,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 7;
 
         GyroRollTimeseriesColumnData( ) = default;
 
@@ -26383,7 +26383,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 7;
 
         GyroSpeedTimeseriesColumnData( ) = default;
 
@@ -26432,7 +26432,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarLatitudeTimeseriesColumnData( ) = default;
 
@@ -26481,7 +26481,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarLongitudeTimeseriesColumnData( ) = default;
 
@@ -26530,7 +26530,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 7;
 
         RadomeDewPointTimeseriesColumnData( ) = default;
 
@@ -26579,7 +26579,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 7;
 
         RadomePressureTimeseriesColumnData( ) = default;
 
@@ -26628,7 +26628,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 7;
 
         RadomeTemperatureTimeseriesColumnData( ) = default;
 
@@ -26677,7 +26677,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VESSEL_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT VESSEL_FIELD_ID = 7;
 
         VesselDraughtTimeseriesColumnData( ) = default;
 
@@ -26726,7 +26726,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VIEW_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT VIEW_FIELD_ID = 7;
 
         ViewLatitudeTimeseriesColumnData( ) = default;
 
@@ -26775,7 +26775,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VIEW_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT VIEW_FIELD_ID = 7;
 
         ViewLongitudeTimeseriesColumnData( ) = default;
 
@@ -26824,7 +26824,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VIEW_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT VIEW_FIELD_ID = 7;
 
         ViewZoomLevelTimeseriesColumnData( ) = default;
 
@@ -26873,7 +26873,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationAbsoluteHumidityTimeseriesColumnData( ) = default;
 
@@ -26922,7 +26922,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationAirTemperatureTimeseriesColumnData( ) = default;
 
@@ -26971,7 +26971,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationBarometricPressureTimeseriesColumnData( ) = default;
 
@@ -27020,7 +27020,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationDewPointTimeseriesColumnData( ) = default;
 
@@ -27069,7 +27069,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationRelativeHumidityTimeseriesColumnData( ) = default;
 
@@ -27118,7 +27118,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationWaterTemperatureTimeseriesColumnData( ) = default;
 
@@ -27167,7 +27167,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationWindDirectionTimeseriesColumnData( ) = default;
 
@@ -27216,7 +27216,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 7;
 
         WeatherStationWindSpeedTimeseriesColumnData( ) = default;
 
@@ -27294,7 +27294,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT AIDTONAVIGATION_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT AIDTONAVIGATION_FIELD_ID = 7;
 
         AisAidToNavigationPositionTimeseriesColumnData( ) = default;
 
@@ -27459,7 +27459,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarAzimuthOffsetTimeseriesColumnData( ) = default;
 
@@ -27508,7 +27508,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarFastTimeConstantLevelTimeseriesColumnData( ) = default;
 
@@ -27557,7 +27557,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarFastTimeConstantModeTimeseriesColumnData( ) = default;
 
@@ -27606,7 +27606,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarPulseTimeseriesColumnData( ) = default;
 
@@ -27655,7 +27655,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarSector1EndTimeseriesColumnData( ) = default;
 
@@ -27704,7 +27704,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarSector1StartTimeseriesColumnData( ) = default;
 
@@ -27753,7 +27753,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarSector2EndTimeseriesColumnData( ) = default;
 
@@ -27802,7 +27802,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarSector2StartTimeseriesColumnData( ) = default;
 
@@ -27851,7 +27851,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarSensitivityTimeControlLevelTimeseriesColumnData( ) = default;
 
@@ -27900,7 +27900,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
 
         RadarTuningTimeseriesColumnData( ) = default;
 
@@ -27949,7 +27949,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT VESSEL_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT VESSEL_FIELD_ID = 7;
 
         VesselPersonsOnBoardTimeseriesColumnData( ) = default;
 
@@ -28288,7 +28288,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 7;
 
         RadomeStatusTimeseriesColumnData( ) = default;
 
@@ -31429,7 +31429,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT RADIUS_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT RADIUS_FIELD_ID = 13;
 
         CircularZoneColumnData( ) = default;
 
@@ -31479,7 +31479,7 @@ namespace Barrelman::Databases::MsSql
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT POLYGON_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT POLYGON_FIELD_ID = 13;
 
         PolygonZoneColumnData( ) = default;
 

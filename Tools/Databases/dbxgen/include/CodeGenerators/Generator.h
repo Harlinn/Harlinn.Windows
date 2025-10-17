@@ -93,7 +93,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
     namespace Java
     {
         inline JavaGenerator::JavaGenerator(const Generator& owner)
-            : Base(owner, owner.Options().Java()), data_(*this)//, databases_(*this), entities_(*this)
+            : Base(owner, owner.Options().Java()), data_(*this), databases_(*this)//, entities_(*this)
         { }
     }
 

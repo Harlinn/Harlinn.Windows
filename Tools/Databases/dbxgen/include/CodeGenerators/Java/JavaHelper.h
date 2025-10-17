@@ -74,21 +74,28 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         static WideString GetDeleteFunctionName(const ClassInfo& classInfo);
 
         static WideString GetInsertFunctionParameters(const ClassInfo& classInfo);
+        static WideString GetInsertFunctionParameterPlaceholders( const ClassInfo& classInfo );
         static WideString GetInsertFunctionCallParameters(const ClassInfo& classInfo);
 
         static WideString GetInsertFunctionParameters1(const ClassInfo& classInfo);
+        static WideString GetInsertFunctionParameterPlaceholders1( const ClassInfo& classInfo );
         static WideString GetInsertFunctionCallParameters1(const ClassInfo& classInfo);
 
         static WideString GetUpdateFunctionParameters(const ClassInfo& classInfo);
+        static WideString GetUpdateFunctionParameterPlaceholders( const ClassInfo& classInfo );
         static WideString GetUpdateFunctionCallParameters(const ClassInfo& classInfo);
+        
 
         static WideString GetUpdateFunctionParameters1(const ClassInfo& classInfo);
+        static WideString GetUpdateFunctionParameterPlaceholders1( const ClassInfo& classInfo );
         static WideString GetUpdateFunctionCallParameters1(const ClassInfo& classInfo);
 
         static WideString GetUpdateFunctionParameters2(const ClassInfo& classInfo);
+        static WideString GetUpdateFunctionParameterPlaceholders2( const ClassInfo& classInfo );
         static WideString GetUpdateFunctionCallParameters2(const ClassInfo& classInfo);
 
         static WideString GetDeleteFunctionParameters(const ClassInfo& classInfo);
+        static WideString GetDeleteFunctionParameterPlaceholders( const ClassInfo& classInfo );
         static WideString GetDeleteFunctionCallParameters(const ClassInfo& classInfo);
 
         static WideString GetSqlCommandParametersAddFunctionName(const MemberInfo& member);

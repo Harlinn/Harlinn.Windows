@@ -883,24 +883,24 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AidToNavigationReportMessageView";
         public new const string ViewAliasName = "atnrm";
 
-        public const int NAVIGATIONALAIDTYPE_FIELD_ID = 7;
-        public const int NAME_FIELD_ID = 8;
-        public const int POSITIONACCURACY_FIELD_ID = 9;
-        public const int LONGITUDE_FIELD_ID = 10;
-        public const int LATITUDE_FIELD_ID = 11;
-        public const int DIMENSIONTOBOW_FIELD_ID = 12;
-        public const int DIMENSIONTOSTERN_FIELD_ID = 13;
-        public const int DIMENSIONTOPORT_FIELD_ID = 14;
-        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 15;
-        public const int POSITIONFIXTYPE_FIELD_ID = 16;
-        public const int TIMESTAMP_FIELD_ID = 17;
-        public const int OFFPOSITION_FIELD_ID = 18;
-        public const int REGIONALRESERVED_FIELD_ID = 19;
-        public const int RAIM_FIELD_ID = 20;
-        public const int VIRTUALAID_FIELD_ID = 21;
-        public const int ASSIGNED_FIELD_ID = 22;
-        public const int SPARE_FIELD_ID = 23;
-        public const int NAMEEXTENSION_FIELD_ID = 24;
+        public const int NAVIGATIONALAIDTYPE_FIELD_ID = 8;
+        public const int NAME_FIELD_ID = 9;
+        public const int POSITIONACCURACY_FIELD_ID = 10;
+        public const int LONGITUDE_FIELD_ID = 11;
+        public const int LATITUDE_FIELD_ID = 12;
+        public const int DIMENSIONTOBOW_FIELD_ID = 13;
+        public const int DIMENSIONTOSTERN_FIELD_ID = 14;
+        public const int DIMENSIONTOPORT_FIELD_ID = 15;
+        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 16;
+        public const int POSITIONFIXTYPE_FIELD_ID = 17;
+        public const int TIMESTAMP_FIELD_ID = 18;
+        public const int OFFPOSITION_FIELD_ID = 19;
+        public const int REGIONALRESERVED_FIELD_ID = 20;
+        public const int RAIM_FIELD_ID = 21;
+        public const int VIRTUALAID_FIELD_ID = 22;
+        public const int ASSIGNED_FIELD_ID = 23;
+        public const int SPARE_FIELD_ID = 24;
+        public const int NAMEEXTENSION_FIELD_ID = 25;
 
         public SimpleAidToNavigationReportMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -1084,11 +1084,11 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisAddressedSafetyRelatedMessageView";
         public new const string ViewAliasName = "aasrm";
 
-        public const int SEQUENCENUMBER_FIELD_ID = 7;
-        public const int DESTINATIONMMSI_FIELD_ID = 8;
-        public const int RETRANSMITFLAG_FIELD_ID = 9;
-        public const int SPARE_FIELD_ID = 10;
-        public const int TEXT_FIELD_ID = 11;
+        public const int SEQUENCENUMBER_FIELD_ID = 8;
+        public const int DESTINATIONMMSI_FIELD_ID = 9;
+        public const int RETRANSMITFLAG_FIELD_ID = 10;
+        public const int SPARE_FIELD_ID = 11;
+        public const int TEXT_FIELD_ID = 12;
 
         public SimpleAisAddressedSafetyRelatedMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -1171,14 +1171,14 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisBaseStationReportMessageView";
         public new const string ViewAliasName = "absrm";
 
-        public const int TIMESTAMP_FIELD_ID = 7;
-        public const int POSITIONACCURACY_FIELD_ID = 8;
-        public const int LONGITUDE_FIELD_ID = 9;
-        public const int LATITUDE_FIELD_ID = 10;
-        public const int POSITIONFIXTYPE_FIELD_ID = 11;
-        public const int SPARE_FIELD_ID = 12;
-        public const int RAIM_FIELD_ID = 13;
-        public const int RADIOSTATUS_FIELD_ID = 14;
+        public const int TIMESTAMP_FIELD_ID = 8;
+        public const int POSITIONACCURACY_FIELD_ID = 9;
+        public const int LONGITUDE_FIELD_ID = 10;
+        public const int LATITUDE_FIELD_ID = 11;
+        public const int POSITIONFIXTYPE_FIELD_ID = 12;
+        public const int SPARE_FIELD_ID = 13;
+        public const int RAIM_FIELD_ID = 14;
+        public const int RADIOSTATUS_FIELD_ID = 15;
 
         public SimpleAisBaseStationReportMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -1286,15 +1286,15 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisBinaryAcknowledgeMessageView";
         public new const string ViewAliasName = "abac";
 
-        public const int SPARE_FIELD_ID = 7;
-        public const int SEQUENCENUMBER1_FIELD_ID = 8;
-        public const int MMSI1_FIELD_ID = 9;
-        public const int SEQUENCENUMBER2_FIELD_ID = 10;
-        public const int MMSI2_FIELD_ID = 11;
-        public const int SEQUENCENUMBER3_FIELD_ID = 12;
-        public const int MMSI3_FIELD_ID = 13;
-        public const int SEQUENCENUMBER4_FIELD_ID = 14;
-        public const int MMSI4_FIELD_ID = 15;
+        public const int SPARE_FIELD_ID = 8;
+        public const int SEQUENCENUMBER1_FIELD_ID = 9;
+        public const int MMSI1_FIELD_ID = 10;
+        public const int SEQUENCENUMBER2_FIELD_ID = 11;
+        public const int MMSI2_FIELD_ID = 12;
+        public const int SEQUENCENUMBER3_FIELD_ID = 13;
+        public const int MMSI3_FIELD_ID = 14;
+        public const int SEQUENCENUMBER4_FIELD_ID = 15;
+        public const int MMSI4_FIELD_ID = 16;
 
         public SimpleAisBinaryAcknowledgeMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -1408,13 +1408,13 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisBinaryAddressedMessageView";
         public new const string ViewAliasName = "abam";
 
-        public const int SEQUENCENUMBER_FIELD_ID = 7;
-        public const int DESTINATIONMMSI_FIELD_ID = 8;
-        public const int RETRANSMITFLAG_FIELD_ID = 9;
-        public const int SPARE_FIELD_ID = 10;
-        public const int DESIGNATEDAREACODE_FIELD_ID = 11;
-        public const int FUNCTIONALID_FIELD_ID = 12;
-        public const int DATA_FIELD_ID = 13;
+        public const int SEQUENCENUMBER_FIELD_ID = 8;
+        public const int DESTINATIONMMSI_FIELD_ID = 9;
+        public const int RETRANSMITFLAG_FIELD_ID = 10;
+        public const int SPARE_FIELD_ID = 11;
+        public const int DESIGNATEDAREACODE_FIELD_ID = 12;
+        public const int FUNCTIONALID_FIELD_ID = 13;
+        public const int DATA_FIELD_ID = 14;
 
         public SimpleAisBinaryAddressedMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -1509,10 +1509,10 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisBinaryBroadcastMessageView";
         public new const string ViewAliasName = "abbm";
 
-        public const int SPARE_FIELD_ID = 7;
-        public const int DESIGNATEDAREACODE_FIELD_ID = 8;
-        public const int FUNCTIONALID_FIELD_ID = 9;
-        public const int DATA_FIELD_ID = 10;
+        public const int SPARE_FIELD_ID = 8;
+        public const int DESIGNATEDAREACODE_FIELD_ID = 9;
+        public const int FUNCTIONALID_FIELD_ID = 10;
+        public const int DATA_FIELD_ID = 11;
 
         public SimpleAisBinaryBroadcastMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -1596,23 +1596,23 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisDataLinkManagementMessageView";
         public new const string ViewAliasName = "adlmm";
 
-        public const int SPARE_FIELD_ID = 7;
-        public const int OFFSET1_FIELD_ID = 8;
-        public const int RESERVEDSLOTS1_FIELD_ID = 9;
-        public const int TIMEOUT1_FIELD_ID = 10;
-        public const int INCREMENT1_FIELD_ID = 11;
-        public const int OFFSET2_FIELD_ID = 12;
-        public const int RESERVEDSLOTS2_FIELD_ID = 13;
-        public const int TIMEOUT2_FIELD_ID = 14;
-        public const int INCREMENT2_FIELD_ID = 15;
-        public const int OFFSET3_FIELD_ID = 16;
-        public const int RESERVEDSLOTS3_FIELD_ID = 17;
-        public const int TIMEOUT3_FIELD_ID = 18;
-        public const int INCREMENT3_FIELD_ID = 19;
-        public const int OFFSET4_FIELD_ID = 20;
-        public const int RESERVEDSLOTS4_FIELD_ID = 21;
-        public const int TIMEOUT4_FIELD_ID = 22;
-        public const int INCREMENT4_FIELD_ID = 23;
+        public const int SPARE_FIELD_ID = 8;
+        public const int OFFSET1_FIELD_ID = 9;
+        public const int RESERVEDSLOTS1_FIELD_ID = 10;
+        public const int TIMEOUT1_FIELD_ID = 11;
+        public const int INCREMENT1_FIELD_ID = 12;
+        public const int OFFSET2_FIELD_ID = 13;
+        public const int RESERVEDSLOTS2_FIELD_ID = 14;
+        public const int TIMEOUT2_FIELD_ID = 15;
+        public const int INCREMENT2_FIELD_ID = 16;
+        public const int OFFSET3_FIELD_ID = 17;
+        public const int RESERVEDSLOTS3_FIELD_ID = 18;
+        public const int TIMEOUT3_FIELD_ID = 19;
+        public const int INCREMENT3_FIELD_ID = 20;
+        public const int OFFSET4_FIELD_ID = 21;
+        public const int RESERVEDSLOTS4_FIELD_ID = 22;
+        public const int TIMEOUT4_FIELD_ID = 23;
+        public const int INCREMENT4_FIELD_ID = 24;
 
         public SimpleAisDataLinkManagementMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -1803,26 +1803,26 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisExtendedClassBCsPositionReportMessageView";
         public new const string ViewAliasName = "aecbprm";
 
-        public const int RESERVED_FIELD_ID = 7;
-        public const int SPEEDOVERGROUND_FIELD_ID = 8;
-        public const int POSITIONACCURACY_FIELD_ID = 9;
-        public const int LONGITUDE_FIELD_ID = 10;
-        public const int LATITUDE_FIELD_ID = 11;
-        public const int COURSEOVERGROUND_FIELD_ID = 12;
-        public const int TRUEHEADING_FIELD_ID = 13;
-        public const int TIMESTAMP_FIELD_ID = 14;
-        public const int REGIONALRESERVED_FIELD_ID = 15;
-        public const int NAME_FIELD_ID = 16;
-        public const int SHIPTYPE_FIELD_ID = 17;
-        public const int DIMENSIONTOBOW_FIELD_ID = 18;
-        public const int DIMENSIONTOSTERN_FIELD_ID = 19;
-        public const int DIMENSIONTOPORT_FIELD_ID = 20;
-        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 21;
-        public const int POSITIONFIXTYPE_FIELD_ID = 22;
-        public const int RAIM_FIELD_ID = 23;
-        public const int DATATERMINALREADY_FIELD_ID = 24;
-        public const int ASSIGNED_FIELD_ID = 25;
-        public const int SPARE_FIELD_ID = 26;
+        public const int RESERVED_FIELD_ID = 8;
+        public const int SPEEDOVERGROUND_FIELD_ID = 9;
+        public const int POSITIONACCURACY_FIELD_ID = 10;
+        public const int LONGITUDE_FIELD_ID = 11;
+        public const int LATITUDE_FIELD_ID = 12;
+        public const int COURSEOVERGROUND_FIELD_ID = 13;
+        public const int TRUEHEADING_FIELD_ID = 14;
+        public const int TIMESTAMP_FIELD_ID = 15;
+        public const int REGIONALRESERVED_FIELD_ID = 16;
+        public const int NAME_FIELD_ID = 17;
+        public const int SHIPTYPE_FIELD_ID = 18;
+        public const int DIMENSIONTOBOW_FIELD_ID = 19;
+        public const int DIMENSIONTOSTERN_FIELD_ID = 20;
+        public const int DIMENSIONTOPORT_FIELD_ID = 21;
+        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 22;
+        public const int POSITIONFIXTYPE_FIELD_ID = 23;
+        public const int RAIM_FIELD_ID = 24;
+        public const int DATATERMINALREADY_FIELD_ID = 25;
+        public const int ASSIGNED_FIELD_ID = 26;
+        public const int SPARE_FIELD_ID = 27;
 
         public SimpleAisExtendedClassBCsPositionReportMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -2025,14 +2025,14 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisInterrogationMessageView";
         public new const string ViewAliasName = "aim";
 
-        public const int INTERROGATEDMMSI_FIELD_ID = 7;
-        public const int FIRSTMESSAGETYPE_FIELD_ID = 8;
-        public const int FIRSTSLOTOFFSET_FIELD_ID = 9;
-        public const int SECONDMESSAGETYPE_FIELD_ID = 10;
-        public const int SECONDSLOTOFFSET_FIELD_ID = 11;
-        public const int SECONDSTATIONINTERROGATIONMMSI_FIELD_ID = 12;
-        public const int SECONDSTATIONFIRSTMESSAGETYPE_FIELD_ID = 13;
-        public const int SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID = 14;
+        public const int INTERROGATEDMMSI_FIELD_ID = 8;
+        public const int FIRSTMESSAGETYPE_FIELD_ID = 9;
+        public const int FIRSTSLOTOFFSET_FIELD_ID = 10;
+        public const int SECONDMESSAGETYPE_FIELD_ID = 11;
+        public const int SECONDSLOTOFFSET_FIELD_ID = 12;
+        public const int SECONDSTATIONINTERROGATIONMMSI_FIELD_ID = 13;
+        public const int SECONDSTATIONFIRSTMESSAGETYPE_FIELD_ID = 14;
+        public const int SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID = 15;
 
         public SimpleAisInterrogationMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -2144,19 +2144,19 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisPositionReportClassAMessageBaseView";
         public new const string ViewAliasName = "aprcab";
 
-        public const int NAVIGATIONSTATUS_FIELD_ID = 7;
-        public const int RATEOFTURN_FIELD_ID = 8;
-        public const int SPEEDOVERGROUND_FIELD_ID = 9;
-        public const int POSITIONACCURACY_FIELD_ID = 10;
-        public const int LONGITUDE_FIELD_ID = 11;
-        public const int LATITUDE_FIELD_ID = 12;
-        public const int COURSEOVERGROUND_FIELD_ID = 13;
-        public const int TRUEHEADING_FIELD_ID = 14;
-        public const int TIMESTAMP_FIELD_ID = 15;
-        public const int MANEUVERINDICATOR_FIELD_ID = 16;
-        public const int SPARE_FIELD_ID = 17;
-        public const int RAIM_FIELD_ID = 18;
-        public const int RADIOSTATUS_FIELD_ID = 19;
+        public const int NAVIGATIONSTATUS_FIELD_ID = 8;
+        public const int RATEOFTURN_FIELD_ID = 9;
+        public const int SPEEDOVERGROUND_FIELD_ID = 10;
+        public const int POSITIONACCURACY_FIELD_ID = 11;
+        public const int LONGITUDE_FIELD_ID = 12;
+        public const int LATITUDE_FIELD_ID = 13;
+        public const int COURSEOVERGROUND_FIELD_ID = 14;
+        public const int TRUEHEADING_FIELD_ID = 15;
+        public const int TIMESTAMP_FIELD_ID = 16;
+        public const int MANEUVERINDICATOR_FIELD_ID = 17;
+        public const int SPARE_FIELD_ID = 18;
+        public const int RAIM_FIELD_ID = 19;
+        public const int RADIOSTATUS_FIELD_ID = 20;
 
         public SimpleAisPositionReportClassAMessageBaseDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -2437,15 +2437,15 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisPositionReportForLongRangeApplicationsMessageView";
         public new const string ViewAliasName = "aprflram";
 
-        public const int POSITIONACCURACY_FIELD_ID = 7;
-        public const int RAIM_FIELD_ID = 8;
-        public const int NAVIGATIONSTATUS_FIELD_ID = 9;
-        public const int LONGITUDE_FIELD_ID = 10;
-        public const int LATITUDE_FIELD_ID = 11;
-        public const int SPEEDOVERGROUND_FIELD_ID = 12;
-        public const int COURSEOVERGROUND_FIELD_ID = 13;
-        public const int GNSSPOSITIONSTATUS_FIELD_ID = 14;
-        public const int SPARE_FIELD_ID = 15;
+        public const int POSITIONACCURACY_FIELD_ID = 8;
+        public const int RAIM_FIELD_ID = 9;
+        public const int NAVIGATIONSTATUS_FIELD_ID = 10;
+        public const int LONGITUDE_FIELD_ID = 11;
+        public const int LATITUDE_FIELD_ID = 12;
+        public const int SPEEDOVERGROUND_FIELD_ID = 13;
+        public const int COURSEOVERGROUND_FIELD_ID = 14;
+        public const int GNSSPOSITIONSTATUS_FIELD_ID = 15;
+        public const int SPARE_FIELD_ID = 16;
 
         public SimpleAisPositionReportForLongRangeApplicationsMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -2561,15 +2561,15 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisSafetyRelatedAcknowledgmentMessageView";
         public new const string ViewAliasName = "asram";
 
-        public const int SPARE_FIELD_ID = 7;
-        public const int SEQUENCENUMBER1_FIELD_ID = 8;
-        public const int MMSI1_FIELD_ID = 9;
-        public const int SEQUENCENUMBER2_FIELD_ID = 10;
-        public const int MMSI2_FIELD_ID = 11;
-        public const int SEQUENCENUMBER3_FIELD_ID = 12;
-        public const int MMSI3_FIELD_ID = 13;
-        public const int SEQUENCENUMBER4_FIELD_ID = 14;
-        public const int MMSI4_FIELD_ID = 15;
+        public const int SPARE_FIELD_ID = 8;
+        public const int SEQUENCENUMBER1_FIELD_ID = 9;
+        public const int MMSI1_FIELD_ID = 10;
+        public const int SEQUENCENUMBER2_FIELD_ID = 11;
+        public const int MMSI2_FIELD_ID = 12;
+        public const int SEQUENCENUMBER3_FIELD_ID = 13;
+        public const int MMSI3_FIELD_ID = 14;
+        public const int SEQUENCENUMBER4_FIELD_ID = 15;
+        public const int MMSI4_FIELD_ID = 16;
 
         public SimpleAisSafetyRelatedAcknowledgmentMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -2693,23 +2693,23 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisStandardClassBCsPositionReportMessageView";
         public new const string ViewAliasName = "ascbprm";
 
-        public const int RESERVED_FIELD_ID = 7;
-        public const int SPEEDOVERGROUND_FIELD_ID = 8;
-        public const int POSITIONACCURACY_FIELD_ID = 9;
-        public const int LONGITUDE_FIELD_ID = 10;
-        public const int LATITUDE_FIELD_ID = 11;
-        public const int COURSEOVERGROUND_FIELD_ID = 12;
-        public const int TRUEHEADING_FIELD_ID = 13;
-        public const int TIMESTAMP_FIELD_ID = 14;
-        public const int REGIONALRESERVED_FIELD_ID = 15;
-        public const int ISCSUNIT_FIELD_ID = 16;
-        public const int HASDISPLAY_FIELD_ID = 17;
-        public const int HASDSCCAPABILITY_FIELD_ID = 18;
-        public const int BAND_FIELD_ID = 19;
-        public const int CANACCEPTMESSAGE22_FIELD_ID = 20;
-        public const int ASSIGNED_FIELD_ID = 21;
-        public const int RAIM_FIELD_ID = 22;
-        public const int RADIOSTATUS_FIELD_ID = 23;
+        public const int RESERVED_FIELD_ID = 8;
+        public const int SPEEDOVERGROUND_FIELD_ID = 9;
+        public const int POSITIONACCURACY_FIELD_ID = 10;
+        public const int LONGITUDE_FIELD_ID = 11;
+        public const int LATITUDE_FIELD_ID = 12;
+        public const int COURSEOVERGROUND_FIELD_ID = 13;
+        public const int TRUEHEADING_FIELD_ID = 14;
+        public const int TIMESTAMP_FIELD_ID = 15;
+        public const int REGIONALRESERVED_FIELD_ID = 16;
+        public const int ISCSUNIT_FIELD_ID = 17;
+        public const int HASDISPLAY_FIELD_ID = 18;
+        public const int HASDSCCAPABILITY_FIELD_ID = 19;
+        public const int BAND_FIELD_ID = 20;
+        public const int CANACCEPTMESSAGE22_FIELD_ID = 21;
+        public const int ASSIGNED_FIELD_ID = 22;
+        public const int RAIM_FIELD_ID = 23;
+        public const int RADIOSTATUS_FIELD_ID = 24;
 
         public SimpleAisStandardClassBCsPositionReportMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -2893,19 +2893,19 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisStandardSarAircraftPositionReportMessageView";
         public new const string ViewAliasName = "assaprm";
 
-        public const int ALTITUDE_FIELD_ID = 7;
-        public const int SPEEDOVERGROUND_FIELD_ID = 8;
-        public const int POSITIONACCURACY_FIELD_ID = 9;
-        public const int LONGITUDE_FIELD_ID = 10;
-        public const int LATITUDE_FIELD_ID = 11;
-        public const int COURSEOVERGROUND_FIELD_ID = 12;
-        public const int TIMESTAMP_FIELD_ID = 13;
-        public const int RESERVED_FIELD_ID = 14;
-        public const int DATATERMINALREADY_FIELD_ID = 15;
-        public const int SPARE_FIELD_ID = 16;
-        public const int ASSIGNED_FIELD_ID = 17;
-        public const int RAIM_FIELD_ID = 18;
-        public const int RADIOSTATUS_FIELD_ID = 19;
+        public const int ALTITUDE_FIELD_ID = 8;
+        public const int SPEEDOVERGROUND_FIELD_ID = 9;
+        public const int POSITIONACCURACY_FIELD_ID = 10;
+        public const int LONGITUDE_FIELD_ID = 11;
+        public const int LATITUDE_FIELD_ID = 12;
+        public const int COURSEOVERGROUND_FIELD_ID = 13;
+        public const int TIMESTAMP_FIELD_ID = 14;
+        public const int RESERVED_FIELD_ID = 15;
+        public const int DATATERMINALREADY_FIELD_ID = 16;
+        public const int SPARE_FIELD_ID = 17;
+        public const int ASSIGNED_FIELD_ID = 18;
+        public const int RAIM_FIELD_ID = 19;
+        public const int RADIOSTATUS_FIELD_ID = 20;
 
         public SimpleAisStandardSarAircraftPositionReportMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -3059,21 +3059,21 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisStaticAndVoyageRelatedDataMessageView";
         public new const string ViewAliasName = "asavrdm";
 
-        public const int AISVERSION_FIELD_ID = 7;
-        public const int IMONUMBER_FIELD_ID = 8;
-        public const int CALLSIGN_FIELD_ID = 9;
-        public const int SHIPNAME_FIELD_ID = 10;
-        public const int SHIPTYPE_FIELD_ID = 11;
-        public const int DIMENSIONTOBOW_FIELD_ID = 12;
-        public const int DIMENSIONTOSTERN_FIELD_ID = 13;
-        public const int DIMENSIONTOPORT_FIELD_ID = 14;
-        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 15;
-        public const int POSITIONFIXTYPE_FIELD_ID = 16;
-        public const int ESTIMATEDTIMEOFARRIVAL_FIELD_ID = 17;
-        public const int DRAUGHT_FIELD_ID = 18;
-        public const int DESTINATION_FIELD_ID = 19;
-        public const int DATATERMINALREADY_FIELD_ID = 20;
-        public const int SPARE_FIELD_ID = 21;
+        public const int AISVERSION_FIELD_ID = 8;
+        public const int IMONUMBER_FIELD_ID = 9;
+        public const int CALLSIGN_FIELD_ID = 10;
+        public const int SHIPNAME_FIELD_ID = 11;
+        public const int SHIPTYPE_FIELD_ID = 12;
+        public const int DIMENSIONTOBOW_FIELD_ID = 13;
+        public const int DIMENSIONTOSTERN_FIELD_ID = 14;
+        public const int DIMENSIONTOPORT_FIELD_ID = 15;
+        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 16;
+        public const int POSITIONFIXTYPE_FIELD_ID = 17;
+        public const int ESTIMATEDTIMEOFARRIVAL_FIELD_ID = 18;
+        public const int DRAUGHT_FIELD_ID = 19;
+        public const int DESTINATION_FIELD_ID = 20;
+        public const int DATATERMINALREADY_FIELD_ID = 21;
+        public const int SPARE_FIELD_ID = 22;
 
         public SimpleAisStaticAndVoyageRelatedDataMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -3234,7 +3234,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisStaticDataReportMessageView";
         public new const string ViewAliasName = "asdrm";
 
-        public const int PARTNUMBER_FIELD_ID = 7;
+        public const int PARTNUMBER_FIELD_ID = 8;
 
         public SimpleAisStaticDataReportMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -3280,8 +3280,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisStaticDataReportPartAMessageView";
         public new const string ViewAliasName = "asdrpa";
 
-        public const int SHIPNAME_FIELD_ID = 8;
-        public const int SPARE_FIELD_ID = 9;
+        public const int SHIPNAME_FIELD_ID = 9;
+        public const int SPARE_FIELD_ID = 10;
 
         public SimpleAisStaticDataReportPartAMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -3345,18 +3345,18 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisStaticDataReportPartBMessageView";
         public new const string ViewAliasName = "asdrpb";
 
-        public const int SHIPTYPE_FIELD_ID = 8;
-        public const int VENDORID_FIELD_ID = 9;
-        public const int UNITMODELCODE_FIELD_ID = 10;
-        public const int SERIALNUMBER_FIELD_ID = 11;
-        public const int CALLSIGN_FIELD_ID = 12;
-        public const int DIMENSIONTOBOW_FIELD_ID = 13;
-        public const int DIMENSIONTOSTERN_FIELD_ID = 14;
-        public const int DIMENSIONTOPORT_FIELD_ID = 15;
-        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 16;
-        public const int MOTHERSHIPMMSI_FIELD_ID = 17;
-        public const int POSITIONFIXTYPE_FIELD_ID = 18;
-        public const int SPARE_FIELD_ID = 19;
+        public const int SHIPTYPE_FIELD_ID = 9;
+        public const int VENDORID_FIELD_ID = 10;
+        public const int UNITMODELCODE_FIELD_ID = 11;
+        public const int SERIALNUMBER_FIELD_ID = 12;
+        public const int CALLSIGN_FIELD_ID = 13;
+        public const int DIMENSIONTOBOW_FIELD_ID = 14;
+        public const int DIMENSIONTOSTERN_FIELD_ID = 15;
+        public const int DIMENSIONTOPORT_FIELD_ID = 16;
+        public const int DIMENSIONTOSTARBOARD_FIELD_ID = 17;
+        public const int MOTHERSHIPMMSI_FIELD_ID = 18;
+        public const int POSITIONFIXTYPE_FIELD_ID = 19;
+        public const int SPARE_FIELD_ID = 20;
 
         public SimpleAisStaticDataReportPartBMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -3490,9 +3490,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisUtcAndDateInquiryMessageView";
         public new const string ViewAliasName = "auadim";
 
-        public const int SPARE1_FIELD_ID = 7;
-        public const int DESTINATIONMMSI_FIELD_ID = 8;
-        public const int SPARE2_FIELD_ID = 9;
+        public const int SPARE1_FIELD_ID = 8;
+        public const int DESTINATIONMMSI_FIELD_ID = 9;
+        public const int SPARE2_FIELD_ID = 10;
 
         public SimpleAisUtcAndDateInquiryMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -3559,14 +3559,14 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisUtcAndDateResponseMessageView";
         public new const string ViewAliasName = "auadrm";
 
-        public const int DATETIME_FIELD_ID = 7;
-        public const int POSITIONACCURACY_FIELD_ID = 8;
-        public const int LONGITUDE_FIELD_ID = 9;
-        public const int LATITUDE_FIELD_ID = 10;
-        public const int POSITIONFIXTYPE_FIELD_ID = 11;
-        public const int SPARE_FIELD_ID = 12;
-        public const int RAIM_FIELD_ID = 13;
-        public const int RADIOSTATUS_FIELD_ID = 14;
+        public const int DATETIME_FIELD_ID = 8;
+        public const int POSITIONACCURACY_FIELD_ID = 9;
+        public const int LONGITUDE_FIELD_ID = 10;
+        public const int LATITUDE_FIELD_ID = 11;
+        public const int POSITIONFIXTYPE_FIELD_ID = 12;
+        public const int SPARE_FIELD_ID = 13;
+        public const int RAIM_FIELD_ID = 14;
+        public const int RADIOSTATUS_FIELD_ID = 15;
 
         public SimpleAisUtcAndDateResponseMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4328,16 +4328,16 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandAbsoluteMoveView";
         public new const string ViewAliasName = "ccam";
 
-        public const int POSITIONPANTILTMODE_FIELD_ID = 7;
-        public const int PANANGLE_FIELD_ID = 8;
-        public const int TILTANGLE_FIELD_ID = 9;
-        public const int POSITIONFOCALLENGTHMODE_FIELD_ID = 10;
-        public const int FOCALLENGTH_FIELD_ID = 11;
-        public const int SPEEDPANTILTMODE_FIELD_ID = 12;
-        public const int PANSPEED_FIELD_ID = 13;
-        public const int TILTSPEED_FIELD_ID = 14;
-        public const int SPEEDFOCALLENGTHMODE_FIELD_ID = 15;
-        public const int ZOOMSPEED_FIELD_ID = 16;
+        public const int POSITIONPANTILTMODE_FIELD_ID = 8;
+        public const int PANANGLE_FIELD_ID = 9;
+        public const int TILTANGLE_FIELD_ID = 10;
+        public const int POSITIONFOCALLENGTHMODE_FIELD_ID = 11;
+        public const int FOCALLENGTH_FIELD_ID = 12;
+        public const int SPEEDPANTILTMODE_FIELD_ID = 13;
+        public const int PANSPEED_FIELD_ID = 14;
+        public const int TILTSPEED_FIELD_ID = 15;
+        public const int SPEEDFOCALLENGTHMODE_FIELD_ID = 16;
+        public const int ZOOMSPEED_FIELD_ID = 17;
 
         public SimpleCameraCommandAbsoluteMoveDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4455,9 +4455,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandAdjustPanTiltZoomView";
         public new const string ViewAliasName = "ccaptz";
 
-        public const int X_FIELD_ID = 7;
-        public const int Y_FIELD_ID = 8;
-        public const int Z_FIELD_ID = 9;
+        public const int X_FIELD_ID = 8;
+        public const int Y_FIELD_ID = 9;
+        public const int Z_FIELD_ID = 10;
 
         public SimpleCameraCommandAdjustPanTiltZoomDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4521,11 +4521,11 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandContinuousMoveView";
         public new const string ViewAliasName = "cccm";
 
-        public const int NORMALIZED_FIELD_ID = 7;
-        public const int PANVELOCITY_FIELD_ID = 8;
-        public const int TILTVELOCITY_FIELD_ID = 9;
-        public const int ZOOMVELOCITY_FIELD_ID = 10;
-        public const int DURATION_FIELD_ID = 11;
+        public const int NORMALIZED_FIELD_ID = 8;
+        public const int PANVELOCITY_FIELD_ID = 9;
+        public const int TILTVELOCITY_FIELD_ID = 10;
+        public const int ZOOMVELOCITY_FIELD_ID = 11;
+        public const int DURATION_FIELD_ID = 12;
 
         public SimpleCameraCommandContinuousMoveDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4610,11 +4610,11 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandGeoMoveView";
         public new const string ViewAliasName = "ccgm";
 
-        public const int LATITUDE_FIELD_ID = 7;
-        public const int LONGITUDE_FIELD_ID = 8;
-        public const int ALTITUDE_FIELD_ID = 9;
-        public const int VIEWPORTWIDTH_FIELD_ID = 10;
-        public const int VIEWPORTHEIGHT_FIELD_ID = 11;
+        public const int LATITUDE_FIELD_ID = 8;
+        public const int LONGITUDE_FIELD_ID = 9;
+        public const int ALTITUDE_FIELD_ID = 10;
+        public const int VIEWPORTWIDTH_FIELD_ID = 11;
+        public const int VIEWPORTHEIGHT_FIELD_ID = 12;
 
         public SimpleCameraCommandGeoMoveDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4696,13 +4696,13 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandRelativeMoveView";
         public new const string ViewAliasName = "ccrm";
 
-        public const int NORMALIZED_FIELD_ID = 7;
-        public const int PANANGLE_FIELD_ID = 8;
-        public const int TILTANGLE_FIELD_ID = 9;
-        public const int FOCALLENGTH_FIELD_ID = 10;
-        public const int PANSPEED_FIELD_ID = 11;
-        public const int TILTSPEED_FIELD_ID = 12;
-        public const int ZOOMSPEED_FIELD_ID = 13;
+        public const int NORMALIZED_FIELD_ID = 8;
+        public const int PANANGLE_FIELD_ID = 9;
+        public const int TILTANGLE_FIELD_ID = 10;
+        public const int FOCALLENGTH_FIELD_ID = 11;
+        public const int PANSPEED_FIELD_ID = 12;
+        public const int TILTSPEED_FIELD_ID = 13;
+        public const int ZOOMSPEED_FIELD_ID = 14;
 
         public SimpleCameraCommandRelativeMoveDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4860,7 +4860,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandSetAutoFocusView";
         public new const string ViewAliasName = "ccsaf";
 
-        public const int ENABLED_FIELD_ID = 7;
+        public const int ENABLED_FIELD_ID = 8;
 
         public SimpleCameraCommandSetAutoFocusDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4904,7 +4904,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandSetBlackAndWhiteView";
         public new const string ViewAliasName = "ccsbaw";
 
-        public const int ENABLED_FIELD_ID = 7;
+        public const int ENABLED_FIELD_ID = 8;
 
         public SimpleCameraCommandSetBlackAndWhiteDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -4949,8 +4949,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandSetFollowedView";
         public new const string ViewAliasName = "ccsf";
 
-        public const int TRACKID_FIELD_ID = 7;
-        public const int REASON_FIELD_ID = 8;
+        public const int TRACKID_FIELD_ID = 8;
+        public const int REASON_FIELD_ID = 9;
 
         public SimpleCameraCommandSetFollowedDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -5002,7 +5002,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandSetInfraRedLampView";
         public new const string ViewAliasName = "ccsirl";
 
-        public const int ENABLED_FIELD_ID = 7;
+        public const int ENABLED_FIELD_ID = 8;
 
         public SimpleCameraCommandSetInfraRedLampDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -5046,7 +5046,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandSetWasherView";
         public new const string ViewAliasName = "cwa";
 
-        public const int ENABLED_FIELD_ID = 7;
+        public const int ENABLED_FIELD_ID = 8;
 
         public SimpleCameraCommandSetWasherDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -5090,7 +5090,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandSetWiperView";
         public new const string ViewAliasName = "cwi";
 
-        public const int ENABLED_FIELD_ID = 7;
+        public const int ENABLED_FIELD_ID = 8;
 
         public SimpleCameraCommandSetWiperDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -5135,8 +5135,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CameraCommandStopView";
         public new const string ViewAliasName = "ccs";
 
-        public const int PANTILT_FIELD_ID = 7;
-        public const int ZOOM_FIELD_ID = 8;
+        public const int PANTILT_FIELD_ID = 8;
+        public const int ZOOM_FIELD_ID = 9;
 
         public SimpleCameraCommandStopDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -6801,7 +6801,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ElementView";
         public new const string ViewAliasName = "e";
 
-        public const int ELEMENTTYPE_FIELD_ID = 4;
+        public const int ELEMENTTYPE_FIELD_ID = 5;
 
         public SimpleElementDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -8547,7 +8547,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CallsignView";
         public new const string ViewAliasName = "c";
 
-        public const int IDENTIFIER_FIELD_ID = 2;
+        public const int IDENTIFIER_FIELD_ID = 3;
 
         public SimpleCallsignDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -8586,7 +8586,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "InternationalMaritimeOrganizationNumberView";
         public new const string ViewAliasName = "imon";
 
-        public const int IDENTIFIER_FIELD_ID = 2;
+        public const int IDENTIFIER_FIELD_ID = 3;
 
         public SimpleInternationalMaritimeOrganizationNumberDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -8625,7 +8625,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "MaritimeMobileServiceIdentityView";
         public new const string ViewAliasName = "mmsi";
 
-        public const int IDENTIFIER_FIELD_ID = 2;
+        public const int IDENTIFIER_FIELD_ID = 3;
 
         public SimpleMaritimeMobileServiceIdentityDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -8664,7 +8664,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "NameView";
         public new const string ViewAliasName = "n";
 
-        public const int TEXT_FIELD_ID = 2;
+        public const int TEXT_FIELD_ID = 3;
 
         public SimpleNameDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9028,8 +9028,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BaseStationView";
         public new const string ViewAliasName = "bs";
 
-        public const int NAME_FIELD_ID = 2;
-        public const int TYPE_FIELD_ID = 3;
+        public const int NAME_FIELD_ID = 3;
+        public const int TYPE_FIELD_ID = 4;
 
         public SimpleBaseStationDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9079,10 +9079,10 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DeviceView";
         public new const string ViewAliasName = "d";
 
-        public const int HOST_FIELD_ID = 2;
-        public const int NAME_FIELD_ID = 3;
-        public const int DESCRIPTION_FIELD_ID = 4;
-        public const int ENABLEDTIMESERIES_FIELD_ID = 5;
+        public const int HOST_FIELD_ID = 3;
+        public const int NAME_FIELD_ID = 4;
+        public const int DESCRIPTION_FIELD_ID = 5;
+        public const int ENABLEDTIMESERIES_FIELD_ID = 6;
 
         public SimpleDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9178,9 +9178,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GNSSDeviceView";
         public new const string ViewAliasName = "g";
 
-        public const int LATITUDETIMESERIES_FIELD_ID = 6;
-        public const int LONGITUDETIMESERIES_FIELD_ID = 7;
-        public const int ALTITUDETIMESERIES_FIELD_ID = 8;
+        public const int LATITUDETIMESERIES_FIELD_ID = 7;
+        public const int LONGITUDETIMESERIES_FIELD_ID = 8;
+        public const int ALTITUDETIMESERIES_FIELD_ID = 9;
 
         public SimpleGNSSDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9246,14 +9246,14 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroDeviceView";
         public new const string ViewAliasName = "gd";
 
-        public const int HEADINGTRUENORTHTIMESERIES_FIELD_ID = 6;
-        public const int HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID = 7;
-        public const int PITCHTIMESERIES_FIELD_ID = 8;
-        public const int RATEOFTURNTIMESERIES_FIELD_ID = 9;
-        public const int ROLLTIMESERIES_FIELD_ID = 10;
-        public const int COURSETIMESERIES_FIELD_ID = 11;
-        public const int SPEEDTIMESERIES_FIELD_ID = 12;
-        public const int GNSSDEVICE_FIELD_ID = 13;
+        public const int HEADINGTRUENORTHTIMESERIES_FIELD_ID = 7;
+        public const int HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID = 8;
+        public const int PITCHTIMESERIES_FIELD_ID = 9;
+        public const int RATEOFTURNTIMESERIES_FIELD_ID = 10;
+        public const int ROLLTIMESERIES_FIELD_ID = 11;
+        public const int COURSETIMESERIES_FIELD_ID = 12;
+        public const int SPEEDTIMESERIES_FIELD_ID = 13;
+        public const int GNSSDEVICE_FIELD_ID = 14;
 
         public SimpleGyroDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9452,11 +9452,11 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadomeDeviceView";
         public new const string ViewAliasName = "rdo";
 
-        public const int RADAR_FIELD_ID = 6;
-        public const int PRESSURETIMESERIES_FIELD_ID = 7;
-        public const int TEMPERATURETIMESERIES_FIELD_ID = 8;
-        public const int DEWPOINTTIMESERIES_FIELD_ID = 9;
-        public const int STATUSTIMESERIES_FIELD_ID = 10;
+        public const int RADAR_FIELD_ID = 7;
+        public const int PRESSURETIMESERIES_FIELD_ID = 8;
+        public const int TEMPERATURETIMESERIES_FIELD_ID = 9;
+        public const int DEWPOINTTIMESERIES_FIELD_ID = 10;
+        public const int STATUSTIMESERIES_FIELD_ID = 11;
 
         public SimpleRadomeDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9612,29 +9612,29 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarDeviceView";
         public new const string ViewAliasName = "rd";
 
-        public const int SAVESETTINGSTIMESERIES_FIELD_ID = 6;
-        public const int POWERONTIMESERIES_FIELD_ID = 7;
-        public const int TRACKINGONTIMESERIES_FIELD_ID = 8;
-        public const int RADARPULSETIMESERIES_FIELD_ID = 9;
-        public const int TUNINGTIMESERIES_FIELD_ID = 10;
-        public const int BLANKSECTOR1TIMESERIES_FIELD_ID = 11;
-        public const int SECTOR1STARTTIMESERIES_FIELD_ID = 12;
-        public const int SECTOR1ENDTIMESERIES_FIELD_ID = 13;
-        public const int BLANKSECTOR2TIMESERIES_FIELD_ID = 14;
-        public const int SECTOR2STARTTIMESERIES_FIELD_ID = 15;
-        public const int SECTOR2ENDTIMESERIES_FIELD_ID = 16;
-        public const int ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 17;
-        public const int AZIMUTHOFFSETTIMESERIES_FIELD_ID = 18;
-        public const int ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 19;
-        public const int AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 20;
-        public const int SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 21;
-        public const int ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 22;
-        public const int FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 23;
-        public const int FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 24;
-        public const int LATITUDETIMESERIES_FIELD_ID = 25;
-        public const int LONGITUDETIMESERIES_FIELD_ID = 26;
-        public const int RADOME_FIELD_ID = 27;
-        public const int GNSSDEVICE_FIELD_ID = 28;
+        public const int SAVESETTINGSTIMESERIES_FIELD_ID = 7;
+        public const int POWERONTIMESERIES_FIELD_ID = 8;
+        public const int TRACKINGONTIMESERIES_FIELD_ID = 9;
+        public const int RADARPULSETIMESERIES_FIELD_ID = 10;
+        public const int TUNINGTIMESERIES_FIELD_ID = 11;
+        public const int BLANKSECTOR1TIMESERIES_FIELD_ID = 12;
+        public const int SECTOR1STARTTIMESERIES_FIELD_ID = 13;
+        public const int SECTOR1ENDTIMESERIES_FIELD_ID = 14;
+        public const int BLANKSECTOR2TIMESERIES_FIELD_ID = 15;
+        public const int SECTOR2STARTTIMESERIES_FIELD_ID = 16;
+        public const int SECTOR2ENDTIMESERIES_FIELD_ID = 17;
+        public const int ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 18;
+        public const int AZIMUTHOFFSETTIMESERIES_FIELD_ID = 19;
+        public const int ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 20;
+        public const int AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 21;
+        public const int SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 22;
+        public const int ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 23;
+        public const int FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 24;
+        public const int FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 25;
+        public const int LATITUDETIMESERIES_FIELD_ID = 26;
+        public const int LONGITUDETIMESERIES_FIELD_ID = 27;
+        public const int RADOME_FIELD_ID = 28;
+        public const int GNSSDEVICE_FIELD_ID = 29;
 
         public SimpleRadarDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9861,15 +9861,15 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationDeviceView";
         public new const string ViewAliasName = "wsd";
 
-        public const int BAROMETRICPRESSURETIMESERIES_FIELD_ID = 6;
-        public const int AIRTEMPERATURETIMESERIES_FIELD_ID = 7;
-        public const int WATERTEMPERATURETIMESERIES_FIELD_ID = 8;
-        public const int RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 9;
-        public const int ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 10;
-        public const int DEWPOINTTIMESERIES_FIELD_ID = 11;
-        public const int WINDDIRECTIONTIMESERIES_FIELD_ID = 12;
-        public const int WINDSPEEDTIMESERIES_FIELD_ID = 13;
-        public const int GYRO_FIELD_ID = 14;
+        public const int BAROMETRICPRESSURETIMESERIES_FIELD_ID = 7;
+        public const int AIRTEMPERATURETIMESERIES_FIELD_ID = 8;
+        public const int WATERTEMPERATURETIMESERIES_FIELD_ID = 9;
+        public const int RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 10;
+        public const int ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 11;
+        public const int DEWPOINTTIMESERIES_FIELD_ID = 12;
+        public const int WINDDIRECTIONTIMESERIES_FIELD_ID = 13;
+        public const int WINDSPEEDTIMESERIES_FIELD_ID = 14;
+        public const int GYRO_FIELD_ID = 15;
 
         public SimpleWeatherStationDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -9976,11 +9976,11 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "FacilityView";
         public new const string ViewAliasName = "f";
 
-        public const int NAME_FIELD_ID = 2;
-        public const int TYPE_FIELD_ID = 3;
-        public const int LONGITUDE_FIELD_ID = 4;
-        public const int LATITUDE_FIELD_ID = 5;
-        public const int ALTITUDE_FIELD_ID = 6;
+        public const int NAME_FIELD_ID = 3;
+        public const int TYPE_FIELD_ID = 4;
+        public const int LONGITUDE_FIELD_ID = 5;
+        public const int LATITUDE_FIELD_ID = 6;
+        public const int ALTITUDE_FIELD_ID = 7;
 
         public SimpleFacilityDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -10075,8 +10075,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AircraftView";
         public new const string ViewAliasName = "a";
 
-        public const int NAME_FIELD_ID = 2;
-        public const int TYPE_FIELD_ID = 3;
+        public const int NAME_FIELD_ID = 3;
+        public const int TYPE_FIELD_ID = 4;
 
         public SimpleAircraftDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -10132,16 +10132,16 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisAidToNavigationView";
         public new const string ViewAliasName = "aatn";
 
-        public const int NAME_FIELD_ID = 2;
-        public const int MMSI_FIELD_ID = 3;
-        public const int NAVIGATIONALAIDTYPE_FIELD_ID = 4;
-        public const int POSITION_FIELD_ID = 5;
-        public const int ISVIRTUAL_FIELD_ID = 6;
-        public const int TOBOW_FIELD_ID = 7;
-        public const int TOSTERN_FIELD_ID = 8;
-        public const int TOPORT_FIELD_ID = 9;
-        public const int TOSTARBOARD_FIELD_ID = 10;
-        public const int OFFPOSITIONTIMESERIES_FIELD_ID = 11;
+        public const int NAME_FIELD_ID = 3;
+        public const int MMSI_FIELD_ID = 4;
+        public const int NAVIGATIONALAIDTYPE_FIELD_ID = 5;
+        public const int POSITION_FIELD_ID = 6;
+        public const int ISVIRTUAL_FIELD_ID = 7;
+        public const int TOBOW_FIELD_ID = 8;
+        public const int TOSTERN_FIELD_ID = 9;
+        public const int TOPORT_FIELD_ID = 10;
+        public const int TOSTARBOARD_FIELD_ID = 11;
+        public const int OFFPOSITIONTIMESERIES_FIELD_ID = 12;
 
         public SimpleAisAidToNavigationDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -10253,8 +10253,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "VehicleView";
         public new const string ViewAliasName = "v";
 
-        public const int NAME_FIELD_ID = 2;
-        public const int TYPE_FIELD_ID = 3;
+        public const int NAME_FIELD_ID = 3;
+        public const int TYPE_FIELD_ID = 4;
 
         public SimpleVehicleDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -10308,14 +10308,14 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "VesselView";
         public new const string ViewAliasName = "vsl";
 
-        public const int NAME_FIELD_ID = 2;
-        public const int TYPE_FIELD_ID = 3;
-        public const int TOBOW_FIELD_ID = 4;
-        public const int TOSTERN_FIELD_ID = 5;
-        public const int TOPORT_FIELD_ID = 6;
-        public const int TOSTARBOARD_FIELD_ID = 7;
-        public const int DRAUGHTTIMESERIES_FIELD_ID = 8;
-        public const int PERSONSONBOARDTIMESERIES_FIELD_ID = 9;
+        public const int NAME_FIELD_ID = 3;
+        public const int TYPE_FIELD_ID = 4;
+        public const int TOBOW_FIELD_ID = 5;
+        public const int TOSTERN_FIELD_ID = 6;
+        public const int TOPORT_FIELD_ID = 7;
+        public const int TOSTARBOARD_FIELD_ID = 8;
+        public const int DRAUGHTTIMESERIES_FIELD_ID = 9;
+        public const int PERSONSONBOARDTIMESERIES_FIELD_ID = 10;
 
         public SimpleVesselDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -14821,7 +14821,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BinaryPropertyView";
         public new const string ViewAliasName = "bp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleBinaryPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -14862,7 +14862,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BooleanPropertyView";
         public new const string ViewAliasName = "bop";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleBooleanPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -14903,7 +14903,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BytePropertyView";
         public new const string ViewAliasName = "byp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleBytePropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -14944,7 +14944,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DateTimePropertyView";
         public new const string ViewAliasName = "dtp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleDateTimePropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -14985,7 +14985,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DoublePropertyView";
         public new const string ViewAliasName = "dp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleDoublePropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15026,7 +15026,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GuidPropertyView";
         public new const string ViewAliasName = "gp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleGuidPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15067,7 +15067,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int16PropertyView";
         public new const string ViewAliasName = "i16p";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleInt16PropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15108,7 +15108,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int32PropertyView";
         public new const string ViewAliasName = "i32p";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleInt32PropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15149,7 +15149,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int64PropertyView";
         public new const string ViewAliasName = "i64p";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleInt64PropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15190,7 +15190,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ReferencePropertyView";
         public new const string ViewAliasName = "rp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleReferencePropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15231,7 +15231,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SBytePropertyView";
         public new const string ViewAliasName = "sp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleSBytePropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15272,7 +15272,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SinglePropertyView";
         public new const string ViewAliasName = "sip";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleSinglePropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15313,7 +15313,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "StringPropertyView";
         public new const string ViewAliasName = "stp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleStringPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15379,7 +15379,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BinaryTimeseriesPropertyView";
         public new const string ViewAliasName = "btp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleBinaryTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15420,7 +15420,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BooleanTimeseriesPropertyView";
         public new const string ViewAliasName = "botp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleBooleanTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15461,7 +15461,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ByteTimeseriesPropertyView";
         public new const string ViewAliasName = "bytp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleByteTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15502,7 +15502,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DateTimeTimeseriesPropertyView";
         public new const string ViewAliasName = "dttp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleDateTimeTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15543,7 +15543,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DoubleTimeseriesPropertyView";
         public new const string ViewAliasName = "dotp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleDoubleTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15584,7 +15584,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GuidTimeseriesPropertyView";
         public new const string ViewAliasName = "gtp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleGuidTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15625,7 +15625,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int16TimeseriesPropertyView";
         public new const string ViewAliasName = "i16tp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleInt16TimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15666,7 +15666,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int32TimeseriesPropertyView";
         public new const string ViewAliasName = "i32tp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleInt32TimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15707,7 +15707,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int64TimeseriesPropertyView";
         public new const string ViewAliasName = "i64tp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleInt64TimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15748,7 +15748,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ReferenceTimeseriesPropertyView";
         public new const string ViewAliasName = "rtp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleReferenceTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15789,7 +15789,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SByteTimeseriesPropertyView";
         public new const string ViewAliasName = "sbtp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleSByteTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15830,7 +15830,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SingleTimeseriesPropertyView";
         public new const string ViewAliasName = "sitp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleSingleTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15871,7 +15871,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "StringTimeseriesPropertyView";
         public new const string ViewAliasName = "sttp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleStringTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15912,7 +15912,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "TimeSpanTimeseriesPropertyView";
         public new const string ViewAliasName = "tstp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleTimeSpanTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15953,7 +15953,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt16TimeseriesPropertyView";
         public new const string ViewAliasName = "u16tp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleUInt16TimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -15994,7 +15994,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt32TimeseriesPropertyView";
         public new const string ViewAliasName = "u32tp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleUInt32TimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16035,7 +16035,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt64TimeseriesPropertyView";
         public new const string ViewAliasName = "u64tp";
 
-        public const int TIMESERIES_FIELD_ID = 4;
+        public const int TIMESERIES_FIELD_ID = 5;
 
         public SimpleUInt64TimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16076,7 +16076,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "TimeSpanPropertyView";
         public new const string ViewAliasName = "tsp";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleTimeSpanPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16117,7 +16117,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt16PropertyView";
         public new const string ViewAliasName = "u16p";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleUInt16PropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16158,7 +16158,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt32PropertyView";
         public new const string ViewAliasName = "u32p";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleUInt32PropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16199,7 +16199,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt64PropertyView";
         public new const string ViewAliasName = "u64p";
 
-        public const int VALUE_FIELD_ID = 4;
+        public const int VALUE_FIELD_ID = 5;
 
         public SimpleUInt64PropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16334,7 +16334,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BinaryPropertyDefinitionView";
         public new const string ViewAliasName = "bpd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
 
         public SimpleBinaryPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16376,7 +16376,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BooleanPropertyDefinitionView";
         public new const string ViewAliasName = "bopd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
 
         public SimpleBooleanPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16420,9 +16420,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "BytePropertyDefinitionView";
         public new const string ViewAliasName = "bypd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleBytePropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16482,9 +16482,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DateTimePropertyDefinitionView";
         public new const string ViewAliasName = "dtpd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleDateTimePropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16544,9 +16544,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DoublePropertyDefinitionView";
         public new const string ViewAliasName = "dpd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleDoublePropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16604,7 +16604,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GuidPropertyDefinitionView";
         public new const string ViewAliasName = "gpd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
 
         public SimpleGuidPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16648,9 +16648,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int16PropertyDefinitionView";
         public new const string ViewAliasName = "i16pd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleInt16PropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16710,9 +16710,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int32PropertyDefinitionView";
         public new const string ViewAliasName = "i32pd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleInt32PropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16772,9 +16772,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int64PropertyDefinitionView";
         public new const string ViewAliasName = "i64pd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleInt64PropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16833,8 +16833,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ReferencePropertyDefinitionView";
         public new const string ViewAliasName = "rpd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int REFERENCEDELEMENTTYPE_FIELD_ID = 6;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int REFERENCEDELEMENTTYPE_FIELD_ID = 7;
 
         public SimpleReferencePropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16886,9 +16886,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SBytePropertyDefinitionView";
         public new const string ViewAliasName = "sbpd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleSBytePropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -16948,9 +16948,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SinglePropertyDefinitionView";
         public new const string ViewAliasName = "sipd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleSinglePropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17009,8 +17009,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "StringPropertyDefinitionView";
         public new const string ViewAliasName = "stpd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int PATTERN_FIELD_ID = 6;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int PATTERN_FIELD_ID = 7;
 
         public SimpleStringPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17149,8 +17149,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ByteTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "bytpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleByteTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17201,8 +17201,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DateTimeTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "dttpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleDateTimeTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17253,8 +17253,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DoubleTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "dotpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleDoubleTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17336,8 +17336,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int16TimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "i16tpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleInt16TimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17388,8 +17388,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int32TimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "i32tpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleInt32TimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17440,8 +17440,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "Int64TimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "i64tpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleInt64TimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17491,7 +17491,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ReferenceTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "rtpd";
 
-        public const int REFERENCEDELEMENTTYPE_FIELD_ID = 5;
+        public const int REFERENCEDELEMENTTYPE_FIELD_ID = 6;
 
         public SimpleReferenceTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17534,8 +17534,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SByteTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "sbtpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleSByteTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17586,8 +17586,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SingleTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "sitpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleSingleTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17637,7 +17637,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "StringTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "sttpd";
 
-        public const int PATTERN_FIELD_ID = 5;
+        public const int PATTERN_FIELD_ID = 6;
 
         public SimpleStringTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17680,8 +17680,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "TimeSpanTimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "tstpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleTimeSpanTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17732,8 +17732,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt16TimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "u16tpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleUInt16TimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17784,8 +17784,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt32TimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "u32tpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleUInt32TimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17836,8 +17836,8 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt64TimeseriesPropertyDefinitionView";
         public new const string ViewAliasName = "u64tpd";
 
-        public const int MINVALUE_FIELD_ID = 5;
-        public const int MAXVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 6;
+        public const int MAXVALUE_FIELD_ID = 7;
 
         public SimpleUInt64TimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17889,9 +17889,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "TimeSpanPropertyDefinitionView";
         public new const string ViewAliasName = "tspd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleTimeSpanPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -17951,9 +17951,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt16PropertyDefinitionView";
         public new const string ViewAliasName = "u16pd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleUInt16PropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -18013,9 +18013,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt32PropertyDefinitionView";
         public new const string ViewAliasName = "u32pd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleUInt32PropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -18075,9 +18075,9 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "UInt64PropertyDefinitionView";
         public new const string ViewAliasName = "u64pd";
 
-        public const int DEFAULTVALUE_FIELD_ID = 5;
-        public const int MINVALUE_FIELD_ID = 6;
-        public const int MAXVALUE_FIELD_ID = 7;
+        public const int DEFAULTVALUE_FIELD_ID = 6;
+        public const int MINVALUE_FIELD_ID = 7;
+        public const int MAXVALUE_FIELD_ID = 8;
 
         public SimpleUInt64PropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -18493,11 +18493,11 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarCommandReplyGetStatusView";
         public new const string ViewAliasName = "rcrgs";
 
-        public const int AZIMUTHCOUNT_FIELD_ID = 7;
-        public const int TRIGGERCOUNT_FIELD_ID = 8;
-        public const int ROTATIONCOUNT_FIELD_ID = 9;
-        public const int PULSE_FIELD_ID = 10;
-        public const int TX_FIELD_ID = 11;
+        public const int AZIMUTHCOUNT_FIELD_ID = 8;
+        public const int TRIGGERCOUNT_FIELD_ID = 9;
+        public const int ROTATIONCOUNT_FIELD_ID = 10;
+        public const int PULSE_FIELD_ID = 11;
+        public const int TX_FIELD_ID = 12;
 
         public SimpleRadarCommandReplyGetStatusDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -20326,7 +20326,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "SecurityRoleView";
         public new const string ViewAliasName = "sr";
 
-        public const int NAME_FIELD_ID = 5;
+        public const int NAME_FIELD_ID = 6;
 
         public SimpleSecurityRoleDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -20975,7 +20975,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "TimeseriesView";
         public new const string ViewAliasName = "t";
 
-        public const int MAXRETENTION_FIELD_ID = 4;
+        public const int MAXRETENTION_FIELD_ID = 5;
 
         public SimpleTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21074,7 +21074,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisAidToNavigationOffPositionTimeseriesView";
         public new const string ViewAliasName = "aatnopt";
 
-        public const int AIDTONAVIGATION_FIELD_ID = 5;
+        public const int AIDTONAVIGATION_FIELD_ID = 6;
 
         public SimpleAisAidToNavigationOffPositionTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21116,7 +21116,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "DeviceEnabledTimeseriesView";
         public new const string ViewAliasName = "det";
 
-        public const int DEVICE_FIELD_ID = 5;
+        public const int DEVICE_FIELD_ID = 6;
 
         public SimpleDeviceEnabledTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21158,7 +21158,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarAutomaticSensitivityTimeControlTimeseriesView";
         public new const string ViewAliasName = "rastct";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarAutomaticSensitivityTimeControlTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21200,7 +21200,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarBlankSector1TimeseriesView";
         public new const string ViewAliasName = "rbs1t";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarBlankSector1TimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21242,7 +21242,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarBlankSector2TimeseriesView";
         public new const string ViewAliasName = "rbs2t";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarBlankSector2TimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21284,7 +21284,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarEnableAutomaticFrequencyControlTimeseriesView";
         public new const string ViewAliasName = "reafct";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarEnableAutomaticFrequencyControlTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21326,7 +21326,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarEnableFastTimeConstantTimeseriesView";
         public new const string ViewAliasName = "reftct";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarEnableFastTimeConstantTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21368,7 +21368,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarEnableSensitivityTimeControlTimeseriesView";
         public new const string ViewAliasName = "restct";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarEnableSensitivityTimeControlTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21410,7 +21410,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarPowerOnTimeseriesView";
         public new const string ViewAliasName = "rpot";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarPowerOnTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21452,7 +21452,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarSaveSettingsTimeseriesView";
         public new const string ViewAliasName = "rsst";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarSaveSettingsTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21494,7 +21494,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarTrackingTimeseriesView";
         public new const string ViewAliasName = "rtt";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarTrackingTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21536,7 +21536,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "MediaProxySessionEnabledTimeseriesView";
         public new const string ViewAliasName = "mpset";
 
-        public const int PROXYSESSION_FIELD_ID = 5;
+        public const int PROXYSESSION_FIELD_ID = 6;
 
         public SimpleMediaProxySessionEnabledTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21578,7 +21578,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "MediaServiceEnabledTimeseriesView";
         public new const string ViewAliasName = "mset";
 
-        public const int SERVICE_FIELD_ID = 5;
+        public const int SERVICE_FIELD_ID = 6;
 
         public SimpleMediaServiceEnabledTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21713,7 +21713,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GNSSAltitudeTimeseriesView";
         public new const string ViewAliasName = "gats";
 
-        public const int GNSSDEVICE_FIELD_ID = 5;
+        public const int GNSSDEVICE_FIELD_ID = 6;
 
         public SimpleGNSSAltitudeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21755,7 +21755,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GNSSLatitudeTimeseriesView";
         public new const string ViewAliasName = "glats";
 
-        public const int GNSSDEVICE_FIELD_ID = 5;
+        public const int GNSSDEVICE_FIELD_ID = 6;
 
         public SimpleGNSSLatitudeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21797,7 +21797,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GNSSLongitudeTimeseriesView";
         public new const string ViewAliasName = "glots";
 
-        public const int GNSSDEVICE_FIELD_ID = 5;
+        public const int GNSSDEVICE_FIELD_ID = 6;
 
         public SimpleGNSSLongitudeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21839,7 +21839,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroCourseTimeseriesView";
         public new const string ViewAliasName = "gct";
 
-        public const int GYRODEVICE_FIELD_ID = 5;
+        public const int GYRODEVICE_FIELD_ID = 6;
 
         public SimpleGyroCourseTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21881,7 +21881,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroHeadingMagneticNorthTimeseriesView";
         public new const string ViewAliasName = "ghmnt";
 
-        public const int GYRODEVICE_FIELD_ID = 5;
+        public const int GYRODEVICE_FIELD_ID = 6;
 
         public SimpleGyroHeadingMagneticNorthTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21923,7 +21923,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroHeadingTrueNorthTimeseriesView";
         public new const string ViewAliasName = "ghtnt";
 
-        public const int GYRODEVICE_FIELD_ID = 5;
+        public const int GYRODEVICE_FIELD_ID = 6;
 
         public SimpleGyroHeadingTrueNorthTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -21965,7 +21965,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroPitchTimeseriesView";
         public new const string ViewAliasName = "gpt";
 
-        public const int GYRODEVICE_FIELD_ID = 5;
+        public const int GYRODEVICE_FIELD_ID = 6;
 
         public SimpleGyroPitchTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22007,7 +22007,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroRateOfTurnTimeseriesView";
         public new const string ViewAliasName = "grott";
 
-        public const int GYRODEVICE_FIELD_ID = 5;
+        public const int GYRODEVICE_FIELD_ID = 6;
 
         public SimpleGyroRateOfTurnTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22049,7 +22049,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroRollTimeseriesView";
         public new const string ViewAliasName = "grt";
 
-        public const int GYRODEVICE_FIELD_ID = 5;
+        public const int GYRODEVICE_FIELD_ID = 6;
 
         public SimpleGyroRollTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22091,7 +22091,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "GyroSpeedTimeseriesView";
         public new const string ViewAliasName = "gst";
 
-        public const int GYRODEVICE_FIELD_ID = 5;
+        public const int GYRODEVICE_FIELD_ID = 6;
 
         public SimpleGyroSpeedTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22133,7 +22133,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarLatitudeTimeseriesView";
         public new const string ViewAliasName = "rlats";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarLatitudeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22175,7 +22175,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarLongitudeTimeseriesView";
         public new const string ViewAliasName = "rlots";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarLongitudeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22217,7 +22217,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadomeDewPointTimeseriesView";
         public new const string ViewAliasName = "rdpt";
 
-        public const int RADOME_FIELD_ID = 5;
+        public const int RADOME_FIELD_ID = 6;
 
         public SimpleRadomeDewPointTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22259,7 +22259,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadomePressureTimeseriesView";
         public new const string ViewAliasName = "rpt";
 
-        public const int RADOME_FIELD_ID = 5;
+        public const int RADOME_FIELD_ID = 6;
 
         public SimpleRadomePressureTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22301,7 +22301,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadomeTemperatureTimeseriesView";
         public new const string ViewAliasName = "rtets";
 
-        public const int RADOME_FIELD_ID = 5;
+        public const int RADOME_FIELD_ID = 6;
 
         public SimpleRadomeTemperatureTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22343,7 +22343,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "VesselDraughtTimeseriesView";
         public new const string ViewAliasName = "vdt";
 
-        public const int VESSEL_FIELD_ID = 5;
+        public const int VESSEL_FIELD_ID = 6;
 
         public SimpleVesselDraughtTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22385,7 +22385,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ViewLatitudeTimeseriesView";
         public new const string ViewAliasName = "vlats";
 
-        public const int VIEW_FIELD_ID = 5;
+        public const int VIEW_FIELD_ID = 6;
 
         public SimpleViewLatitudeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22427,7 +22427,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ViewLongitudeTimeseriesView";
         public new const string ViewAliasName = "vlots";
 
-        public const int VIEW_FIELD_ID = 5;
+        public const int VIEW_FIELD_ID = 6;
 
         public SimpleViewLongitudeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22469,7 +22469,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "ViewZoomLevelTimeseriesView";
         public new const string ViewAliasName = "vzlt";
 
-        public const int VIEW_FIELD_ID = 5;
+        public const int VIEW_FIELD_ID = 6;
 
         public SimpleViewZoomLevelTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22511,7 +22511,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationAbsoluteHumidityTimeseriesView";
         public new const string ViewAliasName = "wsaht";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationAbsoluteHumidityTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22553,7 +22553,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationAirTemperatureTimeseriesView";
         public new const string ViewAliasName = "wsatt";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationAirTemperatureTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22595,7 +22595,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationBarometricPressureTimeseriesView";
         public new const string ViewAliasName = "wsbpt";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationBarometricPressureTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22637,7 +22637,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationDewPointTimeseriesView";
         public new const string ViewAliasName = "wsdpt";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationDewPointTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22679,7 +22679,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationRelativeHumidityTimeseriesView";
         public new const string ViewAliasName = "wsrht";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationRelativeHumidityTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22721,7 +22721,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationWaterTemperatureTimeseriesView";
         public new const string ViewAliasName = "wswtt";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationWaterTemperatureTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22763,7 +22763,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationWindDirectionTimeseriesView";
         public new const string ViewAliasName = "wswdt";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationWindDirectionTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22805,7 +22805,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "WeatherStationWindSpeedTimeseriesView";
         public new const string ViewAliasName = "wswst";
 
-        public const int WEATHERSTATION_FIELD_ID = 5;
+        public const int WEATHERSTATION_FIELD_ID = 6;
 
         public SimpleWeatherStationWindSpeedTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -22878,7 +22878,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "AisAidToNavigationPositionTimeseriesView";
         public new const string ViewAliasName = "aatnpt";
 
-        public const int AIDTONAVIGATION_FIELD_ID = 5;
+        public const int AIDTONAVIGATION_FIELD_ID = 6;
 
         public SimpleAisAidToNavigationPositionTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23044,7 +23044,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarAzimuthOffsetTimeseriesView";
         public new const string ViewAliasName = "raot";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarAzimuthOffsetTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23086,7 +23086,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarFastTimeConstantLevelTimeseriesView";
         public new const string ViewAliasName = "rftclt";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarFastTimeConstantLevelTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23128,7 +23128,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarFastTimeConstantModeTimeseriesView";
         public new const string ViewAliasName = "rftcmt";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarFastTimeConstantModeTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23170,7 +23170,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarPulseTimeseriesView";
         public new const string ViewAliasName = "rapts";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarPulseTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23212,7 +23212,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarSector1EndTimeseriesView";
         public new const string ViewAliasName = "rs1et";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarSector1EndTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23254,7 +23254,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarSector1StartTimeseriesView";
         public new const string ViewAliasName = "rs1st";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarSector1StartTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23296,7 +23296,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarSector2EndTimeseriesView";
         public new const string ViewAliasName = "rs2et";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarSector2EndTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23338,7 +23338,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarSector2StartTimeseriesView";
         public new const string ViewAliasName = "rs2st";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarSector2StartTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23380,7 +23380,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarSensitivityTimeControlLevelTimeseriesView";
         public new const string ViewAliasName = "rstclt";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarSensitivityTimeControlLevelTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23422,7 +23422,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadarTuningTimeseriesView";
         public new const string ViewAliasName = "ratuts";
 
-        public const int RADAR_FIELD_ID = 5;
+        public const int RADAR_FIELD_ID = 6;
 
         public SimpleRadarTuningTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23464,7 +23464,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "VesselPersonsOnBoardTimeseriesView";
         public new const string ViewAliasName = "vpobt";
 
-        public const int VESSEL_FIELD_ID = 5;
+        public const int VESSEL_FIELD_ID = 6;
 
         public SimpleVesselPersonsOnBoardTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -23816,7 +23816,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "RadomeStatusTimeseriesView";
         public new const string ViewAliasName = "rst";
 
-        public const int RADOME_FIELD_ID = 5;
+        public const int RADOME_FIELD_ID = 6;
 
         public SimpleRadomeStatusTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -26585,7 +26585,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "CircularZoneView";
         public new const string ViewAliasName = "cz";
 
-        public const int RADIUS_FIELD_ID = 11;
+        public const int RADIUS_FIELD_ID = 12;
 
         public SimpleCircularZoneDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
@@ -26633,7 +26633,7 @@ namespace Barrelman.Data.Databases.MsSql
         public new const string BaseViewName = "PolygonZoneView";
         public new const string ViewAliasName = "pz";
 
-        public const int POLYGON_FIELD_ID = 11;
+        public const int POLYGON_FIELD_ID = 12;
 
         public SimplePolygonZoneDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )

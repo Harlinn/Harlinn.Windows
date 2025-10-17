@@ -431,6 +431,14 @@ public class Guid implements Serializable, Comparable<Guid> {
 		return result;
 	}
 	
+	public static Guid fromString(String str) {
+		var bytes = com.harlinn.common.platform.Ole32.IIDFromString(str);
+		if(bytes != null) {
+			return new Guid(bytes);
+		}
+		return  null;
+	}
+	
 	
 	
 }

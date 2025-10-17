@@ -1556,119 +1556,137 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         {
         case MemberInfoType::Boolean:
         {
-            result = member.Nullable() ? L"GetNullableBoolean" : L"GetBoolean";
+            result = member.Nullable() ? L"getNullableBoolean" : L"getBoolean";
         }
         break;
         case MemberInfoType::SByte:
         {
-            result = member.Nullable() ? L"GetNullableSByte" : L"GetSByte";
+            result = member.Nullable() ? L"getNullableInt8" : L"getInt8";
         }
         break;
         case MemberInfoType::Byte:
         {
-            result = member.Nullable() ? L"GetNullableByte" : L"GetByte";
+            result = member.Nullable() ? L"getNullableUInt8" : L"getUInt8";
         }
         break;
         case MemberInfoType::Int16:
         {
-            result = member.Nullable() ? L"GetNullableInt16" : L"GetInt16";
+            result = member.Nullable() ? L"getNullableInt16" : L"getInt16";
         }
         break;
         case MemberInfoType::UInt16:
         {
-            result = member.Nullable() ? L"GetNullableUInt16" : L"GetUInt16";
+            result = member.Nullable() ? L"getNullableUInt16" : L"getUInt16";
         }
         break;
         case MemberInfoType::Int32:
         {
-            result = member.Nullable() ? L"GetNullableInt32" : L"GetInt32";
+            result = member.Nullable() ? L"getNullableInt32" : L"getInt32";
         }
         break;
         case MemberInfoType::UInt32:
         {
-            result = member.Nullable() ? L"GetNullableUInt32" : L"GetUInt32";
+            result = member.Nullable() ? L"getNullableUInt32" : L"getUInt32";
         }
         break;
         case MemberInfoType::Int64:
         {
-            result = member.Nullable() ? L"GetNullableInt64" : L"GetInt64";
+            result = member.Nullable() ? L"getNullableInt64" : L"getInt64";
         }
         break;
         case MemberInfoType::UInt64:
         {
-            result = member.Nullable() ? L"GetNullableUInt64" : L"GetUInt64";
+            result = member.Nullable() ? L"getNullableUInt64" : L"getUInt64";
         }
         break;
         case MemberInfoType::Enum:
         {
-            const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>(member);
-            auto enumType = enumMemberInfo.EnumType();
-            if (enumType)
+            const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>( member );
+            auto enumType = enumMemberInfo.EnumType( );
+
+            auto valueType = enumType->ValueType( );
+            switch ( valueType )
             {
-                if (member.Nullable())
-                {
-                    result = Format(L"GetNullableEnum<Types.{}>", enumType->Name());
-                }
-                else
-                {
-                    result = Format(L"GetEnum<Types.{}>", enumType->Name());
-                }
+                case MemberInfoType::SByte:
+                    result = member.Nullable( ) ? L"getNullableInt8" : L"getInt8";
+                    break;
+                case MemberInfoType::Byte:
+                    result = member.Nullable( ) ? L"getNullableUInt8" : L"getUInt8";
+                    break;
+                case MemberInfoType::Int16:
+                    result = member.Nullable( ) ? L"getNullableInt16" : L"getInt16";
+                    break;
+                case MemberInfoType::UInt16:
+                    result = member.Nullable( ) ? L"getNullableUInt16" : L"getUInt16";
+                    break;
+                case MemberInfoType::Int32:
+                    result = member.Nullable( ) ? L"getNullableInt32" : L"getInt32";
+                    break;
+                case MemberInfoType::UInt32:
+                    result = member.Nullable( ) ? L"getNullableUInt32" : L"getUInt32";
+                    break;
+                case MemberInfoType::Int64:
+                    result = member.Nullable( ) ? L"getNullableInt64" : L"getInt64";
+                    break;
+                case MemberInfoType::UInt64:
+                    result = member.Nullable( ) ? L"getNullableUInt64" : L"getUInt64";
+                    break;
             }
         }
         break;
         case MemberInfoType::Single:
         {
-            result = member.Nullable() ? L"GetNullableFloat" : L"GetFloat";
+            result = member.Nullable() ? L"getNullableSingle" : L"getSingle";
         }
         break;
         case MemberInfoType::Double:
         {
-            result = member.Nullable() ? L"GetNullableDouble" : L"GetDouble";
+            result = member.Nullable() ? L"getNullableDouble" : L"getDouble";
         }
         break;
         case MemberInfoType::Currency:
         {
-            result = member.Nullable() ? L"GetNullableInt64" : L"GetInt64";
+            result = member.Nullable() ? L"getNullableCurrency" : L"getCurrency";
         }
         break;
         case MemberInfoType::DateTime:
         {
-            result = member.Nullable() ? L"GetNullableInt64" : L"GetInt64";
+            result = member.Nullable() ? L"getNullableDateTimeFromLong" : L"getDateTimeFromLong";
         }
         break;
         case MemberInfoType::TimeSpan:
         {
-            result = member.Nullable() ? L"GetNullableInt64" : L"GetInt64";
+            result = member.Nullable() ? L"getNullableTimeSpan" : L"getTimeSpan";
         }
         break;
         case MemberInfoType::Guid:
         {
-            result = member.Nullable() ? L"GetNullableGuid" : L"GetGuid";
+            result = member.Nullable() ? L"getNullableGuid" : L"getGuid";
         }
         break;
         case MemberInfoType::String:
         {
-            result = member.Nullable() ? L"GetNullableString" : L"GetString";
+            result = member.Nullable() ? L"getNullableString" : L"getString";
         }
         break;
         case MemberInfoType::Binary:
         {
-            result = member.Nullable() ? L"GetNullableBytes" : L"GetBytes";
+            result = member.Nullable() ? L"getNullableBinary" : L"getBinary";
         }
         break;
         case MemberInfoType::RowVersion:
         {
-            result = member.Nullable() ? L"GetNullableInt64" : L"GetInt64";
+            result = member.Nullable() ? L"getNullableInt64" : L"getInt64";
         }
         break;
         case MemberInfoType::Reference:
         {
-            result = member.Nullable() ? L"GetNullableGuid" : L"GetGuid";
+            result = member.Nullable() ? L"getNullableGuid" : L"getGuid";
         }
         break;
         case MemberInfoType::TimeSeries:
         {
-            result = member.Nullable() ? L"GetNullableGuid" : L"GetGuid";
+            result = member.Nullable() ? L"getNullableGuid" : L"getGuid";
         }
         break;
         }
@@ -1790,28 +1808,28 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
     WideString JavaHelper::GetInsertFunctionName(const ClassInfo& classInfo)
     {
-        return Format(L"Insert{}", classInfo.Name());
+        return Format(L"insert{}", classInfo.Name());
     }
     WideString JavaHelper::GetInsertFunctionName1(const ClassInfo& classInfo)
     {
-        return Format(L"Insert1{}", classInfo.Name());
+        return Format(L"insert1{}", classInfo.Name());
     }
 
     WideString JavaHelper::GetUpdateFunctionName(const ClassInfo& classInfo)
     {
-        return Format(L"Update{}", classInfo.Name());
+        return Format(L"update{}", classInfo.Name());
     }
     WideString JavaHelper::GetUpdateFunctionName1(const ClassInfo& classInfo)
     {
-        return Format(L"Update1{}", classInfo.Name());
+        return Format(L"update1{}", classInfo.Name());
     }
     WideString JavaHelper::GetUpdateFunctionName2(const ClassInfo& classInfo)
     {
-        return Format(L"Update2{}", classInfo.Name());
+        return Format(L"update2{}", classInfo.Name());
     }
     WideString JavaHelper::GetDeleteFunctionName(const ClassInfo& classInfo)
     {
-        return Format(L"Delete{}", classInfo.Name());
+        return Format(L"delete{}", classInfo.Name());
     }
 
     WideString JavaHelper::GetInsertFunctionParameters(const ClassInfo& classInfo)
@@ -1824,7 +1842,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
         StringBuilder<wchar_t> parameters;
 
-        parameters.Append(L"ref {} {}", primaryKeyArgumentType, primaryKeyName);
+        parameters.Append(L"{} {}", primaryKeyArgumentType, primaryKeyName);
 
 
         for (size_t i = 0; i < membersCount; i++)
@@ -1844,6 +1862,32 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         return parameters.ToString();
     }
+
+    WideString JavaHelper::GetInsertFunctionParameterPlaceholders( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+
+        StringBuilder<wchar_t> placeholders;
+
+        placeholders.Append( L"?" );
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    placeholders.Append( L", ?" );
+                }
+            }
+        }
+        return placeholders.ToString( );
+    }
+
     WideString JavaHelper::GetInsertFunctionCallParameters(const ClassInfo& classInfo)
     {
         const auto& members = classInfo.PersistentMembers();
@@ -1854,7 +1898,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
         StringBuilder<wchar_t> parameters;
 
-        parameters.Append(L"ref {}", primaryKeyName);
+        parameters.Append(L"{}", primaryKeyName);
 
         for (size_t i = 0; i < membersCount; i++)
         {
@@ -1884,7 +1928,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
         StringBuilder<wchar_t> parameters;
 
-        parameters.Append(L"ref {} {}", primaryKeyArgumentType, primaryKeyName);
+        parameters.Append(L"{} {}", primaryKeyArgumentType, primaryKeyName);
 
 
         for (size_t i = 0; i < membersCount; i++)
@@ -1904,6 +1948,32 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         return parameters.ToString();
     }
+
+    WideString JavaHelper::GetInsertFunctionParameterPlaceholders1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+
+        StringBuilder<wchar_t> placeholders;
+
+        placeholders.Append( L"?" );
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    placeholders.Append( L", ?" );
+                }
+            }
+        }
+        return placeholders.ToString( );
+    }
+
     WideString JavaHelper::GetInsertFunctionCallParameters1(const ClassInfo& classInfo)
     {
         const auto& members = classInfo.PersistentMembersExceptNullableReferences();
@@ -1914,7 +1984,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
         StringBuilder<wchar_t> parameters;
 
-        parameters.Append(L"ref {}", primaryKeyName);
+        parameters.Append(L"{}", primaryKeyName);
 
         for (size_t i = 0; i < membersCount; i++)
         {
@@ -1958,7 +2028,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
                 if (memberType == MemberInfoType::RowVersion)
                 {
-                    parameters.Append(L", ref {} {}", variableType, variableName);
+                    parameters.Append(L", {} {}", variableType, variableName);
                 }
                 else
                 {
@@ -1968,6 +2038,27 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         return parameters.ToString();
     }
+
+    WideString JavaHelper::GetUpdateFunctionParameterPlaceholders( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"?" );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                parameters.Append( L", ?" );
+            }
+        }
+        return parameters.ToString( );
+    }
+
     WideString JavaHelper::GetUpdateFunctionCallParameters(const ClassInfo& classInfo)
     {
         const auto& members = classInfo.PersistentMembers();
@@ -1985,20 +2076,13 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             if (member.PrimaryKey() == false)
             {
                 auto variableName = GetInputArgumentName(member);
-                auto memberType = member.Type();
-
-                if (memberType == MemberInfoType::RowVersion)
-                {
-                    parameters.Append(L", ref {}", variableName);
-                }
-                else
-                {
-                    parameters.Append(L", {}", variableName);
-                }
+                parameters.Append( L", {}", variableName );
             }
         }
         return parameters.ToString();
     }
+
+    
 
 
     WideString JavaHelper::GetUpdateFunctionParameters1(const ClassInfo& classInfo)
@@ -2024,7 +2108,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
                 if (memberType == MemberInfoType::RowVersion)
                 {
-                    parameters.Append(L", ref {} {}", variableType, variableName);
+                    parameters.Append(L", {} {}", variableType, variableName);
                 }
                 else
                 {
@@ -2034,6 +2118,27 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         return parameters.ToString();
     }
+
+    WideString JavaHelper::GetUpdateFunctionParameterPlaceholders1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"?" );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                parameters.Append( L", ?" );
+            }
+        }
+        return parameters.ToString( );
+    }
+
     WideString JavaHelper::GetUpdateFunctionCallParameters1(const ClassInfo& classInfo)
     {
         const auto& members = classInfo.PersistentMembersExceptNullableReferences();
@@ -2055,7 +2160,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
                 if (memberType == MemberInfoType::RowVersion)
                 {
-                    parameters.Append(L", ref {}", variableName);
+                    parameters.Append(L", {}", variableName);
                 }
                 else
                 {
@@ -2089,7 +2194,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
                 if (memberType == MemberInfoType::RowVersion)
                 {
-                    parameters.Append(L", ref {} {}", variableType, variableName);
+                    parameters.Append(L", {} {}", variableType, variableName);
                 }
                 else
                 {
@@ -2099,6 +2204,28 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         return parameters.ToString();
     }
+
+    WideString JavaHelper::GetUpdateFunctionParameterPlaceholders2( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.Update2Members( );
+        size_t membersCount = members.size( );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"?" );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                parameters.Append( L", ?" );
+            }
+        }
+        return parameters.ToString( );
+    }
+
+
     WideString JavaHelper::GetUpdateFunctionCallParameters2(const ClassInfo& classInfo)
     {
         const auto& members = classInfo.Update2Members();
@@ -2120,7 +2247,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
                 if (memberType == MemberInfoType::RowVersion)
                 {
-                    parameters.Append(L", ref {}", variableName);
+                    parameters.Append(L", {}", variableName);
                 }
                 else
                 {
@@ -2148,6 +2275,20 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
         return parameters.ToString();
     }
+
+    WideString JavaHelper::GetDeleteFunctionParameterPlaceholders( const ClassInfo& classInfo )
+    {
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"?" );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            parameters.Append( L", ?" );
+        }
+        return parameters.ToString( );
+    }
+
     WideString JavaHelper::GetDeleteFunctionCallParameters(const ClassInfo& classInfo)
     {
         auto primaryKey = classInfo.PrimaryKey();
@@ -2171,111 +2312,141 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         auto memberType = member.Type();
         switch (memberType)
         {
-        case MemberInfoType::Boolean:
-        {
-            result = L"AddBoolean";
-        }
-        break;
-        case MemberInfoType::SByte:
-        {
-            result = L"AddSByte";
-        }
-        break;
-        case MemberInfoType::Byte:
-        {
-            result = L"AddByte";
-        }
-        break;
-        case MemberInfoType::Int16:
-        {
-            result = L"AddInt16";
-        }
-        break;
-        case MemberInfoType::UInt16:
-        {
-            result = L"AddUInt16";
-        }
-        break;
-        case MemberInfoType::Int32:
-        {
-            result = L"AddInt32";
-        }
-        break;
-        case MemberInfoType::UInt32:
-        {
-            result = L"AddUInt32";
-        }
-        break;
-        case MemberInfoType::Int64:
-        {
-            result = L"AddInt64";
-        }
-        break;
-        case MemberInfoType::UInt64:
-        {
-            result = L"AddUInt64";
-        }
-        break;
-        case MemberInfoType::Enum:
-        {
-            result = L"AddEnum";
-        }
-        break;
-        case MemberInfoType::Single:
-        {
-            result = L"AddSingle";
-        }
-        break;
-        case MemberInfoType::Double:
-        {
-            result = L"AddDouble";
-        }
-        break;
-        case MemberInfoType::Currency:
-        {
-            result = L"AddCurrency";
-        }
-        break;
-        case MemberInfoType::DateTime:
-        {
-            result = L"AddDateTimeAsInt64";
-        }
-        break;
-        case MemberInfoType::TimeSpan:
-        {
-            result = L"AddTimeSpanAsInt64";
-        }
-        break;
-        case MemberInfoType::Guid:
-        {
-            result = L"AddGuid";
-        }
-        break;
-        case MemberInfoType::String:
-        {
-            result = L"AddNVarChar";
-        }
-        break;
-        case MemberInfoType::Binary:
-        {
-            result = L"AddBinary";
-        }
-        break;
-        case MemberInfoType::RowVersion:
-        {
-            result = L"AddInt64";
-        }
-        break;
-        case MemberInfoType::Reference:
-        {
-            result = L"AddReference";
-        }
-        break;
-        case MemberInfoType::TimeSeries:
-        {
-            result = L"AddReference";
-        }
-        break;
+            case MemberInfoType::Boolean:
+            {
+                result = member.Nullable()? L"setNullableBoolean" : L"setBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = member.Nullable( ) ? L"setNullableInt8" : L"setInt8";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = member.Nullable( ) ? L"setNullableUInt8" : L"setUInt8";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = member.Nullable( ) ? L"setNullableInt16" : L"setInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = member.Nullable( ) ? L"setNullableUInt16" : L"setUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = member.Nullable( ) ? L"setNullableInt32" : L"setInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = member.Nullable( ) ? L"setNullableUInt32" : L"setUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = member.Nullable( ) ? L"setNullableInt64" : L"setInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = member.Nullable( ) ? L"setNullableUInt64" : L"setUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast<const EnumMemberInfo&>( member );
+                auto enumType = enumMemberInfo.EnumType( );
+
+                auto valueType = enumType->ValueType( );
+                switch ( valueType )
+                {
+                    case MemberInfoType::SByte:
+                        result = member.Nullable( ) ? L"setNullableInt8" : L"setInt8";
+                        break;
+                    case MemberInfoType::Byte:
+                        result = member.Nullable( ) ? L"setNullableUInt8" : L"setUInt8";
+                        break;
+                    case MemberInfoType::Int16:
+                        result = member.Nullable( ) ? L"setNullableInt16" : L"setInt16";
+                        break;
+                    case MemberInfoType::UInt16:
+                        result = member.Nullable( ) ? L"setNullableUInt16" : L"setUInt16";
+                        break;
+                    case MemberInfoType::Int32:
+                        result = member.Nullable( ) ? L"setNullableInt32" : L"setInt32";
+                        break;
+                    case MemberInfoType::UInt32:
+                        result = member.Nullable( ) ? L"setNullableUInt32" : L"setUInt32";
+                        break;
+                    case MemberInfoType::Int64:
+                        result = member.Nullable( ) ? L"setNullableInt64" : L"setInt64";
+                        break;
+                    case MemberInfoType::UInt64:
+                        result = member.Nullable( ) ? L"setNullableUInt64" : L"setUInt64";
+                        break;
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = member.Nullable( ) ? L"setNullableSingle" : L"setSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = member.Nullable( ) ? L"setNullableDouble" : L"setDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = member.Nullable( ) ? L"setNullableCurrency" : L"setCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = member.Nullable( ) ? L"setLongFromNullableDateTime" : L"setLongFromDateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = member.Nullable( ) ? L"setNullableTimeSpan" : L"setTimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = member.Nullable( ) ? L"setNullableGuid" : L"setGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                result = member.Nullable( ) ? L"setNullableString" : L"setString";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                result = member.Nullable( ) ? L"setNullableBinary" : L"setBinary";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = member.Nullable( ) ? L"setNullableInt64" : L"setInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = member.Nullable( ) ? L"setNullableGuid" : L"setGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = member.Nullable( ) ? L"setNullableGuid" : L"setGuid";
+            }
+            break;
         }
         return result;
     }

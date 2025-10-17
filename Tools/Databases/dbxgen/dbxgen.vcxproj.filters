@@ -94,6 +94,9 @@
     <Filter Include="Src\CodeGenerators\Java\Databases">
       <UniqueIdentifier>{bf5fff85-cf44-4e95-95f8-aa999d33214c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\CodeGenerators\Java\Databases\MsSql">
+      <UniqueIdentifier>{287911f1-2b63-4678-a756-45e788b5a555}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CodeGenerators\Cpp\CppHelper.h">
@@ -167,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="include\CodeGenerators\Java\Databases\MsSql\JavaMsSqlGenerators.h">
       <Filter>Include\CodeGenerators\Java\Databases\MsSql</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Java\Databases\JavaDatabasesGenerator.h">
+      <Filter>Include\CodeGenerators\Java\Databases</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -324,6 +330,15 @@
     </ClCompile>
     <ClCompile Include="src\CodeGenerators\Java\JavaDataContextGenerator.cpp">
       <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlStoredProceduresGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlSimpleReadersGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlSimpleDatabaseReaderGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java\Databases\MsSql</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

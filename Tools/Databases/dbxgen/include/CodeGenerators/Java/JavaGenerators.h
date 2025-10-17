@@ -17,8 +17,7 @@
    limitations under the License.
 */
 
-#include "CodeGenerators/GeneratorsBase.h"
-#include "CodeGenerators/Java/JavaHelper.h"
+#include "CodeGenerators/Java/Databases/JavaDatabasesGenerator.h"
 
 namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 {
@@ -316,7 +315,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     class JavaGenerator : public GeneratorContainer<Generator, JavaOptions>
     {
         JavaDataGenerator data_;
-        //Databases::JavaDatabasesGenerator databases_;
+        Databases::JavaDatabasesGenerator databases_;
         //JavaEntitiesGenerator entities_;
     public:
         using Base = GeneratorContainer<Generator, JavaOptions>;
@@ -326,7 +325,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         void Run()
         {
             data_.Run();
-            //databases_.Run();
+            databases_.Run();
             //entities_.Run();
         }
 
@@ -340,11 +339,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
     namespace Databases
     {
-        /*
         inline JavaDatabasesGenerator::JavaDatabasesGenerator(const JavaGenerator& owner)
             : Base(owner, owner.Options().Databases()), msSql_(*this)
         { }
-        */
+        
     }
     /*
     inline JavaEntitiesGenerator::JavaEntitiesGenerator(const JavaGenerator& owner)

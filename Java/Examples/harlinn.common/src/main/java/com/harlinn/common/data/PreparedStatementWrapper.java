@@ -26,6 +26,12 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory; 
 
+import com.harlinn.common.util.Currency;
+import com.harlinn.common.util.Guid;
+import com.harlinn.common.util.DateTime;
+import com.harlinn.common.util.TimeSpan;
+
+
 public class PreparedStatementWrapper extends StatementWrapper implements PreparedStatement {
 	static Logger logger = LoggerFactory.getLogger(PreparedStatementWrapper.class);
 	
@@ -897,6 +903,283 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
 		}
 	}
 
+	public void setNullableBoolean(int parameterIndex, Boolean x) throws SQLException {
+		if(x != null) {
+			setBoolean(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.BOOLEAN);
+		}
+	}
+	
+	public void setUInt8(int parameterIndex, byte x) throws SQLException {
+		setShort(parameterIndex, x);
+	}
+	
+	public void setNullableUInt8(int parameterIndex, Byte x) throws SQLException {
+		if(x != null) {
+			setShort(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.TINYINT);
+		}
+	}
+	
+	public void setInt8(int parameterIndex, byte x) throws SQLException {
+		setShort(parameterIndex, x);
+	}
+	
+	public void setNullableInt8(int parameterIndex, Byte x) throws SQLException {
+		if(x != null) {
+			setShort(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.TINYINT);
+		}
+	}
+	
+	public void setUInt16(int parameterIndex, short x) throws SQLException {
+		setShort(parameterIndex, x);
+	}
+	
+	public void setNullableUInt16(int parameterIndex, Short x) throws SQLException {
+		if(x != null) {
+			setShort(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.SMALLINT);
+		}
+	}
+	
+	public void setInt16(int parameterIndex, short x) throws SQLException {
+		setShort(parameterIndex, x);
+	}
+	
+	public void setNullableInt16(int parameterIndex, Short x) throws SQLException {
+		if(x != null) {
+			setShort(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.SMALLINT);
+		}
+	}
+	
+	public void setUInt32(int parameterIndex, int x) throws SQLException {
+		setInt(parameterIndex, x);
+	}
+	
+	public void setNullableUInt32(int parameterIndex, Integer x) throws SQLException {
+		if(x != null) {
+			setInt(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.INTEGER);
+		}
+	}
+	
+	public void setInt32(int parameterIndex, int x) throws SQLException {
+		setInt(parameterIndex, x);
+	}
+	
+	public void setNullableInt32(int parameterIndex, Integer x) throws SQLException {
+		if(x != null) {
+			setInt(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.INTEGER);
+		}
+	}
+	
+	public void setUInt64(int parameterIndex, long x) throws SQLException {
+		setLong(parameterIndex, x);
+	}
+	
+	public void setNullableUInt64(int parameterIndex, Long x) throws SQLException {
+		if(x != null) {
+			setLong(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.BIGINT);
+		}
+	}
+	
+	public void setInt64(int parameterIndex, long x) throws SQLException {
+		setLong(parameterIndex, x);
+	}
+	
+	public void setNullableInt64(int parameterIndex, Long x) throws SQLException {
+		if(x != null) {
+			setLong(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.BIGINT);
+		}
+	}
+	
+	public void setSingle(int parameterIndex, float x) throws SQLException {
+		setFloat(parameterIndex, x);
+	}
+	
+	public void setNullableSingle(int parameterIndex, Float x) throws SQLException {
+		if(x != null) {
+			setFloat(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.REAL);
+		}
+	}
+	
+	public void setNullableDouble(int parameterIndex, Double x) throws SQLException {
+		if(x != null) {
+			setDouble(parameterIndex, x);
+		}
+		else {
+			setNull(parameterIndex,Types.DOUBLE);
+		}
+	}
+	
+	public void setDateTime(int parameterIndex, DateTime dateTime) throws SQLException {
+		if(dateTime != null) {
+			var timestamp = dateTime.toSqlTimestamp();
+			setTimestamp(parameterIndex, timestamp);
+		}
+		else {
+			var message = "dateTime cannot be null.";
+			logger.error(message);
+			throw new IllegalArgumentException(message);
+		}
+	}
+	
+	public void setNullableDateTime(int parameterIndex, DateTime dateTime) throws SQLException {
+		if(dateTime != null) {
+			var timestamp = dateTime.toSqlTimestamp();
+			setTimestamp(parameterIndex, timestamp);
+		}
+		else {
+			setNull(parameterIndex,Types.TIMESTAMP);
+		}
+	}
+	
+	public void setLongFromDateTime(int parameterIndex, DateTime dateTime) throws SQLException {
+		if(dateTime != null) {
+			var ticks = dateTime.toTicks();
+			setLong(parameterIndex, ticks);
+		}
+		else {
+			var message = "dateTime cannot be null.";
+			logger.error(message);
+			throw new IllegalArgumentException(message);
+		}
+	}
+	
+	public void setLongFromNullableDateTime(int parameterIndex, DateTime dateTime) throws SQLException {
+		if(dateTime != null) {
+			var ticks = dateTime.toTicks();
+			setLong(parameterIndex, ticks);
+		}
+		else {
+			setNull(parameterIndex,Types.BIGINT);
+		}
+	}
+	
+	public void setTimeSpan(int parameterIndex, TimeSpan timeSpan) throws SQLException {
+		if(timeSpan != null) {
+			var ticks = timeSpan.getTicks();
+			setLong(parameterIndex, ticks);
+		}
+		else {
+			var message = "timeSpan cannot be null.";
+			logger.error(message);
+			throw new IllegalArgumentException(message);
+		}
+	}
+	
+	public void setNullableTimeSpan(int parameterIndex, TimeSpan timeSpan) throws SQLException {
+		if(timeSpan != null) {
+			var ticks = timeSpan.getTicks();
+			setLong(parameterIndex, ticks);
+		}
+		else {
+			setNull(parameterIndex,Types.BIGINT);
+		}
+	}
+	
+	public void setCurrency(int parameterIndex, Currency currency) throws SQLException {
+		if(currency != null) {
+			var value = currency.getValue();
+			setLong(parameterIndex, value);
+		}
+		else {
+			var message = "currency cannot be null.";
+			logger.error(message);
+			throw new IllegalArgumentException(message);
+		}
+	}
+	
+	public void setNullableCurrency(int parameterIndex, Currency currency) throws SQLException {
+		if(currency != null) {
+			var value = currency.getValue();
+			setLong(parameterIndex, value);
+		}
+		else {
+			setNull(parameterIndex,Types.BIGINT);
+		}
+	}
+	
+	
+	public void setGuid(int parameterIndex, Guid guid) throws SQLException {
+		if(guid != null) {
+			var guidAsString = guid.toString();
+			setString(parameterIndex,guidAsString);
+		}
+		else {
+			var message = "guid cannot be null.";
+			logger.error(message);
+			throw new IllegalArgumentException(message);
+		}
+	}
+	
+	public void setNullableGuid(int parameterIndex, Guid guid) throws SQLException {
+		if(guid != null) {
+			var guidAsString = guid.toString();
+			setString(parameterIndex,guidAsString);
+		}
+		else {
+			setNull(parameterIndex,Types.VARCHAR);
+		}
+	}
+	
+	public void setNullableString(int parameterIndex, String str) throws SQLException {
+		if(str != null) {
+			setString(parameterIndex,str);
+		}
+		else {
+			setNull(parameterIndex,Types.VARCHAR);
+		}
+	}
+	
+	public void setBinary(int parameterIndex, byte[] bytes) throws SQLException {
+		if(bytes != null) {
+			setBytes(parameterIndex,bytes);
+		}
+		else {
+			var message = "bytes cannot be null.";
+			logger.error(message);
+			throw new IllegalArgumentException(message);
+		}
+	}
+	
+	public void setNullableBinary(int parameterIndex, byte[] bytes) throws SQLException {
+		if(bytes != null) {
+			setBytes(parameterIndex,bytes);
+		}
+		else {
+			setNull(parameterIndex,Types.VARBINARY);
+		}
+	}
+	
+	
+	
 	
 	
 }

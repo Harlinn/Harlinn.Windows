@@ -162,9 +162,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp::Databases::MsSql
         const auto& members = classInfo.OwnPersistentMembers();
         if ( members.empty( ) == false )
         {
-            size_t id = 0;
+            
             if ( classInfo.IsTopLevel( ) )
             {
+                size_t id = 0;
                 for ( const auto& member : members )
                 {
                     WriteLine( L"        public const int {}_FIELD_ID = {};", member->Name( ).ToUpper( ), id );
@@ -178,6 +179,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp::Databases::MsSql
             }
             else
             {
+                size_t id = 1;
                 auto baseClass = classInfo.BaseClass( );
                 while ( baseClass )
                 {

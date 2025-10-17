@@ -259,8 +259,14 @@ public class DateTime extends TimeBase implements Comparable<DateTime>, Serializ
 	public java.util.Date toDate() {
 		return new java.util.Date((ticks - UnixEpoch)/TicksPerMillisecond);
 	}
+	
 	public java.sql.Date toSqlDate() {
 		return new java.sql.Date((ticks - UnixEpoch)/TicksPerMillisecond);
+	}
+	
+	public java.sql.Timestamp toSqlTimestamp() {
+		var milliseconds = (ticks - UnixEpoch)/TicksPerMillisecond;
+		return new java.sql.Timestamp(milliseconds);
 	}
 	
 	public Instant toInstant() {

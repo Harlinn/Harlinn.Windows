@@ -451,7 +451,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
             else
             {
                 auto baseClass = classInfo.BaseClass( );
-                size_t id = 1;
+                size_t id = 2;
                 while ( baseClass )
                 {
                     id += baseClass->OwnPersistentMembers( ).size( );

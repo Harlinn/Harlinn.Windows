@@ -29,6 +29,13 @@ public abstract class AbstractDataObject implements Serializable {
 	
 	public abstract int getObjectType();
 	
+	public byte getObjectState() {
+		return objectState;
+	}
+	public void setObjectState(byte objectState) {
+		this.objectState = objectState;
+	}
+	
 	public void readFrom(BinaryReader source) {
 		objectState = source.readUInt8();
 	}

@@ -25,6 +25,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.harlinn.common.util.Guid;
+import com.harlinn.common.util.DateTime;
+import com.harlinn.common.util.TimeSpan;
+
+
 public class ResultSetWrapper implements ResultSet {
 	static Logger logger = LoggerFactory.getLogger(ResultSetWrapper.class);
 	ResultSet resultSet;
@@ -2153,4 +2158,274 @@ public class ResultSetWrapper implements ResultSet {
 			throw exc; 
 		}
 	}
+	
+	public Boolean getNullableBoolean(int parameterIndex) throws SQLException {
+		var value = getBoolean(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public char getChar(int parameterIndex) throws SQLException {
+		var value = getString(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value.charAt(0);
+	}
+	
+	public Character getNullableChar(int parameterIndex) throws SQLException {
+		var value = getString(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value.charAt(0);
+	}
+	
+	public byte getUInt8(int parameterIndex) throws SQLException {
+		var value = getByte(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Byte getNullableUInt8(int parameterIndex) throws SQLException {
+		var value = getByte(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public byte getInt8(int parameterIndex) throws SQLException {
+		var value = getByte(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Byte getNullableInt8(int parameterIndex) throws SQLException {
+		var value = getByte(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public short getUInt16(int parameterIndex) throws SQLException {
+		var value = getShort(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Short getNullableUInt16(int parameterIndex) throws SQLException {
+		var value = getShort(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public short getInt16(int parameterIndex) throws SQLException {
+		var value = getShort(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Short getNullableInt16(int parameterIndex) throws SQLException {
+		var value = getShort(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public int getUInt32(int parameterIndex) throws SQLException {
+		var value = getInt(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Integer getNullableUInt32(int parameterIndex) throws SQLException {
+		var value = getInt(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public int getInt32(int parameterIndex) throws SQLException {
+		var value = getInt(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Integer getNullableInt32(int parameterIndex) throws SQLException {
+		var value = getInt(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	
+	public long getUInt64(int parameterIndex) throws SQLException {
+		var value = getLong(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Long getNullableUInt64(int parameterIndex) throws SQLException {
+		var value = getLong(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public long getInt64(int parameterIndex) throws SQLException {
+		var value = getLong(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Long getNullableInt64(int parameterIndex) throws SQLException {
+		var value = getLong(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public float getSingle(int parameterIndex) throws SQLException {
+		var value = getFloat(parameterIndex);
+		if(wasNull()) {
+			throw new SQLException("The parameter at index "+ parameterIndex +" was NULL.");
+		}
+		return value;
+	}
+	
+	public Float getNullableSingle(int parameterIndex) throws SQLException {
+		var value = getFloat(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public Double getNullableDouble(int parameterIndex) throws SQLException {
+		var value = getDouble(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	
+	public DateTime getDateTime(int parameterIndex) throws SQLException {
+		var timestamp = getTimestamp(parameterIndex);
+		if(timestamp != null) {
+			return new DateTime(timestamp);
+		}
+		return new DateTime();
+	}
+	
+	public DateTime getNullableDateTime(int parameterIndex) throws SQLException {
+		var timestamp = getTimestamp(parameterIndex);
+		if(timestamp != null) {
+			return new DateTime(timestamp);
+		}
+		return null;
+	}
+	
+	public DateTime getDateTimeFromLong(int parameterIndex) throws SQLException {
+		var ticks = getLong(parameterIndex);
+		if(wasNull()) {
+			return new DateTime();
+		}
+		return new DateTime(ticks);
+	}
+	
+	public DateTime getNullableDateTimeFromLong(int parameterIndex) throws SQLException {
+		var ticks = getLong(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return new DateTime(ticks);
+	}
+	
+	public TimeSpan getTimeSpan(int parameterIndex) throws SQLException {
+		var ticks = getLong(parameterIndex);
+		if(wasNull()) {
+			return new TimeSpan();
+		}
+		return new TimeSpan(ticks);
+	}
+	
+	public TimeSpan getNullableTimeSpan(int parameterIndex) throws SQLException {
+		var ticks = getLong(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return new TimeSpan(ticks);
+	}
+	
+	
+	public Guid getGuid(int parameterIndex) throws SQLException {
+		var guidAsString = getString(parameterIndex);
+		if(guidAsString != null) {
+			return Guid.fromString(guidAsString);
+		}
+		return new Guid();
+	}
+	
+	public Guid getNullableGuid(int parameterIndex) throws SQLException {
+		var guidAsString = getString(parameterIndex);
+		if(guidAsString != null) {
+			return Guid.fromString(guidAsString);
+		}
+		return null;
+	}
+	
+	public String getNullableString(int parameterIndex) throws SQLException {
+		var value = getString(parameterIndex);
+		if(wasNull()) {
+			return null;
+		}
+		return value;
+	}
+	
+	public byte[] getBinary(int parameterIndex) throws SQLException {
+		var value = getBytes(parameterIndex);
+		if(wasNull() || value == null ) {
+			return new byte[0];
+		}
+		return value;
+	}
+	
+	public byte[] getNullableBinary(int parameterIndex) throws SQLException {
+		var value = getBytes(parameterIndex);
+		if(wasNull() || value == null ) {
+			return null;
+		}
+		return value;
+	}
+	
+	
+	
 }

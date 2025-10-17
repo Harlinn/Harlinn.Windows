@@ -1110,25 +1110,148 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             namespace MsSql
             {
                 class JavaMsSqlOptions;
-                class JavaMsSqlSimpleDatabaseReadersOptions : public OptionsFile<JavaMsSqlOptions>
+                class JavaMsSqlSimpleReadersOptions;
+                class JavaMsSqlComplexReadersOptions;
+
+                class JavaMsSqlSimpleDatabaseReaderOptions : public OptionsFile<JavaMsSqlSimpleReadersOptions>
                 {
                 public:
-                    using Base = OptionsFile<JavaMsSqlOptions>;
-                    JavaMsSqlSimpleDatabaseReadersOptions(const JavaMsSqlOptions& owner)
-                        : Base(owner, L"MsSqlSimpleDatabaseReaders.java")
+                    using Base = OptionsFile<JavaMsSqlSimpleReadersOptions>;
+                    JavaMsSqlSimpleDatabaseReaderOptions(const JavaMsSqlSimpleReadersOptions& owner, const WideString& filename)
+                        : Base(owner, filename )
                     {
                     }
                 };
 
 
-                class JavaMsSqlComplexDatabaseReadersOptions : public OptionsFile<JavaMsSqlOptions>
+                class JavaMsSqlComplexDatabaseReaderOptions : public OptionsFile<JavaMsSqlComplexReadersOptions>
                 {
                 public:
-                    using Base = OptionsFile<JavaMsSqlOptions>;
-                    JavaMsSqlComplexDatabaseReadersOptions(const JavaMsSqlOptions& owner)
-                        : Base(owner, L"MsSqlComplexDatabaseReaders.java")
+                    using Base = OptionsFile<JavaMsSqlComplexReadersOptions>;
+                    JavaMsSqlComplexDatabaseReaderOptions(const JavaMsSqlComplexReadersOptions& owner, const WideString& filename )
+                        : Base(owner, filename )
                     {
                     }
+                };
+
+                class JavaMsSqlReadersOptions;
+
+
+                class JavaMsSqlSimpleReadersOptions : public OptionsContainer<JavaMsSqlReadersOptions>
+                {
+                    mutable std::map<WideString, std::unique_ptr<JavaMsSqlSimpleDatabaseReaderOptions>> readers_;
+                public:
+                    using ReaderOptions = JavaMsSqlSimpleDatabaseReaderOptions;
+                    using Base = OptionsContainer<JavaMsSqlReadersOptions>;
+
+                    JavaMsSqlSimpleReadersOptions( const JavaMsSqlReadersOptions& owner )
+                        : Base( owner, L"simple" )
+                    { }
+
+                    bool Contains( const WideString& name ) const
+                    {
+                        return readers_.contains( name );
+                    }
+
+                    ReaderOptions* Find( const WideString& name ) const
+                    {
+                        auto it = readers_.find( name );
+                        if ( it != readers_.end( ) )
+                        {
+                            return it->second.get( );
+                        }
+                        return nullptr;
+                    }
+
+                    ReaderOptions* Add( const Metadata::ClassInfo& classInfo, const WideString& className ) const
+                    {
+                        const auto& name = classInfo.Name( );
+                        auto it = readers_.find( name );
+                        if ( it != readers_.end( ) )
+                        {
+                            return it->second.get( );
+                        }
+                        else
+                        {
+
+                            auto filename = className + L".java";
+                            auto reader = std::make_unique<ReaderOptions>( *this, filename );
+                            auto result = reader.get( );
+                            readers_.emplace( name, std::move( reader ) );
+                            return result;
+                        }
+                        
+                    }
+
+                };
+
+                class JavaMsSqlComplexReadersOptions : public OptionsContainer<JavaMsSqlReadersOptions>
+                {
+                    mutable std::map<WideString, std::unique_ptr<JavaMsSqlComplexDatabaseReaderOptions>> readers_;
+                public:
+                    using ReaderOptions = JavaMsSqlComplexDatabaseReaderOptions;
+                    using Base = OptionsContainer<JavaMsSqlReadersOptions>;
+
+                    JavaMsSqlComplexReadersOptions( const JavaMsSqlReadersOptions& owner )
+                        : Base( owner, L"complex" )
+                    { }
+
+                    bool Contains( const WideString& name ) const
+                    {
+                        return readers_.contains( name );
+                    }
+
+                    ReaderOptions* Find( const WideString& name ) const
+                    {
+                        auto it = readers_.find( name );
+                        if ( it != readers_.end( ) )
+                        {
+                            return it->second.get( );
+                        }
+                        return nullptr;
+                    }
+
+                    ReaderOptions* Add( const Metadata::ClassInfo& classInfo, const WideString& className ) const
+                    {
+                        const auto& name = classInfo.Name( );
+                        auto it = readers_.find( name );
+                        if ( it != readers_.end( ) )
+                        {
+                            return it->second.get( );
+                        }
+                        else
+                        {
+                            auto filename = name + L".java";
+                            auto reader = std::make_unique<ReaderOptions>( *this, filename );
+                            auto result = reader.get( );
+                            readers_.emplace( name, std::move( reader ) );
+                            return result;
+                        }
+                    }
+
+                };
+
+
+                class JavaMsSqlReadersOptions : public OptionsContainer<JavaMsSqlOptions>
+                {
+                    JavaMsSqlSimpleReadersOptions simple_;
+                    JavaMsSqlComplexReadersOptions complex_;
+                public:
+                    using Base = OptionsContainer<JavaMsSqlOptions>;
+
+                    JavaMsSqlReadersOptions( const JavaMsSqlOptions& owner )
+                        : Base( owner, L"readers" ), simple_(*this), complex_(*this)
+                    { }
+
+                    const JavaMsSqlSimpleReadersOptions& Simple( ) const
+                    {
+                        return simple_;
+                    }
+                    const JavaMsSqlComplexReadersOptions& Complex( ) const
+                    {
+                        return complex_;
+                    }
+
                 };
 
                 class JavaMsSqlStoredProceduresOptions : public OptionsFile<JavaMsSqlOptions>
@@ -1165,26 +1288,20 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
 
                 class JavaMsSqlOptions : public OptionsContainer<JavaDatabasesOptions>
                 {
-                    JavaMsSqlSimpleDatabaseReadersOptions simpleDatabaseReaders_;
-                    JavaMsSqlComplexDatabaseReadersOptions complexDatabaseReaders_;
+                    JavaMsSqlReadersOptions readers_;
                     JavaMsSqlStoredProceduresOptions storedProcedures_;
                     JavaMsSqlDataContextOptions dataContext_;
                     JavaMsSqlUpdateNodesOptions updateNodes_;
                 public:
                     using Base = OptionsContainer<JavaDatabasesOptions>;
                     JavaMsSqlOptions(const JavaDatabasesOptions& owner)
-                        : Base(owner, L"MsSql"), simpleDatabaseReaders_(*this), complexDatabaseReaders_(*this), storedProcedures_(*this), dataContext_(*this), updateNodes_(*this)
+                        : Base(owner, L"mssql"), readers_( *this ), storedProcedures_( *this ), dataContext_( *this ), updateNodes_( *this )
                     {
                     }
 
-                    const JavaMsSqlSimpleDatabaseReadersOptions& DatabaseReaders() const
+                    const JavaMsSqlReadersOptions& Readers( ) const
                     {
-                        return simpleDatabaseReaders_;
-                    }
-
-                    const JavaMsSqlComplexDatabaseReadersOptions& ComplexDatabaseReaders() const
-                    {
-                        return complexDatabaseReaders_;
+                        return readers_;
                     }
 
                     const JavaMsSqlStoredProceduresOptions& StoredProcedures() const
@@ -1211,7 +1328,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             public:
                 using Base = OptionsContainer<JavaOptions>;
                 JavaDatabasesOptions(const JavaOptions& owner)
-                    : Base(owner, L"Databases"), msSql_(*this)
+                    : Base(owner, L"databases"), msSql_(*this)
                 {
                 }
 

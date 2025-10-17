@@ -89,6 +89,17 @@ public class ConnectionWrapper implements Connection, AutoCloseable {
 			throw exc; 
 		}
 	}
+	
+	public CallableStatementWrapper prepareCallEx(String sql) throws SQLException {
+		try {
+			var callableStatement = connection.prepareCall(sql);
+			return new CallableStatementWrapper(this, callableStatement);
+		}
+		catch(Exception exc) {
+			logger.error("Exception", exc);
+			throw exc; 
+		}
+	}
 
 	@Override
 	public String nativeSQL(String sql) throws SQLException {
