@@ -1221,7 +1221,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                         }
                         else
                         {
-                            auto filename = name + L".java";
+                            auto filename = className + L".java";
                             auto reader = std::make_unique<ReaderOptions>( *this, filename );
                             auto result = reader.get( );
                             readers_.emplace( name, std::move( reader ) );
@@ -1284,6 +1284,15 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                     }
                 };
 
+                class JavaMsSqlTestDataObjectFactoryOptions : public OptionsFile<JavaMsSqlOptions>
+                {
+                public:
+                    using Base = OptionsFile<JavaMsSqlOptions>;
+                    JavaMsSqlTestDataObjectFactoryOptions( const JavaMsSqlOptions& owner )
+                        : Base( owner, L"MsSqlTestDataObjectFactory.java" )
+                    { }
+                };
+
 
 
                 class JavaMsSqlOptions : public OptionsContainer<JavaDatabasesOptions>
@@ -1292,10 +1301,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                     JavaMsSqlStoredProceduresOptions storedProcedures_;
                     JavaMsSqlDataContextOptions dataContext_;
                     JavaMsSqlUpdateNodesOptions updateNodes_;
+                    JavaMsSqlTestDataObjectFactoryOptions testDataObjectFactory_;
                 public:
                     using Base = OptionsContainer<JavaDatabasesOptions>;
                     JavaMsSqlOptions(const JavaDatabasesOptions& owner)
-                        : Base(owner, L"mssql"), readers_( *this ), storedProcedures_( *this ), dataContext_( *this ), updateNodes_( *this )
+                        : Base(owner, L"mssql"), readers_( *this ), storedProcedures_( *this ), dataContext_( *this ), updateNodes_( *this ), testDataObjectFactory_(*this)
                     {
                     }
 
@@ -1317,6 +1327,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                     const JavaMsSqlUpdateNodesOptions& UpdateNodes() const
                     {
                         return updateNodes_;
+                    }
+
+                    const JavaMsSqlTestDataObjectFactoryOptions& TestDataObjectFactory( ) const
+                    {
+                        return testDataObjectFactory_;
                     }
 
                 };
@@ -1396,21 +1411,36 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             { }
         };
 
+        class JavaTestDataObjectFactoryOptions : public OptionsFile<JavaDataTypesOptions>
+        {
+        public:
+            using Base = OptionsFile<JavaDataTypesOptions>;
+            JavaTestDataObjectFactoryOptions( const JavaDataTypesOptions& owner )
+                : Base( owner, L"TestDataObjectFactory.java" )
+            { }
+        };
+
 
 
         class JavaDataTypesOptions : public OptionsFileGroup<JavaDataOptions, JavaDataTypesOptions, JavaDataTypeOptions>
         {
             mutable std::map<WideString, std::unique_ptr<JavaDataTypeOptions>> types_;
             JavaDataTypeFactoryOptions factory_;
+            JavaTestDataObjectFactoryOptions testDataObjectFactory_;
         public:
             using Base = OptionsFileGroup<JavaDataOptions, JavaDataTypesOptions, JavaDataTypeOptions>;
             JavaDataTypesOptions(const JavaDataOptions& owner)
-                : Base(owner), factory_(*this)
+                : Base(owner), factory_(*this), testDataObjectFactory_( *this )
             { }
 
             const JavaDataTypeFactoryOptions& Factory( ) const
             {
                 return factory_;
+            }
+
+            const JavaTestDataObjectFactoryOptions& TestDataObjectFactory( ) const
+            {
+                return testDataObjectFactory_;
             }
 
         };

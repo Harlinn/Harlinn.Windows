@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class CursorInfoObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CursorInfo;
+
     private long _rowVersion = 0;
     private int _typeCode = 0;
+
+    public CursorInfoObject( ) {
+    }
+    public CursorInfoObject( byte objectState, Guid id, long rowVersion, int typeCode ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._typeCode = typeCode;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -75,7 +75,7 @@ extern "C"
         {
             return nullptr;
         }
-        auto result = jniEnv->NewString((const jchar*)buffer, length);
+        auto result = jniEnv->NewString((const jchar*)buffer, length-1);
         return result;
     }
 

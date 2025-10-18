@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class StringPropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.StringProperty;
+
     private String _value = "";
+
+    public StringPropertyObject( ) {
+    }
+    public StringPropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, String value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

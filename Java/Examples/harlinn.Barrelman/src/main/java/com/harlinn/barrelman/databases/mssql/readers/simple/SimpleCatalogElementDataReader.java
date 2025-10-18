@@ -67,4 +67,6 @@ public abstract class SimpleCatalogElementDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public abstract CatalogElementObject GetDataObject( ) throws SQLException;
+
 }

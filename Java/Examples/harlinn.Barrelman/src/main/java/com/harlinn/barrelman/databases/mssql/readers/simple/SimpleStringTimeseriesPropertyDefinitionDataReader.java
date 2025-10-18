@@ -38,4 +38,9 @@ public class SimpleStringTimeseriesPropertyDefinitionDataReader extends SimpleTi
         destination.writeStringUtf8( getPattern( ) );
     }
 
+    @Override
+    public StringTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new StringTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getPattern( ) );
+    }
+
 }

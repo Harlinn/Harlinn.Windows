@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class ZoneExceptionsObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ZoneExceptions;
+
     private long _rowVersion = 0;
     private Guid _zone;
     private DateTime _timestamp;
+
+    public ZoneExceptionsObject( ) {
+    }
+    public ZoneExceptionsObject( byte objectState, Guid id, long rowVersion, Guid zone, DateTime timestamp ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._zone = zone;
+        this._timestamp = timestamp;
+    }
 
     @Override
     public int getObjectType( ) {

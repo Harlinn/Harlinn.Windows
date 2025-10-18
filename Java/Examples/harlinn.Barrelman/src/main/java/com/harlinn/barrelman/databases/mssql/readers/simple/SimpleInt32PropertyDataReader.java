@@ -37,4 +37,9 @@ public class SimpleInt32PropertyDataReader extends SimplePropertyDataReader {
         destination.writeInt32( getValue( ) );
     }
 
+    @Override
+    public Int32PropertyObject GetDataObject( ) throws SQLException {
+        return new Int32PropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
+    }
+
 }

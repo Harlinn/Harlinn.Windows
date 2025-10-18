@@ -61,4 +61,8 @@ public class SimpleTrackerFilterParametersDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public TrackerFilterParametersObject GetDataObject( ) throws SQLException {
+            return new TrackerFilterParametersObject( ObjectState.Stored, getId( ), getRowVersion( ), getTracker( ), getName( ) );
+    }
+
 }

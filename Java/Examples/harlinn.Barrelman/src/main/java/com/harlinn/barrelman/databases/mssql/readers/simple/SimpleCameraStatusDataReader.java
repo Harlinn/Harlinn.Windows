@@ -166,4 +166,8 @@ public class SimpleCameraStatusDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public CameraStatusObject GetDataObject( ) throws SQLException {
+            return new CameraStatusObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTrack( ), getTimestamp( ), getPositionPanTiltMode( ), getPanAngle( ), getTiltAngle( ), getPositionFocalLengthMode( ), getFocalLength( ), getPanTiltMoveStatus( ), getZoomMoveStatus( ), getVelocityPanTiltMode( ), getPanVelocity( ), getTiltVelocity( ), getVelocityFocalLengthMode( ), getZoomVelocity( ), getActiveFeatures( ), getError( ) );
+    }
+
 }

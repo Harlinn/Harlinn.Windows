@@ -138,4 +138,8 @@ public class SimpleMediaProxySessionOptionsDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public MediaProxySessionOptionsObject GetDataObject( ) throws SQLException {
+            return new MediaProxySessionOptionsObject( ObjectState.Stored, getId( ), getRowVersion( ), getProxySession( ), getTimestamp( ), getSourceStreamUrl( ), getStreamName( ), getMode( ), getTunnelOverHTTPPortNumber( ), getUsername( ), getPassword( ), getRecorderPortNumber( ), getSessionType( ), getMaxFileTime( ), getMaxFileRetention( ), getVideoDirectory( ) );
+    }
+
 }

@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class RadarCommandReplyGetStatusObject extends RadarCommandReplyObject {
 
+    public final int KIND = Kind.RadarCommandReplyGetStatus;
+
     private int _azimuthCount = 0;
     private int _triggerCount = 0;
     private TimeSpan _rotationCount;
     private int _pulse = RadarPulse.Short;
     private boolean _tx = false;
+
+    public RadarCommandReplyGetStatusObject( ) {
+    }
+    public RadarCommandReplyGetStatusObject( byte objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, Guid command, int status, String message, int azimuthCount, int triggerCount, TimeSpan rotationCount, int pulse, boolean tx ) {
+        super( objectState, id, rowVersion, radar, timestamp, command, status, message );
+        this._azimuthCount = azimuthCount;
+        this._triggerCount = triggerCount;
+        this._rotationCount = rotationCount;
+        this._pulse = pulse;
+        this._tx = tx;
+    }
 
     @Override
     public int getObjectType( ) {

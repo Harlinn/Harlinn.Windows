@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class BinaryTimeseriesPropertyObject extends TimeseriesPropertyObject {
 
+    public final int KIND = Kind.BinaryTimeseriesProperty;
+
     private Guid _timeseries;
+
+    public BinaryTimeseriesPropertyObject( ) {
+    }
+    public BinaryTimeseriesPropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._timeseries = timeseries;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.Zone;
+
     private long _rowVersion = 0;
     private String _name = "";
     private double _longitude = 0.0;
@@ -16,6 +18,22 @@ public abstract class ZoneObject extends AbstractDataObjectWithGuidKey {
     private double _speed = 0.0;
     private int _strokeColor = 0;
     private int _fillColor = 0;
+
+    public ZoneObject( ) {
+    }
+    public ZoneObject( byte objectState, Guid id, long rowVersion, String name, double longitude, double latitude, int alarmType, TimeSpan alarmTime, TimeSpan radarTrackMinimumLifetime, double speed, int strokeColor, int fillColor ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._name = name;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._alarmType = alarmType;
+        this._alarmTime = alarmTime;
+        this._radarTrackMinimumLifetime = radarTrackMinimumLifetime;
+        this._speed = speed;
+        this._strokeColor = strokeColor;
+        this._fillColor = fillColor;
+    }
 
 
     public long getRowVersion( ) {

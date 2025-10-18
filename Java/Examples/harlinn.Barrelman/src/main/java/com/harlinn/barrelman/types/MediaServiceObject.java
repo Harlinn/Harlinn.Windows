@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class MediaServiceObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MediaService;
+
     private long _rowVersion = 0;
     private Guid _enabledTimeseries;
+
+    public MediaServiceObject( ) {
+    }
+    public MediaServiceObject( byte objectState, Guid id, long rowVersion, Guid enabledTimeseries ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._enabledTimeseries = enabledTimeseries;
+    }
 
     @Override
     public int getObjectType( ) {

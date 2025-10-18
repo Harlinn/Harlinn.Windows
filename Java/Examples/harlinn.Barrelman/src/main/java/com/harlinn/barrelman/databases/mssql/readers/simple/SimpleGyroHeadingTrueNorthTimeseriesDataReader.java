@@ -38,4 +38,9 @@ public class SimpleGyroHeadingTrueNorthTimeseriesDataReader extends SimpleDouble
         destination.writeNullableGuid( getGyroDevice( ) );
     }
 
+    @Override
+    public GyroHeadingTrueNorthTimeseriesObject GetDataObject( ) throws SQLException {
+        return new GyroHeadingTrueNorthTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
+    }
+
 }

@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisPositionReportForLongRangeApplicationsMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisPositionReportForLongRangeApplicationsMessage;
+
     private int _positionAccuracy = PositionAccuracy.Low;
     private int _raim = Raim.NotInUse;
     private int _navigationStatus = NavigationStatus.UnderWayUsingEngine;
@@ -15,6 +17,21 @@ public class AisPositionReportForLongRangeApplicationsMessageObject extends AisM
     private double _courseOverGround = 0.0;
     private int _gnssPositionStatus = GnssPositionStatus.CurrentGnssPosition;
     private int _spare = 0;
+
+    public AisPositionReportForLongRangeApplicationsMessageObject( ) {
+    }
+    public AisPositionReportForLongRangeApplicationsMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int positionAccuracy, int raim, int navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, int gnssPositionStatus, int spare ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._positionAccuracy = positionAccuracy;
+        this._raim = raim;
+        this._navigationStatus = navigationStatus;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._speedOverGround = speedOverGround;
+        this._courseOverGround = courseOverGround;
+        this._gnssPositionStatus = gnssPositionStatus;
+        this._spare = spare;
+    }
 
     @Override
     public int getObjectType( ) {

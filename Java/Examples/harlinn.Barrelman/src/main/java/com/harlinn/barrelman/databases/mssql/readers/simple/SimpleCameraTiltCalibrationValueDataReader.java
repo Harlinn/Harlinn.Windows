@@ -68,4 +68,8 @@ public class SimpleCameraTiltCalibrationValueDataReader extends ResultSetWrapper
         destination.writeBoolean( false );
     }
 
+    public CameraTiltCalibrationValueObject GetDataObject( ) throws SQLException {
+            return new CameraTiltCalibrationValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTiltCalibration( ), getPanAngle( ), getTiltOffset( ) );
+    }
+
 }

@@ -45,4 +45,9 @@ public class SimpleReferencePropertyDefinitionDataReader extends SimplePropertyD
         destination.writeNullableGuid( getReferencedElementType( ) );
     }
 
+    @Override
+    public ReferencePropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new ReferencePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getReferencedElementType( ) );
+    }
+
 }

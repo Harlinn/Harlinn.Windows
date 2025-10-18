@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class GeoPosition2DTimeseriesValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.GeoPosition2DTimeseriesValue;
+
     private long _rowVersion = 0;
     private Guid _timeseries;
     private DateTime _timestamp;
     private Double _latitude;
     private Double _longitude;
+
+    public GeoPosition2DTimeseriesValueObject( ) {
+    }
+    public GeoPosition2DTimeseriesValueObject( byte objectState, Guid id, long rowVersion, Guid timeseries, DateTime timestamp, Double latitude, Double longitude ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timeseries = timeseries;
+        this._timestamp = timestamp;
+        this._latitude = latitude;
+        this._longitude = longitude;
+    }
 
     @Override
     public int getObjectType( ) {

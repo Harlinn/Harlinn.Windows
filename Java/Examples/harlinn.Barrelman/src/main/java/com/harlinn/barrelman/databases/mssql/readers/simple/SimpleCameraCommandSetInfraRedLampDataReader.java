@@ -40,4 +40,9 @@ public class SimpleCameraCommandSetInfraRedLampDataReader extends SimpleCameraCo
         destination.writeBoolean( getEnabled( ) );
     }
 
+    @Override
+    public CameraCommandSetInfraRedLampObject GetDataObject( ) throws SQLException {
+        return new CameraCommandSetInfraRedLampObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getEnabled( ) );
+    }
+
 }

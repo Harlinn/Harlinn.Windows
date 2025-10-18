@@ -75,4 +75,8 @@ public class SimpleTrackLinkDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public TrackLinkObject GetDataObject( ) throws SQLException {
+            return new TrackLinkObject( ObjectState.Stored, getId( ), getRowVersion( ), getPrimary( ), getSecondary( ), getStart( ), getEnd( ) );
+    }
+
 }

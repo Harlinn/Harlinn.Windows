@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class SByteTimeseriesValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.SByteTimeseriesValue;
+
     private long _rowVersion = 0;
     private Guid _timeseries;
     private DateTime _timestamp;
     private Byte _value;
+
+    public SByteTimeseriesValueObject( ) {
+    }
+    public SByteTimeseriesValueObject( byte objectState, Guid id, long rowVersion, Guid timeseries, DateTime timestamp, Byte value ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timeseries = timeseries;
+        this._timestamp = timestamp;
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

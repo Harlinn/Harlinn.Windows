@@ -61,4 +61,9 @@ public class SimpleAisBinaryBroadcastMessageDataReader extends SimpleAisMessageD
         destination.writeStringUtf8( getData( ) );
     }
 
+    @Override
+    public AisBinaryBroadcastMessageObject GetDataObject( ) throws SQLException {
+        return new AisBinaryBroadcastMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSpare( ), getDesignatedAreaCode( ), getFunctionalId( ), getData( ) );
+    }
+
 }

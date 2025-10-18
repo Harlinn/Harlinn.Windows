@@ -45,4 +45,9 @@ public class SimpleAisPositionReportClassAMessageDataReader extends SimpleAisPos
         super.writeTo( destination );
     }
 
+    @Override
+    public AisPositionReportClassAMessageObject GetDataObject( ) throws SQLException {
+        return new AisPositionReportClassAMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationStatus( ), getRateOfTurn( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getManeuverIndicator( ), getSpare( ), getRaim( ), getRadioStatus( ) );
+    }
+
 }

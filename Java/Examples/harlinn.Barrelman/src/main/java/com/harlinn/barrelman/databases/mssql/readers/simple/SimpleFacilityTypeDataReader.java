@@ -54,4 +54,8 @@ public class SimpleFacilityTypeDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public FacilityTypeObject GetDataObject( ) throws SQLException {
+            return new FacilityTypeObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ) );
+    }
+
 }

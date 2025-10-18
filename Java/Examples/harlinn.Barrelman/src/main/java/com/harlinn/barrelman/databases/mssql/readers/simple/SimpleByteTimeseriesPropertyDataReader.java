@@ -37,4 +37,9 @@ public class SimpleByteTimeseriesPropertyDataReader extends SimpleTimeseriesProp
         destination.writeNullableGuid( getTimeseries( ) );
     }
 
+    @Override
+    public ByteTimeseriesPropertyObject GetDataObject( ) throws SQLException {
+        return new ByteTimeseriesPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getTimeseries( ) );
+    }
+
 }

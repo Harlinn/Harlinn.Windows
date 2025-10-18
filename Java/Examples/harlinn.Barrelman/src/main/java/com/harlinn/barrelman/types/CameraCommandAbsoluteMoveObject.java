@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandAbsoluteMove;
+
     private int _positionPanTiltMode = CameraPanTiltMode.Unknown;
     private Double _panAngle;
     private Double _tiltAngle;
@@ -16,6 +18,22 @@ public class CameraCommandAbsoluteMoveObject extends CameraCommandObject {
     private Double _tiltSpeed;
     private int _speedFocalLengthMode = CameraFocalLengthMode.Unknown;
     private Double _zoomSpeed;
+
+    public CameraCommandAbsoluteMoveObject( ) {
+    }
+    public CameraCommandAbsoluteMoveObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, int positionPanTiltMode, Double panAngle, Double tiltAngle, int positionFocalLengthMode, Double focalLength, int speedPanTiltMode, Double panSpeed, Double tiltSpeed, int speedFocalLengthMode, Double zoomSpeed ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._positionPanTiltMode = positionPanTiltMode;
+        this._panAngle = panAngle;
+        this._tiltAngle = tiltAngle;
+        this._positionFocalLengthMode = positionFocalLengthMode;
+        this._focalLength = focalLength;
+        this._speedPanTiltMode = speedPanTiltMode;
+        this._panSpeed = panSpeed;
+        this._tiltSpeed = tiltSpeed;
+        this._speedFocalLengthMode = speedFocalLengthMode;
+        this._zoomSpeed = zoomSpeed;
+    }
 
     @Override
     public int getObjectType( ) {

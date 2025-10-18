@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class GyroDeviceCommandObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.GyroDeviceCommand;
+
     private long _rowVersion = 0;
     private Guid _gyroDevice;
     private DateTime _timestamp;
     private int _deviceCommandSourceType = DeviceCommandSourceType.Unknown;
     private Guid _deviceCommandSourceId;
     private Guid _reply;
+
+    public GyroDeviceCommandObject( ) {
+    }
+    public GyroDeviceCommandObject( byte objectState, Guid id, long rowVersion, Guid gyroDevice, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._gyroDevice = gyroDevice;
+        this._timestamp = timestamp;
+        this._deviceCommandSourceType = deviceCommandSourceType;
+        this._deviceCommandSourceId = deviceCommandSourceId;
+        this._reply = reply;
+    }
 
     @Override
     public int getObjectType( ) {

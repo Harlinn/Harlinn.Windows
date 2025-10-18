@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class UInt16PropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.UInt16Property;
+
     private short _value = 0;
+
+    public UInt16PropertyObject( ) {
+    }
+    public UInt16PropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, short value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleWeatherStationAbsoluteHumidityTimeseriesDataReader extends Si
         destination.writeNullableGuid( getWeatherStation( ) );
     }
 
+    @Override
+    public WeatherStationAbsoluteHumidityTimeseriesObject GetDataObject( ) throws SQLException {
+        return new WeatherStationAbsoluteHumidityTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
+    }
+
 }

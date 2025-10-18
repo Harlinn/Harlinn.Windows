@@ -30,4 +30,9 @@ public class SimpleSByteTimeseriesDataReader extends SimpleTimeseriesDataReader 
         super.writeTo( destination );
     }
 
+    @Override
+    public SByteTimeseriesObject GetDataObject( ) throws SQLException {
+        return new SByteTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

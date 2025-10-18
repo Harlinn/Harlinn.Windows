@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class GuidPropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.GuidPropertyDefinition;
+
     private Guid _defaultValue;
+
+    public GuidPropertyDefinitionObject( ) {
+    }
+    public GuidPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, Guid defaultValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+    }
 
     @Override
     public int getObjectType( ) {

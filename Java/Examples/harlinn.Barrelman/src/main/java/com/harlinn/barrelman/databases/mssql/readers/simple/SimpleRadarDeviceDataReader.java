@@ -193,4 +193,9 @@ public class SimpleRadarDeviceDataReader extends SimpleTrackerDeviceDataReader {
         destination.writeNullableGuid( getGNSSDevice( ) );
     }
 
+    @Override
+    public RadarDeviceObject GetDataObject( ) throws SQLException {
+        return new RadarDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getSaveSettingsTimeseries( ), getPowerOnTimeseries( ), getTrackingOnTimeseries( ), getRadarPulseTimeseries( ), getTuningTimeseries( ), getBlankSector1Timeseries( ), getSector1StartTimeseries( ), getSector1EndTimeseries( ), getBlankSector2Timeseries( ), getSector2StartTimeseries( ), getSector2EndTimeseries( ), getEnableAutomaticFrequencyControlTimeseries( ), getAzimuthOffsetTimeseries( ), getEnableSensitivityTimeControlTimeseries( ), getAutomaticSensitivityTimeControlTimeseries( ), getSensitivityTimeControlLevelTimeseries( ), getEnableFastTimeConstantTimeseries( ), getFastTimeConstantLevelTimeseries( ), getFastTimeConstantModeTimeseries( ), getLatitudeTimeseries( ), getLongitudeTimeseries( ), getRadome( ), getGNSSDevice( ) );
+    }
+
 }

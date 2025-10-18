@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class OilSpillObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.OilSpill;
+
     private long _rowVersion = 0;
     private Guid _oilSpillDetector;
     private DateTime _timestamp;
@@ -14,6 +16,20 @@ public class OilSpillObject extends AbstractDataObjectWithGuidKey {
     private byte[] _bSI = new byte[0];
     private byte[] _oil = new byte[0];
     private byte[] _trace = new byte[0];
+
+    public OilSpillObject( ) {
+    }
+    public OilSpillObject( byte objectState, Guid id, long rowVersion, Guid oilSpillDetector, DateTime timestamp, double oilArea, byte[] shape, byte[] bSI, byte[] oil, byte[] trace ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._oilSpillDetector = oilSpillDetector;
+        this._timestamp = timestamp;
+        this._oilArea = oilArea;
+        this._shape = shape;
+        this._bSI = bSI;
+        this._oil = oil;
+        this._trace = trace;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisStaticAndVoyageRelatedDataMessage;
+
     private int _aisVersion = 0;
     private Guid _imoNumber;
     private Guid _callsign;
@@ -21,6 +23,27 @@ public class AisStaticAndVoyageRelatedDataMessageObject extends AisMessageObject
     private String _destination = "";
     private boolean _dataTerminalReady = false;
     private int _spare = 0;
+
+    public AisStaticAndVoyageRelatedDataMessageObject( ) {
+    }
+    public AisStaticAndVoyageRelatedDataMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int aisVersion, Guid imoNumber, Guid callsign, Guid shipName, int shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, int positionFixType, DateTime estimatedTimeOfArrival, double draught, String destination, boolean dataTerminalReady, int spare ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._aisVersion = aisVersion;
+        this._imoNumber = imoNumber;
+        this._callsign = callsign;
+        this._shipName = shipName;
+        this._shipType = shipType;
+        this._dimensionToBow = dimensionToBow;
+        this._dimensionToStern = dimensionToStern;
+        this._dimensionToPort = dimensionToPort;
+        this._dimensionToStarboard = dimensionToStarboard;
+        this._positionFixType = positionFixType;
+        this._estimatedTimeOfArrival = estimatedTimeOfArrival;
+        this._draught = draught;
+        this._destination = destination;
+        this._dataTerminalReady = dataTerminalReady;
+        this._spare = spare;
+    }
 
     @Override
     public int getObjectType( ) {

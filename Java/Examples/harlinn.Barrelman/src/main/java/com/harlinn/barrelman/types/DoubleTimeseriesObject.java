@@ -6,6 +6,14 @@ import com.harlinn.common.util.*;
 
 public class DoubleTimeseriesObject extends TimeseriesObject {
 
+    public final int KIND = Kind.DoubleTimeseries;
+
+
+    public DoubleTimeseriesObject( ) {
+    }
+    public DoubleTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+    }
 
     @Override
     public int getObjectType( ) {

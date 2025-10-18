@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.GNSSDeviceConfiguration;
+
     private long _rowVersion = 0;
     private Guid _gNSSDevice;
     private DateTime _timestamp;
@@ -15,6 +17,21 @@ public class GNSSDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
     private double _latitudeOffset = 0.0;
     private double _longitudeOffset = 0.0;
     private double _altitudeOffset = 0.0;
+
+    public GNSSDeviceConfigurationObject( ) {
+    }
+    public GNSSDeviceConfigurationObject( byte objectState, Guid id, long rowVersion, Guid gNSSDevice, DateTime timestamp, double defaultLatitude, double defaultLongitude, double defaultAltitude, double latitudeOffset, double longitudeOffset, double altitudeOffset ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._gNSSDevice = gNSSDevice;
+        this._timestamp = timestamp;
+        this._defaultLatitude = defaultLatitude;
+        this._defaultLongitude = defaultLongitude;
+        this._defaultAltitude = defaultAltitude;
+        this._latitudeOffset = latitudeOffset;
+        this._longitudeOffset = longitudeOffset;
+        this._altitudeOffset = altitudeOffset;
+    }
 
     @Override
     public int getObjectType( ) {

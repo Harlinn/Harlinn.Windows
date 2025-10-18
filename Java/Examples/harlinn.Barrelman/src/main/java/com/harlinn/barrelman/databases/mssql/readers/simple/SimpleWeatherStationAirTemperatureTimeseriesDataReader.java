@@ -38,4 +38,9 @@ public class SimpleWeatherStationAirTemperatureTimeseriesDataReader extends Simp
         destination.writeNullableGuid( getWeatherStation( ) );
     }
 
+    @Override
+    public WeatherStationAirTemperatureTimeseriesObject GetDataObject( ) throws SQLException {
+        return new WeatherStationAirTemperatureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
+    }
+
 }

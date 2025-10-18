@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class DoubleTimeseriesPropertyDefinitionObject extends TimeseriesPropertyDefinitionObject {
 
+    public final int KIND = Kind.DoubleTimeseriesPropertyDefinition;
+
     private double _minValue = 0.0;
     private double _maxValue = 0.0;
+
+    public DoubleTimeseriesPropertyDefinitionObject( ) {
+    }
+    public DoubleTimeseriesPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, double minValue, double maxValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._minValue = minValue;
+        this._maxValue = maxValue;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class TrackerFilterParametersObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackerFilterParameters;
+
     private long _rowVersion = 0;
     private Guid _tracker;
     private String _name = "";
+
+    public TrackerFilterParametersObject( ) {
+    }
+    public TrackerFilterParametersObject( byte objectState, Guid id, long rowVersion, Guid tracker, String name ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._tracker = tracker;
+        this._name = name;
+    }
 
     @Override
     public int getObjectType( ) {

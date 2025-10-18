@@ -67,4 +67,9 @@ public class SimpleRadomeDeviceDataReader extends SimpleDeviceDataReader {
         destination.writeNullableGuid( getStatusTimeseries( ) );
     }
 
+    @Override
+    public RadomeDeviceObject GetDataObject( ) throws SQLException {
+        return new RadomeDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getRadar( ), getPressureTimeseries( ), getTemperatureTimeseries( ), getDewPointTimeseries( ), getStatusTimeseries( ) );
+    }
+
 }

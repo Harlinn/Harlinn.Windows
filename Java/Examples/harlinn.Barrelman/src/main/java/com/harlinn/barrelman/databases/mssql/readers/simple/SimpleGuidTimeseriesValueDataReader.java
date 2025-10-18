@@ -68,4 +68,8 @@ public class SimpleGuidTimeseriesValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public GuidTimeseriesValueObject GetDataObject( ) throws SQLException {
+            return new GuidTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getValue( ) );
+    }
+
 }

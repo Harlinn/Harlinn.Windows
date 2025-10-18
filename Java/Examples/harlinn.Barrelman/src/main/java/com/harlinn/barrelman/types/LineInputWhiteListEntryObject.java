@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class LineInputWhiteListEntryObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LineInputWhiteListEntry;
+
     private long _rowVersion = 0;
     private Guid _lineInputDevice;
     private String _hostName = "";
     private int _port = 0;
+
+    public LineInputWhiteListEntryObject( ) {
+    }
+    public LineInputWhiteListEntryObject( byte objectState, Guid id, long rowVersion, Guid lineInputDevice, String hostName, int port ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._lineInputDevice = lineInputDevice;
+        this._hostName = hostName;
+        this._port = port;
+    }
 
     @Override
     public int getObjectType( ) {

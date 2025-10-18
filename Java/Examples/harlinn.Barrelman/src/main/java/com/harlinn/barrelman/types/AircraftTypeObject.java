@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class AircraftTypeObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.AircraftType;
+
     private long _rowVersion = 0;
     private String _name = "";
+
+    public AircraftTypeObject( ) {
+    }
+    public AircraftTypeObject( byte objectState, Guid id, long rowVersion, String name ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._name = name;
+    }
 
     @Override
     public int getObjectType( ) {

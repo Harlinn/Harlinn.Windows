@@ -61,4 +61,8 @@ public class SimpleLogApplicationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public LogApplicationObject GetDataObject( ) throws SQLException {
+            return new LogApplicationObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getDescription( ) );
+    }
+
 }

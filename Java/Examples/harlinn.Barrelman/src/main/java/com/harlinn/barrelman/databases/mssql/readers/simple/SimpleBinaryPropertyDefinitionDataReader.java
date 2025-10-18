@@ -38,4 +38,9 @@ public class SimpleBinaryPropertyDefinitionDataReader extends SimplePropertyDefi
         destination.writeUInt8Array( getDefaultValue( ) );
     }
 
+    @Override
+    public BinaryPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new BinaryPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ) );
+    }
+
 }

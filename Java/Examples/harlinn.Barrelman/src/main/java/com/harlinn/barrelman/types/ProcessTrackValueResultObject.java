@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class ProcessTrackValueResultObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ProcessTrackValueResult;
+
     private long _rowVersion = 0;
     private boolean _createdNewTrack = false;
     private Guid _trackId;
+
+    public ProcessTrackValueResultObject( ) {
+    }
+    public ProcessTrackValueResultObject( byte objectState, Guid id, long rowVersion, boolean createdNewTrack, Guid trackId ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._createdNewTrack = createdNewTrack;
+        this._trackId = trackId;
+    }
 
     @Override
     public int getObjectType( ) {

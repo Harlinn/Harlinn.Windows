@@ -68,4 +68,8 @@ public class SimpleCameraZoomCalibrationValueDataReader extends ResultSetWrapper
         destination.writeBoolean( false );
     }
 
+    public CameraZoomCalibrationValueObject GetDataObject( ) throws SQLException {
+            return new CameraZoomCalibrationValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getZoomCalibration( ), getFocalLength( ), getFocalLengthOffset( ) );
+    }
+
 }

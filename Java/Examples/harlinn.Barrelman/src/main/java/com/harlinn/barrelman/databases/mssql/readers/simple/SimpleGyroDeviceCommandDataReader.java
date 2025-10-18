@@ -82,4 +82,8 @@ public class SimpleGyroDeviceCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public GyroDeviceCommandObject GetDataObject( ) throws SQLException {
+            return new GyroDeviceCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getGyroDevice( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+    }
+
 }

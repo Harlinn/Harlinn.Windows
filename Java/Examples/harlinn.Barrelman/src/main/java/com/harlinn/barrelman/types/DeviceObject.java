@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public abstract class DeviceObject extends ItemObject {
 
+    public final int KIND = Kind.Device;
+
     private Guid _host;
     private String _name = "";
     private String _description = "";
     private Guid _enabledTimeseries;
+
+    public DeviceObject( ) {
+    }
+    public DeviceObject( byte objectState, Guid id, long rowVersion, Guid host, String name, String description, Guid enabledTimeseries ) {
+        super( objectState, id, rowVersion );
+        this._host = host;
+        this._name = name;
+        this._description = description;
+        this._enabledTimeseries = enabledTimeseries;
+    }
 
 
     public Guid getHost( ) {

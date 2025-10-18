@@ -68,4 +68,8 @@ public class SimpleTimeseriesInfoDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public TimeseriesInfoObject GetDataObject( ) throws SQLException {
+            return new TimeseriesInfoObject( ObjectState.Stored, getId( ), getRowVersion( ), getFirstTimestamp( ), getLastTimestamp( ), getCount( ) );
+    }
+
 }

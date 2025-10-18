@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class CameraTiltCalibrationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CameraTiltCalibration;
+
     private long _rowVersion = 0;
     private Guid _camera;
     private DateTime _timestamp;
+
+    public CameraTiltCalibrationObject( ) {
+    }
+    public CameraTiltCalibrationObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._camera = camera;
+        this._timestamp = timestamp;
+    }
 
     @Override
     public int getObjectType( ) {

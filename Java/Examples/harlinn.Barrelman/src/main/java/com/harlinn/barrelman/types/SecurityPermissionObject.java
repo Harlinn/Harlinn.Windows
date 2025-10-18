@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.SecurityPermission;
+
     private long _rowVersion = 0;
     private Guid _identifier;
     private DateTime _timestamp;
@@ -14,6 +16,20 @@ public class SecurityPermissionObject extends AbstractDataObjectWithGuidKey {
     private boolean _canRead = false;
     private boolean _canUpdate = false;
     private boolean _canDelete = false;
+
+    public SecurityPermissionObject( ) {
+    }
+    public SecurityPermissionObject( byte objectState, Guid id, long rowVersion, Guid identifier, DateTime timestamp, int typeCode, boolean canCreate, boolean canRead, boolean canUpdate, boolean canDelete ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._identifier = identifier;
+        this._timestamp = timestamp;
+        this._typeCode = typeCode;
+        this._canCreate = canCreate;
+        this._canRead = canRead;
+        this._canUpdate = canUpdate;
+        this._canDelete = canDelete;
+    }
 
     @Override
     public int getObjectType( ) {

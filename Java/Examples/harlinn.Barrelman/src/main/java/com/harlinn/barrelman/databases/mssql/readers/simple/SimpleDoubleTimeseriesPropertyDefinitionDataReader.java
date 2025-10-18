@@ -45,4 +45,9 @@ public class SimpleDoubleTimeseriesPropertyDefinitionDataReader extends SimpleTi
         destination.writeDouble( getMaxValue( ) );
     }
 
+    @Override
+    public DoubleTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new DoubleTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

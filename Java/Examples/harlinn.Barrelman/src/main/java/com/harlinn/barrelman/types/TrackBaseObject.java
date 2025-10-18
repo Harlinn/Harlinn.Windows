@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public abstract class TrackBaseObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackBase;
+
     private long _rowVersion = 0;
     private Guid _tracker;
     private long _trackNumber = 0;
     private DateTime _timestamp;
+
+    public TrackBaseObject( ) {
+    }
+    public TrackBaseObject( byte objectState, Guid id, long rowVersion, Guid tracker, long trackNumber, DateTime timestamp ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._tracker = tracker;
+        this._trackNumber = trackNumber;
+        this._timestamp = timestamp;
+    }
 
 
     public long getRowVersion( ) {

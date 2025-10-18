@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class RadomeCommandReplyObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadomeCommandReply;
+
     private long _rowVersion = 0;
     private Guid _radome;
     private DateTime _timestamp;
     private Guid _command;
     private int _status = DeviceCommandReplyStatus.Unknown;
     private String _message = "";
+
+    public RadomeCommandReplyObject( ) {
+    }
+    public RadomeCommandReplyObject( byte objectState, Guid id, long rowVersion, Guid radome, DateTime timestamp, Guid command, int status, String message ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radome = radome;
+        this._timestamp = timestamp;
+        this._command = command;
+        this._status = status;
+        this._message = message;
+    }
 
     @Override
     public int getObjectType( ) {

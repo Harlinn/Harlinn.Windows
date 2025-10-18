@@ -82,4 +82,8 @@ public class SimpleLineInputDeviceCommandReplyDataReader extends ResultSetWrappe
         destination.writeBoolean( false );
     }
 
+    public LineInputDeviceCommandReplyObject GetDataObject( ) throws SQLException {
+            return new LineInputDeviceCommandReplyObject( ObjectState.Stored, getId( ), getRowVersion( ), getLineInputDevice( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ) );
+    }
+
 }

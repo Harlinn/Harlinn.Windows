@@ -40,4 +40,9 @@ public class SimpleCameraCommandSetBlackAndWhiteDataReader extends SimpleCameraC
         destination.writeBoolean( getEnabled( ) );
     }
 
+    @Override
+    public CameraCommandSetBlackAndWhiteObject GetDataObject( ) throws SQLException {
+        return new CameraCommandSetBlackAndWhiteObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getEnabled( ) );
+    }
+
 }

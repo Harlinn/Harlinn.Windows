@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadomeConfiguration;
+
     private long _rowVersion = 0;
     private Guid _radome;
     private DateTime _timestamp;
@@ -14,6 +16,20 @@ public class RadomeConfigurationObject extends AbstractDataObjectWithGuidKey {
     private double _highPressureLimit = 0.0;
     private double _lowTemperatureLimit = 0.0;
     private double _highTemperatureLimit = 0.0;
+
+    public RadomeConfigurationObject( ) {
+    }
+    public RadomeConfigurationObject( byte objectState, Guid id, long rowVersion, Guid radome, DateTime timestamp, TimeSpan interval, double lowPressureLimit, double highPressureLimit, double lowTemperatureLimit, double highTemperatureLimit ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radome = radome;
+        this._timestamp = timestamp;
+        this._interval = interval;
+        this._lowPressureLimit = lowPressureLimit;
+        this._highPressureLimit = highPressureLimit;
+        this._lowTemperatureLimit = lowTemperatureLimit;
+        this._highTemperatureLimit = highTemperatureLimit;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleRadarSaveSettingsTimeseriesDataReader extends SimpleBooleanTi
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarSaveSettingsTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarSaveSettingsTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

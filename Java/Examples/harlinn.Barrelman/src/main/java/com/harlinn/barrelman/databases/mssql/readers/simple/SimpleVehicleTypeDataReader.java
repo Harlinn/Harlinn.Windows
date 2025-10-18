@@ -54,4 +54,8 @@ public class SimpleVehicleTypeDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public VehicleTypeObject GetDataObject( ) throws SQLException {
+            return new VehicleTypeObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ) );
+    }
+
 }

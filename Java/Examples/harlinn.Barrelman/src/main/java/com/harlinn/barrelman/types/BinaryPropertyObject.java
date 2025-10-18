@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class BinaryPropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.BinaryProperty;
+
     private byte[] _value = new byte[0];
+
+    public BinaryPropertyObject( ) {
+    }
+    public BinaryPropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, byte[] value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

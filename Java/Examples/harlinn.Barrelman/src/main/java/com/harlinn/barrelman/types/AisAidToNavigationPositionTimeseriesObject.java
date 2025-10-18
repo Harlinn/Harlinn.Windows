@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class AisAidToNavigationPositionTimeseriesObject extends GeoPosition2DTimeseriesObject {
 
+    public final int KIND = Kind.AisAidToNavigationPositionTimeseries;
+
     private Guid _aidToNavigation;
+
+    public AisAidToNavigationPositionTimeseriesObject( ) {
+    }
+    public AisAidToNavigationPositionTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid aidToNavigation ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._aidToNavigation = aidToNavigation;
+    }
 
     @Override
     public int getObjectType( ) {

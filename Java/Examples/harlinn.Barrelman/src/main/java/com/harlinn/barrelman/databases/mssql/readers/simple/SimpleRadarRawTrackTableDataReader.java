@@ -75,4 +75,8 @@ public class SimpleRadarRawTrackTableDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public RadarRawTrackTableObject GetDataObject( ) throws SQLException {
+            return new RadarRawTrackTableObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getCount( ), getTable( ) );
+    }
+
 }

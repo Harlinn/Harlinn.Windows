@@ -30,4 +30,9 @@ public class SimpleSecurityLoginDataReader extends SimpleSecurityIdentifierDataR
         super.writeTo( destination );
     }
 
+    @Override
+    public SecurityLoginObject GetDataObject( ) throws SQLException {
+        return new SecurityLoginObject( ObjectState.Stored, getId( ), getRowVersion( ), getDomain( ), getIdentity( ), getDescription( ) );
+    }
+
 }

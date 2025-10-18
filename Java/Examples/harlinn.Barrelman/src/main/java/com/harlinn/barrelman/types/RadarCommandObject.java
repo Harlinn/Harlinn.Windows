@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class RadarCommandObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadarCommand;
+
     private long _rowVersion = 0;
     private Guid _radar;
     private DateTime _timestamp;
     private int _deviceCommandSourceType = DeviceCommandSourceType.Unknown;
     private Guid _deviceCommandSourceId;
     private Guid _reply;
+
+    public RadarCommandObject( ) {
+    }
+    public RadarCommandObject( byte objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radar = radar;
+        this._timestamp = timestamp;
+        this._deviceCommandSourceType = deviceCommandSourceType;
+        this._deviceCommandSourceId = deviceCommandSourceId;
+        this._reply = reply;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleRadarSensitivityTimeControlLevelTimeseriesDataReader extends 
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarSensitivityTimeControlLevelTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarSensitivityTimeControlLevelTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

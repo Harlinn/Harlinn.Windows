@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public abstract class PropertyDefinitionObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.PropertyDefinition;
+
     private long _rowVersion = 0;
     private Guid _elementType;
     private String _name = "";
     private String _description = "";
+
+    public PropertyDefinitionObject( ) {
+    }
+    public PropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._elementType = elementType;
+        this._name = name;
+        this._description = description;
+    }
 
 
     public long getRowVersion( ) {

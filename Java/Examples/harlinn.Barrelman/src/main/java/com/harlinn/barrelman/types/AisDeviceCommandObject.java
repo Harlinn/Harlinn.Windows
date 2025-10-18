@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class AisDeviceCommandObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.AisDeviceCommand;
+
     private long _rowVersion = 0;
     private Guid _aisDevice;
     private DateTime _timestamp;
     private int _deviceCommandSourceType = DeviceCommandSourceType.Unknown;
     private Guid _deviceCommandSourceId;
     private Guid _reply;
+
+    public AisDeviceCommandObject( ) {
+    }
+    public AisDeviceCommandObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._aisDevice = aisDevice;
+        this._timestamp = timestamp;
+        this._deviceCommandSourceType = deviceCommandSourceType;
+        this._deviceCommandSourceId = deviceCommandSourceId;
+        this._reply = reply;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandSetWiperObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandSetWiper;
+
     private boolean _enabled = false;
+
+    public CameraCommandSetWiperObject( ) {
+    }
+    public CameraCommandSetWiperObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, boolean enabled ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._enabled = enabled;
+    }
 
     @Override
     public int getObjectType( ) {

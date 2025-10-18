@@ -35,4 +35,9 @@ public class SimpleInternationalMaritimeOrganizationNumberDataReader extends Sim
         destination.writeInt64( getIdentifier( ) );
     }
 
+    @Override
+    public InternationalMaritimeOrganizationNumberObject GetDataObject( ) throws SQLException {
+        return new InternationalMaritimeOrganizationNumberObject( ObjectState.Stored, getId( ), getRowVersion( ), getIdentifier( ) );
+    }
+
 }

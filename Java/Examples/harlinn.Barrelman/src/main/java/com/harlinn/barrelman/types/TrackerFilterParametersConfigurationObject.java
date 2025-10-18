@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class TrackerFilterParametersConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackerFilterParametersConfiguration;
+
     private long _rowVersion = 0;
     private Guid _parameters;
     private DateTime _timestamp;
@@ -22,6 +24,28 @@ public class TrackerFilterParametersConfigurationObject extends AbstractDataObje
     private double _deltaRMin = 0.0;
     private double _deltaVMax = 0.0;
     private double _deltaAMax = 0.0;
+
+    public TrackerFilterParametersConfigurationObject( ) {
+    }
+    public TrackerFilterParametersConfigurationObject( byte objectState, Guid id, long rowVersion, Guid parameters, DateTime timestamp, boolean useNaivePredictor, int numberOfPoints, int windowSize, int stabilizeCount, int maxBadPoints, int modelType, double sigmaR, double sigmaAcc, double tauVel, double tauAcc, double deltaRMin, double deltaVMax, double deltaAMax ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._parameters = parameters;
+        this._timestamp = timestamp;
+        this._useNaivePredictor = useNaivePredictor;
+        this._numberOfPoints = numberOfPoints;
+        this._windowSize = windowSize;
+        this._stabilizeCount = stabilizeCount;
+        this._maxBadPoints = maxBadPoints;
+        this._modelType = modelType;
+        this._sigmaR = sigmaR;
+        this._sigmaAcc = sigmaAcc;
+        this._tauVel = tauVel;
+        this._tauAcc = tauAcc;
+        this._deltaRMin = deltaRMin;
+        this._deltaVMax = deltaVMax;
+        this._deltaAMax = deltaAMax;
+    }
 
     @Override
     public int getObjectType( ) {

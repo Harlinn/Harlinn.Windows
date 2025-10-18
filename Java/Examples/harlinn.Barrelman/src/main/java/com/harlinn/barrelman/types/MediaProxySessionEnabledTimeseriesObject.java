@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class MediaProxySessionEnabledTimeseriesObject extends BooleanTimeseriesObject {
 
+    public final int KIND = Kind.MediaProxySessionEnabledTimeseries;
+
     private Guid _proxySession;
+
+    public MediaProxySessionEnabledTimeseriesObject( ) {
+    }
+    public MediaProxySessionEnabledTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid proxySession ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._proxySession = proxySession;
+    }
 
     @Override
     public int getObjectType( ) {

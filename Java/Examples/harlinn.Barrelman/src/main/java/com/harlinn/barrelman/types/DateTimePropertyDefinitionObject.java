@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class DateTimePropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.DateTimePropertyDefinition;
+
     private String _defaultValue = "";
     private String _minValue = "";
     private String _maxValue = "";
+
+    public DateTimePropertyDefinitionObject( ) {
+    }
+    public DateTimePropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, String defaultValue, String minValue, String maxValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+        this._minValue = minValue;
+        this._maxValue = maxValue;
+    }
 
     @Override
     public int getObjectType( ) {

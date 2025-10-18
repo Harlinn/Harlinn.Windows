@@ -37,4 +37,9 @@ public class SimpleBinaryPropertyDataReader extends SimplePropertyDataReader {
         destination.writeUInt8Array( getValue( ) );
     }
 
+    @Override
+    public BinaryPropertyObject GetDataObject( ) throws SQLException {
+        return new BinaryPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
+    }
+
 }

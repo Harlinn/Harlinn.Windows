@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class StringTimeseriesPropertyDefinitionObject extends TimeseriesPropertyDefinitionObject {
 
+    public final int KIND = Kind.StringTimeseriesPropertyDefinition;
+
     private String _pattern = "";
+
+    public StringTimeseriesPropertyDefinitionObject( ) {
+    }
+    public StringTimeseriesPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, String pattern ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._pattern = pattern;
+    }
 
     @Override
     public int getObjectType( ) {

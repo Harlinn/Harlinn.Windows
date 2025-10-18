@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class UInt32TimeseriesValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.UInt32TimeseriesValue;
+
     private long _rowVersion = 0;
     private Guid _timeseries;
     private DateTime _timestamp;
     private Integer _value;
+
+    public UInt32TimeseriesValueObject( ) {
+    }
+    public UInt32TimeseriesValueObject( byte objectState, Guid id, long rowVersion, Guid timeseries, DateTime timestamp, Integer value ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timeseries = timeseries;
+        this._timestamp = timestamp;
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class RadarRawTrackTableObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadarRawTrackTable;
+
     private long _rowVersion = 0;
     private Guid _radar;
     private DateTime _timestamp;
     private int _count = 0;
     private byte[] _table = new byte[0];
+
+    public RadarRawTrackTableObject( ) {
+    }
+    public RadarRawTrackTableObject( byte objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, int count, byte[] table ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radar = radar;
+        this._timestamp = timestamp;
+        this._count = count;
+        this._table = table;
+    }
 
     @Override
     public int getObjectType( ) {

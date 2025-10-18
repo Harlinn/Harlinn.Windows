@@ -89,4 +89,9 @@ public class SimpleAisBaseStationReportMessageDataReader extends SimpleAisMessag
         destination.writeInt32( getRadioStatus( ) );
     }
 
+    @Override
+    public AisBaseStationReportMessageObject GetDataObject( ) throws SQLException {
+        return new AisBaseStationReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getTimestamp( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getPositionFixType( ), getSpare( ), getRaim( ), getRadioStatus( ) );
+    }
+
 }

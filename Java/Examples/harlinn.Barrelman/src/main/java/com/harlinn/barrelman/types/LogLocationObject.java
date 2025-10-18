@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class LogLocationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LogLocation;
+
     private long _rowVersion = 0;
     private String _fileName = "";
     private int _lineNumber = 0;
     private String _namespace = "";
     private String _className = "";
     private String _methodName = "";
+
+    public LogLocationObject( ) {
+    }
+    public LogLocationObject( byte objectState, Guid id, long rowVersion, String fileName, int lineNumber, String namespace, String className, String methodName ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._fileName = fileName;
+        this._lineNumber = lineNumber;
+        this._namespace = namespace;
+        this._className = className;
+        this._methodName = methodName;
+    }
 
     @Override
     public int getObjectType( ) {

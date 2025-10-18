@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class AlarmStateChangeObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.AlarmStateChange;
+
     private long _rowVersion = 0;
     private Guid _alarm;
     private DateTime _timestamp;
     private int _state = AlarmState.Unknown;
+
+    public AlarmStateChangeObject( ) {
+    }
+    public AlarmStateChangeObject( byte objectState, Guid id, long rowVersion, Guid alarm, DateTime timestamp, int state ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._alarm = alarm;
+        this._timestamp = timestamp;
+        this._state = state;
+    }
 
     @Override
     public int getObjectType( ) {

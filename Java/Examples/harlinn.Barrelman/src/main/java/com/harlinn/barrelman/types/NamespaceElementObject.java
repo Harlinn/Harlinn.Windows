@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public abstract class NamespaceElementObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.NamespaceElement;
+
     private long _rowVersion = 0;
     private Guid _namespace;
     private String _name = "";
     private String _description = "";
+
+    public NamespaceElementObject( ) {
+    }
+    public NamespaceElementObject( byte objectState, Guid id, long rowVersion, Guid namespace, String name, String description ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._namespace = namespace;
+        this._name = name;
+        this._description = description;
+    }
 
 
     public long getRowVersion( ) {

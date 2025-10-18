@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisExtendedClassBCsPositionReportMessage;
+
     private int _reserved = 0;
     private double _speedOverGround = 0.0;
     private int _positionAccuracy = PositionAccuracy.Low;
@@ -26,6 +28,32 @@ public class AisExtendedClassBCsPositionReportMessageObject extends AisMessageOb
     private boolean _dataTerminalReady = false;
     private boolean _assigned = false;
     private int _spare = 0;
+
+    public AisExtendedClassBCsPositionReportMessageObject( ) {
+    }
+    public AisExtendedClassBCsPositionReportMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, int positionAccuracy, double longitude, double latitude, double courseOverGround, Integer trueHeading, int timestamp, int regionalReserved, Guid name, int shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, int positionFixType, int raim, boolean dataTerminalReady, boolean assigned, int spare ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._reserved = reserved;
+        this._speedOverGround = speedOverGround;
+        this._positionAccuracy = positionAccuracy;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._courseOverGround = courseOverGround;
+        this._trueHeading = trueHeading;
+        this._timestamp = timestamp;
+        this._regionalReserved = regionalReserved;
+        this._name = name;
+        this._shipType = shipType;
+        this._dimensionToBow = dimensionToBow;
+        this._dimensionToStern = dimensionToStern;
+        this._dimensionToPort = dimensionToPort;
+        this._dimensionToStarboard = dimensionToStarboard;
+        this._positionFixType = positionFixType;
+        this._raim = raim;
+        this._dataTerminalReady = dataTerminalReady;
+        this._assigned = assigned;
+        this._spare = spare;
+    }
 
     @Override
     public int getObjectType( ) {

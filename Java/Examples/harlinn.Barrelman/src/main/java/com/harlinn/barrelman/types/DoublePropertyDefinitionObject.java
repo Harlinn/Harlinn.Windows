@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class DoublePropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.DoublePropertyDefinition;
+
     private double _defaultValue = 0.0;
     private double _minValue = 0.0;
     private double _maxValue = 0.0;
+
+    public DoublePropertyDefinitionObject( ) {
+    }
+    public DoublePropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, double defaultValue, double minValue, double maxValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+        this._minValue = minValue;
+        this._maxValue = maxValue;
+    }
 
     @Override
     public int getObjectType( ) {

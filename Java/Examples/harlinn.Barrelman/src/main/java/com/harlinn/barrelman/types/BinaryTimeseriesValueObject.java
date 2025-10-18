@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class BinaryTimeseriesValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.BinaryTimeseriesValue;
+
     private long _rowVersion = 0;
     private Guid _timeseries;
     private DateTime _timestamp;
     private byte[] _value = new byte[0];
+
+    public BinaryTimeseriesValueObject( ) {
+    }
+    public BinaryTimeseriesValueObject( byte objectState, Guid id, long rowVersion, Guid timeseries, DateTime timestamp, byte[] value ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timeseries = timeseries;
+        this._timestamp = timestamp;
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

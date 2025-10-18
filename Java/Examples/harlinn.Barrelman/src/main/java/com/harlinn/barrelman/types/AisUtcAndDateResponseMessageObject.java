@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisUtcAndDateResponseMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisUtcAndDateResponseMessage;
+
     private DateTime _datetime;
     private int _positionAccuracy = PositionAccuracy.Low;
     private double _longitude = 0.0;
@@ -14,6 +16,20 @@ public class AisUtcAndDateResponseMessageObject extends AisMessageObject {
     private int _spare = 0;
     private int _raim = Raim.NotInUse;
     private int _radioStatus = 0;
+
+    public AisUtcAndDateResponseMessageObject( ) {
+    }
+    public AisUtcAndDateResponseMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime datetime, int positionAccuracy, double longitude, double latitude, int positionFixType, int spare, int raim, int radioStatus ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._datetime = datetime;
+        this._positionAccuracy = positionAccuracy;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._positionFixType = positionFixType;
+        this._spare = spare;
+        this._raim = raim;
+        this._radioStatus = radioStatus;
+    }
 
     @Override
     public int getObjectType( ) {

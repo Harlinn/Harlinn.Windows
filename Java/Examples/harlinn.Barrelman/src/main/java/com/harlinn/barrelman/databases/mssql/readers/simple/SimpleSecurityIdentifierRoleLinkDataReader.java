@@ -75,4 +75,8 @@ public class SimpleSecurityIdentifierRoleLinkDataReader extends ResultSetWrapper
         destination.writeBoolean( false );
     }
 
+    public SecurityIdentifierRoleLinkObject GetDataObject( ) throws SQLException {
+            return new SecurityIdentifierRoleLinkObject( ObjectState.Stored, getId( ), getRowVersion( ), getMember( ), getRole( ), getStart( ), getEnd( ) );
+    }
+
 }

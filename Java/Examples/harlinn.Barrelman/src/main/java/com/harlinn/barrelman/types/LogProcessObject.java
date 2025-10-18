@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class LogProcessObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LogProcess;
+
     private long _rowVersion = 0;
     private Guid _application;
     private Guid _host;
@@ -14,6 +16,20 @@ public class LogProcessObject extends AbstractDataObjectWithGuidKey {
     private long _processId = 0;
     private String _path = "";
     private String _identity = "";
+
+    public LogProcessObject( ) {
+    }
+    public LogProcessObject( byte objectState, Guid id, long rowVersion, Guid application, Guid host, DateTime started, DateTime stopped, long processId, String path, String identity ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._application = application;
+        this._host = host;
+        this._started = started;
+        this._stopped = stopped;
+        this._processId = processId;
+        this._path = path;
+        this._identity = identity;
+    }
 
     @Override
     public int getObjectType( ) {

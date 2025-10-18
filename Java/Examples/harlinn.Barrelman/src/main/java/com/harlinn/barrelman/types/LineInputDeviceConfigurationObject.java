@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LineInputDeviceConfiguration;
+
     private long _rowVersion = 0;
     private Guid _lineInputDevice;
     private DateTime _timestamp;
@@ -42,6 +44,48 @@ public class LineInputDeviceConfigurationObject extends AbstractDataObjectWithGu
     private int _writeBufferSize = 0;
     private TimeSpan _writeTimeout;
     private String _pairedComPort = "";
+
+    public LineInputDeviceConfigurationObject( ) {
+    }
+    public LineInputDeviceConfigurationObject( byte objectState, Guid id, long rowVersion, Guid lineInputDevice, DateTime timestamp, boolean storeReceivedSentences, boolean storeSentMessages, boolean storeUnsentMessages, boolean nMEA, boolean strictNMEA, int connectionType, int udpReceivePort, String udpSendHostname, int udpSendPort, String tcpHostname, int tcpPort, boolean useHttpLogin, String loginHostname, int loginPort, String userName, String password, String comPort, int baudRate, int dataBits, boolean discardNull, boolean dtrEnable, int handshake, String newLine, int parity, byte parityReplace, int readBufferSize, TimeSpan readTimeout, int receivedBytesThreshold, boolean rtsEnable, int stopBits, int writeBufferSize, TimeSpan writeTimeout, String pairedComPort ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._lineInputDevice = lineInputDevice;
+        this._timestamp = timestamp;
+        this._storeReceivedSentences = storeReceivedSentences;
+        this._storeSentMessages = storeSentMessages;
+        this._storeUnsentMessages = storeUnsentMessages;
+        this._nMEA = nMEA;
+        this._strictNMEA = strictNMEA;
+        this._connectionType = connectionType;
+        this._udpReceivePort = udpReceivePort;
+        this._udpSendHostname = udpSendHostname;
+        this._udpSendPort = udpSendPort;
+        this._tcpHostname = tcpHostname;
+        this._tcpPort = tcpPort;
+        this._useHttpLogin = useHttpLogin;
+        this._loginHostname = loginHostname;
+        this._loginPort = loginPort;
+        this._userName = userName;
+        this._password = password;
+        this._comPort = comPort;
+        this._baudRate = baudRate;
+        this._dataBits = dataBits;
+        this._discardNull = discardNull;
+        this._dtrEnable = dtrEnable;
+        this._handshake = handshake;
+        this._newLine = newLine;
+        this._parity = parity;
+        this._parityReplace = parityReplace;
+        this._readBufferSize = readBufferSize;
+        this._readTimeout = readTimeout;
+        this._receivedBytesThreshold = receivedBytesThreshold;
+        this._rtsEnable = rtsEnable;
+        this._stopBits = stopBits;
+        this._writeBufferSize = writeBufferSize;
+        this._writeTimeout = writeTimeout;
+        this._pairedComPort = pairedComPort;
+    }
 
     @Override
     public int getObjectType( ) {

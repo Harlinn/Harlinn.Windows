@@ -38,4 +38,9 @@ public class SimpleRadomeStatusTimeseriesDataReader extends SimpleUInt32Timeseri
         destination.writeNullableGuid( getRadome( ) );
     }
 
+    @Override
+    public RadomeStatusTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadomeStatusTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadome( ) );
+    }
+
 }

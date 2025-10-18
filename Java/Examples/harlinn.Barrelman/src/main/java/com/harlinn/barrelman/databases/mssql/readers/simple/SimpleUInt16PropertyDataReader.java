@@ -37,4 +37,9 @@ public class SimpleUInt16PropertyDataReader extends SimplePropertyDataReader {
         destination.writeUInt16( getValue( ) );
     }
 
+    @Override
+    public UInt16PropertyObject GetDataObject( ) throws SQLException {
+        return new UInt16PropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
+    }
+
 }

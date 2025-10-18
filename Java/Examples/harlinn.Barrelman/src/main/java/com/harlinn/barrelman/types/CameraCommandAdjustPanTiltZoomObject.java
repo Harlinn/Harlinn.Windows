@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandAdjustPanTiltZoomObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandAdjustPanTiltZoom;
+
     private Double _x;
     private Double _y;
     private Double _z;
+
+    public CameraCommandAdjustPanTiltZoomObject( ) {
+    }
+    public CameraCommandAdjustPanTiltZoomObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Double x, Double y, Double z ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._x = x;
+        this._y = y;
+        this._z = z;
+    }
 
     @Override
     public int getObjectType( ) {

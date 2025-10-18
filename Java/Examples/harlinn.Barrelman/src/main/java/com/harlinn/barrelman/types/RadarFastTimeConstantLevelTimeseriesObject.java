@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadarFastTimeConstantLevelTimeseriesObject extends Int32TimeseriesObject {
 
+    public final int KIND = Kind.RadarFastTimeConstantLevelTimeseries;
+
     private Guid _radar;
+
+    public RadarFastTimeConstantLevelTimeseriesObject( ) {
+    }
+    public RadarFastTimeConstantLevelTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radar ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radar = radar;
+    }
 
     @Override
     public int getObjectType( ) {

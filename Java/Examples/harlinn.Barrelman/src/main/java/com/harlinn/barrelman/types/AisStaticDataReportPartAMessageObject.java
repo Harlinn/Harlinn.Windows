@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class AisStaticDataReportPartAMessageObject extends AisStaticDataReportMessageObject {
 
+    public final int KIND = Kind.AisStaticDataReportPartAMessage;
+
     private Guid _shipName;
     private int _spare = 0;
+
+    public AisStaticDataReportPartAMessageObject( ) {
+    }
+    public AisStaticDataReportPartAMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Guid shipName, int spare ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber );
+        this._shipName = shipName;
+        this._spare = spare;
+    }
 
     @Override
     public int getObjectType( ) {

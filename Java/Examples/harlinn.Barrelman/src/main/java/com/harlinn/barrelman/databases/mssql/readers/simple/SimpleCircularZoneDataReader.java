@@ -44,4 +44,9 @@ public class SimpleCircularZoneDataReader extends SimpleZoneDataReader {
         destination.writeDouble( getRadius( ) );
     }
 
+    @Override
+    public CircularZoneObject GetDataObject( ) throws SQLException {
+        return new CircularZoneObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getLongitude( ), getLatitude( ), getAlarmType( ), getAlarmTime( ), getRadarTrackMinimumLifetime( ), getSpeed( ), getStrokeColor( ), getFillColor( ), getRadius( ) );
+    }
+
 }

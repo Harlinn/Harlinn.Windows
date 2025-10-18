@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class TrackValue3DObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackValue3D;
+
     private long _rowVersion = 0;
     private Guid _track;
     private DateTime _timestamp;
@@ -17,6 +19,23 @@ public class TrackValue3DObject extends AbstractDataObjectWithGuidKey {
     private double _speed = 0.0;
     private double _course = 0.0;
     private double _rateOfClimb = 0.0;
+
+    public TrackValue3DObject( ) {
+    }
+    public TrackValue3DObject( byte objectState, Guid id, long rowVersion, Guid track, DateTime timestamp, int flags, int status, double latitude, double longitude, double altitude, double speed, double course, double rateOfClimb ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._track = track;
+        this._timestamp = timestamp;
+        this._flags = flags;
+        this._status = status;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._altitude = altitude;
+        this._speed = speed;
+        this._course = course;
+        this._rateOfClimb = rateOfClimb;
+    }
 
     @Override
     public int getObjectType( ) {

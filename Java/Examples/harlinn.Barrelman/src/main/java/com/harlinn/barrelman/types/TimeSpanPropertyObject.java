@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class TimeSpanPropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.TimeSpanProperty;
+
     private TimeSpan _value;
+
+    public TimeSpanPropertyObject( ) {
+    }
+    public TimeSpanPropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, TimeSpan value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

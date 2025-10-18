@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class MediaServiceOptionsObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MediaServiceOptions;
+
     private long _rowVersion = 0;
     private Guid _mediaService;
     private DateTime _timestamp;
     private int _rtspPortNumber = 0;
     private int _httpPortNumber = 0;
+
+    public MediaServiceOptionsObject( ) {
+    }
+    public MediaServiceOptionsObject( byte objectState, Guid id, long rowVersion, Guid mediaService, DateTime timestamp, int rtspPortNumber, int httpPortNumber ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._mediaService = mediaService;
+        this._timestamp = timestamp;
+        this._rtspPortNumber = rtspPortNumber;
+        this._httpPortNumber = httpPortNumber;
+    }
 
     @Override
     public int getObjectType( ) {

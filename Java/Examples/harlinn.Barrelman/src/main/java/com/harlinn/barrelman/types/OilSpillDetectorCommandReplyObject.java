@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class OilSpillDetectorCommandReplyObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.OilSpillDetectorCommandReply;
+
     private long _rowVersion = 0;
     private Guid _oilSpillDetector;
     private DateTime _timestamp;
     private Guid _command;
     private int _status = DeviceCommandReplyStatus.Unknown;
     private String _message = "";
+
+    public OilSpillDetectorCommandReplyObject( ) {
+    }
+    public OilSpillDetectorCommandReplyObject( byte objectState, Guid id, long rowVersion, Guid oilSpillDetector, DateTime timestamp, Guid command, int status, String message ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._oilSpillDetector = oilSpillDetector;
+        this._timestamp = timestamp;
+        this._command = command;
+        this._status = status;
+        this._message = message;
+    }
 
     @Override
     public int getObjectType( ) {

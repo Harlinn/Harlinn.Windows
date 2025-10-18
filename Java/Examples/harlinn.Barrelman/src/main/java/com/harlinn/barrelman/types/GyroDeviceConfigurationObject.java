@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.GyroDeviceConfiguration;
+
     private long _rowVersion = 0;
     private Guid _gyroDevice;
     private DateTime _timestamp;
@@ -15,6 +17,21 @@ public class GyroDeviceConfigurationObject extends AbstractDataObjectWithGuidKey
     private double _headingMagneticNorthOffset = 0.0;
     private String _pitchTransducerName = "";
     private String _rollTransducerName = "";
+
+    public GyroDeviceConfigurationObject( ) {
+    }
+    public GyroDeviceConfigurationObject( byte objectState, Guid id, long rowVersion, Guid gyroDevice, DateTime timestamp, double defaultHeadingTrueNorth, double defaultMagneticTrueNorth, double headingTrueNorthOffset, double headingMagneticNorthOffset, String pitchTransducerName, String rollTransducerName ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._gyroDevice = gyroDevice;
+        this._timestamp = timestamp;
+        this._defaultHeadingTrueNorth = defaultHeadingTrueNorth;
+        this._defaultMagneticTrueNorth = defaultMagneticTrueNorth;
+        this._headingTrueNorthOffset = headingTrueNorthOffset;
+        this._headingMagneticNorthOffset = headingMagneticNorthOffset;
+        this._pitchTransducerName = pitchTransducerName;
+        this._rollTransducerName = rollTransducerName;
+    }
 
     @Override
     public int getObjectType( ) {

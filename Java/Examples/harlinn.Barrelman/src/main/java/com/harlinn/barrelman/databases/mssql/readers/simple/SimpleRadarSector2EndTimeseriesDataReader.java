@@ -38,4 +38,9 @@ public class SimpleRadarSector2EndTimeseriesDataReader extends SimpleInt32Timese
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarSector2EndTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarSector2EndTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

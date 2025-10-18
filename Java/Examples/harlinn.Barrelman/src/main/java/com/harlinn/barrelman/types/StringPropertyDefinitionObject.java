@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class StringPropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.StringPropertyDefinition;
+
     private String _defaultValue = "";
     private String _pattern = "";
+
+    public StringPropertyDefinitionObject( ) {
+    }
+    public StringPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, String defaultValue, String pattern ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+        this._pattern = pattern;
+    }
 
     @Override
     public int getObjectType( ) {

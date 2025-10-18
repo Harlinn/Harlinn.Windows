@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class CollectionInfoObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CollectionInfo;
+
     private long _rowVersion = 0;
     private long _count = 0;
+
+    public CollectionInfoObject( ) {
+    }
+    public CollectionInfoObject( byte objectState, Guid id, long rowVersion, long count ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._count = count;
+    }
 
     @Override
     public int getObjectType( ) {

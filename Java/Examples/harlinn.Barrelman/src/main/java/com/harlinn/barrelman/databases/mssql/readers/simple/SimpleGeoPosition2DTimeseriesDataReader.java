@@ -30,4 +30,9 @@ public class SimpleGeoPosition2DTimeseriesDataReader extends SimpleTimeseriesDat
         super.writeTo( destination );
     }
 
+    @Override
+    public GeoPosition2DTimeseriesObject GetDataObject( ) throws SQLException {
+        return new GeoPosition2DTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

@@ -82,4 +82,8 @@ public class SimpleLogThreadDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public LogThreadObject GetDataObject( ) throws SQLException {
+            return new LogThreadObject( ObjectState.Stored, getId( ), getRowVersion( ), getProcess( ), getStarted( ), getStopped( ), getThreadId( ), getName( ) );
+    }
+
 }

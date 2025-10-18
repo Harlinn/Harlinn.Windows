@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.AisDeviceConfiguration;
+
     private long _rowVersion = 0;
     private Guid _aisDevice;
     private DateTime _timestamp;
@@ -27,6 +29,33 @@ public class AisDeviceConfigurationObject extends AbstractDataObjectWithGuidKey 
     private int _sourceUpdateRate = 0;
     private String _configurationURL = "";
     private boolean _storeReceivedSentences = false;
+
+    public AisDeviceConfigurationObject( ) {
+    }
+    public AisDeviceConfigurationObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime timestamp, boolean filter, double northWestLatitude, double northWestLongitude, double southEastLatitude, double southEastLongitude, String comPort, int baudRate, String iPAddress, int port, int udpPort, boolean authenticate, String userName, String password, String authenticationURL, int connectionType, int sourceUpdateRate, String configurationURL, boolean storeReceivedSentences ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._aisDevice = aisDevice;
+        this._timestamp = timestamp;
+        this._filter = filter;
+        this._northWestLatitude = northWestLatitude;
+        this._northWestLongitude = northWestLongitude;
+        this._southEastLatitude = southEastLatitude;
+        this._southEastLongitude = southEastLongitude;
+        this._comPort = comPort;
+        this._baudRate = baudRate;
+        this._iPAddress = iPAddress;
+        this._port = port;
+        this._udpPort = udpPort;
+        this._authenticate = authenticate;
+        this._userName = userName;
+        this._password = password;
+        this._authenticationURL = authenticationURL;
+        this._connectionType = connectionType;
+        this._sourceUpdateRate = sourceUpdateRate;
+        this._configurationURL = configurationURL;
+        this._storeReceivedSentences = storeReceivedSentences;
+    }
 
     @Override
     public int getObjectType( ) {

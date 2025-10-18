@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class ItemIdentityLinkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ItemIdentityLink;
+
     private long _rowVersion = 0;
     private Guid _item;
     private Guid _identity;
     private DateTime _start;
     private DateTime _end;
+
+    public ItemIdentityLinkObject( ) {
+    }
+    public ItemIdentityLinkObject( byte objectState, Guid id, long rowVersion, Guid item, Guid identity, DateTime start, DateTime end ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._item = item;
+        this._identity = identity;
+        this._start = start;
+        this._end = end;
+    }
 
     @Override
     public int getObjectType( ) {

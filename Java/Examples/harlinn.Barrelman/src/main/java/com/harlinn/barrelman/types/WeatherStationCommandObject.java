@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class WeatherStationCommandObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.WeatherStationCommand;
+
     private long _rowVersion = 0;
     private Guid _weatherStation;
     private DateTime _timestamp;
     private int _deviceCommandSourceType = DeviceCommandSourceType.Unknown;
     private Guid _deviceCommandSourceId;
     private Guid _reply;
+
+    public WeatherStationCommandObject( ) {
+    }
+    public WeatherStationCommandObject( byte objectState, Guid id, long rowVersion, Guid weatherStation, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._weatherStation = weatherStation;
+        this._timestamp = timestamp;
+        this._deviceCommandSourceType = deviceCommandSourceType;
+        this._deviceCommandSourceId = deviceCommandSourceId;
+        this._reply = reply;
+    }
 
     @Override
     public int getObjectType( ) {

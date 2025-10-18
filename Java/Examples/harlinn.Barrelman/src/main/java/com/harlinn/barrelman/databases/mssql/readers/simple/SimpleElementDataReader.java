@@ -37,4 +37,9 @@ public class SimpleElementDataReader extends SimpleCatalogElementDataReader {
         destination.writeNullableGuid( getElementType( ) );
     }
 
+    @Override
+    public ElementObject GetDataObject( ) throws SQLException {
+        return new ElementObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getElementType( ) );
+    }
+
 }

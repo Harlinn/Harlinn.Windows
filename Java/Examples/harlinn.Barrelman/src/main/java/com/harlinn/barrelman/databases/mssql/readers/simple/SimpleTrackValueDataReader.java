@@ -110,4 +110,8 @@ public class SimpleTrackValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public TrackValueObject GetDataObject( ) throws SQLException {
+            return new TrackValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTrack( ), getTimestamp( ), getFlags( ), getStatus( ), getLatitude( ), getLongitude( ), getSpeed( ), getCourse( ), getHeading( ) );
+    }
+
 }

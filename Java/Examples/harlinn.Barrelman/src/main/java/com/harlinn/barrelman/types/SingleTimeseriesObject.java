@@ -6,6 +6,14 @@ import com.harlinn.common.util.*;
 
 public class SingleTimeseriesObject extends TimeseriesObject {
 
+    public final int KIND = Kind.SingleTimeseries;
+
+
+    public SingleTimeseriesObject( ) {
+    }
+    public SingleTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleVesselPersonsOnBoardTimeseriesDataReader extends SimpleInt32T
         destination.writeNullableGuid( getVessel( ) );
     }
 
+    @Override
+    public VesselPersonsOnBoardTimeseriesObject GetDataObject( ) throws SQLException {
+        return new VesselPersonsOnBoardTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getVessel( ) );
+    }
+
 }

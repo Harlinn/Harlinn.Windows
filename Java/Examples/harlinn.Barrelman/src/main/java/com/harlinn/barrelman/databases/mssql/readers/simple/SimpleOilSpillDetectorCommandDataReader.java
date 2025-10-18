@@ -82,4 +82,8 @@ public class SimpleOilSpillDetectorCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public OilSpillDetectorCommandObject GetDataObject( ) throws SQLException {
+            return new OilSpillDetectorCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getOilSpillDetector( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+    }
+
 }

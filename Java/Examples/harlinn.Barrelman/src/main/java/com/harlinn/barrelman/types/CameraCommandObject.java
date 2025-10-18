@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CameraCommand;
+
     private long _rowVersion = 0;
     private Guid _camera;
     private DateTime _timestamp;
     private int _deviceCommandSourceType = DeviceCommandSourceType.Unknown;
     private Guid _deviceCommandSourceId;
     private Guid _reply;
+
+    public CameraCommandObject( ) {
+    }
+    public CameraCommandObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._camera = camera;
+        this._timestamp = timestamp;
+        this._deviceCommandSourceType = deviceCommandSourceType;
+        this._deviceCommandSourceId = deviceCommandSourceId;
+        this._reply = reply;
+    }
 
     @Override
     public int getObjectType( ) {

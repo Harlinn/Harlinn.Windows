@@ -84,4 +84,9 @@ public class SimpleVesselDataReader extends SimpleTrackableItemDataReader {
         destination.writeNullableGuid( getPersonsOnBoardTimeseries( ) );
     }
 
+    @Override
+    public VesselObject GetDataObject( ) throws SQLException {
+        return new VesselObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ), getToBow( ), getToStern( ), getToPort( ), getToStarboard( ), getDraughtTimeseries( ), getPersonsOnBoardTimeseries( ) );
+    }
+
 }

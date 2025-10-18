@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class ElementObject extends CatalogElementObject {
 
+    public final int KIND = Kind.Element;
+
     private Guid _elementType;
+
+    public ElementObject( ) {
+    }
+    public ElementObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, Guid elementType ) {
+        super( objectState, id, rowVersion, catalog, name );
+        this._elementType = elementType;
+    }
 
     @Override
     public int getObjectType( ) {

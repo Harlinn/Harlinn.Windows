@@ -145,4 +145,8 @@ public class SimpleLogApplicationConfigurationDataReader extends ResultSetWrappe
         destination.writeBoolean( false );
     }
 
+    public LogApplicationConfigurationObject GetDataObject( ) throws SQLException {
+            return new LogApplicationConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getApplication( ), getTimestamp( ), getFinest( ), getFiner( ), getFine( ), getInfo( ), getNotice( ), getWarn( ), getError( ), getSevere( ), getCritical( ), getAlert( ), getFatal( ), getEmergency( ) );
+    }
+
 }

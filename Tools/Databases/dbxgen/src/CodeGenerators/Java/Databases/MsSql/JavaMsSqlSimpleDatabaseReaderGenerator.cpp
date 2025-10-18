@@ -18,11 +18,53 @@
 #include "CodeGenerators/Java/JavaHelper.h"
 #include "CodeGenerators/Databases/MsSql/MsSqlHelper.h"
 
+#include "HCCStringBuilder.h"
 
 namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
 {
     using namespace Harlinn::Tools::DbXGen::Metadata;
     using namespace Harlinn::Tools::DbXGen::CodeGenerators::Databases::MsSql;
+
+    namespace
+    {
+        std::unordered_map<WideString, WideString> GetReservedNames( )
+        {
+            std::unordered_map<WideString, WideString> reservedNames;
+            reservedNames.emplace( L"Type", L"TypeField" );
+            return reservedNames;
+        }
+
+        WideString GetPropertyName( const WideString& propertyName )
+        {
+            static std::unordered_map<WideString, WideString> reservedNames = GetReservedNames( );
+            auto it = reservedNames.find( propertyName );
+            if ( it != reservedNames.end( ) )
+            {
+                return it->second;
+            }
+            return propertyName;
+        }
+
+        WideString GetDataTypeConstructorCallPropertiesArguments( const ClassInfo& classInfo )
+        {
+            const auto& members = classInfo.PersistentMembers( );
+            auto memberCount = members.size( );
+            StringBuilder<wchar_t> sb;
+
+            sb.Append( L"ObjectState.Stored, getId( )" );
+
+            for ( size_t i = 0; i < memberCount; i++ )
+            {
+                const auto& member = *members[ i ];
+                if ( member.PrimaryKey( ) == false )
+                {
+                    auto argumentName = GetPropertyName( member.Name( ).FirstToUpper( ) );
+                    sb.Append( L", get{}( )", argumentName );
+                }
+            }
+            return sb.ToString( );
+        }
+    }
     
 
     void JavaMsSqlSimpleDatabaseReaderGenerator::Run( )
@@ -65,6 +107,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( );
         CreateAccessors( classInfo_ );
         CreateWriteColumns( classInfo_ );
+        CreateGetDataObject( classInfo_ );
         WriteLine( L"}" );
         Flush( );
     }
@@ -160,26 +203,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         }
     }
 
-    namespace
-    {
-        std::unordered_map<WideString, WideString> GetReservedNames( )
-        {
-            std::unordered_map<WideString, WideString> reservedNames; 
-            reservedNames.emplace( L"Type", L"TypeField" );
-            return reservedNames;
-        }
-
-        WideString GetPropertyName( const WideString& propertyName )
-        {
-            static std::unordered_map<WideString, WideString> reservedNames = GetReservedNames( );
-            auto it = reservedNames.find( propertyName );
-            if ( it != reservedNames.end() )
-            {
-                return it->second;
-            }
-            return propertyName;
-        }
-    }
+    
 
     void JavaMsSqlSimpleDatabaseReaderGenerator::CreateAccessors( const ClassInfo& classInfo )
     {
@@ -247,6 +271,47 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             WriteLine( );
         }
 
+    }
+
+    void JavaMsSqlSimpleDatabaseReaderGenerator::CreateGetDataObject( const ClassInfo& classInfo )
+    {
+        auto className = JavaHelper::GetDataType( classInfo );
+        if ( classInfo.IsTopLevel( ) )
+        {
+
+            if ( classInfo.HasDescendants( ) )
+            {
+                if ( classInfo.Abstract( ) )
+                {
+                    WriteLine( L"    public abstract {} GetDataObject( ) throws SQLException;", className );
+                    WriteLine( );
+                    return;
+                }
+                WriteLine( L"    public {} GetDataObject( ) throws SQLException {{", className );
+            }
+            else
+            {
+                WriteLine( L"    public {} GetDataObject( ) throws SQLException {{", className );
+            }
+            auto arguments = GetDataTypeConstructorCallPropertiesArguments( classInfo );
+            WriteLine( L"            return new {}( {} );", className, arguments );
+            WriteLine( L"    }" );
+            WriteLine( );
+        }
+        else
+        {
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto topLevelClassInfo = classInfo.TopLevelClass( );
+                auto topLevelClassName = JavaHelper::GetDataType( classInfo );
+                WriteLine( L"    @Override" );
+                WriteLine( L"    public {} GetDataObject( ) throws SQLException {{", topLevelClassName );
+                auto arguments = GetDataTypeConstructorCallPropertiesArguments( classInfo );
+                WriteLine( L"        return new {}( {} );", className, arguments );
+                WriteLine( L"    }" );
+                WriteLine( );
+            }
+        }
     }
 
 

@@ -44,4 +44,9 @@ public class SimplePolygonZoneDataReader extends SimpleZoneDataReader {
         destination.writeUInt8Array( getPolygon( ) );
     }
 
+    @Override
+    public PolygonZoneObject GetDataObject( ) throws SQLException {
+        return new PolygonZoneObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getLongitude( ), getLatitude( ), getAlarmType( ), getAlarmTime( ), getRadarTrackMinimumLifetime( ), getSpeed( ), getStrokeColor( ), getFillColor( ), getPolygon( ) );
+    }
+
 }

@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class DeviceHostConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.DeviceHostConfiguration;
+
     private long _rowVersion = 0;
     private Guid _host;
     private DateTime _timestamp;
     private String _hostname = "";
     private int _port = 0;
     private String _queueName = "";
+
+    public DeviceHostConfigurationObject( ) {
+    }
+    public DeviceHostConfigurationObject( byte objectState, Guid id, long rowVersion, Guid host, DateTime timestamp, String hostname, int port, String queueName ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._host = host;
+        this._timestamp = timestamp;
+        this._hostname = hostname;
+        this._port = port;
+        this._queueName = queueName;
+    }
 
     @Override
     public int getObjectType( ) {

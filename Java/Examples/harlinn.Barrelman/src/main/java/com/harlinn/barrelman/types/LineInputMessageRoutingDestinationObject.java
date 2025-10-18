@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class LineInputMessageRoutingDestinationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LineInputMessageRoutingDestination;
+
     private long _rowVersion = 0;
     private Guid _routing;
     private Guid _listener;
+
+    public LineInputMessageRoutingDestinationObject( ) {
+    }
+    public LineInputMessageRoutingDestinationObject( byte objectState, Guid id, long rowVersion, Guid routing, Guid listener ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._routing = routing;
+        this._listener = listener;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CameraStatus;
+
     private long _rowVersion = 0;
     private Guid _camera;
     private Guid _track;
@@ -24,6 +26,30 @@ public class CameraStatusObject extends AbstractDataObjectWithGuidKey {
     private Double _zoomVelocity;
     private int _activeFeatures = CameraFeatures.None;
     private String _error = "";
+
+    public CameraStatusObject( ) {
+    }
+    public CameraStatusObject( byte objectState, Guid id, long rowVersion, Guid camera, Guid track, DateTime timestamp, int positionPanTiltMode, double panAngle, double tiltAngle, int positionFocalLengthMode, double focalLength, int panTiltMoveStatus, int zoomMoveStatus, int velocityPanTiltMode, Double panVelocity, Double tiltVelocity, int velocityFocalLengthMode, Double zoomVelocity, int activeFeatures, String error ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._camera = camera;
+        this._track = track;
+        this._timestamp = timestamp;
+        this._positionPanTiltMode = positionPanTiltMode;
+        this._panAngle = panAngle;
+        this._tiltAngle = tiltAngle;
+        this._positionFocalLengthMode = positionFocalLengthMode;
+        this._focalLength = focalLength;
+        this._panTiltMoveStatus = panTiltMoveStatus;
+        this._zoomMoveStatus = zoomMoveStatus;
+        this._velocityPanTiltMode = velocityPanTiltMode;
+        this._panVelocity = panVelocity;
+        this._tiltVelocity = tiltVelocity;
+        this._velocityFocalLengthMode = velocityFocalLengthMode;
+        this._zoomVelocity = zoomVelocity;
+        this._activeFeatures = activeFeatures;
+        this._error = error;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandGeoMoveObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandGeoMove;
+
     private double _latitude = 0.0;
     private double _longitude = 0.0;
     private Double _altitude;
     private Double _viewportWidth;
     private Double _viewportHeight;
+
+    public CameraCommandGeoMoveObject( ) {
+    }
+    public CameraCommandGeoMoveObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, double latitude, double longitude, Double altitude, Double viewportWidth, Double viewportHeight ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._altitude = altitude;
+        this._viewportWidth = viewportWidth;
+        this._viewportHeight = viewportHeight;
+    }
 
     @Override
     public int getObjectType( ) {

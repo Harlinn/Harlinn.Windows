@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.OilSpillDetectorConfiguration;
+
     private long _rowVersion = 0;
     private Guid _oilSpillDetector;
     private DateTime _timestamp;
@@ -31,6 +33,37 @@ public class OilSpillDetectorConfigurationObject extends AbstractDataObjectWithG
     private boolean _testSourceEnabled = false;
     private String _proxyServer = "";
     private boolean _useProxyServer = false;
+
+    public OilSpillDetectorConfigurationObject( ) {
+    }
+    public OilSpillDetectorConfigurationObject( byte objectState, Guid id, long rowVersion, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, boolean drawBorder, byte[] colors, boolean sendToServer, String directory, boolean transparentWater, boolean savePictures, boolean sendAsTarget, boolean writeLog, String targetFilePrefix, Guid targetMMSI, double latitude, double longitude, boolean testSourceEnabled, String proxyServer, boolean useProxyServer ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._oilSpillDetector = oilSpillDetector;
+        this._timestamp = timestamp;
+        this._range = range;
+        this._startAngle = startAngle;
+        this._endAngle = endAngle;
+        this._startRange = startRange;
+        this._endRange = endRange;
+        this._updateRate = updateRate;
+        this._statusSendTime = statusSendTime;
+        this._drawBorder = drawBorder;
+        this._colors = colors;
+        this._sendToServer = sendToServer;
+        this._directory = directory;
+        this._transparentWater = transparentWater;
+        this._savePictures = savePictures;
+        this._sendAsTarget = sendAsTarget;
+        this._writeLog = writeLog;
+        this._targetFilePrefix = targetFilePrefix;
+        this._targetMMSI = targetMMSI;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._testSourceEnabled = testSourceEnabled;
+        this._proxyServer = proxyServer;
+        this._useProxyServer = useProxyServer;
+    }
 
     @Override
     public int getObjectType( ) {

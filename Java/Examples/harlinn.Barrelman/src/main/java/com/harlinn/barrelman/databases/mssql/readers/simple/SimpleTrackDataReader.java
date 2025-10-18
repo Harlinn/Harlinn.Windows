@@ -30,4 +30,9 @@ public class SimpleTrackDataReader extends SimpleTrackBaseDataReader {
         super.writeTo( destination );
     }
 
+    @Override
+    public TrackObject GetDataObject( ) throws SQLException {
+        return new TrackObject( ObjectState.Stored, getId( ), getRowVersion( ), getTracker( ), getTrackNumber( ), getTimestamp( ) );
+    }
+
 }

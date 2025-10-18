@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisStandardSarAircraftPositionReportMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisStandardSarAircraftPositionReportMessage;
+
     private int _altitude = 0;
     private int _speedOverGround = 0;
     private int _positionAccuracy = PositionAccuracy.Low;
@@ -19,6 +21,25 @@ public class AisStandardSarAircraftPositionReportMessageObject extends AisMessag
     private boolean _assigned = false;
     private int _raim = Raim.NotInUse;
     private int _radioStatus = 0;
+
+    public AisStandardSarAircraftPositionReportMessageObject( ) {
+    }
+    public AisStandardSarAircraftPositionReportMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int altitude, int speedOverGround, int positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, boolean dataTerminalReady, int spare, boolean assigned, int raim, int radioStatus ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._altitude = altitude;
+        this._speedOverGround = speedOverGround;
+        this._positionAccuracy = positionAccuracy;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._courseOverGround = courseOverGround;
+        this._timestamp = timestamp;
+        this._reserved = reserved;
+        this._dataTerminalReady = dataTerminalReady;
+        this._spare = spare;
+        this._assigned = assigned;
+        this._raim = raim;
+        this._radioStatus = radioStatus;
+    }
 
     @Override
     public int getObjectType( ) {

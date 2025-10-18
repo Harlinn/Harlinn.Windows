@@ -31,4 +31,9 @@ public class SimpleRadioDeviceDataReader extends SimpleDeviceDataReader {
         super.writeTo( destination );
     }
 
+    @Override
+    public RadioDeviceObject GetDataObject( ) throws SQLException {
+        return new RadioDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
+    }
+
 }

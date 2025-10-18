@@ -29,4 +29,9 @@ public class SimpleCatalogDataReader extends SimpleCatalogElementDataReader {
         super.writeTo( destination );
     }
 
+    @Override
+    public CatalogObject GetDataObject( ) throws SQLException {
+        return new CatalogObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ) );
+    }
+
 }

@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class BytePropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.BytePropertyDefinition;
+
     private byte _defaultValue = 0;
     private byte _minValue = 0;
     private byte _maxValue = 0;
+
+    public BytePropertyDefinitionObject( ) {
+    }
+    public BytePropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, byte defaultValue, byte minValue, byte maxValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+        this._minValue = minValue;
+        this._maxValue = maxValue;
+    }
 
     @Override
     public int getObjectType( ) {

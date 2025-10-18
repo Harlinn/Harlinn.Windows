@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class WeatherStationConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.WeatherStationConfiguration;
+
     private long _rowVersion = 0;
     private Guid _weatherStation;
     private DateTime _timestamp;
@@ -16,6 +18,22 @@ public class WeatherStationConfigurationObject extends AbstractDataObjectWithGui
     private double _gyroOffset = 0.0;
     private boolean _enableAveraging = false;
     private TimeSpan _averagingInterval;
+
+    public WeatherStationConfigurationObject( ) {
+    }
+    public WeatherStationConfigurationObject( byte objectState, Guid id, long rowVersion, Guid weatherStation, DateTime timestamp, TimeSpan noDataTimeOut, TimeSpan sendInterval, double latitude, double longitude, double gyroOffset, boolean enableAveraging, TimeSpan averagingInterval ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._weatherStation = weatherStation;
+        this._timestamp = timestamp;
+        this._noDataTimeOut = noDataTimeOut;
+        this._sendInterval = sendInterval;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._gyroOffset = gyroOffset;
+        this._enableAveraging = enableAveraging;
+        this._averagingInterval = averagingInterval;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -61,4 +61,8 @@ public class SimpleZoneExceptionsVesselLinkDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public ZoneExceptionsVesselLinkObject GetDataObject( ) throws SQLException {
+            return new ZoneExceptionsVesselLinkObject( ObjectState.Stored, getId( ), getRowVersion( ), getZoneExceptions( ), getVessel( ) );
+    }
+
 }

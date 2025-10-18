@@ -61,4 +61,8 @@ public class SimpleZoneExceptionsDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public ZoneExceptionsObject GetDataObject( ) throws SQLException {
+            return new ZoneExceptionsObject( ObjectState.Stored, getId( ), getRowVersion( ), getZone( ), getTimestamp( ) );
+    }
+
 }

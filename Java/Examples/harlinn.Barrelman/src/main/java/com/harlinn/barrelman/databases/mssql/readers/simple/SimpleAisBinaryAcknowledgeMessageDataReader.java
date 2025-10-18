@@ -96,4 +96,9 @@ public class SimpleAisBinaryAcknowledgeMessageDataReader extends SimpleAisMessag
         destination.writeNullableGuid( getMmsi4( ) );
     }
 
+    @Override
+    public AisBinaryAcknowledgeMessageObject GetDataObject( ) throws SQLException {
+        return new AisBinaryAcknowledgeMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSpare( ), getSequenceNumber1( ), getMmsi1( ), getSequenceNumber2( ), getMmsi2( ), getSequenceNumber3( ), getMmsi3( ), getSequenceNumber4( ), getMmsi4( ) );
+    }
+
 }

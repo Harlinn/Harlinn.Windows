@@ -38,4 +38,9 @@ public class SimpleRadomePressureTimeseriesDataReader extends SimpleDoubleTimese
         destination.writeNullableGuid( getRadome( ) );
     }
 
+    @Override
+    public RadomePressureTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadomePressureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadome( ) );
+    }
+
 }

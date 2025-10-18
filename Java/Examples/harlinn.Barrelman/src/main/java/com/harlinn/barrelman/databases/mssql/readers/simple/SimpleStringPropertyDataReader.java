@@ -37,4 +37,9 @@ public class SimpleStringPropertyDataReader extends SimplePropertyDataReader {
         destination.writeStringUtf8( getValue( ) );
     }
 
+    @Override
+    public StringPropertyObject GetDataObject( ) throws SQLException {
+        return new StringPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
+    }
+
 }

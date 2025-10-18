@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class VehicleTypeObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.VehicleType;
+
     private long _rowVersion = 0;
     private String _name = "";
+
+    public VehicleTypeObject( ) {
+    }
+    public VehicleTypeObject( byte objectState, Guid id, long rowVersion, String name ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._name = name;
+    }
 
     @Override
     public int getObjectType( ) {

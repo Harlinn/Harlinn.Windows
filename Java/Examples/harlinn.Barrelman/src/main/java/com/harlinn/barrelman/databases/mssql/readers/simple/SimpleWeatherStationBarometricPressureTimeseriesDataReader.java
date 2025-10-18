@@ -38,4 +38,9 @@ public class SimpleWeatherStationBarometricPressureTimeseriesDataReader extends 
         destination.writeNullableGuid( getWeatherStation( ) );
     }
 
+    @Override
+    public WeatherStationBarometricPressureTimeseriesObject GetDataObject( ) throws SQLException {
+        return new WeatherStationBarometricPressureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
+    }
+
 }

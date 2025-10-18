@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadarSaveSettingsTimeseriesObject extends BooleanTimeseriesObject {
 
+    public final int KIND = Kind.RadarSaveSettingsTimeseries;
+
     private Guid _radar;
+
+    public RadarSaveSettingsTimeseriesObject( ) {
+    }
+    public RadarSaveSettingsTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radar ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radar = radar;
+    }
 
     @Override
     public int getObjectType( ) {

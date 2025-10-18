@@ -75,4 +75,8 @@ public class SimpleAisDeviceRawMessageDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public AisDeviceRawMessageObject GetDataObject( ) throws SQLException {
+            return new AisDeviceRawMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getTimestamp( ), getIsSent( ), getMessage( ) );
+    }
+
 }

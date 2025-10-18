@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class ReferenceTimeseriesPropertyDefinitionObject extends TimeseriesPropertyDefinitionObject {
 
+    public final int KIND = Kind.ReferenceTimeseriesPropertyDefinition;
+
     private Guid _referencedElementType;
+
+    public ReferenceTimeseriesPropertyDefinitionObject( ) {
+    }
+    public ReferenceTimeseriesPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, Guid referencedElementType ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._referencedElementType = referencedElementType;
+    }
 
     @Override
     public int getObjectType( ) {

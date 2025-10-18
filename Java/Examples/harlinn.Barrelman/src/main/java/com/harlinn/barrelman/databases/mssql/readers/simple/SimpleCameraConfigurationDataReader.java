@@ -460,4 +460,8 @@ public class SimpleCameraConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public CameraConfigurationObject GetDataObject( ) throws SQLException {
+            return new CameraConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getCameraControlProtocol( ), getCameraURL( ), getConfigurationURL( ), getUserName( ), getPassword( ), getUseRtspUriOverride( ), getRtspUriOverride( ), getLatitude( ), getLongitude( ), getAltitude( ), getUseRelativePosition( ), getPanTiltMode( ), getMinTiltAngle( ), getMaxTiltAngle( ), getMinTiltScaleAngle( ), getMaxTiltScaleAngle( ), getUseReverseTiltAngle( ), getUseReverseNormalizedTiltAngle( ), getMinTiltVelocity( ), getMaxTiltVelocity( ), getMinTiltSpeed( ), getMaxTiltSpeed( ), getMinPanAngle( ), getMaxPanAngle( ), getMinPanScaleAngle( ), getMaxPanScaleAngle( ), getUseReversePanAngle( ), getUseReverseNormalizedPanAngle( ), getMinPanVelocity( ), getMaxPanVelocity( ), getMinPanSpeed( ), getMaxPanSpeed( ), getFocalLengthMode( ), getMinFocalLength( ), getMaxFocalLength( ), getMinFocalLengthScale( ), getMaxFocalLengthScale( ), getMinZoomVelocity( ), getMaxZoomVelocity( ), getMinZoomSpeed( ), getMaxZoomSpeed( ), getImageSensorWidth( ), getImageSensorHeight( ), getHomePanAngle( ), getHomeTiltAngle( ), getHomeFocalLength( ), getPanOffset( ), getTiltOffset( ), getAimAltitude( ), getMinimumTargetWidth( ), getTargetLockTimeout( ), getUpdateStatusInterval( ), getReadTimeout( ), getMoveCommandStatusDelay( ), getPtzProfileName( ), getPtzConfigurationToken( ), getVideoSourceToken( ) );
+    }
+
 }

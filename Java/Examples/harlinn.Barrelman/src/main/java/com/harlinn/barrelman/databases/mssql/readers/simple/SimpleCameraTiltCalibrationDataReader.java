@@ -61,4 +61,8 @@ public class SimpleCameraTiltCalibrationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public CameraTiltCalibrationObject GetDataObject( ) throws SQLException {
+            return new CameraTiltCalibrationObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ) );
+    }
+
 }

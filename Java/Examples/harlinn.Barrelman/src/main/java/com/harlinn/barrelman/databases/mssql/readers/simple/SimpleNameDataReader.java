@@ -35,4 +35,9 @@ public class SimpleNameDataReader extends SimpleIdentityDataReader {
         destination.writeStringUtf8( getText( ) );
     }
 
+    @Override
+    public NameObject GetDataObject( ) throws SQLException {
+        return new NameObject( ObjectState.Stored, getId( ), getRowVersion( ), getText( ) );
+    }
+
 }

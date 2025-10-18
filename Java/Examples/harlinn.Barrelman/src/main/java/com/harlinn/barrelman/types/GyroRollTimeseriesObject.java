@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class GyroRollTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.GyroRollTimeseries;
+
     private Guid _gyroDevice;
+
+    public GyroRollTimeseriesObject( ) {
+    }
+    public GyroRollTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid gyroDevice ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._gyroDevice = gyroDevice;
+    }
 
     @Override
     public int getObjectType( ) {

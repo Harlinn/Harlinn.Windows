@@ -45,4 +45,9 @@ public class SimpleSByteTimeseriesPropertyDefinitionDataReader extends SimpleTim
         destination.writeInt8( getMaxValue( ) );
     }
 
+    @Override
+    public SByteTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new SByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

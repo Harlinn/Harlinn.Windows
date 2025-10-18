@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class AisStaticDataReportMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisStaticDataReportMessage;
+
     private int _partNumber = 0;
+
+    public AisStaticDataReportMessageObject( ) {
+    }
+    public AisStaticDataReportMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._partNumber = partNumber;
+    }
 
     @Override
     public int getObjectType( ) {

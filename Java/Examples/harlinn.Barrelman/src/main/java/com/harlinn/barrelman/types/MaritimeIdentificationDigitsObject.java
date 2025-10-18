@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class MaritimeIdentificationDigitsObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MaritimeIdentificationDigits;
+
     private long _rowVersion = 0;
     private int _code = 0;
     private Guid _country;
+
+    public MaritimeIdentificationDigitsObject( ) {
+    }
+    public MaritimeIdentificationDigitsObject( byte objectState, Guid id, long rowVersion, int code, Guid country ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._code = code;
+        this._country = country;
+    }
 
     @Override
     public int getObjectType( ) {

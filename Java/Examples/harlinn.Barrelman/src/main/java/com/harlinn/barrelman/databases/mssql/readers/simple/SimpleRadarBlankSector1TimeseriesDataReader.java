@@ -38,4 +38,9 @@ public class SimpleRadarBlankSector1TimeseriesDataReader extends SimpleBooleanTi
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarBlankSector1TimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarBlankSector1TimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

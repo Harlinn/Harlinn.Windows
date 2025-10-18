@@ -63,4 +63,9 @@ public class SimpleFacilityDataReader extends SimpleItemDataReader {
         destination.writeDouble( getAltitude( ) );
     }
 
+    @Override
+    public FacilityObject GetDataObject( ) throws SQLException {
+        return new FacilityObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ), getLongitude( ), getLatitude( ), getAltitude( ) );
+    }
+
 }

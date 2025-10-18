@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class PolygonZoneObject extends ZoneObject {
 
+    public final int KIND = Kind.PolygonZone;
+
     private byte[] _polygon = new byte[0];
+
+    public PolygonZoneObject( ) {
+    }
+    public PolygonZoneObject( byte objectState, Guid id, long rowVersion, String name, double longitude, double latitude, int alarmType, TimeSpan alarmTime, TimeSpan radarTrackMinimumLifetime, double speed, int strokeColor, int fillColor, byte[] polygon ) {
+        super( objectState, id, rowVersion, name, longitude, latitude, alarmType, alarmTime, radarTrackMinimumLifetime, speed, strokeColor, fillColor );
+        this._polygon = polygon;
+    }
 
     @Override
     public int getObjectType( ) {

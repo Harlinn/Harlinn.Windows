@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class MapInfoObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MapInfo;
+
     private long _rowVersion = 0;
     private int _scale = 0;
     private double _latitude = 0.0;
@@ -15,6 +17,21 @@ public class MapInfoObject extends AbstractDataObjectWithGuidKey {
     private double _southEastLatitude = 0.0;
     private double _southEastLongitude = 0.0;
     private byte[] _image = new byte[0];
+
+    public MapInfoObject( ) {
+    }
+    public MapInfoObject( byte objectState, Guid id, long rowVersion, int scale, double latitude, double longitude, double northWestLatitude, double northWestLongitude, double southEastLatitude, double southEastLongitude, byte[] image ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._scale = scale;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._northWestLatitude = northWestLatitude;
+        this._northWestLongitude = northWestLongitude;
+        this._southEastLatitude = southEastLatitude;
+        this._southEastLongitude = southEastLongitude;
+        this._image = image;
+    }
 
     @Override
     public int getObjectType( ) {

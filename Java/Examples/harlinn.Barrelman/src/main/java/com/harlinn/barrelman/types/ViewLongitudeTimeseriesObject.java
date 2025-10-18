@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class ViewLongitudeTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.ViewLongitudeTimeseries;
+
     private Guid _view;
+
+    public ViewLongitudeTimeseriesObject( ) {
+    }
+    public ViewLongitudeTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid view ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._view = view;
+    }
 
     @Override
     public int getObjectType( ) {

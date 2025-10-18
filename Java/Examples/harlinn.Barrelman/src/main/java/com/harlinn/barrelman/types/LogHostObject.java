@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class LogHostObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LogHost;
+
     private long _rowVersion = 0;
     private String _computerName = "";
     private String _description = "";
+
+    public LogHostObject( ) {
+    }
+    public LogHostObject( byte objectState, Guid id, long rowVersion, String computerName, String description ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._computerName = computerName;
+        this._description = description;
+    }
 
     @Override
     public int getObjectType( ) {

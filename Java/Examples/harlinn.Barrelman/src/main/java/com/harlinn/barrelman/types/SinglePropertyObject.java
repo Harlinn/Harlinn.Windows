@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class SinglePropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.SingleProperty;
+
     private float _value = 0.0f;
+
+    public SinglePropertyObject( ) {
+    }
+    public SinglePropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, float value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

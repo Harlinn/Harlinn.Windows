@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class CountryObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.Country;
+
     private long _rowVersion = 0;
     private String _name = "";
     private int _code = 0;
     private String _alpha2 = "";
     private String _alpha3 = "";
+
+    public CountryObject( ) {
+    }
+    public CountryObject( byte objectState, Guid id, long rowVersion, String name, int code, String alpha2, String alpha3 ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._name = name;
+        this._code = code;
+        this._alpha2 = alpha2;
+        this._alpha3 = alpha3;
+    }
 
     @Override
     public int getObjectType( ) {

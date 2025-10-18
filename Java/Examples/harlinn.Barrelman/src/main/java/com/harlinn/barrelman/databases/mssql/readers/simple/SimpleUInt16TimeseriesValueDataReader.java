@@ -68,4 +68,8 @@ public class SimpleUInt16TimeseriesValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public UInt16TimeseriesValueObject GetDataObject( ) throws SQLException {
+            return new UInt16TimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getValue( ) );
+    }
+
 }

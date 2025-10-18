@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.SecurityLoginSession;
+
     private long _rowVersion = 0;
     private Guid _login;
     private DateTime _fromTime;
@@ -13,6 +15,19 @@ public class SecurityLoginSessionObject extends AbstractDataObjectWithGuidKey {
     private Guid _clientSession;
     private String _notificationQueueName = "";
     private String _messageQueueName = "";
+
+    public SecurityLoginSessionObject( ) {
+    }
+    public SecurityLoginSessionObject( byte objectState, Guid id, long rowVersion, Guid login, DateTime fromTime, DateTime throughTime, Guid clientSession, String notificationQueueName, String messageQueueName ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._login = login;
+        this._fromTime = fromTime;
+        this._throughTime = throughTime;
+        this._clientSession = clientSession;
+        this._notificationQueueName = notificationQueueName;
+        this._messageQueueName = messageQueueName;
+    }
 
     @Override
     public int getObjectType( ) {

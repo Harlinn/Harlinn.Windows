@@ -53,4 +53,9 @@ public class SimpleGNSSDeviceDataReader extends SimpleDeviceDataReader {
         destination.writeNullableGuid( getAltitudeTimeseries( ) );
     }
 
+    @Override
+    public GNSSDeviceObject GetDataObject( ) throws SQLException {
+        return new GNSSDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getLatitudeTimeseries( ), getLongitudeTimeseries( ), getAltitudeTimeseries( ) );
+    }
+
 }

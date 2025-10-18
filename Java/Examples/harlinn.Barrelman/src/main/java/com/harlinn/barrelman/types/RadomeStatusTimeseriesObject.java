@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadomeStatusTimeseriesObject extends UInt32TimeseriesObject {
 
+    public final int KIND = Kind.RadomeStatusTimeseries;
+
     private Guid _radome;
+
+    public RadomeStatusTimeseriesObject( ) {
+    }
+    public RadomeStatusTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radome ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radome = radome;
+    }
 
     @Override
     public int getObjectType( ) {

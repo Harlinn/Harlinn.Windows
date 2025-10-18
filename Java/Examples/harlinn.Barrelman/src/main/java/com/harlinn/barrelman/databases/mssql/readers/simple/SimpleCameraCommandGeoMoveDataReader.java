@@ -68,4 +68,9 @@ public class SimpleCameraCommandGeoMoveDataReader extends SimpleCameraCommandDat
         destination.writeNullableDouble( getViewportHeight( ) );
     }
 
+    @Override
+    public CameraCommandGeoMoveObject GetDataObject( ) throws SQLException {
+        return new CameraCommandGeoMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getLatitude( ), getLongitude( ), getAltitude( ), getViewportWidth( ), getViewportHeight( ) );
+    }
+
 }

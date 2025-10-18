@@ -152,4 +152,9 @@ public class SimpleAisStandardClassBCsPositionReportMessageDataReader extends Si
         destination.writeInt32( getRadioStatus( ) );
     }
 
+    @Override
+    public AisStandardClassBCsPositionReportMessageObject GetDataObject( ) throws SQLException {
+        return new AisStandardClassBCsPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getReserved( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getRegionalReserved( ), getIsCsUnit( ), getHasDisplay( ), getHasDscCapability( ), getBand( ), getCanAcceptMessage22( ), getAssigned( ), getRaim( ), getRadioStatus( ) );
+    }
+
 }

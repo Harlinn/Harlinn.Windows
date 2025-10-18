@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class ViewZoomLevelTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.ViewZoomLevelTimeseries;
+
     private Guid _view;
+
+    public ViewZoomLevelTimeseriesObject( ) {
+    }
+    public ViewZoomLevelTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid view ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._view = view;
+    }
 
     @Override
     public int getObjectType( ) {

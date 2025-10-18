@@ -61,4 +61,8 @@ public class SimpleCameraPanCalibrationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public CameraPanCalibrationObject GetDataObject( ) throws SQLException {
+            return new CameraPanCalibrationObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ) );
+    }
+
 }

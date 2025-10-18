@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class ReferencePropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.ReferenceProperty;
+
     private Guid _value;
+
+    public ReferencePropertyObject( ) {
+    }
+    public ReferencePropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

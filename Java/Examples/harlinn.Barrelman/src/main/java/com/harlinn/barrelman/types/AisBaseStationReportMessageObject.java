@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisBaseStationReportMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisBaseStationReportMessage;
+
     private DateTime _timestamp;
     private int _positionAccuracy = PositionAccuracy.Low;
     private double _longitude = 0.0;
@@ -14,6 +16,20 @@ public class AisBaseStationReportMessageObject extends AisMessageObject {
     private int _spare = 0;
     private int _raim = Raim.NotInUse;
     private int _radioStatus = 0;
+
+    public AisBaseStationReportMessageObject( ) {
+    }
+    public AisBaseStationReportMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime timestamp, int positionAccuracy, double longitude, double latitude, int positionFixType, int spare, int raim, int radioStatus ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._timestamp = timestamp;
+        this._positionAccuracy = positionAccuracy;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._positionFixType = positionFixType;
+        this._spare = spare;
+        this._raim = raim;
+        this._radioStatus = radioStatus;
+    }
 
     @Override
     public int getObjectType( ) {

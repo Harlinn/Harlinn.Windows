@@ -55,6 +55,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         static WideString GetDataTypeConstructorCallComplexReaderPropertiesArguments(const ClassInfo& classInfo, const ClassInfo& derivedOrSelfClassInfo);
         static WideString GetDataTypeBaseConstructorCallArguments(const ClassInfo& classInfo);
 
+        static WideString GetTestDataObjectFactory( );
+
         static WideString GetMemberFieldType(const MemberInfo& member);
         static WideString GetMemberFieldName(const MemberInfo& member);
         static bool MemberFieldRequiresDefaultValue(const MemberInfo& member);

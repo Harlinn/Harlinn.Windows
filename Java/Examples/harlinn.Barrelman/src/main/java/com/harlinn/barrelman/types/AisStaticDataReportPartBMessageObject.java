@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMessageObject {
 
+    public final int KIND = Kind.AisStaticDataReportPartBMessage;
+
     private int _shipType = ShipType.NotAvailable;
     private String _vendorId = "";
     private int _unitModelCode = 0;
@@ -18,6 +20,24 @@ public class AisStaticDataReportPartBMessageObject extends AisStaticDataReportMe
     private Guid _mothershipMmsi;
     private int _positionFixType = PositionFixType.Undefined1;
     private int _spare = 0;
+
+    public AisStaticDataReportPartBMessageObject( ) {
+    }
+    public AisStaticDataReportPartBMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, int shipType, String vendorId, int unitModelCode, int serialNumber, Guid callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid mothershipMmsi, int positionFixType, int spare ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber );
+        this._shipType = shipType;
+        this._vendorId = vendorId;
+        this._unitModelCode = unitModelCode;
+        this._serialNumber = serialNumber;
+        this._callsign = callsign;
+        this._dimensionToBow = dimensionToBow;
+        this._dimensionToStern = dimensionToStern;
+        this._dimensionToPort = dimensionToPort;
+        this._dimensionToStarboard = dimensionToStarboard;
+        this._mothershipMmsi = mothershipMmsi;
+        this._positionFixType = positionFixType;
+        this._spare = spare;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CameraConfiguration;
+
     private long _rowVersion = 0;
     private Guid _camera;
     private DateTime _timestamp;
@@ -66,6 +68,72 @@ public class CameraConfigurationObject extends AbstractDataObjectWithGuidKey {
     private String _ptzProfileName = "";
     private String _ptzConfigurationToken = "";
     private String _videoSourceToken = "";
+
+    public CameraConfigurationObject( ) {
+    }
+    public CameraConfigurationObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int cameraControlProtocol, String cameraURL, String configurationURL, String userName, String password, boolean useRtspUriOverride, String rtspUriOverride, double latitude, double longitude, double altitude, boolean useRelativePosition, int panTiltMode, double minTiltAngle, double maxTiltAngle, double minTiltScaleAngle, double maxTiltScaleAngle, boolean useReverseTiltAngle, boolean useReverseNormalizedTiltAngle, double minTiltVelocity, double maxTiltVelocity, double minTiltSpeed, double maxTiltSpeed, double minPanAngle, double maxPanAngle, double minPanScaleAngle, double maxPanScaleAngle, boolean useReversePanAngle, boolean useReverseNormalizedPanAngle, double minPanVelocity, double maxPanVelocity, double minPanSpeed, double maxPanSpeed, int focalLengthMode, double minFocalLength, double maxFocalLength, double minFocalLengthScale, double maxFocalLengthScale, double minZoomVelocity, double maxZoomVelocity, double minZoomSpeed, double maxZoomSpeed, double imageSensorWidth, double imageSensorHeight, double homePanAngle, double homeTiltAngle, double homeFocalLength, double panOffset, double tiltOffset, double aimAltitude, double minimumTargetWidth, TimeSpan targetLockTimeout, TimeSpan updateStatusInterval, TimeSpan readTimeout, TimeSpan moveCommandStatusDelay, String ptzProfileName, String ptzConfigurationToken, String videoSourceToken ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._camera = camera;
+        this._timestamp = timestamp;
+        this._cameraControlProtocol = cameraControlProtocol;
+        this._cameraURL = cameraURL;
+        this._configurationURL = configurationURL;
+        this._userName = userName;
+        this._password = password;
+        this._useRtspUriOverride = useRtspUriOverride;
+        this._rtspUriOverride = rtspUriOverride;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._altitude = altitude;
+        this._useRelativePosition = useRelativePosition;
+        this._panTiltMode = panTiltMode;
+        this._minTiltAngle = minTiltAngle;
+        this._maxTiltAngle = maxTiltAngle;
+        this._minTiltScaleAngle = minTiltScaleAngle;
+        this._maxTiltScaleAngle = maxTiltScaleAngle;
+        this._useReverseTiltAngle = useReverseTiltAngle;
+        this._useReverseNormalizedTiltAngle = useReverseNormalizedTiltAngle;
+        this._minTiltVelocity = minTiltVelocity;
+        this._maxTiltVelocity = maxTiltVelocity;
+        this._minTiltSpeed = minTiltSpeed;
+        this._maxTiltSpeed = maxTiltSpeed;
+        this._minPanAngle = minPanAngle;
+        this._maxPanAngle = maxPanAngle;
+        this._minPanScaleAngle = minPanScaleAngle;
+        this._maxPanScaleAngle = maxPanScaleAngle;
+        this._useReversePanAngle = useReversePanAngle;
+        this._useReverseNormalizedPanAngle = useReverseNormalizedPanAngle;
+        this._minPanVelocity = minPanVelocity;
+        this._maxPanVelocity = maxPanVelocity;
+        this._minPanSpeed = minPanSpeed;
+        this._maxPanSpeed = maxPanSpeed;
+        this._focalLengthMode = focalLengthMode;
+        this._minFocalLength = minFocalLength;
+        this._maxFocalLength = maxFocalLength;
+        this._minFocalLengthScale = minFocalLengthScale;
+        this._maxFocalLengthScale = maxFocalLengthScale;
+        this._minZoomVelocity = minZoomVelocity;
+        this._maxZoomVelocity = maxZoomVelocity;
+        this._minZoomSpeed = minZoomSpeed;
+        this._maxZoomSpeed = maxZoomSpeed;
+        this._imageSensorWidth = imageSensorWidth;
+        this._imageSensorHeight = imageSensorHeight;
+        this._homePanAngle = homePanAngle;
+        this._homeTiltAngle = homeTiltAngle;
+        this._homeFocalLength = homeFocalLength;
+        this._panOffset = panOffset;
+        this._tiltOffset = tiltOffset;
+        this._aimAltitude = aimAltitude;
+        this._minimumTargetWidth = minimumTargetWidth;
+        this._targetLockTimeout = targetLockTimeout;
+        this._updateStatusInterval = updateStatusInterval;
+        this._readTimeout = readTimeout;
+        this._moveCommandStatusDelay = moveCommandStatusDelay;
+        this._ptzProfileName = ptzProfileName;
+        this._ptzConfigurationToken = ptzConfigurationToken;
+        this._videoSourceToken = videoSourceToken;
+    }
 
     @Override
     public int getObjectType( ) {

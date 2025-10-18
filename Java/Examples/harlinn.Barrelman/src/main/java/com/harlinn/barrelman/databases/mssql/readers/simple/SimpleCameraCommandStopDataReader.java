@@ -47,4 +47,9 @@ public class SimpleCameraCommandStopDataReader extends SimpleCameraCommandDataRe
         destination.writeBoolean( getZoom( ) );
     }
 
+    @Override
+    public CameraCommandStopObject GetDataObject( ) throws SQLException {
+        return new CameraCommandStopObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getPanTilt( ), getZoom( ) );
+    }
+
 }

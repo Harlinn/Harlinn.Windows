@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class UInt64PropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.UInt64PropertyDefinition;
+
     private long _defaultValue = 0;
     private long _minValue = 0;
     private long _maxValue = 0;
+
+    public UInt64PropertyDefinitionObject( ) {
+    }
+    public UInt64PropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, long defaultValue, long minValue, long maxValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+        this._minValue = minValue;
+        this._maxValue = maxValue;
+    }
 
     @Override
     public int getObjectType( ) {

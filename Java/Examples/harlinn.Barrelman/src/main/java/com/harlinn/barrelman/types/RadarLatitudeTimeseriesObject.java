@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadarLatitudeTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.RadarLatitudeTimeseries;
+
     private Guid _radar;
+
+    public RadarLatitudeTimeseriesObject( ) {
+    }
+    public RadarLatitudeTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radar ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radar = radar;
+    }
 
     @Override
     public int getObjectType( ) {

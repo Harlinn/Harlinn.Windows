@@ -38,4 +38,9 @@ public class SimpleRadarTrackingTimeseriesDataReader extends SimpleBooleanTimese
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarTrackingTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarTrackingTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

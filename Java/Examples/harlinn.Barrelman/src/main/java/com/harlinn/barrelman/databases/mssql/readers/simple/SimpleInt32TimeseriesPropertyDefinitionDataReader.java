@@ -45,4 +45,9 @@ public class SimpleInt32TimeseriesPropertyDefinitionDataReader extends SimpleTim
         destination.writeInt32( getMaxValue( ) );
     }
 
+    @Override
+    public Int32TimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new Int32TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

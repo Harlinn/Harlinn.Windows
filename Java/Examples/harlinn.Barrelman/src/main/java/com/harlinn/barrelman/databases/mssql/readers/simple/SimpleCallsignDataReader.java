@@ -35,4 +35,9 @@ public class SimpleCallsignDataReader extends SimpleIdentityDataReader {
         destination.writeStringUtf8( getIdentifier( ) );
     }
 
+    @Override
+    public CallsignObject GetDataObject( ) throws SQLException {
+        return new CallsignObject( ObjectState.Stored, getId( ), getRowVersion( ), getIdentifier( ) );
+    }
+
 }

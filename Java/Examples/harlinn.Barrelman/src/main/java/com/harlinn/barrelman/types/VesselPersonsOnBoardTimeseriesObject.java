@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class VesselPersonsOnBoardTimeseriesObject extends Int32TimeseriesObject {
 
+    public final int KIND = Kind.VesselPersonsOnBoardTimeseries;
+
     private Guid _vessel;
+
+    public VesselPersonsOnBoardTimeseriesObject( ) {
+    }
+    public VesselPersonsOnBoardTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid vessel ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._vessel = vessel;
+    }
 
     @Override
     public int getObjectType( ) {

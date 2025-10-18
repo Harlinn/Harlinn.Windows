@@ -124,4 +124,8 @@ public class SimpleMapElementDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public MapElementObject GetDataObject( ) throws SQLException {
+            return new MapElementObject( ObjectState.Stored, getId( ), getRowVersion( ), getItem( ), getElementType( ), getLatitude( ), getLongitude( ), getAngle( ), getLeft( ), getTop( ), getWidth( ), getHeight( ), getLabel( ), getData( ) );
+    }
+
 }

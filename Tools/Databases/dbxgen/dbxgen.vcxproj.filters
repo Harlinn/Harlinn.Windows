@@ -340,5 +340,17 @@
     <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlSimpleDatabaseReaderGenerator.cpp">
       <Filter>Src\CodeGenerators\Java\Databases\MsSql</Filter>
     </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\JavaTestDataObjectFactoryGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlTestDataObjectFactoryGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlComplexReadersGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlComplexDatabaseReaderGenerator.cpp">
+      <Filter>Src\CodeGenerators\Java\Databases\MsSql</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

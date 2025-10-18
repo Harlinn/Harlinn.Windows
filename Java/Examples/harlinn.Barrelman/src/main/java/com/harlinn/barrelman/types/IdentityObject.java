@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public abstract class IdentityObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.Identity;
+
     private long _rowVersion = 0;
+
+    public IdentityObject( ) {
+    }
+    public IdentityObject( byte objectState, Guid id, long rowVersion ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+    }
 
 
     public long getRowVersion( ) {

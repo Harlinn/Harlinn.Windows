@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisAidToNavigationObject extends TrackableItemObject {
 
+    public final int KIND = Kind.AisAidToNavigation;
+
     private String _name = "";
     private Guid _mMSI;
     private int _navigationalAidType = NavigationalAidType.NotSpecified;
@@ -16,6 +18,22 @@ public class AisAidToNavigationObject extends TrackableItemObject {
     private int _toPort = 0;
     private int _toStarboard = 0;
     private Guid _offPositionTimeseries;
+
+    public AisAidToNavigationObject( ) {
+    }
+    public AisAidToNavigationObject( byte objectState, Guid id, long rowVersion, String name, Guid mMSI, int navigationalAidType, Guid position, boolean isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid offPositionTimeseries ) {
+        super( objectState, id, rowVersion );
+        this._name = name;
+        this._mMSI = mMSI;
+        this._navigationalAidType = navigationalAidType;
+        this._position = position;
+        this._isVirtual = isVirtual;
+        this._toBow = toBow;
+        this._toStern = toStern;
+        this._toPort = toPort;
+        this._toStarboard = toStarboard;
+        this._offPositionTimeseries = offPositionTimeseries;
+    }
 
     @Override
     public int getObjectType( ) {

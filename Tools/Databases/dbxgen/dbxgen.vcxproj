@@ -215,9 +215,12 @@
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateUpdateProceduresGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateViewsGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlComplexDatabaseReaderGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlComplexReadersGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlSimpleDatabaseReaderGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlSimpleReadersGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlStoredProceduresGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\Databases\MsSql\JavaMsSqlTestDataObjectFactoryGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaDataContextGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaDataTypeFactoryGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaDataTypeGenerator.cpp" />
@@ -226,6 +229,7 @@
     <ClCompile Include="src\CodeGenerators\Java\JavaEnumsGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaHelper.cpp" />
     <ClCompile Include="src\CodeGenerators\Java\JavaKindGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Java\JavaTestDataObjectFactoryGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Options.cpp" />
     <ClCompile Include="src\dbxgen.cpp" />
     <ClCompile Include="src\Metadata\BinaryMemberInfo.cpp" />

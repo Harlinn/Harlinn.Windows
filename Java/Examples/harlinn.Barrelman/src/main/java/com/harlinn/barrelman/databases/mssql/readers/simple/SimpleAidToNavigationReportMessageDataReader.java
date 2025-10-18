@@ -159,4 +159,9 @@ public class SimpleAidToNavigationReportMessageDataReader extends SimpleAisMessa
         destination.writeStringUtf8( getNameExtension( ) );
     }
 
+    @Override
+    public AidToNavigationReportMessageObject GetDataObject( ) throws SQLException {
+        return new AidToNavigationReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationalAidType( ), getName( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getDimensionToBow( ), getDimensionToStern( ), getDimensionToPort( ), getDimensionToStarboard( ), getPositionFixType( ), getTimestamp( ), getOffPosition( ), getRegionalReserved( ), getRaim( ), getVirtualAid( ), getAssigned( ), getSpare( ), getNameExtension( ) );
+    }
+
 }

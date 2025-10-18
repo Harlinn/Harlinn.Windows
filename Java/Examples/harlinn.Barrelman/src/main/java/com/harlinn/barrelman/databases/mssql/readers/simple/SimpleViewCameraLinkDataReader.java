@@ -75,4 +75,8 @@ public class SimpleViewCameraLinkDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public ViewCameraLinkObject GetDataObject( ) throws SQLException {
+            return new ViewCameraLinkObject( ObjectState.Stored, getId( ), getRowVersion( ), getView( ), getCamera( ), getStart( ), getEnd( ) );
+    }
+
 }

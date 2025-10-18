@@ -48,4 +48,9 @@ public class SimpleAisStaticDataReportPartAMessageDataReader extends SimpleAisSt
         destination.writeInt32( getSpare( ) );
     }
 
+    @Override
+    public AisStaticDataReportPartAMessageObject GetDataObject( ) throws SQLException {
+        return new AisStaticDataReportPartAMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPartNumber( ), getShipName( ), getSpare( ) );
+    }
+
 }

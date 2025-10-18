@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadarSector1StartTimeseriesObject extends Int32TimeseriesObject {
 
+    public final int KIND = Kind.RadarSector1StartTimeseries;
+
     private Guid _radar;
+
+    public RadarSector1StartTimeseriesObject( ) {
+    }
+    public RadarSector1StartTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radar ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radar = radar;
+    }
 
     @Override
     public int getObjectType( ) {

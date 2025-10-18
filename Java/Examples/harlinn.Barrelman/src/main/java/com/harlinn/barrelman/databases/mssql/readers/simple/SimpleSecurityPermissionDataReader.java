@@ -96,4 +96,8 @@ public class SimpleSecurityPermissionDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public SecurityPermissionObject GetDataObject( ) throws SQLException {
+            return new SecurityPermissionObject( ObjectState.Stored, getId( ), getRowVersion( ), getIdentifier( ), getTimestamp( ), getTypeCode( ), getCanCreate( ), getCanRead( ), getCanUpdate( ), getCanDelete( ) );
+    }
+
 }

@@ -1131,6 +1131,8 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
 		if(guid != null) {
 			var guidAsString = guid.toString();
 			setString(parameterIndex,guidAsString);
+			//var uuid = guid.toUUID();
+			//setObject(parameterIndex, uuid);
 		}
 		else {
 			var message = "guid cannot be null.";

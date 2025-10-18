@@ -30,4 +30,9 @@ public class SimpleStringTimeseriesDataReader extends SimpleTimeseriesDataReader
         super.writeTo( destination );
     }
 
+    @Override
+    public StringTimeseriesObject GetDataObject( ) throws SQLException {
+        return new StringTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

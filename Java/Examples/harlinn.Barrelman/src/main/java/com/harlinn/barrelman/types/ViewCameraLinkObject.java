@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class ViewCameraLinkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ViewCameraLink;
+
     private long _rowVersion = 0;
     private Guid _view;
     private Guid _camera;
     private DateTime _start;
     private DateTime _end;
+
+    public ViewCameraLinkObject( ) {
+    }
+    public ViewCameraLinkObject( byte objectState, Guid id, long rowVersion, Guid view, Guid camera, DateTime start, DateTime end ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._view = view;
+        this._camera = camera;
+        this._start = start;
+        this._end = end;
+    }
 
     @Override
     public int getObjectType( ) {

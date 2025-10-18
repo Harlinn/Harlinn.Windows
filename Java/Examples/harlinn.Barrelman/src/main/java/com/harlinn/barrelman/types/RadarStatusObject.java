@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadarStatus;
+
     private long _rowVersion = 0;
     private Guid _radar;
     private DateTime _timestamp;
@@ -15,6 +17,21 @@ public class RadarStatusObject extends AbstractDataObjectWithGuidKey {
     private int _pulse = RadarPulse.Short;
     private boolean _tx = false;
     private boolean _tracking = false;
+
+    public RadarStatusObject( ) {
+    }
+    public RadarStatusObject( byte objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, int azimuthCount, int triggerCount, TimeSpan rotationTime, int pulse, boolean tx, boolean tracking ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radar = radar;
+        this._timestamp = timestamp;
+        this._azimuthCount = azimuthCount;
+        this._triggerCount = triggerCount;
+        this._rotationTime = rotationTime;
+        this._pulse = pulse;
+        this._tx = tx;
+        this._tracking = tracking;
+    }
 
     @Override
     public int getObjectType( ) {

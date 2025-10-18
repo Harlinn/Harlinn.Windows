@@ -31,4 +31,9 @@ public class SimpleCameraDeviceDataReader extends SimpleDeviceDataReader {
         super.writeTo( destination );
     }
 
+    @Override
+    public CameraDeviceObject GetDataObject( ) throws SQLException {
+        return new CameraDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
+    }
+
 }

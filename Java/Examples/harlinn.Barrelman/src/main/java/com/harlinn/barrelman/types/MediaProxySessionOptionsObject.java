@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MediaProxySessionOptions;
+
     private long _rowVersion = 0;
     private Guid _proxySession;
     private DateTime _timestamp;
@@ -20,6 +22,26 @@ public class MediaProxySessionOptionsObject extends AbstractDataObjectWithGuidKe
     private TimeSpan _maxFileTime;
     private TimeSpan _maxFileRetention;
     private String _videoDirectory = "";
+
+    public MediaProxySessionOptionsObject( ) {
+    }
+    public MediaProxySessionOptionsObject( byte objectState, Guid id, long rowVersion, Guid proxySession, DateTime timestamp, String sourceStreamUrl, String streamName, int mode, int tunnelOverHTTPPortNumber, String username, String password, int recorderPortNumber, int sessionType, TimeSpan maxFileTime, TimeSpan maxFileRetention, String videoDirectory ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._proxySession = proxySession;
+        this._timestamp = timestamp;
+        this._sourceStreamUrl = sourceStreamUrl;
+        this._streamName = streamName;
+        this._mode = mode;
+        this._tunnelOverHTTPPortNumber = tunnelOverHTTPPortNumber;
+        this._username = username;
+        this._password = password;
+        this._recorderPortNumber = recorderPortNumber;
+        this._sessionType = sessionType;
+        this._maxFileTime = maxFileTime;
+        this._maxFileRetention = maxFileRetention;
+        this._videoDirectory = videoDirectory;
+    }
 
     @Override
     public int getObjectType( ) {

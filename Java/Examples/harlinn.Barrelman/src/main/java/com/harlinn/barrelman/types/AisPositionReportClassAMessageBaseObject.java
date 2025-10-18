@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public abstract class AisPositionReportClassAMessageBaseObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisPositionReportClassAMessageBase;
+
     private int _navigationStatus = NavigationStatus.UnderWayUsingEngine;
     private Integer _rateOfTurn;
     private double _speedOverGround = 0.0;
@@ -19,6 +21,25 @@ public abstract class AisPositionReportClassAMessageBaseObject extends AisMessag
     private int _spare = 0;
     private int _raim = Raim.NotInUse;
     private int _radioStatus = 0;
+
+    public AisPositionReportClassAMessageBaseObject( ) {
+    }
+    public AisPositionReportClassAMessageBaseObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int navigationStatus, Integer rateOfTurn, double speedOverGround, int positionAccuracy, double longitude, double latitude, double courseOverGround, Integer trueHeading, int timestamp, int maneuverIndicator, int spare, int raim, int radioStatus ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._navigationStatus = navigationStatus;
+        this._rateOfTurn = rateOfTurn;
+        this._speedOverGround = speedOverGround;
+        this._positionAccuracy = positionAccuracy;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._courseOverGround = courseOverGround;
+        this._trueHeading = trueHeading;
+        this._timestamp = timestamp;
+        this._maneuverIndicator = maneuverIndicator;
+        this._spare = spare;
+        this._raim = raim;
+        this._radioStatus = radioStatus;
+    }
 
 
     public int getNavigationStatus( ) {

@@ -32,4 +32,9 @@ public class SimpleCameraCommandReleasePTZOwnershipDataReader extends SimpleCame
         super.writeTo( destination );
     }
 
+    @Override
+    public CameraCommandReleasePTZOwnershipObject GetDataObject( ) throws SQLException {
+        return new CameraCommandReleasePTZOwnershipObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+    }
+
 }

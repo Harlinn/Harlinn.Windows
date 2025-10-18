@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public abstract class TimeseriesCatalogElementObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TimeseriesCatalogElement;
+
     private long _rowVersion = 0;
     private Guid _catalog;
     private String _name = "";
+
+    public TimeseriesCatalogElementObject( ) {
+    }
+    public TimeseriesCatalogElementObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._catalog = catalog;
+        this._name = name;
+    }
 
 
     public long getRowVersion( ) {

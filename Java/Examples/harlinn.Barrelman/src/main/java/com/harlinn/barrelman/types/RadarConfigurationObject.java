@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadarConfiguration;
+
     private long _rowVersion = 0;
     private Guid _radar;
     private DateTime _timestamp;
@@ -34,6 +36,40 @@ public class RadarConfigurationObject extends AbstractDataObjectWithGuidKey {
     private String _nmeaReceiverIPAddress = "";
     private int _nmeaReceiverPort = 0;
     private String _nmeaReceiverSourceId = "";
+
+    public RadarConfigurationObject( ) {
+    }
+    public RadarConfigurationObject( byte objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, int radarProtocolVersion, String radarIPAddress, int radarPort, int radarConfigurationPort, TimeSpan skipMagicTimeout, TimeSpan readTimeout, TimeSpan synchronizationInterval, int targetsRefreshRate, int range, int sectorCount, int sectorOffset, int imageColor, Integer imageSubstitutionColor, int transparentColor, double imageScaleFactorX, double imageOffsetX, double imageScaleFactorY, double imageOffsetY, int radarImageType, int trackColor, int vectorColor, boolean enableNmea, String nmeaReceiverIPAddress, int nmeaReceiverPort, String nmeaReceiverSourceId ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radar = radar;
+        this._timestamp = timestamp;
+        this._radarProtocolVersion = radarProtocolVersion;
+        this._radarIPAddress = radarIPAddress;
+        this._radarPort = radarPort;
+        this._radarConfigurationPort = radarConfigurationPort;
+        this._skipMagicTimeout = skipMagicTimeout;
+        this._readTimeout = readTimeout;
+        this._synchronizationInterval = synchronizationInterval;
+        this._targetsRefreshRate = targetsRefreshRate;
+        this._range = range;
+        this._sectorCount = sectorCount;
+        this._sectorOffset = sectorOffset;
+        this._imageColor = imageColor;
+        this._imageSubstitutionColor = imageSubstitutionColor;
+        this._transparentColor = transparentColor;
+        this._imageScaleFactorX = imageScaleFactorX;
+        this._imageOffsetX = imageOffsetX;
+        this._imageScaleFactorY = imageScaleFactorY;
+        this._imageOffsetY = imageOffsetY;
+        this._radarImageType = radarImageType;
+        this._trackColor = trackColor;
+        this._vectorColor = vectorColor;
+        this._enableNmea = enableNmea;
+        this._nmeaReceiverIPAddress = nmeaReceiverIPAddress;
+        this._nmeaReceiverPort = nmeaReceiverPort;
+        this._nmeaReceiverSourceId = nmeaReceiverSourceId;
+    }
 
     @Override
     public int getObjectType( ) {

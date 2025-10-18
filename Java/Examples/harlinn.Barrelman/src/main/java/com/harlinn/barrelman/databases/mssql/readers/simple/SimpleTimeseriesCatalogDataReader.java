@@ -29,4 +29,9 @@ public class SimpleTimeseriesCatalogDataReader extends SimpleTimeseriesCatalogEl
         super.writeTo( destination );
     }
 
+    @Override
+    public TimeseriesCatalogObject GetDataObject( ) throws SQLException {
+        return new TimeseriesCatalogObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ) );
+    }
+
 }

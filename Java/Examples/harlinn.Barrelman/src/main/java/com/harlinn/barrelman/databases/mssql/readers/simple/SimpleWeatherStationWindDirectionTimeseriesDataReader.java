@@ -38,4 +38,9 @@ public class SimpleWeatherStationWindDirectionTimeseriesDataReader extends Simpl
         destination.writeNullableGuid( getWeatherStation( ) );
     }
 
+    @Override
+    public WeatherStationWindDirectionTimeseriesObject GetDataObject( ) throws SQLException {
+        return new WeatherStationWindDirectionTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
+    }
+
 }

@@ -38,4 +38,9 @@ public class SimpleViewLatitudeTimeseriesDataReader extends SimpleDoubleTimeseri
         destination.writeNullableGuid( getView( ) );
     }
 
+    @Override
+    public ViewLatitudeTimeseriesObject GetDataObject( ) throws SQLException {
+        return new ViewLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getView( ) );
+    }
+
 }

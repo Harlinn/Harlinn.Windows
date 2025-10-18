@@ -42,4 +42,9 @@ public class SimpleBaseStationDataReader extends SimpleItemDataReader {
         destination.writeNullableGuid( getTypeField( ) );
     }
 
+    @Override
+    public BaseStationObject GetDataObject( ) throws SQLException {
+        return new BaseStationObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ) );
+    }
+
 }

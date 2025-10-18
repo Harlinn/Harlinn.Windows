@@ -6,6 +6,14 @@ import com.harlinn.common.util.*;
 
 public class GuidTimeseriesPropertyDefinitionObject extends TimeseriesPropertyDefinitionObject {
 
+    public final int KIND = Kind.GuidTimeseriesPropertyDefinition;
+
+
+    public GuidTimeseriesPropertyDefinitionObject( ) {
+    }
+    public GuidTimeseriesPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+    }
 
     @Override
     public int getObjectType( ) {

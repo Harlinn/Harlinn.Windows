@@ -45,4 +45,9 @@ public class SimpleStringPropertyDefinitionDataReader extends SimplePropertyDefi
         destination.writeStringUtf8( getPattern( ) );
     }
 
+    @Override
+    public StringPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new StringPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getPattern( ) );
+    }
+
 }

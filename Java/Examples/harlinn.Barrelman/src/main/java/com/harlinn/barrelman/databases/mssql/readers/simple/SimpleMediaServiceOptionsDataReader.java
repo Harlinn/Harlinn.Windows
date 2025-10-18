@@ -75,4 +75,8 @@ public class SimpleMediaServiceOptionsDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public MediaServiceOptionsObject GetDataObject( ) throws SQLException {
+            return new MediaServiceOptionsObject( ObjectState.Stored, getId( ), getRowVersion( ), getMediaService( ), getTimestamp( ), getRtspPortNumber( ), getHttpPortNumber( ) );
+    }
+
 }

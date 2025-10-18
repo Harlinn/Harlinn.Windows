@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class BooleanPropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.BooleanProperty;
+
     private boolean _value = false;
+
+    public BooleanPropertyObject( ) {
+    }
+    public BooleanPropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, boolean value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -40,4 +40,9 @@ public class SimpleCameraCommandSetAutoFocusDataReader extends SimpleCameraComma
         destination.writeBoolean( getEnabled( ) );
     }
 
+    @Override
+    public CameraCommandSetAutoFocusObject GetDataObject( ) throws SQLException {
+        return new CameraCommandSetAutoFocusObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getEnabled( ) );
+    }
+
 }

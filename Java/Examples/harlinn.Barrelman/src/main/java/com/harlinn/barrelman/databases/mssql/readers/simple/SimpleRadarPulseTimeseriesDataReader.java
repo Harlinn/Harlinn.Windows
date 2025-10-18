@@ -38,4 +38,9 @@ public class SimpleRadarPulseTimeseriesDataReader extends SimpleInt32TimeseriesD
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarPulseTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarPulseTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

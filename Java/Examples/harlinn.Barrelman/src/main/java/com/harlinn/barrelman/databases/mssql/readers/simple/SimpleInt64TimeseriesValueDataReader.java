@@ -68,4 +68,8 @@ public class SimpleInt64TimeseriesValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public Int64TimeseriesValueObject GetDataObject( ) throws SQLException {
+            return new Int64TimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getValue( ) );
+    }
+
 }

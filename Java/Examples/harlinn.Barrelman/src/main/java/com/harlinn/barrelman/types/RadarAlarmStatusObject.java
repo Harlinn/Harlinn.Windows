@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class RadarAlarmStatusObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadarAlarmStatus;
+
     private long _rowVersion = 0;
     private Guid _radar;
     private DateTime _timestamp;
     private int _type = AlarmState.Unknown;
+
+    public RadarAlarmStatusObject( ) {
+    }
+    public RadarAlarmStatusObject( byte objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, int type ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radar = radar;
+        this._timestamp = timestamp;
+        this._type = type;
+    }
 
     @Override
     public int getObjectType( ) {

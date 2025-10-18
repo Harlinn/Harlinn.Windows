@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class DeviceEnabledTimeseriesObject extends BooleanTimeseriesObject {
 
+    public final int KIND = Kind.DeviceEnabledTimeseries;
+
     private Guid _device;
+
+    public DeviceEnabledTimeseriesObject( ) {
+    }
+    public DeviceEnabledTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid device ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._device = device;
+    }
 
     @Override
     public int getObjectType( ) {

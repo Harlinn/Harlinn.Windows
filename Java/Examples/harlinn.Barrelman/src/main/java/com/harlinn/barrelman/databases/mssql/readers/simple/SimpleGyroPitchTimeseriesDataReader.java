@@ -38,4 +38,9 @@ public class SimpleGyroPitchTimeseriesDataReader extends SimpleDoubleTimeseriesD
         destination.writeNullableGuid( getGyroDevice( ) );
     }
 
+    @Override
+    public GyroPitchTimeseriesObject GetDataObject( ) throws SQLException {
+        return new GyroPitchTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
+    }
+
 }

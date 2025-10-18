@@ -61,4 +61,8 @@ public class SimpleSecurityDomainDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public SecurityDomainObject GetDataObject( ) throws SQLException {
+            return new SecurityDomainObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getDescription( ) );
+    }
+
 }

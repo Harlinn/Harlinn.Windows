@@ -38,4 +38,9 @@ public class SimpleReferenceTimeseriesPropertyDefinitionDataReader extends Simpl
         destination.writeNullableGuid( getReferencedElementType( ) );
     }
 
+    @Override
+    public ReferenceTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new ReferenceTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getReferencedElementType( ) );
+    }
+
 }

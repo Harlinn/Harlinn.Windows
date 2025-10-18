@@ -31,4 +31,9 @@ public class SimpleAisDeviceDataReader extends SimpleTrackerDeviceDataReader {
         super.writeTo( destination );
     }
 
+    @Override
+    public AisDeviceObject GetDataObject( ) throws SQLException {
+        return new AisDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
+    }
+
 }

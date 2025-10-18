@@ -89,4 +89,9 @@ public class SimpleAisUtcAndDateResponseMessageDataReader extends SimpleAisMessa
         destination.writeInt32( getRadioStatus( ) );
     }
 
+    @Override
+    public AisUtcAndDateResponseMessageObject GetDataObject( ) throws SQLException {
+        return new AisUtcAndDateResponseMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getDatetime( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getPositionFixType( ), getSpare( ), getRaim( ), getRadioStatus( ) );
+    }
+
 }

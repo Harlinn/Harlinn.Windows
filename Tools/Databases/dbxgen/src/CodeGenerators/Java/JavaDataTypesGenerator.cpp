@@ -33,6 +33,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             CreateDataType( classInfo );
         }
         CreateFactory( );
+        CreateTestDataObjectFactory( );
     }
 
     void JavaDataTypesGenerator::CreateDataType( const Metadata::ClassInfo& classInfo )
@@ -44,6 +45,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     {
         JavaDataTypeFactoryGenerator dataTypeFactoryGenerator( *this );
         dataTypeFactoryGenerator.Run( );
+    }
+
+    void JavaDataTypesGenerator::CreateTestDataObjectFactory( )
+    {
+        JavaTestDataObjectFactoryGenerator testDataObjectFactoryGenerator( *this );
+        testDataObjectFactoryGenerator.Run( );
     }
 
 }

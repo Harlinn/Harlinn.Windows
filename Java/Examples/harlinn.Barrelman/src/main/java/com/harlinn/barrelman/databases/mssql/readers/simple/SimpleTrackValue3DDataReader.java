@@ -117,4 +117,8 @@ public class SimpleTrackValue3DDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public TrackValue3DObject GetDataObject( ) throws SQLException {
+            return new TrackValue3DObject( ObjectState.Stored, getId( ), getRowVersion( ), getTrack( ), getTimestamp( ), getFlags( ), getStatus( ), getLatitude( ), getLongitude( ), getAltitude( ), getSpeed( ), getCourse( ), getRateOfClimb( ) );
+    }
+
 }

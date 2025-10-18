@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class TrackLinkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackLink;
+
     private long _rowVersion = 0;
     private Guid _primary;
     private Guid _secondary;
     private DateTime _start;
     private DateTime _end;
+
+    public TrackLinkObject( ) {
+    }
+    public TrackLinkObject( byte objectState, Guid id, long rowVersion, Guid primary, Guid secondary, DateTime start, DateTime end ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._primary = primary;
+        this._secondary = secondary;
+        this._start = start;
+        this._end = end;
+    }
 
     @Override
     public int getObjectType( ) {

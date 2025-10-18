@@ -110,4 +110,8 @@ public class SimpleRadioConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public RadioConfigurationObject GetDataObject( ) throws SQLException {
+            return new RadioConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadio( ), getTimestamp( ), getLongitude( ), getLatitude( ), getPlaybackUrl( ), getRadioIPAddress( ), getRadioPort( ), getEd137IPAddress( ), getEd137Port( ) );
+    }
+
 }

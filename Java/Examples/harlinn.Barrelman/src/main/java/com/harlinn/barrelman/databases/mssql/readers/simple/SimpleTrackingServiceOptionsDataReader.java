@@ -124,4 +124,8 @@ public class SimpleTrackingServiceOptionsDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public TrackingServiceOptionsObject GetDataObject( ) throws SQLException {
+            return new TrackingServiceOptionsObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimestamp( ), getTimerInterval( ), getMaxAgeOfCurrentTrackValue( ), getFalseThreshold( ), getDistanceThreshold( ), getDistanceUnmergeThreshold( ), getUnmergeLatency( ), getKalmanFiltering( ), getMaxCourseDeviation( ), getMaxSpeedDeviation( ), getMinimumSpeedThreshold( ) );
+    }
+
 }

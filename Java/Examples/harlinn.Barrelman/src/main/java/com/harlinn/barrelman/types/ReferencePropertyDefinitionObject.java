@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class ReferencePropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.ReferencePropertyDefinition;
+
     private Guid _defaultValue;
     private Guid _referencedElementType;
+
+    public ReferencePropertyDefinitionObject( ) {
+    }
+    public ReferencePropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, Guid defaultValue, Guid referencedElementType ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+        this._referencedElementType = referencedElementType;
+    }
 
     @Override
     public int getObjectType( ) {

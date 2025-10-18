@@ -38,4 +38,9 @@ public class SimpleWeatherStationDewPointTimeseriesDataReader extends SimpleDoub
         destination.writeNullableGuid( getWeatherStation( ) );
     }
 
+    @Override
+    public WeatherStationDewPointTimeseriesObject GetDataObject( ) throws SQLException {
+        return new WeatherStationDewPointTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
+    }
+
 }

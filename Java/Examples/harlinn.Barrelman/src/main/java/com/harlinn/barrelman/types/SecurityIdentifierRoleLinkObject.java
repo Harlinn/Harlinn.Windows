@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class SecurityIdentifierRoleLinkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.SecurityIdentifierRoleLink;
+
     private long _rowVersion = 0;
     private Guid _member;
     private Guid _role;
     private DateTime _start;
     private DateTime _end;
+
+    public SecurityIdentifierRoleLinkObject( ) {
+    }
+    public SecurityIdentifierRoleLinkObject( byte objectState, Guid id, long rowVersion, Guid member, Guid role, DateTime start, DateTime end ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._member = member;
+        this._role = role;
+        this._start = start;
+        this._end = end;
+    }
 
     @Override
     public int getObjectType( ) {

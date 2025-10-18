@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class GNSSDeviceObject extends DeviceObject {
 
+    public final int KIND = Kind.GNSSDevice;
+
     private Guid _latitudeTimeseries;
     private Guid _longitudeTimeseries;
     private Guid _altitudeTimeseries;
+
+    public GNSSDeviceObject( ) {
+    }
+    public GNSSDeviceObject( byte objectState, Guid id, long rowVersion, Guid host, String name, String description, Guid enabledTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid altitudeTimeseries ) {
+        super( objectState, id, rowVersion, host, name, description, enabledTimeseries );
+        this._latitudeTimeseries = latitudeTimeseries;
+        this._longitudeTimeseries = longitudeTimeseries;
+        this._altitudeTimeseries = altitudeTimeseries;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -82,4 +82,9 @@ public class SimpleCameraCommandRelativeMoveDataReader extends SimpleCameraComma
         destination.writeNullableDouble( getZoomSpeed( ) );
     }
 
+    @Override
+    public CameraCommandRelativeMoveObject GetDataObject( ) throws SQLException {
+        return new CameraCommandRelativeMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getNormalized( ), getPanAngle( ), getTiltAngle( ), getFocalLength( ), getPanSpeed( ), getTiltSpeed( ), getZoomSpeed( ) );
+    }
+
 }

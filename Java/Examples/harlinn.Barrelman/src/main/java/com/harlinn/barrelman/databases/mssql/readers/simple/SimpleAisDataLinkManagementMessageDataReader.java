@@ -152,4 +152,9 @@ public class SimpleAisDataLinkManagementMessageDataReader extends SimpleAisMessa
         destination.writeNullableInt32( getIncrement4( ) );
     }
 
+    @Override
+    public AisDataLinkManagementMessageObject GetDataObject( ) throws SQLException {
+        return new AisDataLinkManagementMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSpare( ), getOffset1( ), getReservedSlots1( ), getTimeout1( ), getIncrement1( ), getOffset2( ), getReservedSlots2( ), getTimeout2( ), getIncrement2( ), getOffset3( ), getReservedSlots3( ), getTimeout3( ), getIncrement3( ), getOffset4( ), getReservedSlots4( ), getTimeout4( ), getIncrement4( ) );
+    }
+
 }

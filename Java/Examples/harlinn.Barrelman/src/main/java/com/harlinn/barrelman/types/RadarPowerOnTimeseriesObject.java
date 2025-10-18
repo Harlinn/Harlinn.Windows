@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadarPowerOnTimeseriesObject extends BooleanTimeseriesObject {
 
+    public final int KIND = Kind.RadarPowerOnTimeseries;
+
     private Guid _radar;
+
+    public RadarPowerOnTimeseriesObject( ) {
+    }
+    public RadarPowerOnTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radar ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radar = radar;
+    }
 
     @Override
     public int getObjectType( ) {

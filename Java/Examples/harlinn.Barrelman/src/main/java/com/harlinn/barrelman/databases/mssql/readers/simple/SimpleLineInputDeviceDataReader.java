@@ -31,4 +31,9 @@ public class SimpleLineInputDeviceDataReader extends SimpleDeviceDataReader {
         super.writeTo( destination );
     }
 
+    @Override
+    public LineInputDeviceObject GetDataObject( ) throws SQLException {
+        return new LineInputDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
+    }
+
 }

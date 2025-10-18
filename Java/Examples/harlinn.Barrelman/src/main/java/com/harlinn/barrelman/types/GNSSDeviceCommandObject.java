@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class GNSSDeviceCommandObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.GNSSDeviceCommand;
+
     private long _rowVersion = 0;
     private Guid _gNSSDevice;
     private DateTime _timestamp;
     private int _deviceCommandSourceType = DeviceCommandSourceType.Unknown;
     private Guid _deviceCommandSourceId;
     private Guid _reply;
+
+    public GNSSDeviceCommandObject( ) {
+    }
+    public GNSSDeviceCommandObject( byte objectState, Guid id, long rowVersion, Guid gNSSDevice, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._gNSSDevice = gNSSDevice;
+        this._timestamp = timestamp;
+        this._deviceCommandSourceType = deviceCommandSourceType;
+        this._deviceCommandSourceId = deviceCommandSourceId;
+        this._reply = reply;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleGyroHeadingMagneticNorthTimeseriesDataReader extends SimpleDo
         destination.writeNullableGuid( getGyroDevice( ) );
     }
 
+    @Override
+    public GyroHeadingMagneticNorthTimeseriesObject GetDataObject( ) throws SQLException {
+        return new GyroHeadingMagneticNorthTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
+    }
+
 }

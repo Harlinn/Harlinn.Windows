@@ -38,4 +38,9 @@ public class SimpleDeviceEnabledTimeseriesDataReader extends SimpleBooleanTimese
         destination.writeNullableGuid( getDevice( ) );
     }
 
+    @Override
+    public DeviceEnabledTimeseriesObject GetDataObject( ) throws SQLException {
+        return new DeviceEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getDevice( ) );
+    }
+
 }

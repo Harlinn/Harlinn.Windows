@@ -38,4 +38,9 @@ public class SimpleRadarEnableAutomaticFrequencyControlTimeseriesDataReader exte
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarEnableAutomaticFrequencyControlTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarEnableAutomaticFrequencyControlTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

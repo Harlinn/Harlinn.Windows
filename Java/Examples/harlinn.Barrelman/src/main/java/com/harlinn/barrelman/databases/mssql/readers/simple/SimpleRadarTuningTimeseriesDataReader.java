@@ -38,4 +38,9 @@ public class SimpleRadarTuningTimeseriesDataReader extends SimpleInt32Timeseries
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarTuningTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarTuningTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

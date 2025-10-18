@@ -82,4 +82,8 @@ public class SimpleWeatherStationCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public WeatherStationCommandObject GetDataObject( ) throws SQLException {
+            return new WeatherStationCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getWeatherStation( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+    }
+
 }

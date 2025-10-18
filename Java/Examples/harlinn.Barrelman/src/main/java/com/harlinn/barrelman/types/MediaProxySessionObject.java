@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class MediaProxySessionObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MediaProxySession;
+
     private long _rowVersion = 0;
     private Guid _service;
     private String _name = "";
     private Guid _enabledTimeseries;
+
+    public MediaProxySessionObject( ) {
+    }
+    public MediaProxySessionObject( byte objectState, Guid id, long rowVersion, Guid service, String name, Guid enabledTimeseries ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._service = service;
+        this._name = name;
+        this._enabledTimeseries = enabledTimeseries;
+    }
 
     @Override
     public int getObjectType( ) {

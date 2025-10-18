@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class MediaServiceEnabledTimeseriesObject extends BooleanTimeseriesObject {
 
+    public final int KIND = Kind.MediaServiceEnabledTimeseries;
+
     private Guid _service;
+
+    public MediaServiceEnabledTimeseriesObject( ) {
+    }
+    public MediaServiceEnabledTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid service ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._service = service;
+    }
 
     @Override
     public int getObjectType( ) {

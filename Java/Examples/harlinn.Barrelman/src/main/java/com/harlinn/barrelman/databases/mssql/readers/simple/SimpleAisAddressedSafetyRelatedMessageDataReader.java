@@ -68,4 +68,9 @@ public class SimpleAisAddressedSafetyRelatedMessageDataReader extends SimpleAisM
         destination.writeStringUtf8( getText( ) );
     }
 
+    @Override
+    public AisAddressedSafetyRelatedMessageObject GetDataObject( ) throws SQLException {
+        return new AisAddressedSafetyRelatedMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSequenceNumber( ), getDestinationMmsi( ), getRetransmitFlag( ), getSpare( ), getText( ) );
+    }
+
 }

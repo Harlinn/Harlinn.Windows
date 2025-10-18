@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CameraCommandReply;
+
     private long _rowVersion = 0;
     private Guid _camera;
     private DateTime _timestamp;
@@ -15,6 +17,21 @@ public class CameraCommandReplyObject extends AbstractDataObjectWithGuidKey {
     private double _panAngle = 0.0;
     private double _tiltAngle = 0.0;
     private double _focalLength = 0.0;
+
+    public CameraCommandReplyObject( ) {
+    }
+    public CameraCommandReplyObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, Guid command, int status, String message, double panAngle, double tiltAngle, double focalLength ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._camera = camera;
+        this._timestamp = timestamp;
+        this._command = command;
+        this._status = status;
+        this._message = message;
+        this._panAngle = panAngle;
+        this._tiltAngle = tiltAngle;
+        this._focalLength = focalLength;
+    }
 
     @Override
     public int getObjectType( ) {

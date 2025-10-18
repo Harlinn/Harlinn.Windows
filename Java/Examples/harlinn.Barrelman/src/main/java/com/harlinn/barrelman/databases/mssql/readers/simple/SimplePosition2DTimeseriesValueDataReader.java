@@ -75,4 +75,8 @@ public class SimplePosition2DTimeseriesValueDataReader extends ResultSetWrapper 
         destination.writeBoolean( false );
     }
 
+    public Position2DTimeseriesValueObject GetDataObject( ) throws SQLException {
+            return new Position2DTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getX( ), getY( ) );
+    }
+
 }

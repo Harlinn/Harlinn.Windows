@@ -67,4 +67,6 @@ public abstract class SimpleTimeseriesCatalogElementDataReader extends ResultSet
         destination.writeBoolean( false );
     }
 
+    public abstract TimeseriesCatalogElementObject GetDataObject( ) throws SQLException;
+
 }

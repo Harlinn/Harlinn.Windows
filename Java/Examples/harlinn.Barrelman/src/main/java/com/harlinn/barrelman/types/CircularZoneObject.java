@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class CircularZoneObject extends ZoneObject {
 
+    public final int KIND = Kind.CircularZone;
+
     private double _radius = 0.0;
+
+    public CircularZoneObject( ) {
+    }
+    public CircularZoneObject( byte objectState, Guid id, long rowVersion, String name, double longitude, double latitude, int alarmType, TimeSpan alarmTime, TimeSpan radarTrackMinimumLifetime, double speed, int strokeColor, int fillColor, double radius ) {
+        super( objectState, id, rowVersion, name, longitude, latitude, alarmType, alarmTime, radarTrackMinimumLifetime, speed, strokeColor, fillColor );
+        this._radius = radius;
+    }
 
     @Override
     public int getObjectType( ) {

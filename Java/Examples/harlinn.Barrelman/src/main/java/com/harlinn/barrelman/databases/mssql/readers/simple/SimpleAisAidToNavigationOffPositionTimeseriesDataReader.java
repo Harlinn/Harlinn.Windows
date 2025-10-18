@@ -38,4 +38,9 @@ public class SimpleAisAidToNavigationOffPositionTimeseriesDataReader extends Sim
         destination.writeNullableGuid( getAidToNavigation( ) );
     }
 
+    @Override
+    public AisAidToNavigationOffPositionTimeseriesObject GetDataObject( ) throws SQLException {
+        return new AisAidToNavigationOffPositionTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getAidToNavigation( ) );
+    }
+
 }

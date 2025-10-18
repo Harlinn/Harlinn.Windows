@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class RadioCommandReplyObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadioCommandReply;
+
     private long _rowVersion = 0;
     private Guid _radio;
     private DateTime _timestamp;
     private Guid _command;
     private int _status = DeviceCommandReplyStatus.Unknown;
     private String _message = "";
+
+    public RadioCommandReplyObject( ) {
+    }
+    public RadioCommandReplyObject( byte objectState, Guid id, long rowVersion, Guid radio, DateTime timestamp, Guid command, int status, String message ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radio = radio;
+        this._timestamp = timestamp;
+        this._command = command;
+        this._status = status;
+        this._message = message;
+    }
 
     @Override
     public int getObjectType( ) {

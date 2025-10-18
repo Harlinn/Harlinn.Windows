@@ -118,12 +118,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
 
         WriteLine( L"    public final InsertGuidKeyResult {}( {} ) throws SQLException {{", functionName, functionParameters );
         WriteLine( L"        insertResult.reset( );" );
-        WriteLine( L"        var sqlStatement = \"call {}({})\";", storedProcedureName, functionParameterPlaceHolders );
+        WriteLine( L"        var sqlStatement = \"{{call {}({})}}\";", storedProcedureName, functionParameterPlaceHolders );
         
         WriteLine( L"        try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {" );
         
         WriteLine( L"            if ( {} == null || {}.isEmpty( ) ) {{", primaryKeyArgumentName, primaryKeyArgumentName );
-        WriteLine( L"                callableStatement.registerOutParameter( 1, Types.VARCHAR );" );
+        WriteLine( L"                callableStatement.registerOutParameter( 1, Types.CHAR );" );
         WriteLine( L"            }" );
         WriteLine( L"            else {" );
         WriteLine( L"                callableStatement.setGuid(1, {});", primaryKeyArgumentName );
@@ -174,12 +174,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
 
         WriteLine( L"    public final InsertGuidKeyResult {}( {} ) throws SQLException {{", functionName, functionParameters );
         WriteLine( L"        insertResult.reset( );" );
-        WriteLine( L"        var sqlStatement = \"call {}({})\";", storedProcedureName, functionParameterPlaceHolders );
+        WriteLine( L"        var sqlStatement = \"{{call {}({})}}\";", storedProcedureName, functionParameterPlaceHolders );
 
         WriteLine( L"        try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {" );
 
         WriteLine( L"            if ( {} == null || {}.isEmpty( ) ) {{", primaryKeyArgumentName, primaryKeyArgumentName );
-        WriteLine( L"                callableStatement.registerOutParameter( 1, Types.VARCHAR );" );
+        WriteLine( L"                callableStatement.registerOutParameter( 1, Types.CHAR );" );
         WriteLine( L"            }" );
         WriteLine( L"            else {" );
         WriteLine( L"                callableStatement.setGuid(1, {});", primaryKeyArgumentName );
@@ -327,7 +327,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             WriteLine( L"    public final boolean {}( {} ) throws SQLException {{", functionName, functionParameters );
             WriteLine( L"        boolean result = false;" );
         }
-        WriteLine( L"        var sqlStatement = \"call {}({})\";", storedProcedureName, functionParameterPlaceHolders );
+        WriteLine( L"        var sqlStatement = \"{{call {}({})}}\";", storedProcedureName, functionParameterPlaceHolders );
         WriteLine( L"        try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {" );
         AddUpdateParameter( 1, *primaryKey );
         int parameterIndex = 1;
@@ -398,7 +398,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             WriteLine( L"    public final boolean {}( {} ) throws SQLException {{", functionName, functionParameters );
             WriteLine( L"        boolean result = false;" );
         }
-        WriteLine( L"        var sqlStatement = \"call {}({})\";", storedProcedureName, functionParameterPlaceHolders );
+        WriteLine( L"        var sqlStatement = \"{{call {}({})}}\";", storedProcedureName, functionParameterPlaceHolders );
         WriteLine( L"        try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {" );
         AddUpdateParameter( 1, *primaryKey );
         int parameterIndex = 1;
@@ -469,7 +469,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             WriteLine( L"        boolean result = false;" );
         }
         
-        WriteLine( L"        var sqlStatement = \"call {}({})\";", storedProcedureName, functionParameterPlaceHolders );
+        WriteLine( L"        var sqlStatement = \"{{call {}({})}}\";", storedProcedureName, functionParameterPlaceHolders );
         WriteLine( L"        try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {" );
         AddUpdateParameter( 1, *primaryKey );
         int parameterIndex = 1;
@@ -673,7 +673,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
 
         WriteLine( L"    public final boolean {}( {} ) throws SQLException {{", functionName, functionParameters );
         WriteLine( L"        boolean result = false;" );
-        WriteLine( L"        var sqlStatement = \"call {}({})\";", storedProcedureName, functionParameterPlaceHolders );
+        WriteLine( L"        var sqlStatement = \"{{call {}({})}}\";", storedProcedureName, functionParameterPlaceHolders );
         WriteLine( L"        try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {" );
         AddUpdateParameter( 1, *primaryKey );
         if ( rowVersion )

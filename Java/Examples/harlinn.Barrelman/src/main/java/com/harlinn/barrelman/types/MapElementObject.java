@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class MapElementObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MapElement;
+
     private long _rowVersion = 0;
     private Guid _item;
     private int _elementType = MapElementType.Unknown;
@@ -18,6 +20,24 @@ public class MapElementObject extends AbstractDataObjectWithGuidKey {
     private double _height = 0.0;
     private String _label = "";
     private byte[] _data = new byte[0];
+
+    public MapElementObject( ) {
+    }
+    public MapElementObject( byte objectState, Guid id, long rowVersion, Guid item, int elementType, double latitude, double longitude, double angle, double left, double top, double width, double height, String label, byte[] data ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._item = item;
+        this._elementType = elementType;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._angle = angle;
+        this._left = left;
+        this._top = top;
+        this._width = width;
+        this._height = height;
+        this._label = label;
+        this._data = data;
+    }
 
     @Override
     public int getObjectType( ) {

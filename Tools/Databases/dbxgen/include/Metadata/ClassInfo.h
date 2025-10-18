@@ -342,6 +342,30 @@ namespace Harlinn::Tools::DbXGen::Metadata
         }
 
 
+        std::shared_ptr<ClassInfo> ConcreteClass( ) const
+        {
+            if ( Abstract( ) == false )
+            {
+                return std::const_pointer_cast<ClassInfo>( shared_from_this( ) );
+            }
+            for ( const auto& derivedClass : derivedClasses_ )
+            {
+                if ( derivedClass->Abstract( ) == false )
+                {
+                    return derivedClass;
+                }
+            }
+            for ( const auto& derivedClass : derivedClasses_ )
+            {
+                auto concreteClass = derivedClass->ConcreteClass( );
+                if ( concreteClass )
+                {
+                    return concreteClass;
+                }
+            }
+            return { };
+        }
+
         const std::vector<std::shared_ptr<IndexInfo>>& Indexes( ) const
         {
             return indexes_;

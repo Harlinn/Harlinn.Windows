@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class VesselDraughtTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.VesselDraughtTimeseries;
+
     private Guid _vessel;
+
+    public VesselDraughtTimeseriesObject( ) {
+    }
+    public VesselDraughtTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid vessel ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._vessel = vessel;
+    }
 
     @Override
     public int getObjectType( ) {

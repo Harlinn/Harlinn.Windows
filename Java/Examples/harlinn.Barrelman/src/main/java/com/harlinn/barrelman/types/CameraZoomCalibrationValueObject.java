@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class CameraZoomCalibrationValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CameraZoomCalibrationValue;
+
     private long _rowVersion = 0;
     private Guid _zoomCalibration;
     private double _focalLength = 0.0;
     private double _focalLengthOffset = 0.0;
+
+    public CameraZoomCalibrationValueObject( ) {
+    }
+    public CameraZoomCalibrationValueObject( byte objectState, Guid id, long rowVersion, Guid zoomCalibration, double focalLength, double focalLengthOffset ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._zoomCalibration = zoomCalibration;
+        this._focalLength = focalLength;
+        this._focalLengthOffset = focalLengthOffset;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class SecurityRoleObject extends SecurityIdentifierObject {
 
+    public final int KIND = Kind.SecurityRole;
+
     private String _name = "";
+
+    public SecurityRoleObject( ) {
+    }
+    public SecurityRoleObject( byte objectState, Guid id, long rowVersion, Guid domain, String identity, String description, String name ) {
+        super( objectState, id, rowVersion, domain, identity, description );
+        this._name = name;
+    }
 
     @Override
     public int getObjectType( ) {

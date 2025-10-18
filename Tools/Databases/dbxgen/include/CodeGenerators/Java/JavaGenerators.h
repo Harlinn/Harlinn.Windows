@@ -100,6 +100,17 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
     };
 
+    class JavaTestDataObjectFactoryGenerator : public CodeGenerator<JavaDataTypesGenerator, JavaTestDataObjectFactoryOptions>
+    {
+    public:
+        using Base = CodeGenerator<JavaDataTypesGenerator, JavaTestDataObjectFactoryOptions>;
+
+        inline JavaTestDataObjectFactoryGenerator( const JavaDataTypesGenerator& owner );
+
+        void Run( );
+
+    };
+
 
     
     class JavaDataTypesGenerator : public GeneratorContainer<JavaDataGenerator, JavaDataTypesOptions>
@@ -113,6 +124,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
     private:
         void CreateDataType(const Metadata::ClassInfo& classInfo);
         void CreateFactory();
+        void CreateTestDataObjectFactory( );
     };
     
     inline JavaDataTypeGenerator::JavaDataTypeGenerator( const JavaDataTypesGenerator& owner, const Metadata::ClassInfo& classInfo )
@@ -121,6 +133,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
     inline JavaDataTypeFactoryGenerator::JavaDataTypeFactoryGenerator( const JavaDataTypesGenerator& owner )
         : Base( owner, owner.Options( ).Factory( ) )
+    { }
+
+    inline JavaTestDataObjectFactoryGenerator::JavaTestDataObjectFactoryGenerator( const JavaDataTypesGenerator& owner )
+        : Base( owner, owner.Options( ).TestDataObjectFactory( ) )
     { }
 
 

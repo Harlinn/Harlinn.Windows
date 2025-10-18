@@ -75,4 +75,8 @@ public class SimpleCountryDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public CountryObject GetDataObject( ) throws SQLException {
+            return new CountryObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getCode( ), getAlpha2( ), getAlpha3( ) );
+    }
+
 }

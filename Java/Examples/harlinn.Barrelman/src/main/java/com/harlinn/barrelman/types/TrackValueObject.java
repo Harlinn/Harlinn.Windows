@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class TrackValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackValue;
+
     private long _rowVersion = 0;
     private Guid _track;
     private DateTime _timestamp;
@@ -16,6 +18,22 @@ public class TrackValueObject extends AbstractDataObjectWithGuidKey {
     private double _speed = 0.0;
     private double _course = 0.0;
     private double _heading = 0.0;
+
+    public TrackValueObject( ) {
+    }
+    public TrackValueObject( byte objectState, Guid id, long rowVersion, Guid track, DateTime timestamp, int flags, int status, double latitude, double longitude, double speed, double course, double heading ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._track = track;
+        this._timestamp = timestamp;
+        this._flags = flags;
+        this._status = status;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._speed = speed;
+        this._course = course;
+        this._heading = heading;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public abstract class TimeseriesObject extends TimeseriesCatalogElementObject {
 
+    public final int KIND = Kind.Timeseries;
+
     private TimeSpan _maxRetention;
+
+    public TimeseriesObject( ) {
+    }
+    public TimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention ) {
+        super( objectState, id, rowVersion, catalog, name );
+        this._maxRetention = maxRetention;
+    }
 
 
     public TimeSpan getMaxRetention( ) {

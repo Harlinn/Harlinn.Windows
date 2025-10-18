@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class MaritimeMobileServiceIdentityObject extends IdentityObject {
 
+    public final int KIND = Kind.MaritimeMobileServiceIdentity;
+
     private long _identifier = 0;
+
+    public MaritimeMobileServiceIdentityObject( ) {
+    }
+    public MaritimeMobileServiceIdentityObject( byte objectState, Guid id, long rowVersion, long identifier ) {
+        super( objectState, id, rowVersion );
+        this._identifier = identifier;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class CallsignObject extends IdentityObject {
 
+    public final int KIND = Kind.Callsign;
+
     private String _identifier = "";
+
+    public CallsignObject( ) {
+    }
+    public CallsignObject( byte objectState, Guid id, long rowVersion, String identifier ) {
+        super( objectState, id, rowVersion );
+        this._identifier = identifier;
+    }
 
     @Override
     public int getObjectType( ) {

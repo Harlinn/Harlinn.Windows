@@ -38,4 +38,9 @@ public class SimpleGuidPropertyDefinitionDataReader extends SimplePropertyDefini
         destination.writeGuid( getDefaultValue( ) );
     }
 
+    @Override
+    public GuidPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new GuidPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ) );
+    }
+
 }

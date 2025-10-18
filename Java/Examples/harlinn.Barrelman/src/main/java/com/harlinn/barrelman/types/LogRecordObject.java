@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class LogRecordObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LogRecord;
+
     private long _rowVersion = 0;
     private Guid _thread;
     private long _sequenceNumber = 0;
@@ -16,6 +18,22 @@ public class LogRecordObject extends AbstractDataObjectWithGuidKey {
     private String _message = "";
     private String _exceptionString = "";
     private byte[] _propertiesData = new byte[0];
+
+    public LogRecordObject( ) {
+    }
+    public LogRecordObject( byte objectState, Guid id, long rowVersion, Guid thread, long sequenceNumber, int level, DateTime timestamp, int depth, Guid location, String message, String exceptionString, byte[] propertiesData ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._thread = thread;
+        this._sequenceNumber = sequenceNumber;
+        this._level = level;
+        this._timestamp = timestamp;
+        this._depth = depth;
+        this._location = location;
+        this._message = message;
+        this._exceptionString = exceptionString;
+        this._propertiesData = propertiesData;
+    }
 
     @Override
     public int getObjectType( ) {

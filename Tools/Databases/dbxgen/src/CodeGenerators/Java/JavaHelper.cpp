@@ -1215,6 +1215,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         return Format(L"{}UpdateNode", classInfo.Name().FirstToUpper());
     }
 
+    WideString JavaHelper::GetTestDataObjectFactory( )
+    {
+        return L"TestDataObjectFactory";
+    }
+
     WideString JavaHelper::GetMemberFieldType(const MemberInfo& member)
     {
         WideString result = GetBaseType(member);
@@ -1703,11 +1708,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         auto primaryKey = classInfo.PrimaryKey();
         if (primaryKey->Type() == MemberInfoType::Guid)
         {
-            sb.Append(L"ObjectState objectState, Guid id");
+            sb.Append(L"byte objectState, Guid id");
         }
         else if (primaryKey->Type() == MemberInfoType::Int64)
         {
-            sb.Append(L"ObjectState objectState, long id");
+            sb.Append(L"byte objectState, long id");
         }
 
         for (size_t i = 0; i < memberCount; i++)

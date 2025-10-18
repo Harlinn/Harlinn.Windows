@@ -52,4 +52,9 @@ public class SimpleUInt32PropertyDefinitionDataReader extends SimplePropertyDefi
         destination.writeUInt32( getMaxValue( ) );
     }
 
+    @Override
+    public UInt32PropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new UInt32PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

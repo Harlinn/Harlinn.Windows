@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class ZoneExceptionsVesselLinkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ZoneExceptionsVesselLink;
+
     private long _rowVersion = 0;
     private Guid _zoneExceptions;
     private Guid _vessel;
+
+    public ZoneExceptionsVesselLinkObject( ) {
+    }
+    public ZoneExceptionsVesselLinkObject( byte objectState, Guid id, long rowVersion, Guid zoneExceptions, Guid vessel ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._zoneExceptions = zoneExceptions;
+        this._vessel = vessel;
+    }
 
     @Override
     public int getObjectType( ) {

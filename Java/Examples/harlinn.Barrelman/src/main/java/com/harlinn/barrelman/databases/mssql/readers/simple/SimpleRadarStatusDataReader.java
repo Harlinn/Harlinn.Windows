@@ -103,4 +103,8 @@ public class SimpleRadarStatusDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public RadarStatusObject GetDataObject( ) throws SQLException {
+            return new RadarStatusObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getAzimuthCount( ), getTriggerCount( ), getRotationTime( ), getPulse( ), getTx( ), getTracking( ) );
+    }
+
 }

@@ -75,4 +75,8 @@ public class SimpleViewDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public ViewObject GetDataObject( ) throws SQLException {
+            return new ViewObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getLatitudeTimeseries( ), getLongitudeTimeseries( ), getZoomLevelTimeseries( ) );
+    }
+
 }

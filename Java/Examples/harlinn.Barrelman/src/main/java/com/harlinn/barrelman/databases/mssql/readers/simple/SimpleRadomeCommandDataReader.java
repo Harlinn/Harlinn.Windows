@@ -82,4 +82,8 @@ public class SimpleRadomeCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public RadomeCommandObject GetDataObject( ) throws SQLException {
+            return new RadomeCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadome( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+    }
+
 }

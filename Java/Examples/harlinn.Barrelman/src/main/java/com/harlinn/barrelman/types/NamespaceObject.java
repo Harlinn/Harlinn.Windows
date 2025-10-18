@@ -6,6 +6,14 @@ import com.harlinn.common.util.*;
 
 public class NamespaceObject extends NamespaceElementObject {
 
+    public final int KIND = Kind.Namespace;
+
+
+    public NamespaceObject( ) {
+    }
+    public NamespaceObject( byte objectState, Guid id, long rowVersion, Guid namespace, String name, String description ) {
+        super( objectState, id, rowVersion, namespace, name, description );
+    }
 
     @Override
     public int getObjectType( ) {

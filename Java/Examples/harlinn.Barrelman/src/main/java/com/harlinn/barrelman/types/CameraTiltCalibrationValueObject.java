@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class CameraTiltCalibrationValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.CameraTiltCalibrationValue;
+
     private long _rowVersion = 0;
     private Guid _tiltCalibration;
     private double _panAngle = 0.0;
     private double _tiltOffset = 0.0;
+
+    public CameraTiltCalibrationValueObject( ) {
+    }
+    public CameraTiltCalibrationValueObject( byte objectState, Guid id, long rowVersion, Guid tiltCalibration, double panAngle, double tiltOffset ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._tiltCalibration = tiltCalibration;
+        this._panAngle = panAngle;
+        this._tiltOffset = tiltOffset;
+    }
 
     @Override
     public int getObjectType( ) {

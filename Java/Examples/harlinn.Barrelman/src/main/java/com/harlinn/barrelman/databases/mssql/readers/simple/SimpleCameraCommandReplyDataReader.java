@@ -103,4 +103,8 @@ public class SimpleCameraCommandReplyDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public CameraCommandReplyObject GetDataObject( ) throws SQLException {
+            return new CameraCommandReplyObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ), getPanAngle( ), getTiltAngle( ), getFocalLength( ) );
+    }
+
 }

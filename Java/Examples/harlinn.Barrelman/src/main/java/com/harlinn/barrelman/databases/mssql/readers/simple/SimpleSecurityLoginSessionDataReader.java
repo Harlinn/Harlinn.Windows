@@ -89,4 +89,8 @@ public class SimpleSecurityLoginSessionDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public SecurityLoginSessionObject GetDataObject( ) throws SQLException {
+            return new SecurityLoginSessionObject( ObjectState.Stored, getId( ), getRowVersion( ), getLogin( ), getFromTime( ), getThroughTime( ), getClientSession( ), getNotificationQueueName( ), getMessageQueueName( ) );
+    }
+
 }

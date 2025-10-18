@@ -138,4 +138,8 @@ public class SimpleZoneTrackAlarmDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public ZoneTrackAlarmObject GetDataObject( ) throws SQLException {
+            return new ZoneTrackAlarmObject( ObjectState.Stored, getId( ), getRowVersion( ), getTrack( ), getZone( ), getRadarTrack( ), getTimestamp( ), getLatitude( ), getLongitude( ), getSpeed( ), getCourse( ), getHeading( ), getEnterLatitude( ), getEnterLongitude( ), getLeaveLatitude( ), getLeaveLongitude( ) );
+    }
+
 }

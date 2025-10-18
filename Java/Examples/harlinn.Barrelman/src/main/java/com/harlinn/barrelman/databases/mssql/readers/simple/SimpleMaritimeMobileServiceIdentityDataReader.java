@@ -35,4 +35,9 @@ public class SimpleMaritimeMobileServiceIdentityDataReader extends SimpleIdentit
         destination.writeInt64( getIdentifier( ) );
     }
 
+    @Override
+    public MaritimeMobileServiceIdentityObject GetDataObject( ) throws SQLException {
+        return new MaritimeMobileServiceIdentityObject( ObjectState.Stored, getId( ), getRowVersion( ), getIdentifier( ) );
+    }
+
 }

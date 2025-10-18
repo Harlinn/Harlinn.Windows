@@ -82,4 +82,8 @@ public class SimplePosition3DTimeseriesValueDataReader extends ResultSetWrapper 
         destination.writeBoolean( false );
     }
 
+    public Position3DTimeseriesValueObject GetDataObject( ) throws SQLException {
+            return new Position3DTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getX( ), getY( ), getZ( ) );
+    }
+
 }

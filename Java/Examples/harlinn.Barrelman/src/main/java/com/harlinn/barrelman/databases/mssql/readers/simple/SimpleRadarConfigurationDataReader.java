@@ -236,4 +236,8 @@ public class SimpleRadarConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public RadarConfigurationObject GetDataObject( ) throws SQLException {
+            return new RadarConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getRadarProtocolVersion( ), getRadarIPAddress( ), getRadarPort( ), getRadarConfigurationPort( ), getSkipMagicTimeout( ), getReadTimeout( ), getSynchronizationInterval( ), getTargetsRefreshRate( ), getRange( ), getSectorCount( ), getSectorOffset( ), getImageColor( ), getImageSubstitutionColor( ), getTransparentColor( ), getImageScaleFactorX( ), getImageOffsetX( ), getImageScaleFactorY( ), getImageOffsetY( ), getRadarImageType( ), getTrackColor( ), getVectorColor( ), getEnableNmea( ), getNmeaReceiverIPAddress( ), getNmeaReceiverPort( ), getNmeaReceiverSourceId( ) );
+    }
+
 }

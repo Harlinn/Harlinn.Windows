@@ -30,4 +30,9 @@ public class SimpleBooleanTimeseriesDataReader extends SimpleTimeseriesDataReade
         super.writeTo( destination );
     }
 
+    @Override
+    public BooleanTimeseriesObject GetDataObject( ) throws SQLException {
+        return new BooleanTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

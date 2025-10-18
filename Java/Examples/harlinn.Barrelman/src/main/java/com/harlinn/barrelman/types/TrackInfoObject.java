@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackInfo;
+
     private long _rowVersion = 0;
     private DateTime _firstTimestamp;
     private DateTime _lastTimestamp;
@@ -14,6 +16,20 @@ public class TrackInfoObject extends AbstractDataObjectWithGuidKey {
     private Double _northWestLongitude;
     private Double _southEastLatitude;
     private Double _southEastLongitude;
+
+    public TrackInfoObject( ) {
+    }
+    public TrackInfoObject( byte objectState, Guid id, long rowVersion, DateTime firstTimestamp, DateTime lastTimestamp, long count, Double northWestLatitude, Double northWestLongitude, Double southEastLatitude, Double southEastLongitude ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._firstTimestamp = firstTimestamp;
+        this._lastTimestamp = lastTimestamp;
+        this._count = count;
+        this._northWestLatitude = northWestLatitude;
+        this._northWestLongitude = northWestLongitude;
+        this._southEastLatitude = southEastLatitude;
+        this._southEastLongitude = southEastLongitude;
+    }
 
     @Override
     public int getObjectType( ) {

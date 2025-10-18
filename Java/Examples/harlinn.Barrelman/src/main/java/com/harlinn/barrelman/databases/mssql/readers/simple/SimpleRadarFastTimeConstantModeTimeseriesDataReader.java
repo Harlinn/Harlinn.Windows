@@ -38,4 +38,9 @@ public class SimpleRadarFastTimeConstantModeTimeseriesDataReader extends SimpleI
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarFastTimeConstantModeTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarFastTimeConstantModeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

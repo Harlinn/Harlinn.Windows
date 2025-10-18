@@ -118,4 +118,9 @@ public class SimpleAisStaticDataReportPartBMessageDataReader extends SimpleAisSt
         destination.writeInt32( getSpare( ) );
     }
 
+    @Override
+    public AisStaticDataReportPartBMessageObject GetDataObject( ) throws SQLException {
+        return new AisStaticDataReportPartBMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPartNumber( ), getShipType( ), getVendorId( ), getUnitModelCode( ), getSerialNumber( ), getCallsign( ), getDimensionToBow( ), getDimensionToStern( ), getDimensionToPort( ), getDimensionToStarboard( ), getMothershipMmsi( ), getPositionFixType( ), getSpare( ) );
+    }
+
 }

@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadomeDewPointTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.RadomeDewPointTimeseries;
+
     private Guid _radome;
+
+    public RadomeDewPointTimeseriesObject( ) {
+    }
+    public RadomeDewPointTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radome ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radome = radome;
+    }
 
     @Override
     public int getObjectType( ) {

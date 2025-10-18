@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public abstract class AisMessageObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.AisMessage;
+
     private long _rowVersion = 0;
     private Guid _aisDevice;
     private DateTime _receivedTimestamp;
     private long _messageSequenceNumber = 0;
     private int _repeat = 0;
     private Guid _mmsi;
+
+    public AisMessageObject( ) {
+    }
+    public AisMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._aisDevice = aisDevice;
+        this._receivedTimestamp = receivedTimestamp;
+        this._messageSequenceNumber = messageSequenceNumber;
+        this._repeat = repeat;
+        this._mmsi = mmsi;
+    }
 
 
     public long getRowVersion( ) {

@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AidToNavigationReportMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AidToNavigationReportMessage;
+
     private int _navigationalAidType = NavigationalAidType.NotSpecified;
     private String _name = "";
     private int _positionAccuracy = PositionAccuracy.Low;
@@ -24,6 +26,30 @@ public class AidToNavigationReportMessageObject extends AisMessageObject {
     private boolean _assigned = false;
     private int _spare = 0;
     private String _nameExtension = "";
+
+    public AidToNavigationReportMessageObject( ) {
+    }
+    public AidToNavigationReportMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int navigationalAidType, String name, int positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, int positionFixType, int timestamp, boolean offPosition, int regionalReserved, int raim, boolean virtualAid, boolean assigned, int spare, String nameExtension ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._navigationalAidType = navigationalAidType;
+        this._name = name;
+        this._positionAccuracy = positionAccuracy;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._dimensionToBow = dimensionToBow;
+        this._dimensionToStern = dimensionToStern;
+        this._dimensionToPort = dimensionToPort;
+        this._dimensionToStarboard = dimensionToStarboard;
+        this._positionFixType = positionFixType;
+        this._timestamp = timestamp;
+        this._offPosition = offPosition;
+        this._regionalReserved = regionalReserved;
+        this._raim = raim;
+        this._virtualAid = virtualAid;
+        this._assigned = assigned;
+        this._spare = spare;
+        this._nameExtension = nameExtension;
+    }
 
     @Override
     public int getObjectType( ) {

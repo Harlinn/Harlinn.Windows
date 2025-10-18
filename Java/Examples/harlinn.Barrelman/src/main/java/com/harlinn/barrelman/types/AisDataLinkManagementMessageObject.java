@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisDataLinkManagementMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisDataLinkManagementMessage;
+
     private int _spare = 0;
     private int _offset1 = 0;
     private int _reservedSlots1 = 0;
@@ -23,6 +25,29 @@ public class AisDataLinkManagementMessageObject extends AisMessageObject {
     private Integer _reservedSlots4;
     private Integer _timeout4;
     private Integer _increment4;
+
+    public AisDataLinkManagementMessageObject( ) {
+    }
+    public AisDataLinkManagementMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, Integer offset2, Integer reservedSlots2, Integer timeout2, Integer increment2, Integer offset3, Integer reservedSlots3, Integer timeout3, Integer increment3, Integer offset4, Integer reservedSlots4, Integer timeout4, Integer increment4 ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._spare = spare;
+        this._offset1 = offset1;
+        this._reservedSlots1 = reservedSlots1;
+        this._timeout1 = timeout1;
+        this._increment1 = increment1;
+        this._offset2 = offset2;
+        this._reservedSlots2 = reservedSlots2;
+        this._timeout2 = timeout2;
+        this._increment2 = increment2;
+        this._offset3 = offset3;
+        this._reservedSlots3 = reservedSlots3;
+        this._timeout3 = timeout3;
+        this._increment3 = increment3;
+        this._offset4 = offset4;
+        this._reservedSlots4 = reservedSlots4;
+        this._timeout4 = timeout4;
+        this._increment4 = increment4;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -54,4 +54,9 @@ public class SimpleAisUtcAndDateInquiryMessageDataReader extends SimpleAisMessag
         destination.writeInt32( getSpare2( ) );
     }
 
+    @Override
+    public AisUtcAndDateInquiryMessageObject GetDataObject( ) throws SQLException {
+        return new AisUtcAndDateInquiryMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSpare1( ), getDestinationMmsi( ), getSpare2( ) );
+    }
+
 }

@@ -98,4 +98,9 @@ public class SimpleAisAidToNavigationDataReader extends SimpleTrackableItemDataR
         destination.writeNullableGuid( getOffPositionTimeseries( ) );
     }
 
+    @Override
+    public AisAidToNavigationObject GetDataObject( ) throws SQLException {
+        return new AisAidToNavigationObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getMMSI( ), getNavigationalAidType( ), getPosition( ), getIsVirtual( ), getToBow( ), getToStern( ), getToPort( ), getToStarboard( ), getOffPositionTimeseries( ) );
+    }
+
 }

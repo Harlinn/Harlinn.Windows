@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class VesselObject extends TrackableItemObject {
 
+    public final int KIND = Kind.Vessel;
+
     private String _name = "";
     private Guid _type;
     private int _toBow = 0;
@@ -14,6 +16,20 @@ public class VesselObject extends TrackableItemObject {
     private int _toStarboard = 0;
     private Guid _draughtTimeseries;
     private Guid _personsOnBoardTimeseries;
+
+    public VesselObject( ) {
+    }
+    public VesselObject( byte objectState, Guid id, long rowVersion, String name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid draughtTimeseries, Guid personsOnBoardTimeseries ) {
+        super( objectState, id, rowVersion );
+        this._name = name;
+        this._type = type;
+        this._toBow = toBow;
+        this._toStern = toStern;
+        this._toPort = toPort;
+        this._toStarboard = toStarboard;
+        this._draughtTimeseries = draughtTimeseries;
+        this._personsOnBoardTimeseries = personsOnBoardTimeseries;
+    }
 
     @Override
     public int getObjectType( ) {

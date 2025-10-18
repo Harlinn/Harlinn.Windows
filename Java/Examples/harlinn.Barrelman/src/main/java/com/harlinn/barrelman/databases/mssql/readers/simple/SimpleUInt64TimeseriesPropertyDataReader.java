@@ -37,4 +37,9 @@ public class SimpleUInt64TimeseriesPropertyDataReader extends SimpleTimeseriesPr
         destination.writeNullableGuid( getTimeseries( ) );
     }
 
+    @Override
+    public UInt64TimeseriesPropertyObject GetDataObject( ) throws SQLException {
+        return new UInt64TimeseriesPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getTimeseries( ) );
+    }
+
 }

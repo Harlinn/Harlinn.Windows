@@ -30,4 +30,9 @@ public class SimpleGuidTimeseriesPropertyDefinitionDataReader extends SimpleTime
         super.writeTo( destination );
     }
 
+    @Override
+    public GuidTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new GuidTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ) );
+    }
+
 }

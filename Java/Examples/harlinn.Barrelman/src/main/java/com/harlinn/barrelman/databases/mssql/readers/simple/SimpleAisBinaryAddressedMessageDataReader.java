@@ -82,4 +82,9 @@ public class SimpleAisBinaryAddressedMessageDataReader extends SimpleAisMessageD
         destination.writeStringUtf8( getData( ) );
     }
 
+    @Override
+    public AisBinaryAddressedMessageObject GetDataObject( ) throws SQLException {
+        return new AisBinaryAddressedMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSequenceNumber( ), getDestinationMmsi( ), getRetransmitFlag( ), getSpare( ), getDesignatedAreaCode( ), getFunctionalId( ), getData( ) );
+    }
+
 }

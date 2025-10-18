@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class MediaProxySessionFileObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MediaProxySessionFile;
+
     private long _rowVersion = 0;
     private Guid _proxySession;
     private DateTime _timestamp;
     private String _streamName = "";
+
+    public MediaProxySessionFileObject( ) {
+    }
+    public MediaProxySessionFileObject( byte objectState, Guid id, long rowVersion, Guid proxySession, DateTime timestamp, String streamName ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._proxySession = proxySession;
+        this._timestamp = timestamp;
+        this._streamName = streamName;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleMediaServiceEnabledTimeseriesDataReader extends SimpleBoolean
         destination.writeNullableGuid( getService( ) );
     }
 
+    @Override
+    public MediaServiceEnabledTimeseriesObject GetDataObject( ) throws SQLException {
+        return new MediaServiceEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getService( ) );
+    }
+
 }

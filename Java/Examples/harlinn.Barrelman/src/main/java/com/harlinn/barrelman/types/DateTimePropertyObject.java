@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class DateTimePropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.DateTimeProperty;
+
     private DateTime _value;
+
+    public DateTimePropertyObject( ) {
+    }
+    public DateTimePropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, DateTime value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

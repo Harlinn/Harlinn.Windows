@@ -61,4 +61,8 @@ public class SimpleLineInputMessageRoutingDestinationDataReader extends ResultSe
         destination.writeBoolean( false );
     }
 
+    public LineInputMessageRoutingDestinationObject GetDataObject( ) throws SQLException {
+            return new LineInputMessageRoutingDestinationObject( ObjectState.Stored, getId( ), getRowVersion( ), getRouting( ), getListener( ) );
+    }
+
 }

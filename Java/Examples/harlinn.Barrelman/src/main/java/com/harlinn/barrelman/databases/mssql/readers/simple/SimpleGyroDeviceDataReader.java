@@ -88,4 +88,9 @@ public class SimpleGyroDeviceDataReader extends SimpleDeviceDataReader {
         destination.writeNullableGuid( getGNSSDevice( ) );
     }
 
+    @Override
+    public GyroDeviceObject GetDataObject( ) throws SQLException {
+        return new GyroDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getHeadingTrueNorthTimeseries( ), getHeadingMagneticNorthTimeseries( ), getPitchTimeseries( ), getRateOfTurnTimeseries( ), getRollTimeseries( ), getCourseTimeseries( ), getSpeedTimeseries( ), getGNSSDevice( ) );
+    }
+
 }

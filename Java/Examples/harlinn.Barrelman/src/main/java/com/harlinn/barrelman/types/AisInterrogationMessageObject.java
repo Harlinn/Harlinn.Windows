@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisInterrogationMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisInterrogationMessage;
+
     private Guid _interrogatedMmsi;
     private int _firstMessageType = AisMessageType.PositionReportClassA;
     private int _firstSlotOffset = 0;
@@ -14,6 +16,20 @@ public class AisInterrogationMessageObject extends AisMessageObject {
     private Guid _secondStationInterrogationMmsi;
     private Integer _secondStationFirstMessageType;
     private Integer _secondStationFirstSlotOffset;
+
+    public AisInterrogationMessageObject( ) {
+    }
+    public AisInterrogationMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Guid interrogatedMmsi, int firstMessageType, int firstSlotOffset, Integer secondMessageType, Integer secondSlotOffset, Guid secondStationInterrogationMmsi, Integer secondStationFirstMessageType, Integer secondStationFirstSlotOffset ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._interrogatedMmsi = interrogatedMmsi;
+        this._firstMessageType = firstMessageType;
+        this._firstSlotOffset = firstSlotOffset;
+        this._secondMessageType = secondMessageType;
+        this._secondSlotOffset = secondSlotOffset;
+        this._secondStationInterrogationMmsi = secondStationInterrogationMmsi;
+        this._secondStationFirstMessageType = secondStationFirstMessageType;
+        this._secondStationFirstSlotOffset = secondStationFirstSlotOffset;
+    }
 
     @Override
     public int getObjectType( ) {

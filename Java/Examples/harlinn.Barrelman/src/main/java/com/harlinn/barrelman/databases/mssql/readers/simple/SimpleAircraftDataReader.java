@@ -42,4 +42,9 @@ public class SimpleAircraftDataReader extends SimpleTrackableItemDataReader {
         destination.writeNullableGuid( getTypeField( ) );
     }
 
+    @Override
+    public AircraftObject GetDataObject( ) throws SQLException {
+        return new AircraftObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ) );
+    }
+
 }

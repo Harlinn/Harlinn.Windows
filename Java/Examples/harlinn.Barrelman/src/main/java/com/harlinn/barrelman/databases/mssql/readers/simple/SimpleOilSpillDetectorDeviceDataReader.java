@@ -31,4 +31,9 @@ public class SimpleOilSpillDetectorDeviceDataReader extends SimpleDeviceDataRead
         super.writeTo( destination );
     }
 
+    @Override
+    public OilSpillDetectorDeviceObject GetDataObject( ) throws SQLException {
+        return new OilSpillDetectorDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
+    }
+
 }

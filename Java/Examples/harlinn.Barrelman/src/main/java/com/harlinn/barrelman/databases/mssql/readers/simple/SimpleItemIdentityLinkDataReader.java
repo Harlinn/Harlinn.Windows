@@ -75,4 +75,8 @@ public class SimpleItemIdentityLinkDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public ItemIdentityLinkObject GetDataObject( ) throws SQLException {
+            return new ItemIdentityLinkObject( ObjectState.Stored, getId( ), getRowVersion( ), getItem( ), getIdentity( ), getStart( ), getEnd( ) );
+    }
+
 }

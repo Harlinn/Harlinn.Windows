@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class WeatherStationDeviceObject extends DeviceObject {
 
+    public final int KIND = Kind.WeatherStationDevice;
+
     private Guid _barometricPressureTimeseries;
     private Guid _airTemperatureTimeseries;
     private Guid _waterTemperatureTimeseries;
@@ -15,6 +17,21 @@ public class WeatherStationDeviceObject extends DeviceObject {
     private Guid _windDirectionTimeseries;
     private Guid _windSpeedTimeseries;
     private Guid _gyro;
+
+    public WeatherStationDeviceObject( ) {
+    }
+    public WeatherStationDeviceObject( byte objectState, Guid id, long rowVersion, Guid host, String name, String description, Guid enabledTimeseries, Guid barometricPressureTimeseries, Guid airTemperatureTimeseries, Guid waterTemperatureTimeseries, Guid relativeHumidityTimeseries, Guid absoluteHumidityTimeseries, Guid dewPointTimeseries, Guid windDirectionTimeseries, Guid windSpeedTimeseries, Guid gyro ) {
+        super( objectState, id, rowVersion, host, name, description, enabledTimeseries );
+        this._barometricPressureTimeseries = barometricPressureTimeseries;
+        this._airTemperatureTimeseries = airTemperatureTimeseries;
+        this._waterTemperatureTimeseries = waterTemperatureTimeseries;
+        this._relativeHumidityTimeseries = relativeHumidityTimeseries;
+        this._absoluteHumidityTimeseries = absoluteHumidityTimeseries;
+        this._dewPointTimeseries = dewPointTimeseries;
+        this._windDirectionTimeseries = windDirectionTimeseries;
+        this._windSpeedTimeseries = windSpeedTimeseries;
+        this._gyro = gyro;
+    }
 
     @Override
     public int getObjectType( ) {

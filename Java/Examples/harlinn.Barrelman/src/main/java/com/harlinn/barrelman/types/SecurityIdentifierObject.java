@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public abstract class SecurityIdentifierObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.SecurityIdentifier;
+
     private long _rowVersion = 0;
     private Guid _domain;
     private String _identity = "";
     private String _description = "";
+
+    public SecurityIdentifierObject( ) {
+    }
+    public SecurityIdentifierObject( byte objectState, Guid id, long rowVersion, Guid domain, String identity, String description ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._domain = domain;
+        this._identity = identity;
+        this._description = description;
+    }
 
 
     public long getRowVersion( ) {

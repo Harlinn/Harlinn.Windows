@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadioConfiguration;
+
     private long _rowVersion = 0;
     private Guid _radio;
     private DateTime _timestamp;
@@ -16,6 +18,22 @@ public class RadioConfigurationObject extends AbstractDataObjectWithGuidKey {
     private int _radioPort = 0;
     private String _ed137IPAddress = "";
     private int _ed137Port = 0;
+
+    public RadioConfigurationObject( ) {
+    }
+    public RadioConfigurationObject( byte objectState, Guid id, long rowVersion, Guid radio, DateTime timestamp, double longitude, double latitude, String playbackUrl, String radioIPAddress, int radioPort, String ed137IPAddress, int ed137Port ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radio = radio;
+        this._timestamp = timestamp;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._playbackUrl = playbackUrl;
+        this._radioIPAddress = radioIPAddress;
+        this._radioPort = radioPort;
+        this._ed137IPAddress = ed137IPAddress;
+        this._ed137Port = ed137Port;
+    }
 
     @Override
     public int getObjectType( ) {

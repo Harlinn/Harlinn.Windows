@@ -103,4 +103,8 @@ public class SimpleGNSSDeviceConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public GNSSDeviceConfigurationObject GetDataObject( ) throws SQLException {
+            return new GNSSDeviceConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getGNSSDevice( ), getTimestamp( ), getDefaultLatitude( ), getDefaultLongitude( ), getDefaultAltitude( ), getLatitudeOffset( ), getLongitudeOffset( ), getAltitudeOffset( ) );
+    }
+
 }

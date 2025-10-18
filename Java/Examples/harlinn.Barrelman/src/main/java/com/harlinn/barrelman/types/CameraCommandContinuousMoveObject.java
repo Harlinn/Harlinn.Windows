@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandContinuousMoveObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandContinuousMove;
+
     private boolean _normalized = false;
     private Double _panVelocity;
     private Double _tiltVelocity;
     private Double _zoomVelocity;
     private TimeSpan _duration;
+
+    public CameraCommandContinuousMoveObject( ) {
+    }
+    public CameraCommandContinuousMoveObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, boolean normalized, Double panVelocity, Double tiltVelocity, Double zoomVelocity, TimeSpan duration ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._normalized = normalized;
+        this._panVelocity = panVelocity;
+        this._tiltVelocity = tiltVelocity;
+        this._zoomVelocity = zoomVelocity;
+        this._duration = duration;
+    }
 
     @Override
     public int getObjectType( ) {

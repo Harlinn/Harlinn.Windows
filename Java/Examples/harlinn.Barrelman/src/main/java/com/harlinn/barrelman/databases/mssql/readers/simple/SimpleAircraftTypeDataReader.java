@@ -54,4 +54,8 @@ public class SimpleAircraftTypeDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public AircraftTypeObject GetDataObject( ) throws SQLException {
+            return new AircraftTypeObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ) );
+    }
+
 }

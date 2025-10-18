@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class FacilityObject extends ItemObject {
 
+    public final int KIND = Kind.Facility;
+
     private String _name = "";
     private Guid _type;
     private double _longitude = 0.0;
     private double _latitude = 0.0;
     private double _altitude = 0.0;
+
+    public FacilityObject( ) {
+    }
+    public FacilityObject( byte objectState, Guid id, long rowVersion, String name, Guid type, double longitude, double latitude, double altitude ) {
+        super( objectState, id, rowVersion );
+        this._name = name;
+        this._type = type;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._altitude = altitude;
+    }
 
     @Override
     public int getObjectType( ) {

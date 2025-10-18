@@ -30,4 +30,9 @@ public class SimpleNamespaceDataReader extends SimpleNamespaceElementDataReader 
         super.writeTo( destination );
     }
 
+    @Override
+    public NamespaceObject GetDataObject( ) throws SQLException {
+        return new NamespaceObject( ObjectState.Stored, getId( ), getRowVersion( ), getNamespace( ), getName( ), getDescription( ) );
+    }
+
 }

@@ -30,4 +30,9 @@ public class SimpleUInt64TimeseriesDataReader extends SimpleTimeseriesDataReader
         super.writeTo( destination );
     }
 
+    @Override
+    public UInt64TimeseriesObject GetDataObject( ) throws SQLException {
+        return new UInt64TimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

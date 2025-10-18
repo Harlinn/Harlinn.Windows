@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandSetWasherObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandSetWasher;
+
     private boolean _enabled = false;
+
+    public CameraCommandSetWasherObject( ) {
+    }
+    public CameraCommandSetWasherObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, boolean enabled ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._enabled = enabled;
+    }
 
     @Override
     public int getObjectType( ) {

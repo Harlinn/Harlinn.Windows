@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class AircraftObject extends TrackableItemObject {
 
+    public final int KIND = Kind.Aircraft;
+
     private String _name = "";
     private Guid _type;
+
+    public AircraftObject( ) {
+    }
+    public AircraftObject( byte objectState, Guid id, long rowVersion, String name, Guid type ) {
+        super( objectState, id, rowVersion );
+        this._name = name;
+        this._type = type;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TrackingServiceOptions;
+
     private long _rowVersion = 0;
     private DateTime _timestamp;
     private TimeSpan _timerInterval;
@@ -18,6 +20,24 @@ public class TrackingServiceOptionsObject extends AbstractDataObjectWithGuidKey 
     private double _maxCourseDeviation = 0.0;
     private double _maxSpeedDeviation = 0.0;
     private double _minimumSpeedThreshold = 0.0;
+
+    public TrackingServiceOptionsObject( ) {
+    }
+    public TrackingServiceOptionsObject( byte objectState, Guid id, long rowVersion, DateTime timestamp, TimeSpan timerInterval, TimeSpan maxAgeOfCurrentTrackValue, double falseThreshold, double distanceThreshold, double distanceUnmergeThreshold, long unmergeLatency, boolean kalmanFiltering, double maxCourseDeviation, double maxSpeedDeviation, double minimumSpeedThreshold ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timestamp = timestamp;
+        this._timerInterval = timerInterval;
+        this._maxAgeOfCurrentTrackValue = maxAgeOfCurrentTrackValue;
+        this._falseThreshold = falseThreshold;
+        this._distanceThreshold = distanceThreshold;
+        this._distanceUnmergeThreshold = distanceUnmergeThreshold;
+        this._unmergeLatency = unmergeLatency;
+        this._kalmanFiltering = kalmanFiltering;
+        this._maxCourseDeviation = maxCourseDeviation;
+        this._maxSpeedDeviation = maxSpeedDeviation;
+        this._minimumSpeedThreshold = minimumSpeedThreshold;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleBooleanPropertyDefinitionDataReader extends SimplePropertyDef
         destination.writeBoolean( getDefaultValue( ) );
     }
 
+    @Override
+    public BooleanPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new BooleanPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ) );
+    }
+
 }

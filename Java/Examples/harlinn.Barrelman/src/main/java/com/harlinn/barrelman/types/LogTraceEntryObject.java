@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class LogTraceEntryObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LogTraceEntry;
+
     private long _rowVersion = 0;
     private Guid _thread;
     private long _sequenceNumber = 0;
@@ -13,6 +15,19 @@ public class LogTraceEntryObject extends AbstractDataObjectWithGuidKey {
     private int _depth = 0;
     private DateTime _entered;
     private DateTime _ended;
+
+    public LogTraceEntryObject( ) {
+    }
+    public LogTraceEntryObject( byte objectState, Guid id, long rowVersion, Guid thread, long sequenceNumber, Guid location, int depth, DateTime entered, DateTime ended ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._thread = thread;
+        this._sequenceNumber = sequenceNumber;
+        this._location = location;
+        this._depth = depth;
+        this._entered = entered;
+        this._ended = ended;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -53,4 +53,6 @@ public abstract class SimpleItemDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public abstract ItemObject GetDataObject( ) throws SQLException;
+
 }

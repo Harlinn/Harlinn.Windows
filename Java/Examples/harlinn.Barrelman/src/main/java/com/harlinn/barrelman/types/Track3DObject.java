@@ -6,6 +6,14 @@ import com.harlinn.common.util.*;
 
 public class Track3DObject extends TrackBaseObject {
 
+    public final int KIND = Kind.Track3D;
+
+
+    public Track3DObject( ) {
+    }
+    public Track3DObject( byte objectState, Guid id, long rowVersion, Guid tracker, long trackNumber, DateTime timestamp ) {
+        super( objectState, id, rowVersion, tracker, trackNumber, timestamp );
+    }
 
     @Override
     public int getObjectType( ) {

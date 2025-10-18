@@ -38,4 +38,9 @@ public class SimpleRadomeDewPointTimeseriesDataReader extends SimpleDoubleTimese
         destination.writeNullableGuid( getRadome( ) );
     }
 
+    @Override
+    public RadomeDewPointTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadomeDewPointTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadome( ) );
+    }
+
 }

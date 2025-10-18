@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class LogThreadObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LogThread;
+
     private long _rowVersion = 0;
     private Guid _process;
     private DateTime _started;
     private DateTime _stopped;
     private long _threadId = 0;
     private String _name = "";
+
+    public LogThreadObject( ) {
+    }
+    public LogThreadObject( byte objectState, Guid id, long rowVersion, Guid process, DateTime started, DateTime stopped, long threadId, String name ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._process = process;
+        this._started = started;
+        this._stopped = stopped;
+        this._threadId = threadId;
+        this._name = name;
+    }
 
     @Override
     public int getObjectType( ) {

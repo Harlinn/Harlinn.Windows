@@ -38,4 +38,9 @@ public class SimpleAisAidToNavigationPositionTimeseriesDataReader extends Simple
         destination.writeNullableGuid( getAidToNavigation( ) );
     }
 
+    @Override
+    public AisAidToNavigationPositionTimeseriesObject GetDataObject( ) throws SQLException {
+        return new AisAidToNavigationPositionTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getAidToNavigation( ) );
+    }
+
 }

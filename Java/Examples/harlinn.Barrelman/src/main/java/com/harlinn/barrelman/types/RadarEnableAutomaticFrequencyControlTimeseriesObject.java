@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadarEnableAutomaticFrequencyControlTimeseriesObject extends BooleanTimeseriesObject {
 
+    public final int KIND = Kind.RadarEnableAutomaticFrequencyControlTimeseries;
+
     private Guid _radar;
+
+    public RadarEnableAutomaticFrequencyControlTimeseriesObject( ) {
+    }
+    public RadarEnableAutomaticFrequencyControlTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radar ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radar = radar;
+    }
 
     @Override
     public int getObjectType( ) {

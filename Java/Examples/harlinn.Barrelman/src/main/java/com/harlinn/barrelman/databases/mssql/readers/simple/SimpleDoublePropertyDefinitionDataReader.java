@@ -52,4 +52,9 @@ public class SimpleDoublePropertyDefinitionDataReader extends SimplePropertyDefi
         destination.writeDouble( getMaxValue( ) );
     }
 
+    @Override
+    public DoublePropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new DoublePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

@@ -38,4 +38,9 @@ public class SimpleViewLongitudeTimeseriesDataReader extends SimpleDoubleTimeser
         destination.writeNullableGuid( getView( ) );
     }
 
+    @Override
+    public ViewLongitudeTimeseriesObject GetDataObject( ) throws SQLException {
+        return new ViewLongitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getView( ) );
+    }
+
 }

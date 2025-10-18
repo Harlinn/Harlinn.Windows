@@ -74,4 +74,6 @@ public abstract class SimpleTrackBaseDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public abstract TrackBaseObject GetDataObject( ) throws SQLException;
+
 }

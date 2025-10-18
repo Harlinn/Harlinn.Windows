@@ -30,4 +30,9 @@ public class SimplePosition3DTimeseriesDataReader extends SimpleTimeseriesDataRe
         super.writeTo( destination );
     }
 
+    @Override
+    public Position3DTimeseriesObject GetDataObject( ) throws SQLException {
+        return new Position3DTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

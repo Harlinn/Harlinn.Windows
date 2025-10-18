@@ -44,10 +44,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
 
     class JavaMsSqlComplexDatabaseReaderGenerator : public CodeGenerator<JavaMsSqlComplexReadersGenerator, JavaMsSqlComplexDatabaseReaderOptions>
     {
+        const Metadata::ClassInfo& classInfo_;
     public:
         using Base = CodeGenerator<JavaMsSqlComplexReadersGenerator, JavaMsSqlComplexDatabaseReaderOptions>;
 
-        inline JavaMsSqlComplexDatabaseReaderGenerator( const JavaMsSqlComplexReadersGenerator& owner );
+        inline JavaMsSqlComplexDatabaseReaderGenerator( const JavaMsSqlComplexReadersGenerator& owner, const Metadata::ClassInfo& classInfo );
 
         void Run( );
     private:
@@ -88,10 +89,14 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
 
         JavaMsSqlComplexReadersGenerator( const JavaMsSqlReadersGenerator& owner );
 
-        void Run( )
-        { }
+        void Run( );
+    private:
+        void CreateReader( const Metadata::ClassInfo& classInfo );
     };
 
+    inline JavaMsSqlComplexDatabaseReaderGenerator::JavaMsSqlComplexDatabaseReaderGenerator( const JavaMsSqlComplexReadersGenerator& owner, const Metadata::ClassInfo& classInfo )
+        : Base( owner, *owner.Options( ).Add( classInfo, JavaHelper::GetComplexDataReaderName( classInfo ) ) ), classInfo_( classInfo )
+    { }
 
     class JavaMsSqlReadersGenerator : public GeneratorContainer<JavaMsSqlGenerator, JavaMsSqlReadersOptions>
     {
@@ -211,6 +216,19 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
     };
     */
 
+    class JavaMsSqlTestDataObjectFactoryGenerator : public CodeGenerator<JavaMsSqlGenerator, JavaMsSqlTestDataObjectFactoryOptions>
+    {
+    public:
+        using Base = CodeGenerator<JavaMsSqlGenerator, JavaMsSqlTestDataObjectFactoryOptions>;
+
+        inline JavaMsSqlTestDataObjectFactoryGenerator( const JavaMsSqlGenerator& owner );
+
+        void Run( );
+    private:
+        
+    };
+
+
 
     class JavaMsSqlGenerator : public GeneratorContainer<JavaDatabasesGenerator, JavaMsSqlOptions>
     {
@@ -218,6 +236,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         JavaMsSqlStoredProceduresGenerator storedProcedures_;
         //JavaMsSqlDataContextGenerator dataContext_;
         //JavaMsSqlUpdateNodesGenerator updateNodes_;
+        JavaMsSqlTestDataObjectFactoryGenerator testDataObjectFactory_;
     public:
         using Base = GeneratorContainer<JavaDatabasesGenerator, JavaMsSqlOptions>;
 
@@ -229,6 +248,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             storedProcedures_.Run( );
             //dataContext_.Run( );
             //updateNodes_.Run( );
+            testDataObjectFactory_.Run( );
         }
 
     };
@@ -249,6 +269,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         : Base( owner, owner.Options( ).UpdateNodes( ) )
     { }
     */
+
+    inline JavaMsSqlTestDataObjectFactoryGenerator::JavaMsSqlTestDataObjectFactoryGenerator( const JavaMsSqlGenerator& owner )
+        : Base( owner, owner.Options( ).TestDataObjectFactory( ) )
+    { }
 }
 
 #endif

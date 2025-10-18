@@ -30,4 +30,9 @@ public class SimpleBinaryTimeseriesPropertyDefinitionDataReader extends SimpleTi
         super.writeTo( destination );
     }
 
+    @Override
+    public BinaryTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new BinaryTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ) );
+    }
+
 }

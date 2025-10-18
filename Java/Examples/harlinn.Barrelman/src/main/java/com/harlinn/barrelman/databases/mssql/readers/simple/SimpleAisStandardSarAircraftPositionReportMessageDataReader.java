@@ -124,4 +124,9 @@ public class SimpleAisStandardSarAircraftPositionReportMessageDataReader extends
         destination.writeInt32( getRadioStatus( ) );
     }
 
+    @Override
+    public AisStandardSarAircraftPositionReportMessageObject GetDataObject( ) throws SQLException {
+        return new AisStandardSarAircraftPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAltitude( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTimestamp( ), getReserved( ), getDataTerminalReady( ), getSpare( ), getAssigned( ), getRaim( ), getRadioStatus( ) );
+    }
+
 }

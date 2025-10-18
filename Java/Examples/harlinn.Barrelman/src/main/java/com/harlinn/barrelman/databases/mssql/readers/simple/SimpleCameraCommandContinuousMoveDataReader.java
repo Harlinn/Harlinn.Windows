@@ -68,4 +68,9 @@ public class SimpleCameraCommandContinuousMoveDataReader extends SimpleCameraCom
         destination.writeNullableTimeSpan( getDuration( ) );
     }
 
+    @Override
+    public CameraCommandContinuousMoveObject GetDataObject( ) throws SQLException {
+        return new CameraCommandContinuousMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getNormalized( ), getPanVelocity( ), getTiltVelocity( ), getZoomVelocity( ), getDuration( ) );
+    }
+
 }

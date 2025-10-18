@@ -116,4 +116,6 @@ public abstract class SimpleZoneDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public abstract ZoneObject GetDataObject( ) throws SQLException;
+
 }

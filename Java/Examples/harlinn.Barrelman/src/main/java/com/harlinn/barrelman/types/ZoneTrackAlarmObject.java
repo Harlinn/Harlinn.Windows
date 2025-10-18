@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ZoneTrackAlarm;
+
     private long _rowVersion = 0;
     private Guid _track;
     private Guid _zone;
@@ -20,6 +22,26 @@ public class ZoneTrackAlarmObject extends AbstractDataObjectWithGuidKey {
     private double _enterLongitude = 0.0;
     private Double _leaveLatitude;
     private Double _leaveLongitude;
+
+    public ZoneTrackAlarmObject( ) {
+    }
+    public ZoneTrackAlarmObject( byte objectState, Guid id, long rowVersion, Guid track, Guid zone, Guid radarTrack, DateTime timestamp, double latitude, double longitude, double speed, Double course, Double heading, double enterLatitude, double enterLongitude, Double leaveLatitude, Double leaveLongitude ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._track = track;
+        this._zone = zone;
+        this._radarTrack = radarTrack;
+        this._timestamp = timestamp;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._speed = speed;
+        this._course = course;
+        this._heading = heading;
+        this._enterLatitude = enterLatitude;
+        this._enterLongitude = enterLongitude;
+        this._leaveLatitude = leaveLatitude;
+        this._leaveLongitude = leaveLongitude;
+    }
 
     @Override
     public int getObjectType( ) {

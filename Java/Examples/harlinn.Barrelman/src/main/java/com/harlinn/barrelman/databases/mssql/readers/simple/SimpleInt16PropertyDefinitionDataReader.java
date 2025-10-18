@@ -52,4 +52,9 @@ public class SimpleInt16PropertyDefinitionDataReader extends SimplePropertyDefin
         destination.writeInt16( getMaxValue( ) );
     }
 
+    @Override
+    public Int16PropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new Int16PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

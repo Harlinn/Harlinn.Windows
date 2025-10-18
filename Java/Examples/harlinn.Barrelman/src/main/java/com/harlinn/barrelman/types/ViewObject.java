@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class ViewObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.View;
+
     private long _rowVersion = 0;
     private String _name = "";
     private Guid _latitudeTimeseries;
     private Guid _longitudeTimeseries;
     private Guid _zoomLevelTimeseries;
+
+    public ViewObject( ) {
+    }
+    public ViewObject( byte objectState, Guid id, long rowVersion, String name, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid zoomLevelTimeseries ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._name = name;
+        this._latitudeTimeseries = latitudeTimeseries;
+        this._longitudeTimeseries = longitudeTimeseries;
+        this._zoomLevelTimeseries = zoomLevelTimeseries;
+    }
 
     @Override
     public int getObjectType( ) {

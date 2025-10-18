@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class TimeSpanPropertyDefinitionObject extends PropertyDefinitionObject {
 
+    public final int KIND = Kind.TimeSpanPropertyDefinition;
+
     private TimeSpan _defaultValue;
     private TimeSpan _minValue;
     private TimeSpan _maxValue;
+
+    public TimeSpanPropertyDefinitionObject( ) {
+    }
+    public TimeSpanPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, TimeSpan defaultValue, TimeSpan minValue, TimeSpan maxValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._defaultValue = defaultValue;
+        this._minValue = minValue;
+        this._maxValue = maxValue;
+    }
 
     @Override
     public int getObjectType( ) {

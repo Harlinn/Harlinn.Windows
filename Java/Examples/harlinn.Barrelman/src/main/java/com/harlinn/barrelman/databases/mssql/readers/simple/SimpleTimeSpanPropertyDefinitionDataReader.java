@@ -52,4 +52,9 @@ public class SimpleTimeSpanPropertyDefinitionDataReader extends SimplePropertyDe
         destination.writeTimeSpan( getMaxValue( ) );
     }
 
+    @Override
+    public TimeSpanPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new TimeSpanPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

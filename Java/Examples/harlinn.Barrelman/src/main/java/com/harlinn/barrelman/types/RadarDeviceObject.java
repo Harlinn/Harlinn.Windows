@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class RadarDeviceObject extends TrackerDeviceObject {
 
+    public final int KIND = Kind.RadarDevice;
+
     private Guid _saveSettingsTimeseries;
     private Guid _powerOnTimeseries;
     private Guid _trackingOnTimeseries;
@@ -29,6 +31,35 @@ public class RadarDeviceObject extends TrackerDeviceObject {
     private Guid _longitudeTimeseries;
     private Guid _radome;
     private Guid _gNSSDevice;
+
+    public RadarDeviceObject( ) {
+    }
+    public RadarDeviceObject( byte objectState, Guid id, long rowVersion, Guid host, String name, String description, Guid enabledTimeseries, Guid saveSettingsTimeseries, Guid powerOnTimeseries, Guid trackingOnTimeseries, Guid radarPulseTimeseries, Guid tuningTimeseries, Guid blankSector1Timeseries, Guid sector1StartTimeseries, Guid sector1EndTimeseries, Guid blankSector2Timeseries, Guid sector2StartTimeseries, Guid sector2EndTimeseries, Guid enableAutomaticFrequencyControlTimeseries, Guid azimuthOffsetTimeseries, Guid enableSensitivityTimeControlTimeseries, Guid automaticSensitivityTimeControlTimeseries, Guid sensitivityTimeControlLevelTimeseries, Guid enableFastTimeConstantTimeseries, Guid fastTimeConstantLevelTimeseries, Guid fastTimeConstantModeTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid radome, Guid gNSSDevice ) {
+        super( objectState, id, rowVersion, host, name, description, enabledTimeseries );
+        this._saveSettingsTimeseries = saveSettingsTimeseries;
+        this._powerOnTimeseries = powerOnTimeseries;
+        this._trackingOnTimeseries = trackingOnTimeseries;
+        this._radarPulseTimeseries = radarPulseTimeseries;
+        this._tuningTimeseries = tuningTimeseries;
+        this._blankSector1Timeseries = blankSector1Timeseries;
+        this._sector1StartTimeseries = sector1StartTimeseries;
+        this._sector1EndTimeseries = sector1EndTimeseries;
+        this._blankSector2Timeseries = blankSector2Timeseries;
+        this._sector2StartTimeseries = sector2StartTimeseries;
+        this._sector2EndTimeseries = sector2EndTimeseries;
+        this._enableAutomaticFrequencyControlTimeseries = enableAutomaticFrequencyControlTimeseries;
+        this._azimuthOffsetTimeseries = azimuthOffsetTimeseries;
+        this._enableSensitivityTimeControlTimeseries = enableSensitivityTimeControlTimeseries;
+        this._automaticSensitivityTimeControlTimeseries = automaticSensitivityTimeControlTimeseries;
+        this._sensitivityTimeControlLevelTimeseries = sensitivityTimeControlLevelTimeseries;
+        this._enableFastTimeConstantTimeseries = enableFastTimeConstantTimeseries;
+        this._fastTimeConstantLevelTimeseries = fastTimeConstantLevelTimeseries;
+        this._fastTimeConstantModeTimeseries = fastTimeConstantModeTimeseries;
+        this._latitudeTimeseries = latitudeTimeseries;
+        this._longitudeTimeseries = longitudeTimeseries;
+        this._radome = radome;
+        this._gNSSDevice = gNSSDevice;
+    }
 
     @Override
     public int getObjectType( ) {

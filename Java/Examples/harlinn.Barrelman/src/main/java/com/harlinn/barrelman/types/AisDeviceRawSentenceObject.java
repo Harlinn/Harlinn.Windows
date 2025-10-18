@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class AisDeviceRawSentenceObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.AisDeviceRawSentence;
+
     private long _rowVersion = 0;
     private Guid _aisDevice;
     private DateTime _timestamp;
     private String _sentence = "";
+
+    public AisDeviceRawSentenceObject( ) {
+    }
+    public AisDeviceRawSentenceObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime timestamp, String sentence ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._aisDevice = aisDevice;
+        this._timestamp = timestamp;
+        this._sentence = sentence;
+    }
 
     @Override
     public int getObjectType( ) {

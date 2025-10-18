@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class AisAidToNavigationOffPositionTimeseriesObject extends BooleanTimeseriesObject {
 
+    public final int KIND = Kind.AisAidToNavigationOffPositionTimeseries;
+
     private Guid _aidToNavigation;
+
+    public AisAidToNavigationOffPositionTimeseriesObject( ) {
+    }
+    public AisAidToNavigationOffPositionTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid aidToNavigation ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._aidToNavigation = aidToNavigation;
+    }
 
     @Override
     public int getObjectType( ) {

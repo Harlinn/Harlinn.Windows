@@ -52,4 +52,9 @@ public class SimpleSBytePropertyDefinitionDataReader extends SimplePropertyDefin
         destination.writeInt8( getMaxValue( ) );
     }
 
+    @Override
+    public SBytePropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new SBytePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

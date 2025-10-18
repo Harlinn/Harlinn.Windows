@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class RadomeDeviceObject extends DeviceObject {
 
+    public final int KIND = Kind.RadomeDevice;
+
     private Guid _radar;
     private Guid _pressureTimeseries;
     private Guid _temperatureTimeseries;
     private Guid _dewPointTimeseries;
     private Guid _statusTimeseries;
+
+    public RadomeDeviceObject( ) {
+    }
+    public RadomeDeviceObject( byte objectState, Guid id, long rowVersion, Guid host, String name, String description, Guid enabledTimeseries, Guid radar, Guid pressureTimeseries, Guid temperatureTimeseries, Guid dewPointTimeseries, Guid statusTimeseries ) {
+        super( objectState, id, rowVersion, host, name, description, enabledTimeseries );
+        this._radar = radar;
+        this._pressureTimeseries = pressureTimeseries;
+        this._temperatureTimeseries = temperatureTimeseries;
+        this._dewPointTimeseries = dewPointTimeseries;
+        this._statusTimeseries = statusTimeseries;
+    }
 
     @Override
     public int getObjectType( ) {

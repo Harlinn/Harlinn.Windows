@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class NameObject extends IdentityObject {
 
+    public final int KIND = Kind.Name;
+
     private String _text = "";
+
+    public NameObject( ) {
+    }
+    public NameObject( byte objectState, Guid id, long rowVersion, String text ) {
+        super( objectState, id, rowVersion );
+        this._text = text;
+    }
 
     @Override
     public int getObjectType( ) {

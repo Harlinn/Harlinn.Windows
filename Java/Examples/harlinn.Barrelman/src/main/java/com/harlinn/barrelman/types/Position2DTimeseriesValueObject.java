@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class Position2DTimeseriesValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.Position2DTimeseriesValue;
+
     private long _rowVersion = 0;
     private Guid _timeseries;
     private DateTime _timestamp;
     private Double _x;
     private Double _y;
+
+    public Position2DTimeseriesValueObject( ) {
+    }
+    public Position2DTimeseriesValueObject( byte objectState, Guid id, long rowVersion, Guid timeseries, DateTime timestamp, Double x, Double y ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timeseries = timeseries;
+        this._timestamp = timestamp;
+        this._x = x;
+        this._y = y;
+    }
 
     @Override
     public int getObjectType( ) {

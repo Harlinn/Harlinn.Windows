@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandSetInfraRedLampObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandSetInfraRedLamp;
+
     private boolean _enabled = false;
+
+    public CameraCommandSetInfraRedLampObject( ) {
+    }
+    public CameraCommandSetInfraRedLampObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, boolean enabled ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._enabled = enabled;
+    }
 
     @Override
     public int getObjectType( ) {

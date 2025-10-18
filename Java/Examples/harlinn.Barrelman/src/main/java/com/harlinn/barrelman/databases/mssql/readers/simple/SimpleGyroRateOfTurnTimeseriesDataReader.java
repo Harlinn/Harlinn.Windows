@@ -38,4 +38,9 @@ public class SimpleGyroRateOfTurnTimeseriesDataReader extends SimpleDoubleTimese
         destination.writeNullableGuid( getGyroDevice( ) );
     }
 
+    @Override
+    public GyroRateOfTurnTimeseriesObject GetDataObject( ) throws SQLException {
+        return new GyroRateOfTurnTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
+    }
+
 }

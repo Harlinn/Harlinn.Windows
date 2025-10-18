@@ -37,4 +37,9 @@ public class SimpleSBytePropertyDataReader extends SimplePropertyDataReader {
         destination.writeInt8( getValue( ) );
     }
 
+    @Override
+    public SBytePropertyObject GetDataObject( ) throws SQLException {
+        return new SBytePropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
+    }
+
 }

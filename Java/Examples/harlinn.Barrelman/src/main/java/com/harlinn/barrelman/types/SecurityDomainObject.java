@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class SecurityDomainObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.SecurityDomain;
+
     private long _rowVersion = 0;
     private String _name = "";
     private String _description = "";
+
+    public SecurityDomainObject( ) {
+    }
+    public SecurityDomainObject( byte objectState, Guid id, long rowVersion, String name, String description ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._name = name;
+        this._description = description;
+    }
 
     @Override
     public int getObjectType( ) {

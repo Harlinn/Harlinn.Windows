@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisStandardClassBCsPositionReportMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisStandardClassBCsPositionReportMessage;
+
     private int _reserved = 0;
     private double _speedOverGround = 0.0;
     private int _positionAccuracy = PositionAccuracy.Low;
@@ -23,6 +25,29 @@ public class AisStandardClassBCsPositionReportMessageObject extends AisMessageOb
     private boolean _assigned = false;
     private int _raim = Raim.NotInUse;
     private int _radioStatus = 0;
+
+    public AisStandardClassBCsPositionReportMessageObject( ) {
+    }
+    public AisStandardClassBCsPositionReportMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, int positionAccuracy, double longitude, double latitude, double courseOverGround, Integer trueHeading, int timestamp, int regionalReserved, boolean isCsUnit, boolean hasDisplay, boolean hasDscCapability, boolean band, boolean canAcceptMessage22, boolean assigned, int raim, int radioStatus ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._reserved = reserved;
+        this._speedOverGround = speedOverGround;
+        this._positionAccuracy = positionAccuracy;
+        this._longitude = longitude;
+        this._latitude = latitude;
+        this._courseOverGround = courseOverGround;
+        this._trueHeading = trueHeading;
+        this._timestamp = timestamp;
+        this._regionalReserved = regionalReserved;
+        this._isCsUnit = isCsUnit;
+        this._hasDisplay = hasDisplay;
+        this._hasDscCapability = hasDscCapability;
+        this._band = band;
+        this._canAcceptMessage22 = canAcceptMessage22;
+        this._assigned = assigned;
+        this._raim = raim;
+        this._radioStatus = radioStatus;
+    }
 
     @Override
     public int getObjectType( ) {

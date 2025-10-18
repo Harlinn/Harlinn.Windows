@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandStopObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandStop;
+
     private boolean _panTilt = false;
     private boolean _zoom = false;
+
+    public CameraCommandStopObject( ) {
+    }
+    public CameraCommandStopObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, boolean panTilt, boolean zoom ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._panTilt = panTilt;
+        this._zoom = zoom;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleGNSSLatitudeTimeseriesDataReader extends SimpleDoubleTimeseri
         destination.writeNullableGuid( getGNSSDevice( ) );
     }
 
+    @Override
+    public GNSSLatitudeTimeseriesObject GetDataObject( ) throws SQLException {
+        return new GNSSLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGNSSDevice( ) );
+    }
+
 }

@@ -30,4 +30,9 @@ public class SimpleGuidTimeseriesDataReader extends SimpleTimeseriesDataReader {
         super.writeTo( destination );
     }
 
+    @Override
+    public GuidTimeseriesObject GetDataObject( ) throws SQLException {
+        return new GuidTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class AisAddressedSafetyRelatedMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisAddressedSafetyRelatedMessage;
+
     private int _sequenceNumber = 0;
     private Guid _destinationMmsi;
     private boolean _retransmitFlag = false;
     private int _spare = 0;
     private String _text = "";
+
+    public AisAddressedSafetyRelatedMessageObject( ) {
+    }
+    public AisAddressedSafetyRelatedMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, boolean retransmitFlag, int spare, String text ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._sequenceNumber = sequenceNumber;
+        this._destinationMmsi = destinationMmsi;
+        this._retransmitFlag = retransmitFlag;
+        this._spare = spare;
+        this._text = text;
+    }
 
     @Override
     public int getObjectType( ) {

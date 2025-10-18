@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class RadarImageObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.RadarImage;
+
     private long _rowVersion = 0;
     private Guid _radar;
     private DateTime _timestamp;
@@ -13,6 +15,19 @@ public class RadarImageObject extends AbstractDataObjectWithGuidKey {
     private int _resolution = 0;
     private int _range = 0;
     private byte[] _image = new byte[0];
+
+    public RadarImageObject( ) {
+    }
+    public RadarImageObject( byte objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, int depth, int resolution, int range, byte[] image ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._radar = radar;
+        this._timestamp = timestamp;
+        this._depth = depth;
+        this._resolution = resolution;
+        this._range = range;
+        this._image = image;
+    }
 
     @Override
     public int getObjectType( ) {

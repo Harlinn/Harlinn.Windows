@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class SingleTimeseriesPropertyDefinitionObject extends TimeseriesPropertyDefinitionObject {
 
+    public final int KIND = Kind.SingleTimeseriesPropertyDefinition;
+
     private float _minValue = 0.0f;
     private float _maxValue = 0.0f;
+
+    public SingleTimeseriesPropertyDefinitionObject( ) {
+    }
+    public SingleTimeseriesPropertyDefinitionObject( byte objectState, Guid id, long rowVersion, Guid elementType, String name, String description, float minValue, float maxValue ) {
+        super( objectState, id, rowVersion, elementType, name, description );
+        this._minValue = minValue;
+        this._maxValue = maxValue;
+    }
 
     @Override
     public int getObjectType( ) {

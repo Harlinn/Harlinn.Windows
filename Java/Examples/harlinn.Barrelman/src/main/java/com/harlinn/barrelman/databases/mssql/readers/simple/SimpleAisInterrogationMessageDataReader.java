@@ -89,4 +89,9 @@ public class SimpleAisInterrogationMessageDataReader extends SimpleAisMessageDat
         destination.writeNullableInt32( getSecondStationFirstSlotOffset( ) );
     }
 
+    @Override
+    public AisInterrogationMessageObject GetDataObject( ) throws SQLException {
+        return new AisInterrogationMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getInterrogatedMmsi( ), getFirstMessageType( ), getFirstSlotOffset( ), getSecondMessageType( ), getSecondSlotOffset( ), getSecondStationInterrogationMmsi( ), getSecondStationFirstMessageType( ), getSecondStationFirstSlotOffset( ) );
+    }
+
 }

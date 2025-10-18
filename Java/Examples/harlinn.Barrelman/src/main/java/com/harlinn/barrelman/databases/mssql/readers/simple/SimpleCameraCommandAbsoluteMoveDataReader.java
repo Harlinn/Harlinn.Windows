@@ -103,4 +103,9 @@ public class SimpleCameraCommandAbsoluteMoveDataReader extends SimpleCameraComma
         destination.writeNullableDouble( getZoomSpeed( ) );
     }
 
+    @Override
+    public CameraCommandAbsoluteMoveObject GetDataObject( ) throws SQLException {
+        return new CameraCommandAbsoluteMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getPositionPanTiltMode( ), getPanAngle( ), getTiltAngle( ), getPositionFocalLengthMode( ), getFocalLength( ), getSpeedPanTiltMode( ), getPanSpeed( ), getTiltSpeed( ), getSpeedFocalLengthMode( ), getZoomSpeed( ) );
+    }
+
 }

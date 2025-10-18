@@ -6,6 +6,14 @@ import com.harlinn.common.util.*;
 
 public class Int64TimeseriesObject extends TimeseriesObject {
 
+    public final int KIND = Kind.Int64Timeseries;
+
+
+    public Int64TimeseriesObject( ) {
+    }
+    public Int64TimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+    }
 
     @Override
     public int getObjectType( ) {

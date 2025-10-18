@@ -38,4 +38,9 @@ public class SimpleVesselDraughtTimeseriesDataReader extends SimpleDoubleTimeser
         destination.writeNullableGuid( getVessel( ) );
     }
 
+    @Override
+    public VesselDraughtTimeseriesObject GetDataObject( ) throws SQLException {
+        return new VesselDraughtTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getVessel( ) );
+    }
+
 }

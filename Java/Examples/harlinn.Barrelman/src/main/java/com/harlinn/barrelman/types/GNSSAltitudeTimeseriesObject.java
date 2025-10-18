@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class GNSSAltitudeTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.GNSSAltitudeTimeseries;
+
     private Guid _gNSSDevice;
+
+    public GNSSAltitudeTimeseriesObject( ) {
+    }
+    public GNSSAltitudeTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid gNSSDevice ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._gNSSDevice = gNSSDevice;
+    }
 
     @Override
     public int getObjectType( ) {

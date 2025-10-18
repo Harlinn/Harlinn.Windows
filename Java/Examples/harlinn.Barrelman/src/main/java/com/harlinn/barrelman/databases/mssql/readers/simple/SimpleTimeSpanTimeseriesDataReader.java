@@ -30,4 +30,9 @@ public class SimpleTimeSpanTimeseriesDataReader extends SimpleTimeseriesDataRead
         super.writeTo( destination );
     }
 
+    @Override
+    public TimeSpanTimeseriesObject GetDataObject( ) throws SQLException {
+        return new TimeSpanTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+    }
+
 }

@@ -45,4 +45,9 @@ public class SimpleDateTimeTimeseriesPropertyDefinitionDataReader extends Simple
         destination.writeStringUtf8( getMaxValue( ) );
     }
 
+    @Override
+    public DateTimeTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new DateTimeTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

@@ -52,4 +52,9 @@ public class SimpleDateTimePropertyDefinitionDataReader extends SimplePropertyDe
         destination.writeStringUtf8( getMaxValue( ) );
     }
 
+    @Override
+    public DateTimePropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new DateTimePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

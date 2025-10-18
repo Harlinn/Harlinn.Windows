@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class AisSafetyRelatedAcknowledgmentMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisSafetyRelatedAcknowledgmentMessage;
+
     private int _spare = 0;
     private int _sequenceNumber1 = 0;
     private Guid _mmsi1;
@@ -15,6 +17,21 @@ public class AisSafetyRelatedAcknowledgmentMessageObject extends AisMessageObjec
     private Guid _mmsi3;
     private Integer _sequenceNumber4;
     private Guid _mmsi4;
+
+    public AisSafetyRelatedAcknowledgmentMessageObject( ) {
+    }
+    public AisSafetyRelatedAcknowledgmentMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, Integer sequenceNumber2, Guid mmsi2, Integer sequenceNumber3, Guid mmsi3, Integer sequenceNumber4, Guid mmsi4 ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._spare = spare;
+        this._sequenceNumber1 = sequenceNumber1;
+        this._mmsi1 = mmsi1;
+        this._sequenceNumber2 = sequenceNumber2;
+        this._mmsi2 = mmsi2;
+        this._sequenceNumber3 = sequenceNumber3;
+        this._mmsi3 = mmsi3;
+        this._sequenceNumber4 = sequenceNumber4;
+        this._mmsi4 = mmsi4;
+    }
 
     @Override
     public int getObjectType( ) {

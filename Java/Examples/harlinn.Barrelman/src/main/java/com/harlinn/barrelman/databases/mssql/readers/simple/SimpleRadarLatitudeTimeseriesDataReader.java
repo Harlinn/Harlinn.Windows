@@ -38,4 +38,9 @@ public class SimpleRadarLatitudeTimeseriesDataReader extends SimpleDoubleTimeser
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarLatitudeTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

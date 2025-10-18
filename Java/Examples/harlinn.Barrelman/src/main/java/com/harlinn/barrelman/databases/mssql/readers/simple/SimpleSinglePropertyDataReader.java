@@ -37,4 +37,9 @@ public class SimpleSinglePropertyDataReader extends SimplePropertyDataReader {
         destination.writeSingle( getValue( ) );
     }
 
+    @Override
+    public SinglePropertyObject GetDataObject( ) throws SQLException {
+        return new SinglePropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
+    }
+
 }

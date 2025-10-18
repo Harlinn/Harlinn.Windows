@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class RadarTuningTimeseriesObject extends Int32TimeseriesObject {
 
+    public final int KIND = Kind.RadarTuningTimeseries;
+
     private Guid _radar;
+
+    public RadarTuningTimeseriesObject( ) {
+    }
+    public RadarTuningTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid radar ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._radar = radar;
+    }
 
     @Override
     public int getObjectType( ) {

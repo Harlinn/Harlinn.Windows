@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class LogApplicationConfigurationObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.LogApplicationConfiguration;
+
     private long _rowVersion = 0;
     private Guid _application;
     private DateTime _timestamp;
@@ -21,6 +23,27 @@ public class LogApplicationConfigurationObject extends AbstractDataObjectWithGui
     private boolean _alert = false;
     private boolean _fatal = false;
     private boolean _emergency = false;
+
+    public LogApplicationConfigurationObject( ) {
+    }
+    public LogApplicationConfigurationObject( byte objectState, Guid id, long rowVersion, Guid application, DateTime timestamp, boolean finest, boolean finer, boolean fine, boolean info, boolean notice, boolean warn, boolean error, boolean severe, boolean critical, boolean alert, boolean fatal, boolean emergency ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._application = application;
+        this._timestamp = timestamp;
+        this._finest = finest;
+        this._finer = finer;
+        this._fine = fine;
+        this._info = info;
+        this._notice = notice;
+        this._warn = warn;
+        this._error = error;
+        this._severe = severe;
+        this._critical = critical;
+        this._alert = alert;
+        this._fatal = fatal;
+        this._emergency = emergency;
+    }
 
     @Override
     public int getObjectType( ) {

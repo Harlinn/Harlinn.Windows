@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class VehicleObject extends TrackableItemObject {
 
+    public final int KIND = Kind.Vehicle;
+
     private String _name = "";
     private Guid _type;
+
+    public VehicleObject( ) {
+    }
+    public VehicleObject( byte objectState, Guid id, long rowVersion, String name, Guid type ) {
+        super( objectState, id, rowVersion );
+        this._name = name;
+        this._type = type;
+    }
 
     @Override
     public int getObjectType( ) {

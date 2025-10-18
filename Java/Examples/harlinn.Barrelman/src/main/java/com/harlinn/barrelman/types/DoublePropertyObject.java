@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class DoublePropertyObject extends PropertyObject {
 
+    public final int KIND = Kind.DoubleProperty;
+
     private double _value = 0.0;
+
+    public DoublePropertyObject( ) {
+    }
+    public DoublePropertyObject( byte objectState, Guid id, long rowVersion, Guid element, Guid definition, double value ) {
+        super( objectState, id, rowVersion, element, definition );
+        this._value = value;
+    }
 
     @Override
     public int getObjectType( ) {

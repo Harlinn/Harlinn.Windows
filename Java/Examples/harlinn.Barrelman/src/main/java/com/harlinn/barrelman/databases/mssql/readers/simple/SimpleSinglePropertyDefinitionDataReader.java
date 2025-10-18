@@ -52,4 +52,9 @@ public class SimpleSinglePropertyDefinitionDataReader extends SimplePropertyDefi
         destination.writeSingle( getMaxValue( ) );
     }
 
+    @Override
+    public SinglePropertyDefinitionObject GetDataObject( ) throws SQLException {
+        return new SinglePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
+    }
+
 }

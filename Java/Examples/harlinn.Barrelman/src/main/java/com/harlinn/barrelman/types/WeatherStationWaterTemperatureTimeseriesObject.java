@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class WeatherStationWaterTemperatureTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.WeatherStationWaterTemperatureTimeseries;
+
     private Guid _weatherStation;
+
+    public WeatherStationWaterTemperatureTimeseriesObject( ) {
+    }
+    public WeatherStationWaterTemperatureTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid weatherStation ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._weatherStation = weatherStation;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class AisUtcAndDateInquiryMessageObject extends AisMessageObject {
 
+    public final int KIND = Kind.AisUtcAndDateInquiryMessage;
+
     private int _spare1 = 0;
     private Guid _destinationMmsi;
     private int _spare2 = 0;
+
+    public AisUtcAndDateInquiryMessageObject( ) {
+    }
+    public AisUtcAndDateInquiryMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare1, Guid destinationMmsi, int spare2 ) {
+        super( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi );
+        this._spare1 = spare1;
+        this._destinationMmsi = destinationMmsi;
+        this._spare2 = spare2;
+    }
 
     @Override
     public int getObjectType( ) {

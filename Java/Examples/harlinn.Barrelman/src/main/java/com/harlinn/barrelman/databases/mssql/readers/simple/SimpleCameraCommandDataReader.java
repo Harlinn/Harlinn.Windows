@@ -88,4 +88,8 @@ public class SimpleCameraCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public CameraCommandObject GetDataObject( ) throws SQLException {
+            return new CameraCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+    }
+
 }

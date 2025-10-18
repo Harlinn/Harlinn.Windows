@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class AisDeviceRawMessageObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.AisDeviceRawMessage;
+
     private long _rowVersion = 0;
     private Guid _aisDevice;
     private DateTime _timestamp;
     private boolean _isSent = false;
     private String _message = "";
+
+    public AisDeviceRawMessageObject( ) {
+    }
+    public AisDeviceRawMessageObject( byte objectState, Guid id, long rowVersion, Guid aisDevice, DateTime timestamp, boolean isSent, String message ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._aisDevice = aisDevice;
+        this._timestamp = timestamp;
+        this._isSent = isSent;
+        this._message = message;
+    }
 
     @Override
     public int getObjectType( ) {

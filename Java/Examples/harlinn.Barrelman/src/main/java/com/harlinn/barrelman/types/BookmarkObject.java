@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class BookmarkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.Bookmark;
+
     private long _rowVersion = 0;
     private Guid _view;
     private String _name = "";
@@ -13,6 +15,19 @@ public class BookmarkObject extends AbstractDataObjectWithGuidKey {
     private double _latitude = 0.0;
     private double _longitude = 0.0;
     private double _zoomLevel = 0.0;
+
+    public BookmarkObject( ) {
+    }
+    public BookmarkObject( byte objectState, Guid id, long rowVersion, Guid view, String name, DateTime timestamp, double latitude, double longitude, double zoomLevel ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._view = view;
+        this._name = name;
+        this._timestamp = timestamp;
+        this._latitude = latitude;
+        this._longitude = longitude;
+        this._zoomLevel = zoomLevel;
+    }
 
     @Override
     public int getObjectType( ) {

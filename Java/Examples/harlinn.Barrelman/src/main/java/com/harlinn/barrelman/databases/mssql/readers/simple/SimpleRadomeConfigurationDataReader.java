@@ -96,4 +96,8 @@ public class SimpleRadomeConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
+    public RadomeConfigurationObject GetDataObject( ) throws SQLException {
+            return new RadomeConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadome( ), getTimestamp( ), getInterval( ), getLowPressureLimit( ), getHighPressureLimit( ), getLowTemperatureLimit( ), getHighTemperatureLimit( ) );
+    }
+
 }

@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class ItemParentChildLinkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ItemParentChildLink;
+
     private long _rowVersion = 0;
     private Guid _parent;
     private Guid _child;
     private DateTime _timestamp;
+
+    public ItemParentChildLinkObject( ) {
+    }
+    public ItemParentChildLinkObject( byte objectState, Guid id, long rowVersion, Guid parent, Guid child, DateTime timestamp ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._parent = parent;
+        this._child = child;
+        this._timestamp = timestamp;
+    }
 
     @Override
     public int getObjectType( ) {

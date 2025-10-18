@@ -6,9 +6,20 @@ import com.harlinn.common.util.*;
 
 public class VesselTypeObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.VesselType;
+
     private long _rowVersion = 0;
     private String _name = "";
     private int _code = 0;
+
+    public VesselTypeObject( ) {
+    }
+    public VesselTypeObject( byte objectState, Guid id, long rowVersion, String name, int code ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._name = name;
+        this._code = code;
+    }
 
     @Override
     public int getObjectType( ) {

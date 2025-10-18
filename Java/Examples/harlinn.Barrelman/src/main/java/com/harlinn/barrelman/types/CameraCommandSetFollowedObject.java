@@ -6,8 +6,18 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandSetFollowedObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandSetFollowed;
+
     private Guid _trackId;
     private int _reason = CameraFollowReason.Alarm;
+
+    public CameraCommandSetFollowedObject( ) {
+    }
+    public CameraCommandSetFollowedObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Guid trackId, int reason ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._trackId = trackId;
+        this._reason = reason;
+    }
 
     @Override
     public int getObjectType( ) {

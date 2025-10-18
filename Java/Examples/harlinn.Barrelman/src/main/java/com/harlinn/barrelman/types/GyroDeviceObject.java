@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class GyroDeviceObject extends DeviceObject {
 
+    public final int KIND = Kind.GyroDevice;
+
     private Guid _headingTrueNorthTimeseries;
     private Guid _headingMagneticNorthTimeseries;
     private Guid _pitchTimeseries;
@@ -14,6 +16,20 @@ public class GyroDeviceObject extends DeviceObject {
     private Guid _courseTimeseries;
     private Guid _speedTimeseries;
     private Guid _gNSSDevice;
+
+    public GyroDeviceObject( ) {
+    }
+    public GyroDeviceObject( byte objectState, Guid id, long rowVersion, Guid host, String name, String description, Guid enabledTimeseries, Guid headingTrueNorthTimeseries, Guid headingMagneticNorthTimeseries, Guid pitchTimeseries, Guid rateOfTurnTimeseries, Guid rollTimeseries, Guid courseTimeseries, Guid speedTimeseries, Guid gNSSDevice ) {
+        super( objectState, id, rowVersion, host, name, description, enabledTimeseries );
+        this._headingTrueNorthTimeseries = headingTrueNorthTimeseries;
+        this._headingMagneticNorthTimeseries = headingMagneticNorthTimeseries;
+        this._pitchTimeseries = pitchTimeseries;
+        this._rateOfTurnTimeseries = rateOfTurnTimeseries;
+        this._rollTimeseries = rollTimeseries;
+        this._courseTimeseries = courseTimeseries;
+        this._speedTimeseries = speedTimeseries;
+        this._gNSSDevice = gNSSDevice;
+    }
 
     @Override
     public int getObjectType( ) {

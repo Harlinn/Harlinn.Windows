@@ -37,4 +37,9 @@ public class SimpleReferencePropertyDataReader extends SimplePropertyDataReader 
         destination.writeNullableGuid( getValue( ) );
     }
 
+    @Override
+    public ReferencePropertyObject GetDataObject( ) throws SQLException {
+        return new ReferencePropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
+    }
+
 }

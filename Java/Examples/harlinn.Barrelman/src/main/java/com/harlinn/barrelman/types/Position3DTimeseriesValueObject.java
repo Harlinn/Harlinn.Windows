@@ -6,12 +6,26 @@ import com.harlinn.common.util.*;
 
 public class Position3DTimeseriesValueObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.Position3DTimeseriesValue;
+
     private long _rowVersion = 0;
     private Guid _timeseries;
     private DateTime _timestamp;
     private Double _x;
     private Double _y;
     private Double _z;
+
+    public Position3DTimeseriesValueObject( ) {
+    }
+    public Position3DTimeseriesValueObject( byte objectState, Guid id, long rowVersion, Guid timeseries, DateTime timestamp, Double x, Double y, Double z ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timeseries = timeseries;
+        this._timestamp = timestamp;
+        this._x = x;
+        this._y = y;
+        this._z = z;
+    }
 
     @Override
     public int getObjectType( ) {

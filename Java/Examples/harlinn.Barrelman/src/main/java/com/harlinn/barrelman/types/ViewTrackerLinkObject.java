@@ -6,11 +6,24 @@ import com.harlinn.common.util.*;
 
 public class ViewTrackerLinkObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.ViewTrackerLink;
+
     private long _rowVersion = 0;
     private Guid _view;
     private Guid _tracker;
     private DateTime _start;
     private DateTime _end;
+
+    public ViewTrackerLinkObject( ) {
+    }
+    public ViewTrackerLinkObject( byte objectState, Guid id, long rowVersion, Guid view, Guid tracker, DateTime start, DateTime end ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._view = view;
+        this._tracker = tracker;
+        this._start = start;
+        this._end = end;
+    }
 
     @Override
     public int getObjectType( ) {

@@ -38,4 +38,9 @@ public class SimpleViewZoomLevelTimeseriesDataReader extends SimpleDoubleTimeser
         destination.writeNullableGuid( getView( ) );
     }
 
+    @Override
+    public ViewZoomLevelTimeseriesObject GetDataObject( ) throws SQLException {
+        return new ViewZoomLevelTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getView( ) );
+    }
+
 }

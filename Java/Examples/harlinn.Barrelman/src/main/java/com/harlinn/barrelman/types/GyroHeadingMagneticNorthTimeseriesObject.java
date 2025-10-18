@@ -6,7 +6,16 @@ import com.harlinn.common.util.*;
 
 public class GyroHeadingMagneticNorthTimeseriesObject extends DoubleTimeseriesObject {
 
+    public final int KIND = Kind.GyroHeadingMagneticNorthTimeseries;
+
     private Guid _gyroDevice;
+
+    public GyroHeadingMagneticNorthTimeseriesObject( ) {
+    }
+    public GyroHeadingMagneticNorthTimeseriesObject( byte objectState, Guid id, long rowVersion, Guid catalog, String name, TimeSpan maxRetention, Guid gyroDevice ) {
+        super( objectState, id, rowVersion, catalog, name, maxRetention );
+        this._gyroDevice = gyroDevice;
+    }
 
     @Override
     public int getObjectType( ) {

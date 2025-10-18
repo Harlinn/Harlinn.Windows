@@ -6,10 +6,22 @@ import com.harlinn.common.util.*;
 
 public class TimeseriesInfoObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.TimeseriesInfo;
+
     private long _rowVersion = 0;
     private DateTime _firstTimestamp;
     private DateTime _lastTimestamp;
     private long _count = 0;
+
+    public TimeseriesInfoObject( ) {
+    }
+    public TimeseriesInfoObject( byte objectState, Guid id, long rowVersion, DateTime firstTimestamp, DateTime lastTimestamp, long count ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._firstTimestamp = firstTimestamp;
+        this._lastTimestamp = lastTimestamp;
+        this._count = count;
+    }
 
     @Override
     public int getObjectType( ) {

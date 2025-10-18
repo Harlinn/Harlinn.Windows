@@ -38,4 +38,9 @@ public class SimpleRadarAzimuthOffsetTimeseriesDataReader extends SimpleInt32Tim
         destination.writeNullableGuid( getRadar( ) );
     }
 
+    @Override
+    public RadarAzimuthOffsetTimeseriesObject GetDataObject( ) throws SQLException {
+        return new RadarAzimuthOffsetTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
+    }
+
 }

@@ -42,4 +42,9 @@ public class SimpleVehicleDataReader extends SimpleTrackableItemDataReader {
         destination.writeNullableGuid( getTypeField( ) );
     }
 
+    @Override
+    public VehicleObject GetDataObject( ) throws SQLException {
+        return new VehicleObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ) );
+    }
+
 }

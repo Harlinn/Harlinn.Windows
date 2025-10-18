@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class CameraCommandRelativeMoveObject extends CameraCommandObject {
 
+    public final int KIND = Kind.CameraCommandRelativeMove;
+
     private boolean _normalized = false;
     private Double _panAngle;
     private Double _tiltAngle;
@@ -13,6 +15,19 @@ public class CameraCommandRelativeMoveObject extends CameraCommandObject {
     private Double _panSpeed;
     private Double _tiltSpeed;
     private Double _zoomSpeed;
+
+    public CameraCommandRelativeMoveObject( ) {
+    }
+    public CameraCommandRelativeMoveObject( byte objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, int deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, boolean normalized, Double panAngle, Double tiltAngle, Double focalLength, Double panSpeed, Double tiltSpeed, Double zoomSpeed ) {
+        super( objectState, id, rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
+        this._normalized = normalized;
+        this._panAngle = panAngle;
+        this._tiltAngle = tiltAngle;
+        this._focalLength = focalLength;
+        this._panSpeed = panSpeed;
+        this._tiltSpeed = tiltSpeed;
+        this._zoomSpeed = zoomSpeed;
+    }
 
     @Override
     public int getObjectType( ) {

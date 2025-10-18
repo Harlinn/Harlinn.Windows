@@ -43,6 +43,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             WriteLine( L"public class {} extends {} {{", className, baseClassName );
         }
         WriteLine( );
+        WriteLine( L"    public final int KIND = Kind.{};", classInfo_.Name() );
+        WriteLine( );
         // Fields
         for ( const auto& member : persistentMembers )
         {
@@ -61,6 +63,35 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 }
             }
         }
+        WriteLine( );
+
+        WriteLine( L"    public {}( ) {{", className );
+        WriteLine( L"    }" );
+        auto constructorArguments = JavaHelper::GetDataTypeConstructorArguments( classInfo_ );
+        WriteLine( L"    public {}( {} ) {{", className, constructorArguments );
+        if ( classInfo_.IsTopLevel( ) )
+        {
+            WriteLine( L"        super( objectState, id );" );
+        }
+        else
+        {
+            auto baseClass = classInfo_.BaseClass( );
+            auto baseClassConstructorArguments = JavaHelper::GetDataTypeConstructorCallArguments( *baseClass );
+            WriteLine( L"        super( {} );", baseClassConstructorArguments );
+        }
+
+        for ( const auto& member : persistentMembers )
+        {
+            if ( member->PrimaryKey( ) == false )
+            {
+                auto fieldName = JavaHelper::GetMemberFieldName( *member );
+                auto argumentName = JavaHelper::GetInputArgumentName( *member );
+                WriteLine( L"        this.{} = {};", fieldName, argumentName );
+            }
+        }
+
+        WriteLine( L"    }" );
+
         WriteLine( );
 
         if ( classInfo_.Abstract( ) == false )

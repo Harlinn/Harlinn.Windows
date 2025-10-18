@@ -6,6 +6,8 @@ import com.harlinn.common.util.*;
 
 public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
 
+    public final int KIND = Kind.MapServiceOptions;
+
     private long _rowVersion = 0;
     private DateTime _timestamp;
     private String _ipAddress = "";
@@ -14,6 +16,20 @@ public class MapServiceOptionsObject extends AbstractDataObjectWithGuidKey {
     private double _imageOffsetX = 0.0;
     private double _imageScaleFactorY = 0.0;
     private double _imageOffsetY = 0.0;
+
+    public MapServiceOptionsObject( ) {
+    }
+    public MapServiceOptionsObject( byte objectState, Guid id, long rowVersion, DateTime timestamp, String ipAddress, int port, double imageScaleFactorX, double imageOffsetX, double imageScaleFactorY, double imageOffsetY ) {
+        super( objectState, id );
+        this._rowVersion = rowVersion;
+        this._timestamp = timestamp;
+        this._ipAddress = ipAddress;
+        this._port = port;
+        this._imageScaleFactorX = imageScaleFactorX;
+        this._imageOffsetX = imageOffsetX;
+        this._imageScaleFactorY = imageScaleFactorY;
+        this._imageOffsetY = imageOffsetY;
+    }
 
     @Override
     public int getObjectType( ) {

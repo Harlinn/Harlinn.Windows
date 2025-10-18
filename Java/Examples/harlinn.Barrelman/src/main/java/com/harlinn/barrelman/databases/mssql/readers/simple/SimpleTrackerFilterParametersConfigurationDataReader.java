@@ -152,4 +152,8 @@ public class SimpleTrackerFilterParametersConfigurationDataReader extends Result
         destination.writeBoolean( false );
     }
 
+    public TrackerFilterParametersConfigurationObject GetDataObject( ) throws SQLException {
+            return new TrackerFilterParametersConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getParameters( ), getTimestamp( ), getUseNaivePredictor( ), getNumberOfPoints( ), getWindowSize( ), getStabilizeCount( ), getMaxBadPoints( ), getModelType( ), getSigmaR( ), getSigmaAcc( ), getTauVel( ), getTauAcc( ), getDeltaRMin( ), getDeltaVMax( ), getDeltaAMax( ) );
+    }
+
 }

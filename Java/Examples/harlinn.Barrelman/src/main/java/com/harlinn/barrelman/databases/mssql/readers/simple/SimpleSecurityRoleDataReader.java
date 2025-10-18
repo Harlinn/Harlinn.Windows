@@ -38,4 +38,9 @@ public class SimpleSecurityRoleDataReader extends SimpleSecurityIdentifierDataRe
         destination.writeStringUtf8( getName( ) );
     }
 
+    @Override
+    public SecurityRoleObject GetDataObject( ) throws SQLException {
+        return new SecurityRoleObject( ObjectState.Stored, getId( ), getRowVersion( ), getDomain( ), getIdentity( ), getDescription( ), getName( ) );
+    }
+
 }
