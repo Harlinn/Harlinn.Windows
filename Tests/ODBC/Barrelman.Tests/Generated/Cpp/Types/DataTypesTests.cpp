@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE( AisDeviceCommandObjectSerializationTest )
     aisDeviceCommandObject1->SetId( Guid( L"{0B1A380B-1F86-8561-A186-F861D0581CD0}" ) );
     aisDeviceCommandObject1->SetRowVersion( -8835746333351856117LL );
     aisDeviceCommandObject1->SetAisDevice( Guid( L"{0B1A380B-1F86-8561-A186-F861D0581CD0}" ) );
-    aisDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisDeviceCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Source );
     aisDeviceCommandObject1->SetDeviceCommandSourceId( Guid( L"{0B1A380B-1F86-8561-A186-F861D0581CD0}" ) );
     aisDeviceCommandObject1->SetReply( Guid( L"{0B1A380B-1F86-8561-A186-F861D0581CD0}" ) );
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE( AisDeviceCommandReplyObjectSerializationTest )
     aisDeviceCommandReplyObject1->SetId( Guid( L"{B5D95B2D-BBE8-9869-1996-DD17AD9BDAB4}" ) );
     aisDeviceCommandReplyObject1->SetRowVersion( -7464228299232158931LL );
     aisDeviceCommandReplyObject1->SetAisDevice( Guid( L"{B5D95B2D-BBE8-9869-1996-DD17AD9BDAB4}" ) );
-    aisDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisDeviceCommandReplyObject1->SetCommand( Guid( L"{B5D95B2D-BBE8-9869-1996-DD17AD9BDAB4}" ) );
     aisDeviceCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Ok );
     aisDeviceCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE( AisDeviceConfigurationObjectSerializationTest )
     aisDeviceConfigurationObject1->SetId( Guid( L"{1888438C-A8B0-211D-84B8-150D1811C231}" ) );
     aisDeviceConfigurationObject1->SetRowVersion( 2386248851855524748LL );
     aisDeviceConfigurationObject1->SetAisDevice( Guid( L"{1888438C-A8B0-211D-84B8-150D1811C231}" ) );
-    aisDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisDeviceConfigurationObject1->SetFilter( false );
     aisDeviceConfigurationObject1->SetNorthWestLatitude( 2386248851855525 );
     aisDeviceConfigurationObject1->SetNorthWestLongitude( 2386248851855525 );
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE( AisDeviceRawMessageObjectSerializationTest )
     aisDeviceRawMessageObject1->SetId( Guid( L"{5F78586E-B6FE-19AB-98D5-6D7FFA1E1A76}" ) );
     aisDeviceRawMessageObject1->SetRowVersion( 1849773275605391470LL );
     aisDeviceRawMessageObject1->SetAisDevice( Guid( L"{5F78586E-B6FE-19AB-98D5-6D7FFA1E1A76}" ) );
-    aisDeviceRawMessageObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisDeviceRawMessageObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisDeviceRawMessageObject1->SetIsSent( false );
     aisDeviceRawMessageObject1->SetMessage( L"Message" );
 
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE( AisDeviceRawSentenceObjectSerializationTest )
     aisDeviceRawSentenceObject1->SetId( Guid( L"{0110FDB4-7CDF-2EE6-7467-3EFB8008BF2D}" ) );
     aisDeviceRawSentenceObject1->SetRowVersion( 3379525867625577908LL );
     aisDeviceRawSentenceObject1->SetAisDevice( Guid( L"{0110FDB4-7CDF-2EE6-7467-3EFB8008BF2D}" ) );
-    aisDeviceRawSentenceObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisDeviceRawSentenceObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisDeviceRawSentenceObject1->SetSentence( WideString(L"Sentence") );
 
     IO::MemoryStream stream;
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE( AidToNavigationReportMessageObjectSerializationTest )
     aidToNavigationReportMessageObject1->SetId( Guid( L"{A8095C85-AF09-1B47-D8E2-F59015903AA1}" ) );
     aidToNavigationReportMessageObject1->SetRowVersion( 1965732218379263109LL );
     aidToNavigationReportMessageObject1->SetAisDevice( Guid( L"{A8095C85-AF09-1B47-D8E2-F59015903AA1}" ) );
-    aidToNavigationReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aidToNavigationReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aidToNavigationReportMessageObject1->SetMessageSequenceNumber( 1965732218379263109LL );
     aidToNavigationReportMessageObject1->SetRepeat( -1475781499L );
     aidToNavigationReportMessageObject1->SetMmsi( Guid( L"{A8095C85-AF09-1B47-D8E2-F59015903AA1}" ) );
@@ -213,7 +213,7 @@ BOOST_AUTO_TEST_CASE( AisAddressedSafetyRelatedMessageObjectSerializationTest )
     aisAddressedSafetyRelatedMessageObject1->SetId( Guid( L"{E6B4FA51-12E6-F131-8F8C-4867672D5F8A}" ) );
     aisAddressedSafetyRelatedMessageObject1->SetRowVersion( -1067050853787698607LL );
     aisAddressedSafetyRelatedMessageObject1->SetAisDevice( Guid( L"{E6B4FA51-12E6-F131-8F8C-4867672D5F8A}" ) );
-    aisAddressedSafetyRelatedMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisAddressedSafetyRelatedMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisAddressedSafetyRelatedMessageObject1->SetMessageSequenceNumber( -1067050853787698607LL );
     aisAddressedSafetyRelatedMessageObject1->SetRepeat( -424347055L );
     aisAddressedSafetyRelatedMessageObject1->SetMmsi( Guid( L"{E6B4FA51-12E6-F131-8F8C-4867672D5F8A}" ) );
@@ -241,11 +241,11 @@ BOOST_AUTO_TEST_CASE( AisBaseStationReportMessageObjectSerializationTest )
     aisBaseStationReportMessageObject1->SetId( Guid( L"{7D642251-4972-A316-C568-924EBE26448A}" ) );
     aisBaseStationReportMessageObject1->SetRowVersion( -6695083039960849839LL );
     aisBaseStationReportMessageObject1->SetAisDevice( Guid( L"{7D642251-4972-A316-C568-924EBE26448A}" ) );
-    aisBaseStationReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisBaseStationReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisBaseStationReportMessageObject1->SetMessageSequenceNumber( -6695083039960849839LL );
     aisBaseStationReportMessageObject1->SetRepeat( 2103714385L );
     aisBaseStationReportMessageObject1->SetMmsi( Guid( L"{7D642251-4972-A316-C568-924EBE26448A}" ) );
-    aisBaseStationReportMessageObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisBaseStationReportMessageObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisBaseStationReportMessageObject1->SetPositionAccuracy( PositionAccuracy::High );
     aisBaseStationReportMessageObject1->SetLongitude( 11751661033748702 );
     aisBaseStationReportMessageObject1->SetLatitude( 11751661033748702 );
@@ -272,7 +272,7 @@ BOOST_AUTO_TEST_CASE( AisBinaryAcknowledgeMessageObjectSerializationTest )
     aisBinaryAcknowledgeMessageObject1->SetId( Guid( L"{7D7D182B-0D08-F217-4FE8-B010BEBE18D4}" ) );
     aisBinaryAcknowledgeMessageObject1->SetRowVersion( -1002318061950396373LL );
     aisBinaryAcknowledgeMessageObject1->SetAisDevice( Guid( L"{7D7D182B-0D08-F217-4FE8-B010BEBE18D4}" ) );
-    aisBinaryAcknowledgeMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisBinaryAcknowledgeMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisBinaryAcknowledgeMessageObject1->SetMessageSequenceNumber( -1002318061950396373LL );
     aisBinaryAcknowledgeMessageObject1->SetRepeat( 2105350187L );
     aisBinaryAcknowledgeMessageObject1->SetMmsi( Guid( L"{7D7D182B-0D08-F217-4FE8-B010BEBE18D4}" ) );
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE( AisBinaryAddressedMessageObjectSerializationTest )
     aisBinaryAddressedMessageObject1->SetId( Guid( L"{D1FE2C97-3198-60D6-066B-8C198B7F34E9}" ) );
     aisBinaryAddressedMessageObject1->SetRowVersion( 6977819205085047959LL );
     aisBinaryAddressedMessageObject1->SetAisDevice( Guid( L"{D1FE2C97-3198-60D6-066B-8C198B7F34E9}" ) );
-    aisBinaryAddressedMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisBinaryAddressedMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisBinaryAddressedMessageObject1->SetMessageSequenceNumber( 6977819205085047959LL );
     aisBinaryAddressedMessageObject1->SetRepeat( -771871593L );
     aisBinaryAddressedMessageObject1->SetMmsi( Guid( L"{D1FE2C97-3198-60D6-066B-8C198B7F34E9}" ) );
@@ -334,7 +334,7 @@ BOOST_AUTO_TEST_CASE( AisBinaryBroadcastMessageObjectSerializationTest )
     aisBinaryBroadcastMessageObject1->SetId( Guid( L"{F2AD5C24-F9C1-C1D8-831B-9F834FB53A24}" ) );
     aisBinaryBroadcastMessageObject1->SetRowVersion( -4478555218024506332LL );
     aisBinaryBroadcastMessageObject1->SetAisDevice( Guid( L"{F2AD5C24-F9C1-C1D8-831B-9F834FB53A24}" ) );
-    aisBinaryBroadcastMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisBinaryBroadcastMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisBinaryBroadcastMessageObject1->SetMessageSequenceNumber( -4478555218024506332LL );
     aisBinaryBroadcastMessageObject1->SetRepeat( -223519708L );
     aisBinaryBroadcastMessageObject1->SetMmsi( Guid( L"{F2AD5C24-F9C1-C1D8-831B-9F834FB53A24}" ) );
@@ -361,7 +361,7 @@ BOOST_AUTO_TEST_CASE( AisDataLinkManagementMessageObjectSerializationTest )
     aisDataLinkManagementMessageObject1->SetId( Guid( L"{11F331C0-404D-8BCF-D1F3-02B288CF8C03}" ) );
     aisDataLinkManagementMessageObject1->SetRowVersion( -8372402482500652608LL );
     aisDataLinkManagementMessageObject1->SetAisDevice( Guid( L"{11F331C0-404D-8BCF-D1F3-02B288CF8C03}" ) );
-    aisDataLinkManagementMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisDataLinkManagementMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisDataLinkManagementMessageObject1->SetMessageSequenceNumber( -8372402482500652608LL );
     aisDataLinkManagementMessageObject1->SetRepeat( 301150656L );
     aisDataLinkManagementMessageObject1->SetMmsi( Guid( L"{11F331C0-404D-8BCF-D1F3-02B288CF8C03}" ) );
@@ -401,7 +401,7 @@ BOOST_AUTO_TEST_CASE( AisExtendedClassBCsPositionReportMessageObjectSerializatio
     aisExtendedClassBCsPositionReportMessageObject1->SetId( Guid( L"{3800E00B-53D3-860B-61D0-CACB1C0007D0}" ) );
     aisExtendedClassBCsPositionReportMessageObject1->SetRowVersion( -8787838081240604661LL );
     aisExtendedClassBCsPositionReportMessageObject1->SetAisDevice( Guid( L"{3800E00B-53D3-860B-61D0-CACB1C0007D0}" ) );
-    aisExtendedClassBCsPositionReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisExtendedClassBCsPositionReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisExtendedClassBCsPositionReportMessageObject1->SetMessageSequenceNumber( -8787838081240604661LL );
     aisExtendedClassBCsPositionReportMessageObject1->SetRepeat( 939581451L );
     aisExtendedClassBCsPositionReportMessageObject1->SetMmsi( Guid( L"{3800E00B-53D3-860B-61D0-CACB1C0007D0}" ) );
@@ -444,7 +444,7 @@ BOOST_AUTO_TEST_CASE( AisInterrogationMessageObjectSerializationTest )
     aisInterrogationMessageObject1->SetId( Guid( L"{E8E82CCD-52E4-6679-669E-4A27171734B3}" ) );
     aisInterrogationMessageObject1->SetRowVersion( 7384024207164189901LL );
     aisInterrogationMessageObject1->SetAisDevice( Guid( L"{E8E82CCD-52E4-6679-669E-4A27171734B3}" ) );
-    aisInterrogationMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisInterrogationMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisInterrogationMessageObject1->SetMessageSequenceNumber( 7384024207164189901LL );
     aisInterrogationMessageObject1->SetRepeat( -387437363L );
     aisInterrogationMessageObject1->SetMmsi( Guid( L"{E8E82CCD-52E4-6679-669E-4A27171734B3}" ) );
@@ -475,7 +475,7 @@ BOOST_AUTO_TEST_CASE( AisPositionReportClassAAssignedScheduleMessageObjectSerial
     aisPositionReportClassAAssignedScheduleMessageObject1->SetId( Guid( L"{CA9F2595-C836-B10F-8DF0-136C53F9A4A9}" ) );
     aisPositionReportClassAAssignedScheduleMessageObject1->SetRowVersion( -5688107666692430443LL );
     aisPositionReportClassAAssignedScheduleMessageObject1->SetAisDevice( Guid( L"{CA9F2595-C836-B10F-8DF0-136C53F9A4A9}" ) );
-    aisPositionReportClassAAssignedScheduleMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisPositionReportClassAAssignedScheduleMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisPositionReportClassAAssignedScheduleMessageObject1->SetMessageSequenceNumber( -5688107666692430443LL );
     aisPositionReportClassAAssignedScheduleMessageObject1->SetRepeat( -895539819L );
     aisPositionReportClassAAssignedScheduleMessageObject1->SetMmsi( Guid( L"{CA9F2595-C836-B10F-8DF0-136C53F9A4A9}" ) );
@@ -511,7 +511,7 @@ BOOST_AUTO_TEST_CASE( AisPositionReportClassAMessageObjectSerializationTest )
     aisPositionReportClassAMessageObject1->SetId( Guid( L"{05ACAC97-D62C-C7D9-E39B-6B34A03535E9}" ) );
     aisPositionReportClassAMessageObject1->SetRowVersion( -4045967305653572457LL );
     aisPositionReportClassAMessageObject1->SetAisDevice( Guid( L"{05ACAC97-D62C-C7D9-E39B-6B34A03535E9}" ) );
-    aisPositionReportClassAMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisPositionReportClassAMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisPositionReportClassAMessageObject1->SetMessageSequenceNumber( -4045967305653572457LL );
     aisPositionReportClassAMessageObject1->SetRepeat( 95202455L );
     aisPositionReportClassAMessageObject1->SetMmsi( Guid( L"{05ACAC97-D62C-C7D9-E39B-6B34A03535E9}" ) );
@@ -547,7 +547,7 @@ BOOST_AUTO_TEST_CASE( AisPositionReportClassAResponseToInterrogationMessageObjec
     aisPositionReportClassAResponseToInterrogationMessageObject1->SetId( Guid( L"{D9584796-610C-ED40-B702-86309B1AE269}" ) );
     aisPositionReportClassAResponseToInterrogationMessageObject1->SetRowVersion( -1350973180397205610LL );
     aisPositionReportClassAResponseToInterrogationMessageObject1->SetAisDevice( Guid( L"{D9584796-610C-ED40-B702-86309B1AE269}" ) );
-    aisPositionReportClassAResponseToInterrogationMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisPositionReportClassAResponseToInterrogationMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisPositionReportClassAResponseToInterrogationMessageObject1->SetMessageSequenceNumber( -1350973180397205610LL );
     aisPositionReportClassAResponseToInterrogationMessageObject1->SetRepeat( -648525930L );
     aisPositionReportClassAResponseToInterrogationMessageObject1->SetMmsi( Guid( L"{D9584796-610C-ED40-B702-86309B1AE269}" ) );
@@ -583,7 +583,7 @@ BOOST_AUTO_TEST_CASE( AisPositionReportForLongRangeApplicationsMessageObjectSeri
     aisPositionReportForLongRangeApplicationsMessageObject1->SetId( Guid( L"{CB0CB752-220B-B92B-9DD4-44D0D330ED4A}" ) );
     aisPositionReportForLongRangeApplicationsMessageObject1->SetRowVersion( -5103948318647732398LL );
     aisPositionReportForLongRangeApplicationsMessageObject1->SetAisDevice( Guid( L"{CB0CB752-220B-B92B-9DD4-44D0D330ED4A}" ) );
-    aisPositionReportForLongRangeApplicationsMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisPositionReportForLongRangeApplicationsMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisPositionReportForLongRangeApplicationsMessageObject1->SetMessageSequenceNumber( -5103948318647732398LL );
     aisPositionReportForLongRangeApplicationsMessageObject1->SetRepeat( -888359086L );
     aisPositionReportForLongRangeApplicationsMessageObject1->SetMmsi( Guid( L"{CB0CB752-220B-B92B-9DD4-44D0D330ED4A}" ) );
@@ -615,7 +615,7 @@ BOOST_AUTO_TEST_CASE( AisSafetyRelatedAcknowledgmentMessageObjectSerializationTe
     aisSafetyRelatedAcknowledgmentMessageObject1->SetId( Guid( L"{DBA7680C-F9E3-8E3B-71DC-9FC7DBE51630}" ) );
     aisSafetyRelatedAcknowledgmentMessageObject1->SetRowVersion( -8197683939659782132LL );
     aisSafetyRelatedAcknowledgmentMessageObject1->SetAisDevice( Guid( L"{DBA7680C-F9E3-8E3B-71DC-9FC7DBE51630}" ) );
-    aisSafetyRelatedAcknowledgmentMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisSafetyRelatedAcknowledgmentMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisSafetyRelatedAcknowledgmentMessageObject1->SetMessageSequenceNumber( -8197683939659782132LL );
     aisSafetyRelatedAcknowledgmentMessageObject1->SetRepeat( -609785844L );
     aisSafetyRelatedAcknowledgmentMessageObject1->SetMmsi( Guid( L"{DBA7680C-F9E3-8E3B-71DC-9FC7DBE51630}" ) );
@@ -647,7 +647,7 @@ BOOST_AUTO_TEST_CASE( AisStandardClassBCsPositionReportMessageObjectSerializatio
     aisStandardClassBCsPositionReportMessageObject1->SetId( Guid( L"{DE8F513C-118E-7428-2E14-88717BF18A3C}" ) );
     aisStandardClassBCsPositionReportMessageObject1->SetRowVersion( 8369959212785029436LL );
     aisStandardClassBCsPositionReportMessageObject1->SetAisDevice( Guid( L"{DE8F513C-118E-7428-2E14-88717BF18A3C}" ) );
-    aisStandardClassBCsPositionReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisStandardClassBCsPositionReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisStandardClassBCsPositionReportMessageObject1->SetMessageSequenceNumber( 8369959212785029436LL );
     aisStandardClassBCsPositionReportMessageObject1->SetRepeat( -561032900L );
     aisStandardClassBCsPositionReportMessageObject1->SetMmsi( Guid( L"{DE8F513C-118E-7428-2E14-88717BF18A3C}" ) );
@@ -687,7 +687,7 @@ BOOST_AUTO_TEST_CASE( AisStandardSarAircraftPositionReportMessageObjectSerializa
     aisStandardSarAircraftPositionReportMessageObject1->SetId( Guid( L"{41467402-F4D5-7EAD-7EB5-2FAB82622E40}" ) );
     aisStandardSarAircraftPositionReportMessageObject1->SetRowVersion( 9128221216510211074LL );
     aisStandardSarAircraftPositionReportMessageObject1->SetAisDevice( Guid( L"{41467402-F4D5-7EAD-7EB5-2FAB82622E40}" ) );
-    aisStandardSarAircraftPositionReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisStandardSarAircraftPositionReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisStandardSarAircraftPositionReportMessageObject1->SetMessageSequenceNumber( 9128221216510211074LL );
     aisStandardSarAircraftPositionReportMessageObject1->SetRepeat( 1095136258L );
     aisStandardSarAircraftPositionReportMessageObject1->SetMmsi( Guid( L"{41467402-F4D5-7EAD-7EB5-2FAB82622E40}" ) );
@@ -723,7 +723,7 @@ BOOST_AUTO_TEST_CASE( AisStaticAndVoyageRelatedDataMessageObjectSerializationTes
     aisStaticAndVoyageRelatedDataMessageObject1->SetId( Guid( L"{FE446502-C000-ADA7-B5E5-03007F22A640}" ) );
     aisStaticAndVoyageRelatedDataMessageObject1->SetRowVersion( -5933562873538910974LL );
     aisStaticAndVoyageRelatedDataMessageObject1->SetAisDevice( Guid( L"{FE446502-C000-ADA7-B5E5-03007F22A640}" ) );
-    aisStaticAndVoyageRelatedDataMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisStaticAndVoyageRelatedDataMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisStaticAndVoyageRelatedDataMessageObject1->SetMessageSequenceNumber( -5933562873538910974LL );
     aisStaticAndVoyageRelatedDataMessageObject1->SetRepeat( -29072126L );
     aisStaticAndVoyageRelatedDataMessageObject1->SetMmsi( Guid( L"{FE446502-C000-ADA7-B5E5-03007F22A640}" ) );
@@ -737,7 +737,7 @@ BOOST_AUTO_TEST_CASE( AisStaticAndVoyageRelatedDataMessageObjectSerializationTes
     aisStaticAndVoyageRelatedDataMessageObject1->SetDimensionToPort( -29072126L );
     aisStaticAndVoyageRelatedDataMessageObject1->SetDimensionToStarboard( -29072126L );
     aisStaticAndVoyageRelatedDataMessageObject1->SetPositionFixType( PositionFixType::Glonass );
-    aisStaticAndVoyageRelatedDataMessageObject1->SetEstimatedTimeOfArrival( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisStaticAndVoyageRelatedDataMessageObject1->SetEstimatedTimeOfArrival( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisStaticAndVoyageRelatedDataMessageObject1->SetDraught( 12513181200170642 );
     aisStaticAndVoyageRelatedDataMessageObject1->SetDestination( L"Destination" );
     aisStaticAndVoyageRelatedDataMessageObject1->SetDataTerminalReady( false );
@@ -761,7 +761,7 @@ BOOST_AUTO_TEST_CASE( AisStaticDataReportMessageObjectSerializationTest )
     aisStaticDataReportMessageObject1->SetId( Guid( L"{69972CB9-08CA-C920-9304-105396E9349D}" ) );
     aisStaticDataReportMessageObject1->SetRowVersion( -3954150807383364423LL );
     aisStaticDataReportMessageObject1->SetAisDevice( Guid( L"{69972CB9-08CA-C920-9304-105396E9349D}" ) );
-    aisStaticDataReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisStaticDataReportMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisStaticDataReportMessageObject1->SetMessageSequenceNumber( -3954150807383364423LL );
     aisStaticDataReportMessageObject1->SetRepeat( 1771515065L );
     aisStaticDataReportMessageObject1->SetMmsi( Guid( L"{69972CB9-08CA-C920-9304-105396E9349D}" ) );
@@ -785,7 +785,7 @@ BOOST_AUTO_TEST_CASE( AisStaticDataReportPartAMessageObjectSerializationTest )
     aisStaticDataReportPartAMessageObject1->SetId( Guid( L"{CA38BF53-B49F-618C-8631-2DF9531CFDCA}" ) );
     aisStaticDataReportPartAMessageObject1->SetRowVersion( 7029191716804018003LL );
     aisStaticDataReportPartAMessageObject1->SetAisDevice( Guid( L"{CA38BF53-B49F-618C-8631-2DF9531CFDCA}" ) );
-    aisStaticDataReportPartAMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisStaticDataReportPartAMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisStaticDataReportPartAMessageObject1->SetMessageSequenceNumber( 7029191716804018003LL );
     aisStaticDataReportPartAMessageObject1->SetRepeat( -902250669L );
     aisStaticDataReportPartAMessageObject1->SetMmsi( Guid( L"{CA38BF53-B49F-618C-8631-2DF9531CFDCA}" ) );
@@ -811,7 +811,7 @@ BOOST_AUTO_TEST_CASE( AisStaticDataReportPartBMessageObjectSerializationTest )
     aisStaticDataReportPartBMessageObject1->SetId( Guid( L"{F5627DB0-8BA6-0BD2-D04B-D165AF46BE0D}" ) );
     aisStaticDataReportPartBMessageObject1->SetRowVersion( 851896828724149680LL );
     aisStaticDataReportPartBMessageObject1->SetAisDevice( Guid( L"{F5627DB0-8BA6-0BD2-D04B-D165AF46BE0D}" ) );
-    aisStaticDataReportPartBMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisStaticDataReportPartBMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisStaticDataReportPartBMessageObject1->SetMessageSequenceNumber( 851896828724149680LL );
     aisStaticDataReportPartBMessageObject1->SetRepeat( -178094672L );
     aisStaticDataReportPartBMessageObject1->SetMmsi( Guid( L"{F5627DB0-8BA6-0BD2-D04B-D165AF46BE0D}" ) );
@@ -847,7 +847,7 @@ BOOST_AUTO_TEST_CASE( AisUtcAndDateInquiryMessageObjectSerializationTest )
     aisUtcAndDateInquiryMessageObject1->SetId( Guid( L"{CA0D5117-9AF8-676C-E636-591F53B08AE8}" ) );
     aisUtcAndDateInquiryMessageObject1->SetRowVersion( 7452501876723765527LL );
     aisUtcAndDateInquiryMessageObject1->SetAisDevice( Guid( L"{CA0D5117-9AF8-676C-E636-591F53B08AE8}" ) );
-    aisUtcAndDateInquiryMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisUtcAndDateInquiryMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisUtcAndDateInquiryMessageObject1->SetMessageSequenceNumber( 7452501876723765527LL );
     aisUtcAndDateInquiryMessageObject1->SetRepeat( -905096937L );
     aisUtcAndDateInquiryMessageObject1->SetMmsi( Guid( L"{CA0D5117-9AF8-676C-E636-591F53B08AE8}" ) );
@@ -873,11 +873,11 @@ BOOST_AUTO_TEST_CASE( AisUtcAndDateResponseMessageObjectSerializationTest )
     aisUtcAndDateResponseMessageObject1->SetId( Guid( L"{7ED5439C-5B10-6A85-56A1-DA087EABC239}" ) );
     aisUtcAndDateResponseMessageObject1->SetRowVersion( 7675641266328388508LL );
     aisUtcAndDateResponseMessageObject1->SetAisDevice( Guid( L"{7ED5439C-5B10-6A85-56A1-DA087EABC239}" ) );
-    aisUtcAndDateResponseMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisUtcAndDateResponseMessageObject1->SetReceivedTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisUtcAndDateResponseMessageObject1->SetMessageSequenceNumber( 7675641266328388508LL );
     aisUtcAndDateResponseMessageObject1->SetRepeat( 2127905692L );
     aisUtcAndDateResponseMessageObject1->SetMmsi( Guid( L"{7ED5439C-5B10-6A85-56A1-DA087EABC239}" ) );
-    aisUtcAndDateResponseMessageObject1->SetDatetime( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    aisUtcAndDateResponseMessageObject1->SetDatetime( DateTime( 1, 1, 1, 23, 49, 54 ) );
     aisUtcAndDateResponseMessageObject1->SetPositionAccuracy( PositionAccuracy::Low );
     aisUtcAndDateResponseMessageObject1->SetLongitude( 7675641266328389 );
     aisUtcAndDateResponseMessageObject1->SetLatitude( 7675641266328389 );
@@ -904,7 +904,7 @@ BOOST_AUTO_TEST_CASE( AlarmStateChangeObjectSerializationTest )
     alarmStateChangeObject1->SetId( Guid( L"{86072ECE-CF2F-0DB4-B02D-F3F461E07473}" ) );
     alarmStateChangeObject1->SetRowVersion( 987642021320011470LL );
     alarmStateChangeObject1->SetAlarm( Guid( L"{86072ECE-CF2F-0DB4-B02D-F3F461E07473}" ) );
-    alarmStateChangeObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    alarmStateChangeObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     alarmStateChangeObject1->SetState( AlarmState::Cleared );
 
     IO::MemoryStream stream;
@@ -944,7 +944,7 @@ BOOST_AUTO_TEST_CASE( BinaryTimeseriesValueObjectSerializationTest )
     binaryTimeseriesValueObject1->SetId( Guid( L"{592D1EA9-0849-9318-C918-10929AB47895}" ) );
     binaryTimeseriesValueObject1->SetRowVersion( -7847513239571325271LL );
     binaryTimeseriesValueObject1->SetTimeseries( Guid( L"{592D1EA9-0849-9318-C918-10929AB47895}" ) );
-    binaryTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    binaryTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     binaryTimeseriesValueObject1->SetValue( Binary{ {'V','a','l','u','e'} } );
 
     IO::MemoryStream stream;
@@ -966,7 +966,7 @@ BOOST_AUTO_TEST_CASE( BookmarkObjectSerializationTest )
     bookmarkObject1->SetRowVersion( -2251764777939428011LL );
     bookmarkObject1->SetView( Guid( L"{652F1D55-1FDD-E0C0-0703-F8BBA6F4B8AA}" ) );
     bookmarkObject1->SetName( L"Name" );
-    bookmarkObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    bookmarkObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     bookmarkObject1->SetLatitude( 16194979295770124 );
     bookmarkObject1->SetLongitude( 16194979295770124 );
     bookmarkObject1->SetZoomLevel( 16194979295770124 );
@@ -989,7 +989,7 @@ BOOST_AUTO_TEST_CASE( BooleanTimeseriesValueObjectSerializationTest )
     booleanTimeseriesValueObject1->SetId( Guid( L"{F3919E41-40E5-BAB5-5DAD-02A7CF897982}" ) );
     booleanTimeseriesValueObject1->SetRowVersion( -4993013255492231615LL );
     booleanTimeseriesValueObject1->SetTimeseries( Guid( L"{F3919E41-40E5-BAB5-5DAD-02A7CF897982}" ) );
-    booleanTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    booleanTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     booleanTimeseriesValueObject1->SetValue( false );
 
     IO::MemoryStream stream;
@@ -1010,7 +1010,7 @@ BOOST_AUTO_TEST_CASE( ByteTimeseriesValueObjectSerializationTest )
     byteTimeseriesValueObject1->SetId( Guid( L"{E106F150-2900-1D63-B8C6-940087608F0A}" ) );
     byteTimeseriesValueObject1->SetRowVersion( 2117581333546332496LL );
     byteTimeseriesValueObject1->SetTimeseries( Guid( L"{E106F150-2900-1D63-B8C6-940087608F0A}" ) );
-    byteTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    byteTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     byteTimeseriesValueObject1->SetValue( 80 );
 
     IO::MemoryStream stream;
@@ -1031,7 +1031,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandObjectSerializationTest )
     cameraCommandObject1->SetId( Guid( L"{664197EB-56C6-2117-84E8-6A636682E9D7}" ) );
     cameraCommandObject1->SetRowVersion( 2384469937835055083LL );
     cameraCommandObject1->SetCamera( Guid( L"{664197EB-56C6-2117-84E8-6A636682E9D7}" ) );
-    cameraCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Source );
     cameraCommandObject1->SetDeviceCommandSourceId( Guid( L"{664197EB-56C6-2117-84E8-6A636682E9D7}" ) );
     cameraCommandObject1->SetReply( Guid( L"{664197EB-56C6-2117-84E8-6A636682E9D7}" ) );
@@ -1054,7 +1054,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandAbsoluteMoveObjectSerializationTest )
     cameraCommandAbsoluteMoveObject1->SetId( Guid( L"{B0F47B16-0F88-634E-C672-F0110D2FDE68}" ) );
     cameraCommandAbsoluteMoveObject1->SetRowVersion( 7155673937697078038LL );
     cameraCommandAbsoluteMoveObject1->SetCamera( Guid( L"{B0F47B16-0F88-634E-C672-F0110D2FDE68}" ) );
-    cameraCommandAbsoluteMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandAbsoluteMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandAbsoluteMoveObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Device );
     cameraCommandAbsoluteMoveObject1->SetDeviceCommandSourceId( Guid( L"{B0F47B16-0F88-634E-C672-F0110D2FDE68}" ) );
     cameraCommandAbsoluteMoveObject1->SetReply( Guid( L"{B0F47B16-0F88-634E-C672-F0110D2FDE68}" ) );
@@ -1087,7 +1087,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandAdjustPanTiltZoomObjectSerializationTest )
     cameraCommandAdjustPanTiltZoomObject1->SetId( Guid( L"{C14A2079-48BB-058C-A031-12DD8352049E}" ) );
     cameraCommandAdjustPanTiltZoomObject1->SetRowVersion( 399774438168076409LL );
     cameraCommandAdjustPanTiltZoomObject1->SetCamera( Guid( L"{C14A2079-48BB-058C-A031-12DD8352049E}" ) );
-    cameraCommandAdjustPanTiltZoomObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandAdjustPanTiltZoomObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandAdjustPanTiltZoomObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     cameraCommandAdjustPanTiltZoomObject1->SetDeviceCommandSourceId( Guid( L"{C14A2079-48BB-058C-A031-12DD8352049E}" ) );
     cameraCommandAdjustPanTiltZoomObject1->SetReply( Guid( L"{C14A2079-48BB-058C-A031-12DD8352049E}" ) );
@@ -1113,7 +1113,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandContinuousMoveObjectSerializationTest )
     cameraCommandContinuousMoveObject1->SetId( Guid( L"{2DCEB552-500C-9183-89C1-0A30B473AD4A}" ) );
     cameraCommandContinuousMoveObject1->SetRowVersion( -7961431703022553774LL );
     cameraCommandContinuousMoveObject1->SetCamera( Guid( L"{2DCEB552-500C-9183-89C1-0A30B473AD4A}" ) );
-    cameraCommandContinuousMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandContinuousMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandContinuousMoveObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Device );
     cameraCommandContinuousMoveObject1->SetDeviceCommandSourceId( Guid( L"{2DCEB552-500C-9183-89C1-0A30B473AD4A}" ) );
     cameraCommandContinuousMoveObject1->SetReply( Guid( L"{2DCEB552-500C-9183-89C1-0A30B473AD4A}" ) );
@@ -1141,7 +1141,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandGeoMoveObjectSerializationTest )
     cameraCommandGeoMoveObject1->SetId( Guid( L"{A0BB9958-0341-AD24-B524-C08205DD991A}" ) );
     cameraCommandGeoMoveObject1->SetRowVersion( -5970643625582028456LL );
     cameraCommandGeoMoveObject1->SetCamera( Guid( L"{A0BB9958-0341-AD24-B524-C08205DD991A}" ) );
-    cameraCommandGeoMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandGeoMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandGeoMoveObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Unknown );
     cameraCommandGeoMoveObject1->SetDeviceCommandSourceId( Guid( L"{A0BB9958-0341-AD24-B524-C08205DD991A}" ) );
     cameraCommandGeoMoveObject1->SetReply( Guid( L"{A0BB9958-0341-AD24-B524-C08205DD991A}" ) );
@@ -1169,7 +1169,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandRelativeMoveObjectSerializationTest )
     cameraCommandRelativeMoveObject1->SetId( Guid( L"{3B1F2501-F679-705C-0E3A-6F9EDCF8A480}" ) );
     cameraCommandRelativeMoveObject1->SetRowVersion( 8096617230648681729LL );
     cameraCommandRelativeMoveObject1->SetCamera( Guid( L"{3B1F2501-F679-705C-0E3A-6F9EDCF8A480}" ) );
-    cameraCommandRelativeMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandRelativeMoveObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandRelativeMoveObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     cameraCommandRelativeMoveObject1->SetDeviceCommandSourceId( Guid( L"{3B1F2501-F679-705C-0E3A-6F9EDCF8A480}" ) );
     cameraCommandRelativeMoveObject1->SetReply( Guid( L"{3B1F2501-F679-705C-0E3A-6F9EDCF8A480}" ) );
@@ -1199,7 +1199,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandReleasePTZOwnershipObjectSerializationTest )
     cameraCommandReleasePTZOwnershipObject1->SetId( Guid( L"{9CDA9BB9-4762-635C-C63A-E246395BD99D}" ) );
     cameraCommandReleasePTZOwnershipObject1->SetRowVersion( 7159675996476185529LL );
     cameraCommandReleasePTZOwnershipObject1->SetCamera( Guid( L"{9CDA9BB9-4762-635C-C63A-E246395BD99D}" ) );
-    cameraCommandReleasePTZOwnershipObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandReleasePTZOwnershipObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandReleasePTZOwnershipObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     cameraCommandReleasePTZOwnershipObject1->SetDeviceCommandSourceId( Guid( L"{9CDA9BB9-4762-635C-C63A-E246395BD99D}" ) );
     cameraCommandReleasePTZOwnershipObject1->SetReply( Guid( L"{9CDA9BB9-4762-635C-C63A-E246395BD99D}" ) );
@@ -1222,7 +1222,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandRequestPTZOwnershipObjectSerializationTest )
     cameraCommandRequestPTZOwnershipObject1->SetId( Guid( L"{74450B39-1F6C-F5B8-AF1D-F8362EA2D09C}" ) );
     cameraCommandRequestPTZOwnershipObject1->SetRowVersion( -740807588034835655LL );
     cameraCommandRequestPTZOwnershipObject1->SetCamera( Guid( L"{74450B39-1F6C-F5B8-AF1D-F8362EA2D09C}" ) );
-    cameraCommandRequestPTZOwnershipObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandRequestPTZOwnershipObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandRequestPTZOwnershipObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     cameraCommandRequestPTZOwnershipObject1->SetDeviceCommandSourceId( Guid( L"{74450B39-1F6C-F5B8-AF1D-F8362EA2D09C}" ) );
     cameraCommandRequestPTZOwnershipObject1->SetReply( Guid( L"{74450B39-1F6C-F5B8-AF1D-F8362EA2D09C}" ) );
@@ -1245,7 +1245,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandSetAutoFocusObjectSerializationTest )
     cameraCommandSetAutoFocusObject1->SetId( Guid( L"{BFA69A70-BA7F-4100-8200-5DFEFD65590E}" ) );
     cameraCommandSetAutoFocusObject1->SetRowVersion( 4683948670304295536LL );
     cameraCommandSetAutoFocusObject1->SetCamera( Guid( L"{BFA69A70-BA7F-4100-8200-5DFEFD65590E}" ) );
-    cameraCommandSetAutoFocusObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandSetAutoFocusObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandSetAutoFocusObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Unknown );
     cameraCommandSetAutoFocusObject1->SetDeviceCommandSourceId( Guid( L"{BFA69A70-BA7F-4100-8200-5DFEFD65590E}" ) );
     cameraCommandSetAutoFocusObject1->SetReply( Guid( L"{BFA69A70-BA7F-4100-8200-5DFEFD65590E}" ) );
@@ -1269,7 +1269,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandSetBlackAndWhiteObjectSerializationTest )
     cameraCommandSetBlackAndWhiteObject1->SetId( Guid( L"{9B072A4D-7597-5B04-DA20-AEE9D9E054B2}" ) );
     cameraCommandSetBlackAndWhiteObject1->SetRowVersion( 6558496251359734349LL );
     cameraCommandSetBlackAndWhiteObject1->SetCamera( Guid( L"{9B072A4D-7597-5B04-DA20-AEE9D9E054B2}" ) );
-    cameraCommandSetBlackAndWhiteObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandSetBlackAndWhiteObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandSetBlackAndWhiteObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     cameraCommandSetBlackAndWhiteObject1->SetDeviceCommandSourceId( Guid( L"{9B072A4D-7597-5B04-DA20-AEE9D9E054B2}" ) );
     cameraCommandSetBlackAndWhiteObject1->SetReply( Guid( L"{9B072A4D-7597-5B04-DA20-AEE9D9E054B2}" ) );
@@ -1293,7 +1293,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandSetFollowedObjectSerializationTest )
     cameraCommandSetFollowedObject1->SetId( Guid( L"{B9DD5ECF-09D5-3BA0-DC05-90AB9DBB7AF3}" ) );
     cameraCommandSetFollowedObject1->SetRowVersion( 4296444858062429903LL );
     cameraCommandSetFollowedObject1->SetCamera( Guid( L"{B9DD5ECF-09D5-3BA0-DC05-90AB9DBB7AF3}" ) );
-    cameraCommandSetFollowedObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandSetFollowedObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandSetFollowedObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Source );
     cameraCommandSetFollowedObject1->SetDeviceCommandSourceId( Guid( L"{B9DD5ECF-09D5-3BA0-DC05-90AB9DBB7AF3}" ) );
     cameraCommandSetFollowedObject1->SetReply( Guid( L"{B9DD5ECF-09D5-3BA0-DC05-90AB9DBB7AF3}" ) );
@@ -1318,7 +1318,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandSetInfraRedLampObjectSerializationTest )
     cameraCommandSetInfraRedLampObject1->SetId( Guid( L"{4F4F05AD-B0D5-2BD2-D44B-0DABF2F2A0B5}" ) );
     cameraCommandSetInfraRedLampObject1->SetRowVersion( 3157780718945240493LL );
     cameraCommandSetInfraRedLampObject1->SetCamera( Guid( L"{4F4F05AD-B0D5-2BD2-D44B-0DABF2F2A0B5}" ) );
-    cameraCommandSetInfraRedLampObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandSetInfraRedLampObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandSetInfraRedLampObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     cameraCommandSetInfraRedLampObject1->SetDeviceCommandSourceId( Guid( L"{4F4F05AD-B0D5-2BD2-D44B-0DABF2F2A0B5}" ) );
     cameraCommandSetInfraRedLampObject1->SetReply( Guid( L"{4F4F05AD-B0D5-2BD2-D44B-0DABF2F2A0B5}" ) );
@@ -1342,7 +1342,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandSetWasherObjectSerializationTest )
     cameraCommandSetWasherObject1->SetId( Guid( L"{CD63FFAD-F1AD-8424-2124-8FB5B3C6FFB5}" ) );
     cameraCommandSetWasherObject1->SetRowVersion( -8924742832763961427LL );
     cameraCommandSetWasherObject1->SetCamera( Guid( L"{CD63FFAD-F1AD-8424-2124-8FB5B3C6FFB5}" ) );
-    cameraCommandSetWasherObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandSetWasherObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandSetWasherObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     cameraCommandSetWasherObject1->SetDeviceCommandSourceId( Guid( L"{CD63FFAD-F1AD-8424-2124-8FB5B3C6FFB5}" ) );
     cameraCommandSetWasherObject1->SetReply( Guid( L"{CD63FFAD-F1AD-8424-2124-8FB5B3C6FFB5}" ) );
@@ -1366,7 +1366,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandSetWiperObjectSerializationTest )
     cameraCommandSetWiperObject1->SetId( Guid( L"{059133CC-5F0A-B478-2D1E-FA50A089CC33}" ) );
     cameraCommandSetWiperObject1->SetRowVersion( -5442495653029530676LL );
     cameraCommandSetWiperObject1->SetCamera( Guid( L"{059133CC-5F0A-B478-2D1E-FA50A089CC33}" ) );
-    cameraCommandSetWiperObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandSetWiperObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandSetWiperObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Unknown );
     cameraCommandSetWiperObject1->SetDeviceCommandSourceId( Guid( L"{059133CC-5F0A-B478-2D1E-FA50A089CC33}" ) );
     cameraCommandSetWiperObject1->SetReply( Guid( L"{059133CC-5F0A-B478-2D1E-FA50A089CC33}" ) );
@@ -1390,7 +1390,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandStopObjectSerializationTest )
     cameraCommandStopObject1->SetId( Guid( L"{F2E01750-4663-2D0A-B450-62C64F07E80A}" ) );
     cameraCommandStopObject1->SetRowVersion( 3245483876564342608LL );
     cameraCommandStopObject1->SetCamera( Guid( L"{F2E01750-4663-2D0A-B450-62C64F07E80A}" ) );
-    cameraCommandStopObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandStopObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandStopObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Unknown );
     cameraCommandStopObject1->SetDeviceCommandSourceId( Guid( L"{F2E01750-4663-2D0A-B450-62C64F07E80A}" ) );
     cameraCommandStopObject1->SetReply( Guid( L"{F2E01750-4663-2D0A-B450-62C64F07E80A}" ) );
@@ -1415,7 +1415,7 @@ BOOST_AUTO_TEST_CASE( CameraCommandReplyObjectSerializationTest )
     cameraCommandReplyObject1->SetId( Guid( L"{26FFBA0F-E13C-F85B-1FDA-873C64FF5DF0}" ) );
     cameraCommandReplyObject1->SetRowVersion( -550598880954172913LL );
     cameraCommandReplyObject1->SetCamera( Guid( L"{26FFBA0F-E13C-F85B-1FDA-873C64FF5DF0}" ) );
-    cameraCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraCommandReplyObject1->SetCommand( Guid( L"{26FFBA0F-E13C-F85B-1FDA-873C64FF5DF0}" ) );
     cameraCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Error );
     cameraCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -1441,7 +1441,7 @@ BOOST_AUTO_TEST_CASE( CameraConfigurationObjectSerializationTest )
     cameraConfigurationObject1->SetId( Guid( L"{328264BE-F096-6BC6-D663-0F694C41267D}" ) );
     cameraConfigurationObject1->SetRowVersion( 7766159135330165950LL );
     cameraConfigurationObject1->SetCamera( Guid( L"{328264BE-F096-6BC6-D663-0F694C41267D}" ) );
-    cameraConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraConfigurationObject1->SetCameraControlProtocol( CameraControlProtocol::Unknown );
     cameraConfigurationObject1->SetCameraURL( L"CameraURL" );
     cameraConfigurationObject1->SetConfigurationURL( L"ConfigurationURL" );
@@ -1518,7 +1518,7 @@ BOOST_AUTO_TEST_CASE( CameraPanCalibrationObjectSerializationTest )
     cameraPanCalibrationObject1->SetId( Guid( L"{938FC103-EA2B-A116-8568-57D4C9F183C0}" ) );
     cameraPanCalibrationObject1->SetRowVersion( -6839021511235354365LL );
     cameraPanCalibrationObject1->SetCamera( Guid( L"{938FC103-EA2B-A116-8568-57D4C9F183C0}" ) );
-    cameraPanCalibrationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraPanCalibrationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -1560,7 +1560,7 @@ BOOST_AUTO_TEST_CASE( CameraStatusObjectSerializationTest )
     cameraStatusObject1->SetRowVersion( 2334787301536842794LL );
     cameraStatusObject1->SetCamera( Guid( L"{3632442A-D4AE-2066-0466-2B756C4C2254}" ) );
     cameraStatusObject1->SetTrack( Guid( L"{3632442A-D4AE-2066-0466-2B756C4C2254}" ) );
-    cameraStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     cameraStatusObject1->SetPositionPanTiltMode( CameraPanTiltMode::Angular );
     cameraStatusObject1->SetPanAngle( 2334787301536843 );
     cameraStatusObject1->SetTiltAngle( 2334787301536843 );
@@ -1594,7 +1594,7 @@ BOOST_AUTO_TEST_CASE( CameraTiltCalibrationObjectSerializationTest )
     cameraTiltCalibrationObject1->SetId( Guid( L"{801E423D-6D9D-ABFC-D53F-B6B9017842BC}" ) );
     cameraTiltCalibrationObject1->SetRowVersion( -6053843275866029507LL );
     cameraTiltCalibrationObject1->SetCamera( Guid( L"{801E423D-6D9D-ABFC-D53F-B6B9017842BC}" ) );
-    cameraTiltCalibrationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraTiltCalibrationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -1635,7 +1635,7 @@ BOOST_AUTO_TEST_CASE( CameraZoomCalibrationObjectSerializationTest )
     cameraZoomCalibrationObject1->SetId( Guid( L"{E6245A05-1E69-4CFC-323F-789667245AA0}" ) );
     cameraZoomCalibrationObject1->SetRowVersion( 5547342281195149829LL );
     cameraZoomCalibrationObject1->SetCamera( Guid( L"{E6245A05-1E69-4CFC-323F-789667245AA0}" ) );
-    cameraZoomCalibrationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    cameraZoomCalibrationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -1777,8 +1777,8 @@ BOOST_AUTO_TEST_CASE( DateTimeTimeseriesValueObjectSerializationTest )
     dateTimeTimeseriesValueObject1->SetId( Guid( L"{4267AABD-DE1A-D545-ABA2-7B5842E655BD}" ) );
     dateTimeTimeseriesValueObject1->SetRowVersion( -3078810565873259843LL );
     dateTimeTimeseriesValueObject1->SetTimeseries( Guid( L"{4267AABD-DE1A-D545-ABA2-7B5842E655BD}" ) );
-    dateTimeTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    dateTimeTimeseriesValueObject1->SetValue( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    dateTimeTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    dateTimeTimeseriesValueObject1->SetValue( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -1817,7 +1817,7 @@ BOOST_AUTO_TEST_CASE( DeviceHostConfigurationObjectSerializationTest )
     deviceHostConfigurationObject1->SetId( Guid( L"{E525AB0B-EC92-D432-2B4C-3749A7A4D5D0}" ) );
     deviceHostConfigurationObject1->SetRowVersion( -3156200273179464949LL );
     deviceHostConfigurationObject1->SetHost( Guid( L"{E525AB0B-EC92-D432-2B4C-3749A7A4D5D0}" ) );
-    deviceHostConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    deviceHostConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     deviceHostConfigurationObject1->SetHostname( L"Hostname" );
     deviceHostConfigurationObject1->SetPort( -450516213L );
     deviceHostConfigurationObject1->SetQueueName( L"QueueName" );
@@ -1840,7 +1840,7 @@ BOOST_AUTO_TEST_CASE( DoubleTimeseriesValueObjectSerializationTest )
     doubleTimeseriesValueObject1->SetId( Guid( L"{C2761332-6A1D-1778-E81E-56B8436EC84C}" ) );
     doubleTimeseriesValueObject1->SetRowVersion( 1691218336126735154LL );
     doubleTimeseriesValueObject1->SetTimeseries( Guid( L"{C2761332-6A1D-1778-E81E-56B8436EC84C}" ) );
-    doubleTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    doubleTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     doubleTimeseriesValueObject1->SetValue( 1691218336126735 );
 
     IO::MemoryStream stream;
@@ -1880,7 +1880,7 @@ BOOST_AUTO_TEST_CASE( GeoPosition2DTimeseriesValueObjectSerializationTest )
     geoPosition2DTimeseriesValueObject1->SetId( Guid( L"{C715E22D-B55D-0616-6068-ADBAE3A847B4}" ) );
     geoPosition2DTimeseriesValueObject1->SetRowVersion( 438737428091888173LL );
     geoPosition2DTimeseriesValueObject1->SetTimeseries( Guid( L"{C715E22D-B55D-0616-6068-ADBAE3A847B4}" ) );
-    geoPosition2DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    geoPosition2DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     geoPosition2DTimeseriesValueObject1->SetLatitude( 438737428091888.2 );
     geoPosition2DTimeseriesValueObject1->SetLongitude( 438737428091888.2 );
 
@@ -1902,7 +1902,7 @@ BOOST_AUTO_TEST_CASE( GeoPosition3DTimeseriesValueObjectSerializationTest )
     geoPosition3DTimeseriesValueObject1->SetId( Guid( L"{9D5BFA33-A3E7-6871-168E-C5E7B9DA5FCC}" ) );
     geoPosition3DTimeseriesValueObject1->SetRowVersion( 7525976667485633075LL );
     geoPosition3DTimeseriesValueObject1->SetTimeseries( Guid( L"{9D5BFA33-A3E7-6871-168E-C5E7B9DA5FCC}" ) );
-    geoPosition3DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    geoPosition3DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     geoPosition3DTimeseriesValueObject1->SetLatitude( 7525976667485634 );
     geoPosition3DTimeseriesValueObject1->SetLongitude( 7525976667485634 );
     geoPosition3DTimeseriesValueObject1->SetAltitude( 7525976667485634 );
@@ -1925,7 +1925,7 @@ BOOST_AUTO_TEST_CASE( GNSSDeviceCommandObjectSerializationTest )
     gNSSDeviceCommandObject1->SetId( Guid( L"{16E46657-F2F0-53BB-CADD-4F0F682766EA}" ) );
     gNSSDeviceCommandObject1->SetRowVersion( 6033683238783051351LL );
     gNSSDeviceCommandObject1->SetGNSSDevice( Guid( L"{16E46657-F2F0-53BB-CADD-4F0F682766EA}" ) );
-    gNSSDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    gNSSDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     gNSSDeviceCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Source );
     gNSSDeviceCommandObject1->SetDeviceCommandSourceId( Guid( L"{16E46657-F2F0-53BB-CADD-4F0F682766EA}" ) );
     gNSSDeviceCommandObject1->SetReply( Guid( L"{16E46657-F2F0-53BB-CADD-4F0F682766EA}" ) );
@@ -1948,7 +1948,7 @@ BOOST_AUTO_TEST_CASE( GNSSDeviceCommandReplyObjectSerializationTest )
     gNSSDeviceCommandReplyObject1->SetId( Guid( L"{351EEA93-C2A0-2E72-744E-4305AC7857C9}" ) );
     gNSSDeviceCommandReplyObject1->SetRowVersion( 3346951466431474323LL );
     gNSSDeviceCommandReplyObject1->SetGNSSDevice( Guid( L"{351EEA93-C2A0-2E72-744E-4305AC7857C9}" ) );
-    gNSSDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    gNSSDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     gNSSDeviceCommandReplyObject1->SetCommand( Guid( L"{351EEA93-C2A0-2E72-744E-4305AC7857C9}" ) );
     gNSSDeviceCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Error );
     gNSSDeviceCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -1971,7 +1971,7 @@ BOOST_AUTO_TEST_CASE( GNSSDeviceConfigurationObjectSerializationTest )
     gNSSDeviceConfigurationObject1->SetId( Guid( L"{3ED852BF-D8F3-84AF-21F5-1BCF7C1B4AFD}" ) );
     gNSSDeviceConfigurationObject1->SetRowVersion( -8885645000535682369LL );
     gNSSDeviceConfigurationObject1->SetGNSSDevice( Guid( L"{3ED852BF-D8F3-84AF-21F5-1BCF7C1B4AFD}" ) );
-    gNSSDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    gNSSDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     gNSSDeviceConfigurationObject1->SetDefaultLatitude( 9561099073173868 );
     gNSSDeviceConfigurationObject1->SetDefaultLongitude( 9561099073173868 );
     gNSSDeviceConfigurationObject1->SetDefaultAltitude( 9561099073173868 );
@@ -1997,7 +1997,7 @@ BOOST_AUTO_TEST_CASE( GuidTimeseriesValueObjectSerializationTest )
     guidTimeseriesValueObject1->SetId( Guid( L"{46558315-F37B-09FC-903F-CFDE62AAC1A8}" ) );
     guidTimeseriesValueObject1->SetRowVersion( 719717751258972949LL );
     guidTimeseriesValueObject1->SetTimeseries( Guid( L"{46558315-F37B-09FC-903F-CFDE62AAC1A8}" ) );
-    guidTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    guidTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     guidTimeseriesValueObject1->SetValue( Guid( L"{46558315-F37B-09FC-903F-CFDE62AAC1A8}" ) );
 
     IO::MemoryStream stream;
@@ -2018,7 +2018,7 @@ BOOST_AUTO_TEST_CASE( GyroDeviceCommandObjectSerializationTest )
     gyroDeviceCommandObject1->SetId( Guid( L"{0E55A9AC-70F5-F9E6-9F67-0EAF70AA9535}" ) );
     gyroDeviceCommandObject1->SetRowVersion( -439539715812251220LL );
     gyroDeviceCommandObject1->SetGyroDevice( Guid( L"{0E55A9AC-70F5-F9E6-9F67-0EAF70AA9535}" ) );
-    gyroDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    gyroDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     gyroDeviceCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Unknown );
     gyroDeviceCommandObject1->SetDeviceCommandSourceId( Guid( L"{0E55A9AC-70F5-F9E6-9F67-0EAF70AA9535}" ) );
     gyroDeviceCommandObject1->SetReply( Guid( L"{0E55A9AC-70F5-F9E6-9F67-0EAF70AA9535}" ) );
@@ -2041,7 +2041,7 @@ BOOST_AUTO_TEST_CASE( GyroDeviceCommandReplyObjectSerializationTest )
     gyroDeviceCommandReplyObject1->SetId( Guid( L"{FE226ABE-7E8C-EA31-578C-7E317F44567D}" ) );
     gyroDeviceCommandReplyObject1->SetRowVersion( -1571335650951402818LL );
     gyroDeviceCommandReplyObject1->SetGyroDevice( Guid( L"{FE226ABE-7E8C-EA31-578C-7E317F44567D}" ) );
-    gyroDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    gyroDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     gyroDeviceCommandReplyObject1->SetCommand( Guid( L"{FE226ABE-7E8C-EA31-578C-7E317F44567D}" ) );
     gyroDeviceCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::NotImplemented );
     gyroDeviceCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -2064,7 +2064,7 @@ BOOST_AUTO_TEST_CASE( GyroDeviceConfigurationObjectSerializationTest )
     gyroDeviceConfigurationObject1->SetId( Guid( L"{1BECC465-DE53-3C49-3C92-7BCAD83723A6}" ) );
     gyroDeviceConfigurationObject1->SetRowVersion( 4344247764107707493LL );
     gyroDeviceConfigurationObject1->SetGyroDevice( Guid( L"{1BECC465-DE53-3C49-3C92-7BCAD83723A6}" ) );
-    gyroDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    gyroDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     gyroDeviceConfigurationObject1->SetDefaultHeadingTrueNorth( 4344247764107707.5 );
     gyroDeviceConfigurationObject1->SetDefaultMagneticTrueNorth( 4344247764107707.5 );
     gyroDeviceConfigurationObject1->SetHeadingTrueNorthOffset( 4344247764107707.5 );
@@ -2166,7 +2166,7 @@ BOOST_AUTO_TEST_CASE( Int16TimeseriesValueObjectSerializationTest )
     int16TimeseriesValueObject1->SetId( Guid( L"{B94AD405-0355-A9BD-95BD-C0AA9D522BA0}" ) );
     int16TimeseriesValueObject1->SetRowVersion( -6215808243985624059LL );
     int16TimeseriesValueObject1->SetTimeseries( Guid( L"{B94AD405-0355-A9BD-95BD-C0AA9D522BA0}" ) );
-    int16TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    int16TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     int16TimeseriesValueObject1->SetValue( -11259 );
 
     IO::MemoryStream stream;
@@ -2187,7 +2187,7 @@ BOOST_AUTO_TEST_CASE( Int32TimeseriesValueObjectSerializationTest )
     int32TimeseriesValueObject1->SetId( Guid( L"{38DCBC02-9C28-2570-A40E-39141C3B3D40}" ) );
     int32TimeseriesValueObject1->SetRowVersion( 2697827873361542146LL );
     int32TimeseriesValueObject1->SetTimeseries( Guid( L"{38DCBC02-9C28-2570-A40E-39141C3B3D40}" ) );
-    int32TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    int32TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     int32TimeseriesValueObject1->SetValue( 953990146L );
 
     IO::MemoryStream stream;
@@ -2208,7 +2208,7 @@ BOOST_AUTO_TEST_CASE( Int64TimeseriesValueObjectSerializationTest )
     int64TimeseriesValueObject1->SetId( Guid( L"{DD2DE745-E72A-DFD1-FB8B-E754BBB4E7A2}" ) );
     int64TimeseriesValueObject1->SetRowVersion( -2318818161833679035LL );
     int64TimeseriesValueObject1->SetTimeseries( Guid( L"{DD2DE745-E72A-DFD1-FB8B-E754BBB4E7A2}" ) );
-    int64TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    int64TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     int64TimeseriesValueObject1->SetValue( -2318818161833679035LL );
 
     IO::MemoryStream stream;
@@ -2635,8 +2635,8 @@ BOOST_AUTO_TEST_CASE( ItemIdentityLinkObjectSerializationTest )
     itemIdentityLinkObject1->SetRowVersion( 5125130334099102454LL );
     itemIdentityLinkObject1->SetItem( Guid( L"{7F8E5AF6-1EE2-4720-E204-7847FE715A6F}" ) );
     itemIdentityLinkObject1->SetIdentity( Guid( L"{7F8E5AF6-1EE2-4720-E204-7847FE715A6F}" ) );
-    itemIdentityLinkObject1->SetStart( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    itemIdentityLinkObject1->SetEnd( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    itemIdentityLinkObject1->SetStart( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    itemIdentityLinkObject1->SetEnd( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -2657,7 +2657,7 @@ BOOST_AUTO_TEST_CASE( ItemParentChildLinkObjectSerializationTest )
     itemParentChildLinkObject1->SetRowVersion( 329881441219664439LL );
     itemParentChildLinkObject1->SetParent( Guid( L"{49E45A37-F96C-0493-20C9-9F3692275AEC}" ) );
     itemParentChildLinkObject1->SetChild( Guid( L"{49E45A37-F96C-0493-20C9-9F3692275AEC}" ) );
-    itemParentChildLinkObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    itemParentChildLinkObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -2677,7 +2677,7 @@ BOOST_AUTO_TEST_CASE( LineInputDeviceCommandObjectSerializationTest )
     lineInputDeviceCommandObject1->SetId( Guid( L"{628CD2DB-52F1-4F5F-F2FA-4A8F46314BDB}" ) );
     lineInputDeviceCommandObject1->SetRowVersion( 5719381248477811419LL );
     lineInputDeviceCommandObject1->SetLineInputDevice( Guid( L"{628CD2DB-52F1-4F5F-F2FA-4A8F46314BDB}" ) );
-    lineInputDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    lineInputDeviceCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     lineInputDeviceCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Source );
     lineInputDeviceCommandObject1->SetDeviceCommandSourceId( Guid( L"{628CD2DB-52F1-4F5F-F2FA-4A8F46314BDB}" ) );
     lineInputDeviceCommandObject1->SetReply( Guid( L"{628CD2DB-52F1-4F5F-F2FA-4A8F46314BDB}" ) );
@@ -2700,7 +2700,7 @@ BOOST_AUTO_TEST_CASE( LineInputDeviceCommandReplyObjectSerializationTest )
     lineInputDeviceCommandReplyObject1->SetId( Guid( L"{C1D214AC-9A66-FF50-FF0A-5966834B2835}" ) );
     lineInputDeviceCommandReplyObject1->SetRowVersion( -49369829771963220LL );
     lineInputDeviceCommandReplyObject1->SetLineInputDevice( Guid( L"{C1D214AC-9A66-FF50-FF0A-5966834B2835}" ) );
-    lineInputDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    lineInputDeviceCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     lineInputDeviceCommandReplyObject1->SetCommand( Guid( L"{C1D214AC-9A66-FF50-FF0A-5966834B2835}" ) );
     lineInputDeviceCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Unknown );
     lineInputDeviceCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -2723,7 +2723,7 @@ BOOST_AUTO_TEST_CASE( LineInputDeviceConfigurationObjectSerializationTest )
     lineInputDeviceConfigurationObject1->SetId( Guid( L"{C0009AA8-BD74-CF77-F3EE-BD2E03005915}" ) );
     lineInputDeviceConfigurationObject1->SetRowVersion( -3497118276494779736LL );
     lineInputDeviceConfigurationObject1->SetLineInputDevice( Guid( L"{C0009AA8-BD74-CF77-F3EE-BD2E03005915}" ) );
-    lineInputDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    lineInputDeviceConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     lineInputDeviceConfigurationObject1->SetStoreReceivedSentences( false );
     lineInputDeviceConfigurationObject1->SetStoreSentMessages( false );
     lineInputDeviceConfigurationObject1->SetStoreUnsentMessages( false );
@@ -2857,7 +2857,7 @@ BOOST_AUTO_TEST_CASE( LogApplicationConfigurationObjectSerializationTest )
     logApplicationConfigurationObject1->SetId( Guid( L"{CC4F6DA5-6ECC-B5D6-AD6B-763333F2B6A5}" ) );
     logApplicationConfigurationObject1->SetRowVersion( -5343962081948373595LL );
     logApplicationConfigurationObject1->SetApplication( Guid( L"{CC4F6DA5-6ECC-B5D6-AD6B-763333F2B6A5}" ) );
-    logApplicationConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    logApplicationConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     logApplicationConfigurationObject1->SetFinest( false );
     logApplicationConfigurationObject1->SetFiner( false );
     logApplicationConfigurationObject1->SetFine( false );
@@ -2909,7 +2909,7 @@ BOOST_AUTO_TEST_CASE( LogHostConfigurationObjectSerializationTest )
     logHostConfigurationObject1->SetId( Guid( L"{417B144E-3AC8-DAA0-5B05-5C1382DE2872}" ) );
     logHostConfigurationObject1->SetRowVersion( -2693087945401101234LL );
     logHostConfigurationObject1->SetHost( Guid( L"{417B144E-3AC8-DAA0-5B05-5C1382DE2872}" ) );
-    logHostConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    logHostConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     logHostConfigurationObject1->SetFinest( false );
     logHostConfigurationObject1->SetFiner( false );
     logHostConfigurationObject1->SetFine( false );
@@ -2965,8 +2965,8 @@ BOOST_AUTO_TEST_CASE( LogProcessObjectSerializationTest )
     logProcessObject1->SetRowVersion( -4229563574839173907LL );
     logProcessObject1->SetApplication( Guid( L"{7EC79CED-9256-C54D-A3B2-496A7EE339B7}" ) );
     logProcessObject1->SetHost( Guid( L"{7EC79CED-9256-C54D-A3B2-496A7EE339B7}" ) );
-    logProcessObject1->SetStarted( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    logProcessObject1->SetStopped( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    logProcessObject1->SetStarted( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    logProcessObject1->SetStopped( DateTime( 1, 1, 1, 23, 49, 54 ) );
     logProcessObject1->SetProcessId( -4229563574839173907LL );
     logProcessObject1->SetPath( WideString(L"Path") );
     logProcessObject1->SetIdentity( L"Identity" );
@@ -2991,7 +2991,7 @@ BOOST_AUTO_TEST_CASE( LogRecordObjectSerializationTest )
     logRecordObject1->SetThread( Guid( L"{28B6F7B7-3766-03C6-C063-EC66146DEFED}" ) );
     logRecordObject1->SetSequenceNumber( 271965739411765175LL );
     logRecordObject1->SetLevel( LogLevel::Warn );
-    logRecordObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    logRecordObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     logRecordObject1->SetDepth( 683079607L );
     logRecordObject1->SetLocation( Guid( L"{28B6F7B7-3766-03C6-C063-EC66146DEFED}" ) );
     logRecordObject1->SetMessage( WideString(L"Message") );
@@ -3016,8 +3016,8 @@ BOOST_AUTO_TEST_CASE( LogThreadObjectSerializationTest )
     logThreadObject1->SetId( Guid( L"{04816AF0-B0B9-19C1-9883-0D9D2081560F}" ) );
     logThreadObject1->SetRowVersion( 1855958830144383728LL );
     logThreadObject1->SetProcess( Guid( L"{04816AF0-B0B9-19C1-9883-0D9D2081560F}" ) );
-    logThreadObject1->SetStarted( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    logThreadObject1->SetStopped( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    logThreadObject1->SetStarted( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    logThreadObject1->SetStopped( DateTime( 1, 1, 1, 23, 49, 54 ) );
     logThreadObject1->SetThreadId( 1855958830144383728LL );
     logThreadObject1->SetName( L"Name" );
 
@@ -3042,8 +3042,8 @@ BOOST_AUTO_TEST_CASE( LogTraceEntryObjectSerializationTest )
     logTraceEntryObject1->SetSequenceNumber( -2617861764834353313LL );
     logTraceEntryObject1->SetLocation( Guid( L"{4BF89F5F-7C98-DBAB-DBD5-3E19D21FF9FA}" ) );
     logTraceEntryObject1->SetDepth( 1274584927L );
-    logTraceEntryObject1->SetEntered( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    logTraceEntryObject1->SetEnded( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    logTraceEntryObject1->SetEntered( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    logTraceEntryObject1->SetEnded( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -3117,7 +3117,7 @@ BOOST_AUTO_TEST_CASE( MapServiceOptionsObjectSerializationTest )
     auto mapServiceOptionsObject1 = std::make_shared<MapServiceOptionsObject>( );
     mapServiceOptionsObject1->SetId( Guid( L"{20E6AB7D-3887-E6FB-67DF-1CE10467D5BE}" ) );
     mapServiceOptionsObject1->SetRowVersion( -1802785072808023171LL );
-    mapServiceOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    mapServiceOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     mapServiceOptionsObject1->SetIpAddress( L"IpAddress" );
     mapServiceOptionsObject1->SetPort( 551988093L );
     mapServiceOptionsObject1->SetImageScaleFactorX( 16643959000901528 );
@@ -3184,7 +3184,7 @@ BOOST_AUTO_TEST_CASE( MediaProxySessionFileObjectSerializationTest )
     mediaProxySessionFileObject1->SetId( Guid( L"{8E158396-1682-3D78-BC1E-684171A8C169}" ) );
     mediaProxySessionFileObject1->SetRowVersion( 4429314983504216982LL );
     mediaProxySessionFileObject1->SetProxySession( Guid( L"{8E158396-1682-3D78-BC1E-684171A8C169}" ) );
-    mediaProxySessionFileObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    mediaProxySessionFileObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     mediaProxySessionFileObject1->SetStreamName( L"StreamName" );
 
     IO::MemoryStream stream;
@@ -3205,7 +3205,7 @@ BOOST_AUTO_TEST_CASE( MediaProxySessionOptionsObjectSerializationTest )
     mediaProxySessionOptionsObject1->SetId( Guid( L"{EDD260D0-4C90-FC60-3F06-3209B74B060B}" ) );
     mediaProxySessionOptionsObject1->SetRowVersion( -261124593038499632LL );
     mediaProxySessionOptionsObject1->SetProxySession( Guid( L"{EDD260D0-4C90-FC60-3F06-3209B74B060B}" ) );
-    mediaProxySessionOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    mediaProxySessionOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     mediaProxySessionOptionsObject1->SetSourceStreamUrl( L"SourceStreamUrl" );
     mediaProxySessionOptionsObject1->SetStreamName( L"StreamName" );
     mediaProxySessionOptionsObject1->SetMode( MediaProxySessionMode::Unknown );
@@ -3255,7 +3255,7 @@ BOOST_AUTO_TEST_CASE( MediaServiceOptionsObjectSerializationTest )
     mediaServiceOptionsObject1->SetId( Guid( L"{0A8CEF15-C6AB-65EC-A637-63D55031F7A8}" ) );
     mediaServiceOptionsObject1->SetRowVersion( 7344463530253152021LL );
     mediaServiceOptionsObject1->SetMediaService( Guid( L"{0A8CEF15-C6AB-65EC-A637-63D55031F7A8}" ) );
-    mediaServiceOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    mediaServiceOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     mediaServiceOptionsObject1->SetRtspPortNumber( 177008405L );
     mediaServiceOptionsObject1->SetHttpPortNumber( 177008405L );
 
@@ -3319,7 +3319,7 @@ BOOST_AUTO_TEST_CASE( OilSpillObjectSerializationTest )
     oilSpillObject1->SetId( Guid( L"{4F2942F2-FB55-83FB-C1DF-DFAAF294424F}" ) );
     oilSpillObject1->SetRowVersion( -8936272691767721230LL );
     oilSpillObject1->SetOilSpillDetector( Guid( L"{4F2942F2-FB55-83FB-C1DF-DFAAF294424F}" ) );
-    oilSpillObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    oilSpillObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     oilSpillObject1->SetOilArea( 9510471381941830 );
     oilSpillObject1->SetShape( Binary{ {'S','h','a','p','e'} } );
     oilSpillObject1->SetBSI( Binary{ {'B','S','I'} } );
@@ -3344,7 +3344,7 @@ BOOST_AUTO_TEST_CASE( OilSpillDetectorCommandObjectSerializationTest )
     oilSpillDetectorCommandObject1->SetId( Guid( L"{56F5EB57-7713-940A-2950-EEC86AAFD7EA}" ) );
     oilSpillDetectorCommandObject1->SetRowVersion( -7779274481382069417LL );
     oilSpillDetectorCommandObject1->SetOilSpillDetector( Guid( L"{56F5EB57-7713-940A-2950-EEC86AAFD7EA}" ) );
-    oilSpillDetectorCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    oilSpillDetectorCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     oilSpillDetectorCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Source );
     oilSpillDetectorCommandObject1->SetDeviceCommandSourceId( Guid( L"{56F5EB57-7713-940A-2950-EEC86AAFD7EA}" ) );
     oilSpillDetectorCommandObject1->SetReply( Guid( L"{56F5EB57-7713-940A-2950-EEC86AAFD7EA}" ) );
@@ -3367,7 +3367,7 @@ BOOST_AUTO_TEST_CASE( OilSpillDetectorCommandReplyObjectSerializationTest )
     oilSpillDetectorCommandReplyObject1->SetId( Guid( L"{ADEF8281-2DE0-5BF1-DA8F-B407B5F74181}" ) );
     oilSpillDetectorCommandReplyObject1->SetRowVersion( 6625126969852789377LL );
     oilSpillDetectorCommandReplyObject1->SetOilSpillDetector( Guid( L"{ADEF8281-2DE0-5BF1-DA8F-B407B5F74181}" ) );
-    oilSpillDetectorCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    oilSpillDetectorCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     oilSpillDetectorCommandReplyObject1->SetCommand( Guid( L"{ADEF8281-2DE0-5BF1-DA8F-B407B5F74181}" ) );
     oilSpillDetectorCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Ok );
     oilSpillDetectorCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -3390,7 +3390,7 @@ BOOST_AUTO_TEST_CASE( OilSpillDetectorConfigurationObjectSerializationTest )
     oilSpillDetectorConfigurationObject1->SetId( Guid( L"{4FF652FA-2908-F7CF-EFF3-9410F26F4A5F}" ) );
     oilSpillDetectorConfigurationObject1->SetRowVersion( -590207910484225286LL );
     oilSpillDetectorConfigurationObject1->SetOilSpillDetector( Guid( L"{4FF652FA-2908-F7CF-EFF3-9410F26F4A5F}" ) );
-    oilSpillDetectorConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    oilSpillDetectorConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     oilSpillDetectorConfigurationObject1->SetRange( 17856536163225326 );
     oilSpillDetectorConfigurationObject1->SetStartAngle( 17856536163225326 );
     oilSpillDetectorConfigurationObject1->SetEndAngle( 17856536163225326 );
@@ -3432,7 +3432,7 @@ BOOST_AUTO_TEST_CASE( Position2DTimeseriesValueObjectSerializationTest )
     position2DTimeseriesValueObject1->SetId( Guid( L"{0E8E2416-D3F0-2D94-B429-CB0F70712468}" ) );
     position2DTimeseriesValueObject1->SetRowVersion( 3284483056249742358LL );
     position2DTimeseriesValueObject1->SetTimeseries( Guid( L"{0E8E2416-D3F0-2D94-B429-CB0F70712468}" ) );
-    position2DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    position2DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     position2DTimeseriesValueObject1->SetX( 3284483056249742.5 );
     position2DTimeseriesValueObject1->SetY( 3284483056249742.5 );
 
@@ -3454,7 +3454,7 @@ BOOST_AUTO_TEST_CASE( Position3DTimeseriesValueObjectSerializationTest )
     position3DTimeseriesValueObject1->SetId( Guid( L"{270243BC-C575-4E4D-72B2-A3AEE440C23D}" ) );
     position3DTimeseriesValueObject1->SetRowVersion( 5642383015121404860LL );
     position3DTimeseriesValueObject1->SetTimeseries( Guid( L"{270243BC-C575-4E4D-72B2-A3AEE440C23D}" ) );
-    position3DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    position3DTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     position3DTimeseriesValueObject1->SetX( 5642383015121405 );
     position3DTimeseriesValueObject1->SetY( 5642383015121405 );
     position3DTimeseriesValueObject1->SetZ( 5642383015121405 );
@@ -3561,7 +3561,7 @@ BOOST_AUTO_TEST_CASE( DateTimePropertyObjectSerializationTest )
     dateTimePropertyObject1->SetRowVersion( -124225754901377756LL );
     dateTimePropertyObject1->SetElement( Guid( L"{87260D24-A955-FE46-7F62-95AAE164B024}" ) );
     dateTimePropertyObject1->SetDefinition( Guid( L"{87260D24-A955-FE46-7F62-95AAE164B024}" ) );
-    dateTimePropertyObject1->SetValue( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    dateTimePropertyObject1->SetValue( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -4994,7 +4994,7 @@ BOOST_AUTO_TEST_CASE( RadarAlarmStatusObjectSerializationTest )
     radarAlarmStatusObject1->SetId( Guid( L"{6591FD22-1881-3763-ECC6-1881A689BF44}" ) );
     radarAlarmStatusObject1->SetRowVersion( 3991060638814305570LL );
     radarAlarmStatusObject1->SetRadar( Guid( L"{6591FD22-1881-3763-ECC6-1881A689BF44}" ) );
-    radarAlarmStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarAlarmStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarAlarmStatusObject1->SetType( AlarmState::Raised );
 
     IO::MemoryStream stream;
@@ -5015,7 +5015,7 @@ BOOST_AUTO_TEST_CASE( RadarCommandObjectSerializationTest )
     radarCommandObject1->SetId( Guid( L"{09E2F261-F724-AF90-F509-EF2490474F86}" ) );
     radarCommandObject1->SetRowVersion( -5795860986269076895LL );
     radarCommandObject1->SetRadar( Guid( L"{09E2F261-F724-AF90-F509-EF2490474F86}" ) );
-    radarCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     radarCommandObject1->SetDeviceCommandSourceId( Guid( L"{09E2F261-F724-AF90-F509-EF2490474F86}" ) );
     radarCommandObject1->SetReply( Guid( L"{09E2F261-F724-AF90-F509-EF2490474F86}" ) );
@@ -5038,7 +5038,7 @@ BOOST_AUTO_TEST_CASE( RadarCommandGetStatusObjectSerializationTest )
     radarCommandGetStatusObject1->SetId( Guid( L"{15DB63DD-58A5-93F1-C98F-1AA5A8DBC6BB}" ) );
     radarCommandGetStatusObject1->SetRowVersion( -7786344814687329315LL );
     radarCommandGetStatusObject1->SetRadar( Guid( L"{15DB63DD-58A5-93F1-C98F-1AA5A8DBC6BB}" ) );
-    radarCommandGetStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarCommandGetStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarCommandGetStatusObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     radarCommandGetStatusObject1->SetDeviceCommandSourceId( Guid( L"{15DB63DD-58A5-93F1-C98F-1AA5A8DBC6BB}" ) );
     radarCommandGetStatusObject1->SetReply( Guid( L"{15DB63DD-58A5-93F1-C98F-1AA5A8DBC6BB}" ) );
@@ -5061,7 +5061,7 @@ BOOST_AUTO_TEST_CASE( RadarCommandReplyObjectSerializationTest )
     radarCommandReplyObject1->SetId( Guid( L"{A338B9CF-C23E-6B8E-D671-437CC51C9DF3}" ) );
     radarCommandReplyObject1->SetRowVersion( 7750345583033366991LL );
     radarCommandReplyObject1->SetRadar( Guid( L"{A338B9CF-C23E-6B8E-D671-437CC51C9DF3}" ) );
-    radarCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarCommandReplyObject1->SetCommand( Guid( L"{A338B9CF-C23E-6B8E-D671-437CC51C9DF3}" ) );
     radarCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Error );
     radarCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -5084,7 +5084,7 @@ BOOST_AUTO_TEST_CASE( RadarCommandReplyGetStatusObjectSerializationTest )
     radarCommandReplyGetStatusObject1->SetId( Guid( L"{76904A9F-BEF0-E591-A789-7D0F6E0952F9}" ) );
     radarCommandReplyGetStatusObject1->SetRowVersion( -1904531227410412897LL );
     radarCommandReplyGetStatusObject1->SetRadar( Guid( L"{76904A9F-BEF0-E591-A789-7D0F6E0952F9}" ) );
-    radarCommandReplyGetStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarCommandReplyGetStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarCommandReplyGetStatusObject1->SetCommand( Guid( L"{76904A9F-BEF0-E591-A789-7D0F6E0952F9}" ) );
     radarCommandReplyGetStatusObject1->SetStatus( DeviceCommandReplyStatus::Error );
     radarCommandReplyGetStatusObject1->SetMessage( WideString(L"Message") );
@@ -5112,7 +5112,7 @@ BOOST_AUTO_TEST_CASE( RadarConfigurationObjectSerializationTest )
     radarConfigurationObject1->SetId( Guid( L"{B52CAF4D-4966-5963-9AC6-9266AD34F5B2}" ) );
     radarConfigurationObject1->SetRowVersion( 6441072597545037645LL );
     radarConfigurationObject1->SetRadar( Guid( L"{B52CAF4D-4966-5963-9AC6-9266AD34F5B2}" ) );
-    radarConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarConfigurationObject1->SetRadarProtocolVersion( -1255362739L );
     radarConfigurationObject1->SetRadarIPAddress( L"RadarIPAddress" );
     radarConfigurationObject1->SetRadarPort( -1255362739L );
@@ -5157,7 +5157,7 @@ BOOST_AUTO_TEST_CASE( RadarImageObjectSerializationTest )
     radarImageObject1->SetId( Guid( L"{E255597A-EAB9-8A6B-51D6-579D47AA9A5E}" ) );
     radarImageObject1->SetRowVersion( -8472420189880362630LL );
     radarImageObject1->SetRadar( Guid( L"{E255597A-EAB9-8A6B-51D6-579D47AA9A5E}" ) );
-    radarImageObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarImageObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarImageObject1->SetDepth( 3797244282UL );
     radarImageObject1->SetResolution( -497723014L );
     radarImageObject1->SetRange( -497723014L );
@@ -5181,7 +5181,7 @@ BOOST_AUTO_TEST_CASE( RadarRawTrackTableObjectSerializationTest )
     radarRawTrackTableObject1->SetId( Guid( L"{987A5FFC-22C5-4193-82C9-44A3195EFA3F}" ) );
     radarRawTrackTableObject1->SetRowVersion( 4725158666103840764LL );
     radarRawTrackTableObject1->SetRadar( Guid( L"{987A5FFC-22C5-4193-82C9-44A3195EFA3F}" ) );
-    radarRawTrackTableObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarRawTrackTableObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarRawTrackTableObject1->SetCount( -1736810500L );
     radarRawTrackTableObject1->SetTable( Binary{ {'T','a','b','l','e'} } );
 
@@ -5203,7 +5203,7 @@ BOOST_AUTO_TEST_CASE( RadarStatusObjectSerializationTest )
     radarStatusObject1->SetId( Guid( L"{02607B8B-1D3F-7C67-3EE6-B8FC4006DED1}" ) );
     radarStatusObject1->SetRowVersion( 8964165739764284299LL );
     radarStatusObject1->SetRadar( Guid( L"{02607B8B-1D3F-7C67-3EE6-B8FC4006DED1}" ) );
-    radarStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radarStatusObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radarStatusObject1->SetAzimuthCount( 39877515L );
     radarStatusObject1->SetTriggerCount( 39877515L );
     radarStatusObject1->SetRotationTime( TimeSpan( 715764284299LL ) );
@@ -5229,7 +5229,7 @@ BOOST_AUTO_TEST_CASE( RadioCommandObjectSerializationTest )
     radioCommandObject1->SetId( Guid( L"{2E60CDCD-C816-0913-90C8-13687406B3B3}" ) );
     radioCommandObject1->SetRowVersion( 654086368491785677LL );
     radioCommandObject1->SetRadio( Guid( L"{2E60CDCD-C816-0913-90C8-13687406B3B3}" ) );
-    radioCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radioCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radioCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     radioCommandObject1->SetDeviceCommandSourceId( Guid( L"{2E60CDCD-C816-0913-90C8-13687406B3B3}" ) );
     radioCommandObject1->SetReply( Guid( L"{2E60CDCD-C816-0913-90C8-13687406B3B3}" ) );
@@ -5252,7 +5252,7 @@ BOOST_AUTO_TEST_CASE( RadioCommandReplyObjectSerializationTest )
     radioCommandReplyObject1->SetId( Guid( L"{4196677A-F28B-98D7-19EB-4FD18269E65E}" ) );
     radioCommandReplyObject1->SetRowVersion( -7433205980036962438LL );
     radioCommandReplyObject1->SetRadio( Guid( L"{4196677A-F28B-98D7-19EB-4FD18269E65E}" ) );
-    radioCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radioCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radioCommandReplyObject1->SetCommand( Guid( L"{4196677A-F28B-98D7-19EB-4FD18269E65E}" ) );
     radioCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::NotImplemented );
     radioCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -5275,7 +5275,7 @@ BOOST_AUTO_TEST_CASE( RadioConfigurationObjectSerializationTest )
     radioConfigurationObject1->SetId( Guid( L"{AB4C66CF-5346-E4F6-276F-CA62D53266F3}" ) );
     radioConfigurationObject1->SetRowVersion( -1948278225804433713LL );
     radioConfigurationObject1->SetRadio( Guid( L"{AB4C66CF-5346-E4F6-276F-CA62D53266F3}" ) );
-    radioConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radioConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radioConfigurationObject1->SetLongitude( 16498465847905118 );
     radioConfigurationObject1->SetLatitude( 16498465847905118 );
     radioConfigurationObject1->SetPlaybackUrl( L"PlaybackUrl" );
@@ -5302,7 +5302,7 @@ BOOST_AUTO_TEST_CASE( RadomeCommandObjectSerializationTest )
     radomeCommandObject1->SetId( Guid( L"{3C06BA91-1621-4C7A-325E-68843C605D89}" ) );
     radomeCommandObject1->SetRowVersion( 5510741426038028945LL );
     radomeCommandObject1->SetRadome( Guid( L"{3C06BA91-1621-4C7A-325E-68843C605D89}" ) );
-    radomeCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radomeCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radomeCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Session );
     radomeCommandObject1->SetDeviceCommandSourceId( Guid( L"{3C06BA91-1621-4C7A-325E-68843C605D89}" ) );
     radomeCommandObject1->SetReply( Guid( L"{3C06BA91-1621-4C7A-325E-68843C605D89}" ) );
@@ -5325,7 +5325,7 @@ BOOST_AUTO_TEST_CASE( RadomeCommandReplyObjectSerializationTest )
     radomeCommandReplyObject1->SetId( Guid( L"{6A296804-C699-97E0-E907-639956941620}" ) );
     radomeCommandReplyObject1->SetRowVersion( -7502778616985851900LL );
     radomeCommandReplyObject1->SetRadome( Guid( L"{6A296804-C699-97E0-E907-639956941620}" ) );
-    radomeCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radomeCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radomeCommandReplyObject1->SetCommand( Guid( L"{6A296804-C699-97E0-E907-639956941620}" ) );
     radomeCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Unknown );
     radomeCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -5348,7 +5348,7 @@ BOOST_AUTO_TEST_CASE( RadomeConfigurationObjectSerializationTest )
     radomeConfigurationObject1->SetId( Guid( L"{2F8DD664-7BE7-739B-CED9-DEE7F4B16B26}" ) );
     radomeConfigurationObject1->SetRowVersion( 8330388168617350756LL );
     radomeConfigurationObject1->SetRadome( Guid( L"{2F8DD664-7BE7-739B-CED9-DEE7F4B16B26}" ) );
-    radomeConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    radomeConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     radomeConfigurationObject1->SetInterval( TimeSpan( 840617350756LL ) );
     radomeConfigurationObject1->SetLowPressureLimit( 8330388168617351 );
     radomeConfigurationObject1->SetHighPressureLimit( 8330388168617351 );
@@ -5373,7 +5373,7 @@ BOOST_AUTO_TEST_CASE( ReferenceTimeseriesValueObjectSerializationTest )
     referenceTimeseriesValueObject1->SetId( Guid( L"{6F4E97CF-FE10-6D89-B691-7F08F672E9F3}" ) );
     referenceTimeseriesValueObject1->SetRowVersion( 7893119168483858383LL );
     referenceTimeseriesValueObject1->SetTimeseries( Guid( L"{6F4E97CF-FE10-6D89-B691-7F08F672E9F3}" ) );
-    referenceTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    referenceTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     referenceTimeseriesValueObject1->SetValue( Guid( L"{6F4E97CF-FE10-6D89-B691-7F08F672E9F3}" ) );
 
     IO::MemoryStream stream;
@@ -5394,7 +5394,7 @@ BOOST_AUTO_TEST_CASE( SByteTimeseriesValueObjectSerializationTest )
     sByteTimeseriesValueObject1->SetId( Guid( L"{250A9ACA-1D35-8290-4109-B8ACA4505953}" ) );
     sByteTimeseriesValueObject1->SetRowVersion( -9038692338040661302LL );
     sByteTimeseriesValueObject1->SetTimeseries( Guid( L"{250A9ACA-1D35-8290-4109-B8ACA4505953}" ) );
-    sByteTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    sByteTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     sByteTimeseriesValueObject1->SetValue( -54 );
 
     IO::MemoryStream stream;
@@ -5479,8 +5479,8 @@ BOOST_AUTO_TEST_CASE( SecurityIdentifierRoleLinkObjectSerializationTest )
     securityIdentifierRoleLinkObject1->SetRowVersion( -4495400156697650295LL );
     securityIdentifierRoleLinkObject1->SetMember( Guid( L"{08CD1B89-2160-C19D-83B9-840610B3D891}" ) );
     securityIdentifierRoleLinkObject1->SetRole( Guid( L"{08CD1B89-2160-C19D-83B9-840610B3D891}" ) );
-    securityIdentifierRoleLinkObject1->SetStart( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    securityIdentifierRoleLinkObject1->SetEnd( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    securityIdentifierRoleLinkObject1->SetStart( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    securityIdentifierRoleLinkObject1->SetEnd( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -5500,8 +5500,8 @@ BOOST_AUTO_TEST_CASE( SecurityLoginSessionObjectSerializationTest )
     securityLoginSessionObject1->SetId( Guid( L"{1600A37D-D48F-A2D7-45EB-2BF16800C5BE}" ) );
     securityLoginSessionObject1->SetRowVersion( -6712663008557882499LL );
     securityLoginSessionObject1->SetLogin( Guid( L"{1600A37D-D48F-A2D7-45EB-2BF16800C5BE}" ) );
-    securityLoginSessionObject1->SetFromTime( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    securityLoginSessionObject1->SetThroughTime( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    securityLoginSessionObject1->SetFromTime( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    securityLoginSessionObject1->SetThroughTime( DateTime( 1, 1, 1, 23, 49, 54 ) );
     securityLoginSessionObject1->SetClientSession( Guid( L"{1600A37D-D48F-A2D7-45EB-2BF16800C5BE}" ) );
     securityLoginSessionObject1->SetNotificationQueueName( L"NotificationQueueName" );
     securityLoginSessionObject1->SetMessageQueueName( L"MessageQueueName" );
@@ -5524,7 +5524,7 @@ BOOST_AUTO_TEST_CASE( SecurityPermissionObjectSerializationTest )
     securityPermissionObject1->SetId( Guid( L"{9A65967B-785F-8F6C-F136-1EFA59A669DE}" ) );
     securityPermissionObject1->SetRowVersion( -8111976476793530757LL );
     securityPermissionObject1->SetIdentifier( Guid( L"{9A65967B-785F-8F6C-F136-1EFA59A669DE}" ) );
-    securityPermissionObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    securityPermissionObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     securityPermissionObject1->SetTypeCode( -1704618373L );
     securityPermissionObject1->SetCanCreate( false );
     securityPermissionObject1->SetCanRead( false );
@@ -5549,7 +5549,7 @@ BOOST_AUTO_TEST_CASE( SingleTimeseriesValueObjectSerializationTest )
     singleTimeseriesValueObject1->SetId( Guid( L"{295C3FB9-5436-1E12-7848-2A6C943AFC9D}" ) );
     singleTimeseriesValueObject1->SetRowVersion( 2166886962317508537LL );
     singleTimeseriesValueObject1->SetTimeseries( Guid( L"{295C3FB9-5436-1E12-7848-2A6C943AFC9D}" ) );
-    singleTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    singleTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     singleTimeseriesValueObject1->SetValue( 2.166887e+15f );
 
     IO::MemoryStream stream;
@@ -5570,7 +5570,7 @@ BOOST_AUTO_TEST_CASE( StringTimeseriesValueObjectSerializationTest )
     stringTimeseriesValueObject1->SetId( Guid( L"{8151E4E0-9099-AD75-B5AE-0999818A2707}" ) );
     stringTimeseriesValueObject1->SetRowVersion( -5947688743898848032LL );
     stringTimeseriesValueObject1->SetTimeseries( Guid( L"{8151E4E0-9099-AD75-B5AE-0999818A2707}" ) );
-    stringTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    stringTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     stringTimeseriesValueObject1->SetValue( WideString(L"Value") );
 
     IO::MemoryStream stream;
@@ -7217,8 +7217,8 @@ BOOST_AUTO_TEST_CASE( TimeseriesInfoObjectSerializationTest )
     auto timeseriesInfoObject1 = std::make_shared<TimeseriesInfoObject>( );
     timeseriesInfoObject1->SetId( Guid( L"{7A785D97-FDEA-3E83-7CC1-BF575E1EBAE9}" ) );
     timeseriesInfoObject1->SetRowVersion( 4504723235819511191LL );
-    timeseriesInfoObject1->SetFirstTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    timeseriesInfoObject1->SetLastTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    timeseriesInfoObject1->SetFirstTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    timeseriesInfoObject1->SetLastTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     timeseriesInfoObject1->SetCount( 4504723235819511191LL );
 
     IO::MemoryStream stream;
@@ -7239,7 +7239,7 @@ BOOST_AUTO_TEST_CASE( TimeSpanTimeseriesValueObjectSerializationTest )
     timeSpanTimeseriesValueObject1->SetId( Guid( L"{B9BB7A7B-A746-EDFF-B7FF-E5629DDD5EDE}" ) );
     timeSpanTimeseriesValueObject1->SetRowVersion( -1297134245453792645LL );
     timeSpanTimeseriesValueObject1->SetTimeseries( Guid( L"{B9BB7A7B-A746-EDFF-B7FF-E5629DDD5EDE}" ) );
-    timeSpanTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    timeSpanTimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     timeSpanTimeseriesValueObject1->SetValue( TimeSpan( -677453792645LL ) );
 
     IO::MemoryStream stream;
@@ -7261,8 +7261,8 @@ BOOST_AUTO_TEST_CASE( TrackableItemTrackLinkObjectSerializationTest )
     trackableItemTrackLinkObject1->SetRowVersion( -1760985094416256573LL );
     trackableItemTrackLinkObject1->SetItem( Guid( L"{008FB1C3-B963-E78F-E7F1-9DC600F18DC3}" ) );
     trackableItemTrackLinkObject1->SetTrack( Guid( L"{008FB1C3-B963-E78F-E7F1-9DC600F18DC3}" ) );
-    trackableItemTrackLinkObject1->SetStart( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    trackableItemTrackLinkObject1->SetEnd( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackableItemTrackLinkObject1->SetStart( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    trackableItemTrackLinkObject1->SetEnd( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -7283,7 +7283,7 @@ BOOST_AUTO_TEST_CASE( TrackObjectSerializationTest )
     trackObject1->SetRowVersion( -8592704316887506626LL );
     trackObject1->SetTracker( Guid( L"{2BF4613E-94F3-88C0-1103-29CFD42F867C}" ) );
     trackObject1->SetTrackNumber( -8592704316887506626LL );
-    trackObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -7304,7 +7304,7 @@ BOOST_AUTO_TEST_CASE( Track3DObjectSerializationTest )
     track3DObject1->SetRowVersion( -1639380315329120365LL );
     track3DObject1->SetTracker( Guid( L"{FD0A3793-C049-E93F-97FC-0392BF50ECC9}" ) );
     track3DObject1->SetTrackNumber( -1639380315329120365LL );
-    track3DObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    track3DObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -7344,7 +7344,7 @@ BOOST_AUTO_TEST_CASE( TrackerFilterParametersConfigurationObjectSerializationTes
     trackerFilterParametersConfigurationObject1->SetId( Guid( L"{060FC360-326B-7108-8E10-4CD660F0C306}" ) );
     trackerFilterParametersConfigurationObject1->SetRowVersion( 8144815361344127840LL );
     trackerFilterParametersConfigurationObject1->SetParameters( Guid( L"{060FC360-326B-7108-8E10-4CD660F0C306}" ) );
-    trackerFilterParametersConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackerFilterParametersConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     trackerFilterParametersConfigurationObject1->SetUseNaivePredictor( false );
     trackerFilterParametersConfigurationObject1->SetNumberOfPoints( 101696352L );
     trackerFilterParametersConfigurationObject1->SetWindowSize( 101696352L );
@@ -7376,8 +7376,8 @@ BOOST_AUTO_TEST_CASE( TrackInfoObjectSerializationTest )
     auto trackInfoObject1 = std::make_shared<TrackInfoObject>( );
     trackInfoObject1->SetId( Guid( L"{DDE619C0-47E8-DC84-3B21-E217BB679803}" ) );
     trackInfoObject1->SetRowVersion( -2556839622958769728LL );
-    trackInfoObject1->SetFirstTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    trackInfoObject1->SetLastTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackInfoObject1->SetFirstTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    trackInfoObject1->SetLastTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     trackInfoObject1->SetCount( -2556839622958769728LL );
     trackInfoObject1->SetNorthWestLatitude( 15889904450750782 );
     trackInfoObject1->SetNorthWestLongitude( 15889904450750782 );
@@ -7401,7 +7401,7 @@ BOOST_AUTO_TEST_CASE( TrackingServiceOptionsObjectSerializationTest )
     auto trackingServiceOptionsObject1 = std::make_shared<TrackingServiceOptionsObject>( );
     trackingServiceOptionsObject1->SetId( Guid( L"{EBE67FA6-2321-643C-263C-C484D767FE65}" ) );
     trackingServiceOptionsObject1->SetRowVersion( 7222686530994077606LL );
-    trackingServiceOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackingServiceOptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     trackingServiceOptionsObject1->SetTimerInterval( TimeSpan( 770994077606LL ) );
     trackingServiceOptionsObject1->SetMaxAgeOfCurrentTrackValue( TimeSpan( 770994077606LL ) );
     trackingServiceOptionsObject1->SetFalseThreshold( 7222686530994078 );
@@ -7432,8 +7432,8 @@ BOOST_AUTO_TEST_CASE( TrackLinkObjectSerializationTest )
     trackLinkObject1->SetRowVersion( -526455800190224528LL );
     trackLinkObject1->SetPrimary( Guid( L"{2FB7B770-A73D-F8B1-1F8D-E5BCF4EDED0E}" ) );
     trackLinkObject1->SetSecondary( Guid( L"{2FB7B770-A73D-F8B1-1F8D-E5BCF4EDED0E}" ) );
-    trackLinkObject1->SetStart( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    trackLinkObject1->SetEnd( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackLinkObject1->SetStart( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    trackLinkObject1->SetEnd( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -7453,7 +7453,7 @@ BOOST_AUTO_TEST_CASE( TrackValueObjectSerializationTest )
     trackValueObject1->SetId( Guid( L"{314730E2-D36D-A435-25AC-CBB68CE20C47}" ) );
     trackValueObject1->SetRowVersion( -6614148011792060190LL );
     trackValueObject1->SetTrack( Guid( L"{314730E2-D36D-A435-25AC-CBB68CE20C47}" ) );
-    trackValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     trackValueObject1->SetFlags( TrackFlags::Course );
     trackValueObject1->SetStatus( TrackStatus::RestrictedManeuverability );
     trackValueObject1->SetLatitude( 11832596061917492 );
@@ -7480,7 +7480,7 @@ BOOST_AUTO_TEST_CASE( TrackValue3DObjectSerializationTest )
     trackValue3DObject1->SetId( Guid( L"{8B49E8E0-2358-68D7-16EB-C41AD1921707}" ) );
     trackValue3DObject1->SetRowVersion( 7554545763138267360LL );
     trackValue3DObject1->SetTrack( Guid( L"{8B49E8E0-2358-68D7-16EB-C41AD1921707}" ) );
-    trackValue3DObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    trackValue3DObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     trackValue3DObject1->SetFlags( TrackFlags3D::None );
     trackValue3DObject1->SetStatus( 2336876768UL );
     trackValue3DObject1->SetLatitude( 7554545763138267 );
@@ -7508,7 +7508,7 @@ BOOST_AUTO_TEST_CASE( UInt16TimeseriesValueObjectSerializationTest )
     uInt16TimeseriesValueObject1->SetId( Guid( L"{6136B482-E2B0-C76B-E3D6-470D866C2D41}" ) );
     uInt16TimeseriesValueObject1->SetRowVersion( -4076915790480755582LL );
     uInt16TimeseriesValueObject1->SetTimeseries( Guid( L"{6136B482-E2B0-C76B-E3D6-470D866C2D41}" ) );
-    uInt16TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    uInt16TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     uInt16TimeseriesValueObject1->SetValue( 46210 );
 
     IO::MemoryStream stream;
@@ -7529,7 +7529,7 @@ BOOST_AUTO_TEST_CASE( UInt32TimeseriesValueObjectSerializationTest )
     uInt32TimeseriesValueObject1->SetId( Guid( L"{485A0A48-CCBD-4975-92AE-33BD125A5012}" ) );
     uInt32TimeseriesValueObject1->SetRowVersion( 5293362050378631752LL );
     uInt32TimeseriesValueObject1->SetTimeseries( Guid( L"{485A0A48-CCBD-4975-92AE-33BD125A5012}" ) );
-    uInt32TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    uInt32TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     uInt32TimeseriesValueObject1->SetValue( 1213860424UL );
 
     IO::MemoryStream stream;
@@ -7550,7 +7550,7 @@ BOOST_AUTO_TEST_CASE( UInt64TimeseriesValueObjectSerializationTest )
     uInt64TimeseriesValueObject1->SetId( Guid( L"{2B846AF0-4E92-0F11-F088-7249D421560F}" ) );
     uInt64TimeseriesValueObject1->SetRowVersion( 1085735374875290352LL );
     uInt64TimeseriesValueObject1->SetTimeseries( Guid( L"{2B846AF0-4E92-0F11-F088-7249D421560F}" ) );
-    uInt64TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    uInt64TimeseriesValueObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     uInt64TimeseriesValueObject1->SetValue( 1085735374875290352LL );
 
     IO::MemoryStream stream;
@@ -7633,8 +7633,8 @@ BOOST_AUTO_TEST_CASE( ViewCameraLinkObjectSerializationTest )
     viewCameraLinkObject1->SetRowVersion( -8187961040949623320LL );
     viewCameraLinkObject1->SetView( Guid( L"{9F75C5E8-84D0-8E5E-717A-210BF9AEA317}" ) );
     viewCameraLinkObject1->SetCamera( Guid( L"{9F75C5E8-84D0-8E5E-717A-210BF9AEA317}" ) );
-    viewCameraLinkObject1->SetStart( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    viewCameraLinkObject1->SetEnd( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    viewCameraLinkObject1->SetStart( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    viewCameraLinkObject1->SetEnd( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -7655,8 +7655,8 @@ BOOST_AUTO_TEST_CASE( ViewTrackerLinkObjectSerializationTest )
     viewTrackerLinkObject1->SetRowVersion( 3790175032003962881LL );
     viewTrackerLinkObject1->SetView( Guid( L"{4326A801-681C-3499-2C99-1638C2641580}" ) );
     viewTrackerLinkObject1->SetTracker( Guid( L"{4326A801-681C-3499-2C99-1638C2641580}" ) );
-    viewTrackerLinkObject1->SetStart( DateTime( 1, 1, 1, 22, 53, 37 ) );
-    viewTrackerLinkObject1->SetEnd( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    viewTrackerLinkObject1->SetStart( DateTime( 1, 1, 1, 23, 49, 54 ) );
+    viewTrackerLinkObject1->SetEnd( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -7676,7 +7676,7 @@ BOOST_AUTO_TEST_CASE( WeatherStationCommandObjectSerializationTest )
     weatherStationCommandObject1->SetId( Guid( L"{15A71ED0-61D0-1B4B-D8D2-860BA8E5780B}" ) );
     weatherStationCommandObject1->SetRowVersion( 1966773208621719248LL );
     weatherStationCommandObject1->SetWeatherStation( Guid( L"{15A71ED0-61D0-1B4B-D8D2-860BA8E5780B}" ) );
-    weatherStationCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    weatherStationCommandObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     weatherStationCommandObject1->SetDeviceCommandSourceType( DeviceCommandSourceType::Unknown );
     weatherStationCommandObject1->SetDeviceCommandSourceId( Guid( L"{15A71ED0-61D0-1B4B-D8D2-860BA8E5780B}" ) );
     weatherStationCommandObject1->SetReply( Guid( L"{15A71ED0-61D0-1B4B-D8D2-860BA8E5780B}" ) );
@@ -7699,7 +7699,7 @@ BOOST_AUTO_TEST_CASE( WeatherStationCommandReplyObjectSerializationTest )
     weatherStationCommandReplyObject1->SetId( Guid( L"{EB8BB859-93A7-CFCE-F373-C9E5D7D11D9A}" ) );
     weatherStationCommandReplyObject1->SetRowVersion( -3472675913235449767LL );
     weatherStationCommandReplyObject1->SetWeatherStation( Guid( L"{EB8BB859-93A7-CFCE-F373-C9E5D7D11D9A}" ) );
-    weatherStationCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    weatherStationCommandReplyObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     weatherStationCommandReplyObject1->SetCommand( Guid( L"{EB8BB859-93A7-CFCE-F373-C9E5D7D11D9A}" ) );
     weatherStationCommandReplyObject1->SetStatus( DeviceCommandReplyStatus::Ok );
     weatherStationCommandReplyObject1->SetMessage( WideString(L"Message") );
@@ -7722,7 +7722,7 @@ BOOST_AUTO_TEST_CASE( WeatherStationConfigurationObjectSerializationTest )
     weatherStationConfigurationObject1->SetId( Guid( L"{48131464-C2BB-F6DD-6FBB-43DD12C82826}" ) );
     weatherStationConfigurationObject1->SetRowVersion( -658155860902341532LL );
     weatherStationConfigurationObject1->SetWeatherStation( Guid( L"{48131464-C2BB-F6DD-6FBB-43DD12C82826}" ) );
-    weatherStationConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    weatherStationConfigurationObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     weatherStationConfigurationObject1->SetNoDataTimeOut( TimeSpan( -404902341532LL ) );
     weatherStationConfigurationObject1->SetSendInterval( TimeSpan( -404902341532LL ) );
     weatherStationConfigurationObject1->SetLatitude( 17788588212807212 );
@@ -7805,7 +7805,7 @@ BOOST_AUTO_TEST_CASE( ZoneExceptionsObjectSerializationTest )
     zoneExceptionsObject1->SetId( Guid( L"{B1060A97-736B-DDAC-BB35-CED68D6050E9}" ) );
     zoneExceptionsObject1->SetRowVersion( -2473475188964586857LL );
     zoneExceptionsObject1->SetZone( Guid( L"{B1060A97-736B-DDAC-BB35-CED68D6050E9}" ) );
-    zoneExceptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    zoneExceptionsObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
 
     IO::MemoryStream stream;
     IO::BinaryWriter destination( stream );
@@ -7847,7 +7847,7 @@ BOOST_AUTO_TEST_CASE( ZoneTrackAlarmObjectSerializationTest )
     zoneTrackAlarmObject1->SetTrack( Guid( L"{0F40BC2F-963C-F3B4-CF2D-693CF0023DF4}" ) );
     zoneTrackAlarmObject1->SetZone( Guid( L"{0F40BC2F-963C-F3B4-CF2D-693CF0023DF4}" ) );
     zoneTrackAlarmObject1->SetRadarTrack( Guid( L"{0F40BC2F-963C-F3B4-CF2D-693CF0023DF4}" ) );
-    zoneTrackAlarmObject1->SetTimestamp( DateTime( 1, 1, 1, 22, 53, 37 ) );
+    zoneTrackAlarmObject1->SetTimestamp( DateTime( 1, 1, 1, 23, 49, 54 ) );
     zoneTrackAlarmObject1->SetLatitude( 17560826031722512 );
     zoneTrackAlarmObject1->SetLongitude( 17560826031722512 );
     zoneTrackAlarmObject1->SetSpeed( 17560826031722512 );

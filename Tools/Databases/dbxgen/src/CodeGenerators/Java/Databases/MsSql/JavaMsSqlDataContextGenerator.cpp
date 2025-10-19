@@ -51,7 +51,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"import com.harlinn.common.util.*;" );
         WriteLine( );
 
-        WriteLine( L"public class MsSqlDataContext" );
+        WriteLine( L"public class MsSqlDataContext implements DataContext" );
         WriteLine( L"{" );
         WriteLine( L"    private final ConnectionWrapper connection;" );
         WriteLine( L"    private final MsSqlStoredProcedures storedProcedures;" );
@@ -77,15 +77,15 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"    	return sessionId;" );
         WriteLine( L"    }" );
         WriteLine( );
-        WriteLine( L"    public boolean insertObject(AbstractDataObjectWithGuidKey dataObject ) throws SQLException {" );
+        WriteLine( L"    public final boolean insertObject(AbstractDataObjectWithGuidKey dataObject ) throws SQLException {" );
         WriteLine( L"    	return getStoredProcedures().insertObject(dataObject);" );
         WriteLine( L"    }" );
         WriteLine( );
-        WriteLine( L"    public boolean updateObject(AbstractDataObjectWithGuidKey dataObject ) throws SQLException {" );
+        WriteLine( L"    public final boolean updateObject(AbstractDataObjectWithGuidKey dataObject ) throws SQLException {" );
         WriteLine( L"    	return getStoredProcedures().updateObject(dataObject);" );
         WriteLine( L"    }" );
         WriteLine( );
-        WriteLine( L"    public boolean deleteObject(AbstractDataObjectWithGuidKey dataObject ) throws SQLException {" );
+        WriteLine( L"    public final boolean deleteObject(AbstractDataObjectWithGuidKey dataObject ) throws SQLException {" );
         WriteLine( L"    	return getStoredProcedures().deleteObject(dataObject);" );
         WriteLine( L"    }" );
         WriteLine( );
@@ -120,7 +120,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         auto dataReaderVariableName = dataReaderName.FirstToLower( );
         functions_.insert( functionName );
 
-        WriteLine( L"    public {} {}DataReader( {} id ) throws SQLException {{", dataReaderName, functionName, primaryKeyType );
+        WriteLine( L"    public final {} {}DataReader( {} id ) throws SQLException {{", dataReaderName, functionName, primaryKeyType );
         WriteLine( L"        String sql = {}.BaseQuery + \"WHERE \" + {}.ViewAliasName + \".[{}] = ?\";", dataReaderName, dataReaderName, primaryKey->Name( ).FirstToUpper( ) );
         WriteLine( L"        var sqlConnection = getConnection( );" );
         WriteLine( L"        var preparedStatement = sqlConnection.prepareStatementEx( sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY );" );
@@ -130,7 +130,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"    }" );
         WriteLine( );
         
-        WriteLine( L"    public {} {}( {} id ) throws SQLException {{", className, functionName, primaryKeyType );
+        WriteLine( L"    public final {} {}( {} id ) throws SQLException {{", className, functionName, primaryKeyType );
         WriteLine( L"        var {} = {}DataReader( id );", dataReaderVariableName, functionName );
         WriteLine( L"        try ( {} ) {{", dataReaderVariableName );
         WriteLine( L"            if ( {}.next( ) ) {{", dataReaderVariableName );
@@ -142,7 +142,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"    }" );
         WriteLine( );
 
-        WriteLine( L"    public void {}( {} id, BinaryWriter destination ) throws SQLException {{", functionName, primaryKeyType );
+        WriteLine( L"    public final void {}( {} id, BinaryWriter destination ) throws SQLException {{", functionName, primaryKeyType );
         WriteLine( L"        var {} = {}DataReader( id );", dataReaderVariableName, functionName );
         WriteLine( L"        try ( {} ) {{", dataReaderVariableName );
         WriteLine( L"            if ( {}.next( ) ) {{", dataReaderVariableName );
@@ -168,7 +168,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
 
         functions_.insert( functionName );
 
-        WriteLine( L"    public {} {}DataReader( ) throws SQLException {{", dataReaderName, functionName );
+        WriteLine( L"    public final {} {}DataReader( ) throws SQLException {{", dataReaderName, functionName );
         WriteLine( L"        String sql = {}.BaseQuery; ", dataReaderName );
         WriteLine( L"        var sqlConnection = getConnection( );" );
         WriteLine( L"        var preparedStatement = sqlConnection.prepareStatementEx( sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY );" );
@@ -178,7 +178,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( );
 
         
-        WriteLine( L"    public List<{}> {}( ) throws SQLException {{", className, functionName );
+        WriteLine( L"    public final List<{}> {}( ) throws SQLException {{", className, functionName );
         WriteLine( L"        var result = new ArrayList<{}>( );", className );
         WriteLine( L"        var {} = {}DataReader( );", dataReaderVariableName, functionName );
         WriteLine( L"        try ( {} ) {{", dataReaderVariableName );
@@ -191,7 +191,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"    }" );
         WriteLine( );
         
-        WriteLine( L"    public void {}( BinaryWriter destination ) throws SQLException {{", functionName );
+        WriteLine( L"    public final void {}( BinaryWriter destination ) throws SQLException {{", functionName );
         WriteLine( L"        var {} = {}DataReader( );", dataReaderVariableName, functionName );
         WriteLine( L"        try ( {} ) {{", dataReaderVariableName );
         WriteLine( L"            {}.writeResultSetTo( destination );", dataReaderVariableName );
@@ -237,7 +237,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         auto dataReaderName = JavaHelper::GetDataReaderName( classInfo );
         
         auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-        WriteLine( L"    public {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
+        WriteLine( L"    public final {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
         CreateGetByIndexSql( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        var sqlConnection = getConnection( );" );
         WriteLine( L"        var preparedStatement = sqlConnection.prepareStatementEx( sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY ); " );
@@ -317,7 +317,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             auto dataReaderVariableName = dataReaderName.FirstToLower( );
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             auto callArguments = JavaHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    public {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
+            WriteLine( L"    public final {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
             if ( JavaHelper::IsUnique( indexInfo, indexMemberCount ) )
             {
                 WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
@@ -342,7 +342,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             }
             WriteLine( L"    }" );
             WriteLine( );
-            WriteLine( L"    public void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
+            WriteLine( L"    public final void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
             if ( JavaHelper::IsUnique( indexInfo, indexMemberCount ) )
             {
                 WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
@@ -378,7 +378,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             functions_.insert( functionName );
             auto returnType = Format( L"List<{}>", className );
             auto arguments = JavaHelper::GetByNullableIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    public {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
+            WriteLine( L"    public final {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
             WriteLine( L"        throw new UnsupportedOperationException(\"This method is not yet implemented.\");" );
             WriteLine( L"    }" );
         }
@@ -391,7 +391,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         auto dataReaderName = JavaHelper::GetDataReaderName( classInfo );
         auto dataReaderVariableName = dataReaderName.FirstToLower( );
         auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-        WriteLine( L"    public {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
+        WriteLine( L"    public final {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
         CreateGetByIndexAtSql( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        var sqlConnection = getConnection( );" );
         WriteLine( L"        var preparedStatement = sqlConnection.prepareStatementEx( sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY ); " );
@@ -486,7 +486,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             auto dataReaderVariableName = dataReaderName.FirstToLower( );
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             auto callArguments = JavaHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    public {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
+            WriteLine( L"    public final {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
             if ( JavaHelper::IsUnique( indexInfo, indexMemberCount ) )
             {
                 WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
@@ -511,7 +511,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             }
             WriteLine( L"    }" );
             WriteLine( );
-            WriteLine( L"    public void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
+            WriteLine( L"    public final void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
             if ( JavaHelper::IsUnique( indexInfo, indexMemberCount ) )
             {
                 WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
@@ -544,7 +544,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         auto dataReaderName = JavaHelper::GetDataReaderName( classInfo );
         auto dataReaderVariableName = dataReaderName.FirstToLower( );
         auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-        WriteLine( L"    public {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
+        WriteLine( L"    public final {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
         CreateGetByIndexFromSql( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        var sqlConnection = getConnection( );" );
         WriteLine( L"        var preparedStatement = sqlConnection.prepareStatementEx( sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY ); " );
@@ -616,7 +616,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             auto dataReaderVariableName = dataReaderName.FirstToLower( );
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             auto callArguments = JavaHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    public {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
+            WriteLine( L"    public final {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
             WriteLine( L"        var result = new ArrayList<{}>( );", className );
             WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
             WriteLine( L"        try( {} ) {{", dataReaderVariableName );
@@ -628,7 +628,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             WriteLine( L"        return result;" );
             WriteLine( L"    }" );
             WriteLine( );
-            WriteLine( L"    public void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
+            WriteLine( L"    public final void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
             WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
             WriteLine( L"        try( {} ) {{", dataReaderVariableName );
             WriteLine( L"            {}.writeResultSetTo( destination );", dataReaderVariableName );
@@ -645,7 +645,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         auto dataReaderName = JavaHelper::GetDataReaderName( classInfo );
         auto dataReaderVariableName = dataReaderName.FirstToLower( );
         auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-        WriteLine( L"    public {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
+        WriteLine( L"    public final {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
         CreateGetByIndexUntilSql( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        var sqlConnection = getConnection( );" );
         WriteLine( L"        var preparedStatement = sqlConnection.prepareStatementEx( sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY ); " );
@@ -719,7 +719,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             auto dataReaderVariableName = dataReaderName.FirstToLower( );
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             auto callArguments = JavaHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    public {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
+            WriteLine( L"    public final {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
             WriteLine( L"        var result = new ArrayList<{}>( );", className );
             WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
             WriteLine( L"        try( {} ) {{", dataReaderVariableName );
@@ -731,7 +731,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             WriteLine( L"        return result;" );
             WriteLine( L"    }" );
             WriteLine( );
-            WriteLine( L"    public void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
+            WriteLine( L"    public final void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
             WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
             WriteLine( L"        try( {} ) {{", dataReaderVariableName );
             WriteLine( L"            {}.writeResultSetTo( destination );", dataReaderVariableName );
@@ -749,7 +749,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         auto dataReaderName = JavaHelper::GetDataReaderName( classInfo );
         auto dataReaderVariableName = dataReaderName.FirstToLower( );
         auto arguments = JavaHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
-        WriteLine( L"    public {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
+        WriteLine( L"    public final {} {}( {} ) throws SQLException {{", dataReaderName, functionName, arguments );
         CreateGetByIndexOverSql( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        var sqlConnection = getConnection( );" );
         WriteLine( L"        var preparedStatement = sqlConnection.prepareStatementEx( sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY ); " );
@@ -831,7 +831,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             auto dataReaderVariableName = dataReaderName.FirstToLower( );
             auto arguments = JavaHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
             auto callArguments = JavaHelper::GetByIndexFunctionOverCallParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    public {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
+            WriteLine( L"    public final {} {}( {} ) throws SQLException {{", returnType, functionName, arguments );
             WriteLine( L"        var result = new ArrayList<{}>( );", className );
             WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
             WriteLine( L"        try( {} ) {{", dataReaderVariableName );
@@ -843,7 +843,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             WriteLine( L"        return result;" );
             WriteLine( L"    }" );
             WriteLine( );
-            WriteLine( L"    public void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
+            WriteLine( L"    public final void {}( {}, BinaryWriter destination ) throws SQLException {{", functionName, arguments );
             WriteLine( L"        var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
             WriteLine( L"        try( {} ) {{", dataReaderVariableName );
             WriteLine( L"            {}.writeResultSetTo( destination );", dataReaderVariableName );

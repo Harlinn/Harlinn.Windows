@@ -41,6 +41,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         WriteLine( );
 
         WriteLine( L"public interface DataContext {" );
+        WriteLine( L"    Guid getSessionId( );" );
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];
@@ -53,6 +54,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 
     void JavaDataContextGenerator::CreateMembers( const ClassInfo& classInfo )
     {
+        
         WriteLine( L"    // ---------------------------------------------------------------------" );
         WriteLine( L"    // {} queries", classInfo.Name( ) );
         WriteLine( L"    // ---------------------------------------------------------------------" );
@@ -68,7 +70,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         auto primaryKeyType = JavaHelper::GetInputArgumentType( *primaryKey );
         functions_.insert( functionName );
 
-        WriteLine( L"    {} {}( {} id );", className, functionName, primaryKeyType );
+        WriteLine( L"    {} {}( {} id ) throws Exception;", className, functionName, primaryKeyType );
 
     }
     void JavaDataContextGenerator::CreateGetAll( const ClassInfo& classInfo )
@@ -77,7 +79,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         auto functionName = JavaHelper::GetAllFunctionName( classInfo );
         functions_.insert( functionName );
 
-        WriteLine( L"    List<{}> {}( );", className, functionName );
+        WriteLine( L"    List<{}> {}( ) throws Exception;", className, functionName );
     }
     void JavaDataContextGenerator::CreateGetByIndex( const ClassInfo& classInfo )
     {
@@ -122,7 +124,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 returnType = Format( L"List<{}>", className );
             }
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    {} {}( {} );", returnType, functionName, arguments );
+            WriteLine( L"    {} {}( {} ) throws Exception;", returnType, functionName, arguments );
         }
     }
 
@@ -135,7 +137,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             functions_.insert( functionName );
             auto returnType = Format( L"List<{}>", className );
             auto arguments = JavaHelper::GetByNullableIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    {} {}( {} );", returnType, functionName, arguments );
+            WriteLine( L"    {} {}( {} ) throws Exception;", returnType, functionName, arguments );
         }
     }
 
@@ -152,7 +154,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 returnType = Format( L"List<{}>", className );
             }
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    {} {}( {} );", returnType, functionName, arguments );
+            WriteLine( L"    {} {}( {} ) throws Exception;", returnType, functionName, arguments );
         }
     }
     void JavaDataContextGenerator::CreateGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
@@ -164,7 +166,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             functions_.insert( functionName );
             auto returnType = Format( L"List<{}>", className );
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    {} {}( {} );", returnType, functionName, arguments );
+            WriteLine( L"    {} {}( {} ) throws Exception;", returnType, functionName, arguments );
         }
     }
     void JavaDataContextGenerator::CreateGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
@@ -176,7 +178,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             functions_.insert( functionName );
             auto returnType = Format( L"List<{}>", className );
             auto arguments = JavaHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    {} {}( {} );", returnType, functionName, arguments );
+            WriteLine( L"    {} {}( {} ) throws Exception;", returnType, functionName, arguments );
         }
     }
     void JavaDataContextGenerator::CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
@@ -188,7 +190,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
             functions_.insert( functionName );
             auto returnType = Format( L"List<{}>", className );
             auto arguments = JavaHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
-            WriteLine( L"    {} {}( {} );", returnType, functionName, arguments );
+            WriteLine( L"    {} {}( {} ) throws Exception;", returnType, functionName, arguments );
         }
     }
 
