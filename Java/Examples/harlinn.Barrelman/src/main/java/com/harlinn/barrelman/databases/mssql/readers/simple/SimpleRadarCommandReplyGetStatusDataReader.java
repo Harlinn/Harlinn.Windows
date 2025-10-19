@@ -69,7 +69,7 @@ public class SimpleRadarCommandReplyGetStatusDataReader extends SimpleRadarComma
     }
 
     @Override
-    public RadarCommandReplyGetStatusObject GetDataObject( ) throws SQLException {
+    public RadarCommandReplyGetStatusObject getDataObject( ) throws SQLException {
         return new RadarCommandReplyGetStatusObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ), getAzimuthCount( ), getTriggerCount( ), getRotationCount( ), getPulse( ), getTx( ) );
     }
 

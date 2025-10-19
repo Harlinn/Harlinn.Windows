@@ -39,7 +39,7 @@ public class SimpleVesselPersonsOnBoardTimeseriesDataReader extends SimpleInt32T
     }
 
     @Override
-    public VesselPersonsOnBoardTimeseriesObject GetDataObject( ) throws SQLException {
+    public VesselPersonsOnBoardTimeseriesObject getDataObject( ) throws SQLException {
         return new VesselPersonsOnBoardTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getVessel( ) );
     }
 

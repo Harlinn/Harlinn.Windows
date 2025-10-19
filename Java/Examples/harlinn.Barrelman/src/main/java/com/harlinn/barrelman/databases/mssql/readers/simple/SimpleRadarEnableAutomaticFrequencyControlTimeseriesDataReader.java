@@ -39,7 +39,7 @@ public class SimpleRadarEnableAutomaticFrequencyControlTimeseriesDataReader exte
     }
 
     @Override
-    public RadarEnableAutomaticFrequencyControlTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarEnableAutomaticFrequencyControlTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarEnableAutomaticFrequencyControlTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

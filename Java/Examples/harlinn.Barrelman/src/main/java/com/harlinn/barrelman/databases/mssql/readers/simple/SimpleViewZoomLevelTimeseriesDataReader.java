@@ -39,7 +39,7 @@ public class SimpleViewZoomLevelTimeseriesDataReader extends SimpleDoubleTimeser
     }
 
     @Override
-    public ViewZoomLevelTimeseriesObject GetDataObject( ) throws SQLException {
+    public ViewZoomLevelTimeseriesObject getDataObject( ) throws SQLException {
         return new ViewZoomLevelTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getView( ) );
     }
 

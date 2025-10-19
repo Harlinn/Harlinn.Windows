@@ -39,7 +39,7 @@ public class SimpleRadarTuningTimeseriesDataReader extends SimpleInt32Timeseries
     }
 
     @Override
-    public RadarTuningTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarTuningTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarTuningTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

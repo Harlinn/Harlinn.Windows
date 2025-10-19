@@ -45,7 +45,7 @@ public class SimplePolygonZoneDataReader extends SimpleZoneDataReader {
     }
 
     @Override
-    public PolygonZoneObject GetDataObject( ) throws SQLException {
+    public PolygonZoneObject getDataObject( ) throws SQLException {
         return new PolygonZoneObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getLongitude( ), getLatitude( ), getAlarmType( ), getAlarmTime( ), getRadarTrackMinimumLifetime( ), getSpeed( ), getStrokeColor( ), getFillColor( ), getPolygon( ) );
     }
 

@@ -38,7 +38,7 @@ public class SimpleBooleanPropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public BooleanPropertyObject GetDataObject( ) throws SQLException {
+    public BooleanPropertyObject getDataObject( ) throws SQLException {
         return new BooleanPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

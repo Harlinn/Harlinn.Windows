@@ -283,15 +283,15 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             {
                 if ( classInfo.Abstract( ) )
                 {
-                    WriteLine( L"    public abstract {} GetDataObject( ) throws SQLException;", className );
+                    WriteLine( L"    public abstract {} getDataObject( ) throws SQLException;", className );
                     WriteLine( );
                     return;
                 }
-                WriteLine( L"    public {} GetDataObject( ) throws SQLException {{", className );
+                WriteLine( L"    public {} getDataObject( ) throws SQLException {{", className );
             }
             else
             {
-                WriteLine( L"    public {} GetDataObject( ) throws SQLException {{", className );
+                WriteLine( L"    public {} getDataObject( ) throws SQLException {{", className );
             }
             auto arguments = GetDataTypeConstructorCallPropertiesArguments( classInfo );
             WriteLine( L"            return new {}( {} );", className, arguments );
@@ -305,7 +305,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
                 auto topLevelClassInfo = classInfo.TopLevelClass( );
                 auto topLevelClassName = JavaHelper::GetDataType( classInfo );
                 WriteLine( L"    @Override" );
-                WriteLine( L"    public {} GetDataObject( ) throws SQLException {{", topLevelClassName );
+                WriteLine( L"    public {} getDataObject( ) throws SQLException {{", topLevelClassName );
                 auto arguments = GetDataTypeConstructorCallPropertiesArguments( classInfo );
                 WriteLine( L"        return new {}( {} );", className, arguments );
                 WriteLine( L"    }" );

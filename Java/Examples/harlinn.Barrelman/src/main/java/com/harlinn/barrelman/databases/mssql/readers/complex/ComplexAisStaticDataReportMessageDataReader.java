@@ -161,5 +161,95 @@ public class ComplexAisStaticDataReportMessageDataReader extends ResultSetWrappe
         return getInt32( ASDRPB_SPARE_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AisStaticDataReportMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getPartNumber( ) );
+            }
+            break;
+            case Kind.AisStaticDataReportPartAMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getPartNumber( ) );
+                destination.writeNullableGuid( getAisStaticDataReportPartAMessageShipName( ) );
+                destination.writeInt32( getAisStaticDataReportPartAMessageSpare( ) );
+            }
+            break;
+            case Kind.AisStaticDataReportPartBMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getPartNumber( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageShipType( ) );
+                destination.writeStringUtf8( getAisStaticDataReportPartBMessageVendorId( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageUnitModelCode( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageSerialNumber( ) );
+                destination.writeNullableGuid( getAisStaticDataReportPartBMessageCallsign( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToBow( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToStern( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToPort( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToStarboard( ) );
+                destination.writeNullableGuid( getAisStaticDataReportPartBMessageMothershipMmsi( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessagePositionFixType( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageSpare( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public AisStaticDataReportMessageObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AisStaticDataReportMessage: {
+                return new AisStaticDataReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPartNumber( ) );
+            }
+            case Kind.AisStaticDataReportPartAMessage: {
+                return new AisStaticDataReportPartAMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPartNumber( ), getAisStaticDataReportPartAMessageShipName( ), getAisStaticDataReportPartAMessageSpare( ) );
+            }
+            case Kind.AisStaticDataReportPartBMessage: {
+                return new AisStaticDataReportPartBMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPartNumber( ), getAisStaticDataReportPartBMessageShipType( ), getAisStaticDataReportPartBMessageVendorId( ), getAisStaticDataReportPartBMessageUnitModelCode( ), getAisStaticDataReportPartBMessageSerialNumber( ), getAisStaticDataReportPartBMessageCallsign( ), getAisStaticDataReportPartBMessageDimensionToBow( ), getAisStaticDataReportPartBMessageDimensionToStern( ), getAisStaticDataReportPartBMessageDimensionToPort( ), getAisStaticDataReportPartBMessageDimensionToStarboard( ), getAisStaticDataReportPartBMessageMothershipMmsi( ), getAisStaticDataReportPartBMessagePositionFixType( ), getAisStaticDataReportPartBMessageSpare( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

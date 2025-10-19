@@ -61,7 +61,7 @@ public class SimpleVesselTypeDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public VesselTypeObject GetDataObject( ) throws SQLException {
+    public VesselTypeObject getDataObject( ) throws SQLException {
             return new VesselTypeObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getCode( ) );
     }
 

@@ -110,7 +110,7 @@ public class SimpleLogRecordDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public LogRecordObject GetDataObject( ) throws SQLException {
+    public LogRecordObject getDataObject( ) throws SQLException {
             return new LogRecordObject( ObjectState.Stored, getId( ), getRowVersion( ), getThread( ), getSequenceNumber( ), getLevel( ), getTimestamp( ), getDepth( ), getLocation( ), getMessage( ), getExceptionString( ), getPropertiesData( ) );
     }
 

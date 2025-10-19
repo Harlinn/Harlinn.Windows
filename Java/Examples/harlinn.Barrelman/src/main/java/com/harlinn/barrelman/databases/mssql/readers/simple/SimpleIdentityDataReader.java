@@ -53,6 +53,6 @@ public abstract class SimpleIdentityDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public abstract IdentityObject GetDataObject( ) throws SQLException;
+    public abstract IdentityObject getDataObject( ) throws SQLException;
 
 }

@@ -55,7 +55,7 @@ public class SimpleCameraCommandAdjustPanTiltZoomDataReader extends SimpleCamera
     }
 
     @Override
-    public CameraCommandAdjustPanTiltZoomObject GetDataObject( ) throws SQLException {
+    public CameraCommandAdjustPanTiltZoomObject getDataObject( ) throws SQLException {
         return new CameraCommandAdjustPanTiltZoomObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getX( ), getY( ), getZ( ) );
     }
 

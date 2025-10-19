@@ -39,7 +39,7 @@ public class SimpleRadomeDewPointTimeseriesDataReader extends SimpleDoubleTimese
     }
 
     @Override
-    public RadomeDewPointTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadomeDewPointTimeseriesObject getDataObject( ) throws SQLException {
         return new RadomeDewPointTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadome( ) );
     }
 

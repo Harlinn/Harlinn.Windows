@@ -59,5 +59,59 @@ public class ComplexNamespaceElementDataReader extends ResultSetWrapper {
         return getString( NE_DESCRIPTION_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.ElementType: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getNamespace( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+            }
+            break;
+            case Kind.Namespace: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getNamespace( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public NamespaceElementObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.ElementType: {
+                return new ElementTypeObject( ObjectState.Stored, getId( ), getRowVersion( ), getNamespace( ), getName( ), getDescription( ) );
+            }
+            case Kind.Namespace: {
+                return new NamespaceObject( ObjectState.Stored, getId( ), getRowVersion( ), getNamespace( ), getName( ), getDescription( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

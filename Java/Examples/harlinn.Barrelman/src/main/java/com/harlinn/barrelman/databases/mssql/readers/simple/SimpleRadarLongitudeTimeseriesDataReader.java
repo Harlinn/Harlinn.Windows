@@ -39,7 +39,7 @@ public class SimpleRadarLongitudeTimeseriesDataReader extends SimpleDoubleTimese
     }
 
     @Override
-    public RadarLongitudeTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarLongitudeTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarLongitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

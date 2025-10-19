@@ -67,5 +67,77 @@ public class ComplexIdentityDataReader extends ResultSetWrapper {
         return getString( N_TEXT_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.Callsign: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getCallsignIdentifier( ) );
+            }
+            break;
+            case Kind.InternationalMaritimeOrganizationNumber: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeInt64( getInternationalMaritimeOrganizationNumberIdentifier( ) );
+            }
+            break;
+            case Kind.MaritimeMobileServiceIdentity: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeInt64( getMaritimeMobileServiceIdentityIdentifier( ) );
+            }
+            break;
+            case Kind.Name: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getNameText( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public IdentityObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.Callsign: {
+                return new CallsignObject( ObjectState.Stored, getId( ), getRowVersion( ), getCallsignIdentifier( ) );
+            }
+            case Kind.InternationalMaritimeOrganizationNumber: {
+                return new InternationalMaritimeOrganizationNumberObject( ObjectState.Stored, getId( ), getRowVersion( ), getInternationalMaritimeOrganizationNumberIdentifier( ) );
+            }
+            case Kind.MaritimeMobileServiceIdentity: {
+                return new MaritimeMobileServiceIdentityObject( ObjectState.Stored, getId( ), getRowVersion( ), getMaritimeMobileServiceIdentityIdentifier( ) );
+            }
+            case Kind.Name: {
+                return new NameObject( ObjectState.Stored, getId( ), getRowVersion( ), getNameText( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

@@ -61,7 +61,7 @@ public class SimpleLogHostDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public LogHostObject GetDataObject( ) throws SQLException {
+    public LogHostObject getDataObject( ) throws SQLException {
             return new LogHostObject( ObjectState.Stored, getId( ), getRowVersion( ), getComputerName( ), getDescription( ) );
     }
 

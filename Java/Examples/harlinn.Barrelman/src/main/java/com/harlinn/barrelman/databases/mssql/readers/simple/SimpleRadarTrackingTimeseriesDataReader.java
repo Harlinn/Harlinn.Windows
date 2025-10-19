@@ -39,7 +39,7 @@ public class SimpleRadarTrackingTimeseriesDataReader extends SimpleBooleanTimese
     }
 
     @Override
-    public RadarTrackingTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarTrackingTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarTrackingTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

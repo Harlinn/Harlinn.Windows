@@ -39,7 +39,7 @@ public class SimpleViewLongitudeTimeseriesDataReader extends SimpleDoubleTimeser
     }
 
     @Override
-    public ViewLongitudeTimeseriesObject GetDataObject( ) throws SQLException {
+    public ViewLongitudeTimeseriesObject getDataObject( ) throws SQLException {
         return new ViewLongitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getView( ) );
     }
 

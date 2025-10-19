@@ -37,7 +37,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases
     namespace MsSql
     {
         inline JavaMsSqlGenerator::JavaMsSqlGenerator( const JavaDatabasesGenerator& owner )
-            : Base( owner, owner.Options( ).MsSql( ) ), readers_( *this ), storedProcedures_( *this ) /*, dataContext_( *this ), updateNodes_( *this )*/, testDataObjectFactory_( *this )
+            : Base( owner, owner.Options( ).MsSql( ) ), readers_( *this ), storedProcedures_( *this ), dataContext_( *this ), /*, updateNodes_( *this ),*/ testDataObjectFactory_( *this )
         { }
     }
 }

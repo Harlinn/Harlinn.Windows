@@ -82,7 +82,7 @@ public class SimpleLogLocationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public LogLocationObject GetDataObject( ) throws SQLException {
+    public LogLocationObject getDataObject( ) throws SQLException {
             return new LogLocationObject( ObjectState.Stored, getId( ), getRowVersion( ), getFileName( ), getLineNumber( ), getNamespace( ), getClassName( ), getMethodName( ) );
     }
 

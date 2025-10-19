@@ -203,5 +203,84 @@ public class ComplexTrackerDeviceDataReader extends ResultSetWrapper {
         return getNullableGuid( RD_GNSSDEVICE_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AisDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getHost( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeNullableGuid( getEnabledTimeseries( ) );
+            }
+            break;
+            case Kind.RadarDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getHost( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeNullableGuid( getEnabledTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSaveSettingsTimeseries( ) );
+                destination.writeNullableGuid( getRadarDevicePowerOnTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceTrackingOnTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceRadarPulseTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceTuningTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceBlankSector1Timeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector1StartTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector1EndTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceBlankSector2Timeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector2StartTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector2EndTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceEnableAutomaticFrequencyControlTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceAzimuthOffsetTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceEnableSensitivityTimeControlTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceAutomaticSensitivityTimeControlTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSensitivityTimeControlLevelTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceEnableFastTimeConstantTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceFastTimeConstantLevelTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceFastTimeConstantModeTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceLatitudeTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceLongitudeTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceRadome( ) );
+                destination.writeNullableGuid( getRadarDeviceGNSSDevice( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public TrackerDeviceObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AisDevice: {
+                return new AisDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
+            }
+            case Kind.RadarDevice: {
+                return new RadarDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getRadarDeviceSaveSettingsTimeseries( ), getRadarDevicePowerOnTimeseries( ), getRadarDeviceTrackingOnTimeseries( ), getRadarDeviceRadarPulseTimeseries( ), getRadarDeviceTuningTimeseries( ), getRadarDeviceBlankSector1Timeseries( ), getRadarDeviceSector1StartTimeseries( ), getRadarDeviceSector1EndTimeseries( ), getRadarDeviceBlankSector2Timeseries( ), getRadarDeviceSector2StartTimeseries( ), getRadarDeviceSector2EndTimeseries( ), getRadarDeviceEnableAutomaticFrequencyControlTimeseries( ), getRadarDeviceAzimuthOffsetTimeseries( ), getRadarDeviceEnableSensitivityTimeControlTimeseries( ), getRadarDeviceAutomaticSensitivityTimeControlTimeseries( ), getRadarDeviceSensitivityTimeControlLevelTimeseries( ), getRadarDeviceEnableFastTimeConstantTimeseries( ), getRadarDeviceFastTimeConstantLevelTimeseries( ), getRadarDeviceFastTimeConstantModeTimeseries( ), getRadarDeviceLatitudeTimeseries( ), getRadarDeviceLongitudeTimeseries( ), getRadarDeviceRadome( ), getRadarDeviceGNSSDevice( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

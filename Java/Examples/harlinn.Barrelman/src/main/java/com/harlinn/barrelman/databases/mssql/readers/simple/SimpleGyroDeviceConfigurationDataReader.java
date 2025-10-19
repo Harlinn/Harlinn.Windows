@@ -103,7 +103,7 @@ public class SimpleGyroDeviceConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public GyroDeviceConfigurationObject GetDataObject( ) throws SQLException {
+    public GyroDeviceConfigurationObject getDataObject( ) throws SQLException {
             return new GyroDeviceConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getGyroDevice( ), getTimestamp( ), getDefaultHeadingTrueNorth( ), getDefaultMagneticTrueNorth( ), getHeadingTrueNorthOffset( ), getHeadingMagneticNorthOffset( ), getPitchTransducerName( ), getRollTransducerName( ) );
     }
 

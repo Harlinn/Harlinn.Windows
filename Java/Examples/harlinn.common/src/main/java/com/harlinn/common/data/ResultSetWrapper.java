@@ -2389,7 +2389,7 @@ public class ResultSetWrapper implements ResultSet {
 	public Guid getGuid(int parameterIndex) throws SQLException {
 		var guidAsString = getString(parameterIndex);
 		if(guidAsString != null) {
-			return Guid.fromString(guidAsString);
+			return Guid.fromString("{"+guidAsString+"}");
 		}
 		return new Guid();
 	}
@@ -2397,7 +2397,7 @@ public class ResultSetWrapper implements ResultSet {
 	public Guid getNullableGuid(int parameterIndex) throws SQLException {
 		var guidAsString = getString(parameterIndex);
 		if(guidAsString != null) {
-			return Guid.fromString(guidAsString);
+			return Guid.fromString("{"+guidAsString+"}");
 		}
 		return null;
 	}

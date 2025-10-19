@@ -68,7 +68,7 @@ public class SimpleBinaryTimeseriesValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public BinaryTimeseriesValueObject GetDataObject( ) throws SQLException {
+    public BinaryTimeseriesValueObject getDataObject( ) throws SQLException {
             return new BinaryTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getValue( ) );
     }
 

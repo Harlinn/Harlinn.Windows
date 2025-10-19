@@ -46,7 +46,7 @@ public class SimpleStringPropertyDefinitionDataReader extends SimplePropertyDefi
     }
 
     @Override
-    public StringPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public StringPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new StringPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getPattern( ) );
     }
 

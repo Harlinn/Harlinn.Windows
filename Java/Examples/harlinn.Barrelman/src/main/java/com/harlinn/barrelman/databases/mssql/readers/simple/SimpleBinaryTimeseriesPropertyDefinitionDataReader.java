@@ -31,7 +31,7 @@ public class SimpleBinaryTimeseriesPropertyDefinitionDataReader extends SimpleTi
     }
 
     @Override
-    public BinaryTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public BinaryTimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new BinaryTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ) );
     }
 

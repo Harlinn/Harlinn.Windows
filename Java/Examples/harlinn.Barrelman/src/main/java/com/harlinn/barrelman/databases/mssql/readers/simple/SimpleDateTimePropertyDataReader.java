@@ -38,7 +38,7 @@ public class SimpleDateTimePropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public DateTimePropertyObject GetDataObject( ) throws SQLException {
+    public DateTimePropertyObject getDataObject( ) throws SQLException {
         return new DateTimePropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

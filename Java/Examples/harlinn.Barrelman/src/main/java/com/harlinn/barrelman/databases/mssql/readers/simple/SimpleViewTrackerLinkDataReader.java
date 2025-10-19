@@ -75,7 +75,7 @@ public class SimpleViewTrackerLinkDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public ViewTrackerLinkObject GetDataObject( ) throws SQLException {
+    public ViewTrackerLinkObject getDataObject( ) throws SQLException {
             return new ViewTrackerLinkObject( ObjectState.Stored, getId( ), getRowVersion( ), getView( ), getTracker( ), getStart( ), getEnd( ) );
     }
 

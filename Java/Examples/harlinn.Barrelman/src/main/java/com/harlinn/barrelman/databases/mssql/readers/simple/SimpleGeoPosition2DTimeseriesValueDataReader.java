@@ -75,7 +75,7 @@ public class SimpleGeoPosition2DTimeseriesValueDataReader extends ResultSetWrapp
         destination.writeBoolean( false );
     }
 
-    public GeoPosition2DTimeseriesValueObject GetDataObject( ) throws SQLException {
+    public GeoPosition2DTimeseriesValueObject getDataObject( ) throws SQLException {
             return new GeoPosition2DTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getLatitude( ), getLongitude( ) );
     }
 

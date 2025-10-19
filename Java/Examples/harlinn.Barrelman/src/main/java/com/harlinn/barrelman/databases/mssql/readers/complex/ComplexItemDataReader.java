@@ -544,5 +544,310 @@ public class ComplexItemDataReader extends ResultSetWrapper {
         return getNullableGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.BaseStation: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getBaseStationName( ) );
+                destination.writeNullableGuid( getBaseStationType( ) );
+            }
+            break;
+            case Kind.CameraDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+            }
+            break;
+            case Kind.GNSSDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+                destination.writeNullableGuid( getGNSSDeviceLatitudeTimeseries( ) );
+                destination.writeNullableGuid( getGNSSDeviceLongitudeTimeseries( ) );
+                destination.writeNullableGuid( getGNSSDeviceAltitudeTimeseries( ) );
+            }
+            break;
+            case Kind.GyroDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+                destination.writeNullableGuid( getGyroDeviceHeadingTrueNorthTimeseries( ) );
+                destination.writeNullableGuid( getGyroDeviceHeadingMagneticNorthTimeseries( ) );
+                destination.writeNullableGuid( getGyroDevicePitchTimeseries( ) );
+                destination.writeNullableGuid( getGyroDeviceRateOfTurnTimeseries( ) );
+                destination.writeNullableGuid( getGyroDeviceRollTimeseries( ) );
+                destination.writeNullableGuid( getGyroDeviceCourseTimeseries( ) );
+                destination.writeNullableGuid( getGyroDeviceSpeedTimeseries( ) );
+                destination.writeNullableGuid( getGyroDeviceGNSSDevice( ) );
+            }
+            break;
+            case Kind.LineInputDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+            }
+            break;
+            case Kind.OilSpillDetectorDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+            }
+            break;
+            case Kind.RadioDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+            }
+            break;
+            case Kind.RadomeDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+                destination.writeNullableGuid( getRadomeDeviceRadar( ) );
+                destination.writeNullableGuid( getRadomeDevicePressureTimeseries( ) );
+                destination.writeNullableGuid( getRadomeDeviceTemperatureTimeseries( ) );
+                destination.writeNullableGuid( getRadomeDeviceDewPointTimeseries( ) );
+                destination.writeNullableGuid( getRadomeDeviceStatusTimeseries( ) );
+            }
+            break;
+            case Kind.AisDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+            }
+            break;
+            case Kind.RadarDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSaveSettingsTimeseries( ) );
+                destination.writeNullableGuid( getRadarDevicePowerOnTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceTrackingOnTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceRadarPulseTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceTuningTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceBlankSector1Timeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector1StartTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector1EndTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceBlankSector2Timeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector2StartTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSector2EndTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceEnableAutomaticFrequencyControlTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceAzimuthOffsetTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceEnableSensitivityTimeControlTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceAutomaticSensitivityTimeControlTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceSensitivityTimeControlLevelTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceEnableFastTimeConstantTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceFastTimeConstantLevelTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceFastTimeConstantModeTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceLatitudeTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceLongitudeTimeseries( ) );
+                destination.writeNullableGuid( getRadarDeviceRadome( ) );
+                destination.writeNullableGuid( getRadarDeviceGNSSDevice( ) );
+            }
+            break;
+            case Kind.WeatherStationDevice: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDeviceHost( ) );
+                destination.writeStringUtf8( getDeviceName( ) );
+                destination.writeStringUtf8( getDeviceDescription( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceBarometricPressureTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceAirTemperatureTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceWaterTemperatureTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceRelativeHumidityTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceAbsoluteHumidityTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceDewPointTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceWindDirectionTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceWindSpeedTimeseries( ) );
+                destination.writeNullableGuid( getWeatherStationDeviceGyro( ) );
+            }
+            break;
+            case Kind.Facility: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getFacilityName( ) );
+                destination.writeNullableGuid( getFacilityType( ) );
+                destination.writeDouble( getFacilityLongitude( ) );
+                destination.writeDouble( getFacilityLatitude( ) );
+                destination.writeDouble( getFacilityAltitude( ) );
+            }
+            break;
+            case Kind.Aircraft: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getAircraftName( ) );
+                destination.writeNullableGuid( getAircraftType( ) );
+            }
+            break;
+            case Kind.AisAidToNavigation: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getAisAidToNavigationName( ) );
+                destination.writeNullableGuid( getAisAidToNavigationMMSI( ) );
+                destination.writeInt32( getAisAidToNavigationNavigationalAidType( ) );
+                destination.writeNullableGuid( getAisAidToNavigationPosition( ) );
+                destination.writeBoolean( getAisAidToNavigationIsVirtual( ) );
+                destination.writeInt32( getAisAidToNavigationToBow( ) );
+                destination.writeInt32( getAisAidToNavigationToStern( ) );
+                destination.writeInt32( getAisAidToNavigationToPort( ) );
+                destination.writeInt32( getAisAidToNavigationToStarboard( ) );
+                destination.writeNullableGuid( getAisAidToNavigationOffPositionTimeseries( ) );
+            }
+            break;
+            case Kind.Vehicle: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getVehicleName( ) );
+                destination.writeNullableGuid( getVehicleType( ) );
+            }
+            break;
+            case Kind.Vessel: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getVesselName( ) );
+                destination.writeNullableGuid( getVesselType( ) );
+                destination.writeInt32( getVesselToBow( ) );
+                destination.writeInt32( getVesselToStern( ) );
+                destination.writeInt32( getVesselToPort( ) );
+                destination.writeInt32( getVesselToStarboard( ) );
+                destination.writeNullableGuid( getVesselDraughtTimeseries( ) );
+                destination.writeNullableGuid( getVesselPersonsOnBoardTimeseries( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public ItemObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.BaseStation: {
+                return new BaseStationObject( ObjectState.Stored, getId( ), getRowVersion( ), getBaseStationName( ), getBaseStationType( ) );
+            }
+            case Kind.CameraDevice: {
+                return new CameraDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ) );
+            }
+            case Kind.GNSSDevice: {
+                return new GNSSDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ), getGNSSDeviceLatitudeTimeseries( ), getGNSSDeviceLongitudeTimeseries( ), getGNSSDeviceAltitudeTimeseries( ) );
+            }
+            case Kind.GyroDevice: {
+                return new GyroDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ), getGyroDeviceHeadingTrueNorthTimeseries( ), getGyroDeviceHeadingMagneticNorthTimeseries( ), getGyroDevicePitchTimeseries( ), getGyroDeviceRateOfTurnTimeseries( ), getGyroDeviceRollTimeseries( ), getGyroDeviceCourseTimeseries( ), getGyroDeviceSpeedTimeseries( ), getGyroDeviceGNSSDevice( ) );
+            }
+            case Kind.LineInputDevice: {
+                return new LineInputDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ) );
+            }
+            case Kind.OilSpillDetectorDevice: {
+                return new OilSpillDetectorDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ) );
+            }
+            case Kind.RadioDevice: {
+                return new RadioDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ) );
+            }
+            case Kind.RadomeDevice: {
+                return new RadomeDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ), getRadomeDeviceRadar( ), getRadomeDevicePressureTimeseries( ), getRadomeDeviceTemperatureTimeseries( ), getRadomeDeviceDewPointTimeseries( ), getRadomeDeviceStatusTimeseries( ) );
+            }
+            case Kind.AisDevice: {
+                return new AisDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ) );
+            }
+            case Kind.RadarDevice: {
+                return new RadarDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ), getRadarDeviceSaveSettingsTimeseries( ), getRadarDevicePowerOnTimeseries( ), getRadarDeviceTrackingOnTimeseries( ), getRadarDeviceRadarPulseTimeseries( ), getRadarDeviceTuningTimeseries( ), getRadarDeviceBlankSector1Timeseries( ), getRadarDeviceSector1StartTimeseries( ), getRadarDeviceSector1EndTimeseries( ), getRadarDeviceBlankSector2Timeseries( ), getRadarDeviceSector2StartTimeseries( ), getRadarDeviceSector2EndTimeseries( ), getRadarDeviceEnableAutomaticFrequencyControlTimeseries( ), getRadarDeviceAzimuthOffsetTimeseries( ), getRadarDeviceEnableSensitivityTimeControlTimeseries( ), getRadarDeviceAutomaticSensitivityTimeControlTimeseries( ), getRadarDeviceSensitivityTimeControlLevelTimeseries( ), getRadarDeviceEnableFastTimeConstantTimeseries( ), getRadarDeviceFastTimeConstantLevelTimeseries( ), getRadarDeviceFastTimeConstantModeTimeseries( ), getRadarDeviceLatitudeTimeseries( ), getRadarDeviceLongitudeTimeseries( ), getRadarDeviceRadome( ), getRadarDeviceGNSSDevice( ) );
+            }
+            case Kind.WeatherStationDevice: {
+                return new WeatherStationDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getDeviceHost( ), getDeviceName( ), getDeviceDescription( ), getDeviceEnabledTimeseries( ), getWeatherStationDeviceBarometricPressureTimeseries( ), getWeatherStationDeviceAirTemperatureTimeseries( ), getWeatherStationDeviceWaterTemperatureTimeseries( ), getWeatherStationDeviceRelativeHumidityTimeseries( ), getWeatherStationDeviceAbsoluteHumidityTimeseries( ), getWeatherStationDeviceDewPointTimeseries( ), getWeatherStationDeviceWindDirectionTimeseries( ), getWeatherStationDeviceWindSpeedTimeseries( ), getWeatherStationDeviceGyro( ) );
+            }
+            case Kind.Facility: {
+                return new FacilityObject( ObjectState.Stored, getId( ), getRowVersion( ), getFacilityName( ), getFacilityType( ), getFacilityLongitude( ), getFacilityLatitude( ), getFacilityAltitude( ) );
+            }
+            case Kind.Aircraft: {
+                return new AircraftObject( ObjectState.Stored, getId( ), getRowVersion( ), getAircraftName( ), getAircraftType( ) );
+            }
+            case Kind.AisAidToNavigation: {
+                return new AisAidToNavigationObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisAidToNavigationName( ), getAisAidToNavigationMMSI( ), getAisAidToNavigationNavigationalAidType( ), getAisAidToNavigationPosition( ), getAisAidToNavigationIsVirtual( ), getAisAidToNavigationToBow( ), getAisAidToNavigationToStern( ), getAisAidToNavigationToPort( ), getAisAidToNavigationToStarboard( ), getAisAidToNavigationOffPositionTimeseries( ) );
+            }
+            case Kind.Vehicle: {
+                return new VehicleObject( ObjectState.Stored, getId( ), getRowVersion( ), getVehicleName( ), getVehicleType( ) );
+            }
+            case Kind.Vessel: {
+                return new VesselObject( ObjectState.Stored, getId( ), getRowVersion( ), getVesselName( ), getVesselType( ), getVesselToBow( ), getVesselToStern( ), getVesselToPort( ), getVesselToStarboard( ), getVesselDraughtTimeseries( ), getVesselPersonsOnBoardTimeseries( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

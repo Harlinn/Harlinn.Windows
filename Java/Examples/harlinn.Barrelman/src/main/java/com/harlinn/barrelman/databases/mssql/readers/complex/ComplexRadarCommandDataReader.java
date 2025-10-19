@@ -70,5 +70,63 @@ public class ComplexRadarCommandDataReader extends ResultSetWrapper {
         return getNullableGuid( RC_REPLY_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.RadarCommand: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getRadar( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+            }
+            break;
+            case Kind.RadarCommandGetStatus: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getRadar( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public RadarCommandObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.RadarCommand: {
+                return new RadarCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+            }
+            case Kind.RadarCommandGetStatus: {
+                return new RadarCommandGetStatusObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

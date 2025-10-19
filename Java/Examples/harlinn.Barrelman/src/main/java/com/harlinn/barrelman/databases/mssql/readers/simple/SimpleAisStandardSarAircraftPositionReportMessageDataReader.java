@@ -125,7 +125,7 @@ public class SimpleAisStandardSarAircraftPositionReportMessageDataReader extends
     }
 
     @Override
-    public AisStandardSarAircraftPositionReportMessageObject GetDataObject( ) throws SQLException {
+    public AisStandardSarAircraftPositionReportMessageObject getDataObject( ) throws SQLException {
         return new AisStandardSarAircraftPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAltitude( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTimestamp( ), getReserved( ), getDataTerminalReady( ), getSpare( ), getAssigned( ), getRaim( ), getRadioStatus( ) );
     }
 

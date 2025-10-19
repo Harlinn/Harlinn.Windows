@@ -68,7 +68,7 @@ public class SimpleLineInputWhiteListEntryDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public LineInputWhiteListEntryObject GetDataObject( ) throws SQLException {
+    public LineInputWhiteListEntryObject getDataObject( ) throws SQLException {
             return new LineInputWhiteListEntryObject( ObjectState.Stored, getId( ), getRowVersion( ), getLineInputDevice( ), getHostName( ), getPort( ) );
     }
 

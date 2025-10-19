@@ -89,7 +89,7 @@ public class SimpleGyroDeviceDataReader extends SimpleDeviceDataReader {
     }
 
     @Override
-    public GyroDeviceObject GetDataObject( ) throws SQLException {
+    public GyroDeviceObject getDataObject( ) throws SQLException {
         return new GyroDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getHeadingTrueNorthTimeseries( ), getHeadingMagneticNorthTimeseries( ), getPitchTimeseries( ), getRateOfTurnTimeseries( ), getRollTimeseries( ), getCourseTimeseries( ), getSpeedTimeseries( ), getGNSSDevice( ) );
     }
 

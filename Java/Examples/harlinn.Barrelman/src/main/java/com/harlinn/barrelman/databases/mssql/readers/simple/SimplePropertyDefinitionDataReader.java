@@ -74,6 +74,6 @@ public abstract class SimplePropertyDefinitionDataReader extends ResultSetWrappe
         destination.writeBoolean( false );
     }
 
-    public abstract PropertyDefinitionObject GetDataObject( ) throws SQLException;
+    public abstract PropertyDefinitionObject getDataObject( ) throws SQLException;
 
 }

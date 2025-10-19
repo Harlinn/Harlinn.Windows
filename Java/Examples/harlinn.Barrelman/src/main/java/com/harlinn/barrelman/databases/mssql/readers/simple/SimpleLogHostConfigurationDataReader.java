@@ -145,7 +145,7 @@ public class SimpleLogHostConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public LogHostConfigurationObject GetDataObject( ) throws SQLException {
+    public LogHostConfigurationObject getDataObject( ) throws SQLException {
             return new LogHostConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getTimestamp( ), getFinest( ), getFiner( ), getFine( ), getInfo( ), getNotice( ), getWarn( ), getError( ), getSevere( ), getCritical( ), getAlert( ), getFatal( ), getEmergency( ) );
     }
 

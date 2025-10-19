@@ -85,7 +85,7 @@ public class SimpleVesselDataReader extends SimpleTrackableItemDataReader {
     }
 
     @Override
-    public VesselObject GetDataObject( ) throws SQLException {
+    public VesselObject getDataObject( ) throws SQLException {
         return new VesselObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ), getToBow( ), getToStern( ), getToPort( ), getToStarboard( ), getDraughtTimeseries( ), getPersonsOnBoardTimeseries( ) );
     }
 

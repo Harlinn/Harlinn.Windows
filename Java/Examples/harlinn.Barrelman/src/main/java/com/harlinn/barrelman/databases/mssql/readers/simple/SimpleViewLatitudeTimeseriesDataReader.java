@@ -39,7 +39,7 @@ public class SimpleViewLatitudeTimeseriesDataReader extends SimpleDoubleTimeseri
     }
 
     @Override
-    public ViewLatitudeTimeseriesObject GetDataObject( ) throws SQLException {
+    public ViewLatitudeTimeseriesObject getDataObject( ) throws SQLException {
         return new ViewLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getView( ) );
     }
 

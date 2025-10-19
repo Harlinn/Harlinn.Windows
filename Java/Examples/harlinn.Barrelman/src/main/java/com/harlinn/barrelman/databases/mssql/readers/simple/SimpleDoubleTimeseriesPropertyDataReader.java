@@ -38,7 +38,7 @@ public class SimpleDoubleTimeseriesPropertyDataReader extends SimpleTimeseriesPr
     }
 
     @Override
-    public DoubleTimeseriesPropertyObject GetDataObject( ) throws SQLException {
+    public DoubleTimeseriesPropertyObject getDataObject( ) throws SQLException {
         return new DoubleTimeseriesPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getTimeseries( ) );
     }
 

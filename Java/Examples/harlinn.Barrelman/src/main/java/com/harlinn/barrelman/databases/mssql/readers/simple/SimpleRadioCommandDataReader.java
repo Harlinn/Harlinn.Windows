@@ -82,7 +82,7 @@ public class SimpleRadioCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public RadioCommandObject GetDataObject( ) throws SQLException {
+    public RadioCommandObject getDataObject( ) throws SQLException {
             return new RadioCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadio( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
     }
 

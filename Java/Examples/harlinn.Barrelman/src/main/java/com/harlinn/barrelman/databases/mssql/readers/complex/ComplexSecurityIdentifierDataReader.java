@@ -65,5 +65,60 @@ public class ComplexSecurityIdentifierDataReader extends ResultSetWrapper {
         return getString( SR_NAME_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.SecurityLogin: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDomain( ) );
+                destination.writeStringUtf8( getIdentity( ) );
+                destination.writeStringUtf8( getDescription( ) );
+            }
+            break;
+            case Kind.SecurityRole: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getDomain( ) );
+                destination.writeStringUtf8( getIdentity( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeStringUtf8( getSecurityRoleName( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public SecurityIdentifierObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.SecurityLogin: {
+                return new SecurityLoginObject( ObjectState.Stored, getId( ), getRowVersion( ), getDomain( ), getIdentity( ), getDescription( ) );
+            }
+            case Kind.SecurityRole: {
+                return new SecurityRoleObject( ObjectState.Stored, getId( ), getRowVersion( ), getDomain( ), getIdentity( ), getDescription( ), getSecurityRoleName( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

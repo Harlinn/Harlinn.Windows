@@ -88,6 +88,6 @@ public abstract class SimpleAisMessageDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public abstract AisMessageObject GetDataObject( ) throws SQLException;
+    public abstract AisMessageObject getDataObject( ) throws SQLException;
 
 }

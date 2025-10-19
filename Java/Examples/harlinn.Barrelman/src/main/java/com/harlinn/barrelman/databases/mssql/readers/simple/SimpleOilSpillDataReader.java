@@ -96,7 +96,7 @@ public class SimpleOilSpillDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public OilSpillObject GetDataObject( ) throws SQLException {
+    public OilSpillObject getDataObject( ) throws SQLException {
             return new OilSpillObject( ObjectState.Stored, getId( ), getRowVersion( ), getOilSpillDetector( ), getTimestamp( ), getOilArea( ), getShape( ), getBSI( ), getOil( ), getTrace( ) );
     }
 

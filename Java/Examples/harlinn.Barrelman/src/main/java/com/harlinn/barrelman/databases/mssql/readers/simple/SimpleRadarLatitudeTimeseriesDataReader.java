@@ -39,7 +39,7 @@ public class SimpleRadarLatitudeTimeseriesDataReader extends SimpleDoubleTimeser
     }
 
     @Override
-    public RadarLatitudeTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarLatitudeTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

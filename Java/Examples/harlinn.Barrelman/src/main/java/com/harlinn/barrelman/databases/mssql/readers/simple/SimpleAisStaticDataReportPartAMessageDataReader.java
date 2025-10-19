@@ -49,7 +49,7 @@ public class SimpleAisStaticDataReportPartAMessageDataReader extends SimpleAisSt
     }
 
     @Override
-    public AisStaticDataReportPartAMessageObject GetDataObject( ) throws SQLException {
+    public AisStaticDataReportPartAMessageObject getDataObject( ) throws SQLException {
         return new AisStaticDataReportPartAMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPartNumber( ), getShipName( ), getSpare( ) );
     }
 

@@ -38,7 +38,7 @@ public class SimpleBytePropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public BytePropertyObject GetDataObject( ) throws SQLException {
+    public BytePropertyObject getDataObject( ) throws SQLException {
         return new BytePropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

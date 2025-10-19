@@ -32,7 +32,7 @@ public class SimpleLineInputDeviceDataReader extends SimpleDeviceDataReader {
     }
 
     @Override
-    public LineInputDeviceObject GetDataObject( ) throws SQLException {
+    public LineInputDeviceObject getDataObject( ) throws SQLException {
         return new LineInputDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
     }
 

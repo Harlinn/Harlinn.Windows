@@ -31,7 +31,7 @@ public class SimpleGuidTimeseriesDataReader extends SimpleTimeseriesDataReader {
     }
 
     @Override
-    public GuidTimeseriesObject GetDataObject( ) throws SQLException {
+    public GuidTimeseriesObject getDataObject( ) throws SQLException {
         return new GuidTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

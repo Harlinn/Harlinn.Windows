@@ -39,7 +39,7 @@ public class SimpleRadomeStatusTimeseriesDataReader extends SimpleUInt32Timeseri
     }
 
     @Override
-    public RadomeStatusTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadomeStatusTimeseriesObject getDataObject( ) throws SQLException {
         return new RadomeStatusTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadome( ) );
     }
 

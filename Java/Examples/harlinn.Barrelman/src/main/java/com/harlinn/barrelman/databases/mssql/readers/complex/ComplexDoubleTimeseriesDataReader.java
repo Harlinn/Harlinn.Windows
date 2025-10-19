@@ -246,5 +246,424 @@ public class ComplexDoubleTimeseriesDataReader extends ResultSetWrapper {
         return getNullableGuid( WSWST_WEATHERSTATION_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.DoubleTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+            }
+            break;
+            case Kind.GNSSAltitudeTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGNSSAltitudeTimeseriesGNSSDevice( ) );
+            }
+            break;
+            case Kind.GNSSLatitudeTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGNSSLatitudeTimeseriesGNSSDevice( ) );
+            }
+            break;
+            case Kind.GNSSLongitudeTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGNSSLongitudeTimeseriesGNSSDevice( ) );
+            }
+            break;
+            case Kind.GyroCourseTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGyroCourseTimeseriesGyroDevice( ) );
+            }
+            break;
+            case Kind.GyroHeadingMagneticNorthTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGyroHeadingMagneticNorthTimeseriesGyroDevice( ) );
+            }
+            break;
+            case Kind.GyroHeadingTrueNorthTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGyroHeadingTrueNorthTimeseriesGyroDevice( ) );
+            }
+            break;
+            case Kind.GyroPitchTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGyroPitchTimeseriesGyroDevice( ) );
+            }
+            break;
+            case Kind.GyroRateOfTurnTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGyroRateOfTurnTimeseriesGyroDevice( ) );
+            }
+            break;
+            case Kind.GyroRollTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGyroRollTimeseriesGyroDevice( ) );
+            }
+            break;
+            case Kind.GyroSpeedTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getGyroSpeedTimeseriesGyroDevice( ) );
+            }
+            break;
+            case Kind.RadarLatitudeTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarLatitudeTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarLongitudeTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarLongitudeTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadomeDewPointTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadomeDewPointTimeseriesRadome( ) );
+            }
+            break;
+            case Kind.RadomePressureTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadomePressureTimeseriesRadome( ) );
+            }
+            break;
+            case Kind.RadomeTemperatureTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadomeTemperatureTimeseriesRadome( ) );
+            }
+            break;
+            case Kind.VesselDraughtTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getVesselDraughtTimeseriesVessel( ) );
+            }
+            break;
+            case Kind.ViewLatitudeTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getViewLatitudeTimeseriesView( ) );
+            }
+            break;
+            case Kind.ViewLongitudeTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getViewLongitudeTimeseriesView( ) );
+            }
+            break;
+            case Kind.ViewZoomLevelTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getViewZoomLevelTimeseriesView( ) );
+            }
+            break;
+            case Kind.WeatherStationAbsoluteHumidityTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationAbsoluteHumidityTimeseriesWeatherStation( ) );
+            }
+            break;
+            case Kind.WeatherStationAirTemperatureTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationAirTemperatureTimeseriesWeatherStation( ) );
+            }
+            break;
+            case Kind.WeatherStationBarometricPressureTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationBarometricPressureTimeseriesWeatherStation( ) );
+            }
+            break;
+            case Kind.WeatherStationDewPointTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationDewPointTimeseriesWeatherStation( ) );
+            }
+            break;
+            case Kind.WeatherStationRelativeHumidityTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationRelativeHumidityTimeseriesWeatherStation( ) );
+            }
+            break;
+            case Kind.WeatherStationWaterTemperatureTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationWaterTemperatureTimeseriesWeatherStation( ) );
+            }
+            break;
+            case Kind.WeatherStationWindDirectionTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationWindDirectionTimeseriesWeatherStation( ) );
+            }
+            break;
+            case Kind.WeatherStationWindSpeedTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getWeatherStationWindSpeedTimeseriesWeatherStation( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public DoubleTimeseriesObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.DoubleTimeseries: {
+                return new DoubleTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+            }
+            case Kind.GNSSAltitudeTimeseries: {
+                return new GNSSAltitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGNSSAltitudeTimeseriesGNSSDevice( ) );
+            }
+            case Kind.GNSSLatitudeTimeseries: {
+                return new GNSSLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGNSSLatitudeTimeseriesGNSSDevice( ) );
+            }
+            case Kind.GNSSLongitudeTimeseries: {
+                return new GNSSLongitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGNSSLongitudeTimeseriesGNSSDevice( ) );
+            }
+            case Kind.GyroCourseTimeseries: {
+                return new GyroCourseTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroCourseTimeseriesGyroDevice( ) );
+            }
+            case Kind.GyroHeadingMagneticNorthTimeseries: {
+                return new GyroHeadingMagneticNorthTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroHeadingMagneticNorthTimeseriesGyroDevice( ) );
+            }
+            case Kind.GyroHeadingTrueNorthTimeseries: {
+                return new GyroHeadingTrueNorthTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroHeadingTrueNorthTimeseriesGyroDevice( ) );
+            }
+            case Kind.GyroPitchTimeseries: {
+                return new GyroPitchTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroPitchTimeseriesGyroDevice( ) );
+            }
+            case Kind.GyroRateOfTurnTimeseries: {
+                return new GyroRateOfTurnTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroRateOfTurnTimeseriesGyroDevice( ) );
+            }
+            case Kind.GyroRollTimeseries: {
+                return new GyroRollTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroRollTimeseriesGyroDevice( ) );
+            }
+            case Kind.GyroSpeedTimeseries: {
+                return new GyroSpeedTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroSpeedTimeseriesGyroDevice( ) );
+            }
+            case Kind.RadarLatitudeTimeseries: {
+                return new RadarLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarLatitudeTimeseriesRadar( ) );
+            }
+            case Kind.RadarLongitudeTimeseries: {
+                return new RadarLongitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarLongitudeTimeseriesRadar( ) );
+            }
+            case Kind.RadomeDewPointTimeseries: {
+                return new RadomeDewPointTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadomeDewPointTimeseriesRadome( ) );
+            }
+            case Kind.RadomePressureTimeseries: {
+                return new RadomePressureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadomePressureTimeseriesRadome( ) );
+            }
+            case Kind.RadomeTemperatureTimeseries: {
+                return new RadomeTemperatureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadomeTemperatureTimeseriesRadome( ) );
+            }
+            case Kind.VesselDraughtTimeseries: {
+                return new VesselDraughtTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getVesselDraughtTimeseriesVessel( ) );
+            }
+            case Kind.ViewLatitudeTimeseries: {
+                return new ViewLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getViewLatitudeTimeseriesView( ) );
+            }
+            case Kind.ViewLongitudeTimeseries: {
+                return new ViewLongitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getViewLongitudeTimeseriesView( ) );
+            }
+            case Kind.ViewZoomLevelTimeseries: {
+                return new ViewZoomLevelTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getViewZoomLevelTimeseriesView( ) );
+            }
+            case Kind.WeatherStationAbsoluteHumidityTimeseries: {
+                return new WeatherStationAbsoluteHumidityTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationAbsoluteHumidityTimeseriesWeatherStation( ) );
+            }
+            case Kind.WeatherStationAirTemperatureTimeseries: {
+                return new WeatherStationAirTemperatureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationAirTemperatureTimeseriesWeatherStation( ) );
+            }
+            case Kind.WeatherStationBarometricPressureTimeseries: {
+                return new WeatherStationBarometricPressureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationBarometricPressureTimeseriesWeatherStation( ) );
+            }
+            case Kind.WeatherStationDewPointTimeseries: {
+                return new WeatherStationDewPointTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationDewPointTimeseriesWeatherStation( ) );
+            }
+            case Kind.WeatherStationRelativeHumidityTimeseries: {
+                return new WeatherStationRelativeHumidityTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationRelativeHumidityTimeseriesWeatherStation( ) );
+            }
+            case Kind.WeatherStationWaterTemperatureTimeseries: {
+                return new WeatherStationWaterTemperatureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationWaterTemperatureTimeseriesWeatherStation( ) );
+            }
+            case Kind.WeatherStationWindDirectionTimeseries: {
+                return new WeatherStationWindDirectionTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationWindDirectionTimeseriesWeatherStation( ) );
+            }
+            case Kind.WeatherStationWindSpeedTimeseries: {
+                return new WeatherStationWindSpeedTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStationWindSpeedTimeseriesWeatherStation( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

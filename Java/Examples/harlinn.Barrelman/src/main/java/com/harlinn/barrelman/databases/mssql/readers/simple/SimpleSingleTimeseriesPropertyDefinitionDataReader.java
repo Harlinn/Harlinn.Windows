@@ -46,7 +46,7 @@ public class SimpleSingleTimeseriesPropertyDefinitionDataReader extends SimpleTi
     }
 
     @Override
-    public SingleTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public SingleTimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new SingleTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
     }
 

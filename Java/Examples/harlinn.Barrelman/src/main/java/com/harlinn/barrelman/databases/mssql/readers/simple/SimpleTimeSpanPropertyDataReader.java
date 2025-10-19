@@ -38,7 +38,7 @@ public class SimpleTimeSpanPropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public TimeSpanPropertyObject GetDataObject( ) throws SQLException {
+    public TimeSpanPropertyObject getDataObject( ) throws SQLException {
         return new TimeSpanPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

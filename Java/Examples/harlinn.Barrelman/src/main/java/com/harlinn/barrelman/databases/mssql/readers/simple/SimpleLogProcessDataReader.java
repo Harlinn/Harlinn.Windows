@@ -96,7 +96,7 @@ public class SimpleLogProcessDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public LogProcessObject GetDataObject( ) throws SQLException {
+    public LogProcessObject getDataObject( ) throws SQLException {
             return new LogProcessObject( ObjectState.Stored, getId( ), getRowVersion( ), getApplication( ), getHost( ), getStarted( ), getStopped( ), getProcessId( ), getPath( ), getIdentity( ) );
     }
 

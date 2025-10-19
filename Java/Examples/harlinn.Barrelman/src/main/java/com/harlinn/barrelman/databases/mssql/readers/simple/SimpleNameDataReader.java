@@ -36,7 +36,7 @@ public class SimpleNameDataReader extends SimpleIdentityDataReader {
     }
 
     @Override
-    public NameObject GetDataObject( ) throws SQLException {
+    public NameObject getDataObject( ) throws SQLException {
         return new NameObject( ObjectState.Stored, getId( ), getRowVersion( ), getText( ) );
     }
 

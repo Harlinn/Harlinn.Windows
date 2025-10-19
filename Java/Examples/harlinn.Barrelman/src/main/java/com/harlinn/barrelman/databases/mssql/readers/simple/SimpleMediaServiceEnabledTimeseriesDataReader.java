@@ -39,7 +39,7 @@ public class SimpleMediaServiceEnabledTimeseriesDataReader extends SimpleBoolean
     }
 
     @Override
-    public MediaServiceEnabledTimeseriesObject GetDataObject( ) throws SQLException {
+    public MediaServiceEnabledTimeseriesObject getDataObject( ) throws SQLException {
         return new MediaServiceEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getService( ) );
     }
 

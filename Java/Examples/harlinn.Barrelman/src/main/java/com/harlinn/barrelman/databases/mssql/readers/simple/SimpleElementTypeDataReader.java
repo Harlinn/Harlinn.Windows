@@ -31,7 +31,7 @@ public class SimpleElementTypeDataReader extends SimpleNamespaceElementDataReade
     }
 
     @Override
-    public ElementTypeObject GetDataObject( ) throws SQLException {
+    public ElementTypeObject getDataObject( ) throws SQLException {
         return new ElementTypeObject( ObjectState.Stored, getId( ), getRowVersion( ), getNamespace( ), getName( ), getDescription( ) );
     }
 

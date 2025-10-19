@@ -48,7 +48,7 @@ public class SimpleCameraCommandStopDataReader extends SimpleCameraCommandDataRe
     }
 
     @Override
-    public CameraCommandStopObject GetDataObject( ) throws SQLException {
+    public CameraCommandStopObject getDataObject( ) throws SQLException {
         return new CameraCommandStopObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getPanTilt( ), getZoom( ) );
     }
 

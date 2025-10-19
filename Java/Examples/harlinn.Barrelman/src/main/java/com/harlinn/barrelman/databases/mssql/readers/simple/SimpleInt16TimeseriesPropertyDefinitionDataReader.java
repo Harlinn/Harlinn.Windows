@@ -46,7 +46,7 @@ public class SimpleInt16TimeseriesPropertyDefinitionDataReader extends SimpleTim
     }
 
     @Override
-    public Int16TimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public Int16TimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new Int16TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
     }
 

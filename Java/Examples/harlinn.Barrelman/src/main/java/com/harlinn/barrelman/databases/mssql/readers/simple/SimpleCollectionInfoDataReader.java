@@ -54,7 +54,7 @@ public class SimpleCollectionInfoDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public CollectionInfoObject GetDataObject( ) throws SQLException {
+    public CollectionInfoObject getDataObject( ) throws SQLException {
             return new CollectionInfoObject( ObjectState.Stored, getId( ), getRowVersion( ), getCount( ) );
     }
 

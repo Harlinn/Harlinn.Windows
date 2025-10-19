@@ -46,7 +46,7 @@ public class SimpleUInt64TimeseriesPropertyDefinitionDataReader extends SimpleTi
     }
 
     @Override
-    public UInt64TimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public UInt64TimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new UInt64TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
     }
 

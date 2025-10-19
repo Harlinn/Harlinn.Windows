@@ -83,7 +83,7 @@ public class SimpleCameraCommandRelativeMoveDataReader extends SimpleCameraComma
     }
 
     @Override
-    public CameraCommandRelativeMoveObject GetDataObject( ) throws SQLException {
+    public CameraCommandRelativeMoveObject getDataObject( ) throws SQLException {
         return new CameraCommandRelativeMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getNormalized( ), getPanAngle( ), getTiltAngle( ), getFocalLength( ), getPanSpeed( ), getTiltSpeed( ), getZoomSpeed( ) );
     }
 

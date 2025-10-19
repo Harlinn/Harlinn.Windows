@@ -31,7 +31,7 @@ public class SimpleSByteTimeseriesDataReader extends SimpleTimeseriesDataReader 
     }
 
     @Override
-    public SByteTimeseriesObject GetDataObject( ) throws SQLException {
+    public SByteTimeseriesObject getDataObject( ) throws SQLException {
         return new SByteTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

@@ -54,7 +54,7 @@ public class SimpleDeviceHostDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public DeviceHostObject GetDataObject( ) throws SQLException {
+    public DeviceHostObject getDataObject( ) throws SQLException {
             return new DeviceHostObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ) );
     }
 

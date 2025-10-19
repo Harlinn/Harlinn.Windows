@@ -39,7 +39,7 @@ public class SimpleRadarEnableSensitivityTimeControlTimeseriesDataReader extends
     }
 
     @Override
-    public RadarEnableSensitivityTimeControlTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarEnableSensitivityTimeControlTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarEnableSensitivityTimeControlTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

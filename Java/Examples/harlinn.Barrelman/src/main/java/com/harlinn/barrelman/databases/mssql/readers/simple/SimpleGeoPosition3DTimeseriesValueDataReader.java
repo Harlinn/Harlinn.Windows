@@ -82,7 +82,7 @@ public class SimpleGeoPosition3DTimeseriesValueDataReader extends ResultSetWrapp
         destination.writeBoolean( false );
     }
 
-    public GeoPosition3DTimeseriesValueObject GetDataObject( ) throws SQLException {
+    public GeoPosition3DTimeseriesValueObject getDataObject( ) throws SQLException {
             return new GeoPosition3DTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getLatitude( ), getLongitude( ), getAltitude( ) );
     }
 

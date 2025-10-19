@@ -1280,5 +1280,589 @@ public class ComplexAisMessageDataReader extends ResultSetWrapper {
         return getInt32( AUADRM_RADIOSTATUS_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AidToNavigationReportMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAidToNavigationReportMessageNavigationalAidType( ) );
+                destination.writeStringUtf8( getAidToNavigationReportMessageName( ) );
+                destination.writeInt32( getAidToNavigationReportMessagePositionAccuracy( ) );
+                destination.writeDouble( getAidToNavigationReportMessageLongitude( ) );
+                destination.writeDouble( getAidToNavigationReportMessageLatitude( ) );
+                destination.writeInt32( getAidToNavigationReportMessageDimensionToBow( ) );
+                destination.writeInt32( getAidToNavigationReportMessageDimensionToStern( ) );
+                destination.writeInt32( getAidToNavigationReportMessageDimensionToPort( ) );
+                destination.writeInt32( getAidToNavigationReportMessageDimensionToStarboard( ) );
+                destination.writeInt32( getAidToNavigationReportMessagePositionFixType( ) );
+                destination.writeInt32( getAidToNavigationReportMessageTimestamp( ) );
+                destination.writeBoolean( getAidToNavigationReportMessageOffPosition( ) );
+                destination.writeInt32( getAidToNavigationReportMessageRegionalReserved( ) );
+                destination.writeInt32( getAidToNavigationReportMessageRaim( ) );
+                destination.writeBoolean( getAidToNavigationReportMessageVirtualAid( ) );
+                destination.writeBoolean( getAidToNavigationReportMessageAssigned( ) );
+                destination.writeInt32( getAidToNavigationReportMessageSpare( ) );
+                destination.writeStringUtf8( getAidToNavigationReportMessageNameExtension( ) );
+            }
+            break;
+            case Kind.AisAddressedSafetyRelatedMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisAddressedSafetyRelatedMessageSequenceNumber( ) );
+                destination.writeNullableGuid( getAisAddressedSafetyRelatedMessageDestinationMmsi( ) );
+                destination.writeBoolean( getAisAddressedSafetyRelatedMessageRetransmitFlag( ) );
+                destination.writeInt32( getAisAddressedSafetyRelatedMessageSpare( ) );
+                destination.writeStringUtf8( getAisAddressedSafetyRelatedMessageText( ) );
+            }
+            break;
+            case Kind.AisBaseStationReportMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeDateTime( getAisBaseStationReportMessageTimestamp( ) );
+                destination.writeInt32( getAisBaseStationReportMessagePositionAccuracy( ) );
+                destination.writeDouble( getAisBaseStationReportMessageLongitude( ) );
+                destination.writeDouble( getAisBaseStationReportMessageLatitude( ) );
+                destination.writeInt32( getAisBaseStationReportMessagePositionFixType( ) );
+                destination.writeInt32( getAisBaseStationReportMessageSpare( ) );
+                destination.writeInt32( getAisBaseStationReportMessageRaim( ) );
+                destination.writeInt32( getAisBaseStationReportMessageRadioStatus( ) );
+            }
+            break;
+            case Kind.AisBinaryAcknowledgeMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisBinaryAcknowledgeMessageSpare( ) );
+                destination.writeInt32( getAisBinaryAcknowledgeMessageSequenceNumber1( ) );
+                destination.writeNullableGuid( getAisBinaryAcknowledgeMessageMmsi1( ) );
+                destination.writeNullableInt32( getAisBinaryAcknowledgeMessageSequenceNumber2( ) );
+                destination.writeNullableGuid( getAisBinaryAcknowledgeMessageMmsi2( ) );
+                destination.writeNullableInt32( getAisBinaryAcknowledgeMessageSequenceNumber3( ) );
+                destination.writeNullableGuid( getAisBinaryAcknowledgeMessageMmsi3( ) );
+                destination.writeNullableInt32( getAisBinaryAcknowledgeMessageSequenceNumber4( ) );
+                destination.writeNullableGuid( getAisBinaryAcknowledgeMessageMmsi4( ) );
+            }
+            break;
+            case Kind.AisBinaryAddressedMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisBinaryAddressedMessageSequenceNumber( ) );
+                destination.writeNullableGuid( getAisBinaryAddressedMessageDestinationMmsi( ) );
+                destination.writeBoolean( getAisBinaryAddressedMessageRetransmitFlag( ) );
+                destination.writeInt32( getAisBinaryAddressedMessageSpare( ) );
+                destination.writeInt32( getAisBinaryAddressedMessageDesignatedAreaCode( ) );
+                destination.writeInt32( getAisBinaryAddressedMessageFunctionalId( ) );
+                destination.writeStringUtf8( getAisBinaryAddressedMessageData( ) );
+            }
+            break;
+            case Kind.AisBinaryBroadcastMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisBinaryBroadcastMessageSpare( ) );
+                destination.writeInt32( getAisBinaryBroadcastMessageDesignatedAreaCode( ) );
+                destination.writeInt32( getAisBinaryBroadcastMessageFunctionalId( ) );
+                destination.writeStringUtf8( getAisBinaryBroadcastMessageData( ) );
+            }
+            break;
+            case Kind.AisDataLinkManagementMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisDataLinkManagementMessageSpare( ) );
+                destination.writeInt32( getAisDataLinkManagementMessageOffset1( ) );
+                destination.writeInt32( getAisDataLinkManagementMessageReservedSlots1( ) );
+                destination.writeInt32( getAisDataLinkManagementMessageTimeout1( ) );
+                destination.writeInt32( getAisDataLinkManagementMessageIncrement1( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageOffset2( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageReservedSlots2( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageTimeout2( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageIncrement2( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageOffset3( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageReservedSlots3( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageTimeout3( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageIncrement3( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageOffset4( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageReservedSlots4( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageTimeout4( ) );
+                destination.writeNullableInt32( getAisDataLinkManagementMessageIncrement4( ) );
+            }
+            break;
+            case Kind.AisExtendedClassBCsPositionReportMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageReserved( ) );
+                destination.writeDouble( getAisExtendedClassBCsPositionReportMessageSpeedOverGround( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessagePositionAccuracy( ) );
+                destination.writeDouble( getAisExtendedClassBCsPositionReportMessageLongitude( ) );
+                destination.writeDouble( getAisExtendedClassBCsPositionReportMessageLatitude( ) );
+                destination.writeDouble( getAisExtendedClassBCsPositionReportMessageCourseOverGround( ) );
+                destination.writeNullableInt32( getAisExtendedClassBCsPositionReportMessageTrueHeading( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageTimestamp( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageRegionalReserved( ) );
+                destination.writeNullableGuid( getAisExtendedClassBCsPositionReportMessageName( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageShipType( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageDimensionToBow( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageDimensionToStern( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageDimensionToPort( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageDimensionToStarboard( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessagePositionFixType( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageRaim( ) );
+                destination.writeBoolean( getAisExtendedClassBCsPositionReportMessageDataTerminalReady( ) );
+                destination.writeBoolean( getAisExtendedClassBCsPositionReportMessageAssigned( ) );
+                destination.writeInt32( getAisExtendedClassBCsPositionReportMessageSpare( ) );
+            }
+            break;
+            case Kind.AisInterrogationMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeNullableGuid( getAisInterrogationMessageInterrogatedMmsi( ) );
+                destination.writeInt32( getAisInterrogationMessageFirstMessageType( ) );
+                destination.writeInt32( getAisInterrogationMessageFirstSlotOffset( ) );
+                destination.writeNullableInt32( getAisInterrogationMessageSecondMessageType( ) );
+                destination.writeNullableInt32( getAisInterrogationMessageSecondSlotOffset( ) );
+                destination.writeNullableGuid( getAisInterrogationMessageSecondStationInterrogationMmsi( ) );
+                destination.writeNullableInt32( getAisInterrogationMessageSecondStationFirstMessageType( ) );
+                destination.writeNullableInt32( getAisInterrogationMessageSecondStationFirstSlotOffset( ) );
+            }
+            break;
+            case Kind.AisPositionReportClassAAssignedScheduleMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseNavigationStatus( ) );
+                destination.writeNullableInt32( getAisPositionReportClassAMessageBaseRateOfTurn( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseSpeedOverGround( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBasePositionAccuracy( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseLongitude( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseLatitude( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseCourseOverGround( ) );
+                destination.writeNullableInt32( getAisPositionReportClassAMessageBaseTrueHeading( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseTimestamp( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseManeuverIndicator( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseSpare( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseRaim( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseRadioStatus( ) );
+            }
+            break;
+            case Kind.AisPositionReportClassAMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseNavigationStatus( ) );
+                destination.writeNullableInt32( getAisPositionReportClassAMessageBaseRateOfTurn( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseSpeedOverGround( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBasePositionAccuracy( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseLongitude( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseLatitude( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseCourseOverGround( ) );
+                destination.writeNullableInt32( getAisPositionReportClassAMessageBaseTrueHeading( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseTimestamp( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseManeuverIndicator( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseSpare( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseRaim( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseRadioStatus( ) );
+            }
+            break;
+            case Kind.AisPositionReportClassAResponseToInterrogationMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseNavigationStatus( ) );
+                destination.writeNullableInt32( getAisPositionReportClassAMessageBaseRateOfTurn( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseSpeedOverGround( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBasePositionAccuracy( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseLongitude( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseLatitude( ) );
+                destination.writeDouble( getAisPositionReportClassAMessageBaseCourseOverGround( ) );
+                destination.writeNullableInt32( getAisPositionReportClassAMessageBaseTrueHeading( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseTimestamp( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseManeuverIndicator( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseSpare( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseRaim( ) );
+                destination.writeInt32( getAisPositionReportClassAMessageBaseRadioStatus( ) );
+            }
+            break;
+            case Kind.AisPositionReportForLongRangeApplicationsMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisPositionReportForLongRangeApplicationsMessagePositionAccuracy( ) );
+                destination.writeInt32( getAisPositionReportForLongRangeApplicationsMessageRaim( ) );
+                destination.writeInt32( getAisPositionReportForLongRangeApplicationsMessageNavigationStatus( ) );
+                destination.writeDouble( getAisPositionReportForLongRangeApplicationsMessageLongitude( ) );
+                destination.writeDouble( getAisPositionReportForLongRangeApplicationsMessageLatitude( ) );
+                destination.writeDouble( getAisPositionReportForLongRangeApplicationsMessageSpeedOverGround( ) );
+                destination.writeDouble( getAisPositionReportForLongRangeApplicationsMessageCourseOverGround( ) );
+                destination.writeInt32( getAisPositionReportForLongRangeApplicationsMessageGnssPositionStatus( ) );
+                destination.writeInt32( getAisPositionReportForLongRangeApplicationsMessageSpare( ) );
+            }
+            break;
+            case Kind.AisSafetyRelatedAcknowledgmentMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisSafetyRelatedAcknowledgmentMessageSpare( ) );
+                destination.writeInt32( getAisSafetyRelatedAcknowledgmentMessageSequenceNumber1( ) );
+                destination.writeNullableGuid( getAisSafetyRelatedAcknowledgmentMessageMmsi1( ) );
+                destination.writeNullableInt32( getAisSafetyRelatedAcknowledgmentMessageSequenceNumber2( ) );
+                destination.writeNullableGuid( getAisSafetyRelatedAcknowledgmentMessageMmsi2( ) );
+                destination.writeNullableInt32( getAisSafetyRelatedAcknowledgmentMessageSequenceNumber3( ) );
+                destination.writeNullableGuid( getAisSafetyRelatedAcknowledgmentMessageMmsi3( ) );
+                destination.writeNullableInt32( getAisSafetyRelatedAcknowledgmentMessageSequenceNumber4( ) );
+                destination.writeNullableGuid( getAisSafetyRelatedAcknowledgmentMessageMmsi4( ) );
+            }
+            break;
+            case Kind.AisStandardClassBCsPositionReportMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisStandardClassBCsPositionReportMessageReserved( ) );
+                destination.writeDouble( getAisStandardClassBCsPositionReportMessageSpeedOverGround( ) );
+                destination.writeInt32( getAisStandardClassBCsPositionReportMessagePositionAccuracy( ) );
+                destination.writeDouble( getAisStandardClassBCsPositionReportMessageLongitude( ) );
+                destination.writeDouble( getAisStandardClassBCsPositionReportMessageLatitude( ) );
+                destination.writeDouble( getAisStandardClassBCsPositionReportMessageCourseOverGround( ) );
+                destination.writeNullableInt32( getAisStandardClassBCsPositionReportMessageTrueHeading( ) );
+                destination.writeInt32( getAisStandardClassBCsPositionReportMessageTimestamp( ) );
+                destination.writeInt32( getAisStandardClassBCsPositionReportMessageRegionalReserved( ) );
+                destination.writeBoolean( getAisStandardClassBCsPositionReportMessageIsCsUnit( ) );
+                destination.writeBoolean( getAisStandardClassBCsPositionReportMessageHasDisplay( ) );
+                destination.writeBoolean( getAisStandardClassBCsPositionReportMessageHasDscCapability( ) );
+                destination.writeBoolean( getAisStandardClassBCsPositionReportMessageBand( ) );
+                destination.writeBoolean( getAisStandardClassBCsPositionReportMessageCanAcceptMessage22( ) );
+                destination.writeBoolean( getAisStandardClassBCsPositionReportMessageAssigned( ) );
+                destination.writeInt32( getAisStandardClassBCsPositionReportMessageRaim( ) );
+                destination.writeInt32( getAisStandardClassBCsPositionReportMessageRadioStatus( ) );
+            }
+            break;
+            case Kind.AisStandardSarAircraftPositionReportMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessageAltitude( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessageSpeedOverGround( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessagePositionAccuracy( ) );
+                destination.writeDouble( getAisStandardSarAircraftPositionReportMessageLongitude( ) );
+                destination.writeDouble( getAisStandardSarAircraftPositionReportMessageLatitude( ) );
+                destination.writeDouble( getAisStandardSarAircraftPositionReportMessageCourseOverGround( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessageTimestamp( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessageReserved( ) );
+                destination.writeBoolean( getAisStandardSarAircraftPositionReportMessageDataTerminalReady( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessageSpare( ) );
+                destination.writeBoolean( getAisStandardSarAircraftPositionReportMessageAssigned( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessageRaim( ) );
+                destination.writeInt32( getAisStandardSarAircraftPositionReportMessageRadioStatus( ) );
+            }
+            break;
+            case Kind.AisStaticAndVoyageRelatedDataMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessageAisVersion( ) );
+                destination.writeNullableGuid( getAisStaticAndVoyageRelatedDataMessageImoNumber( ) );
+                destination.writeNullableGuid( getAisStaticAndVoyageRelatedDataMessageCallsign( ) );
+                destination.writeNullableGuid( getAisStaticAndVoyageRelatedDataMessageShipName( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessageShipType( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessageDimensionToBow( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessageDimensionToStern( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessageDimensionToPort( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessageDimensionToStarboard( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessagePositionFixType( ) );
+                destination.writeNullableDateTime( getAisStaticAndVoyageRelatedDataMessageEstimatedTimeOfArrival( ) );
+                destination.writeDouble( getAisStaticAndVoyageRelatedDataMessageDraught( ) );
+                destination.writeStringUtf8( getAisStaticAndVoyageRelatedDataMessageDestination( ) );
+                destination.writeBoolean( getAisStaticAndVoyageRelatedDataMessageDataTerminalReady( ) );
+                destination.writeInt32( getAisStaticAndVoyageRelatedDataMessageSpare( ) );
+            }
+            break;
+            case Kind.AisStaticDataReportMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisStaticDataReportMessagePartNumber( ) );
+            }
+            break;
+            case Kind.AisStaticDataReportPartAMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisStaticDataReportMessagePartNumber( ) );
+                destination.writeNullableGuid( getAisStaticDataReportPartAMessageShipName( ) );
+                destination.writeInt32( getAisStaticDataReportPartAMessageSpare( ) );
+            }
+            break;
+            case Kind.AisStaticDataReportPartBMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisStaticDataReportMessagePartNumber( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageShipType( ) );
+                destination.writeStringUtf8( getAisStaticDataReportPartBMessageVendorId( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageUnitModelCode( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageSerialNumber( ) );
+                destination.writeNullableGuid( getAisStaticDataReportPartBMessageCallsign( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToBow( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToStern( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToPort( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageDimensionToStarboard( ) );
+                destination.writeNullableGuid( getAisStaticDataReportPartBMessageMothershipMmsi( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessagePositionFixType( ) );
+                destination.writeInt32( getAisStaticDataReportPartBMessageSpare( ) );
+            }
+            break;
+            case Kind.AisUtcAndDateInquiryMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getAisUtcAndDateInquiryMessageSpare1( ) );
+                destination.writeNullableGuid( getAisUtcAndDateInquiryMessageDestinationMmsi( ) );
+                destination.writeInt32( getAisUtcAndDateInquiryMessageSpare2( ) );
+            }
+            break;
+            case Kind.AisUtcAndDateResponseMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeDateTime( getAisUtcAndDateResponseMessageDatetime( ) );
+                destination.writeInt32( getAisUtcAndDateResponseMessagePositionAccuracy( ) );
+                destination.writeDouble( getAisUtcAndDateResponseMessageLongitude( ) );
+                destination.writeDouble( getAisUtcAndDateResponseMessageLatitude( ) );
+                destination.writeInt32( getAisUtcAndDateResponseMessagePositionFixType( ) );
+                destination.writeInt32( getAisUtcAndDateResponseMessageSpare( ) );
+                destination.writeInt32( getAisUtcAndDateResponseMessageRaim( ) );
+                destination.writeInt32( getAisUtcAndDateResponseMessageRadioStatus( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public AisMessageObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AidToNavigationReportMessage: {
+                return new AidToNavigationReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAidToNavigationReportMessageNavigationalAidType( ), getAidToNavigationReportMessageName( ), getAidToNavigationReportMessagePositionAccuracy( ), getAidToNavigationReportMessageLongitude( ), getAidToNavigationReportMessageLatitude( ), getAidToNavigationReportMessageDimensionToBow( ), getAidToNavigationReportMessageDimensionToStern( ), getAidToNavigationReportMessageDimensionToPort( ), getAidToNavigationReportMessageDimensionToStarboard( ), getAidToNavigationReportMessagePositionFixType( ), getAidToNavigationReportMessageTimestamp( ), getAidToNavigationReportMessageOffPosition( ), getAidToNavigationReportMessageRegionalReserved( ), getAidToNavigationReportMessageRaim( ), getAidToNavigationReportMessageVirtualAid( ), getAidToNavigationReportMessageAssigned( ), getAidToNavigationReportMessageSpare( ), getAidToNavigationReportMessageNameExtension( ) );
+            }
+            case Kind.AisAddressedSafetyRelatedMessage: {
+                return new AisAddressedSafetyRelatedMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisAddressedSafetyRelatedMessageSequenceNumber( ), getAisAddressedSafetyRelatedMessageDestinationMmsi( ), getAisAddressedSafetyRelatedMessageRetransmitFlag( ), getAisAddressedSafetyRelatedMessageSpare( ), getAisAddressedSafetyRelatedMessageText( ) );
+            }
+            case Kind.AisBaseStationReportMessage: {
+                return new AisBaseStationReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisBaseStationReportMessageTimestamp( ), getAisBaseStationReportMessagePositionAccuracy( ), getAisBaseStationReportMessageLongitude( ), getAisBaseStationReportMessageLatitude( ), getAisBaseStationReportMessagePositionFixType( ), getAisBaseStationReportMessageSpare( ), getAisBaseStationReportMessageRaim( ), getAisBaseStationReportMessageRadioStatus( ) );
+            }
+            case Kind.AisBinaryAcknowledgeMessage: {
+                return new AisBinaryAcknowledgeMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisBinaryAcknowledgeMessageSpare( ), getAisBinaryAcknowledgeMessageSequenceNumber1( ), getAisBinaryAcknowledgeMessageMmsi1( ), getAisBinaryAcknowledgeMessageSequenceNumber2( ), getAisBinaryAcknowledgeMessageMmsi2( ), getAisBinaryAcknowledgeMessageSequenceNumber3( ), getAisBinaryAcknowledgeMessageMmsi3( ), getAisBinaryAcknowledgeMessageSequenceNumber4( ), getAisBinaryAcknowledgeMessageMmsi4( ) );
+            }
+            case Kind.AisBinaryAddressedMessage: {
+                return new AisBinaryAddressedMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisBinaryAddressedMessageSequenceNumber( ), getAisBinaryAddressedMessageDestinationMmsi( ), getAisBinaryAddressedMessageRetransmitFlag( ), getAisBinaryAddressedMessageSpare( ), getAisBinaryAddressedMessageDesignatedAreaCode( ), getAisBinaryAddressedMessageFunctionalId( ), getAisBinaryAddressedMessageData( ) );
+            }
+            case Kind.AisBinaryBroadcastMessage: {
+                return new AisBinaryBroadcastMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisBinaryBroadcastMessageSpare( ), getAisBinaryBroadcastMessageDesignatedAreaCode( ), getAisBinaryBroadcastMessageFunctionalId( ), getAisBinaryBroadcastMessageData( ) );
+            }
+            case Kind.AisDataLinkManagementMessage: {
+                return new AisDataLinkManagementMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisDataLinkManagementMessageSpare( ), getAisDataLinkManagementMessageOffset1( ), getAisDataLinkManagementMessageReservedSlots1( ), getAisDataLinkManagementMessageTimeout1( ), getAisDataLinkManagementMessageIncrement1( ), getAisDataLinkManagementMessageOffset2( ), getAisDataLinkManagementMessageReservedSlots2( ), getAisDataLinkManagementMessageTimeout2( ), getAisDataLinkManagementMessageIncrement2( ), getAisDataLinkManagementMessageOffset3( ), getAisDataLinkManagementMessageReservedSlots3( ), getAisDataLinkManagementMessageTimeout3( ), getAisDataLinkManagementMessageIncrement3( ), getAisDataLinkManagementMessageOffset4( ), getAisDataLinkManagementMessageReservedSlots4( ), getAisDataLinkManagementMessageTimeout4( ), getAisDataLinkManagementMessageIncrement4( ) );
+            }
+            case Kind.AisExtendedClassBCsPositionReportMessage: {
+                return new AisExtendedClassBCsPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisExtendedClassBCsPositionReportMessageReserved( ), getAisExtendedClassBCsPositionReportMessageSpeedOverGround( ), getAisExtendedClassBCsPositionReportMessagePositionAccuracy( ), getAisExtendedClassBCsPositionReportMessageLongitude( ), getAisExtendedClassBCsPositionReportMessageLatitude( ), getAisExtendedClassBCsPositionReportMessageCourseOverGround( ), getAisExtendedClassBCsPositionReportMessageTrueHeading( ), getAisExtendedClassBCsPositionReportMessageTimestamp( ), getAisExtendedClassBCsPositionReportMessageRegionalReserved( ), getAisExtendedClassBCsPositionReportMessageName( ), getAisExtendedClassBCsPositionReportMessageShipType( ), getAisExtendedClassBCsPositionReportMessageDimensionToBow( ), getAisExtendedClassBCsPositionReportMessageDimensionToStern( ), getAisExtendedClassBCsPositionReportMessageDimensionToPort( ), getAisExtendedClassBCsPositionReportMessageDimensionToStarboard( ), getAisExtendedClassBCsPositionReportMessagePositionFixType( ), getAisExtendedClassBCsPositionReportMessageRaim( ), getAisExtendedClassBCsPositionReportMessageDataTerminalReady( ), getAisExtendedClassBCsPositionReportMessageAssigned( ), getAisExtendedClassBCsPositionReportMessageSpare( ) );
+            }
+            case Kind.AisInterrogationMessage: {
+                return new AisInterrogationMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisInterrogationMessageInterrogatedMmsi( ), getAisInterrogationMessageFirstMessageType( ), getAisInterrogationMessageFirstSlotOffset( ), getAisInterrogationMessageSecondMessageType( ), getAisInterrogationMessageSecondSlotOffset( ), getAisInterrogationMessageSecondStationInterrogationMmsi( ), getAisInterrogationMessageSecondStationFirstMessageType( ), getAisInterrogationMessageSecondStationFirstSlotOffset( ) );
+            }
+            case Kind.AisPositionReportClassAAssignedScheduleMessage: {
+                return new AisPositionReportClassAAssignedScheduleMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisPositionReportClassAMessageBaseNavigationStatus( ), getAisPositionReportClassAMessageBaseRateOfTurn( ), getAisPositionReportClassAMessageBaseSpeedOverGround( ), getAisPositionReportClassAMessageBasePositionAccuracy( ), getAisPositionReportClassAMessageBaseLongitude( ), getAisPositionReportClassAMessageBaseLatitude( ), getAisPositionReportClassAMessageBaseCourseOverGround( ), getAisPositionReportClassAMessageBaseTrueHeading( ), getAisPositionReportClassAMessageBaseTimestamp( ), getAisPositionReportClassAMessageBaseManeuverIndicator( ), getAisPositionReportClassAMessageBaseSpare( ), getAisPositionReportClassAMessageBaseRaim( ), getAisPositionReportClassAMessageBaseRadioStatus( ) );
+            }
+            case Kind.AisPositionReportClassAMessage: {
+                return new AisPositionReportClassAMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisPositionReportClassAMessageBaseNavigationStatus( ), getAisPositionReportClassAMessageBaseRateOfTurn( ), getAisPositionReportClassAMessageBaseSpeedOverGround( ), getAisPositionReportClassAMessageBasePositionAccuracy( ), getAisPositionReportClassAMessageBaseLongitude( ), getAisPositionReportClassAMessageBaseLatitude( ), getAisPositionReportClassAMessageBaseCourseOverGround( ), getAisPositionReportClassAMessageBaseTrueHeading( ), getAisPositionReportClassAMessageBaseTimestamp( ), getAisPositionReportClassAMessageBaseManeuverIndicator( ), getAisPositionReportClassAMessageBaseSpare( ), getAisPositionReportClassAMessageBaseRaim( ), getAisPositionReportClassAMessageBaseRadioStatus( ) );
+            }
+            case Kind.AisPositionReportClassAResponseToInterrogationMessage: {
+                return new AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisPositionReportClassAMessageBaseNavigationStatus( ), getAisPositionReportClassAMessageBaseRateOfTurn( ), getAisPositionReportClassAMessageBaseSpeedOverGround( ), getAisPositionReportClassAMessageBasePositionAccuracy( ), getAisPositionReportClassAMessageBaseLongitude( ), getAisPositionReportClassAMessageBaseLatitude( ), getAisPositionReportClassAMessageBaseCourseOverGround( ), getAisPositionReportClassAMessageBaseTrueHeading( ), getAisPositionReportClassAMessageBaseTimestamp( ), getAisPositionReportClassAMessageBaseManeuverIndicator( ), getAisPositionReportClassAMessageBaseSpare( ), getAisPositionReportClassAMessageBaseRaim( ), getAisPositionReportClassAMessageBaseRadioStatus( ) );
+            }
+            case Kind.AisPositionReportForLongRangeApplicationsMessage: {
+                return new AisPositionReportForLongRangeApplicationsMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisPositionReportForLongRangeApplicationsMessagePositionAccuracy( ), getAisPositionReportForLongRangeApplicationsMessageRaim( ), getAisPositionReportForLongRangeApplicationsMessageNavigationStatus( ), getAisPositionReportForLongRangeApplicationsMessageLongitude( ), getAisPositionReportForLongRangeApplicationsMessageLatitude( ), getAisPositionReportForLongRangeApplicationsMessageSpeedOverGround( ), getAisPositionReportForLongRangeApplicationsMessageCourseOverGround( ), getAisPositionReportForLongRangeApplicationsMessageGnssPositionStatus( ), getAisPositionReportForLongRangeApplicationsMessageSpare( ) );
+            }
+            case Kind.AisSafetyRelatedAcknowledgmentMessage: {
+                return new AisSafetyRelatedAcknowledgmentMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisSafetyRelatedAcknowledgmentMessageSpare( ), getAisSafetyRelatedAcknowledgmentMessageSequenceNumber1( ), getAisSafetyRelatedAcknowledgmentMessageMmsi1( ), getAisSafetyRelatedAcknowledgmentMessageSequenceNumber2( ), getAisSafetyRelatedAcknowledgmentMessageMmsi2( ), getAisSafetyRelatedAcknowledgmentMessageSequenceNumber3( ), getAisSafetyRelatedAcknowledgmentMessageMmsi3( ), getAisSafetyRelatedAcknowledgmentMessageSequenceNumber4( ), getAisSafetyRelatedAcknowledgmentMessageMmsi4( ) );
+            }
+            case Kind.AisStandardClassBCsPositionReportMessage: {
+                return new AisStandardClassBCsPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisStandardClassBCsPositionReportMessageReserved( ), getAisStandardClassBCsPositionReportMessageSpeedOverGround( ), getAisStandardClassBCsPositionReportMessagePositionAccuracy( ), getAisStandardClassBCsPositionReportMessageLongitude( ), getAisStandardClassBCsPositionReportMessageLatitude( ), getAisStandardClassBCsPositionReportMessageCourseOverGround( ), getAisStandardClassBCsPositionReportMessageTrueHeading( ), getAisStandardClassBCsPositionReportMessageTimestamp( ), getAisStandardClassBCsPositionReportMessageRegionalReserved( ), getAisStandardClassBCsPositionReportMessageIsCsUnit( ), getAisStandardClassBCsPositionReportMessageHasDisplay( ), getAisStandardClassBCsPositionReportMessageHasDscCapability( ), getAisStandardClassBCsPositionReportMessageBand( ), getAisStandardClassBCsPositionReportMessageCanAcceptMessage22( ), getAisStandardClassBCsPositionReportMessageAssigned( ), getAisStandardClassBCsPositionReportMessageRaim( ), getAisStandardClassBCsPositionReportMessageRadioStatus( ) );
+            }
+            case Kind.AisStandardSarAircraftPositionReportMessage: {
+                return new AisStandardSarAircraftPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisStandardSarAircraftPositionReportMessageAltitude( ), getAisStandardSarAircraftPositionReportMessageSpeedOverGround( ), getAisStandardSarAircraftPositionReportMessagePositionAccuracy( ), getAisStandardSarAircraftPositionReportMessageLongitude( ), getAisStandardSarAircraftPositionReportMessageLatitude( ), getAisStandardSarAircraftPositionReportMessageCourseOverGround( ), getAisStandardSarAircraftPositionReportMessageTimestamp( ), getAisStandardSarAircraftPositionReportMessageReserved( ), getAisStandardSarAircraftPositionReportMessageDataTerminalReady( ), getAisStandardSarAircraftPositionReportMessageSpare( ), getAisStandardSarAircraftPositionReportMessageAssigned( ), getAisStandardSarAircraftPositionReportMessageRaim( ), getAisStandardSarAircraftPositionReportMessageRadioStatus( ) );
+            }
+            case Kind.AisStaticAndVoyageRelatedDataMessage: {
+                return new AisStaticAndVoyageRelatedDataMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisStaticAndVoyageRelatedDataMessageAisVersion( ), getAisStaticAndVoyageRelatedDataMessageImoNumber( ), getAisStaticAndVoyageRelatedDataMessageCallsign( ), getAisStaticAndVoyageRelatedDataMessageShipName( ), getAisStaticAndVoyageRelatedDataMessageShipType( ), getAisStaticAndVoyageRelatedDataMessageDimensionToBow( ), getAisStaticAndVoyageRelatedDataMessageDimensionToStern( ), getAisStaticAndVoyageRelatedDataMessageDimensionToPort( ), getAisStaticAndVoyageRelatedDataMessageDimensionToStarboard( ), getAisStaticAndVoyageRelatedDataMessagePositionFixType( ), getAisStaticAndVoyageRelatedDataMessageEstimatedTimeOfArrival( ), getAisStaticAndVoyageRelatedDataMessageDraught( ), getAisStaticAndVoyageRelatedDataMessageDestination( ), getAisStaticAndVoyageRelatedDataMessageDataTerminalReady( ), getAisStaticAndVoyageRelatedDataMessageSpare( ) );
+            }
+            case Kind.AisStaticDataReportMessage: {
+                return new AisStaticDataReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisStaticDataReportMessagePartNumber( ) );
+            }
+            case Kind.AisStaticDataReportPartAMessage: {
+                return new AisStaticDataReportPartAMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisStaticDataReportMessagePartNumber( ), getAisStaticDataReportPartAMessageShipName( ), getAisStaticDataReportPartAMessageSpare( ) );
+            }
+            case Kind.AisStaticDataReportPartBMessage: {
+                return new AisStaticDataReportPartBMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisStaticDataReportMessagePartNumber( ), getAisStaticDataReportPartBMessageShipType( ), getAisStaticDataReportPartBMessageVendorId( ), getAisStaticDataReportPartBMessageUnitModelCode( ), getAisStaticDataReportPartBMessageSerialNumber( ), getAisStaticDataReportPartBMessageCallsign( ), getAisStaticDataReportPartBMessageDimensionToBow( ), getAisStaticDataReportPartBMessageDimensionToStern( ), getAisStaticDataReportPartBMessageDimensionToPort( ), getAisStaticDataReportPartBMessageDimensionToStarboard( ), getAisStaticDataReportPartBMessageMothershipMmsi( ), getAisStaticDataReportPartBMessagePositionFixType( ), getAisStaticDataReportPartBMessageSpare( ) );
+            }
+            case Kind.AisUtcAndDateInquiryMessage: {
+                return new AisUtcAndDateInquiryMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisUtcAndDateInquiryMessageSpare1( ), getAisUtcAndDateInquiryMessageDestinationMmsi( ), getAisUtcAndDateInquiryMessageSpare2( ) );
+            }
+            case Kind.AisUtcAndDateResponseMessage: {
+                return new AisUtcAndDateResponseMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisUtcAndDateResponseMessageDatetime( ), getAisUtcAndDateResponseMessagePositionAccuracy( ), getAisUtcAndDateResponseMessageLongitude( ), getAisUtcAndDateResponseMessageLatitude( ), getAisUtcAndDateResponseMessagePositionFixType( ), getAisUtcAndDateResponseMessageSpare( ), getAisUtcAndDateResponseMessageRaim( ), getAisUtcAndDateResponseMessageRadioStatus( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

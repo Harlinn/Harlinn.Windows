@@ -39,7 +39,7 @@ public class SimpleDeviceEnabledTimeseriesDataReader extends SimpleBooleanTimese
     }
 
     @Override
-    public DeviceEnabledTimeseriesObject GetDataObject( ) throws SQLException {
+    public DeviceEnabledTimeseriesObject getDataObject( ) throws SQLException {
         return new DeviceEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getDevice( ) );
     }
 

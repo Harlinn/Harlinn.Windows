@@ -68,7 +68,7 @@ public class SimpleSingleTimeseriesValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public SingleTimeseriesValueObject GetDataObject( ) throws SQLException {
+    public SingleTimeseriesValueObject getDataObject( ) throws SQLException {
             return new SingleTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getValue( ) );
     }
 

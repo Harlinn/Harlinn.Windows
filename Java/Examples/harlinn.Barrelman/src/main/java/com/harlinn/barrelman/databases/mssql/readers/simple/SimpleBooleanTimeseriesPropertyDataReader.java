@@ -38,7 +38,7 @@ public class SimpleBooleanTimeseriesPropertyDataReader extends SimpleTimeseriesP
     }
 
     @Override
-    public BooleanTimeseriesPropertyObject GetDataObject( ) throws SQLException {
+    public BooleanTimeseriesPropertyObject getDataObject( ) throws SQLException {
         return new BooleanTimeseriesPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getTimeseries( ) );
     }
 

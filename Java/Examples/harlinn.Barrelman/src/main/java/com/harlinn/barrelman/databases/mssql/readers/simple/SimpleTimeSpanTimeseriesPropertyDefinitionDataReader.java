@@ -46,7 +46,7 @@ public class SimpleTimeSpanTimeseriesPropertyDefinitionDataReader extends Simple
     }
 
     @Override
-    public TimeSpanTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public TimeSpanTimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new TimeSpanTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
     }
 

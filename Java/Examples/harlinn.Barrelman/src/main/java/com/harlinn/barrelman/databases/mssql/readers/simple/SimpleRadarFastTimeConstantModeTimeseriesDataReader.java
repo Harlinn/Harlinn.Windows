@@ -39,7 +39,7 @@ public class SimpleRadarFastTimeConstantModeTimeseriesDataReader extends SimpleI
     }
 
     @Override
-    public RadarFastTimeConstantModeTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarFastTimeConstantModeTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarFastTimeConstantModeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

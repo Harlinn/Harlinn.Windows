@@ -31,7 +31,7 @@ public class SimpleTimeSpanTimeseriesDataReader extends SimpleTimeseriesDataRead
     }
 
     @Override
-    public TimeSpanTimeseriesObject GetDataObject( ) throws SQLException {
+    public TimeSpanTimeseriesObject getDataObject( ) throws SQLException {
         return new TimeSpanTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

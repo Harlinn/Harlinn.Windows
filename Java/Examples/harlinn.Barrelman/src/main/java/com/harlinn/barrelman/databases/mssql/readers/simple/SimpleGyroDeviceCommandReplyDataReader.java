@@ -82,7 +82,7 @@ public class SimpleGyroDeviceCommandReplyDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public GyroDeviceCommandReplyObject GetDataObject( ) throws SQLException {
+    public GyroDeviceCommandReplyObject getDataObject( ) throws SQLException {
             return new GyroDeviceCommandReplyObject( ObjectState.Stored, getId( ), getRowVersion( ), getGyroDevice( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ) );
     }
 

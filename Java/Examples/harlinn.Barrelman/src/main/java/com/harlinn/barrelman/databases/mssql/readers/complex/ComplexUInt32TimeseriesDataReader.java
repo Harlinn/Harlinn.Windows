@@ -64,5 +64,60 @@ public class ComplexUInt32TimeseriesDataReader extends ResultSetWrapper {
         return getNullableGuid( RST_RADOME_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.UInt32Timeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+            }
+            break;
+            case Kind.RadomeStatusTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadomeStatusTimeseriesRadome( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public UInt32TimeseriesObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.UInt32Timeseries: {
+                return new UInt32TimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+            }
+            case Kind.RadomeStatusTimeseries: {
+                return new RadomeStatusTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadomeStatusTimeseriesRadome( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

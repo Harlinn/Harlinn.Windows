@@ -89,7 +89,7 @@ public class SimpleRadarImageDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public RadarImageObject GetDataObject( ) throws SQLException {
+    public RadarImageObject getDataObject( ) throws SQLException {
             return new RadarImageObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getDepth( ), getResolution( ), getRange( ), getImage( ) );
     }
 

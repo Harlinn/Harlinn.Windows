@@ -36,7 +36,7 @@ public class SimpleMaritimeMobileServiceIdentityDataReader extends SimpleIdentit
     }
 
     @Override
-    public MaritimeMobileServiceIdentityObject GetDataObject( ) throws SQLException {
+    public MaritimeMobileServiceIdentityObject getDataObject( ) throws SQLException {
         return new MaritimeMobileServiceIdentityObject( ObjectState.Stored, getId( ), getRowVersion( ), getIdentifier( ) );
     }
 

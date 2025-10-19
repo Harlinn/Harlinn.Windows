@@ -54,7 +54,7 @@ public class SimpleCursorInfoDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public CursorInfoObject GetDataObject( ) throws SQLException {
+    public CursorInfoObject getDataObject( ) throws SQLException {
             return new CursorInfoObject( ObjectState.Stored, getId( ), getRowVersion( ), getTypeCode( ) );
     }
 

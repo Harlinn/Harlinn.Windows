@@ -187,7 +187,7 @@ public class SimpleAisDeviceConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public AisDeviceConfigurationObject GetDataObject( ) throws SQLException {
+    public AisDeviceConfigurationObject getDataObject( ) throws SQLException {
             return new AisDeviceConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getTimestamp( ), getFilter( ), getNorthWestLatitude( ), getNorthWestLongitude( ), getSouthEastLatitude( ), getSouthEastLongitude( ), getComPort( ), getBaudRate( ), getIPAddress( ), getPort( ), getUdpPort( ), getAuthenticate( ), getUserName( ), getPassword( ), getAuthenticationURL( ), getConnectionType( ), getSourceUpdateRate( ), getConfigurationURL( ), getStoreReceivedSentences( ) );
     }
 

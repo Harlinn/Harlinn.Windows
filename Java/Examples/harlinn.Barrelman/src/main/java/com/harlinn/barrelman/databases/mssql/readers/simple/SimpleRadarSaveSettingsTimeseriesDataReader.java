@@ -39,7 +39,7 @@ public class SimpleRadarSaveSettingsTimeseriesDataReader extends SimpleBooleanTi
     }
 
     @Override
-    public RadarSaveSettingsTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarSaveSettingsTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarSaveSettingsTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

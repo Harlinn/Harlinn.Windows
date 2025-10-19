@@ -43,7 +43,7 @@ public class SimpleAircraftDataReader extends SimpleTrackableItemDataReader {
     }
 
     @Override
-    public AircraftObject GetDataObject( ) throws SQLException {
+    public AircraftObject getDataObject( ) throws SQLException {
         return new AircraftObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ) );
     }
 

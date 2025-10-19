@@ -110,7 +110,7 @@ public class SimpleWeatherStationConfigurationDataReader extends ResultSetWrappe
         destination.writeBoolean( false );
     }
 
-    public WeatherStationConfigurationObject GetDataObject( ) throws SQLException {
+    public WeatherStationConfigurationObject getDataObject( ) throws SQLException {
             return new WeatherStationConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getWeatherStation( ), getTimestamp( ), getNoDataTimeOut( ), getSendInterval( ), getLatitude( ), getLongitude( ), getGyroOffset( ), getEnableAveraging( ), getAveragingInterval( ) );
     }
 

@@ -68,7 +68,7 @@ public class SimpleRadomeDeviceDataReader extends SimpleDeviceDataReader {
     }
 
     @Override
-    public RadomeDeviceObject GetDataObject( ) throws SQLException {
+    public RadomeDeviceObject getDataObject( ) throws SQLException {
         return new RadomeDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getRadar( ), getPressureTimeseries( ), getTemperatureTimeseries( ), getDewPointTimeseries( ), getStatusTimeseries( ) );
     }
 

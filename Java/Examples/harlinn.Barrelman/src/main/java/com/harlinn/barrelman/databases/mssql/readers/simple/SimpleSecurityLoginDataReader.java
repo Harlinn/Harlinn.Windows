@@ -31,7 +31,7 @@ public class SimpleSecurityLoginDataReader extends SimpleSecurityIdentifierDataR
     }
 
     @Override
-    public SecurityLoginObject GetDataObject( ) throws SQLException {
+    public SecurityLoginObject getDataObject( ) throws SQLException {
         return new SecurityLoginObject( ObjectState.Stored, getId( ), getRowVersion( ), getDomain( ), getIdentity( ), getDescription( ) );
     }
 

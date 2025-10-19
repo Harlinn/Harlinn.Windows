@@ -32,7 +32,7 @@ public class SimpleCameraDeviceDataReader extends SimpleDeviceDataReader {
     }
 
     @Override
-    public CameraDeviceObject GetDataObject( ) throws SQLException {
+    public CameraDeviceObject getDataObject( ) throws SQLException {
         return new CameraDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
     }
 

@@ -30,7 +30,7 @@ public class SimpleTimeseriesCatalogDataReader extends SimpleTimeseriesCatalogEl
     }
 
     @Override
-    public TimeseriesCatalogObject GetDataObject( ) throws SQLException {
+    public TimeseriesCatalogObject getDataObject( ) throws SQLException {
         return new TimeseriesCatalogObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ) );
     }
 

@@ -54,7 +54,7 @@ public class SimpleGNSSDeviceDataReader extends SimpleDeviceDataReader {
     }
 
     @Override
-    public GNSSDeviceObject GetDataObject( ) throws SQLException {
+    public GNSSDeviceObject getDataObject( ) throws SQLException {
         return new GNSSDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getLatitudeTimeseries( ), getLongitudeTimeseries( ), getAltitudeTimeseries( ) );
     }
 

@@ -103,7 +103,7 @@ public class SimpleMapInfoDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public MapInfoObject GetDataObject( ) throws SQLException {
+    public MapInfoObject getDataObject( ) throws SQLException {
             return new MapInfoObject( ObjectState.Stored, getId( ), getRowVersion( ), getScale( ), getLatitude( ), getLongitude( ), getNorthWestLatitude( ), getNorthWestLongitude( ), getSouthEastLatitude( ), getSouthEastLongitude( ), getImage( ) );
     }
 

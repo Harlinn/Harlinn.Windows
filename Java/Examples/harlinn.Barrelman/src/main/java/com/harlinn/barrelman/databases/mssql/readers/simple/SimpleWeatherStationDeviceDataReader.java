@@ -96,7 +96,7 @@ public class SimpleWeatherStationDeviceDataReader extends SimpleDeviceDataReader
     }
 
     @Override
-    public WeatherStationDeviceObject GetDataObject( ) throws SQLException {
+    public WeatherStationDeviceObject getDataObject( ) throws SQLException {
         return new WeatherStationDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ), getBarometricPressureTimeseries( ), getAirTemperatureTimeseries( ), getWaterTemperatureTimeseries( ), getRelativeHumidityTimeseries( ), getAbsoluteHumidityTimeseries( ), getDewPointTimeseries( ), getWindDirectionTimeseries( ), getWindSpeedTimeseries( ), getGyro( ) );
     }
 

@@ -41,7 +41,7 @@ public class SimpleCameraCommandSetInfraRedLampDataReader extends SimpleCameraCo
     }
 
     @Override
-    public CameraCommandSetInfraRedLampObject GetDataObject( ) throws SQLException {
+    public CameraCommandSetInfraRedLampObject getDataObject( ) throws SQLException {
         return new CameraCommandSetInfraRedLampObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getEnabled( ) );
     }
 

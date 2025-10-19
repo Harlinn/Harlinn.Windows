@@ -39,7 +39,7 @@ public class SimpleVesselDraughtTimeseriesDataReader extends SimpleDoubleTimeser
     }
 
     @Override
-    public VesselDraughtTimeseriesObject GetDataObject( ) throws SQLException {
+    public VesselDraughtTimeseriesObject getDataObject( ) throws SQLException {
         return new VesselDraughtTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getVessel( ) );
     }
 

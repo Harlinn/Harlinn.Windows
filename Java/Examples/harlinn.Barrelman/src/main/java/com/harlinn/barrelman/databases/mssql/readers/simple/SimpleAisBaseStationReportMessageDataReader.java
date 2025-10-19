@@ -90,7 +90,7 @@ public class SimpleAisBaseStationReportMessageDataReader extends SimpleAisMessag
     }
 
     @Override
-    public AisBaseStationReportMessageObject GetDataObject( ) throws SQLException {
+    public AisBaseStationReportMessageObject getDataObject( ) throws SQLException {
         return new AisBaseStationReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getTimestamp( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getPositionFixType( ), getSpare( ), getRaim( ), getRadioStatus( ) );
     }
 

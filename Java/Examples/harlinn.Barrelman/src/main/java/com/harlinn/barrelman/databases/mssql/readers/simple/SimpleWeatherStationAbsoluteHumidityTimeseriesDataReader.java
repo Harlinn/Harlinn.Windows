@@ -39,7 +39,7 @@ public class SimpleWeatherStationAbsoluteHumidityTimeseriesDataReader extends Si
     }
 
     @Override
-    public WeatherStationAbsoluteHumidityTimeseriesObject GetDataObject( ) throws SQLException {
+    public WeatherStationAbsoluteHumidityTimeseriesObject getDataObject( ) throws SQLException {
         return new WeatherStationAbsoluteHumidityTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
     }
 

@@ -292,7 +292,7 @@ public class SimpleLineInputDeviceConfigurationDataReader extends ResultSetWrapp
         destination.writeBoolean( false );
     }
 
-    public LineInputDeviceConfigurationObject GetDataObject( ) throws SQLException {
+    public LineInputDeviceConfigurationObject getDataObject( ) throws SQLException {
             return new LineInputDeviceConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getLineInputDevice( ), getTimestamp( ), getStoreReceivedSentences( ), getStoreSentMessages( ), getStoreUnsentMessages( ), getNMEA( ), getStrictNMEA( ), getConnectionType( ), getUdpReceivePort( ), getUdpSendHostname( ), getUdpSendPort( ), getTcpHostname( ), getTcpPort( ), getUseHttpLogin( ), getLoginHostname( ), getLoginPort( ), getUserName( ), getPassword( ), getComPort( ), getBaudRate( ), getDataBits( ), getDiscardNull( ), getDtrEnable( ), getHandshake( ), getNewLine( ), getParity( ), getParityReplace( ), getReadBufferSize( ), getReadTimeout( ), getReceivedBytesThreshold( ), getRtsEnable( ), getStopBits( ), getWriteBufferSize( ), getWriteTimeout( ), getPairedComPort( ) );
     }
 

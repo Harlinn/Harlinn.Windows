@@ -39,7 +39,7 @@ public class SimpleRadarSector2StartTimeseriesDataReader extends SimpleInt32Time
     }
 
     @Override
-    public RadarSector2StartTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarSector2StartTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarSector2StartTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

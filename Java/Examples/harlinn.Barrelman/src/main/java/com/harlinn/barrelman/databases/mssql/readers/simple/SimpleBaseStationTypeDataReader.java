@@ -54,7 +54,7 @@ public class SimpleBaseStationTypeDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public BaseStationTypeObject GetDataObject( ) throws SQLException {
+    public BaseStationTypeObject getDataObject( ) throws SQLException {
             return new BaseStationTypeObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ) );
     }
 

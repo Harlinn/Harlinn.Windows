@@ -39,7 +39,7 @@ public class SimpleMediaProxySessionEnabledTimeseriesDataReader extends SimpleBo
     }
 
     @Override
-    public MediaProxySessionEnabledTimeseriesObject GetDataObject( ) throws SQLException {
+    public MediaProxySessionEnabledTimeseriesObject getDataObject( ) throws SQLException {
         return new MediaProxySessionEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getProxySession( ) );
     }
 

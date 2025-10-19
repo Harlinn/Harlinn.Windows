@@ -139,7 +139,7 @@ public class SimpleAisStaticAndVoyageRelatedDataMessageDataReader extends Simple
     }
 
     @Override
-    public AisStaticAndVoyageRelatedDataMessageObject GetDataObject( ) throws SQLException {
+    public AisStaticAndVoyageRelatedDataMessageObject getDataObject( ) throws SQLException {
         return new AisStaticAndVoyageRelatedDataMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getAisVersion( ), getImoNumber( ), getCallsign( ), getShipName( ), getShipType( ), getDimensionToBow( ), getDimensionToStern( ), getDimensionToPort( ), getDimensionToStarboard( ), getPositionFixType( ), getEstimatedTimeOfArrival( ), getDraught( ), getDestination( ), getDataTerminalReady( ), getSpare( ) );
     }
 

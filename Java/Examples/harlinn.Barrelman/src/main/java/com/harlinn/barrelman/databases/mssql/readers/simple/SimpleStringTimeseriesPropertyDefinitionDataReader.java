@@ -39,7 +39,7 @@ public class SimpleStringTimeseriesPropertyDefinitionDataReader extends SimpleTi
     }
 
     @Override
-    public StringTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public StringTimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new StringTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getPattern( ) );
     }
 

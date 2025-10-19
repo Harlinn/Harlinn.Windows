@@ -38,7 +38,7 @@ public class SimpleBinaryPropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public BinaryPropertyObject GetDataObject( ) throws SQLException {
+    public BinaryPropertyObject getDataObject( ) throws SQLException {
         return new BinaryPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

@@ -38,7 +38,7 @@ public class SimpleUInt32TimeseriesPropertyDataReader extends SimpleTimeseriesPr
     }
 
     @Override
-    public UInt32TimeseriesPropertyObject GetDataObject( ) throws SQLException {
+    public UInt32TimeseriesPropertyObject getDataObject( ) throws SQLException {
         return new UInt32TimeseriesPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getTimeseries( ) );
     }
 

@@ -82,7 +82,7 @@ public class SimpleDeviceHostConfigurationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public DeviceHostConfigurationObject GetDataObject( ) throws SQLException {
+    public DeviceHostConfigurationObject getDataObject( ) throws SQLException {
             return new DeviceHostConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getTimestamp( ), getHostname( ), getPort( ), getQueueName( ) );
     }
 

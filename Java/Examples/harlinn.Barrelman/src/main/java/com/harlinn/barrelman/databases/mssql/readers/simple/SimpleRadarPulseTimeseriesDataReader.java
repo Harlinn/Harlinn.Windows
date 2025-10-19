@@ -39,7 +39,7 @@ public class SimpleRadarPulseTimeseriesDataReader extends SimpleInt32TimeseriesD
     }
 
     @Override
-    public RadarPulseTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarPulseTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarPulseTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

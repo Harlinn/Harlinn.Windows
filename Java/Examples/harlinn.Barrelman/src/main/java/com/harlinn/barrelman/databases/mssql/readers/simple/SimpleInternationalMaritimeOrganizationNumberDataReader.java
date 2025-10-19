@@ -36,7 +36,7 @@ public class SimpleInternationalMaritimeOrganizationNumberDataReader extends Sim
     }
 
     @Override
-    public InternationalMaritimeOrganizationNumberObject GetDataObject( ) throws SQLException {
+    public InternationalMaritimeOrganizationNumberObject getDataObject( ) throws SQLException {
         return new InternationalMaritimeOrganizationNumberObject( ObjectState.Stored, getId( ), getRowVersion( ), getIdentifier( ) );
     }
 

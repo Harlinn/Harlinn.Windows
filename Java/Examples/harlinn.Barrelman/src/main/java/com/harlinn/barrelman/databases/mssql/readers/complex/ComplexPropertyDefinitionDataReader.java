@@ -506,5 +506,544 @@ public class ComplexPropertyDefinitionDataReader extends ResultSetWrapper {
         return getInt64( U64PD_MAXVALUE_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.BinaryPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeUInt8Array( getBinaryPropertyDefinitionDefaultValue( ) );
+            }
+            break;
+            case Kind.BooleanPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeBoolean( getBooleanPropertyDefinitionDefaultValue( ) );
+            }
+            break;
+            case Kind.BytePropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeUInt8( getBytePropertyDefinitionDefaultValue( ) );
+                destination.writeUInt8( getBytePropertyDefinitionMinValue( ) );
+                destination.writeUInt8( getBytePropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.DateTimePropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeStringUtf8( getDateTimePropertyDefinitionDefaultValue( ) );
+                destination.writeStringUtf8( getDateTimePropertyDefinitionMinValue( ) );
+                destination.writeStringUtf8( getDateTimePropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.DoublePropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeDouble( getDoublePropertyDefinitionDefaultValue( ) );
+                destination.writeDouble( getDoublePropertyDefinitionMinValue( ) );
+                destination.writeDouble( getDoublePropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.GuidPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeGuid( getGuidPropertyDefinitionDefaultValue( ) );
+            }
+            break;
+            case Kind.Int16PropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt16( getInt16PropertyDefinitionDefaultValue( ) );
+                destination.writeInt16( getInt16PropertyDefinitionMinValue( ) );
+                destination.writeInt16( getInt16PropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.Int32PropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt32( getInt32PropertyDefinitionDefaultValue( ) );
+                destination.writeInt32( getInt32PropertyDefinitionMinValue( ) );
+                destination.writeInt32( getInt32PropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.Int64PropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt64( getInt64PropertyDefinitionDefaultValue( ) );
+                destination.writeInt64( getInt64PropertyDefinitionMinValue( ) );
+                destination.writeInt64( getInt64PropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.ReferencePropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeNullableGuid( getReferencePropertyDefinitionDefaultValue( ) );
+                destination.writeNullableGuid( getReferencePropertyDefinitionReferencedElementType( ) );
+            }
+            break;
+            case Kind.SBytePropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt8( getSBytePropertyDefinitionDefaultValue( ) );
+                destination.writeInt8( getSBytePropertyDefinitionMinValue( ) );
+                destination.writeInt8( getSBytePropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.SinglePropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeSingle( getSinglePropertyDefinitionDefaultValue( ) );
+                destination.writeSingle( getSinglePropertyDefinitionMinValue( ) );
+                destination.writeSingle( getSinglePropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.StringPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeStringUtf8( getStringPropertyDefinitionDefaultValue( ) );
+                destination.writeStringUtf8( getStringPropertyDefinitionPattern( ) );
+            }
+            break;
+            case Kind.BinaryTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+            }
+            break;
+            case Kind.BooleanTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+            }
+            break;
+            case Kind.ByteTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeUInt8( getByteTimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeUInt8( getByteTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.DateTimeTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeStringUtf8( getDateTimeTimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeStringUtf8( getDateTimeTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.DoubleTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeDouble( getDoubleTimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeDouble( getDoubleTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.GuidTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+            }
+            break;
+            case Kind.Int16TimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt16( getInt16TimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeInt16( getInt16TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.Int32TimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt32( getInt32TimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeInt32( getInt32TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.Int64TimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt64( getInt64TimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeInt64( getInt64TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.ReferenceTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeNullableGuid( getReferenceTimeseriesPropertyDefinitionReferencedElementType( ) );
+            }
+            break;
+            case Kind.SByteTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt8( getSByteTimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeInt8( getSByteTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.SingleTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeSingle( getSingleTimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeSingle( getSingleTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.StringTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeStringUtf8( getStringTimeseriesPropertyDefinitionPattern( ) );
+            }
+            break;
+            case Kind.TimeSpanTimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeTimeSpan( getTimeSpanTimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeTimeSpan( getTimeSpanTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.UInt16TimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeUInt16( getUInt16TimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeUInt16( getUInt16TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.UInt32TimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeUInt32( getUInt32TimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeUInt32( getUInt32TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.UInt64TimeseriesPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt64( getUInt64TimeseriesPropertyDefinitionMinValue( ) );
+                destination.writeInt64( getUInt64TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.TimeSpanPropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeTimeSpan( getTimeSpanPropertyDefinitionDefaultValue( ) );
+                destination.writeTimeSpan( getTimeSpanPropertyDefinitionMinValue( ) );
+                destination.writeTimeSpan( getTimeSpanPropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.UInt16PropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeUInt16( getUInt16PropertyDefinitionDefaultValue( ) );
+                destination.writeUInt16( getUInt16PropertyDefinitionMinValue( ) );
+                destination.writeUInt16( getUInt16PropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.UInt32PropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeUInt32( getUInt32PropertyDefinitionDefaultValue( ) );
+                destination.writeUInt32( getUInt32PropertyDefinitionMinValue( ) );
+                destination.writeUInt32( getUInt32PropertyDefinitionMaxValue( ) );
+            }
+            break;
+            case Kind.UInt64PropertyDefinition: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getElementType( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeStringUtf8( getDescription( ) );
+                destination.writeInt64( getUInt64PropertyDefinitionDefaultValue( ) );
+                destination.writeInt64( getUInt64PropertyDefinitionMinValue( ) );
+                destination.writeInt64( getUInt64PropertyDefinitionMaxValue( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public PropertyDefinitionObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.BinaryPropertyDefinition: {
+                return new BinaryPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getBinaryPropertyDefinitionDefaultValue( ) );
+            }
+            case Kind.BooleanPropertyDefinition: {
+                return new BooleanPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getBooleanPropertyDefinitionDefaultValue( ) );
+            }
+            case Kind.BytePropertyDefinition: {
+                return new BytePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getBytePropertyDefinitionDefaultValue( ), getBytePropertyDefinitionMinValue( ), getBytePropertyDefinitionMaxValue( ) );
+            }
+            case Kind.DateTimePropertyDefinition: {
+                return new DateTimePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDateTimePropertyDefinitionDefaultValue( ), getDateTimePropertyDefinitionMinValue( ), getDateTimePropertyDefinitionMaxValue( ) );
+            }
+            case Kind.DoublePropertyDefinition: {
+                return new DoublePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDoublePropertyDefinitionDefaultValue( ), getDoublePropertyDefinitionMinValue( ), getDoublePropertyDefinitionMaxValue( ) );
+            }
+            case Kind.GuidPropertyDefinition: {
+                return new GuidPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getGuidPropertyDefinitionDefaultValue( ) );
+            }
+            case Kind.Int16PropertyDefinition: {
+                return new Int16PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getInt16PropertyDefinitionDefaultValue( ), getInt16PropertyDefinitionMinValue( ), getInt16PropertyDefinitionMaxValue( ) );
+            }
+            case Kind.Int32PropertyDefinition: {
+                return new Int32PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getInt32PropertyDefinitionDefaultValue( ), getInt32PropertyDefinitionMinValue( ), getInt32PropertyDefinitionMaxValue( ) );
+            }
+            case Kind.Int64PropertyDefinition: {
+                return new Int64PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getInt64PropertyDefinitionDefaultValue( ), getInt64PropertyDefinitionMinValue( ), getInt64PropertyDefinitionMaxValue( ) );
+            }
+            case Kind.ReferencePropertyDefinition: {
+                return new ReferencePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getReferencePropertyDefinitionDefaultValue( ), getReferencePropertyDefinitionReferencedElementType( ) );
+            }
+            case Kind.SBytePropertyDefinition: {
+                return new SBytePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getSBytePropertyDefinitionDefaultValue( ), getSBytePropertyDefinitionMinValue( ), getSBytePropertyDefinitionMaxValue( ) );
+            }
+            case Kind.SinglePropertyDefinition: {
+                return new SinglePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getSinglePropertyDefinitionDefaultValue( ), getSinglePropertyDefinitionMinValue( ), getSinglePropertyDefinitionMaxValue( ) );
+            }
+            case Kind.StringPropertyDefinition: {
+                return new StringPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getStringPropertyDefinitionDefaultValue( ), getStringPropertyDefinitionPattern( ) );
+            }
+            case Kind.BinaryTimeseriesPropertyDefinition: {
+                return new BinaryTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ) );
+            }
+            case Kind.BooleanTimeseriesPropertyDefinition: {
+                return new BooleanTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ) );
+            }
+            case Kind.ByteTimeseriesPropertyDefinition: {
+                return new ByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getByteTimeseriesPropertyDefinitionMinValue( ), getByteTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.DateTimeTimeseriesPropertyDefinition: {
+                return new DateTimeTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDateTimeTimeseriesPropertyDefinitionMinValue( ), getDateTimeTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.DoubleTimeseriesPropertyDefinition: {
+                return new DoubleTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDoubleTimeseriesPropertyDefinitionMinValue( ), getDoubleTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.GuidTimeseriesPropertyDefinition: {
+                return new GuidTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ) );
+            }
+            case Kind.Int16TimeseriesPropertyDefinition: {
+                return new Int16TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getInt16TimeseriesPropertyDefinitionMinValue( ), getInt16TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.Int32TimeseriesPropertyDefinition: {
+                return new Int32TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getInt32TimeseriesPropertyDefinitionMinValue( ), getInt32TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.Int64TimeseriesPropertyDefinition: {
+                return new Int64TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getInt64TimeseriesPropertyDefinitionMinValue( ), getInt64TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.ReferenceTimeseriesPropertyDefinition: {
+                return new ReferenceTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getReferenceTimeseriesPropertyDefinitionReferencedElementType( ) );
+            }
+            case Kind.SByteTimeseriesPropertyDefinition: {
+                return new SByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getSByteTimeseriesPropertyDefinitionMinValue( ), getSByteTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.SingleTimeseriesPropertyDefinition: {
+                return new SingleTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getSingleTimeseriesPropertyDefinitionMinValue( ), getSingleTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.StringTimeseriesPropertyDefinition: {
+                return new StringTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getStringTimeseriesPropertyDefinitionPattern( ) );
+            }
+            case Kind.TimeSpanTimeseriesPropertyDefinition: {
+                return new TimeSpanTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getTimeSpanTimeseriesPropertyDefinitionMinValue( ), getTimeSpanTimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.UInt16TimeseriesPropertyDefinition: {
+                return new UInt16TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getUInt16TimeseriesPropertyDefinitionMinValue( ), getUInt16TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.UInt32TimeseriesPropertyDefinition: {
+                return new UInt32TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getUInt32TimeseriesPropertyDefinitionMinValue( ), getUInt32TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.UInt64TimeseriesPropertyDefinition: {
+                return new UInt64TimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getUInt64TimeseriesPropertyDefinitionMinValue( ), getUInt64TimeseriesPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.TimeSpanPropertyDefinition: {
+                return new TimeSpanPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getTimeSpanPropertyDefinitionDefaultValue( ), getTimeSpanPropertyDefinitionMinValue( ), getTimeSpanPropertyDefinitionMaxValue( ) );
+            }
+            case Kind.UInt16PropertyDefinition: {
+                return new UInt16PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getUInt16PropertyDefinitionDefaultValue( ), getUInt16PropertyDefinitionMinValue( ), getUInt16PropertyDefinitionMaxValue( ) );
+            }
+            case Kind.UInt32PropertyDefinition: {
+                return new UInt32PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getUInt32PropertyDefinitionDefaultValue( ), getUInt32PropertyDefinitionMinValue( ), getUInt32PropertyDefinitionMaxValue( ) );
+            }
+            case Kind.UInt64PropertyDefinition: {
+                return new UInt64PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getUInt64PropertyDefinitionDefaultValue( ), getUInt64PropertyDefinitionMinValue( ), getUInt64PropertyDefinitionMaxValue( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

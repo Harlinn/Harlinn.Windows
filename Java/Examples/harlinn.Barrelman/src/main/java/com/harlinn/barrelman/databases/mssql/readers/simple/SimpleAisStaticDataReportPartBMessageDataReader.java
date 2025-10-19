@@ -119,7 +119,7 @@ public class SimpleAisStaticDataReportPartBMessageDataReader extends SimpleAisSt
     }
 
     @Override
-    public AisStaticDataReportPartBMessageObject GetDataObject( ) throws SQLException {
+    public AisStaticDataReportPartBMessageObject getDataObject( ) throws SQLException {
         return new AisStaticDataReportPartBMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPartNumber( ), getShipType( ), getVendorId( ), getUnitModelCode( ), getSerialNumber( ), getCallsign( ), getDimensionToBow( ), getDimensionToStern( ), getDimensionToPort( ), getDimensionToStarboard( ), getMothershipMmsi( ), getPositionFixType( ), getSpare( ) );
     }
 

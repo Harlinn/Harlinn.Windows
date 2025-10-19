@@ -96,7 +96,7 @@ public class SimpleMapServiceOptionsDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public MapServiceOptionsObject GetDataObject( ) throws SQLException {
+    public MapServiceOptionsObject getDataObject( ) throws SQLException {
             return new MapServiceOptionsObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimestamp( ), getIpAddress( ), getPort( ), getImageScaleFactorX( ), getImageOffsetX( ), getImageScaleFactorY( ), getImageOffsetY( ) );
     }
 

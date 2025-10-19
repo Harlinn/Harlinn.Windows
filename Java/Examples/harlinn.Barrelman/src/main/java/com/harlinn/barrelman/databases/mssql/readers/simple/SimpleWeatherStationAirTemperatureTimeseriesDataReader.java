@@ -39,7 +39,7 @@ public class SimpleWeatherStationAirTemperatureTimeseriesDataReader extends Simp
     }
 
     @Override
-    public WeatherStationAirTemperatureTimeseriesObject GetDataObject( ) throws SQLException {
+    public WeatherStationAirTemperatureTimeseriesObject getDataObject( ) throws SQLException {
         return new WeatherStationAirTemperatureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
     }
 

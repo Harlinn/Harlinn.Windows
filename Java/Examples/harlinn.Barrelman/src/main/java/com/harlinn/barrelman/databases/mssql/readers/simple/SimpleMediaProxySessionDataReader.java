@@ -68,7 +68,7 @@ public class SimpleMediaProxySessionDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public MediaProxySessionObject GetDataObject( ) throws SQLException {
+    public MediaProxySessionObject getDataObject( ) throws SQLException {
             return new MediaProxySessionObject( ObjectState.Stored, getId( ), getRowVersion( ), getService( ), getName( ), getEnabledTimeseries( ) );
     }
 

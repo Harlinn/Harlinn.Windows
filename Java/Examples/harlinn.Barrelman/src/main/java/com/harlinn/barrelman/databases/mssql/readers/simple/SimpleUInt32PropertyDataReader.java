@@ -38,7 +38,7 @@ public class SimpleUInt32PropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public UInt32PropertyObject GetDataObject( ) throws SQLException {
+    public UInt32PropertyObject getDataObject( ) throws SQLException {
         return new UInt32PropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

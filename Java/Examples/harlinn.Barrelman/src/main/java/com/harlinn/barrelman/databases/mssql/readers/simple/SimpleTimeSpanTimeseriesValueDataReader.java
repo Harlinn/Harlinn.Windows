@@ -68,7 +68,7 @@ public class SimpleTimeSpanTimeseriesValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public TimeSpanTimeseriesValueObject GetDataObject( ) throws SQLException {
+    public TimeSpanTimeseriesValueObject getDataObject( ) throws SQLException {
             return new TimeSpanTimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getValue( ) );
     }
 

@@ -39,7 +39,7 @@ public class SimpleGuidPropertyDefinitionDataReader extends SimplePropertyDefini
     }
 
     @Override
-    public GuidPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public GuidPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new GuidPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ) );
     }
 

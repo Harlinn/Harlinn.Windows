@@ -74,6 +74,6 @@ public abstract class SimpleNamespaceElementDataReader extends ResultSetWrapper 
         destination.writeBoolean( false );
     }
 
-    public abstract NamespaceElementObject GetDataObject( ) throws SQLException;
+    public abstract NamespaceElementObject getDataObject( ) throws SQLException;
 
 }

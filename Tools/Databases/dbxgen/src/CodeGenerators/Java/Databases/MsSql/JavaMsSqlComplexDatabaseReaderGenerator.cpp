@@ -103,6 +103,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"    }" );
         WriteLine( );
         CreateAccessors( classInfo );
+        CreateWriteTo( classInfo );
+        CreateGetDataObject( classInfo );
         WriteLine( L"}" );
         WriteLine( );
     }
@@ -228,7 +230,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         for ( const auto& member : viewMembers )
         {
             auto getFunctionName = JavaHelper::GetDataReaderGetFunctionName( *member );
-            auto propertyName = member->Name( ).FirstToUpper( );
+            auto propertyName = GetPropertyName( member->Name( ).FirstToUpper( ) );
 
             auto fieldId = Format( L"{}_{}_FIELD_ID", shortName, member->Name( ).ToUpper( ) );
 
@@ -251,7 +253,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
             for ( const auto& member : ownPersistentMembers )
             {
                 auto owner = member->Owner( );
-                auto propertyName = owner->Name( ).FirstToUpper( ) + member->Name( ).FirstToUpper( );
+                auto propertyName = GetPropertyName( owner->Name( ).FirstToUpper( ) + member->Name( ).FirstToUpper( ) );
 
                 auto derivedShortName = owner->ShortName( ).ToUpper( );
                 auto fieldId = Format( L"{}_{}_FIELD_ID", derivedShortName, member->Name( ).ToUpper( ) );
@@ -266,8 +268,122 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         auto getFunctionName = JavaHelper::GetDataReaderGetFunctionName( member );
         auto propertyType = JavaHelper::GetMemberFieldType( member );
 
-        WriteLine( L"    public {} get{}( ) throws SQLException {{", propertyType, GetPropertyName( propertyName ) );
+        WriteLine( L"    public {} get{}( ) throws SQLException {{", propertyType, propertyName );
         WriteLine( L"        return {}( {} );", getFunctionName, fieldId );
+        WriteLine( L"    }" );
+        WriteLine( );
+    }
+
+    void JavaMsSqlComplexDatabaseReaderGenerator::CreateWriteTo( const ClassInfo& classInfo )
+    {
+        auto descendantClassesAndSelf = classInfo.AllDerivedClassesAndSelf( );
+        WriteLine( L"    public void writeTo(BinaryWriter destination ) throws SQLException {" );
+        WriteLine( L"        var kind = getObjectType( );" );
+        WriteLine( L"        switch(kind) {" );
+        for ( const auto clazz : descendantClassesAndSelf )
+        {
+            if ( clazz->Abstract( ) == false )
+            {
+                WriteLine( L"            case Kind.{}: {{", clazz->Name( ) );
+                const auto& members = clazz->PersistentMembers( );
+                auto memberCount = members.size( );
+
+                WriteLine( L"                destination.writeInt32( kind );" );
+                WriteLine( L"                destination.writeUInt8( ObjectState.Stored );" );
+
+                for ( size_t i = 0; i < memberCount; i++ )
+                {
+                    const auto& member = *members[ i ];
+
+                    auto fieldName = member.Name( ).FirstToUpper( );
+                    auto writeFunction = JavaHelper::GetSerializationWriteFunction( member );
+                        
+
+                    auto memberType = member.Type( );
+                    if ( classInfo.IsViewMember( member ) )
+                    {
+                        auto accessorName = GetPropertyName( fieldName );
+                        WriteLine( L"                destination.{}( get{}( ) );", writeFunction, accessorName );
+                    }
+                    else
+                    {
+                        auto owner = member.Owner( );
+                        auto accessorName = GetPropertyName( owner->Name( ).FirstToUpper( ) + fieldName );
+                        WriteLine( L"                destination.{}( get{}( ) );", writeFunction, accessorName );
+                    }
+                }
+                WriteLine( L"            }" );
+                WriteLine( L"            break;" );
+            }
+        }
+        WriteLine( L"            default: {" );
+        WriteLine( L"                var exc = new SQLException( \"Cannot perform serialization for kind=\" + kind + \".\" );" );
+        WriteLine( L"                throw exc;" );
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
+        WriteLine( L"    }" );
+        WriteLine( );
+        WriteLine( L"    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {" );
+        WriteLine( L"        while ( next( ) ) {" );
+        WriteLine( L"            destination.writeBoolean( true );" );
+        WriteLine( L"            writeTo( destination );" );
+        WriteLine( L"        }" );
+        WriteLine( L"        destination.writeBoolean( false );" );
+        WriteLine( L"    }" );
+        WriteLine( );
+    }
+
+    void JavaMsSqlComplexDatabaseReaderGenerator::CreateGetDataObject( const ClassInfo& classInfo )
+    {
+        auto className = JavaHelper::GetDataType( classInfo );
+        auto descendantClassesAndSelf = classInfo.AllDerivedClassesAndSelf( );
+        WriteLine( L"    public {} getDataObject( ) throws SQLException {{", className );
+        WriteLine( L"        var kind = getObjectType( );" );
+        WriteLine( L"        switch(kind) {" );
+        for ( const auto clazz : descendantClassesAndSelf )
+        {
+            if ( clazz->Abstract( ) == false )
+            {
+                WriteLine( L"            case Kind.{}: {{", clazz->Name( ) );
+                auto clazzName = JavaHelper::GetDataType( *clazz );
+
+                const auto& members = clazz->PersistentMembers( );
+                auto memberCount = members.size( );
+
+                StringBuilder<wchar_t> sb;
+
+                sb.Append( L"ObjectState.Stored" );
+
+                for ( size_t i = 0; i < memberCount; i++ )
+                {
+                    const auto& member = *members[ i ];
+
+                    auto fieldName = member.Name( ).FirstToUpper( );
+                    auto writeFunction = JavaHelper::GetSerializationWriteFunction( member );
+
+
+                    auto memberType = member.Type( );
+                    if ( classInfo.IsViewMember( member ) )
+                    {
+                        auto accessorName = GetPropertyName( fieldName );
+                        sb.Append( L", get{}( )", accessorName );
+                    }
+                    else
+                    {
+                        auto owner = member.Owner( );
+                        auto accessorName = GetPropertyName( owner->Name( ).FirstToUpper( ) + fieldName );
+                        sb.Append( L", get{}( )", accessorName );
+                    }
+                }
+                WriteLine( L"                return new {}( {} );", clazzName, sb.ToString( ) );
+                WriteLine( L"            }" );
+            }
+        }
+        WriteLine( L"            default: {" );
+        WriteLine( L"                var exc = new SQLException( \"Cannot create an object for kind=\" + kind + \".\" );" );
+        WriteLine( L"                throw exc;" );
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
         WriteLine( L"    }" );
         WriteLine( );
     }

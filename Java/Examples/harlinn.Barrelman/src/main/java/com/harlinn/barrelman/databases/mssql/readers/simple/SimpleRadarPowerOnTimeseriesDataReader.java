@@ -39,7 +39,7 @@ public class SimpleRadarPowerOnTimeseriesDataReader extends SimpleBooleanTimeser
     }
 
     @Override
-    public RadarPowerOnTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarPowerOnTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarPowerOnTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

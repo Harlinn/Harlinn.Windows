@@ -317,5 +317,297 @@ public class ComplexCameraCommandDataReader extends ResultSetWrapper {
         return getBoolean( CCS_ZOOM_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.CameraCommand: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+            }
+            break;
+            case Kind.CameraCommandAbsoluteMove: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeInt32( getCameraCommandAbsoluteMovePositionPanTiltMode( ) );
+                destination.writeNullableDouble( getCameraCommandAbsoluteMovePanAngle( ) );
+                destination.writeNullableDouble( getCameraCommandAbsoluteMoveTiltAngle( ) );
+                destination.writeInt32( getCameraCommandAbsoluteMovePositionFocalLengthMode( ) );
+                destination.writeNullableDouble( getCameraCommandAbsoluteMoveFocalLength( ) );
+                destination.writeInt32( getCameraCommandAbsoluteMoveSpeedPanTiltMode( ) );
+                destination.writeNullableDouble( getCameraCommandAbsoluteMovePanSpeed( ) );
+                destination.writeNullableDouble( getCameraCommandAbsoluteMoveTiltSpeed( ) );
+                destination.writeInt32( getCameraCommandAbsoluteMoveSpeedFocalLengthMode( ) );
+                destination.writeNullableDouble( getCameraCommandAbsoluteMoveZoomSpeed( ) );
+            }
+            break;
+            case Kind.CameraCommandAdjustPanTiltZoom: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeNullableDouble( getCameraCommandAdjustPanTiltZoomX( ) );
+                destination.writeNullableDouble( getCameraCommandAdjustPanTiltZoomY( ) );
+                destination.writeNullableDouble( getCameraCommandAdjustPanTiltZoomZ( ) );
+            }
+            break;
+            case Kind.CameraCommandContinuousMove: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandContinuousMoveNormalized( ) );
+                destination.writeNullableDouble( getCameraCommandContinuousMovePanVelocity( ) );
+                destination.writeNullableDouble( getCameraCommandContinuousMoveTiltVelocity( ) );
+                destination.writeNullableDouble( getCameraCommandContinuousMoveZoomVelocity( ) );
+                destination.writeNullableTimeSpan( getCameraCommandContinuousMoveDuration( ) );
+            }
+            break;
+            case Kind.CameraCommandGeoMove: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeDouble( getCameraCommandGeoMoveLatitude( ) );
+                destination.writeDouble( getCameraCommandGeoMoveLongitude( ) );
+                destination.writeNullableDouble( getCameraCommandGeoMoveAltitude( ) );
+                destination.writeNullableDouble( getCameraCommandGeoMoveViewportWidth( ) );
+                destination.writeNullableDouble( getCameraCommandGeoMoveViewportHeight( ) );
+            }
+            break;
+            case Kind.CameraCommandRelativeMove: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandRelativeMoveNormalized( ) );
+                destination.writeNullableDouble( getCameraCommandRelativeMovePanAngle( ) );
+                destination.writeNullableDouble( getCameraCommandRelativeMoveTiltAngle( ) );
+                destination.writeNullableDouble( getCameraCommandRelativeMoveFocalLength( ) );
+                destination.writeNullableDouble( getCameraCommandRelativeMovePanSpeed( ) );
+                destination.writeNullableDouble( getCameraCommandRelativeMoveTiltSpeed( ) );
+                destination.writeNullableDouble( getCameraCommandRelativeMoveZoomSpeed( ) );
+            }
+            break;
+            case Kind.CameraCommandReleasePTZOwnership: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+            }
+            break;
+            case Kind.CameraCommandRequestPTZOwnership: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+            }
+            break;
+            case Kind.CameraCommandSetAutoFocus: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandSetAutoFocusEnabled( ) );
+            }
+            break;
+            case Kind.CameraCommandSetBlackAndWhite: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandSetBlackAndWhiteEnabled( ) );
+            }
+            break;
+            case Kind.CameraCommandSetFollowed: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeGuid( getCameraCommandSetFollowedTrackId( ) );
+                destination.writeInt32( getCameraCommandSetFollowedReason( ) );
+            }
+            break;
+            case Kind.CameraCommandSetInfraRedLamp: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandSetInfraRedLampEnabled( ) );
+            }
+            break;
+            case Kind.CameraCommandSetWasher: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandSetWasherEnabled( ) );
+            }
+            break;
+            case Kind.CameraCommandSetWiper: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandSetWiperEnabled( ) );
+            }
+            break;
+            case Kind.CameraCommandStop: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getCamera( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeInt32( getDeviceCommandSourceType( ) );
+                destination.writeGuid( getDeviceCommandSourceId( ) );
+                destination.writeNullableGuid( getReply( ) );
+                destination.writeBoolean( getCameraCommandStopPanTilt( ) );
+                destination.writeBoolean( getCameraCommandStopZoom( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public CameraCommandObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.CameraCommand: {
+                return new CameraCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+            }
+            case Kind.CameraCommandAbsoluteMove: {
+                return new CameraCommandAbsoluteMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandAbsoluteMovePositionPanTiltMode( ), getCameraCommandAbsoluteMovePanAngle( ), getCameraCommandAbsoluteMoveTiltAngle( ), getCameraCommandAbsoluteMovePositionFocalLengthMode( ), getCameraCommandAbsoluteMoveFocalLength( ), getCameraCommandAbsoluteMoveSpeedPanTiltMode( ), getCameraCommandAbsoluteMovePanSpeed( ), getCameraCommandAbsoluteMoveTiltSpeed( ), getCameraCommandAbsoluteMoveSpeedFocalLengthMode( ), getCameraCommandAbsoluteMoveZoomSpeed( ) );
+            }
+            case Kind.CameraCommandAdjustPanTiltZoom: {
+                return new CameraCommandAdjustPanTiltZoomObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandAdjustPanTiltZoomX( ), getCameraCommandAdjustPanTiltZoomY( ), getCameraCommandAdjustPanTiltZoomZ( ) );
+            }
+            case Kind.CameraCommandContinuousMove: {
+                return new CameraCommandContinuousMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandContinuousMoveNormalized( ), getCameraCommandContinuousMovePanVelocity( ), getCameraCommandContinuousMoveTiltVelocity( ), getCameraCommandContinuousMoveZoomVelocity( ), getCameraCommandContinuousMoveDuration( ) );
+            }
+            case Kind.CameraCommandGeoMove: {
+                return new CameraCommandGeoMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandGeoMoveLatitude( ), getCameraCommandGeoMoveLongitude( ), getCameraCommandGeoMoveAltitude( ), getCameraCommandGeoMoveViewportWidth( ), getCameraCommandGeoMoveViewportHeight( ) );
+            }
+            case Kind.CameraCommandRelativeMove: {
+                return new CameraCommandRelativeMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandRelativeMoveNormalized( ), getCameraCommandRelativeMovePanAngle( ), getCameraCommandRelativeMoveTiltAngle( ), getCameraCommandRelativeMoveFocalLength( ), getCameraCommandRelativeMovePanSpeed( ), getCameraCommandRelativeMoveTiltSpeed( ), getCameraCommandRelativeMoveZoomSpeed( ) );
+            }
+            case Kind.CameraCommandReleasePTZOwnership: {
+                return new CameraCommandReleasePTZOwnershipObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+            }
+            case Kind.CameraCommandRequestPTZOwnership: {
+                return new CameraCommandRequestPTZOwnershipObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
+            }
+            case Kind.CameraCommandSetAutoFocus: {
+                return new CameraCommandSetAutoFocusObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandSetAutoFocusEnabled( ) );
+            }
+            case Kind.CameraCommandSetBlackAndWhite: {
+                return new CameraCommandSetBlackAndWhiteObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandSetBlackAndWhiteEnabled( ) );
+            }
+            case Kind.CameraCommandSetFollowed: {
+                return new CameraCommandSetFollowedObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandSetFollowedTrackId( ), getCameraCommandSetFollowedReason( ) );
+            }
+            case Kind.CameraCommandSetInfraRedLamp: {
+                return new CameraCommandSetInfraRedLampObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandSetInfraRedLampEnabled( ) );
+            }
+            case Kind.CameraCommandSetWasher: {
+                return new CameraCommandSetWasherObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandSetWasherEnabled( ) );
+            }
+            case Kind.CameraCommandSetWiper: {
+                return new CameraCommandSetWiperObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandSetWiperEnabled( ) );
+            }
+            case Kind.CameraCommandStop: {
+                return new CameraCommandStopObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getCameraCommandStopPanTilt( ), getCameraCommandStopZoom( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

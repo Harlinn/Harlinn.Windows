@@ -160,7 +160,7 @@ public class SimpleAidToNavigationReportMessageDataReader extends SimpleAisMessa
     }
 
     @Override
-    public AidToNavigationReportMessageObject GetDataObject( ) throws SQLException {
+    public AidToNavigationReportMessageObject getDataObject( ) throws SQLException {
         return new AidToNavigationReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationalAidType( ), getName( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getDimensionToBow( ), getDimensionToStern( ), getDimensionToPort( ), getDimensionToStarboard( ), getPositionFixType( ), getTimestamp( ), getOffPosition( ), getRegionalReserved( ), getRaim( ), getVirtualAid( ), getAssigned( ), getSpare( ), getNameExtension( ) );
     }
 

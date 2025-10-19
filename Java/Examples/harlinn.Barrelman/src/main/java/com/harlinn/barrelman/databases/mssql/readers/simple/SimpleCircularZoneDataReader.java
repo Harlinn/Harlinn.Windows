@@ -45,7 +45,7 @@ public class SimpleCircularZoneDataReader extends SimpleZoneDataReader {
     }
 
     @Override
-    public CircularZoneObject GetDataObject( ) throws SQLException {
+    public CircularZoneObject getDataObject( ) throws SQLException {
         return new CircularZoneObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getLongitude( ), getLatitude( ), getAlarmType( ), getAlarmTime( ), getRadarTrackMinimumLifetime( ), getSpeed( ), getStrokeColor( ), getFillColor( ), getRadius( ) );
     }
 

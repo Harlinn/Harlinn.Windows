@@ -48,7 +48,7 @@ public class SimpleCameraCommandSetFollowedDataReader extends SimpleCameraComman
     }
 
     @Override
-    public CameraCommandSetFollowedObject GetDataObject( ) throws SQLException {
+    public CameraCommandSetFollowedObject getDataObject( ) throws SQLException {
         return new CameraCommandSetFollowedObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getTrackId( ), getReason( ) );
     }
 

@@ -82,7 +82,7 @@ public class SimpleAisDeviceCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public AisDeviceCommandObject GetDataObject( ) throws SQLException {
+    public AisDeviceCommandObject getDataObject( ) throws SQLException {
             return new AisDeviceCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
     }
 

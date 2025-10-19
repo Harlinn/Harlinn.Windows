@@ -39,7 +39,7 @@ public class SimpleBinaryPropertyDefinitionDataReader extends SimplePropertyDefi
     }
 
     @Override
-    public BinaryPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public BinaryPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new BinaryPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ) );
     }
 

@@ -32,7 +32,7 @@ public class SimpleOilSpillDetectorDeviceDataReader extends SimpleDeviceDataRead
     }
 
     @Override
-    public OilSpillDetectorDeviceObject GetDataObject( ) throws SQLException {
+    public OilSpillDetectorDeviceObject getDataObject( ) throws SQLException {
         return new OilSpillDetectorDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
     }
 

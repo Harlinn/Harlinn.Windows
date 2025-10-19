@@ -215,7 +215,7 @@ public class SimpleOilSpillDetectorConfigurationDataReader extends ResultSetWrap
         destination.writeBoolean( false );
     }
 
-    public OilSpillDetectorConfigurationObject GetDataObject( ) throws SQLException {
+    public OilSpillDetectorConfigurationObject getDataObject( ) throws SQLException {
             return new OilSpillDetectorConfigurationObject( ObjectState.Stored, getId( ), getRowVersion( ), getOilSpillDetector( ), getTimestamp( ), getRange( ), getStartAngle( ), getEndAngle( ), getStartRange( ), getEndRange( ), getUpdateRate( ), getStatusSendTime( ), getDrawBorder( ), getColors( ), getSendToServer( ), getDirectory( ), getTransparentWater( ), getSavePictures( ), getSendAsTarget( ), getWriteLog( ), getTargetFilePrefix( ), getTargetMMSI( ), getLatitude( ), getLongitude( ), getTestSourceEnabled( ), getProxyServer( ), getUseProxyServer( ) );
     }
 

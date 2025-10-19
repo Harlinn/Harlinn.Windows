@@ -61,7 +61,7 @@ public class SimpleProcessTrackValueResultDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public ProcessTrackValueResultObject GetDataObject( ) throws SQLException {
+    public ProcessTrackValueResultObject getDataObject( ) throws SQLException {
             return new ProcessTrackValueResultObject( ObjectState.Stored, getId( ), getRowVersion( ), getCreatedNewTrack( ), getTrackId( ) );
     }
 

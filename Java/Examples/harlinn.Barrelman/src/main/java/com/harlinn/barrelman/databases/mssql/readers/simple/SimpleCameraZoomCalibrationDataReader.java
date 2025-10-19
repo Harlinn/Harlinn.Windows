@@ -61,7 +61,7 @@ public class SimpleCameraZoomCalibrationDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public CameraZoomCalibrationObject GetDataObject( ) throws SQLException {
+    public CameraZoomCalibrationObject getDataObject( ) throws SQLException {
             return new CameraZoomCalibrationObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ) );
     }
 

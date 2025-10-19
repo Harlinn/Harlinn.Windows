@@ -46,7 +46,7 @@ public class SimpleReferencePropertyDefinitionDataReader extends SimplePropertyD
     }
 
     @Override
-    public ReferencePropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public ReferencePropertyDefinitionObject getDataObject( ) throws SQLException {
         return new ReferencePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getReferencedElementType( ) );
     }
 

@@ -43,7 +43,7 @@ public class SimpleVehicleDataReader extends SimpleTrackableItemDataReader {
     }
 
     @Override
-    public VehicleObject GetDataObject( ) throws SQLException {
+    public VehicleObject getDataObject( ) throws SQLException {
         return new VehicleObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ) );
     }
 

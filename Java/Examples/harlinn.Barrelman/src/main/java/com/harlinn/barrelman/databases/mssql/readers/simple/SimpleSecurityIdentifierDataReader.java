@@ -74,6 +74,6 @@ public abstract class SimpleSecurityIdentifierDataReader extends ResultSetWrappe
         destination.writeBoolean( false );
     }
 
-    public abstract SecurityIdentifierObject GetDataObject( ) throws SQLException;
+    public abstract SecurityIdentifierObject getDataObject( ) throws SQLException;
 
 }

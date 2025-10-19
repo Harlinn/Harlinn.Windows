@@ -153,7 +153,7 @@ public class SimpleAisStandardClassBCsPositionReportMessageDataReader extends Si
     }
 
     @Override
-    public AisStandardClassBCsPositionReportMessageObject GetDataObject( ) throws SQLException {
+    public AisStandardClassBCsPositionReportMessageObject getDataObject( ) throws SQLException {
         return new AisStandardClassBCsPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getReserved( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getRegionalReserved( ), getIsCsUnit( ), getHasDisplay( ), getHasDscCapability( ), getBand( ), getCanAcceptMessage22( ), getAssigned( ), getRaim( ), getRadioStatus( ) );
     }
 

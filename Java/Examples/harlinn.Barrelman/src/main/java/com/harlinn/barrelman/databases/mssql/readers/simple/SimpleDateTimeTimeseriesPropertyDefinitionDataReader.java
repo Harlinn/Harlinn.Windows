@@ -46,7 +46,7 @@ public class SimpleDateTimeTimeseriesPropertyDefinitionDataReader extends Simple
     }
 
     @Override
-    public DateTimeTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public DateTimeTimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new DateTimeTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
     }
 

@@ -104,7 +104,7 @@ public class SimpleCameraCommandAbsoluteMoveDataReader extends SimpleCameraComma
     }
 
     @Override
-    public CameraCommandAbsoluteMoveObject GetDataObject( ) throws SQLException {
+    public CameraCommandAbsoluteMoveObject getDataObject( ) throws SQLException {
         return new CameraCommandAbsoluteMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getPositionPanTiltMode( ), getPanAngle( ), getTiltAngle( ), getPositionFocalLengthMode( ), getFocalLength( ), getSpeedPanTiltMode( ), getPanSpeed( ), getTiltSpeed( ), getSpeedFocalLengthMode( ), getZoomSpeed( ) );
     }
 

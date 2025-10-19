@@ -155,7 +155,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         void CreateMergeDataObject( );
     };
 
-    /*
+    
     class JavaMsSqlDataContextGenerator : public CodeGenerator<JavaMsSqlGenerator, JavaMsSqlDataContextOptions>
     {
         std::set<WideString> functions_;
@@ -188,10 +188,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         void CreateGetByIndexOverDataReader( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByIndexOverSql( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByIndexOver( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
-        void AddParameter( const Metadata::MemberInfo& memberInfo );
-        void AddParameter( const Metadata::MemberInfo& memberInfo, const WideString& argumentName, const WideString& sqlArgumentName );
+        void AddParameter( size_t parameterIndex, const Metadata::MemberInfo& memberInfo );
+        void AddParameter( size_t parameterIndex, const Metadata::MemberInfo& memberInfo, const WideString& argumentName );
     };
-    */
+    
 
     /*
     class JavaMsSqlUpdateNodesGenerator : public CodeGenerator<JavaMsSqlGenerator, JavaMsSqlUpdateNodesOptions>
@@ -234,7 +234,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
     {
         JavaMsSqlReadersGenerator readers_;
         JavaMsSqlStoredProceduresGenerator storedProcedures_;
-        //JavaMsSqlDataContextGenerator dataContext_;
+        JavaMsSqlDataContextGenerator dataContext_;
         //JavaMsSqlUpdateNodesGenerator updateNodes_;
         JavaMsSqlTestDataObjectFactoryGenerator testDataObjectFactory_;
     public:
@@ -246,7 +246,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         {
             readers_.Run( );
             storedProcedures_.Run( );
-            //dataContext_.Run( );
+            dataContext_.Run( );
             //updateNodes_.Run( );
             testDataObjectFactory_.Run( );
         }
@@ -260,11 +260,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
     inline JavaMsSqlStoredProceduresGenerator::JavaMsSqlStoredProceduresGenerator( const JavaMsSqlGenerator& owner )
         : Base( owner, owner.Options( ).StoredProcedures( ) )
     { }
-    /*
+    
     inline JavaMsSqlDataContextGenerator::JavaMsSqlDataContextGenerator( const JavaMsSqlGenerator& owner )
         : Base( owner, owner.Options( ).DataContext( ) )
     { }
 
+    /*
     inline JavaMsSqlUpdateNodesGenerator::JavaMsSqlUpdateNodesGenerator( const JavaMsSqlGenerator& owner )
         : Base( owner, owner.Options( ).UpdateNodes( ) )
     { }

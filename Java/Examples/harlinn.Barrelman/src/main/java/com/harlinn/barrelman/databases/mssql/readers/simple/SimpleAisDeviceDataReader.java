@@ -32,7 +32,7 @@ public class SimpleAisDeviceDataReader extends SimpleTrackerDeviceDataReader {
     }
 
     @Override
-    public AisDeviceObject GetDataObject( ) throws SQLException {
+    public AisDeviceObject getDataObject( ) throws SQLException {
         return new AisDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
     }
 

@@ -69,7 +69,7 @@ public class SimpleAisAddressedSafetyRelatedMessageDataReader extends SimpleAisM
     }
 
     @Override
-    public AisAddressedSafetyRelatedMessageObject GetDataObject( ) throws SQLException {
+    public AisAddressedSafetyRelatedMessageObject getDataObject( ) throws SQLException {
         return new AisAddressedSafetyRelatedMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSequenceNumber( ), getDestinationMmsi( ), getRetransmitFlag( ), getSpare( ), getText( ) );
     }
 

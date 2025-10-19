@@ -150,5 +150,117 @@ public class ComplexAisPositionReportClassAMessageBaseDataReader extends ResultS
         return getInt32( APRCAB_RADIOSTATUS_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AisPositionReportClassAAssignedScheduleMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getNavigationStatus( ) );
+                destination.writeNullableInt32( getRateOfTurn( ) );
+                destination.writeDouble( getSpeedOverGround( ) );
+                destination.writeInt32( getPositionAccuracy( ) );
+                destination.writeDouble( getLongitude( ) );
+                destination.writeDouble( getLatitude( ) );
+                destination.writeDouble( getCourseOverGround( ) );
+                destination.writeNullableInt32( getTrueHeading( ) );
+                destination.writeInt32( getTimestamp( ) );
+                destination.writeInt32( getManeuverIndicator( ) );
+                destination.writeInt32( getSpare( ) );
+                destination.writeInt32( getRaim( ) );
+                destination.writeInt32( getRadioStatus( ) );
+            }
+            break;
+            case Kind.AisPositionReportClassAMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getNavigationStatus( ) );
+                destination.writeNullableInt32( getRateOfTurn( ) );
+                destination.writeDouble( getSpeedOverGround( ) );
+                destination.writeInt32( getPositionAccuracy( ) );
+                destination.writeDouble( getLongitude( ) );
+                destination.writeDouble( getLatitude( ) );
+                destination.writeDouble( getCourseOverGround( ) );
+                destination.writeNullableInt32( getTrueHeading( ) );
+                destination.writeInt32( getTimestamp( ) );
+                destination.writeInt32( getManeuverIndicator( ) );
+                destination.writeInt32( getSpare( ) );
+                destination.writeInt32( getRaim( ) );
+                destination.writeInt32( getRadioStatus( ) );
+            }
+            break;
+            case Kind.AisPositionReportClassAResponseToInterrogationMessage: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getAisDevice( ) );
+                destination.writeDateTime( getReceivedTimestamp( ) );
+                destination.writeInt64( getMessageSequenceNumber( ) );
+                destination.writeInt32( getRepeat( ) );
+                destination.writeNullableGuid( getMmsi( ) );
+                destination.writeInt32( getNavigationStatus( ) );
+                destination.writeNullableInt32( getRateOfTurn( ) );
+                destination.writeDouble( getSpeedOverGround( ) );
+                destination.writeInt32( getPositionAccuracy( ) );
+                destination.writeDouble( getLongitude( ) );
+                destination.writeDouble( getLatitude( ) );
+                destination.writeDouble( getCourseOverGround( ) );
+                destination.writeNullableInt32( getTrueHeading( ) );
+                destination.writeInt32( getTimestamp( ) );
+                destination.writeInt32( getManeuverIndicator( ) );
+                destination.writeInt32( getSpare( ) );
+                destination.writeInt32( getRaim( ) );
+                destination.writeInt32( getRadioStatus( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public AisPositionReportClassAMessageBaseObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.AisPositionReportClassAAssignedScheduleMessage: {
+                return new AisPositionReportClassAAssignedScheduleMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationStatus( ), getRateOfTurn( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getManeuverIndicator( ), getSpare( ), getRaim( ), getRadioStatus( ) );
+            }
+            case Kind.AisPositionReportClassAMessage: {
+                return new AisPositionReportClassAMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationStatus( ), getRateOfTurn( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getManeuverIndicator( ), getSpare( ), getRaim( ), getRadioStatus( ) );
+            }
+            case Kind.AisPositionReportClassAResponseToInterrogationMessage: {
+                return new AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationStatus( ), getRateOfTurn( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getManeuverIndicator( ), getSpare( ), getRaim( ), getRadioStatus( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

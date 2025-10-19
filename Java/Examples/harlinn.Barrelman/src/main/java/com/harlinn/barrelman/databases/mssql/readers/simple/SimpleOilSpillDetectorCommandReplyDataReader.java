@@ -82,7 +82,7 @@ public class SimpleOilSpillDetectorCommandReplyDataReader extends ResultSetWrapp
         destination.writeBoolean( false );
     }
 
-    public OilSpillDetectorCommandReplyObject GetDataObject( ) throws SQLException {
+    public OilSpillDetectorCommandReplyObject getDataObject( ) throws SQLException {
             return new OilSpillDetectorCommandReplyObject( ObjectState.Stored, getId( ), getRowVersion( ), getOilSpillDetector( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ) );
     }
 

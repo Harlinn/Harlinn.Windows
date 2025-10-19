@@ -41,7 +41,7 @@ public class SimpleCameraCommandSetWiperDataReader extends SimpleCameraCommandDa
     }
 
     @Override
-    public CameraCommandSetWiperObject GetDataObject( ) throws SQLException {
+    public CameraCommandSetWiperObject getDataObject( ) throws SQLException {
         return new CameraCommandSetWiperObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getEnabled( ) );
     }
 

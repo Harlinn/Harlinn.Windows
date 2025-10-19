@@ -39,7 +39,7 @@ public class SimpleRadarBlankSector2TimeseriesDataReader extends SimpleBooleanTi
     }
 
     @Override
-    public RadarBlankSector2TimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarBlankSector2TimeseriesObject getDataObject( ) throws SQLException {
         return new RadarBlankSector2TimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

@@ -96,7 +96,7 @@ public class SimpleTrackInfoDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public TrackInfoObject GetDataObject( ) throws SQLException {
+    public TrackInfoObject getDataObject( ) throws SQLException {
             return new TrackInfoObject( ObjectState.Stored, getId( ), getRowVersion( ), getFirstTimestamp( ), getLastTimestamp( ), getCount( ), getNorthWestLatitude( ), getNorthWestLongitude( ), getSouthEastLatitude( ), getSouthEastLongitude( ) );
     }
 

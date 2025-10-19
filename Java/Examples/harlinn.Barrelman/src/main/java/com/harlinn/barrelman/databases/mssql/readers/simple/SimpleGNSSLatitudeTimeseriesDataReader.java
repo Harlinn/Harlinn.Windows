@@ -39,7 +39,7 @@ public class SimpleGNSSLatitudeTimeseriesDataReader extends SimpleDoubleTimeseri
     }
 
     @Override
-    public GNSSLatitudeTimeseriesObject GetDataObject( ) throws SQLException {
+    public GNSSLatitudeTimeseriesObject getDataObject( ) throws SQLException {
         return new GNSSLatitudeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGNSSDevice( ) );
     }
 

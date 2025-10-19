@@ -68,7 +68,7 @@ public class SimpleUInt64TimeseriesValueDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public UInt64TimeseriesValueObject GetDataObject( ) throws SQLException {
+    public UInt64TimeseriesValueObject getDataObject( ) throws SQLException {
             return new UInt64TimeseriesValueObject( ObjectState.Stored, getId( ), getRowVersion( ), getTimeseries( ), getTimestamp( ), getValue( ) );
     }
 

@@ -665,7 +665,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
     {
         auto functionName = JavaHelper::GetDeleteFunctionName( classInfo );
         auto functionParameters = JavaHelper::GetDeleteFunctionParameters( classInfo );
-        auto functionParameterPlaceHolders = JavaHelper::GetDeleteFunctionParameterPlaceholders( classInfo );
+        auto functionParameterPlaceHolders = JavaHelper::GetDeleteFunctionParameterPlaceholders( classInfo ) + L", ?";
         auto storedProcedureName = MsSqlHelper::GetDeleteProcedureName( classInfo );
 
         auto primaryKey = classInfo.PrimaryKey( );
@@ -675,14 +675,19 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"        boolean result = false;" );
         WriteLine( L"        var sqlStatement = \"{{call {}({})}}\";", storedProcedureName, functionParameterPlaceHolders );
         WriteLine( L"        try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {" );
-        AddUpdateParameter( 1, *primaryKey );
+        AddDeleteParameter( 1, *primaryKey );
         if ( rowVersion )
         {
-            AddUpdateParameter( 2, *rowVersion );
+            AddDeleteParameter( 2, *rowVersion );
+            WriteLine( L"            callableStatement.registerOutParameter( 3, Types.INTEGER );" );
+        }
+        else
+        {
+            WriteLine( L"            callableStatement.registerOutParameter( 2, Types.INTEGER );" );
         }
         WriteLine( L"            callableStatement.execute( );" );
         WriteLine( L"            int rowsAffected = callableStatement.getUpdateCount( );" );
-        WriteLine( L"            if ( rowsAffected == 1 ) {" );
+        WriteLine( L"            if ( rowsAffected >= 1 ) {" );
         WriteLine( L"                result = true;" );
         WriteLine( L"            }" );
         WriteLine( L"        }" );

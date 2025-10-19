@@ -46,7 +46,7 @@ public class SimpleAisPositionReportClassAAssignedScheduleMessageDataReader exte
     }
 
     @Override
-    public AisPositionReportClassAAssignedScheduleMessageObject GetDataObject( ) throws SQLException {
+    public AisPositionReportClassAAssignedScheduleMessageObject getDataObject( ) throws SQLException {
         return new AisPositionReportClassAAssignedScheduleMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationStatus( ), getRateOfTurn( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getManeuverIndicator( ), getSpare( ), getRaim( ), getRadioStatus( ) );
     }
 

@@ -55,7 +55,7 @@ public class SimpleAisUtcAndDateInquiryMessageDataReader extends SimpleAisMessag
     }
 
     @Override
-    public AisUtcAndDateInquiryMessageObject GetDataObject( ) throws SQLException {
+    public AisUtcAndDateInquiryMessageObject getDataObject( ) throws SQLException {
         return new AisUtcAndDateInquiryMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSpare1( ), getDestinationMmsi( ), getSpare2( ) );
     }
 

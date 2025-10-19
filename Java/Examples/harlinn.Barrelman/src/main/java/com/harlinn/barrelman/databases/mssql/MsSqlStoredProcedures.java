@@ -93,14 +93,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAircraftType( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AircraftTypeDelete(?, ?)}";
+        var sqlStatement = "{call AircraftTypeDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -309,14 +309,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisDeviceCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisDeviceCommandDelete(?, ?)}";
+        var sqlStatement = "{call AisDeviceCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -525,14 +525,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisDeviceCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisDeviceCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call AisDeviceCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -691,14 +691,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisDeviceConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisDeviceConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call AisDeviceConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -793,14 +793,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisDeviceRawMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisDeviceRawMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisDeviceRawMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -891,14 +891,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisDeviceRawSentence( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisDeviceRawSentenceDelete(?, ?)}";
+        var sqlStatement = "{call AisDeviceRawSentenceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -1251,14 +1251,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAidToNavigationReportMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AidToNavigationReportMessageDelete(?, ?)}";
+        var sqlStatement = "{call AidToNavigationReportMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -1505,14 +1505,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisAddressedSafetyRelatedMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisAddressedSafetyRelatedMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisAddressedSafetyRelatedMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -1785,14 +1785,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisBaseStationReportMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisBaseStationReportMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisBaseStationReportMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -2065,14 +2065,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisBinaryAcknowledgeMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisBinaryAcknowledgeMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisBinaryAcknowledgeMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -2335,14 +2335,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisBinaryAddressedMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisBinaryAddressedMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisBinaryAddressedMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -2583,14 +2583,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisBinaryBroadcastMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisBinaryBroadcastMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisBinaryBroadcastMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -2935,14 +2935,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisDataLinkManagementMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisDataLinkManagementMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisDataLinkManagementMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -3309,14 +3309,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisExtendedClassBCsPositionReportMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisExtendedClassBCsPositionReportMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisExtendedClassBCsPositionReportMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -3585,14 +3585,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisInterrogationMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisInterrogationMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisInterrogationMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -3905,14 +3905,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisPositionReportClassAAssignedScheduleMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisPositionReportClassAAssignedScheduleMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisPositionReportClassAAssignedScheduleMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -4225,14 +4225,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisPositionReportClassAMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisPositionReportClassAMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisPositionReportClassAMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -4545,14 +4545,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisPositionReportClassAResponseToInterrogationMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisPositionReportClassAResponseToInterrogationMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisPositionReportClassAResponseToInterrogationMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -4833,14 +4833,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisPositionReportForLongRangeApplicationsMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisPositionReportForLongRangeApplicationsMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisPositionReportForLongRangeApplicationsMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -5113,14 +5113,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisSafetyRelatedAcknowledgmentMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisSafetyRelatedAcknowledgmentMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisSafetyRelatedAcknowledgmentMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -5465,14 +5465,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisStandardClassBCsPositionReportMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisStandardClassBCsPositionReportMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisStandardClassBCsPositionReportMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -5785,14 +5785,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisStandardSarAircraftPositionReportMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisStandardSarAircraftPositionReportMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisStandardSarAircraftPositionReportMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -6115,14 +6115,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisStaticAndVoyageRelatedDataMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisStaticAndVoyageRelatedDataMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisStaticAndVoyageRelatedDataMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -6339,14 +6339,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisStaticDataReportMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisStaticDataReportMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisStaticDataReportMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -6577,14 +6577,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisStaticDataReportPartAMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisStaticDataReportPartAMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisStaticDataReportPartAMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -6893,14 +6893,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisStaticDataReportPartBMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisStaticDataReportPartBMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisStaticDataReportPartBMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -7131,14 +7131,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisUtcAndDateInquiryMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisUtcAndDateInquiryMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisUtcAndDateInquiryMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -7411,14 +7411,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisUtcAndDateResponseMessage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisUtcAndDateResponseMessageDelete(?, ?)}";
+        var sqlStatement = "{call AisUtcAndDateResponseMessageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -7509,14 +7509,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAlarmStateChange( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AlarmStateChangeDelete(?, ?)}";
+        var sqlStatement = "{call AlarmStateChangeDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -7599,14 +7599,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBaseStationType( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BaseStationTypeDelete(?, ?)}";
+        var sqlStatement = "{call BaseStationTypeDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -7697,14 +7697,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBinaryTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BinaryTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call BinaryTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -7807,14 +7807,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBookmark( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BookmarkDelete(?, ?)}";
+        var sqlStatement = "{call BookmarkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -7905,14 +7905,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBooleanTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BooleanTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call BooleanTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -8003,14 +8003,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteByteTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ByteTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call ByteTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -8219,14 +8219,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -8515,14 +8515,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandAbsoluteMove( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandAbsoluteMoveDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandAbsoluteMoveDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -8755,14 +8755,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandAdjustPanTiltZoom( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandAdjustPanTiltZoomDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandAdjustPanTiltZoomDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -9011,14 +9011,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandContinuousMove( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandContinuousMoveDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandContinuousMoveDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -9267,14 +9267,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandGeoMove( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandGeoMoveDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandGeoMoveDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -9539,14 +9539,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandRelativeMove( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandRelativeMoveDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandRelativeMoveDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -9755,14 +9755,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandReleasePTZOwnership( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandReleasePTZOwnershipDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandReleasePTZOwnershipDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -9971,14 +9971,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandRequestPTZOwnership( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandRequestPTZOwnershipDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandRequestPTZOwnershipDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -10195,14 +10195,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandSetAutoFocus( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandSetAutoFocusDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandSetAutoFocusDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -10419,14 +10419,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandSetBlackAndWhite( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandSetBlackAndWhiteDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandSetBlackAndWhiteDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -10651,14 +10651,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandSetFollowed( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandSetFollowedDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandSetFollowedDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -10875,14 +10875,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandSetInfraRedLamp( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandSetInfraRedLampDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandSetInfraRedLampDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -11099,14 +11099,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandSetWasher( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandSetWasherDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandSetWasherDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -11323,14 +11323,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandSetWiper( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandSetWiperDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandSetWiperDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -11555,14 +11555,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandStop( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandStopDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandStopDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -11795,14 +11795,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call CameraCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -12117,14 +12117,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call CameraConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -12211,14 +12211,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraPanCalibration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraPanCalibrationDelete(?, ?)}";
+        var sqlStatement = "{call CameraPanCalibrationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -12309,14 +12309,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraPanCalibrationValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraPanCalibrationValueDelete(?, ?)}";
+        var sqlStatement = "{call CameraPanCalibrationValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -12621,14 +12621,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraStatus( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraStatusDelete(?, ?)}";
+        var sqlStatement = "{call CameraStatusDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -12715,14 +12715,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraTiltCalibration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraTiltCalibrationDelete(?, ?)}";
+        var sqlStatement = "{call CameraTiltCalibrationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -12813,14 +12813,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraTiltCalibrationValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraTiltCalibrationValueDelete(?, ?)}";
+        var sqlStatement = "{call CameraTiltCalibrationValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -12907,14 +12907,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraZoomCalibration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraZoomCalibrationDelete(?, ?)}";
+        var sqlStatement = "{call CameraZoomCalibrationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13005,14 +13005,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraZoomCalibrationValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraZoomCalibrationValueDelete(?, ?)}";
+        var sqlStatement = "{call CameraZoomCalibrationValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13197,14 +13197,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCatalog( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CatalogDelete(?, ?)}";
+        var sqlStatement = "{call CatalogDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13395,14 +13395,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteElement( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ElementDelete(?, ?)}";
+        var sqlStatement = "{call ElementDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13485,14 +13485,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCollectionInfo( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CollectionInfoDelete(?, ?)}";
+        var sqlStatement = "{call CollectionInfoDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13587,14 +13587,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCountry( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CountryDelete(?, ?)}";
+        var sqlStatement = "{call CountryDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13677,14 +13677,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCursorInfo( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CursorInfoDelete(?, ?)}";
+        var sqlStatement = "{call CursorInfoDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13775,14 +13775,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDateTimeTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DateTimeTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call DateTimeTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13865,14 +13865,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDeviceHost( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DeviceHostDelete(?, ?)}";
+        var sqlStatement = "{call DeviceHostDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -13971,14 +13971,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDeviceHostConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DeviceHostConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call DeviceHostConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -14069,14 +14069,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDoubleTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DoubleTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call DoubleTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -14159,14 +14159,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteFacilityType( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call FacilityTypeDelete(?, ?)}";
+        var sqlStatement = "{call FacilityTypeDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -14261,14 +14261,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGeoPosition2DTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GeoPosition2DTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call GeoPosition2DTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -14367,14 +14367,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGeoPosition3DTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GeoPosition3DTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call GeoPosition3DTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -14583,14 +14583,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGNSSDeviceCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GNSSDeviceCommandDelete(?, ?)}";
+        var sqlStatement = "{call GNSSDeviceCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -14799,14 +14799,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGNSSDeviceCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GNSSDeviceCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call GNSSDeviceCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -14917,14 +14917,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGNSSDeviceConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GNSSDeviceConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call GNSSDeviceConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15015,14 +15015,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGuidTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GuidTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call GuidTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15231,14 +15231,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroDeviceCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroDeviceCommandDelete(?, ?)}";
+        var sqlStatement = "{call GyroDeviceCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15447,14 +15447,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroDeviceCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroDeviceCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call GyroDeviceCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15565,14 +15565,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroDeviceConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroDeviceConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call GyroDeviceConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15655,14 +15655,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCallsign( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CallsignDelete(?, ?)}";
+        var sqlStatement = "{call CallsignDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15745,14 +15745,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInternationalMaritimeOrganizationNumber( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call InternationalMaritimeOrganizationNumberDelete(?, ?)}";
+        var sqlStatement = "{call InternationalMaritimeOrganizationNumberDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15835,14 +15835,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMaritimeMobileServiceIdentity( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MaritimeMobileServiceIdentityDelete(?, ?)}";
+        var sqlStatement = "{call MaritimeMobileServiceIdentityDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -15925,14 +15925,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteName( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call NameDelete(?, ?)}";
+        var sqlStatement = "{call NameDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -16023,14 +16023,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt16TimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int16TimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call Int16TimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -16121,14 +16121,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt32TimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int32TimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call Int32TimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -16219,14 +16219,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt64TimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int64TimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call Int64TimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -16411,14 +16411,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBaseStation( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BaseStationDelete(?, ?)}";
+        var sqlStatement = "{call BaseStationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -16619,14 +16619,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCameraDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CameraDeviceDelete(?, ?)}";
+        var sqlStatement = "{call CameraDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -16845,14 +16845,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGNSSDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GNSSDeviceDelete(?, ?)}";
+        var sqlStatement = "{call GNSSDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -17101,14 +17101,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroDeviceDelete(?, ?)}";
+        var sqlStatement = "{call GyroDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -17309,14 +17309,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLineInputDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LineInputDeviceDelete(?, ?)}";
+        var sqlStatement = "{call LineInputDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -17517,14 +17517,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteOilSpillDetectorDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call OilSpillDetectorDeviceDelete(?, ?)}";
+        var sqlStatement = "{call OilSpillDetectorDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -17725,14 +17725,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadioDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadioDeviceDelete(?, ?)}";
+        var sqlStatement = "{call RadioDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -17963,14 +17963,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomeDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomeDeviceDelete(?, ?)}";
+        var sqlStatement = "{call RadomeDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -18171,14 +18171,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisDeviceDelete(?, ?)}";
+        var sqlStatement = "{call AisDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -18517,14 +18517,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarDeviceDelete(?, ?)}";
+        var sqlStatement = "{call RadarDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -18779,14 +18779,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationDevice( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationDeviceDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationDeviceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -18995,14 +18995,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteFacility( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call FacilityDelete(?, ?)}";
+        var sqlStatement = "{call FacilityDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -19187,14 +19187,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAircraft( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AircraftDelete(?, ?)}";
+        var sqlStatement = "{call AircraftDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -19439,14 +19439,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisAidToNavigation( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisAidToNavigationDelete(?, ?)}";
+        var sqlStatement = "{call AisAidToNavigationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -19631,14 +19631,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteVehicle( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call VehicleDelete(?, ?)}";
+        var sqlStatement = "{call VehicleDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -19867,14 +19867,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteVessel( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call VesselDelete(?, ?)}";
+        var sqlStatement = "{call VesselDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -19969,14 +19969,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteItemIdentityLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ItemIdentityLinkDelete(?, ?)}";
+        var sqlStatement = "{call ItemIdentityLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -20067,14 +20067,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteItemParentChildLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ItemParentChildLinkDelete(?, ?)}";
+        var sqlStatement = "{call ItemParentChildLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -20283,14 +20283,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLineInputDeviceCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LineInputDeviceCommandDelete(?, ?)}";
+        var sqlStatement = "{call LineInputDeviceCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -20499,14 +20499,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLineInputDeviceCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LineInputDeviceCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call LineInputDeviceCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -20725,14 +20725,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLineInputDeviceConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LineInputDeviceConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call LineInputDeviceConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -20819,14 +20819,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLineInputMessageRouting( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LineInputMessageRoutingDelete(?, ?)}";
+        var sqlStatement = "{call LineInputMessageRoutingDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21011,14 +21011,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLineInputMessageRoutingDestination( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LineInputMessageRoutingDestinationDelete(?, ?)}";
+        var sqlStatement = "{call LineInputMessageRoutingDestinationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21109,14 +21109,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLineInputWhiteListEntry( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LineInputWhiteListEntryDelete(?, ?)}";
+        var sqlStatement = "{call LineInputWhiteListEntryDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21203,14 +21203,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogApplication( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogApplicationDelete(?, ?)}";
+        var sqlStatement = "{call LogApplicationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21345,14 +21345,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogApplicationConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogApplicationConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call LogApplicationConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21439,14 +21439,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogHost( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogHostDelete(?, ?)}";
+        var sqlStatement = "{call LogHostDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21581,14 +21581,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogHostConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogHostConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call LogHostConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21687,14 +21687,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogLocation( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogLocationDelete(?, ?)}";
+        var sqlStatement = "{call LogLocationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -21919,14 +21919,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogProcess( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogProcessDelete(?, ?)}";
+        var sqlStatement = "{call LogProcessDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22041,14 +22041,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogRecord( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogRecordDelete(?, ?)}";
+        var sqlStatement = "{call LogRecordDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22147,14 +22147,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogThread( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogThreadDelete(?, ?)}";
+        var sqlStatement = "{call LogThreadDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22257,14 +22257,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteLogTraceEntry( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call LogTraceEntryDelete(?, ?)}";
+        var sqlStatement = "{call LogTraceEntryDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22387,14 +22387,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMapElement( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MapElementDelete(?, ?)}";
+        var sqlStatement = "{call MapElementDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22505,14 +22505,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMapInfo( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MapInfoDelete(?, ?)}";
+        var sqlStatement = "{call MapInfoDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22619,14 +22619,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMapServiceOptions( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MapServiceOptionsDelete(?, ?)}";
+        var sqlStatement = "{call MapServiceOptionsDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22713,14 +22713,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMaritimeIdentificationDigits( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MaritimeIdentificationDigitsDelete(?, ?)}";
+        var sqlStatement = "{call MaritimeIdentificationDigitsDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -22913,14 +22913,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMediaProxySession( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MediaProxySessionDelete(?, ?)}";
+        var sqlStatement = "{call MediaProxySessionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23011,14 +23011,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMediaProxySessionFile( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MediaProxySessionFileDelete(?, ?)}";
+        var sqlStatement = "{call MediaProxySessionFileDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23149,14 +23149,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMediaProxySessionOptions( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MediaProxySessionOptionsDelete(?, ?)}";
+        var sqlStatement = "{call MediaProxySessionOptionsDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23333,14 +23333,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMediaService( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MediaServiceDelete(?, ?)}";
+        var sqlStatement = "{call MediaServiceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23435,14 +23435,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMediaServiceOptions( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MediaServiceOptionsDelete(?, ?)}";
+        var sqlStatement = "{call MediaServiceOptionsDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23533,14 +23533,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteElementType( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ElementTypeDelete(?, ?)}";
+        var sqlStatement = "{call ElementTypeDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23631,14 +23631,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteNamespace( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call NamespaceDelete(?, ?)}";
+        var sqlStatement = "{call NamespaceDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23745,14 +23745,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteOilSpill( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call OilSpillDelete(?, ?)}";
+        var sqlStatement = "{call OilSpillDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -23961,14 +23961,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteOilSpillDetectorCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call OilSpillDetectorCommandDelete(?, ?)}";
+        var sqlStatement = "{call OilSpillDetectorCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -24177,14 +24177,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteOilSpillDetectorCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call OilSpillDetectorCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call OilSpillDetectorCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -24545,14 +24545,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteOilSpillDetectorConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call OilSpillDetectorConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call OilSpillDetectorConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -24647,14 +24647,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deletePosition2DTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Position2DTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call Position2DTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -24753,14 +24753,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deletePosition3DTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Position3DTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call Position3DTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -24847,14 +24847,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteProcessTrackValueResult( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ProcessTrackValueResultDelete(?, ?)}";
+        var sqlStatement = "{call ProcessTrackValueResultDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -24945,14 +24945,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBinaryProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BinaryPropertyDelete(?, ?)}";
+        var sqlStatement = "{call BinaryPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25043,14 +25043,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBooleanProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BooleanPropertyDelete(?, ?)}";
+        var sqlStatement = "{call BooleanPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25141,14 +25141,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteByteProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BytePropertyDelete(?, ?)}";
+        var sqlStatement = "{call BytePropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25239,14 +25239,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDateTimeProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DateTimePropertyDelete(?, ?)}";
+        var sqlStatement = "{call DateTimePropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25337,14 +25337,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDoubleProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DoublePropertyDelete(?, ?)}";
+        var sqlStatement = "{call DoublePropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25435,14 +25435,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGuidProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GuidPropertyDelete(?, ?)}";
+        var sqlStatement = "{call GuidPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25533,14 +25533,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt16Property( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int16PropertyDelete(?, ?)}";
+        var sqlStatement = "{call Int16PropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25631,14 +25631,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt32Property( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int32PropertyDelete(?, ?)}";
+        var sqlStatement = "{call Int32PropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25729,14 +25729,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt64Property( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int64PropertyDelete(?, ?)}";
+        var sqlStatement = "{call Int64PropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -25929,14 +25929,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteReferenceProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ReferencePropertyDelete(?, ?)}";
+        var sqlStatement = "{call ReferencePropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -26027,14 +26027,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSByteProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SBytePropertyDelete(?, ?)}";
+        var sqlStatement = "{call SBytePropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -26125,14 +26125,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSingleProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SinglePropertyDelete(?, ?)}";
+        var sqlStatement = "{call SinglePropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -26223,14 +26223,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteStringProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call StringPropertyDelete(?, ?)}";
+        var sqlStatement = "{call StringPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -26423,14 +26423,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBinaryTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BinaryTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call BinaryTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -26623,14 +26623,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBooleanTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BooleanTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call BooleanTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -26823,14 +26823,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteByteTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ByteTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call ByteTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -27023,14 +27023,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDateTimeTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DateTimeTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call DateTimeTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -27223,14 +27223,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDoubleTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DoubleTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call DoubleTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -27423,14 +27423,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGuidTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GuidTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call GuidTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -27623,14 +27623,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt16TimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int16TimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call Int16TimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -27823,14 +27823,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt32TimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int32TimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call Int32TimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -28023,14 +28023,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt64TimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int64TimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call Int64TimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -28223,14 +28223,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteReferenceTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ReferenceTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call ReferenceTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -28423,14 +28423,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSByteTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SByteTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call SByteTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -28623,14 +28623,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSingleTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SingleTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call SingleTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -28823,14 +28823,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteStringTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call StringTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call StringTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -29023,14 +29023,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeSpanTimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeSpanTimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call TimeSpanTimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -29223,14 +29223,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt16TimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt16TimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call UInt16TimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -29423,14 +29423,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt32TimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt32TimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call UInt32TimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -29623,14 +29623,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt64TimeseriesProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt64TimeseriesPropertyDelete(?, ?)}";
+        var sqlStatement = "{call UInt64TimeseriesPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -29721,14 +29721,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeSpanProperty( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeSpanPropertyDelete(?, ?)}";
+        var sqlStatement = "{call TimeSpanPropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -29819,14 +29819,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt16Property( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt16PropertyDelete(?, ?)}";
+        var sqlStatement = "{call UInt16PropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -29917,14 +29917,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt32Property( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt32PropertyDelete(?, ?)}";
+        var sqlStatement = "{call UInt32PropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30015,14 +30015,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt64Property( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt64PropertyDelete(?, ?)}";
+        var sqlStatement = "{call UInt64PropertyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30117,14 +30117,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBinaryPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BinaryPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call BinaryPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30219,14 +30219,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBooleanPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BooleanPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call BooleanPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30329,14 +30329,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBytePropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BytePropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call BytePropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30439,14 +30439,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDateTimePropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DateTimePropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call DateTimePropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30549,14 +30549,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDoublePropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DoublePropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call DoublePropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30651,14 +30651,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGuidPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GuidPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call GuidPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30761,14 +30761,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt16PropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int16PropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call Int16PropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30871,14 +30871,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt32PropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int32PropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call Int32PropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -30981,14 +30981,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt64PropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int64PropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call Int64PropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31195,14 +31195,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteReferencePropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ReferencePropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call ReferencePropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31305,14 +31305,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSBytePropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SBytePropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call SBytePropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31415,14 +31415,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSinglePropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SinglePropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call SinglePropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31521,14 +31521,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteStringPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call StringPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call StringPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31619,14 +31619,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBinaryTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BinaryTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call BinaryTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31717,14 +31717,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBooleanTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BooleanTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call BooleanTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31823,14 +31823,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteByteTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ByteTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call ByteTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -31929,14 +31929,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDateTimeTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DateTimeTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call DateTimeTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32035,14 +32035,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDoubleTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DoubleTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call DoubleTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32133,14 +32133,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGuidTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GuidTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call GuidTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32239,14 +32239,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt16TimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int16TimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call Int16TimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32345,14 +32345,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt32TimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int32TimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call Int32TimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32451,14 +32451,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt64TimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int64TimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call Int64TimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32659,14 +32659,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteReferenceTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ReferenceTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call ReferenceTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32765,14 +32765,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSByteTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SByteTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call SByteTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32871,14 +32871,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSingleTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SingleTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call SingleTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -32973,14 +32973,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteStringTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call StringTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call StringTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33079,14 +33079,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeSpanTimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeSpanTimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call TimeSpanTimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33185,14 +33185,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt16TimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt16TimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call UInt16TimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33291,14 +33291,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt32TimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt32TimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call UInt32TimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33397,14 +33397,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt64TimeseriesPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt64TimeseriesPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call UInt64TimeseriesPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33507,14 +33507,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeSpanPropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeSpanPropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call TimeSpanPropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33617,14 +33617,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt16PropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt16PropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call UInt16PropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33727,14 +33727,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt32PropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt32PropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call UInt32PropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33837,14 +33837,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt64PropertyDefinition( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt64PropertyDefinitionDelete(?, ?)}";
+        var sqlStatement = "{call UInt64PropertyDefinitionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -33935,14 +33935,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarAlarmStatus( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarAlarmStatusDelete(?, ?)}";
+        var sqlStatement = "{call RadarAlarmStatusDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -34151,14 +34151,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarCommandDelete(?, ?)}";
+        var sqlStatement = "{call RadarCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -34367,14 +34367,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarCommandGetStatus( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarCommandGetStatusDelete(?, ?)}";
+        var sqlStatement = "{call RadarCommandGetStatusDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -34583,14 +34583,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call RadarCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -34839,14 +34839,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarCommandReplyGetStatus( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarCommandReplyGetStatusDelete(?, ?)}";
+        var sqlStatement = "{call RadarCommandReplyGetStatusDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -35033,14 +35033,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call RadarConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -35143,14 +35143,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarImage( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarImageDelete(?, ?)}";
+        var sqlStatement = "{call RadarImageDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -35245,14 +35245,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarRawTrackTable( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarRawTrackTableDelete(?, ?)}";
+        var sqlStatement = "{call RadarRawTrackTableDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -35363,14 +35363,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarStatus( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarStatusDelete(?, ?)}";
+        var sqlStatement = "{call RadarStatusDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -35579,14 +35579,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadioCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadioCommandDelete(?, ?)}";
+        var sqlStatement = "{call RadioCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -35795,14 +35795,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadioCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadioCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call RadioCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -35917,14 +35917,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadioConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadioConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call RadioConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36133,14 +36133,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomeCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomeCommandDelete(?, ?)}";
+        var sqlStatement = "{call RadomeCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36349,14 +36349,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomeCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomeCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call RadomeCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36463,14 +36463,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomeConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomeConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call RadomeConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36561,14 +36561,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteReferenceTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ReferenceTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call ReferenceTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36659,14 +36659,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSByteTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SByteTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call SByteTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36753,14 +36753,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSecurityDomain( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SecurityDomainDelete(?, ?)}";
+        var sqlStatement = "{call SecurityDomainDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36851,14 +36851,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSecurityLogin( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SecurityLoginDelete(?, ?)}";
+        var sqlStatement = "{call SecurityLoginDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -36953,14 +36953,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSecurityRole( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SecurityRoleDelete(?, ?)}";
+        var sqlStatement = "{call SecurityRoleDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -37055,14 +37055,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSecurityIdentifierRoleLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SecurityIdentifierRoleLinkDelete(?, ?)}";
+        var sqlStatement = "{call SecurityIdentifierRoleLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -37165,14 +37165,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSecurityLoginSession( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SecurityLoginSessionDelete(?, ?)}";
+        var sqlStatement = "{call SecurityLoginSessionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -37279,14 +37279,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSecurityPermission( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SecurityPermissionDelete(?, ?)}";
+        var sqlStatement = "{call SecurityPermissionDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -37377,14 +37377,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSingleTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SingleTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call SingleTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -37475,14 +37475,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteStringTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call StringTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call StringTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -37675,14 +37675,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBinaryTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BinaryTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call BinaryTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -37875,14 +37875,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteBooleanTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call BooleanTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call BooleanTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -38081,14 +38081,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisAidToNavigationOffPositionTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisAidToNavigationOffPositionTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call AisAidToNavigationOffPositionTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -38287,14 +38287,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDeviceEnabledTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DeviceEnabledTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call DeviceEnabledTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -38493,14 +38493,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarAutomaticSensitivityTimeControlTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarAutomaticSensitivityTimeControlTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarAutomaticSensitivityTimeControlTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -38699,14 +38699,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarBlankSector1Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarBlankSector1TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarBlankSector1TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -38905,14 +38905,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarBlankSector2Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarBlankSector2TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarBlankSector2TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -39111,14 +39111,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarEnableAutomaticFrequencyControlTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarEnableAutomaticFrequencyControlTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarEnableAutomaticFrequencyControlTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -39317,14 +39317,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarEnableFastTimeConstantTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarEnableFastTimeConstantTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarEnableFastTimeConstantTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -39523,14 +39523,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarEnableSensitivityTimeControlTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarEnableSensitivityTimeControlTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarEnableSensitivityTimeControlTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -39729,14 +39729,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarPowerOnTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarPowerOnTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarPowerOnTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -39935,14 +39935,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarSaveSettingsTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarSaveSettingsTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarSaveSettingsTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -40141,14 +40141,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarTrackingTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarTrackingTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarTrackingTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -40347,14 +40347,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMediaProxySessionEnabledTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MediaProxySessionEnabledTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call MediaProxySessionEnabledTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -40553,14 +40553,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteMediaServiceEnabledTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call MediaServiceEnabledTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call MediaServiceEnabledTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -40753,14 +40753,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteByteTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ByteTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call ByteTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -40953,14 +40953,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDateTimeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DateTimeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call DateTimeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -41153,14 +41153,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteDoubleTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call DoubleTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call DoubleTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -41359,14 +41359,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGNSSAltitudeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GNSSAltitudeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GNSSAltitudeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -41565,14 +41565,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGNSSLatitudeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GNSSLatitudeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GNSSLatitudeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -41771,14 +41771,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGNSSLongitudeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GNSSLongitudeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GNSSLongitudeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -41977,14 +41977,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroCourseTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroCourseTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GyroCourseTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -42183,14 +42183,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroHeadingMagneticNorthTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroHeadingMagneticNorthTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GyroHeadingMagneticNorthTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -42389,14 +42389,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroHeadingTrueNorthTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroHeadingTrueNorthTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GyroHeadingTrueNorthTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -42595,14 +42595,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroPitchTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroPitchTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GyroPitchTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -42801,14 +42801,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroRateOfTurnTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroRateOfTurnTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GyroRateOfTurnTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -43007,14 +43007,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroRollTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroRollTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GyroRollTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -43213,14 +43213,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGyroSpeedTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GyroSpeedTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GyroSpeedTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -43419,14 +43419,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarLatitudeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarLatitudeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarLatitudeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -43625,14 +43625,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarLongitudeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarLongitudeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarLongitudeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -43831,14 +43831,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomeDewPointTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomeDewPointTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadomeDewPointTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -44037,14 +44037,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomePressureTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomePressureTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadomePressureTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -44243,14 +44243,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomeTemperatureTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomeTemperatureTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadomeTemperatureTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -44449,14 +44449,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteVesselDraughtTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call VesselDraughtTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call VesselDraughtTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -44655,14 +44655,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteViewLatitudeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ViewLatitudeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call ViewLatitudeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -44861,14 +44861,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteViewLongitudeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ViewLongitudeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call ViewLongitudeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -45067,14 +45067,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteViewZoomLevelTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ViewZoomLevelTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call ViewZoomLevelTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -45273,14 +45273,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationAbsoluteHumidityTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationAbsoluteHumidityTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationAbsoluteHumidityTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -45479,14 +45479,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationAirTemperatureTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationAirTemperatureTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationAirTemperatureTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -45685,14 +45685,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationBarometricPressureTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationBarometricPressureTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationBarometricPressureTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -45891,14 +45891,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationDewPointTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationDewPointTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationDewPointTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -46097,14 +46097,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationRelativeHumidityTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationRelativeHumidityTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationRelativeHumidityTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -46303,14 +46303,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationWaterTemperatureTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationWaterTemperatureTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationWaterTemperatureTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -46509,14 +46509,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationWindDirectionTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationWindDirectionTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationWindDirectionTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -46715,14 +46715,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationWindSpeedTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationWindSpeedTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationWindSpeedTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -46915,14 +46915,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGeoPosition2DTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GeoPosition2DTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GeoPosition2DTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -47121,14 +47121,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteAisAidToNavigationPositionTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call AisAidToNavigationPositionTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call AisAidToNavigationPositionTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -47321,14 +47321,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGeoPosition3DTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GeoPosition3DTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GeoPosition3DTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -47521,14 +47521,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteGuidTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call GuidTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call GuidTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -47721,14 +47721,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt16Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int16TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call Int16TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -47921,14 +47921,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt32Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int32TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call Int32TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -48127,14 +48127,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarAzimuthOffsetTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarAzimuthOffsetTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarAzimuthOffsetTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -48333,14 +48333,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarFastTimeConstantLevelTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarFastTimeConstantLevelTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarFastTimeConstantLevelTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -48539,14 +48539,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarFastTimeConstantModeTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarFastTimeConstantModeTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarFastTimeConstantModeTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -48745,14 +48745,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarPulseTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarPulseTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarPulseTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -48951,14 +48951,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarSector1EndTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarSector1EndTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarSector1EndTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -49157,14 +49157,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarSector1StartTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarSector1StartTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarSector1StartTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -49363,14 +49363,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarSector2EndTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarSector2EndTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarSector2EndTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -49569,14 +49569,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarSector2StartTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarSector2StartTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarSector2StartTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -49775,14 +49775,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarSensitivityTimeControlLevelTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarSensitivityTimeControlLevelTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarSensitivityTimeControlLevelTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -49981,14 +49981,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadarTuningTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadarTuningTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadarTuningTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -50187,14 +50187,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteVesselPersonsOnBoardTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call VesselPersonsOnBoardTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call VesselPersonsOnBoardTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -50387,14 +50387,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteInt64Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Int64TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call Int64TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -50587,14 +50587,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deletePosition2DTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Position2DTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call Position2DTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -50787,14 +50787,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deletePosition3DTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Position3DTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call Position3DTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -50987,14 +50987,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteReferenceTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ReferenceTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call ReferenceTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -51187,14 +51187,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSByteTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SByteTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call SByteTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -51387,14 +51387,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteSingleTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call SingleTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call SingleTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -51587,14 +51587,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteStringTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call StringTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call StringTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -51787,14 +51787,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeSpanTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeSpanTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call TimeSpanTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -51987,14 +51987,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt16Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt16TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call UInt16TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -52187,14 +52187,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt32Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt32TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call UInt32TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -52393,14 +52393,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteRadomeStatusTimeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call RadomeStatusTimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call RadomeStatusTimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -52593,14 +52593,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt64Timeseries( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt64TimeseriesDelete(?, ?)}";
+        var sqlStatement = "{call UInt64TimeseriesDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -52785,14 +52785,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeseriesCatalog( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeseriesCatalogDelete(?, ?)}";
+        var sqlStatement = "{call TimeseriesCatalogDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -52883,14 +52883,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeseriesInfo( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeseriesInfoDelete(?, ?)}";
+        var sqlStatement = "{call TimeseriesInfoDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -52981,14 +52981,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTimeSpanTimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TimeSpanTimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call TimeSpanTimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53083,14 +53083,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackableItemTrackLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackableItemTrackLinkDelete(?, ?)}";
+        var sqlStatement = "{call TrackableItemTrackLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53181,14 +53181,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrack( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackDelete(?, ?)}";
+        var sqlStatement = "{call TrackDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53279,14 +53279,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrack3D( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call Track3DDelete(?, ?)}";
+        var sqlStatement = "{call Track3DDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53373,14 +53373,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackerFilterParameters( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackerFilterParametersDelete(?, ?)}";
+        var sqlStatement = "{call TrackerFilterParametersDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53519,14 +53519,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackerFilterParametersConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackerFilterParametersConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call TrackerFilterParametersConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53633,14 +53633,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackInfo( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackInfoDelete(?, ?)}";
+        var sqlStatement = "{call TrackInfoDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53763,14 +53763,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackingServiceOptions( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackingServiceOptionsDelete(?, ?)}";
+        var sqlStatement = "{call TrackingServiceOptionsDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53865,14 +53865,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackLinkDelete(?, ?)}";
+        var sqlStatement = "{call TrackLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -53987,14 +53987,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackValueDelete(?, ?)}";
+        var sqlStatement = "{call TrackValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54113,14 +54113,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteTrackValue3D( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call TrackValue3DDelete(?, ?)}";
+        var sqlStatement = "{call TrackValue3DDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54211,14 +54211,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt16TimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt16TimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call UInt16TimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54309,14 +54309,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt32TimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt32TimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call UInt32TimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54407,14 +54407,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteUInt64TimeseriesValue( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call UInt64TimeseriesValueDelete(?, ?)}";
+        var sqlStatement = "{call UInt64TimeseriesValueDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54497,14 +54497,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteVehicleType( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call VehicleTypeDelete(?, ?)}";
+        var sqlStatement = "{call VehicleTypeDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54591,14 +54591,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteVesselType( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call VesselTypeDelete(?, ?)}";
+        var sqlStatement = "{call VesselTypeDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54795,14 +54795,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteView( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ViewDelete(?, ?)}";
+        var sqlStatement = "{call ViewDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54897,14 +54897,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteViewCameraLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ViewCameraLinkDelete(?, ?)}";
+        var sqlStatement = "{call ViewCameraLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -54999,14 +54999,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteViewTrackerLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ViewTrackerLinkDelete(?, ?)}";
+        var sqlStatement = "{call ViewTrackerLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -55215,14 +55215,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationCommand( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationCommandDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationCommandDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -55431,14 +55431,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationCommandReply( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationCommandReplyDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationCommandReplyDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -55553,14 +55553,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteWeatherStationConfiguration( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call WeatherStationConfigurationDelete(?, ?)}";
+        var sqlStatement = "{call WeatherStationConfigurationDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -55679,14 +55679,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteCircularZone( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call CircularZoneDelete(?, ?)}";
+        var sqlStatement = "{call CircularZoneDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -55805,14 +55805,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deletePolygonZone( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call PolygonZoneDelete(?, ?)}";
+        var sqlStatement = "{call PolygonZoneDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -55899,14 +55899,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteZoneExceptions( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ZoneExceptionsDelete(?, ?)}";
+        var sqlStatement = "{call ZoneExceptionsDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -55993,14 +55993,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteZoneExceptionsVesselLink( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ZoneExceptionsVesselLinkDelete(?, ?)}";
+        var sqlStatement = "{call ZoneExceptionsVesselLinkDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }
@@ -56273,14 +56273,14 @@ public class MsSqlStoredProcedures
 
     public final boolean deleteZoneTrackAlarm( Guid id, long rowVersion ) throws SQLException {
         boolean result = false;
-        var sqlStatement = "{call ZoneTrackAlarmDelete(?, ?)}";
+        var sqlStatement = "{call ZoneTrackAlarmDelete(?, ?, ?)}";
         try (var callableStatement = getConnection().prepareCallEx(sqlStatement)) {
             callableStatement.setGuid(1, id);
             callableStatement.setInt64(2, rowVersion);
-            callableStatement.registerOutParameter( 2, Types.BIGINT );
+            callableStatement.registerOutParameter( 3, Types.INTEGER );
             callableStatement.execute( );
             int rowsAffected = callableStatement.getUpdateCount( );
-            if ( rowsAffected == 1 ) {
+            if ( rowsAffected >= 1 ) {
                 result = true;
             }
         }

@@ -39,7 +39,7 @@ public class SimpleWeatherStationBarometricPressureTimeseriesDataReader extends 
     }
 
     @Override
-    public WeatherStationBarometricPressureTimeseriesObject GetDataObject( ) throws SQLException {
+    public WeatherStationBarometricPressureTimeseriesObject getDataObject( ) throws SQLException {
         return new WeatherStationBarometricPressureTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
     }
 

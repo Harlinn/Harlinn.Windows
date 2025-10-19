@@ -67,6 +67,6 @@ public abstract class SimplePropertyDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public abstract PropertyObject GetDataObject( ) throws SQLException;
+    public abstract PropertyObject getDataObject( ) throws SQLException;
 
 }

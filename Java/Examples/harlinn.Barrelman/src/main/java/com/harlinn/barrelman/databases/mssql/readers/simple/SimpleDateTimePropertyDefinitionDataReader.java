@@ -53,7 +53,7 @@ public class SimpleDateTimePropertyDefinitionDataReader extends SimplePropertyDe
     }
 
     @Override
-    public DateTimePropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public DateTimePropertyDefinitionObject getDataObject( ) throws SQLException {
         return new DateTimePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
     }
 

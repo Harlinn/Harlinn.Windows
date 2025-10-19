@@ -39,7 +39,7 @@ public class SimpleGyroHeadingTrueNorthTimeseriesDataReader extends SimpleDouble
     }
 
     @Override
-    public GyroHeadingTrueNorthTimeseriesObject GetDataObject( ) throws SQLException {
+    public GyroHeadingTrueNorthTimeseriesObject getDataObject( ) throws SQLException {
         return new GyroHeadingTrueNorthTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
     }
 

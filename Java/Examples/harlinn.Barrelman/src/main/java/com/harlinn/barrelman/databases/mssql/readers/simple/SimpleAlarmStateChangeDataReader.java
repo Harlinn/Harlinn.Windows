@@ -68,7 +68,7 @@ public class SimpleAlarmStateChangeDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public AlarmStateChangeObject GetDataObject( ) throws SQLException {
+    public AlarmStateChangeObject getDataObject( ) throws SQLException {
             return new AlarmStateChangeObject( ObjectState.Stored, getId( ), getRowVersion( ), getAlarm( ), getTimestamp( ), getState( ) );
     }
 

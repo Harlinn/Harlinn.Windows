@@ -53,7 +53,7 @@ public class SimpleSBytePropertyDefinitionDataReader extends SimplePropertyDefin
     }
 
     @Override
-    public SBytePropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public SBytePropertyDefinitionObject getDataObject( ) throws SQLException {
         return new SBytePropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
     }
 

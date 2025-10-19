@@ -89,7 +89,7 @@ public class SimpleLogTraceEntryDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public LogTraceEntryObject GetDataObject( ) throws SQLException {
+    public LogTraceEntryObject getDataObject( ) throws SQLException {
             return new LogTraceEntryObject( ObjectState.Stored, getId( ), getRowVersion( ), getThread( ), getSequenceNumber( ), getLocation( ), getDepth( ), getEntered( ), getEnded( ) );
     }
 

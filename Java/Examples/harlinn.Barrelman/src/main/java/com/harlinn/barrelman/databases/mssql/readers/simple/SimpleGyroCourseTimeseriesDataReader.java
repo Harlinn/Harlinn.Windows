@@ -39,7 +39,7 @@ public class SimpleGyroCourseTimeseriesDataReader extends SimpleDoubleTimeseries
     }
 
     @Override
-    public GyroCourseTimeseriesObject GetDataObject( ) throws SQLException {
+    public GyroCourseTimeseriesObject getDataObject( ) throws SQLException {
         return new GyroCourseTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
     }
 

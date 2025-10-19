@@ -88,7 +88,7 @@ public class SimpleRadarCommandDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public RadarCommandObject GetDataObject( ) throws SQLException {
+    public RadarCommandObject getDataObject( ) throws SQLException {
             return new RadarCommandObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
     }
 

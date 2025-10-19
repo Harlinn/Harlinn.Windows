@@ -100,5 +100,68 @@ public class ComplexRadarCommandReplyDataReader extends ResultSetWrapper {
         return getBoolean( RCRGS_TX_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.RadarCommandReply: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getRadar( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeNullableGuid( getCommand( ) );
+                destination.writeInt32( getStatus( ) );
+                destination.writeStringUtf8( getMessage( ) );
+            }
+            break;
+            case Kind.RadarCommandReplyGetStatus: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeGuid( getRadar( ) );
+                destination.writeDateTime( getTimestamp( ) );
+                destination.writeNullableGuid( getCommand( ) );
+                destination.writeInt32( getStatus( ) );
+                destination.writeStringUtf8( getMessage( ) );
+                destination.writeInt32( getRadarCommandReplyGetStatusAzimuthCount( ) );
+                destination.writeInt32( getRadarCommandReplyGetStatusTriggerCount( ) );
+                destination.writeTimeSpan( getRadarCommandReplyGetStatusRotationCount( ) );
+                destination.writeInt32( getRadarCommandReplyGetStatusPulse( ) );
+                destination.writeBoolean( getRadarCommandReplyGetStatusTx( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public RadarCommandReplyObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.RadarCommandReply: {
+                return new RadarCommandReplyObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ) );
+            }
+            case Kind.RadarCommandReplyGetStatus: {
+                return new RadarCommandReplyGetStatusObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ), getRadarCommandReplyGetStatusAzimuthCount( ), getRadarCommandReplyGetStatusTriggerCount( ), getRadarCommandReplyGetStatusRotationCount( ), getRadarCommandReplyGetStatusPulse( ), getRadarCommandReplyGetStatusTx( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

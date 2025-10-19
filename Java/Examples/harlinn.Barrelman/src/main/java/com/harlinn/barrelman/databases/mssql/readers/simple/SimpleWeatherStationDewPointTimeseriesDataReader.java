@@ -39,7 +39,7 @@ public class SimpleWeatherStationDewPointTimeseriesDataReader extends SimpleDoub
     }
 
     @Override
-    public WeatherStationDewPointTimeseriesObject GetDataObject( ) throws SQLException {
+    public WeatherStationDewPointTimeseriesObject getDataObject( ) throws SQLException {
         return new WeatherStationDewPointTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getWeatherStation( ) );
     }
 

@@ -31,7 +31,7 @@ public class SimpleDateTimeTimeseriesDataReader extends SimpleTimeseriesDataRead
     }
 
     @Override
-    public DateTimeTimeseriesObject GetDataObject( ) throws SQLException {
+    public DateTimeTimeseriesObject getDataObject( ) throws SQLException {
         return new DateTimeTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

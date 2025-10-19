@@ -300,6 +300,16 @@ public class ConnectionWrapper implements Connection, AutoCloseable {
 			throw exc; 
 		}
 	}
+	public PreparedStatementWrapper prepareStatementEx(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+		try {
+			var preparedStatement = connection.prepareStatement(sql, resultSetType, resultSetConcurrency);
+			return new PreparedStatementWrapper(this, preparedStatement); 
+		}
+		catch(Exception exc) {
+			logger.error("Exception", exc);
+			throw exc; 
+		}
+	}
 
 	@Override
 	public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {

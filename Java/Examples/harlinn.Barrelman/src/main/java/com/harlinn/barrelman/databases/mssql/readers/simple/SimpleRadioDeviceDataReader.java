@@ -32,7 +32,7 @@ public class SimpleRadioDeviceDataReader extends SimpleDeviceDataReader {
     }
 
     @Override
-    public RadioDeviceObject GetDataObject( ) throws SQLException {
+    public RadioDeviceObject getDataObject( ) throws SQLException {
         return new RadioDeviceObject( ObjectState.Stored, getId( ), getRowVersion( ), getHost( ), getName( ), getDescription( ), getEnabledTimeseries( ) );
     }
 

@@ -38,7 +38,7 @@ public class SimpleUInt16TimeseriesPropertyDataReader extends SimpleTimeseriesPr
     }
 
     @Override
-    public UInt16TimeseriesPropertyObject GetDataObject( ) throws SQLException {
+    public UInt16TimeseriesPropertyObject getDataObject( ) throws SQLException {
         return new UInt16TimeseriesPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getTimeseries( ) );
     }
 

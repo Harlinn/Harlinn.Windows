@@ -39,7 +39,7 @@ public class SimpleGyroRateOfTurnTimeseriesDataReader extends SimpleDoubleTimese
     }
 
     @Override
-    public GyroRateOfTurnTimeseriesObject GetDataObject( ) throws SQLException {
+    public GyroRateOfTurnTimeseriesObject getDataObject( ) throws SQLException {
         return new GyroRateOfTurnTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
     }
 

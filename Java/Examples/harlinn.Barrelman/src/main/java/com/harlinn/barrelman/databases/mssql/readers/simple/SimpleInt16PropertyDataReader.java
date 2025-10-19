@@ -38,7 +38,7 @@ public class SimpleInt16PropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public Int16PropertyObject GetDataObject( ) throws SQLException {
+    public Int16PropertyObject getDataObject( ) throws SQLException {
         return new Int16PropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

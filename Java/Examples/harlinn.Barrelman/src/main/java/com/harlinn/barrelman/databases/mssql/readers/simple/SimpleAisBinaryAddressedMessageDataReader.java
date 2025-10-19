@@ -83,7 +83,7 @@ public class SimpleAisBinaryAddressedMessageDataReader extends SimpleAisMessageD
     }
 
     @Override
-    public AisBinaryAddressedMessageObject GetDataObject( ) throws SQLException {
+    public AisBinaryAddressedMessageObject getDataObject( ) throws SQLException {
         return new AisBinaryAddressedMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getSequenceNumber( ), getDestinationMmsi( ), getRetransmitFlag( ), getSpare( ), getDesignatedAreaCode( ), getFunctionalId( ), getData( ) );
     }
 

@@ -38,7 +38,7 @@ public class SimpleDoublePropertyDataReader extends SimplePropertyDataReader {
     }
 
     @Override
-    public DoublePropertyObject GetDataObject( ) throws SQLException {
+    public DoublePropertyObject getDataObject( ) throws SQLException {
         return new DoublePropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getValue( ) );
     }
 

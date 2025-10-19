@@ -31,7 +31,7 @@ public class SimpleBooleanTimeseriesDataReader extends SimpleTimeseriesDataReade
     }
 
     @Override
-    public BooleanTimeseriesObject GetDataObject( ) throws SQLException {
+    public BooleanTimeseriesObject getDataObject( ) throws SQLException {
         return new BooleanTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

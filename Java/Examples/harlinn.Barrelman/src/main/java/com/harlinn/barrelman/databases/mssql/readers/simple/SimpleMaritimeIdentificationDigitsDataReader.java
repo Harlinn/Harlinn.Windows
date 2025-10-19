@@ -61,7 +61,7 @@ public class SimpleMaritimeIdentificationDigitsDataReader extends ResultSetWrapp
         destination.writeBoolean( false );
     }
 
-    public MaritimeIdentificationDigitsObject GetDataObject( ) throws SQLException {
+    public MaritimeIdentificationDigitsObject getDataObject( ) throws SQLException {
             return new MaritimeIdentificationDigitsObject( ObjectState.Stored, getId( ), getRowVersion( ), getCode( ), getCountry( ) );
     }
 

@@ -43,7 +43,7 @@ public class SimpleBaseStationDataReader extends SimpleItemDataReader {
     }
 
     @Override
-    public BaseStationObject GetDataObject( ) throws SQLException {
+    public BaseStationObject getDataObject( ) throws SQLException {
         return new BaseStationObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getTypeField( ) );
     }
 

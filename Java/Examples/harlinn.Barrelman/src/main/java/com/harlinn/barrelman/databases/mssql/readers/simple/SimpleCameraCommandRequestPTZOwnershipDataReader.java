@@ -33,7 +33,7 @@ public class SimpleCameraCommandRequestPTZOwnershipDataReader extends SimpleCame
     }
 
     @Override
-    public CameraCommandRequestPTZOwnershipObject GetDataObject( ) throws SQLException {
+    public CameraCommandRequestPTZOwnershipObject getDataObject( ) throws SQLException {
         return new CameraCommandRequestPTZOwnershipObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
     }
 

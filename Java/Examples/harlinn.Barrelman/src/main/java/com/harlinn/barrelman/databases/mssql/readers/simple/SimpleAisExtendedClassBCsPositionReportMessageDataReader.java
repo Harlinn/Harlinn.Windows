@@ -174,7 +174,7 @@ public class SimpleAisExtendedClassBCsPositionReportMessageDataReader extends Si
     }
 
     @Override
-    public AisExtendedClassBCsPositionReportMessageObject GetDataObject( ) throws SQLException {
+    public AisExtendedClassBCsPositionReportMessageObject getDataObject( ) throws SQLException {
         return new AisExtendedClassBCsPositionReportMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getReserved( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getRegionalReserved( ), getName( ), getShipType( ), getDimensionToBow( ), getDimensionToStern( ), getDimensionToPort( ), getDimensionToStarboard( ), getPositionFixType( ), getRaim( ), getDataTerminalReady( ), getAssigned( ), getSpare( ) );
     }
 

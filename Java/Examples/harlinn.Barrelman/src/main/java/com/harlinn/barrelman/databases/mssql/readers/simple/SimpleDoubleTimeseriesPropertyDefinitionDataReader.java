@@ -46,7 +46,7 @@ public class SimpleDoubleTimeseriesPropertyDefinitionDataReader extends SimpleTi
     }
 
     @Override
-    public DoubleTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public DoubleTimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new DoubleTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
     }
 

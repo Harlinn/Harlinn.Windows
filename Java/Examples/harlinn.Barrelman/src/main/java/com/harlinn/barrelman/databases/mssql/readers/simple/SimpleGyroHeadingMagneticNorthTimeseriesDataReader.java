@@ -39,7 +39,7 @@ public class SimpleGyroHeadingMagneticNorthTimeseriesDataReader extends SimpleDo
     }
 
     @Override
-    public GyroHeadingMagneticNorthTimeseriesObject GetDataObject( ) throws SQLException {
+    public GyroHeadingMagneticNorthTimeseriesObject getDataObject( ) throws SQLException {
         return new GyroHeadingMagneticNorthTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getGyroDevice( ) );
     }
 

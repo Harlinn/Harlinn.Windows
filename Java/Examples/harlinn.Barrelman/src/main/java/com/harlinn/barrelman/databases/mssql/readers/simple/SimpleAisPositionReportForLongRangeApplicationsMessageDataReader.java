@@ -97,7 +97,7 @@ public class SimpleAisPositionReportForLongRangeApplicationsMessageDataReader ex
     }
 
     @Override
-    public AisPositionReportForLongRangeApplicationsMessageObject GetDataObject( ) throws SQLException {
+    public AisPositionReportForLongRangeApplicationsMessageObject getDataObject( ) throws SQLException {
         return new AisPositionReportForLongRangeApplicationsMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getPositionAccuracy( ), getRaim( ), getNavigationStatus( ), getLongitude( ), getLatitude( ), getSpeedOverGround( ), getCourseOverGround( ), getGnssPositionStatus( ), getSpare( ) );
     }
 

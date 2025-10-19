@@ -38,7 +38,7 @@ public class SimpleByteTimeseriesPropertyDataReader extends SimpleTimeseriesProp
     }
 
     @Override
-    public ByteTimeseriesPropertyObject GetDataObject( ) throws SQLException {
+    public ByteTimeseriesPropertyObject getDataObject( ) throws SQLException {
         return new ByteTimeseriesPropertyObject( ObjectState.Stored, getId( ), getRowVersion( ), getElement( ), getDefinition( ), getTimeseries( ) );
     }
 

@@ -39,7 +39,7 @@ public class SimpleRadarFastTimeConstantLevelTimeseriesDataReader extends Simple
     }
 
     @Override
-    public RadarFastTimeConstantLevelTimeseriesObject GetDataObject( ) throws SQLException {
+    public RadarFastTimeConstantLevelTimeseriesObject getDataObject( ) throws SQLException {
         return new RadarFastTimeConstantLevelTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadar( ) );
     }
 

@@ -31,7 +31,7 @@ public class SimpleGeoPosition2DTimeseriesDataReader extends SimpleTimeseriesDat
     }
 
     @Override
-    public GeoPosition2DTimeseriesObject GetDataObject( ) throws SQLException {
+    public GeoPosition2DTimeseriesObject getDataObject( ) throws SQLException {
         return new GeoPosition2DTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

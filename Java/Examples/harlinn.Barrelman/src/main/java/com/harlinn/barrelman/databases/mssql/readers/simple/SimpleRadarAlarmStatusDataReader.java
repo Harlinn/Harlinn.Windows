@@ -68,7 +68,7 @@ public class SimpleRadarAlarmStatusDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public RadarAlarmStatusObject GetDataObject( ) throws SQLException {
+    public RadarAlarmStatusObject getDataObject( ) throws SQLException {
             return new RadarAlarmStatusObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getTypeField( ) );
     }
 

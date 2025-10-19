@@ -59,5 +59,58 @@ public class ComplexCatalogElementDataReader extends ResultSetWrapper {
         return getNullableGuid( E_ELEMENTTYPE_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.Catalog: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+            }
+            break;
+            case Kind.Element: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeNullableGuid( getElementElementType( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public CatalogElementObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.Catalog: {
+                return new CatalogObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ) );
+            }
+            case Kind.Element: {
+                return new ElementObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getElementElementType( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

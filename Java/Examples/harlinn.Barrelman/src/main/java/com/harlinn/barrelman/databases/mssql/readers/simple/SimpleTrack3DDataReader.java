@@ -31,7 +31,7 @@ public class SimpleTrack3DDataReader extends SimpleTrackBaseDataReader {
     }
 
     @Override
-    public Track3DObject GetDataObject( ) throws SQLException {
+    public Track3DObject getDataObject( ) throws SQLException {
         return new Track3DObject( ObjectState.Stored, getId( ), getRowVersion( ), getTracker( ), getTrackNumber( ), getTimestamp( ) );
     }
 

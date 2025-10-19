@@ -31,7 +31,7 @@ public class SimplePosition2DTimeseriesDataReader extends SimpleTimeseriesDataRe
     }
 
     @Override
-    public Position2DTimeseriesObject GetDataObject( ) throws SQLException {
+    public Position2DTimeseriesObject getDataObject( ) throws SQLException {
         return new Position2DTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

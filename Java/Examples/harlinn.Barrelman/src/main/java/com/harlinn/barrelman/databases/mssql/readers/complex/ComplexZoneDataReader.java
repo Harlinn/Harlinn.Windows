@@ -107,5 +107,73 @@ public class ComplexZoneDataReader extends ResultSetWrapper {
         return getBinary( PZ_POLYGON_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.CircularZone: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeDouble( getLongitude( ) );
+                destination.writeDouble( getLatitude( ) );
+                destination.writeInt32( getAlarmType( ) );
+                destination.writeTimeSpan( getAlarmTime( ) );
+                destination.writeTimeSpan( getRadarTrackMinimumLifetime( ) );
+                destination.writeDouble( getSpeed( ) );
+                destination.writeUInt32( getStrokeColor( ) );
+                destination.writeUInt32( getFillColor( ) );
+                destination.writeDouble( getCircularZoneRadius( ) );
+            }
+            break;
+            case Kind.PolygonZone: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeDouble( getLongitude( ) );
+                destination.writeDouble( getLatitude( ) );
+                destination.writeInt32( getAlarmType( ) );
+                destination.writeTimeSpan( getAlarmTime( ) );
+                destination.writeTimeSpan( getRadarTrackMinimumLifetime( ) );
+                destination.writeDouble( getSpeed( ) );
+                destination.writeUInt32( getStrokeColor( ) );
+                destination.writeUInt32( getFillColor( ) );
+                destination.writeUInt8Array( getPolygonZonePolygon( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public ZoneObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.CircularZone: {
+                return new CircularZoneObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getLongitude( ), getLatitude( ), getAlarmType( ), getAlarmTime( ), getRadarTrackMinimumLifetime( ), getSpeed( ), getStrokeColor( ), getFillColor( ), getCircularZoneRadius( ) );
+            }
+            case Kind.PolygonZone: {
+                return new PolygonZoneObject( ObjectState.Stored, getId( ), getRowVersion( ), getName( ), getLongitude( ), getLatitude( ), getAlarmType( ), getAlarmTime( ), getRadarTrackMinimumLifetime( ), getSpeed( ), getStrokeColor( ), getFillColor( ), getPolygonZonePolygon( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

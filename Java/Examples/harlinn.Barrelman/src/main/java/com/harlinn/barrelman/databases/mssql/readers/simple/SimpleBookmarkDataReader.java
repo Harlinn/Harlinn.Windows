@@ -89,7 +89,7 @@ public class SimpleBookmarkDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public BookmarkObject GetDataObject( ) throws SQLException {
+    public BookmarkObject getDataObject( ) throws SQLException {
             return new BookmarkObject( ObjectState.Stored, getId( ), getRowVersion( ), getView( ), getName( ), getTimestamp( ), getLatitude( ), getLongitude( ), getZoomLevel( ) );
     }
 

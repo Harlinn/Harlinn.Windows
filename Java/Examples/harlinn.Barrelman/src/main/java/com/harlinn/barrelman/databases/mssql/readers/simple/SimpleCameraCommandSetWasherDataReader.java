@@ -41,7 +41,7 @@ public class SimpleCameraCommandSetWasherDataReader extends SimpleCameraCommandD
     }
 
     @Override
-    public CameraCommandSetWasherObject GetDataObject( ) throws SQLException {
+    public CameraCommandSetWasherObject getDataObject( ) throws SQLException {
         return new CameraCommandSetWasherObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getEnabled( ) );
     }
 

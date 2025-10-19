@@ -46,7 +46,7 @@ public class SimpleAisPositionReportClassAResponseToInterrogationMessageDataRead
     }
 
     @Override
-    public AisPositionReportClassAResponseToInterrogationMessageObject GetDataObject( ) throws SQLException {
+    public AisPositionReportClassAResponseToInterrogationMessageObject getDataObject( ) throws SQLException {
         return new AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getReceivedTimestamp( ), getMessageSequenceNumber( ), getRepeat( ), getMmsi( ), getNavigationStatus( ), getRateOfTurn( ), getSpeedOverGround( ), getPositionAccuracy( ), getLongitude( ), getLatitude( ), getCourseOverGround( ), getTrueHeading( ), getTimestamp( ), getManeuverIndicator( ), getSpare( ), getRaim( ), getRadioStatus( ) );
     }
 

@@ -82,7 +82,7 @@ public class SimpleWeatherStationCommandReplyDataReader extends ResultSetWrapper
         destination.writeBoolean( false );
     }
 
-    public WeatherStationCommandReplyObject GetDataObject( ) throws SQLException {
+    public WeatherStationCommandReplyObject getDataObject( ) throws SQLException {
             return new WeatherStationCommandReplyObject( ObjectState.Stored, getId( ), getRowVersion( ), getWeatherStation( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ) );
     }
 

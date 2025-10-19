@@ -82,7 +82,7 @@ public class SimpleGNSSDeviceCommandReplyDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public GNSSDeviceCommandReplyObject GetDataObject( ) throws SQLException {
+    public GNSSDeviceCommandReplyObject getDataObject( ) throws SQLException {
             return new GNSSDeviceCommandReplyObject( ObjectState.Stored, getId( ), getRowVersion( ), getGNSSDevice( ), getTimestamp( ), getCommand( ), getStatus( ), getMessage( ) );
     }
 

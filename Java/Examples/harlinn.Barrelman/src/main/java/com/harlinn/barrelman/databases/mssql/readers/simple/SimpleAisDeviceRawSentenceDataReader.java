@@ -68,7 +68,7 @@ public class SimpleAisDeviceRawSentenceDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public AisDeviceRawSentenceObject GetDataObject( ) throws SQLException {
+    public AisDeviceRawSentenceObject getDataObject( ) throws SQLException {
             return new AisDeviceRawSentenceObject( ObjectState.Stored, getId( ), getRowVersion( ), getAisDevice( ), getTimestamp( ), getSentence( ) );
     }
 

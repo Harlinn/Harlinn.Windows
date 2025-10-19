@@ -46,7 +46,7 @@ public class SimpleSByteTimeseriesPropertyDefinitionDataReader extends SimpleTim
     }
 
     @Override
-    public SByteTimeseriesPropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public SByteTimeseriesPropertyDefinitionObject getDataObject( ) throws SQLException {
         return new SByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getMinValue( ), getMaxValue( ) );
     }
 

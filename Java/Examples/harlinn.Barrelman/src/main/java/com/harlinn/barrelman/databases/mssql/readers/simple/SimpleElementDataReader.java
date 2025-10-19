@@ -38,7 +38,7 @@ public class SimpleElementDataReader extends SimpleCatalogElementDataReader {
     }
 
     @Override
-    public ElementObject GetDataObject( ) throws SQLException {
+    public ElementObject getDataObject( ) throws SQLException {
         return new ElementObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getElementType( ) );
     }
 

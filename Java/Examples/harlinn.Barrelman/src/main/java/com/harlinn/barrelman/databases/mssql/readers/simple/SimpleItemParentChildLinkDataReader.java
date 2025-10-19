@@ -68,7 +68,7 @@ public class SimpleItemParentChildLinkDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public ItemParentChildLinkObject GetDataObject( ) throws SQLException {
+    public ItemParentChildLinkObject getDataObject( ) throws SQLException {
             return new ItemParentChildLinkObject( ObjectState.Stored, getId( ), getRowVersion( ), getParent( ), getChild( ), getTimestamp( ) );
     }
 

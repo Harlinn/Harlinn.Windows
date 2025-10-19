@@ -54,7 +54,7 @@ public class SimpleMediaServiceDataReader extends ResultSetWrapper {
         destination.writeBoolean( false );
     }
 
-    public MediaServiceObject GetDataObject( ) throws SQLException {
+    public MediaServiceObject getDataObject( ) throws SQLException {
             return new MediaServiceObject( ObjectState.Stored, getId( ), getRowVersion( ), getEnabledTimeseries( ) );
     }
 

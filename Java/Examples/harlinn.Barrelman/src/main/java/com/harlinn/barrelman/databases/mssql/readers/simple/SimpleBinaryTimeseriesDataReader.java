@@ -31,7 +31,7 @@ public class SimpleBinaryTimeseriesDataReader extends SimpleTimeseriesDataReader
     }
 
     @Override
-    public BinaryTimeseriesObject GetDataObject( ) throws SQLException {
+    public BinaryTimeseriesObject getDataObject( ) throws SQLException {
         return new BinaryTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
     }
 

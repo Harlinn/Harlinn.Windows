@@ -39,7 +39,7 @@ public class SimpleSecurityRoleDataReader extends SimpleSecurityIdentifierDataRe
     }
 
     @Override
-    public SecurityRoleObject GetDataObject( ) throws SQLException {
+    public SecurityRoleObject getDataObject( ) throws SQLException {
         return new SecurityRoleObject( ObjectState.Stored, getId( ), getRowVersion( ), getDomain( ), getIdentity( ), getDescription( ), getName( ) );
     }
 

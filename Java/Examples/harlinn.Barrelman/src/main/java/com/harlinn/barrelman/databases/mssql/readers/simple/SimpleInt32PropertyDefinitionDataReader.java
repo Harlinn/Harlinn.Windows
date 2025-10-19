@@ -53,7 +53,7 @@ public class SimpleInt32PropertyDefinitionDataReader extends SimplePropertyDefin
     }
 
     @Override
-    public Int32PropertyDefinitionObject GetDataObject( ) throws SQLException {
+    public Int32PropertyDefinitionObject getDataObject( ) throws SQLException {
         return new Int32PropertyDefinitionObject( ObjectState.Stored, getId( ), getRowVersion( ), getElementType( ), getName( ), getDescription( ), getDefaultValue( ), getMinValue( ), getMaxValue( ) );
     }
 

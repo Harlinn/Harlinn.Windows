@@ -33,7 +33,7 @@ public class SimpleRadarCommandGetStatusDataReader extends SimpleRadarCommandDat
     }
 
     @Override
-    public RadarCommandGetStatusObject GetDataObject( ) throws SQLException {
+    public RadarCommandGetStatusObject getDataObject( ) throws SQLException {
         return new RadarCommandGetStatusObject( ObjectState.Stored, getId( ), getRowVersion( ), getRadar( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ) );
     }
 

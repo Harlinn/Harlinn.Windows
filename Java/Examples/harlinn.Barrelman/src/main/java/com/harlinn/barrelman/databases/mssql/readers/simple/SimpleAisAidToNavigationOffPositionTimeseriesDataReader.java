@@ -39,7 +39,7 @@ public class SimpleAisAidToNavigationOffPositionTimeseriesDataReader extends Sim
     }
 
     @Override
-    public AisAidToNavigationOffPositionTimeseriesObject GetDataObject( ) throws SQLException {
+    public AisAidToNavigationOffPositionTimeseriesObject getDataObject( ) throws SQLException {
         return new AisAidToNavigationOffPositionTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getAidToNavigation( ) );
     }
 

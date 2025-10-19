@@ -148,5 +148,228 @@ public class ComplexBooleanTimeseriesDataReader extends ResultSetWrapper {
         return getNullableGuid( RTT_RADAR_FIELD_ID );
     }
 
+    public void writeTo(BinaryWriter destination ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.BooleanTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+            }
+            break;
+            case Kind.AisAidToNavigationOffPositionTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getAisAidToNavigationOffPositionTimeseriesAidToNavigation( ) );
+            }
+            break;
+            case Kind.DeviceEnabledTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getDeviceEnabledTimeseriesDevice( ) );
+            }
+            break;
+            case Kind.MediaProxySessionEnabledTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getMediaProxySessionEnabledTimeseriesProxySession( ) );
+            }
+            break;
+            case Kind.MediaServiceEnabledTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getMediaServiceEnabledTimeseriesService( ) );
+            }
+            break;
+            case Kind.RadarAutomaticSensitivityTimeControlTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarAutomaticSensitivityTimeControlTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarBlankSector1Timeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarBlankSector1TimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarBlankSector2Timeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarBlankSector2TimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarEnableAutomaticFrequencyControlTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarEnableAutomaticFrequencyControlTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarEnableFastTimeConstantTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarEnableFastTimeConstantTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarEnableSensitivityTimeControlTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarEnableSensitivityTimeControlTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarPowerOnTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarPowerOnTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarSaveSettingsTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarSaveSettingsTimeseriesRadar( ) );
+            }
+            break;
+            case Kind.RadarTrackingTimeseries: {
+                destination.writeInt32( kind );
+                destination.writeUInt8( ObjectState.Stored );
+                destination.writeGuid( getId( ) );
+                destination.writeInt64( getRowVersion( ) );
+                destination.writeNullableGuid( getCatalog( ) );
+                destination.writeStringUtf8( getName( ) );
+                destination.writeTimeSpan( getMaxRetention( ) );
+                destination.writeNullableGuid( getRadarTrackingTimeseriesRadar( ) );
+            }
+            break;
+            default: {
+                var exc = new SQLException( "Cannot perform serialization for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
+    public void writeResultSetTo( BinaryWriter destination ) throws SQLException {
+        while ( next( ) ) {
+            destination.writeBoolean( true );
+            writeTo( destination );
+        }
+        destination.writeBoolean( false );
+    }
+
+    public BooleanTimeseriesObject getDataObject( ) throws SQLException {
+        var kind = getObjectType( );
+        switch(kind) {
+            case Kind.BooleanTimeseries: {
+                return new BooleanTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ) );
+            }
+            case Kind.AisAidToNavigationOffPositionTimeseries: {
+                return new AisAidToNavigationOffPositionTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getAisAidToNavigationOffPositionTimeseriesAidToNavigation( ) );
+            }
+            case Kind.DeviceEnabledTimeseries: {
+                return new DeviceEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getDeviceEnabledTimeseriesDevice( ) );
+            }
+            case Kind.MediaProxySessionEnabledTimeseries: {
+                return new MediaProxySessionEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getMediaProxySessionEnabledTimeseriesProxySession( ) );
+            }
+            case Kind.MediaServiceEnabledTimeseries: {
+                return new MediaServiceEnabledTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getMediaServiceEnabledTimeseriesService( ) );
+            }
+            case Kind.RadarAutomaticSensitivityTimeControlTimeseries: {
+                return new RadarAutomaticSensitivityTimeControlTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarAutomaticSensitivityTimeControlTimeseriesRadar( ) );
+            }
+            case Kind.RadarBlankSector1Timeseries: {
+                return new RadarBlankSector1TimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarBlankSector1TimeseriesRadar( ) );
+            }
+            case Kind.RadarBlankSector2Timeseries: {
+                return new RadarBlankSector2TimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarBlankSector2TimeseriesRadar( ) );
+            }
+            case Kind.RadarEnableAutomaticFrequencyControlTimeseries: {
+                return new RadarEnableAutomaticFrequencyControlTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarEnableAutomaticFrequencyControlTimeseriesRadar( ) );
+            }
+            case Kind.RadarEnableFastTimeConstantTimeseries: {
+                return new RadarEnableFastTimeConstantTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarEnableFastTimeConstantTimeseriesRadar( ) );
+            }
+            case Kind.RadarEnableSensitivityTimeControlTimeseries: {
+                return new RadarEnableSensitivityTimeControlTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarEnableSensitivityTimeControlTimeseriesRadar( ) );
+            }
+            case Kind.RadarPowerOnTimeseries: {
+                return new RadarPowerOnTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarPowerOnTimeseriesRadar( ) );
+            }
+            case Kind.RadarSaveSettingsTimeseries: {
+                return new RadarSaveSettingsTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarSaveSettingsTimeseriesRadar( ) );
+            }
+            case Kind.RadarTrackingTimeseries: {
+                return new RadarTrackingTimeseriesObject( ObjectState.Stored, getId( ), getRowVersion( ), getCatalog( ), getName( ), getMaxRetention( ), getRadarTrackingTimeseriesRadar( ) );
+            }
+            default: {
+                var exc = new SQLException( "Cannot create an object for kind=" + kind + "." );
+                throw exc;
+            }
+        }
+    }
+
 }
 

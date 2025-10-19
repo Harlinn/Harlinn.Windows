@@ -69,7 +69,7 @@ public class SimpleCameraCommandContinuousMoveDataReader extends SimpleCameraCom
     }
 
     @Override
-    public CameraCommandContinuousMoveObject GetDataObject( ) throws SQLException {
+    public CameraCommandContinuousMoveObject getDataObject( ) throws SQLException {
         return new CameraCommandContinuousMoveObject( ObjectState.Stored, getId( ), getRowVersion( ), getCamera( ), getTimestamp( ), getDeviceCommandSourceType( ), getDeviceCommandSourceId( ), getReply( ), getNormalized( ), getPanVelocity( ), getTiltVelocity( ), getZoomVelocity( ), getDuration( ) );
     }
 

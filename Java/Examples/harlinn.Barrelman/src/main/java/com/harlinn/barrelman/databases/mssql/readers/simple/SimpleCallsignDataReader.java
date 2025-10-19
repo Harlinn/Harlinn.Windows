@@ -36,7 +36,7 @@ public class SimpleCallsignDataReader extends SimpleIdentityDataReader {
     }
 
     @Override
-    public CallsignObject GetDataObject( ) throws SQLException {
+    public CallsignObject getDataObject( ) throws SQLException {
         return new CallsignObject( ObjectState.Stored, getId( ), getRowVersion( ), getIdentifier( ) );
     }
 
