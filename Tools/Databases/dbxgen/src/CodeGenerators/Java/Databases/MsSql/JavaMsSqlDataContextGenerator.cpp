@@ -325,8 +325,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
                 WriteLine( L"            if( {}.next( ) ) {{", dataReaderVariableName );
                 WriteLine( L"                return {}.getDataObject( );", dataReaderVariableName );
                 WriteLine( L"            }" );
-                WriteLine( L"            return null;" );
                 WriteLine( L"        }" );
+                WriteLine( L"        return null;" );
             }
             else
             {
@@ -494,8 +494,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
                 WriteLine( L"            if( {}.next( ) ) {{", dataReaderVariableName );
                 WriteLine( L"                return {}.getDataObject( );", dataReaderVariableName );
                 WriteLine( L"            }" );
-                WriteLine( L"            return null;" );
                 WriteLine( L"        }" );
+                WriteLine( L"        return null;" );
             }
             else
             {
