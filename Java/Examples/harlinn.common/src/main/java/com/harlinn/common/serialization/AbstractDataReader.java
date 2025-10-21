@@ -25,7 +25,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 	}
 	
 	protected abstract byte readByte( );
-	protected abstract ByteBuffer readBuffer( int size );
+	protected abstract byte[] readBytes( int size );
 	
 	public final long Read7BitEncodedUInt64( ) {
 	    long resultValue = 0;
@@ -73,6 +73,63 @@ public abstract class AbstractDataReader implements BinaryReader {
 	}
 	
 	
+	private final short readShort() {
+		var bytes = readBytes(2);
+    	short result = (short)(((short)bytes[0] & 0xFF) | 
+    			((short)bytes[1] & 0xFF) << 8);
+    	return result;
+	}
+	
+	private static final short getShort(byte[] bytes, int index) {
+		int offset = index * Short.BYTES; 
+    	short result = (short)(((short)bytes[offset] & 0xFF) | 
+    			((short)bytes[offset + 1] & 0xFF) << 8);
+    	return result;
+	}
+	
+	private final int readInt() {
+		var bytes = readBytes(4);
+    	int result = (int)(((int)bytes[0] & 0xFF) | 
+    			((int)bytes[1] & 0xFF) << 8 |
+    			((int)bytes[2] & 0xFF) << 16 |
+    			((int)bytes[3] & 0xFF) << 24 );
+    	return result;
+	}
+	
+	private static final int getInt(byte[] bytes, int index) {
+		int offset = index * Integer.BYTES;
+    	int result = (int)(((int)bytes[offset] & 0xFF) | 
+    			((int)bytes[offset + 1] & 0xFF) << 8 |
+    			((int)bytes[offset + 2] & 0xFF) << 16 |
+    			((int)bytes[offset + 3] & 0xFF) << 24 );
+    	return result;
+	}
+	
+	private final long readLong() {
+		var bytes = readBytes(8);
+    	long result = (long)(((long)bytes[0] & 0xFF) | 
+    			((long)bytes[1] & 0xFF) << 8 |
+    			((long)bytes[2] & 0xFF) << 16 |
+    			((long)bytes[3] & 0xFF) << 24 |
+    			((long)bytes[4] & 0xFF) << 32 |
+    			((long)bytes[5] & 0xFF) << 40 |
+    			((long)bytes[6] & 0xFF) << 48 |
+    			((long)bytes[7] & 0xFF) << 56 );
+    	return result;
+	}
+	
+	private static final long getLong(byte[] bytes, int index) {
+		int offset = index * Long.BYTES;
+    	long result = (long)(((long)bytes[offset] & 0xFF) | 
+    			((long)bytes[offset + 1] & 0xFF) << 8 |
+    			((long)bytes[offset + 2] & 0xFF) << 16 |
+    			((long)bytes[offset + 3] & 0xFF) << 24 |
+    			((long)bytes[offset + 4] & 0xFF) << 32 |
+    			((long)bytes[offset + 5] & 0xFF) << 40 |
+    			((long)bytes[offset + 6] & 0xFF) << 48 |
+    			((long)bytes[offset + 7] & 0xFF) << 56 );
+    	return result;
+	}
 	
 	
 	private final byte readDataType() {
@@ -115,9 +172,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxChar:
 		    	return (char)0xFFFF;
 		    case DataType.Char:
-		    	var buffer = readBuffer(2);
-		    	var charBuffer = buffer.asCharBuffer();
-		    	return charBuffer.get();
+		    	short result = readShort( );
+		    	return (char)result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -135,9 +191,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxChar:
 		    	return Character.valueOf((char)0xFFFF);
 		    case DataType.Char:
-		    	var buffer = readBuffer(2);
-		    	var charBuffer = buffer.asCharBuffer();
-		    	return charBuffer.get();
+		    	short result = readShort( );
+		    	return (char)result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -232,10 +287,9 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    	return (short)1;
 		    case DataType.MaxUInt16:
 		    	return (short)0xFFFF;
-		    case DataType.Byte:
-		    	var buffer = readBuffer(2);
-		    	var shortBuffer = buffer.asShortBuffer();
-		    	return shortBuffer.get();
+		    case DataType.UInt16:
+		    	short result = readShort( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -253,9 +307,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxUInt16:
 		    	return (short)0xFFFF;
 		    case DataType.UInt16:
-		    	var buffer = readBuffer(2);
-		    	var shortBuffer = buffer.asShortBuffer();
-		    	return shortBuffer.get();
+		    	short result = readShort( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -275,9 +328,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxInt16:
 		    	return Short.MAX_VALUE;
 		    case DataType.Int16:
-		    	var buffer = readBuffer(2);
-		    	var shortBuffer = buffer.asShortBuffer();
-		    	return shortBuffer.get();
+		    	short result = readShort( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -299,9 +351,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxInt16:
 		    	return Short.MAX_VALUE;
 		    case DataType.Int16:
-		    	var buffer = readBuffer(2);
-		    	var shortBuffer = buffer.asShortBuffer();
-		    	return shortBuffer.get();
+		    	short result = readShort( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -316,10 +367,9 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    	return (int)1;
 		    case DataType.MaxUInt32:
 		    	return (int)0xFFFFFFFF;
-		    case DataType.Byte:
-		    	var buffer = readBuffer(4);
-		    	var intBuffer = buffer.asIntBuffer();
-		    	return intBuffer.get();
+		    case DataType.UInt32:
+		    	var result = readInt( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -337,9 +387,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxUInt32:
 		    	return (int)0xFFFFFFFF;
 		    case DataType.UInt32:
-		    	var buffer = readBuffer(4);
-		    	var intBuffer = buffer.asIntBuffer();
-		    	return intBuffer.get();
+		    	var result = readInt( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -359,9 +408,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxInt32:
 		    	return Integer.MAX_VALUE;
 		    case DataType.Int32:
-		    	var buffer = readBuffer(4);
-		    	var intBuffer = buffer.asIntBuffer();
-		    	return intBuffer.get();
+		    	var result = readInt( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -383,9 +431,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxInt32:
 		    	return Integer.MAX_VALUE;
 		    case DataType.Int32:
-		    	var buffer = readBuffer(4);
-		    	var intBuffer = buffer.asIntBuffer();
-		    	return intBuffer.get();
+		    	var result = readInt( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -401,10 +448,9 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    	return (long)1;
 		    case DataType.MaxUInt64:
 		    	return (long)0xFFFFFFFF;
-		    case DataType.Byte:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return longBuffer.get();
+		    case DataType.UInt64:
+		    	var result = readLong( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -422,9 +468,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxUInt64:
 		    	return (long)0xFFFFFFFF;
 		    case DataType.UInt64:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return longBuffer.get();
+		    	var result = readLong( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -444,9 +489,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxInt64:
 		    	return Long.MAX_VALUE;
 		    case DataType.Int64:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return longBuffer.get();
+		    	var result = readLong( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -468,9 +512,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxInt64:
 		    	return Long.MAX_VALUE;
 		    case DataType.Int64:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return longBuffer.get();
+		    	var result = readLong( );
+		    	return result;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -497,9 +540,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.SingleNaN:
 		    	return Float.NaN;
 		    case DataType.Single:
-		    	var buffer = readBuffer(4);
-		    	var floatBuffer = buffer.asFloatBuffer();
-		    	return floatBuffer.get();
+		    	var value = readInt();
+		    	return Float.intBitsToFloat(value);
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -527,9 +569,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.SingleNaN:
 		    	return Float.NaN;
 		    case DataType.Single:
-		    	var buffer = readBuffer(4);
-		    	var floatBuffer = buffer.asFloatBuffer();
-		    	return floatBuffer.get();
+		    	var value = readInt();
+		    	return Float.intBitsToFloat(value);
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -555,9 +596,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.DoubleNaN:
 		    	return Double.NaN;
 		    case DataType.Double:
-		    	var buffer = readBuffer(8);
-		    	var doubleBuffer = buffer.asDoubleBuffer();
-		    	return doubleBuffer.get();
+		    	var value = readLong();
+		    	return Double.longBitsToDouble(value);
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -585,9 +625,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.DoubleNaN:
 		    	return Double.NaN;
 		    case DataType.Double:
-		    	var buffer = readBuffer(8);
-		    	var doubleBuffer = buffer.asDoubleBuffer();
-		    	return doubleBuffer.get();
+		    	var value = readLong();
+		    	return Double.longBitsToDouble(value);
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -608,9 +647,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxCurrency:
 		    	return Currency.fromValue( Long.MAX_VALUE );
 		    case DataType.Currency:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return Currency.fromValue( longBuffer.get() );
+		    	var value = readLong();
+		    	return Currency.fromValue( value );
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -632,9 +670,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.MaxCurrency:
 		    	return Currency.fromValue( Long.MAX_VALUE );
 		    case DataType.Currency:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return Currency.fromValue( longBuffer.get() );
+		    	var value = readLong();
+		    	return Currency.fromValue( value );
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -646,9 +683,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroDateTime:
 				return 0;
 		    case DataType.DateTime:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return longBuffer.get();
+		    	var value = readLong();
+		    	return value;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -666,9 +702,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroDateTime:
 				return new DateTime();
 		    case DataType.DateTime:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return new DateTime(longBuffer.get());
+		    	var value = readLong();
+		    	return new DateTime(value);
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -689,9 +724,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroDateTime:
 				return java.time.Instant.ofEpochSecond(-TimeBase.UnixEpoch/TimeBase.TicksPerSecond, 0);
 		    case DataType.DateTime:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	var ticks = longBuffer.get() - TimeBase.UnixEpoch;;
+		    	var ticks = readLong() - TimeBase.UnixEpoch;;
 		    	var seconds = ticks / TimeBase.TicksPerSecond;
 				var nanos = (ticks % TimeBase.TicksPerSecond)*100;
 				return java.time.Instant.ofEpochSecond(seconds, nanos);
@@ -715,9 +748,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroDateTime:
 				return new Date(-TimeBase.UnixEpoch/TimeBase.TicksPerSecond);
 		    case DataType.DateTime:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	var ticks = longBuffer.get() - TimeBase.UnixEpoch;;
+		    	var ticks = readLong() - TimeBase.UnixEpoch;;
 		    	var milliSeconds = ticks / TimeBase.TicksPerMillisecond;
 				return new Date(milliSeconds);
 		    default:
@@ -732,9 +763,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroTimeSpan:
 				return 0;
 		    case DataType.TimeSpan:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return longBuffer.get();
+		    	return readLong();
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -752,9 +781,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroTimeSpan:
 				return new TimeSpan();
 		    case DataType.TimeSpan:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	return new TimeSpan(longBuffer.get());
+		    	return new TimeSpan(readLong());
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -775,9 +802,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroTimeSpan:
 				return Duration.ofSeconds(0, 0);
 		    case DataType.TimeSpan:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	var ticks = longBuffer.get();
+		    	var ticks = readLong();
 		    	var seconds = ticks / TimeBase.TicksPerSecond;
 				var nanos = (ticks % TimeBase.TicksPerSecond)*100;
 				return Duration.ofSeconds(seconds, nanos);
@@ -800,9 +825,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.ZeroTimeSpan:
 				return new Time(0);
 		    case DataType.TimeSpan:
-		    	var buffer = readBuffer(8);
-		    	var longBuffer = buffer.asLongBuffer();
-		    	var ticks = longBuffer.get();
+		    	var ticks = readLong();
 		    	var milliSeconds = ticks / TimeBase.TicksPerMillisecond;
 				return new Time(milliSeconds);
 		    default:
@@ -816,8 +839,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.EmptyGuid:
 				return new byte[16];
 		    case DataType.Guid:
-		    	var buffer = readBuffer(16);
-		    	return buffer.array();
+		    	var bytes = readBytes(16);
+		    	return bytes;
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -829,8 +852,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.EmptyGuid:
 				return new Guid();
 		    case DataType.Guid:
-		    	var buffer = readBuffer(16);
-		    	return new Guid(buffer.array());
+		    	var bytes = readBytes(16);
+		    	return new Guid(bytes);
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -844,8 +867,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.EmptyGuid:
 				return new Guid();
 		    case DataType.Guid:
-		    	var buffer = readBuffer(16);
-		    	return new Guid(buffer.array());
+		    	var bytes = readBytes(16);
+		    	return new Guid(bytes);
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
 		}
@@ -889,8 +912,7 @@ public abstract class AbstractDataReader implements BinaryReader {
 			case DataType.EmptyGuid:
 				return new UUID(0L,0L);
 		    case DataType.Guid:
-		    	var buffer = readBuffer(16);
-		    	var guidBytes = buffer.array();
+		    	var guidBytes = readBytes(16);
 		    	// Reorder the first three components of the GUID to match UUID's expected byte order
 		        var reorderedBytes = new byte[16];
 
@@ -930,14 +952,14 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.StringUTF8:
 		    {
 		    	var size = Read7BitEncodedUInt64( );
-		    	var buffer = readBuffer((int)size);
-		    	return new String(buffer.array(), StandardCharsets.UTF_8);
+		    	var bytes = readBytes((int)size);
+		    	return new String(bytes, StandardCharsets.UTF_8);
 		    }
 		    case DataType.StringUTF16LE:
 		    {
 		    	var size = Read7BitEncodedUInt64( );
-		    	var buffer = readBuffer((int)size);
-		    	return new String(buffer.array(), StandardCharsets.UTF_16LE);
+		    	var bytes = readBytes((int)size);
+		    	return new String(bytes, StandardCharsets.UTF_16LE);
 		    }
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
@@ -954,14 +976,14 @@ public abstract class AbstractDataReader implements BinaryReader {
 		    case DataType.StringUTF8:
 		    {
 		    	var size = Read7BitEncodedUInt64( );
-		    	var buffer = readBuffer((int)size);
-		    	return new String(buffer.array(), StandardCharsets.UTF_8);
+		    	var bytes = readBytes((int)size);
+		    	return new String(bytes, StandardCharsets.UTF_8);
 		    }
 		    case DataType.StringUTF16LE:
 		    {
 		    	var size = Read7BitEncodedUInt64( );
-		    	var buffer = readBuffer((int)size);
-		    	return new String(buffer.array(), StandardCharsets.UTF_16LE);
+		    	var bytes = readBytes((int)size);
+		    	return new String(bytes, StandardCharsets.UTF_16LE);
 		    }
 		    default:
 		        throw new UnexpectedDataTypeException(dataType);
@@ -974,14 +996,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return readByte();
 		}
 		else if(dataType == mediumArrayDataType) {
-			var buffer = readBuffer(2);
-	    	var shortBuffer = buffer.asShortBuffer();
-	    	return shortBuffer.get();
+	    	return readShort();
 		}
 		else if(dataType == largeArrayDataType) {
-			var buffer = readBuffer(2);
-	    	var intBuffer = buffer.asIntBuffer();
-	    	return intBuffer.get();
+			return readInt();
 		}
 		else if(dataType == emptyArrayDataType) {
 			return 0;
@@ -1004,14 +1022,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return readByte();
 		}
 		else if(dataType == mediumArrayDataType) {
-			var buffer = readBuffer(2);
-	    	var shortBuffer = buffer.asShortBuffer();
-	    	return shortBuffer.get();
+			return readShort();
 		}
 		else if(dataType == largeArrayDataType) {
-			var buffer = readBuffer(2);
-	    	var intBuffer = buffer.asIntBuffer();
-	    	return intBuffer.get();
+			return readInt();
 		}
 		else if(dataType == emptyArrayDataType) {
 			return 0;
@@ -1028,10 +1042,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final boolean[] readBooleanArray() {
 		var count = readSize(DataType.SmallBooleanArray);
 		if(count > 0) {
-			var buffer = readBuffer(count);
+			var bytes = readBytes(count);
 			var result = new boolean[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = bytes[i];
 				result[i] = value != 0; 
 			}
 			return result;
@@ -1046,10 +1060,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var buffer = readBuffer(count);
+			var bytes = readBytes(count);
 			var result = new boolean[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = bytes[i];
 				result[i] = value != 0; 
 			}
 			return result;
@@ -1062,12 +1076,11 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final char[] readCharArray() {
 		var count = readSize(DataType.SmallCharArray);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Character.BYTES);
-			var buffer = byteBuffer.asCharBuffer(); 
+			var bytes = readBytes(count*Character.BYTES);
 			var result = new char[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
-				result[i] = value; 
+				var value = getShort(bytes, i);
+				result[i] = (char)value; 
 			}
 			return result;
 		}
@@ -1081,12 +1094,11 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Character.BYTES);
-			var buffer = byteBuffer.asCharBuffer(); 
+			var bytes = readBytes(count*Character.BYTES);
 			var result = new char[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
-				result[i] = value; 
+				var value = getShort(bytes, i);
+				result[i] = (char)value; 
 			}
 			return result;
 		}
@@ -1098,15 +1110,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final byte[] readUInt8Array() {
 		var count = readSize(DataType.SmallByteArray);
 		if(count > 0) {
-			var buffer = readBuffer(count);
-			if(buffer.hasArray()) {
-				return buffer.array();
-			}
-			else {
-				var result = new byte[count];
-				buffer.get(result);
-				return result;
-			}
+			var bytes = readBytes(count);
+			return bytes;
 		}
 		else {
 			return new byte[0];
@@ -1118,15 +1123,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var buffer = readBuffer(count);
-			if(buffer.hasArray()) {
-				return buffer.array();
-			}
-			else {
-				var result = new byte[count];
-				buffer.get(result);
-				return result;
-			}
+			var bytes = readBytes(count);
+			return bytes;
 		}
 		else {
 			return new byte[0];
@@ -1136,15 +1134,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final byte[] readInt8Array() {
 		var count = readSize(DataType.SmallSByteArray);
 		if(count > 0) {
-			var buffer = readBuffer(count);
-			if(buffer.hasArray()) {
-				return buffer.array();
-			}
-			else {
-				var result = new byte[count];
-				buffer.get(result);
-				return result;
-			}
+			var bytes = readBytes(count);
+			return bytes;
 		}
 		else {
 			return new byte[0];
@@ -1156,15 +1147,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var buffer = readBuffer(count);
-			if(buffer.hasArray()) {
-				return buffer.array();
-			}
-			else {
-				var result = new byte[count];
-				buffer.get(result);
-				return result;
-			}
+			var bytes = readBytes(count);
+			return bytes;
 		}
 		else {
 			return new byte[0];
@@ -1174,11 +1158,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final short[] readUInt16Array() {
 		var count = readSize(DataType.SmallUInt16Array);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Short.BYTES);
-			var buffer = byteBuffer.asShortBuffer(); 
+			var bytes = readBytes(count*Short.BYTES);
 			var result = new short[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getShort(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1193,11 +1176,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Short.BYTES);
-			var buffer = byteBuffer.asShortBuffer(); 
+			var bytes = readBytes(count*Short.BYTES);
 			var result = new short[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getShort(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1210,11 +1192,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final short[] readInt16Array() {
 		var count = readSize(DataType.SmallInt16Array);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Short.BYTES);
-			var buffer = byteBuffer.asShortBuffer(); 
+			var bytes = readBytes(count*Short.BYTES);
 			var result = new short[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getShort(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1229,11 +1210,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Short.BYTES);
-			var buffer = byteBuffer.asShortBuffer(); 
+			var bytes = readBytes(count*Short.BYTES);
 			var result = new short[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getShort(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1246,11 +1226,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final int[] readUInt32Array() {
 		var count = readSize(DataType.SmallUInt32Array);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Integer.BYTES);
-			var buffer = byteBuffer.asIntBuffer(); 
+			var bytes = readBytes(count*Integer.BYTES);
 			var result = new int[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getInt(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1265,11 +1244,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Integer.BYTES);
-			var buffer = byteBuffer.asIntBuffer(); 
+			var bytes = readBytes(count*Integer.BYTES);
 			var result = new int[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getInt(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1282,11 +1260,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final int[] readInt32Array() {
 		var count = readSize(DataType.SmallInt32Array);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Integer.BYTES);
-			var buffer = byteBuffer.asIntBuffer(); 
+			var bytes = readBytes(count*Integer.BYTES);
 			var result = new int[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getInt(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1301,11 +1278,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Integer.BYTES);
-			var buffer = byteBuffer.asIntBuffer(); 
+			var bytes = readBytes(count*Integer.BYTES);
 			var result = new int[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getInt(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1318,11 +1294,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final long[] readUInt64Array() {
 		var count = readSize(DataType.SmallUInt64Array);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new long[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1337,11 +1312,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new long[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1354,11 +1328,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final long[] readInt64Array() {
 		var count = readSize(DataType.SmallInt64Array);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new long[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1373,11 +1346,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new long[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = value; 
 			}
 			return result;
@@ -1390,12 +1362,11 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final float[] readSingleArray() {
 		var count = readSize(DataType.SmallSingleArray);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Float.BYTES);
-			var buffer = byteBuffer.asFloatBuffer(); 
+			var bytes = readBytes(count*Float.BYTES);
 			var result = new float[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
-				result[i] = value; 
+				var value = getInt(bytes, i);
+				result[i] = Float.intBitsToFloat(value); 
 			}
 			return result;
 		}
@@ -1409,12 +1380,11 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Float.BYTES);
-			var buffer = byteBuffer.asFloatBuffer(); 
+			var bytes = readBytes(count*Float.BYTES);
 			var result = new float[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
-				result[i] = value; 
+				var value = getInt(bytes, i);
+				result[i] = Float.intBitsToFloat(value); 
 			}
 			return result;
 		}
@@ -1426,12 +1396,11 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final double[] readDoubleArray() {
 		var count = readSize(DataType.SmallDoubleArray);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Double.BYTES);
-			var buffer = byteBuffer.asDoubleBuffer(); 
+			var bytes = readBytes(count*Double.BYTES);
 			var result = new double[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
-				result[i] = value; 
+				var value = getLong(bytes, i);
+				result[i] = Double.longBitsToDouble(value); 
 			}
 			return result;
 		}
@@ -1445,12 +1414,11 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Double.BYTES);
-			var buffer = byteBuffer.asDoubleBuffer(); 
+			var bytes = readBytes(count*Double.BYTES);
 			var result = new double[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
-				result[i] = value; 
+				var value = getLong(bytes, i);
+				result[i] = Double.longBitsToDouble(value); 
 			}
 			return result;
 		}
@@ -1462,11 +1430,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final DateTime[] readDateTimeArray() {
 		var count = readSize(DataType.SmallDateTimeArray);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new DateTime[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = new DateTime( value ); 
 			}
 			return result;
@@ -1481,11 +1448,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new DateTime[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = new DateTime( value ); 
 			}
 			return result;
@@ -1498,11 +1464,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final TimeSpan[] readTimeSpanArray() {
 		var count = readSize(DataType.SmallTimeSpanArray);
 		if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new TimeSpan[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = new TimeSpan( value ); 
 			}
 			return result;
@@ -1517,11 +1482,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var byteBuffer = readBuffer(count*Long.BYTES);
-			var buffer = byteBuffer.asLongBuffer(); 
+			var bytes = readBytes(count*Long.BYTES);
 			var result = new TimeSpan[count];
 			for(int i = 0; i < count; i++) {
-				var value = buffer.get();
+				var value = getLong(bytes, i);
 				result[i] = new TimeSpan( value ); 
 			}
 			return result;
@@ -1534,11 +1498,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 	public final Guid[] readGuidArray() {
 		var count = readSize(DataType.SmallGuidArray);
 		if(count > 0) {
-			var buffer = readBuffer(count*Guid.BYTES);
+			var bytes = readBytes(count*Guid.BYTES);
 			var result = new Guid[count];
 			for(int i = 0; i < count; i++) {
-				buffer.get( sixteenBytes );
-				result[i] = new Guid( sixteenBytes ); 
+				result[i] = new Guid( bytes, i * Guid.BYTES); 
 			}
 			return result;
 		}
@@ -1552,11 +1515,10 @@ public abstract class AbstractDataReader implements BinaryReader {
 			return null;
 		}
 		else if(count > 0) {
-			var buffer = readBuffer(count*Guid.BYTES);
+			var bytes = readBytes(count*Guid.BYTES);
 			var result = new Guid[count];
 			for(int i = 0; i < count; i++) {
-				buffer.get( sixteenBytes );
-				result[i] = new Guid( sixteenBytes ); 
+				result[i] = new Guid( bytes, i * Guid.BYTES); 
 			}
 			return result;
 		}
@@ -1571,16 +1533,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			var result = new String[count];
 			for(int i = 0; i < count; i++) {
 				var byteCount = (int)Read7BitEncodedUInt64( );
-				var buffer = readBuffer(byteCount);
-				if(buffer.hasArray() ) {
-					var stringBytes = buffer.array();
-					result[i] = new String(stringBytes, StandardCharsets.UTF_8);
-				}
-				else {
-					var stringBytes = new byte[byteCount];
-					buffer.get(stringBytes);
-					result[i] = new String(stringBytes, StandardCharsets.UTF_8);
-				}
+				var stringBytes = readBytes(byteCount);
+				result[i] = new String(stringBytes, StandardCharsets.UTF_8);
 			}
 			return result;
 		}
@@ -1597,16 +1551,8 @@ public abstract class AbstractDataReader implements BinaryReader {
 			var result = new String[count];
 			for(int i = 0; i < count; i++) {
 				var byteCount = (int)Read7BitEncodedUInt64( );
-				var buffer = readBuffer(byteCount);
-				if(buffer.hasArray() ) {
-					var stringBytes = buffer.array();
-					result[i] = new String(stringBytes, StandardCharsets.UTF_8);
-				}
-				else {
-					var stringBytes = new byte[byteCount];
-					buffer.get(stringBytes);
-					result[i] = new String(stringBytes, StandardCharsets.UTF_8);
-				}
+				var stringBytes = readBytes(byteCount);
+				result[i] = new String(stringBytes, StandardCharsets.UTF_8);
 			}
 			return result;
 		}

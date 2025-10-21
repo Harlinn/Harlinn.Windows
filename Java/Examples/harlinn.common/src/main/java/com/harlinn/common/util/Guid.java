@@ -49,6 +49,22 @@ public class Guid implements Serializable, Comparable<Guid> {
 	    k = 0;
 	}
 	
+	public Guid(long mostSigBits, long leastSigBits) {
+		
+		a = (int)(((mostSigBits >>> 56)) & 0xFFL | ((mostSigBits >>> 48)) & 0xFFL | ((mostSigBits >>> 40)) & 0xFFL | ((mostSigBits >>> 32)) & 0xFFL);
+	    b = (short)(((mostSigBits >>> 24)) & 0xFFL | ((mostSigBits >>> 16)) & 0xFFL);
+	    c = (short)(((mostSigBits >>> 8)) & 0xFFL | (mostSigBits) & 0xFFL);
+	    d = (byte)(((leastSigBits >>> 56)) & 0xFFL );
+	    e = (byte)(((leastSigBits >>> 48)) & 0xFFL );
+	    f = (byte)(((leastSigBits >>> 40)) & 0xFFL );
+	    g = (byte)(((leastSigBits >>> 32)) & 0xFFL );
+	    h = (byte)(((leastSigBits >>> 24)) & 0xFFL );
+	    i = (byte)(((leastSigBits >>> 16)) & 0xFFL );
+	    j = (byte)(((leastSigBits >>> 8)) & 0xFFL );
+	    k = (byte)((leastSigBits) & 0xFFL );
+	}
+	
+	
 	public Guid(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k ) {
 		this.a = a;
 		this.b = b;
@@ -102,6 +118,27 @@ public class Guid implements Serializable, Comparable<Guid> {
 		this.j = bytes[14];
 		this.k = bytes[15];
 	}
+	
+	public Guid(byte[] bytes, int offset ) {
+		if(bytes == null) {
+			throw new IllegalArgumentException("bytes == null");
+		}
+		if(bytes.length - offset < BYTES) {
+			throw new IllegalArgumentException("bytes.length("+bytes.length+") - offset("+offset+") < BYTES("+BYTES+")");
+		}
+		this.a = BitConverter.toInt32(bytes, offset);
+		this.b = BitConverter.toInt16(bytes,offset + 4);
+		this.c = BitConverter.toInt16(bytes,offset + 6);
+		this.d = bytes[offset + 8];
+		this.e = bytes[offset + 9];
+		this.f = bytes[offset + 10];
+		this.g = bytes[offset + 11];
+		this.h = bytes[offset + 12];
+		this.i = bytes[offset + 13];
+		this.j = bytes[offset + 14];
+		this.k = bytes[offset + 15];
+	}
+	
 	
 	
 	public int getA() {

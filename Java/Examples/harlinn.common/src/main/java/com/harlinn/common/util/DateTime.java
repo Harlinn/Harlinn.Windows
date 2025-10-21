@@ -16,6 +16,7 @@ import java.util.TimeZone;
  * </p>
  */
 public class DateTime extends TimeBase implements Comparable<DateTime>, Serializable, Cloneable {
+	public static final int BYTES = 8;
 	/**
 	 * 
 	 */

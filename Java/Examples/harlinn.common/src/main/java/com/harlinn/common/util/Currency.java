@@ -7,10 +7,16 @@ import java.math.BigDecimal;
  * number with 15 digits to the left of the decimal point and 4 digits to the right.
  */
 public class Currency implements Cloneable, Comparable<Currency> {
+	public static final int BYTES = 8;
+	
 	public static final long Scale = 10000;
 	static final float ScaleFloat = 10000.0f;
 	static final double ScaleDouble = 10000.0;
 	static final BigDecimal ScaleDecimal = new BigDecimal(10000.0);
+	
+	public static final Currency MIN_VALUE = Currency.fromValue( Long.MIN_VALUE );
+	public static final Currency MAX_VALUE = Currency.fromValue( Long.MAX_VALUE );
+	
 	long value;
 	
 	public Currency() {

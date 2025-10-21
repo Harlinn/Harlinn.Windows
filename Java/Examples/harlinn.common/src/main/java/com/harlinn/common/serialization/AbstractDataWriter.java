@@ -1,5 +1,6 @@
 package com.harlinn.common.serialization;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Time;
 import java.time.Instant;
@@ -18,6 +19,7 @@ import com.harlinn.common.util.Guid;
 
 public abstract class AbstractDataWriter implements BinaryWriter {
 
+	private final byte[] zeroBytes = new byte[0];
 	private final byte[] oneByte = new byte[1];
 	private final byte[] twoBytes = new byte[2];
 	private final byte[] threeBytes = new byte[3];
@@ -103,6 +105,74 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 	    writeBytes(dest, count);
 	}
 	
+	void Write7BitEncodedUInt64( long value, java.io.OutputStream stream )
+	{
+		int count = 1;
+		var dest = nineBytes;
+	    // Loop manually unrolled for performance:
+		dest[0] = (byte)(value & 0x7F);
+	    if ( value > 127 ) {
+	    	count++;
+	        dest[0] |= 0x80;
+	        value >>>= 7;
+	        dest[1] = (byte)(value & 0x7F);
+	        if ( value > 127 ) {
+	        	count++;
+	            dest[1] |= 0x80;
+	            value >>>= 7;
+	            dest[2] = (byte)(value & 0x7F);
+
+	            if ( value > 127 ) {
+	            	count++;
+	                dest[2] |= 0x80;
+	                value >>>= 7;
+	                dest[3] = (byte)(value & 0x7F);
+
+	                if ( value > 127 ) {
+	                	count++;
+	                    dest[3] |= 0x80;
+	                    value >>>= 7;
+	                    dest[4] = (byte)(value & 0x7F);
+
+	                    if ( value > 127 ) {
+	                    	count++;
+	                        dest[4] |= 0x80;
+	                        value >>>= 7;
+	                        dest[5] = (byte)(value & 0x7F);
+
+	                        if ( value > 127 ) {
+	                        	count++;
+	                            dest[5] |= 0x80;
+	                            value >>>= 7;
+	                            dest[6] = (byte)(value & 0x7F);
+
+	                            if ( value > 127 ) {
+	                            	count++;
+	                                dest[6] |= 0x80;
+	                                value >>>= 7;
+	                                dest[7] = (byte)(value & 0x7F);
+
+	                                if ( value > 127 ) {
+	                                	count++;
+	                                    dest[7] |= 0x80;
+	                                    value >>>= 7;
+	                                    dest[8] = (byte)(value & 0xFF);
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    try {
+		    stream.write(dest, 0, count);
+	    }
+	    catch(java.io.IOException exc) {
+	    	throw new java.io.UncheckedIOException(exc);
+	    }
+	}
+	
 	void Write7BitEncodedInt64( long value ) {
 		Write7BitEncodedUInt64( (value << 1) | (value >>> 1) );
 	}
@@ -147,7 +217,7 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		nineBytes[6] = (byte) ((value >>> 40) & 0xFF);
 		nineBytes[7] = (byte) ((value >>> 48) & 0xFF);
 		nineBytes[8] = (byte) ((value >>> 56) & 0xFF);
-		writeBytes(fiveBytes);
+		writeBytes(nineBytes);
 	}
 	
 	
@@ -339,7 +409,7 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 				writeDataType( DataType.MaxInt32 );
 				break;
 			default:
-				writeInt(DataType.UInt32,value );
+				writeInt(DataType.Int32,value );
 				break;
 		}
 	}
@@ -382,7 +452,7 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		else if(value == -1) {
 			writeDataType( DataType.MinusOneInt64 );
 		}
-		if(value == 0) {
+		else if(value == 0) {
 			writeDataType( DataType.ZeroInt64 );
 		}
 		else if(value == 1) {
@@ -417,7 +487,7 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		else if(value == -1.f) {
 			writeDataType( DataType.MinusOneSingle );
 		}
-		if(value == 0.f) {
+		else if(value == 0.f) {
 			writeDataType( DataType.ZeroSingle );
 		}
 		else if(value == 1.f) {
@@ -455,7 +525,7 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		else if(value == -1.) {
 			writeDataType( DataType.MinusOneDouble );
 		}
-		if(value == 0.) {
+		else if(value == 0.) {
 			writeDataType( DataType.ZeroDouble );
 		}
 		else if(value == 1.) {
@@ -491,7 +561,7 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		else if(value == -Currency.Scale) {
 			writeDataType( DataType.MinusOneCurrency );
 		}
-		if(value == 0) {
+		else if(value == 0) {
 			writeDataType( DataType.ZeroCurrency );
 		}
 		else if(value == Currency.Scale) {
@@ -730,10 +800,9 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		}
 	}
 	
-	private final <T> void writeSize(T[] values, byte smallArrayDataType) {
-		var count = values.length;
+	private final <T> void writeSize(int count, byte smallArrayDataType) {
 		if(count == 0 ) {
-			writeDataType((byte)(smallArrayDataType+2));
+			writeDataType((byte)(smallArrayDataType+3));
 		}
 		else if(count <= 0xFF) {
 			writeByte(smallArrayDataType,(byte)count);
@@ -746,134 +815,436 @@ public abstract class AbstractDataWriter implements BinaryWriter {
 		}
 	}
 	
-	private final <T> void writeNullableSize(T[] values, byte smallArrayDataType) {
+	
+	public final void writeBooleanArray(boolean[] values ) {
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallBooleanArray);
+		var bytes = new byte[count];
+		for(int i = 0; i < count; i++) {
+			bytes[i] = values[i] ? (byte)1 : (byte)0;
+		}
+		writeBytes(bytes);
+	}
+	public final void writeNullableBooleanArray(boolean[] values ) {
 		if(values == null) {
 			writeNull();
 		}
 		else {
-			writeSize(values,smallArrayDataType);
+			writeBooleanArray(values);
 		}
 	}
 	
-	
-	public final void writeBooleanArray(boolean[] values ) {
-		
-	}
-	public final void writeNullableBooleanArray(boolean[] values ) {
-		
-	}
-	
 	public final void writeCharArray(char[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallCharArray);
+		var bytes = new byte[count*Character.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = (short)values[i];
+			int byteOffset = Character.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableCharArray(char[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeCharArray(values);
+		}
 	}
 	
 	public final void writeUInt8Array(byte[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallByteArray);
+		writeBytes(values);
 	}
 	public final void writeNullableUInt8Array(byte[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeUInt8Array(values);
+		}
 	}
 	
 	public final void writeInt8Array(byte[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallSByteArray);
+		writeBytes(values);
 	}
 	public final void writeNullableInt8Array(byte[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeInt8Array(values);
+		}
 	}
 	
 	public final void writeUInt16Array(short[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallUInt16Array);
+		var bytes = new byte[count*Short.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			int byteOffset = Short.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableUInt16Array(short[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeUInt16Array(values);
+		}
 	}
 	
 	public final void writeInt16Array(short[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallInt16Array);
+		var bytes = new byte[count*Short.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			int byteOffset = Short.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableInt16Array(short[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeInt16Array(values);
+		}
 	}
 	
 	public final void writeUInt32Array(int[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallUInt32Array);
+		var bytes = new byte[count*Integer.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			int byteOffset = Integer.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableUInt32Array(int[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeUInt32Array(values);
+		}
 	}
 	
 	public final void writeInt32Array(int[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallInt32Array);
+		var bytes = new byte[count*Integer.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			int byteOffset = Integer.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableInt32Array(int[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeInt32Array(values);
+		}
 	}
 	
 	public final void writeUInt64Array(long[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallUInt64Array);
+		var bytes = new byte[count*Long.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			int byteOffset = Long.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+	        bytes[byteOffset + 4] = (byte) ((value >>> 32) & 0xFF);
+	        bytes[byteOffset + 5] = (byte) ((value >>> 40) & 0xFF);
+	        bytes[byteOffset + 6] = (byte) ((value >>> 48) & 0xFF);
+	        bytes[byteOffset + 7] = (byte) ((value >>> 56) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableUInt64Array(long[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeUInt64Array(values);
+		}
 	}
 	
 	public final void writeInt64Array(long[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallInt64Array);
+		var bytes = new byte[count*Long.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			int byteOffset = Long.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+	        bytes[byteOffset + 4] = (byte) ((value >>> 32) & 0xFF);
+	        bytes[byteOffset + 5] = (byte) ((value >>> 40) & 0xFF);
+	        bytes[byteOffset + 6] = (byte) ((value >>> 48) & 0xFF);
+	        bytes[byteOffset + 7] = (byte) ((value >>> 56) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableInt64Array(long[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeInt64Array(values);
+		}
 	}
 	
 	public final void writeSingleArray(float[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallSingleArray);
+		var bytes = new byte[count*Integer.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = Float.floatToIntBits( values[i] );
+			int byteOffset = Float.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableSingleArray(float[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeSingleArray(values);
+		}
 	}
 	
 	public final void writeDoubleArray(double[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallDoubleArray);
+		var bytes = new byte[count*Double.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = Double.doubleToLongBits( values[i] );
+			int byteOffset = Double.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+	        bytes[byteOffset + 4] = (byte) ((value >>> 32) & 0xFF);
+	        bytes[byteOffset + 5] = (byte) ((value >>> 40) & 0xFF);
+	        bytes[byteOffset + 6] = (byte) ((value >>> 48) & 0xFF);
+	        bytes[byteOffset + 7] = (byte) ((value >>> 56) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableDoubleArray(double[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeDoubleArray(values);
+		}
 	}
 	
 	public final void writeDateTimeArray(DateTime[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallDateTimeArray);
+		var bytes = new byte[count*DateTime.BYTES];
+		for(int i = 0; i < count; i++) {
+			
+			var value = values[i] != null ? values[i].getTicks() : 0L;
+			int byteOffset = DateTime.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+	        bytes[byteOffset + 4] = (byte) ((value >>> 32) & 0xFF);
+	        bytes[byteOffset + 5] = (byte) ((value >>> 40) & 0xFF);
+	        bytes[byteOffset + 6] = (byte) ((value >>> 48) & 0xFF);
+	        bytes[byteOffset + 7] = (byte) ((value >>> 56) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableDateTimeArray(DateTime[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeDateTimeArray(values);
+		}
 	}
 	
 	public final void writeTimeSpanArray(TimeSpan[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallTimeSpanArray);
+		var bytes = new byte[count*TimeSpan.BYTES];
+		for(int i = 0; i < count; i++) {
+			
+			var value = values[i] != null ? values[i].getTicks() : 0L;
+			int byteOffset = TimeSpan.BYTES * i;
+			bytes[byteOffset] = (byte) (value & 0xFF);
+	        bytes[byteOffset + 1] = (byte) ((value >>> 8) & 0xFF);
+	        bytes[byteOffset + 2] = (byte) ((value >>> 16) & 0xFF);
+	        bytes[byteOffset + 3] = (byte) ((value >>> 24) & 0xFF);
+	        bytes[byteOffset + 4] = (byte) ((value >>> 32) & 0xFF);
+	        bytes[byteOffset + 5] = (byte) ((value >>> 40) & 0xFF);
+	        bytes[byteOffset + 6] = (byte) ((value >>> 48) & 0xFF);
+	        bytes[byteOffset + 7] = (byte) ((value >>> 56) & 0xFF);
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableTimeSpanArray(TimeSpan[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeTimeSpanArray(values);
+		}
 	}
 	
 	public final void writeGuidArray(Guid[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallGuidArray);
+		var bytes = new byte[count*Guid.BYTES];
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			if(value != null) {
+				int byteOffset = Guid.BYTES * i;
+				var a = value.getA();
+				bytes[byteOffset] = (byte) (a & 0xFF);
+		        bytes[byteOffset + 1] = (byte) ((a >>> 8) & 0xFF);
+		        bytes[byteOffset + 2] = (byte) ((a >>> 16) & 0xFF);
+		        bytes[byteOffset + 3] = (byte) ((a >>> 24) & 0xFF);
+		        
+		        var b = value.getB();
+		        bytes[byteOffset + 4] = (byte) (b & 0xFF);
+		        bytes[byteOffset + 5] = (byte) ((b >>> 8) & 0xFF);
+		        
+		        var c = value.getC();
+		        bytes[byteOffset + 6] = (byte) (c & 0xFF);
+		        bytes[byteOffset + 7] = (byte) ((c >>> 8) & 0xFF);
+		        
+		        bytes[byteOffset + 8] = value.getD();
+		        bytes[byteOffset + 9] = value.getE();
+		        bytes[byteOffset + 10] = value.getF();
+		        bytes[byteOffset + 11] = value.getG();
+		        bytes[byteOffset + 12] = value.getH();
+		        bytes[byteOffset + 13] = value.getI();
+		        bytes[byteOffset + 14] = value.getJ();
+		        bytes[byteOffset + 15] = value.getK();
+			}
+		}
+		writeBytes(bytes);
 	}
 	public final void writeNullableGuidArray(Guid[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeGuidArray(values);
+		}
 	}
 	
 	public final void writeStringArray(String[] values ) {
-		
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallStringArray);
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			for(int i = 0; i < count; i++) {
+				var value = values[i];
+				if(value != null) {
+					var bytes = value.getBytes(StandardCharsets.UTF_8);
+					Write7BitEncodedUInt64(bytes.length,stream);
+					stream.write(bytes);
+				}
+				else {
+					oneByte[0] = 0;
+					stream.write(oneByte);
+				}
+				
+			}
+		}
+		catch(java.io.IOException exc) {
+			throw new java.io.UncheckedIOException(exc);
+		}
+		writeBytes(stream.toByteArray());
 	}
 	public final void writeNullableStringArray(String[] values ) {
-		
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeStringArray(values);
+		}
 	}
 	
+	// zeroBytes
 	public final void writeUInt8ListArray(byte[][] values ) {
+		assert values != null : "values cannot be null";
+		var count = values.length; 
+		writeSize(count, DataType.SmallByteArrayList);
 		
+		for(int i = 0; i < count; i++) {
+			var value = values[i];
+			if(value != null) {
+				writeUInt8Array(value);
+			}
+			else {
+				writeUInt8Array(zeroBytes);
+			}
+		}
 	}
-	public final void writeUNullableInt8ListArray(byte[][] values ) {
-		
+	public final void writeNullableUInt8ListArray(byte[][] values) {
+		if(values == null) {
+			writeNull();
+		}
+		else {
+			writeUInt8ListArray(values);
+		}
 	}
-	
-	
 }

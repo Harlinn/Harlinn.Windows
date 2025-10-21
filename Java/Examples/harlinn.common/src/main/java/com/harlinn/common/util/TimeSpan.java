@@ -6,6 +6,8 @@ import java.io.Serializable;
  * Represents a time interval.
  */
 public class TimeSpan extends TimeBase implements Comparable<TimeSpan>, Serializable, Cloneable {
+	public static final int BYTES = 8;
+	
 	private static final long serialVersionUID = 4876775050401345933L;
 	
 	long ticks;
