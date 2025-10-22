@@ -89,6 +89,27 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java::Databases::MsSql
         WriteLine( L"    	return getStoredProcedures().deleteObject(dataObject);" );
         WriteLine( L"    }" );
         WriteLine( );
+
+        WriteLine( L"    public final AbstractDataObjectWithGuidKey findObject( Guid id, int objectType ) throws SQLException {" );
+        WriteLine( L"        AbstractDataObjectWithGuidKey result = null;" );
+        WriteLine( L"        switch(objectType) {" );
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto& classInfo = *classes[ i ];
+            auto functionName = JavaHelper::GetByIdFunctionName( classInfo );
+            WriteLine( L"            case Kind.{}: {{", classInfo.Name() );
+            WriteLine( L"                result = {}( id );", functionName );
+            WriteLine( L"            }" );
+            WriteLine( L"            break;" );
+        }
+        WriteLine( L"            default: {" );
+        WriteLine( L"                throw new IllegalArgumentException(\"Unknown objectType: \" + objectType + \".\" );" );
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
+        WriteLine( L"        return result;" );
+        WriteLine( L"    }" );
+        WriteLine( );
+
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];

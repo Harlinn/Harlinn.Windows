@@ -1,5 +1,7 @@
 package com.harlinn.barrelman.databases.mssql;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,11 +13,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.harlinn.common.data.ConnectionWrapper;
+import com.harlinn.common.serialization.DataReader;
+import com.harlinn.common.serialization.DataWriter;
 import com.harlinn.common.types.*;
 import com.harlinn.common.util.*;
 
 import com.harlinn.barrelman.databases.mssql.readers.simple.*;
 import com.harlinn.barrelman.types.*;
+import com.harlinn.barrelman.types.DataObjectFactory;
 
 class MsSqlDataContextTest {
 
@@ -72,6 +77,56 @@ class MsSqlDataContextTest {
 		var updatedAircraftType = dataContext.getAircraftTypeById(id);
 		areEqual = updatedAircraftType.equals(aircraftType);
 		assertTrue(areEqual);
+		
+	}
+	
+	@Test
+	void testCreateAndDelete() throws Exception {
+		var testDataObjectFactory = new TestDataObjectFactory();
+		var dataObjectFactory = new DataObjectFactory();
+		
+		var dataObjects = testDataObjectFactory.getDataObjects();
+		var count = dataObjects.length;
+		
+		var reversedDataObjects = new AbstractDataObjectWithGuidKey[count];
+	    for (int i = 0; i < count; i++) {
+	    	reversedDataObjects[i] = dataObjects[count - 1 - i];
+	    }
+	    
+	    for (int i = 0; i < count; i++) {
+	    	var dataObject = reversedDataObjects[i];
+	    	dataContext.deleteObject(dataObject);
+	    }
+	    
+	    for (int i = 0; i < count; i++) {
+	    	var dataObject = dataObjects[i];
+	    	var className = dataObject.getClass().getName();
+	    	if(className == "com.harlinn.barrelman.types.AisAddressedSafetyRelatedMessageObject") {
+	    		var foundDataObject = dataContext.findObject(dataObject.getId(), dataObject.getObjectType());
+	    		if( foundDataObject != null) {
+	    			System.out.append("Found: " + className);
+	    		}
+	    		System.out.append("Inserting: " + className);
+	    	}
+	    	var inserted = dataContext.insertObject(dataObject);
+	    	if(inserted == false) {
+	    		System.out.append("Not inserted: " + className);
+	    		
+	    	}
+	    	assertTrue(inserted,"Not inserted: " + dataObject.getClass().getName());
+	    }
+	    
+	    for (int i = 0; i < count; i++) {
+	    	var dataObject = dataObjects[i];
+	    	var foundDataObject = dataContext.findObject(dataObject.getId(), dataObject.getObjectType());
+	    	assertNotNull(foundDataObject);
+	    }
+	    
+	    for (int i = 0; i < count; i++) {
+	    	var dataObject = reversedDataObjects[i];
+	    	var deleted = dataContext.deleteObject(dataObject);
+	    	assertTrue(deleted);
+	    }
 		
 	}
 	

@@ -52,6 +52,11 @@ namespace Harlinn::Tools::DbXGen::Metadata
         std::shared_ptr<MemberInfo> primaryKey_;
         std::shared_ptr<RowVersionMemberInfo> rowVersion_;
         std::vector<std::shared_ptr<IndexInfo>> indexes_;
+
+        mutable std::optional<bool> hasDependencies_;
+        mutable std::vector<std::shared_ptr<ClassInfo>> dependencies_;
+        mutable std::optional<bool> hasRequiredDependencies_;
+        mutable std::vector<std::shared_ptr<ClassInfo>> requiredDependencies_;
     public:
         ClassInfo( const std::shared_ptr<ModelInfo>& owner, const WideString& name )
             : owner_( owner ), name_(name)
@@ -271,6 +276,109 @@ namespace Harlinn::Tools::DbXGen::Metadata
             }
             return result;
         }
+
+        // mutable std::optional<bool> hasDependencies_;
+        // mutable std::vector<std::shared_ptr<ClassInfo>> dependencies_;
+        // mutable std::optional<bool> hasRequiredDependencies_;
+        // mutable std::vector<std::shared_ptr<ClassInfo>> requiredDependencies_;
+
+    private:
+        void CollectDependencies( ) const
+        {
+            if ( !hasDependencies_.has_value( ) )
+            {
+                auto references = References( );
+                std::unordered_map<WideString, std::shared_ptr<ClassInfo>> types;
+                for ( const auto& ref : references )
+                {
+                    auto referencedType = ref->ReferencedType( );
+                    auto all = referencedType->AllDerivedClassesAndSelf( );
+                    for ( const auto& cls : all )
+                    {
+                        if ( cls->Abstract( ) == false )
+                        {
+                            if ( types.contains( cls->Name( ) ) == false )
+                            {
+                                types.emplace( cls->Name( ), cls );
+                            }
+                        }
+                    }
+                }
+                for ( const auto& entry : types )
+                {
+                    dependencies_.push_back( entry.second );
+                }
+                hasDependencies_ = dependencies_.size( ) != 0;
+            }
+        }
+        void CollectRequiredDependencies( ) const
+        {
+            if ( !hasRequiredDependencies_.has_value( ) )
+            {
+                auto references = References( );
+                std::unordered_map<WideString, std::shared_ptr<ClassInfo>> types;
+                for ( const auto& ref : references )
+                {
+                    if ( ref->Nullable( ) == false )
+                    {
+                        auto referencedType = ref->ReferencedType( );
+                        auto all = referencedType->AllDerivedClassesAndSelf( );
+                        for ( const auto& cls : all )
+                        {
+                            if ( cls->Abstract( ) == false )
+                            {
+                                if ( types.contains( cls->Name( ) ) == false )
+                                {
+                                    types.emplace( cls->Name( ), cls );
+                                }
+                            }
+                        }
+                    }
+                }
+                for ( const auto& entry : types )
+                {
+                    requiredDependencies_.push_back( entry.second );
+                }
+                hasRequiredDependencies_ = requiredDependencies_.size( ) != 0;
+            }
+        }
+    public:
+        std::vector<std::shared_ptr<ClassInfo>> Dependencies( ) const
+        {
+            if ( !hasDependencies_.has_value( ) )
+            {
+                CollectDependencies( );
+            }
+            return dependencies_;
+        }
+
+        bool HasDependencies( ) const
+        {
+            if ( !hasDependencies_.has_value( ) )
+            {
+                CollectDependencies( );
+            }
+            return hasDependencies_.value();
+        }
+
+        std::vector<std::shared_ptr<ClassInfo>> RequiredDependencies( ) const
+        {
+            if ( !hasRequiredDependencies_.has_value( ) )
+            {
+                CollectRequiredDependencies( );
+            }
+            return requiredDependencies_;
+        }
+
+        bool HasRequiredDependencies( ) const
+        {
+            if ( !hasRequiredDependencies_.has_value( ) )
+            {
+                CollectRequiredDependencies( );
+            }
+            return hasRequiredDependencies_.value( );
+        }
+
 
         std::vector<std::shared_ptr<MemberInfo>> Update2Members( ) const
         {

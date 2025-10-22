@@ -21,6 +21,92 @@
 namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
 {
     using namespace Metadata;
+    namespace
+    {
+        std::vector<std::shared_ptr<Metadata::ClassInfo>> SortClassesByRequiredDependencies( const std::vector<std::shared_ptr<Metadata::ClassInfo>>& classes )
+        {
+            std::map<WideString, int> inDegree; // Number of incoming dependencies for each class
+            std::map<WideString, std::set<std::shared_ptr<Metadata::ClassInfo>>> adjList; // Adjacency list for dependencies
+
+            // Initialize in-degrees and build adjacency list
+            for ( const auto& entry : classes )
+            {
+                // Initialize all in-degrees to 0
+                inDegree[ entry->Name( ) ] = 0;
+            }
+            for ( const auto& entry : classes )
+            {
+                const auto& dependencies = entry->RequiredDependencies( );
+                for ( const auto& dep : dependencies )
+                {
+                    // If cls depends on dep, then dep has an edge to cls
+                    adjList[ dep->Name( ) ].insert( entry );
+                    inDegree[ entry->Name( ) ]++;
+                }
+            }
+
+            std::vector<std::shared_ptr<Metadata::ClassInfo>> sortedClasses;
+            std::vector<std::shared_ptr<Metadata::ClassInfo>> queue; // Classes with no incoming dependencies
+
+            // Add classes with in-degree 0 to the queue
+            for ( const auto& cls : classes )
+            {
+                if ( inDegree[ cls->Name() ] == 0 )
+                {
+                    queue.push_back( cls );
+                }
+            }
+
+            while ( !queue.empty( ) )
+            {
+                auto currentClass = queue.front( );
+                queue.erase( queue.begin( ) ); // Dequeue
+                auto it = std::ranges::find_if( sortedClasses, [&currentClass ]( const auto& element )
+                                                {
+                                                    return element->Name( ) == currentClass->Name( );
+                                                } );
+                if ( it == sortedClasses.end( ) )
+                {
+                    sortedClasses.push_back( currentClass );
+                }
+
+                // For each class that depends on currentClass
+                if ( adjList.count( currentClass->Name( ) ) )
+                {
+                    for ( const auto& dependentClass : adjList[ currentClass->Name( ) ] )
+                    {
+                        inDegree[ dependentClass->Name( ) ]--;
+                        if ( inDegree[ dependentClass->Name( ) ] == 0 )
+                        {
+                            queue.push_back( dependentClass );
+                        }
+                    }
+                }
+            }
+
+            for ( const auto& cls : classes )
+            {
+                auto it = std::ranges::find_if( sortedClasses, [ &cls ]( const auto& element )
+                                                {
+                                                    return element->Name( ) == cls->Name( );
+                                                } );
+                if ( it == sortedClasses.end( ) )
+                {
+                    sortedClasses.push_back( cls );
+                }
+            }
+
+
+            // Check for cycles (if sortedClasses.size() != classes.size(), there's a cycle)
+            if ( sortedClasses.size( ) != classes.size( ) )
+            {
+                std::cerr << "Error: Circular dependency detected!" << std::endl;
+                return {}; // Return empty or handle error appropriately
+            }
+
+            return sortedClasses;
+        }
+    }
 
     void JavaTestDataObjectFactoryGenerator::Run( )
     {
@@ -118,6 +204,40 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         }
 
         WriteLine( );
+
+        auto sortedClasses = SortClassesByRequiredDependencies( classes );
+
+        StringBuilder<wchar_t> sb;
+        bool isFirst = true;
+        for ( const auto& classInfo : sortedClasses )
+        {
+            if ( classInfo->Abstract( ) == false )
+            {
+                const auto& name = classInfo->Name( );
+                if ( isFirst )
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sb.AppendLine( L"," );
+                }
+                sb.Append( L"            get{}( )", name );
+            }
+        }
+        sb.AppendLine( );
+
+
+
+        WriteLine( L"    public AbstractDataObjectWithGuidKey[] getDataObjects() {" );
+        WriteLine( L"        AbstractDataObjectWithGuidKey[] result = {" );
+        WriteLine( sb.ToString( ) );
+        WriteLine( L"        };" );
+        WriteLine( L"        return result;" );
+        WriteLine( L"    }" );
+        WriteLine( );
+
+
 
         WriteLine( L"}");
         Flush( );

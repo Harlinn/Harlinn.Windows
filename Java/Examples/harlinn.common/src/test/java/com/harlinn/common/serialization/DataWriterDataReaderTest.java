@@ -1055,6 +1055,24 @@ class DataWriterDataReaderTest {
 		}
 	}
 	
+	void fill(String[] array) {
+		
+		Random random = new Random();
+		var count = array.length;
+		for(int i = 0; i < count; i++) {
+			array[i] = new Guid( random.nextLong(), random.nextLong() ).toString();
+		}
+	}
+	
+	void fill(byte[][] array) {
+		
+		Random random = new Random();
+		var count = array.length;
+		for(int i = 0; i < count; i++) {
+			array[i] = new Guid( random.nextLong(), random.nextLong() ).toArray();
+		}
+	}
+	
 	
 	
 	@Test
@@ -1879,6 +1897,61 @@ class DataWriterDataReaderTest {
 		assertNotNull(arrayNullableOut);
 		assertArrayEquals(arrayNullableOut,array);
 		var largeNullableArrayOut = reader.readNullableGuidArray();
+		assertNotNull(largeNullableArrayOut);
+		assertArrayEquals(largeNullableArrayOut,largeArray);
+		
+	}
+	
+	@Test
+	void uint8ListArrayTest() {
+		var emptyArray = new byte[0][];
+		var smallArray = new byte[10][];
+		var array = new byte[1000][];
+		var largeArray = new byte[100000][];
+		
+		fill(smallArray);
+		fill(array);
+		fill(largeArray);
+		
+		
+		var outStream = new ByteArrayOutputStream();
+		var writer = new DataWriter(outStream);
+		
+		writer.writeUInt8ListArray(emptyArray);
+		writer.writeUInt8ListArray(smallArray);
+		writer.writeUInt8ListArray(array);
+		writer.writeUInt8ListArray(largeArray);
+		writer.writeNullableUInt8ListArray(null);
+		writer.writeNullableUInt8ListArray(emptyArray);
+		writer.writeNullableUInt8ListArray(smallArray);
+		writer.writeNullableUInt8ListArray(array);
+		writer.writeNullableUInt8ListArray(largeArray);
+		
+		var bytes = outStream.toByteArray();
+		
+		var inStream = new ByteArrayInputStream(bytes);
+		var reader = new DataReader(inStream);
+		
+		var emptyArrayOut = reader.readUInt8ListArray();
+		assertEquals(emptyArrayOut.length,emptyArray.length);
+		var smallArrayOut = reader.readUInt8ListArray();
+		assertArrayEquals(smallArrayOut,smallArray);
+		var arrayOut = reader.readUInt8ListArray();
+		assertArrayEquals(arrayOut,array);
+		var largeArrayOut = reader.readUInt8ListArray();
+		assertArrayEquals(largeArrayOut,largeArray);
+		var nullNullableArrayOut = reader.readNullableUInt8ListArray();
+		assertNull(nullNullableArrayOut);
+		var emptyNullableArrayOut = reader.readNullableUInt8ListArray();
+		assertNotNull(emptyNullableArrayOut);
+		assertArrayEquals(emptyNullableArrayOut,emptyArray);
+		var smallNullableArrayOut = reader.readNullableUInt8ListArray();
+		assertNotNull(smallNullableArrayOut);
+		assertArrayEquals(smallNullableArrayOut,smallArray);
+		var arrayNullableOut = reader.readNullableUInt8ListArray();
+		assertNotNull(arrayNullableOut);
+		assertArrayEquals(arrayNullableOut,array);
+		var largeNullableArrayOut = reader.readNullableUInt8ListArray();
 		assertNotNull(largeNullableArrayOut);
 		assertArrayEquals(largeNullableArrayOut,largeArray);
 		
