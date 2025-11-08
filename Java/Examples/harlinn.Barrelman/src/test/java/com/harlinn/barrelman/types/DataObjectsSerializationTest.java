@@ -22,8 +22,7 @@ class DataObjectsSerializationTest {
 		
 		var dataObjects = testDataObjectFactory.getDataObjects();
 		var count = dataObjects.length;
-		for(int i = 0; i < count; i++) {
-			var dataObject = dataObjects[i];
+		for(var dataObject : dataObjects) {
 			var outStream = new ByteArrayOutputStream();
 			var writer = new DataWriter(outStream);
 			dataObject.writeTo(writer);

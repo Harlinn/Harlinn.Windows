@@ -75,7 +75,7 @@ namespace Harlinn::OCI::Internal
     inline constexpr bool HasTraits = IsAnyOf_v<T, bool, SByte, Byte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Single, Double, DateTime, Guid, WideString>;
 
     template<typename T>
-    concept SimpleBindableType = HasTraits<T> || ( IsSpecializationOf<T,std::optional> && HasTraits<typename T::value_type> );
+    concept SimpleBindableType = HasTraits<T> ||( IsSpecializationOf_v< T, std::optional > && HasTraits<typename T::value_type> );
 
 
 

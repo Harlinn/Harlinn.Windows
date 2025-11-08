@@ -6212,7 +6212,7 @@ namespace Harlinn::OCI
                 auto newBind = statement.Bind<Arg>( position, arg.length( ) );
                 newBind->Assign( arg );
             }
-            else if constexpr ( IsSpecializationOf<Arg, std::optional> )
+            else if constexpr ( IsSpecializationOf_v<Arg, std::optional> )
             {
                 using BintT = typename Arg::value_type;
                 if ( arg.has_value( ) )

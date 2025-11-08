@@ -110,7 +110,7 @@ class MsSqlDataContextTest {
 	    	}
 	    	var inserted = dataContext.insertObject(dataObject);
 	    	if(inserted == false) {
-	    		System.out.append("Not inserted: " + className);
+	    		System.out.append("Not inserted: " + className + " i:"+i);
 	    		
 	    	}
 	    	assertTrue(inserted,"Not inserted: " + dataObject.getClass().getName());

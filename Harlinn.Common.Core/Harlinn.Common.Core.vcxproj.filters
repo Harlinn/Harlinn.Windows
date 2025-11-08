@@ -333,6 +333,12 @@
     <ClInclude Include="HCCError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCGraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCRanges.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -438,6 +444,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HCCMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HCCGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

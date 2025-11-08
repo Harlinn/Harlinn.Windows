@@ -34,12 +34,16 @@ namespace Harlinn::Common::Core
     using TypeList = Meta::List<Types...>;
 
 
-    template<class, template<class...> class>
-    inline constexpr bool IsSpecializationOf = false;
+    // true if and only if Type is a specialization of Template
+    template <class Type, template <class...> class Template>
+    constexpr bool IsSpecializationOf_v = false;
+    template <template <class...> class Template, class... Types>
+    constexpr bool IsSpecializationOf_v<Template<Types...>, Template> = true;
 
-    template< template<class...> class T, class... Args>
-    inline constexpr bool IsSpecializationOf<T<Args...>, T> = true;
-
+    template <class Type, template <class...> class Template>
+    struct IsSpecializationOf : std::bool_constant<IsSpecializationOf_v<Type, Template>>
+    { };
+    
     template<typename Type, typename... TypeList>
     using IsAnyOf = std::disjunction<std::is_same<Type, TypeList>...>;
 
@@ -307,7 +311,8 @@ namespace Harlinn::Common::Core
     template<typename T>
     constexpr bool IsBasicStringView = Core::Internal::IsBasicStringViewImpl<std::remove_cvref_t<T>>;
 
-
+    template <class T>
+    constexpr bool IsInitializerList = IsSpecializationOf_v<std::remove_cvref_t<T>, std::initializer_list>;
     
 
     namespace Internal

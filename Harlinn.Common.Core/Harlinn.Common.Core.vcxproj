@@ -215,6 +215,7 @@
     <ClInclude Include="HCCComModule.h" />
     <ClInclude Include="HCCConcepts.h" />
     <ClInclude Include="HCCConcurrentQueue.h" />
+    <ClInclude Include="HCCRanges.h" />
     <ClInclude Include="HCCData.h" />
     <ClInclude Include="HCCDataSource.h" />
     <ClInclude Include="HCCDebugServiceHost.h" />
@@ -226,6 +227,7 @@
     <ClInclude Include="HCCFlags.h" />
     <ClInclude Include="HCCFloatingPoint.h" />
     <ClInclude Include="HCCGenerators.h" />
+    <ClInclude Include="HCCGraph.h" />
     <ClInclude Include="HCCHtmlNamedCharacters.h" />
     <ClInclude Include="HCCInteger.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
@@ -320,6 +322,7 @@
     <ClCompile Include="HCCEnvironment.cpp" />
     <ClCompile Include="HCCEse.cpp" />
     <ClCompile Include="HCCException.cpp" />
+    <ClCompile Include="HCCGraph.cpp" />
     <ClCompile Include="HCCGuid.cpp" />
     <ClCompile Include="HCCHtmlNamedCharacters.cpp" />
     <ClCompile Include="HCCIO.cpp" />

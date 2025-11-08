@@ -17,7 +17,7 @@
    limitations under the License.
 */
 
-#include <HCCDef.h>
+#include <HCCError.h>
 
 #include <HCCDateTime.h>
 #include <HCCString.h>

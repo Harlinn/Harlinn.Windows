@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="natvis">
+      <UniqueIdentifier>{68ce345e-c446-4210-8d19-c320ba964fd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Harlinn.Common.Core.Tests.cpp">
@@ -199,6 +202,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BitConverterTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RangesTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

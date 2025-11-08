@@ -194,9 +194,11 @@
     <ClCompile Include="ComInterfacesTests.cpp" />
     <ClCompile Include="ConceptsTests.cpp" />
     <ClCompile Include="ConcurrentQueueTests.cpp" />
+    <ClCompile Include="RangesTests.cpp" />
     <ClCompile Include="DirectoryUtilsTests.cpp" />
     <ClCompile Include="EseOptionsTests.cpp" />
     <ClCompile Include="FlagsTests.cpp" />
+    <ClCompile Include="GraphTests.cpp" />
     <ClCompile Include="HtmlNamedCharactersTests.cpp" />
     <ClCompile Include="IntervalTests.cpp" />
     <ClCompile Include="IOPathTests.cpp" />

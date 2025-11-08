@@ -197,6 +197,7 @@
 #include <valarray>
 
 #include <algorithm>
+#include <ranges>
 #include <array>
 
 #include <atomic>

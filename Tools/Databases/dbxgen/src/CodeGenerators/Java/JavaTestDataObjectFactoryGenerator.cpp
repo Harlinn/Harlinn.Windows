@@ -70,6 +70,15 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                     sortedClasses.push_back( currentClass );
                 }
 
+                /*
+                // Partial handling of circular dependencies
+                if ( it != sortedClasses.end( ) )
+                {
+                    sortedClasses.erase( it );
+                }
+                sortedClasses.push_back( currentClass );
+                */
+
                 // For each class that depends on currentClass
                 if ( adjList.count( currentClass->Name( ) ) )
                 {
@@ -84,6 +93,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                 }
             }
 
+            std::vector<std::shared_ptr<Metadata::ClassInfo>> missing;
             for ( const auto& cls : classes )
             {
                 auto it = std::ranges::find_if( sortedClasses, [ &cls ]( const auto& element )
@@ -92,9 +102,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
                                                 } );
                 if ( it == sortedClasses.end( ) )
                 {
-                    sortedClasses.push_back( cls );
+                    missing.push_back( cls );
                 }
             }
+
+            sortedClasses.insert_range( sortedClasses.end( ), missing );
+
 
 
             // Check for cycles (if sortedClasses.size() != classes.size(), there's a cycle)
@@ -236,6 +249,32 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Java
         WriteLine( L"        return result;" );
         WriteLine( L"    }" );
         WriteLine( );
+
+        WriteLine( L"/*" );
+        for ( const auto& classInfo : sortedClasses )
+        {
+            if ( classInfo->Abstract( ) )
+            {
+                WriteLine( L"{} is abstract", classInfo->Name( ) );
+            }
+            else
+            {
+                WriteLine( classInfo->Name( ) );
+            }
+            const auto& dependencies = classInfo->RequiredDependencies( );
+            if ( dependencies.empty( ) )
+            {
+                WriteLine(L"    <no dependencies>");
+            }
+            else
+            {
+                for ( const auto& dep : dependencies )
+                {
+                    WriteLine( L"    {}", dep->Name() );
+                }
+            }
+        }
+        WriteLine( L"*/" );
 
 
 

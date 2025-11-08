@@ -36,6 +36,17 @@ namespace Harlinn::Common
     /// Matches most containers with sequential memory layout.
     /// </summary>
     template<typename T>
+    concept ForwardIterable = std::is_base_of_v<std::forward_iterator_tag, typename std::iterator_traits<typename T::const_iterator>::iterator_category>&& requires ( T t1 )
+    {
+        { t1.begin( ) };
+        { t1.end( ) };
+    };
+
+
+    /// <summary>
+    /// Matches most containers with sequential memory layout.
+    /// </summary>
+    template<typename T>
     concept SimpleSpanLike = std::is_base_of_v<std::random_access_iterator_tag, typename std::iterator_traits<typename T::const_iterator>::iterator_category>&& requires ( T t1 )
     {
         { t1[ 0 ] } ->std::convertible_to<typename T::const_reference>;

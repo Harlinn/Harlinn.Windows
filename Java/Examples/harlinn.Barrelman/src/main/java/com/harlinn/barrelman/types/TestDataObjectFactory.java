@@ -5879,4 +5879,2052 @@ public class TestDataObjectFactory {
         return result;
     }
 
+/*
+AircraftType
+    <no dependencies>
+BaseStationType
+    <no dependencies>
+CatalogElement is abstract
+    <no dependencies>
+Catalog
+    <no dependencies>
+Element
+    <no dependencies>
+CollectionInfo
+    <no dependencies>
+Country
+    <no dependencies>
+CursorInfo
+    <no dependencies>
+DeviceHost
+    <no dependencies>
+FacilityType
+    <no dependencies>
+Identity is abstract
+    <no dependencies>
+Callsign
+    <no dependencies>
+InternationalMaritimeOrganizationNumber
+    <no dependencies>
+MaritimeMobileServiceIdentity
+    <no dependencies>
+Name
+    <no dependencies>
+Item is abstract
+    <no dependencies>
+BaseStation
+    <no dependencies>
+Facility
+    <no dependencies>
+TrackableItem is abstract
+    <no dependencies>
+Aircraft
+    <no dependencies>
+AisAidToNavigation
+    <no dependencies>
+Vehicle
+    <no dependencies>
+Vessel
+    <no dependencies>
+LogApplication
+    <no dependencies>
+LogHost
+    <no dependencies>
+LogLocation
+    <no dependencies>
+MapInfo
+    <no dependencies>
+MapServiceOptions
+    <no dependencies>
+MediaService
+    <no dependencies>
+ProcessTrackValueResult
+    <no dependencies>
+SecurityDomain
+    <no dependencies>
+TimeseriesCatalogElement is abstract
+    <no dependencies>
+Timeseries is abstract
+    <no dependencies>
+BinaryTimeseries
+    <no dependencies>
+BooleanTimeseries
+    <no dependencies>
+AisAidToNavigationOffPositionTimeseries
+    <no dependencies>
+DeviceEnabledTimeseries
+    <no dependencies>
+RadarAutomaticSensitivityTimeControlTimeseries
+    <no dependencies>
+RadarBlankSector1Timeseries
+    <no dependencies>
+RadarBlankSector2Timeseries
+    <no dependencies>
+RadarEnableAutomaticFrequencyControlTimeseries
+    <no dependencies>
+RadarEnableFastTimeConstantTimeseries
+    <no dependencies>
+RadarEnableSensitivityTimeControlTimeseries
+    <no dependencies>
+RadarPowerOnTimeseries
+    <no dependencies>
+RadarSaveSettingsTimeseries
+    <no dependencies>
+RadarTrackingTimeseries
+    <no dependencies>
+MediaProxySessionEnabledTimeseries
+    <no dependencies>
+MediaServiceEnabledTimeseries
+    <no dependencies>
+ByteTimeseries
+    <no dependencies>
+DateTimeTimeseries
+    <no dependencies>
+DoubleTimeseries
+    <no dependencies>
+GNSSAltitudeTimeseries
+    <no dependencies>
+GNSSLatitudeTimeseries
+    <no dependencies>
+GNSSLongitudeTimeseries
+    <no dependencies>
+GyroCourseTimeseries
+    <no dependencies>
+GyroHeadingMagneticNorthTimeseries
+    <no dependencies>
+GyroHeadingTrueNorthTimeseries
+    <no dependencies>
+GyroPitchTimeseries
+    <no dependencies>
+GyroRateOfTurnTimeseries
+    <no dependencies>
+GyroRollTimeseries
+    <no dependencies>
+GyroSpeedTimeseries
+    <no dependencies>
+RadarLatitudeTimeseries
+    <no dependencies>
+RadarLongitudeTimeseries
+    <no dependencies>
+RadomeDewPointTimeseries
+    <no dependencies>
+RadomePressureTimeseries
+    <no dependencies>
+RadomeTemperatureTimeseries
+    <no dependencies>
+VesselDraughtTimeseries
+    <no dependencies>
+ViewLatitudeTimeseries
+    <no dependencies>
+ViewLongitudeTimeseries
+    <no dependencies>
+ViewZoomLevelTimeseries
+    <no dependencies>
+WeatherStationAbsoluteHumidityTimeseries
+    <no dependencies>
+WeatherStationAirTemperatureTimeseries
+    <no dependencies>
+WeatherStationBarometricPressureTimeseries
+    <no dependencies>
+WeatherStationDewPointTimeseries
+    <no dependencies>
+WeatherStationRelativeHumidityTimeseries
+    <no dependencies>
+WeatherStationWaterTemperatureTimeseries
+    <no dependencies>
+WeatherStationWindDirectionTimeseries
+    <no dependencies>
+WeatherStationWindSpeedTimeseries
+    <no dependencies>
+GeoPosition2DTimeseries
+    <no dependencies>
+AisAidToNavigationPositionTimeseries
+    <no dependencies>
+GeoPosition3DTimeseries
+    <no dependencies>
+GuidTimeseries
+    <no dependencies>
+Int16Timeseries
+    <no dependencies>
+Int32Timeseries
+    <no dependencies>
+RadarAzimuthOffsetTimeseries
+    <no dependencies>
+RadarFastTimeConstantLevelTimeseries
+    <no dependencies>
+RadarFastTimeConstantModeTimeseries
+    <no dependencies>
+RadarPulseTimeseries
+    <no dependencies>
+RadarSector1EndTimeseries
+    <no dependencies>
+RadarSector1StartTimeseries
+    <no dependencies>
+RadarSector2EndTimeseries
+    <no dependencies>
+RadarSector2StartTimeseries
+    <no dependencies>
+RadarSensitivityTimeControlLevelTimeseries
+    <no dependencies>
+RadarTuningTimeseries
+    <no dependencies>
+VesselPersonsOnBoardTimeseries
+    <no dependencies>
+Int64Timeseries
+    <no dependencies>
+Position2DTimeseries
+    <no dependencies>
+Position3DTimeseries
+    <no dependencies>
+ReferenceTimeseries
+    <no dependencies>
+SByteTimeseries
+    <no dependencies>
+SingleTimeseries
+    <no dependencies>
+StringTimeseries
+    <no dependencies>
+TimeSpanTimeseries
+    <no dependencies>
+UInt16Timeseries
+    <no dependencies>
+UInt32Timeseries
+    <no dependencies>
+RadomeStatusTimeseries
+    <no dependencies>
+UInt64Timeseries
+    <no dependencies>
+TimeseriesCatalog
+    <no dependencies>
+TimeseriesInfo
+    <no dependencies>
+TrackInfo
+    <no dependencies>
+TrackingServiceOptions
+    <no dependencies>
+VehicleType
+    <no dependencies>
+VesselType
+    <no dependencies>
+View
+    <no dependencies>
+Zone is abstract
+    <no dependencies>
+CircularZone
+    <no dependencies>
+PolygonZone
+    <no dependencies>
+MaritimeIdentificationDigits
+    Country
+DeviceHostConfiguration
+    DeviceHost
+Device is abstract
+    DeviceHost
+CameraDevice
+    DeviceHost
+GNSSDevice
+    DeviceHost
+GyroDevice
+    DeviceHost
+LineInputDevice
+    DeviceHost
+OilSpillDetectorDevice
+    DeviceHost
+RadioDevice
+    DeviceHost
+RadomeDevice
+    DeviceHost
+TrackerDevice is abstract
+    DeviceHost
+AisDevice
+    DeviceHost
+RadarDevice
+    DeviceHost
+WeatherStationDevice
+    DeviceHost
+LogApplicationConfiguration
+    LogApplication
+LogProcess
+    LogApplication
+LogHostConfiguration
+    LogHost
+MediaProxySession
+    MediaService
+MediaServiceOptions
+    MediaService
+SecurityIdentifier is abstract
+    SecurityDomain
+SecurityLogin
+    SecurityDomain
+SecurityRole
+    SecurityDomain
+BinaryTimeseriesValue
+    BinaryTimeseries
+BooleanTimeseriesValue
+    RadarAutomaticSensitivityTimeControlTimeseries
+    BooleanTimeseries
+    RadarBlankSector1Timeseries
+    AisAidToNavigationOffPositionTimeseries
+    RadarBlankSector2Timeseries
+    DeviceEnabledTimeseries
+    MediaProxySessionEnabledTimeseries
+    MediaServiceEnabledTimeseries
+    RadarEnableAutomaticFrequencyControlTimeseries
+    RadarEnableFastTimeConstantTimeseries
+    RadarEnableSensitivityTimeControlTimeseries
+    RadarPowerOnTimeseries
+    RadarSaveSettingsTimeseries
+    RadarTrackingTimeseries
+ByteTimeseriesValue
+    ByteTimeseries
+DateTimeTimeseriesValue
+    DateTimeTimeseries
+DoubleTimeseriesValue
+    GyroPitchTimeseries
+    GyroHeadingMagneticNorthTimeseries
+    DoubleTimeseries
+    GNSSAltitudeTimeseries
+    GyroHeadingTrueNorthTimeseries
+    GNSSLatitudeTimeseries
+    GyroCourseTimeseries
+    GNSSLongitudeTimeseries
+    RadomeTemperatureTimeseries
+    GyroRateOfTurnTimeseries
+    RadomePressureTimeseries
+    GyroRollTimeseries
+    GyroSpeedTimeseries
+    RadarLatitudeTimeseries
+    RadomeDewPointTimeseries
+    RadarLongitudeTimeseries
+    WeatherStationWindDirectionTimeseries
+    VesselDraughtTimeseries
+    WeatherStationDewPointTimeseries
+    ViewLatitudeTimeseries
+    ViewLongitudeTimeseries
+    ViewZoomLevelTimeseries
+    WeatherStationAbsoluteHumidityTimeseries
+    WeatherStationAirTemperatureTimeseries
+    WeatherStationBarometricPressureTimeseries
+    WeatherStationRelativeHumidityTimeseries
+    WeatherStationWaterTemperatureTimeseries
+    WeatherStationWindSpeedTimeseries
+GeoPosition2DTimeseriesValue
+    GeoPosition2DTimeseries
+    AisAidToNavigationPositionTimeseries
+GeoPosition3DTimeseriesValue
+    GeoPosition3DTimeseries
+GuidTimeseriesValue
+    GuidTimeseries
+Int16TimeseriesValue
+    Int16Timeseries
+Int32TimeseriesValue
+    Int32Timeseries
+    RadarSector1EndTimeseries
+    RadarAzimuthOffsetTimeseries
+    RadarSector2StartTimeseries
+    RadarFastTimeConstantModeTimeseries
+    RadarFastTimeConstantLevelTimeseries
+    RadarPulseTimeseries
+    RadarSector1StartTimeseries
+    RadarSector2EndTimeseries
+    RadarSensitivityTimeControlLevelTimeseries
+    RadarTuningTimeseries
+    VesselPersonsOnBoardTimeseries
+Int64TimeseriesValue
+    Int64Timeseries
+Position2DTimeseriesValue
+    Position2DTimeseries
+Position3DTimeseriesValue
+    Position3DTimeseries
+ReferenceTimeseriesValue
+    ReferenceTimeseries
+    Element
+SByteTimeseriesValue
+    SByteTimeseries
+SingleTimeseriesValue
+    SingleTimeseries
+StringTimeseriesValue
+    StringTimeseries
+TimeSpanTimeseriesValue
+    TimeSpanTimeseries
+UInt16TimeseriesValue
+    UInt16Timeseries
+UInt32TimeseriesValue
+    UInt32Timeseries
+    RadomeStatusTimeseries
+UInt64TimeseriesValue
+    UInt64Timeseries
+Bookmark
+    View
+ZoneExceptions
+    CircularZone
+    PolygonZone
+CameraCommand
+    CameraDevice
+CameraCommandAbsoluteMove
+    CameraDevice
+CameraCommandAdjustPanTiltZoom
+    CameraDevice
+CameraCommandContinuousMove
+    CameraDevice
+CameraCommandGeoMove
+    CameraDevice
+CameraCommandRelativeMove
+    CameraDevice
+CameraCommandReleasePTZOwnership
+    CameraDevice
+CameraCommandRequestPTZOwnership
+    CameraDevice
+CameraCommandSetAutoFocus
+    CameraDevice
+CameraCommandSetBlackAndWhite
+    CameraDevice
+CameraCommandSetFollowed
+    CameraDevice
+CameraCommandSetInfraRedLamp
+    CameraDevice
+CameraCommandSetWasher
+    CameraDevice
+CameraCommandSetWiper
+    CameraDevice
+CameraCommandStop
+    CameraDevice
+CameraCommandReply
+    CameraDevice
+CameraConfiguration
+    CameraDevice
+CameraPanCalibration
+    CameraDevice
+CameraStatus
+    CameraDevice
+CameraTiltCalibration
+    CameraDevice
+CameraZoomCalibration
+    CameraDevice
+ViewCameraLink
+    View
+    CameraDevice
+GNSSDeviceCommand
+    GNSSDevice
+GNSSDeviceCommandReply
+    GNSSDevice
+GNSSDeviceConfiguration
+    GNSSDevice
+GyroDeviceCommand
+    GyroDevice
+GyroDeviceCommandReply
+    GyroDevice
+GyroDeviceConfiguration
+    GyroDevice
+LineInputDeviceCommand
+    LineInputDevice
+LineInputDeviceCommandReply
+    LineInputDevice
+LineInputDeviceConfiguration
+    LineInputDevice
+LineInputMessageRouting
+    LineInputDevice
+LineInputWhiteListEntry
+    LineInputDevice
+OilSpill
+    OilSpillDetectorDevice
+OilSpillDetectorCommand
+    OilSpillDetectorDevice
+OilSpillDetectorCommandReply
+    OilSpillDetectorDevice
+OilSpillDetectorConfiguration
+    OilSpillDetectorDevice
+RadioCommand
+    RadioDevice
+RadioCommandReply
+    RadioDevice
+RadioConfiguration
+    RadioDevice
+RadomeCommand
+    RadomeDevice
+RadomeCommandReply
+    RadomeDevice
+RadomeConfiguration
+    RadomeDevice
+AisMessage is abstract
+    AisDevice
+AidToNavigationReportMessage
+    AisDevice
+AisAddressedSafetyRelatedMessage
+    AisDevice
+AisBaseStationReportMessage
+    AisDevice
+AisBinaryAcknowledgeMessage
+    AisDevice
+AisBinaryAddressedMessage
+    AisDevice
+AisBinaryBroadcastMessage
+    AisDevice
+AisDataLinkManagementMessage
+    AisDevice
+AisExtendedClassBCsPositionReportMessage
+    AisDevice
+AisInterrogationMessage
+    AisDevice
+AisPositionReportClassAMessageBase is abstract
+    AisDevice
+AisPositionReportClassAAssignedScheduleMessage
+    AisDevice
+AisPositionReportClassAMessage
+    AisDevice
+AisPositionReportClassAResponseToInterrogationMessage
+    AisDevice
+AisPositionReportForLongRangeApplicationsMessage
+    AisDevice
+AisSafetyRelatedAcknowledgmentMessage
+    AisDevice
+AisStandardClassBCsPositionReportMessage
+    AisDevice
+AisStandardSarAircraftPositionReportMessage
+    AisDevice
+AisStaticAndVoyageRelatedDataMessage
+    AisDevice
+AisStaticDataReportMessage
+    AisDevice
+AisStaticDataReportPartAMessage
+    AisDevice
+AisStaticDataReportPartBMessage
+    AisDevice
+AisUtcAndDateInquiryMessage
+    AisDevice
+AisUtcAndDateResponseMessage
+    AisDevice
+AisDeviceCommand
+    AisDevice
+AisDeviceCommandReply
+    AisDevice
+AisDeviceConfiguration
+    AisDevice
+AisDeviceRawMessage
+    AisDevice
+AisDeviceRawSentence
+    AisDevice
+RadarAlarmStatus
+    RadarDevice
+RadarCommand
+    RadarDevice
+RadarCommandGetStatus
+    RadarDevice
+RadarCommandReply
+    RadarDevice
+RadarCommandReplyGetStatus
+    RadarDevice
+RadarConfiguration
+    RadarDevice
+RadarImage
+    RadarDevice
+RadarRawTrackTable
+    RadarDevice
+RadarStatus
+    RadarDevice
+TrackBase is abstract
+    AisDevice
+    RadarDevice
+Track
+    AisDevice
+    RadarDevice
+Track3D
+    AisDevice
+    RadarDevice
+TrackerFilterParameters
+    AisDevice
+    RadarDevice
+ViewTrackerLink
+    AisDevice
+    View
+    RadarDevice
+ItemIdentityLink
+    RadarDevice
+    BaseStation
+    WeatherStationDevice
+    CameraDevice
+    MaritimeMobileServiceIdentity
+    GNSSDevice
+    OilSpillDetectorDevice
+    RadomeDevice
+    GyroDevice
+    LineInputDevice
+    RadioDevice
+    AisDevice
+    Facility
+    Aircraft
+    AisAidToNavigation
+    Vehicle
+    Vessel
+    Callsign
+    InternationalMaritimeOrganizationNumber
+    Name
+ItemParentChildLink
+    RadarDevice
+    BaseStation
+    WeatherStationDevice
+    CameraDevice
+    GNSSDevice
+    OilSpillDetectorDevice
+    RadomeDevice
+    GyroDevice
+    LineInputDevice
+    RadioDevice
+    AisDevice
+    Facility
+    Aircraft
+    AisAidToNavigation
+    Vehicle
+    Vessel
+MapElement
+    RadarDevice
+    BaseStation
+    WeatherStationDevice
+    CameraDevice
+    GNSSDevice
+    OilSpillDetectorDevice
+    RadomeDevice
+    GyroDevice
+    LineInputDevice
+    RadioDevice
+    AisDevice
+    Facility
+    Aircraft
+    AisAidToNavigation
+    Vehicle
+    Vessel
+WeatherStationCommand
+    WeatherStationDevice
+WeatherStationCommandReply
+    WeatherStationDevice
+WeatherStationConfiguration
+    WeatherStationDevice
+LogThread
+    LogProcess
+MediaProxySessionFile
+    MediaProxySession
+MediaProxySessionOptions
+    MediaProxySession
+SecurityLoginSession
+    SecurityLogin
+SecurityIdentifierRoleLink
+    SecurityLogin
+    SecurityRole
+SecurityPermission
+    SecurityLogin
+    SecurityRole
+ZoneExceptionsVesselLink
+    ZoneExceptions
+    Vessel
+CameraPanCalibrationValue
+    CameraPanCalibration
+CameraTiltCalibrationValue
+    CameraTiltCalibration
+CameraZoomCalibrationValue
+    CameraZoomCalibration
+LineInputMessageRoutingDestination
+    LineInputMessageRouting
+TrackValue
+    Track
+ZoneTrackAlarm
+    Track
+    CircularZone
+    PolygonZone
+TrackableItemTrackLink
+    Track
+    Aircraft
+    AisAidToNavigation
+    Vehicle
+    Track3D
+    Vessel
+TrackLink
+    Track
+    Track3D
+TrackValue3D
+    Track3D
+TrackerFilterParametersConfiguration
+    TrackerFilterParameters
+LogRecord
+    LogThread
+    LogLocation
+LogTraceEntry
+    LogThread
+    LogLocation
+AlarmStateChange
+    ZoneTrackAlarm
+NamespaceElement is abstract
+    Namespace
+ElementType
+    Namespace
+Namespace
+    Namespace
+Property is abstract
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+BinaryProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+BooleanProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+ByteProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+DateTimeProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+DoubleProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+GuidProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+Int16Property
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+Int32Property
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+Int64Property
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+ReferenceProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+SByteProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+SingleProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+StringProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+TimeseriesProperty is abstract
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+BinaryTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+BooleanTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+ByteTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+DateTimeTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+DoubleTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+GuidTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+Int16TimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+Int32TimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+Int64TimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+ReferenceTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+SByteTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+SingleTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+StringTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+TimeSpanTimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+UInt16TimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+UInt32TimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+UInt64TimeseriesProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+TimeSpanProperty
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+UInt16Property
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+UInt32Property
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+UInt64Property
+    StringTimeseriesPropertyDefinition
+    DateTimePropertyDefinition
+    BooleanPropertyDefinition
+    SingleTimeseriesPropertyDefinition
+    Element
+    BinaryPropertyDefinition
+    GuidPropertyDefinition
+    UInt32PropertyDefinition
+    BytePropertyDefinition
+    DoublePropertyDefinition
+    Int16PropertyDefinition
+    ReferencePropertyDefinition
+    Int32PropertyDefinition
+    Int64PropertyDefinition
+    DoubleTimeseriesPropertyDefinition
+    BooleanTimeseriesPropertyDefinition
+    SBytePropertyDefinition
+    SinglePropertyDefinition
+    StringPropertyDefinition
+    UInt16TimeseriesPropertyDefinition
+    BinaryTimeseriesPropertyDefinition
+    ByteTimeseriesPropertyDefinition
+    DateTimeTimeseriesPropertyDefinition
+    GuidTimeseriesPropertyDefinition
+    Int16TimeseriesPropertyDefinition
+    Int32TimeseriesPropertyDefinition
+    Int64TimeseriesPropertyDefinition
+    ReferenceTimeseriesPropertyDefinition
+    SByteTimeseriesPropertyDefinition
+    TimeSpanTimeseriesPropertyDefinition
+    UInt32TimeseriesPropertyDefinition
+    TimeSpanPropertyDefinition
+    UInt64TimeseriesPropertyDefinition
+    UInt16PropertyDefinition
+    UInt64PropertyDefinition
+PropertyDefinition is abstract
+    ElementType
+BinaryPropertyDefinition
+    ElementType
+BooleanPropertyDefinition
+    ElementType
+BytePropertyDefinition
+    ElementType
+DateTimePropertyDefinition
+    ElementType
+DoublePropertyDefinition
+    ElementType
+GuidPropertyDefinition
+    ElementType
+Int16PropertyDefinition
+    ElementType
+Int32PropertyDefinition
+    ElementType
+Int64PropertyDefinition
+    ElementType
+ReferencePropertyDefinition
+    ElementType
+SBytePropertyDefinition
+    ElementType
+SinglePropertyDefinition
+    ElementType
+StringPropertyDefinition
+    ElementType
+TimeseriesPropertyDefinition is abstract
+    ElementType
+BinaryTimeseriesPropertyDefinition
+    ElementType
+BooleanTimeseriesPropertyDefinition
+    ElementType
+ByteTimeseriesPropertyDefinition
+    ElementType
+DateTimeTimeseriesPropertyDefinition
+    ElementType
+DoubleTimeseriesPropertyDefinition
+    ElementType
+GuidTimeseriesPropertyDefinition
+    ElementType
+Int16TimeseriesPropertyDefinition
+    ElementType
+Int32TimeseriesPropertyDefinition
+    ElementType
+Int64TimeseriesPropertyDefinition
+    ElementType
+ReferenceTimeseriesPropertyDefinition
+    ElementType
+SByteTimeseriesPropertyDefinition
+    ElementType
+SingleTimeseriesPropertyDefinition
+    ElementType
+StringTimeseriesPropertyDefinition
+    ElementType
+TimeSpanTimeseriesPropertyDefinition
+    ElementType
+UInt16TimeseriesPropertyDefinition
+    ElementType
+UInt32TimeseriesPropertyDefinition
+    ElementType
+UInt64TimeseriesPropertyDefinition
+    ElementType
+TimeSpanPropertyDefinition
+    ElementType
+UInt16PropertyDefinition
+    ElementType
+UInt32PropertyDefinition
+    ElementType
+UInt64PropertyDefinition
+    ElementType
+*/
 }
