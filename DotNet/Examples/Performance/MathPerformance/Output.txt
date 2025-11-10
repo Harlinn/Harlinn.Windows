@@ -1,0 +1,36 @@
+2025-11-08:
+OverheadTest: Iterations=1000000000, Duration=0.695413, Accumulated=503141590973.86835
+OverheadTest2: Iterations=1000000000, Duration=0.8487255, Accumulated=503141590973.86835
+OverheadTest3: Iterations=1000000000, Duration=0.7021992, Accumulated=503141590973.86835
+IsNaNTest: Iterations=1000000000, Duration=1.7928591, Accumulated=0
+IsInfTest: Iterations=1000000000, Duration=1.9994976, Accumulated=0
+AbsTest: Iterations=1000000000, Duration=1.7079242, Accumulated=503141590973.86835
+SignBitTest: Iterations=1000000000, Duration=3.7636965, Accumulated=0
+FRExpTest: Iterations=1000000000, Duration=0.8978256, Accumulated 1=745120329.5878271, Accumulated 2=745120329.5878271
+ModFTest: Iterations=1000000000, Duration=0.7941431, Accumulated 1=499999993.8677668, Accumulated 2=499999993.8677668
+MinTest: Iterations=1000000000, Duration=1.7430961, Accumulated=503141590973.86835
+MaxTest: Iterations=1000000000, Duration=1.7349731, Accumulated=503141590973.86835
+CeilTest: Iterations=1000000000, Duration=1.6808278, Accumulated=503641590980
+FloorTest: Iterations=1000000000, Duration=1.6793771, Accumulated=502641590980
+TruncTest: Iterations=1000000000, Duration=1.6821514, Accumulated=502641590980
+RoundTest: Iterations=1000000000, Duration=1.6810996, Accumulated=503141590980
+ClampTest: Iterations=1000000000, Duration=0.9904546, Accumulated=503141590973.86835
+LerpTest: Iterations=1000000000, Duration=0.7853365, Accumulated=503926989135.1825
+CopySignTest: Iterations=1000000000, Duration=1.8015454, Accumulated=-503141590973.86835
+ScaleByNTest: Iterations=1000000000, Duration=0.6599042, Accumulated=1.6658946543001458E+38
+SinTest: Iterations=1000000000, Duration=4.9344127, Accumulated=-437618.4859658297
+ASinTest: Iterations=1000000000, Duration=4.7468488, Accumulated=570796325.6249679
+CosTest: Iterations=1000000000, Duration=5.1620915, Accumulated=-826878.3921448524
+ACosTest: Iterations=1000000000, Duration=4.3312871, Accumulated=1000000001.1699724
+TanTest: Iterations=1000000000, Duration=7.0799855, Accumulated=-6438915991.965047
+ATanTest: Iterations=1000000000, Duration=4.1413937, Accumulated=438824574.1665145
+ATan2Test: Iterations=1000000000, Duration=8.0369129, Accumulated=785398158.123596
+SqrtTest: Iterations=1000000000, Duration=4.1936168, Accumulated=21177562677.907993
+NextUpTest: Iterations=1000000000, Duration=1.5108624, Accumulated=2.4703282295377952E-306
+NextDownTest: Iterations=1000000000, Duration=1.4458644, Accumulated=-2.4703282295377952E-306
+FModTest: Iterations=1000000000, Duration=3.3942396, Accumulated=2353341560.634282
+ExpTest: Iterations=1000000000, Duration=4.0813247, Accumulated=4226291487.0085087
+HypotTest: Iterations=1000000000, Duration=1.9051415, Accumulated=2119906187.6395133
+LogTest: Iterations=1000000000, Duration=4.269762, Accumulated=314346866.84337443
+Log2Test: Iterations=1000000000, Duration=5.1382997, Accumulated=453506665.9140615
+Log10Test: Iterations=1000000000, Duration=4.5074351, Accumulated=136519109.67367068

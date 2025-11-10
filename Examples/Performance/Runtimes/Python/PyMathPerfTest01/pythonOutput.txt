@@ -21,3 +21,30 @@ ASinTest : accumulated  570796325.6249679  in  217.004373  seconds
 ACosTest : accumulated  1000000001.1699724  in  217.970242  seconds
 ATanTest : accumulated  438824574.1665145  in  218.877134  seconds
 ATan2Test : accumulated  785398158.123596  in  274.691577  seconds
+
+2025-11-08:
+OverheadTest : accumulated  503141590973.86835  in  33.342934  seconds
+IsNaNTest : accumulated  0.0  in  48.387091  seconds
+IsInfTest : accumulated  0.0  in  48.345996  seconds
+AbsTest : accumulated  503141590973.86835  in  37.292279  seconds
+FRExpTest : accumulated 1: 745120329.5878271 : accumulated 2: 9005132735.0  in  90.898373 seconds
+ModFTest : accumulated 1: 499999993.8677668 : accumulated 2: 502641590980.0  in  90.023869 seconds
+MinTest : accumulated  503141590973.86835  in  46.38793  seconds
+MaxTest : accumulated  503141590973.86835  in  70.678263  seconds
+CeilTest : accumulated  503641590980.0  in  98.222139  seconds
+FloorTest : accumulated  502641590980.0  in  82.130186  seconds
+TruncTest : accumulated  502641590980.0  in  88.852148  seconds
+RoundTest : accumulated  503141590980.0  in  118.442557  seconds
+ClampTest : accumulated  503141590973.86835  in  125.600529  seconds
+LerpTest : accumulated  503926989135.1825  in  78.52302  seconds
+CopySignTest : accumulated  -503141590973.86835  in  62.281426  seconds
+SinTest : accumulated  463375.4415525004  in  54.436115  seconds
+CosTest : accumulated  812724.4462835883  in  54.358828  seconds
+TanTest : accumulated  6435908926.834679  in  62.614907  seconds
+SqrtTest : accumulated  21177562677.907993  in  50.045977  seconds
+ASinTest : accumulated  570796325.6249679  in  55.998758  seconds
+ACosTest : accumulated  1000000001.1699724  in  59.157915  seconds
+ATanTest : accumulated  438824574.1665145  in  62.500339  seconds
+ATan2Test : accumulated  785398158.123596  in  62.725177  seconds
+Press any key to continue . . .
+

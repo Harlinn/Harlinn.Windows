@@ -1,0 +1,35 @@
+OverheadTest: Executed 1000000000 iterations, Duration: 0.663 Accumulated: 5.0314159097386835e11
+IsNaNTest: Executed 1000000000 iterations, Duration: 1.005 Accumulated: 0.0
+IsInfTest: Executed 1000000000 iterations, Duration: 1.073 Accumulated: 0.0
+AbsTest: Executed 1000000000 iterations, Duration: 0.605 Accumulated: 5.0314159097386835e11
+SignBitTest: Executed 1000000000 iterations, Duration: 1.077 Accumulated: 0.0
+FRExpTest: Executed 1000000000 iterations, Duration: 0.71 Accumulated 1: 7.451203295878271e8 Accumulated 2: 9.005132735e9
+ModFTest: Executed 1000000000 iterations, Duration: 0.808 Accumulated 1: 4.999999938677668e8 Accumulated 2: 5.0264159098e11
+MinTest: Executed 1000000000 iterations, Duration: 0.656 Accumulated: 5.0314159097386835e11
+MaxTest: Executed 1000000000 iterations, Duration: 0.655 Accumulated: 5.0314159097386835e11
+FloorTest: Executed 1000000000 iterations, Duration: 0.689 Accumulated: 5.0264159098e11
+CeilTest: Executed 1000000000 iterations, Duration: 0.693 Accumulated: 5.0364159098e11
+TruncTest: Executed 1000000000 iterations, Duration: 0.69 Accumulated: 5.0264159098e11
+RoundTest: Executed 1000000000 iterations, Duration: 0.69 Accumulated: 5.0314159098e11
+ClampTest: Executed 1000000000 iterations, Duration: 0.693 Accumulated: 5.0314159097386835e11
+LerpTest: Executed 1000000000 iterations, Duration: 0.742 Accumulated: 5.039269891351825e11
+CopySignTest: Executed 1000000000 iterations, Duration: 0.61 Accumulated: -5.0314159097386835e11
+ScaleBNTest: Executed 1000000000 iterations, Duration: 1.911 Accumulated: 1.1708964680213878e56
+SinTest: Executed 1000000000 iterations, Duration: 2.958 Accumulated: 463375.4415525009
+ASinTest: Executed 1000000000 iterations, Duration: 2.977 Accumulated: 5.707963256249679e8
+CosTest: Executed 1000000000 iterations, Duration: 3.068 Accumulated: 812724.4462835881
+ACosTest: Executed 1000000000 iterations, Duration: 2.725 Accumulated: 1.0000000011699724e9
+TanTest: Executed 1000000000 iterations, Duration: 5.41 Accumulated: 6.435908926834679e9
+ATanTest: Executed 1000000000 iterations, Duration: 3.527 Accumulated: 4.388245741665145e8
+ATan2Test: Executed 1000000000 iterations, Duration: 5.617 Accumulated: 7.85398158123596e8
+SqrtTest: Executed 1000000000 iterations, Duration: 2.029 Accumulated: 2.1177562677907993e10
+NextUpTest: Executed 1000000000 iterations, Duration: 2.016 Accumulated: 2.4703282295377952e-306
+NextDownTest: Executed 1000000000 iterations, Duration: 2.021 Accumulated: -2.4703282295377952e-306
+FModTest: Executed 1000000000 iterations, Duration: 2.911 Accumulated: 2.353341560634282e9
+ExpTest: Executed 1000000000 iterations, Duration: 1.692 Accumulated: 4.2262914870085087e9
+HypotTest: Executed 1000000000 iterations, Duration: 2.891 Accumulated: 2.1199061876395133e9
+RunAddDouble4ATest: Executed 1000000000 iterations, Duration: 28.098 Accumulated: [5.0099999832557697e11, 1.0009999966536157e12, 1.5010000198417183e12, 2.0009999933096396e12]
+HypotTest2: Executed 1000000000 iterations, Duration: 2.0 Accumulated: 3.3554432e7
+LogTest: Executed 1000000000 iterations, Duration: 2.925 Accumulated: 3.1434686684337443e8
+Log2Test: Executed 1000000000 iterations, Duration: 3.0 Accumulated: 4.535066659140615e8
+Log10Test: Executed 1000000000 iterations, Duration: 2.983 Accumulated: 1.3651910967367068e8

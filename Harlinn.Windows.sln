@@ -3142,7 +3142,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.ls-qpack", "3rdPart
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.msh3", "3rdParty\Harlinn.msh3\Harlinn.msh3.vcxproj", "{45F888B5-986D-480C-BB8A-484E9390FCC5}"
 	ProjectSection(ProjectDependencies) = postProject
-		{25551375-1032-434F-B928-F7D3F7A2FC11} = {25551375-1032-434F-B928-F7D3F7A2FC11}
 		{B4978304-EACA-421F-83EF-8278D27A40B2} = {B4978304-EACA-421F-83EF-8278D27A40B2}
 	EndProjectSection
 EndProject
@@ -3343,6 +3342,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5F9FE4C1-987D-4533-BA4D-17857B98A326}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "harlinn.common.jni", "Java\Examples\harlinn.common.jni\harlinn.common.jni.vcxproj", "{54266140-0AC1-4D90-AAEE-190418FEAE6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Props", "Props", "{36A1BE21-6EE3-46C4-9C6D-2BCE29DC4C4E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rdParty", "3rdParty", "{00801CCE-1B4B-4FC1-8FDA-40AEB5561B47}"
+	ProjectSection(SolutionItems) = preProject
+		Props\3rdParty\msquic.props = Props\3rdParty\msquic.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18725,6 +18731,7 @@ Global
 		{D0E4390C-06F7-424E-9EFF-830C5A61544A} = {3E2C34DD-A4A7-4423-ACE5-5892A378AF5F}
 		{5F9FE4C1-987D-4533-BA4D-17857B98A326} = {42F6357C-6BDD-4549-933C-C9BD2CACB087}
 		{54266140-0AC1-4D90-AAEE-190418FEAE6B} = {5F9FE4C1-987D-4533-BA4D-17857B98A326}
+		{00801CCE-1B4B-4FC1-8FDA-40AEB5561B47} = {36A1BE21-6EE3-46C4-9C6D-2BCE29DC4C4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}
