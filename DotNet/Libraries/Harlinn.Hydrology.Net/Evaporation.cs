@@ -1,0 +1,37 @@
+﻿/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+namespace Harlinn.Hydrology
+{
+    public class Evaporation
+    {
+
+        public static bool IsDailyPETmethod(EvapMethod method)
+        {
+            switch (method)
+            {
+                case EvapMethod.PET_LINACRE: return true;
+                case EvapMethod.PET_MONTHLY_FACTOR: return true;
+                case EvapMethod.PET_FROMMONTHLY: return true;
+                case EvapMethod.PET_TURC_1961: return true;
+                case EvapMethod.PET_JENSEN_HAISE: return true;
+                case EvapMethod.PET_HAMON: return true;
+                case EvapMethod.PET_LINEAR_TEMP: return true;
+                case EvapMethod.PET_CONSTANT: return true;
+                default: return false;
+            }
+        }
+    }
+}
