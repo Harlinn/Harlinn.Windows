@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 namespace Harlinn.Hydrology
 {
     /// <summary>
@@ -236,5 +237,10 @@ namespace Harlinn.Hydrology
         /// fixed array of cell station/cell IDS (size:_IdxNonZeroGridCells)
         /// </summary>
         string[] _aStationIDs;
+
+        internal ForcingType GetForcingType()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -25,67 +25,67 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// [0..1] Precipitation gradient modification factor (default 0.01)
         /// </summary>
-        double A0STAB;
+        public double A0STAB;
         /// <summary>
         /// [degC / 1000 m] Lapse rate for maximum temperatures when  the station elevation is less than 2000 m (default 10)
         /// </summary>
-        double A0TLXM;
+        public double A0TLXM;
         /// <summary>
         /// [degC / 1000 m] Lapse rate for minimum temperatures when the station elevation is less than 2000 m (default 0.5)
         /// </summary>
-        double A0TLNM;
+        public double A0TLNM;
         /// <summary>
         /// [degC / 1000 m] Lapse rate for maximum temperatures when the station elevation is greater than 2000 m (default 6.4)
         /// </summary>
-        double A0TLXH;
+        public double A0TLXH;
         /// <summary>
         /// [degC / 1000 m] Lapse rate for minimum temperatures when the station elevation is greater than 2000 m (default 2.0)
         /// </summary>
-        double A0TLNH;
+        public double A0TLNH;
         /// <summary>
         /// [degC / 1000 m] Lapse rate of maximum temperature range for elevations below 2000 m (default 6.0)
         /// </summary>
-        double P0TEDL;
+        public double P0TEDL;
         /// <summary>
         /// [degC / 1000 m] Lapse rate of maximum temperature range for elevations above 2000 m (default 0.0)
         /// </summary>
-        double P0TEDU;
+        public double P0TEDU;
         /// <summary>
         /// [m] Reference elevation for precipitation gradient P0GRADL
         /// </summary>
-        double E0LLOW;
+        public double E0LLOW;
         /// <summary>
         /// [m] Elevation above which precipitation gradient P0GRADM applies. Set at approx. 1/2 barrier height
         /// </summary>
-        double E0LMID;
+        public double E0LMID;
         /// <summary>
         /// [m] Elevation above which the precipitation gradient P0GRADU applies.  Set at approx. 2/3 barrier height
         /// </summary>
-        double E0LHI;
+        public double E0LHI;
         /// <summary>
         /// [%, 0..20] Precipitation gradient factor for elevations below E0LMID (default 5)
         /// </summary>
-        double P0GRADL;
+        public double P0GRADL;
         /// <summary>
         /// [%, 0..20] Precipitation gradient factor for elevations below E0LHI (default 0)
         /// </summary>
-        double P0GRADM;
+        public double P0GRADM;
         /// <summary>
         /// [%, 0..20] Precipitation gradient factor for elevations above E0LHI (default 0)
         /// </summary>
-        double P0GRADU;
+        public double P0GRADU;
         /// <summary>
         /// [mm / 1000 m] Lapse rate of potential evapotranspiration factor A0EDDF (default 0.9)
         /// </summary>
-        double A0PELA;
+        public double A0PELA;
         /// <summary>
         /// [degC] (A0TERM)
         /// </summary>
-        double max_range_temp;
+        public double max_range_temp;
         /// <summary>
         /// [mm/d] Threshold precipitation for temperature lapse rate (default 5.0)
         /// </summary>
-        double A0PPTP;  
+        public double A0PPTP;  
     }
 
 }

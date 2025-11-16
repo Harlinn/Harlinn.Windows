@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using Serilog;
 using static Harlinn.Hydrology.Constants;
 
 namespace Harlinn.Hydrology
@@ -456,6 +457,375 @@ namespace Harlinn.Hydrology
         /// number of lateral flow processes
         /// </summary>
         int _nLatFlowProcesses;
+
+        /// <summary>
+        /// Returns index of state variable type passed
+        /// </summary>
+        /// <param name="type">
+        /// State variable type
+        /// </param>
+        /// <returns>
+        /// Index which corresponds to the state variable type passed, if it exists; DOESNT_EXIST (-1) otherwise.
+        /// </returns>
+        /// <remarks>
+        /// should only be used for state variable types without multiple levels; issues for soils, e.g.
+        /// </remarks>
+        public int GetStateVarIndex(SVType type)
+        {
+            return _aStateVarIndices[(int)(type),0];
+        }
+
+        /// <summary>
+        /// Checks if state variable passed exists in model
+        /// </summary>
+        /// <param name="type">
+        /// State variable type
+        /// </param>
+        /// <returns>
+        /// bool indicating whether state variable exists in model
+        /// </returns>
+        public bool StateVarExists(SVType type)
+        {
+            return (GetStateVarIndex(type) != DOESNT_EXIST);
+        }
+
+
+        int GetForcingGridIndexFromType(ForcingType typ)
+        {
+            for (int f=0;f<_nForcingGrids;f++)
+            {
+                if (typ==_pForcingGrids[f].GetForcingType())
+                {
+                    return f;
+                }
+            }
+            return DOESNT_EXIST;
+        }
+
+        public bool ForcingGridIsAvailable(ForcingType ftype)
+        {
+            return (GetForcingGridIndexFromType(ftype) != DOESNT_EXIST);
+        }
+
+        ///
+
+        void GenerateGaugeWeights(ForcingType forcing, Options options, out double[,] aWts)
+        {
+            int k, g;
+            bool[] has_data = new bool[_nGauges];
+            Location xyh, xyg;
+
+            // allocate memory
+
+            aWts = new double[_nHydroUnits, _nGauges];
+
+            int nGaugesWithData = 0;
+            for (g = 0; g < _nGauges; g++)
+            {
+                has_data[g] = _pGauges[g].TimeSeriesExists(forcing);
+                if (has_data[g])
+                {
+                    nGaugesWithData++;
+                }
+            }
+
+            //handle the case that weights are allowed to sum to zero -netCDF is available
+            //still need to allocate all zeros
+            if (ForcingGridIsAvailable(forcing))
+            {
+                return;
+            }
+            if ((forcing == ForcingType.F_TEMP_AVE) && (ForcingGridIsAvailable(ForcingType.F_TEMP_DAILY_MIN)))
+            {
+                //this is also acceptable
+                return;
+            }
+            if ((forcing == ForcingType.F_TEMP_AVE) && (ForcingGridIsAvailable(ForcingType.F_TEMP_DAILY_AVE)))
+            {
+                //this is also acceptable
+                return;
+            }
+            if ((forcing == ForcingType.F_PRECIP) && (ForcingGridIsAvailable(ForcingType.F_RAINFALL)))
+            {
+                //this is also acceptable
+                return;
+            }
+
+            if (nGaugesWithData == 0)
+            {
+                Log.Warning("GenerateGaugeWeights: no gauges present with the following data: {:Forcing}", forcing);
+                string message = "GenerateGaugeWeights: no gauges present with the following data: " + forcing;
+                throw new InvalidOperationException(message);
+            }
+
+            switch (options.interpolation)
+            {
+                case (InterpMethod.INTERP_NEAREST_NEIGHBOR):
+                {
+                    //w=1.0 for nearest gauge, 0.0 for all others
+                    double distmin, dist;
+                    int g_min = 0;
+                    for (k = 0; k < _nHydroUnits; k++)
+                    {
+                        xyh = _pHydroUnits[k].GetCentroid();
+                        g_min = 0;
+                        distmin = ALMOST_INF;
+                        for (g = 0; g < _nGauges; g++)
+                        {
+                            if (has_data[g])
+                            {
+                                xyg = _pGauges[g].GetLocation();
+                                dist = Math.Pow(xyh.UTM_x - xyg.UTM_x, 2) + Math.Pow(xyh.UTM_y - xyg.UTM_y, 2);
+                                if (dist < distmin) 
+                                { 
+                                    distmin = dist; g_min = g; 
+                                }
+                            }
+                            aWts[k,g] = 0.0;
+                        }
+                        aWts[k,g_min] = 1.0;
+
+                    }
+                }
+                break;
+                case (InterpMethod.INTERP_AVERAGE_ALL):
+                {
+                    for (k = 0; k < _nHydroUnits; k++)
+                    {
+                        for (g = 0; g < _nGauges; g++)
+                        {
+                            if (has_data[g]) 
+                            { 
+                                aWts[k,g] = 1.0 / (double)(nGaugesWithData); 
+                            }
+                            else 
+                            { 
+                                aWts[k,g] = 0.0; 
+                            }
+                        }
+                    }
+                }
+                break;
+                case (InterpMethod.INTERP_INVERSE_DISTANCE):
+                {
+                    //wt_i = (1/r_i^2) / (sum{1/r_j^2})
+                    double dist;
+                    double denomsum;
+                    const double IDW_POWER = 2.0;
+                    int atop_gauge = DOESNT_EXIST;
+                    for (k = 0; k < _nHydroUnits; k++)
+                    {
+                        xyh = _pHydroUnits[k].GetCentroid();
+                        atop_gauge = DOESNT_EXIST;
+                        denomsum = 0;
+                        for (g = 0; g < _nGauges; g++)
+                        {
+                            if (has_data[g])
+                            {
+                                xyg = _pGauges[g].GetLocation();
+                                dist = Math.Sqrt(Math.Pow(xyh.UTM_x - xyg.UTM_x, 2) + Math.Pow(xyh.UTM_y - xyg.UTM_y, 2));
+                                denomsum += Math.Pow(dist, -IDW_POWER);
+                                if (dist < REAL_SMALL) 
+                                {
+                                    //handles limiting case where weight= large number/large number
+                                    atop_gauge = g; 
+                                }
+                            }
+                        }
+
+                        for (g = 0; g < _nGauges; g++)
+                        {
+                            aWts[k,g] = 0.0;
+                            if (has_data[g])
+                            {
+                                xyg = _pGauges[g].GetLocation();
+                                dist = Math.Sqrt(Math.Pow(xyh.UTM_x - xyg.UTM_x, 2) + Math.Pow(xyh.UTM_y - xyg.UTM_y, 2));
+
+                                if (atop_gauge != DOESNT_EXIST) 
+                                { 
+                                    aWts[k,g] = 0.0; 
+                                    aWts[k,atop_gauge] = 1.0; 
+                                }
+                                else 
+                                { 
+                                    aWts[k,g] = Math.Pow(dist, -IDW_POWER) / denomsum; 
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                case (InterpMethod.INTERP_INVERSE_DISTANCE_ELEVATION):
+                {
+                    double dist;
+                    double elevh, elevg;
+                    double denomsum;
+                    const double IDW_POWER = 2.0;
+                    int atop_gauge = DOESNT_EXIST;
+                    for (k = 0; k < _nHydroUnits; k++)
+                    {
+                        elevh = _pHydroUnits[k].GetElevation();
+                        atop_gauge = DOESNT_EXIST;
+                        denomsum = 0;
+                        for (g = 0; g < _nGauges; g++)
+                        {
+                            if (has_data[g])
+                            {
+                                elevg = _pGauges[g].GetElevation();
+                                dist = Math.Abs(elevh - elevg);
+                                denomsum += Math.Pow(dist, -IDW_POWER);
+                                if (dist < REAL_SMALL) 
+                                {
+                                    //handles limiting case where weight= large number/large number
+                                    atop_gauge = g; 
+                                }
+                            }
+                        }
+
+                        for (g = 0; g < _nGauges; g++)
+                        {
+                            aWts[k,g] = 0.0;
+                            if (has_data[g])
+                            {
+                                elevg = _pGauges[g].GetElevation();
+                                dist = Math.Abs(elevh - elevg);
+                                if (atop_gauge != DOESNT_EXIST) 
+                                { 
+                                    aWts[k,g] = 0.0; 
+                                    aWts[k,atop_gauge] = 1.0; 
+                                }
+                                else 
+                                { 
+                                    aWts[k,g] = Math.Pow(dist, -IDW_POWER) / denomsum; 
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                case (InterpMethod.INTERP_FROM_FILE):
+                {
+                    //format:
+                    //:GaugeWeightTable
+                    //  nGauges nHydroUnits
+                    //  v11 v12 v13 v14 ... v_1,nGauges
+                    //  ...
+                    //  vN1 vN2 vN3 vN4 ... v_N,nGauges
+                    //:EndGaugeWeightTable
+                    //ExitGracefullyIf no gauge file
+
+                    /*
+                    int Len, line = 0 ;
+                    char* s[MAXINPUTITEMS];
+                    ifstream INPUT;
+                    INPUT.open(Options.interp_file.c_str());
+                    if (INPUT.fail())
+                    {
+                        INPUT.close();
+                        string errString = "GenerateGaugeWeights:: Cannot find gauge weighting file " + Options.interp_file;
+                        ExitGracefully(errString.c_str(), BAD_DATA);
+                    }
+                    else
+                    {
+                        CParser* p = new CParser(INPUT, Options.interp_file, line);
+                        bool done(false);
+                        while (!done)
+                        {
+                            p->Tokenize(s, Len);
+                            if (IsComment(s[0], Len)) { }
+                            else if (!strcmp(s[0], ":GaugeWeightTable")) { }
+                            else if (Len >= 2)
+                            {
+                                ExitGracefullyIf(s_to_i(s[0]) != _nGauges,
+                                                 "GenerateGaugeWeights: the gauge weighting file has an improper number of gauges specified", BAD_DATA);
+                                ExitGracefullyIf(s_to_i(s[1]) != _nHydroUnits,
+                                                 "GenerateGaugeWeights: the gauge weighting file has an improper number of HRUs specified", BAD_DATA);
+                                done = true;
+                            }
+                        }
+                        int junk;
+                        p->Parse2DArray_dbl(aWts, _nHydroUnits, _nGauges, junk);
+
+                        for (k = 0; k < _nHydroUnits; k++)
+                        {
+                            double sum = 0;
+                            for (g = 0; g < _nGauges; g++)
+                            {
+                                sum += aWts[k][g];
+                            }
+                            if (fabs(sum - 1.0) > 1e-4)
+                            {
+                                ExitGracefully("GenerateGaugeWeights: INTERP_FROM_FILE: user-specified weights for gauge don't add up to 1.0", BAD_DATA);
+                            }
+                        }
+                        INPUT.close();
+                        delete p;
+                    }
+                    */
+                    
+                }
+                break;
+                default:
+                {
+                    throw new InvalidOperationException("Invalid interpolation method");
+                }
+                break;
+            }
+            /*
+            //Override weights where specified
+            for (k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k]->GetSpecifiedGaugeIndex() != DOESNT_EXIST)
+                {
+                    for (g = 0; g < _nGauges; g++)
+                    {
+                        aWts[k][g] = 0.0;
+                    }
+                    g = _pHydroUnits[k]->GetSpecifiedGaugeIndex();
+                    aWts[k][g] = 1.0;
+                }
+            }
+
+            //check quality - weights for each HRU should add to 1
+            double sum;
+            for (k = 0; k < _nHydroUnits; k++)
+            {
+                sum = 0.0;
+                for (g = 0; g < _nGauges; g++) { sum += aWts[k][g]; }
+
+                ExitGracefullyIf((fabs(sum - 1.0) > REAL_SMALL) && (INTERP_FROM_FILE) && (_nGauges > 1),
+                                 "GenerateGaugeWeights: Bad weighting scheme- weights for each HRU must sum to 1", BAD_DATA);
+                ExitGracefullyIf((fabs(sum - 1.0) > REAL_SMALL) && !(INTERP_FROM_FILE) && (_nGauges > 1),
+                                 "GenerateGaugeWeights: Bad weighting scheme- weights for each HRU must sum to 1", RUNTIME_ERR);
+            }
+
+            if (Options.write_interp_wts)
+            {
+                ofstream WTS;
+                string tmpFilename = FilenamePrepare("InterpolationWeights.csv", Options);
+                WTS.open(tmpFilename.c_str(), ios::app);
+                WTS << "Weights for " << ForcingToString(forcing) << "--------------------------------------" << endl;
+                WTS << "HRU index (k), HRU ID";
+                for (g = 0; g < _nGauges; g++) { WTS << "," << _pGauges[g]->GetName(); }
+                WTS << endl;
+                for (k = 0; k < _nHydroUnits; k++)
+                {
+                    WTS << k << "," << _pHydroUnits[k]->GetHRUID();
+
+                    for (g = 0; g < _nGauges; g++) { WTS << "," << aWts[k][g]; }
+                    WTS << endl;
+                }
+                WTS.close();
+            }
+
+            has_data;
+            */
+        }
+
+        internal int GetNumSubBasins()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

@@ -22,5 +22,9 @@ namespace Harlinn.Hydrology
     public class IsotopeModel : ConstituentModel
     {
         IsoType _isotope;
+
+        public IsotopeModel(Model model, TransportModel transportModel, string name, ConstitType type, bool isPassive, int constitIndex) : base(model, transportModel, name, type, isPassive, constitIndex)
+        {
+        }
     }
 }

@@ -188,6 +188,7 @@
     <ClCompile Include="SIMDByteTests.cpp" />
     <ClCompile Include="SIMDDoubleTests.cpp" />
     <ClCompile Include="SIMDFloatTests.cpp" />
+    <ClCompile Include="SIMDInt32Tests.cpp" />
     <ClCompile Include="SquareMatrix2FloatTests.cpp" />
     <ClCompile Include="SquareMatrix3Tests.cpp" />
     <ClCompile Include="SquareMatrix4FloatTests.cpp" />

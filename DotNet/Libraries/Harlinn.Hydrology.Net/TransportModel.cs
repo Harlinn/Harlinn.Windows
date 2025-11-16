@@ -22,7 +22,7 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class TransportModel
     {
-        Model pModel;
+        Model _model;
 
         /// <summary>
         /// number of advective/dispersive transport connections between water storage units
@@ -115,6 +115,36 @@ namespace Harlinn.Hydrology
         /// special pointer to enthalpy constituent, if present (or NULL if not)
         /// </summary>
         EnthalpyModel[] _pEnthalpyModel;
+
+        public TransportModel(Model model)
+        {
+            ArgumentNullException.ThrowIfNull(model);
+            _model = model;
+        }
+
+        internal string GetConstituentLongName(int layerIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetConstituentTypeName2(int layerIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void m_to_cj(int m, ref int c, ref int j)
+        {
+            if((m < 0) || (m > (_nConstituents * _nWaterCompartments)))
+            {
+                throw new ArgumentException("Invalid layer index", nameof(m));
+            }
+            j = m % _nWaterCompartments;
+            c = (m - j) / _nWaterCompartments;
+        }
+
+
+
+
     }
 
 }

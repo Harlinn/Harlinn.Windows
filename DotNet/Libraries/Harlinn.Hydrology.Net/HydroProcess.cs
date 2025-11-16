@@ -47,6 +47,10 @@ namespace Harlinn.Hydrology
         /// number of conditions
         /// </summary>
         int _nConditions;
+
+
+
+
         
     }
 }

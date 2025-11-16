@@ -15,7 +15,7 @@
 */
 namespace Harlinn.Hydrology
 {
-    enum TimeSeriesType 
+    public enum TimeSeriesType 
     { 
         TS_REGULAR, 
         TS_IRREGULAR 

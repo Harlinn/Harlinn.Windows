@@ -23,19 +23,19 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// albedo exponential decay threshold value (0.65)
         /// </summary>
-        double ALBASE;
+        public double ALBASE;
         /// <summary>
         /// recession constant (0.9/day)
         /// </summary>
-        double ALBREC;
+        public double ALBREC;
         /// <summary>
         /// "max annual melt" (~4000mm)
         /// </summary>
-        double MAX_CUM_MELT;
+        public double MAX_CUM_MELT;
         /// <summary>
         /// total daily snowfall required to bring albedo to that of new snow [mm/d] ,  15
         /// </summary>
-        double ALBSNW;
+        public double ALBSNW;
     };
 
 }

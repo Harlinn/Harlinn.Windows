@@ -77,5 +77,9 @@ namespace Harlinn.Hydrology
         /// Output LakeEnergyBalances.csv
         /// </summary>
         TextWriter _LAKEOUT;
+
+        public EnthalpyModel(Model model, TransportModel transportModel, string name, ConstitType type, bool isPassive, int constitIndex) : base(model, transportModel, name, type, isPassive, constitIndex)
+        {
+        }
     }
 }

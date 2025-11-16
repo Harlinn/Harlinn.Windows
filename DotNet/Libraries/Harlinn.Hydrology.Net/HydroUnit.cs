@@ -139,6 +139,16 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// derived vegetation properties
         /// </summary>
-        VegetationVariable _VegVar;  
+        VegetationVariable _VegVar;
+
+        internal Location GetCentroid()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal double GetElevation()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

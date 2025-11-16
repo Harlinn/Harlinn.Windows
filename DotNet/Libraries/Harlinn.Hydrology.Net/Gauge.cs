@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using System.Diagnostics.Metrics;
 using static Harlinn.Hydrology.Constants;
 
 namespace Harlinn.Hydrology
@@ -42,7 +43,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// Array of time series
         /// </summary>
-        TimeSeries[] _pTimeSeries;
+        TimeSeries[]? _pTimeSeries;
         /// <summary>
         /// number of time series linked to gauge
         /// </summary>
@@ -50,24 +51,24 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// lookup array for time series by forcing type
         /// </summary>
-        int[] _aTSindex = new int[MAX_FORCING_TYPES];
+        readonly int[] _aTSindex = new int[MAX_FORCING_TYPES];
 
         /// <summary>
         /// representative average monthly temperatures [C]
         /// </summary>
-        double[] _aAveTemp = new double[12];
+        readonly double[] _aAveTemp = new double[12];
         /// <summary>
         /// representative minimum monthly temperatures [C]
         /// </summary>
-        double[] _aMinTemp = new double[12];
+        readonly double[] _aMinTemp = new double[12];
         /// <summary>
         /// representative maximum monthly temperatures [C]
         /// </summary>
-        double[] _aMaxTemp = new double[12];
+        readonly double[] _aMaxTemp = new double[12];
         /// <summary>
         /// representative average monthly PET [mm/d] (or monthly PET factor [mm/d/K], if MONTHLY_FACTOR is used)
         /// </summary>
-        double[] _aAvePET = new double[12];
+        readonly double[] _aAvePET = new double[12];
 
         /// <summary>
         /// correction factor for rainfall (stored with gauge, used elsewhere)
@@ -89,5 +90,91 @@ namespace Harlinn.Hydrology
         /// maximum temparature threshold used to determine cloud_cover factor
         /// </summary>
         double _cloud_max_temp;
+
+
+        public Gauge(string gauge_name, double latit, double longit, double elev)
+        {
+            _Loc.latitude = latit;
+            _Loc.longitude = longit;
+
+            _elevation = elev;
+
+            // [m], default
+            _meas_ht = 2.0; 
+            _rainfall_corr = 1.0;
+            _snowfall_corr = 1.0;
+            _temperature_corr = 0.0;
+
+            //ensures cloud-free status always unless overriden
+            _cloud_min_temp = -20.0;
+            _cloud_max_temp = 40.0;
+
+            _name = gauge_name;
+
+            _nTimeSeries = 0;
+            _pTimeSeries = null;
+
+            for (int i = 0; i < MAX_FORCING_TYPES; i++)
+            {
+                _aTSindex[i] = DOESNT_EXIST;
+            }
+
+            for (int i = 0; i < 12; i++)
+            {
+                _aAveTemp[i] = NOT_SPECIFIED;
+                _aMinTemp[i] = NOT_SPECIFIED;
+                _aMaxTemp[i] = NOT_SPECIFIED;
+                _aAvePET[i] = NOT_SPECIFIED;
+            }
+        }
+
+        public void Initialize(Options options, int utmZone)
+        {
+            _Loc.InitializeUTM(utmZone);
+
+        }
+
+        /// <summary>
+        /// Gets time series representing forcing data type ftype
+        /// </summary>
+        /// <param name="ftype">
+        /// forcing data type
+        /// </param>
+        /// <returns>
+        /// The time series representing the forcing data type ftype, if time series exists, otherwise null.
+        /// </returns>
+        public TimeSeries? GetTimeSeries(ForcingType ftype)
+        {
+            int index = _aTSindex[(int)(ftype)];
+            if (index != DOESNT_EXIST && _pTimeSeries != null)
+            {
+                return _pTimeSeries[index];
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// returns true if forcing exists at gauge
+        /// </summary>
+        /// <param name="ftype">
+        /// forcing data type
+        /// </param>
+        /// <returns>
+        /// true if forcing exists at gauge.
+        /// </returns>
+        public bool TimeSeriesExists(ForcingType ftype)
+        {
+            return (_aTSindex[(int)(ftype)] != DOESNT_EXIST);
+        }
+
+        internal Location GetLocation()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal double GetElevation()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

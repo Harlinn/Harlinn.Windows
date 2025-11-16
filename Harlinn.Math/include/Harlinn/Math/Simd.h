@@ -1735,6 +1735,75 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        static SIMDType Set( Type value1 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi32(0, 0, 0, value1 );
+            }
+            else
+            {
+                return _mm256_set_epi32( 0, 0, 0, 0, 0, 0, 0, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value2, Type value1 ) noexcept requires ( N > 1 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi32( 0, 0, value2, value1 );
+            }
+            else
+            {
+                return _mm256_set_epi32( 0, 0, 0, 0, 0, 0, value2, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value3, Type value2, Type value1 ) noexcept requires ( N > 2 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi32( 0, value3, value2, value1 );
+            }
+            else
+            {
+                return _mm256_set_epi32( 0, 0, 0, 0, 0, value3, value2, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 3 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi32( value4, value3, value2, value1 );
+            }
+            else
+            {
+                return _mm256_set_epi32( 0, 0, 0, 0, value4, value3, value2, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 4 )
+        {
+            return _mm256_set_epi32( 0, 0, 0, value5, value4, value3, value2, value1 );
+        }
+
+        static SIMDType Set( Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 5 )
+        {
+            return _mm256_set_epi32( 0, 0, value6, value5, value4, value3, value2, value1 );
+        }
+
+        static SIMDType Set( Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 6 )
+        {
+            return _mm256_set_epi32( 0, value7, value6, value5, value4, value3, value2, value1 );
+        }
+
+        static SIMDType Set( Type value8, Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 7 )
+        {
+            return _mm256_set_epi32( value8, value7, value6, value5, value4, value3, value2, value1 );
+        }
+
+
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -1812,7 +1881,7 @@ namespace Harlinn::Math::SIMD
             }
             else
             {
-                _mm256_store_si256( reinterpret_cast< __m128i* >( dest ), src );
+                _mm256_store_si256( reinterpret_cast< __m256i* >( dest ), src );
             }
         }
 
@@ -2204,16 +2273,16 @@ namespace Harlinn::Math::SIMD
                 }
                 else if constexpr ( N == 2 )
                 {
-                    return _mm_add_epi32( _mm_shuffle_epi32( v, 0b01'00'01'00 ), _mm_permute_epi32( v, v, 0b00'01'00'01 ) );
+                    return _mm_add_epi32( _mm_shuffle_epi32( v, 0b01'00'01'00 ), _mm_shuffle_epi32( v, 0b00'01'00'01 ) );
                 }
                 else if constexpr ( N == 3 )
                 {
-                    return _mm_add_epi32( _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 0, 2, 1, 0 ) ), _mm_add_epi32( _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 1, 1, 0, 2 ) ), _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 2, 0, 2, 1 ) ) ) );
+                    return _mm_add_epi32( _mm_shuffle_epi32( v, _MM_SHUFFLE( 0, 2, 1, 0 ) ), _mm_add_epi32( _mm_shuffle_epi32( v, _MM_SHUFFLE( 1, 1, 0, 2 ) ), _mm_shuffle_epi32( v, _MM_SHUFFLE( 2, 0, 2, 1 ) ) ) );
                 }
                 else
                 {
-                    return _mm_add_epi32( _mm_add_epi32( v, _mm_shuffle_epi32( v, v, 0b10'01'00'11 ) ),
-                        _mm_add_epi32( _mm_shuffle_epi32( v, v, 0b01'00'11'10 ), _mm_shuffle_epi32( v, v, 0b00'11'10'01 ) ) );
+                    return _mm_add_epi32( _mm_add_epi32( v, _mm_shuffle_epi32( v, 0b10'01'00'11 ) ),
+                        _mm_add_epi32( _mm_shuffle_epi32( v, 0b01'00'11'10 ), _mm_shuffle_epi32( v, 0b00'11'10'01 ) ) );
                 }
             }
             else

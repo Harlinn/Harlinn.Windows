@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using System.IO;
+
 namespace Harlinn.Hydrology
 {
     /// <summary>
@@ -20,6 +22,28 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class Parser
     {
+        /// <summary>
+        /// current input
+        /// </summary>
+        TextReader _INPUT;
+        /// <summary>
+        /// current line in input file
+        /// </summary>
+        int _lineno;
+        /// <summary>
+        /// current input filename
+        /// </summary>
+        string _filename;
+        /// <summary>
+        /// true if spaces & tabs ignored in tokenization
+        /// </summary>
+        bool _comma_only;
+        /// <summary>
+        /// true if currently parsing math exp (commas not ignored)
+        /// </summary>
+        bool _parsing_math_exp; 
+
+
 
     }
 

@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using Serilog;
+
 namespace Harlinn.Hydrology
 {
     /// <summary>
@@ -36,5 +38,31 @@ namespace Harlinn.Hydrology
         /// y-coordinate in Universal Transverse Mercator coordinate system
         /// </summary>
         public double UTM_y;
+
+
+        public Location()
+        { }
+
+        public Location(double lat, double lon)
+        {
+            latitude = lat;
+            longitude = lon;
+        }
+
+        public Location(double lat, double lon, int utmZone)
+        {
+            latitude = lat;
+            longitude = lon;
+            UTMUtils.LatLonToUTMXY(lat, lon, utmZone, out UTM_x, out UTM_y);
+        }
+
+        public void InitializeUTM(int utmZone)
+        {
+            UTMUtils.LatLonToUTMXY(latitude, longitude, utmZone, out UTM_x, out UTM_y);
+        }
+
+
+
+
     }
 }
