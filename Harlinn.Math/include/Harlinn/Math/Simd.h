@@ -1706,6 +1706,7 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
         using ArrayType = std::array<Type, N>;
+        using UIntType = std::make_unsigned_t<Type>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast< Int64 >( -8 ) );
@@ -1734,6 +1735,116 @@ namespace Harlinn::Math::SIMD
                 return _mm256_set1_epi32( std::bit_cast< int >( value ) );
             }
         }
+
+        template<size_t Num>
+        static SIMDType FillDivisor( Type value ) noexcept requires ( Num > 0 && Num <= SIMDTypeCapacity )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Num == 1 )
+                {
+                    return _mm_set_epi32( 1.f, 1.f, 1.f, value );
+                }
+                else if constexpr ( Num == 2 )
+                {
+                    return _mm_set_epi32( 1.f, 1.f, value, value );
+                }
+                else if constexpr ( Num == 3 )
+                {
+                    return _mm_set_epi32( 1.f, value, value, value );
+                }
+                else
+                {
+                    return _mm_set1_epi32( value );
+                }
+            }
+            else
+            {
+                if constexpr ( Num == 5 )
+                {
+                    return _mm256_set_epi32( 1.f, 1.f, 1.f, value, value, value, value, value );
+                }
+                else if constexpr ( Num == 6 )
+                {
+                    return _mm256_set_epi32( 1.f, 1.f, value, value, value, value, value, value );
+                }
+                else if constexpr ( Num == 7 )
+                {
+                    return _mm256_set_epi32( 1.f, value, value, value, value, value, value, value );
+                }
+                else
+                {
+                    return _mm256_set1_epi32( value );
+                }
+            }
+        }
+
+        static SIMDType Trim( SIMDType v ) noexcept
+        {
+            if constexpr ( Size == SIMDTypeCapacity )
+            {
+                return v;
+            }
+            else
+            {
+                return And( v, Mask( ) );
+            }
+        }
+
+
+        static SIMDType Mask( UIntType value ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Size == 1 )
+                {
+                    return _mm_set_epi32( 0x00000000, 0x00000000, 0x00000000, value );
+                }
+                else if constexpr ( Size == 2 )
+                {
+                    return _mm_set_epi32( 0x00000000, 0x00000000, value, value );
+                }
+                else if constexpr ( Size == 3 )
+                {
+                    return _mm_set_epi32( 0x00000000, value, value, value );
+                }
+                else
+                {
+                    return _mm_set_epi32( value, value, value, value );
+                }
+            }
+            else
+            {
+                if constexpr ( Size == 5 )
+                {
+                    return _mm256_set_epi32( 0x00000000, 0x00000000, 0x00000000, value, value, value, value, value );
+                }
+                else if constexpr ( Size == 6 )
+                {
+                    return _mm256_set_epi32( 0x00000000, 0x00000000, value, value, value, value, value, value );
+                }
+                else if constexpr ( Size == 7 )
+                {
+                    return _mm256_set_epi32( 0x00000000, value, value, value, value, value, value, value );
+                }
+                else
+                {
+                    return _mm256_set_epi32( value, value, value, value, value, value, value, value );
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a mask suitable for extracting
+        /// the <c>Size</c> lowest elements from
+        /// the <c>SIMDType</c> using the <c>And</c> function.
+        /// </summary>
+        /// <returns></returns>
+        static SIMDType Mask( ) noexcept
+        {
+            return Mask( 0xFFFFFFFF );
+        }
+
 
         static SIMDType Set( Type value1 ) noexcept
         {
@@ -1801,6 +1912,54 @@ namespace Harlinn::Math::SIMD
         static SIMDType Set( Type value8, Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 7 )
         {
             return _mm256_set_epi32( value8, value7, value6, value5, value4, value3, value2, value1 );
+        }
+
+        static SIMDType SetX( SIMDType v, Type value )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_epi32( v, _mm_set1_epi32( value ), 0b0001 );
+            }
+            else
+            {
+                return _mm256_blend_epi32( v, _mm256_set1_epi32( value ), 0b0001 );
+            }
+        }
+
+        static SIMDType SetY( SIMDType v, Type value )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_epi32( v, _mm_set1_epi32( value ), 0b0010 );
+            }
+            else
+            {
+                return _mm256_blend_epi32( v, _mm256_set1_epi32( value ), 0b0010 );
+            }
+        }
+
+        static SIMDType SetZ( SIMDType v, Type value )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_epi32( v, _mm_set1_epi32( value ), 0b0100 );
+            }
+            else
+            {
+                return _mm256_blend_epi32( v, _mm256_set1_epi32( value ), 0b0100 );
+            }
+        }
+
+        static SIMDType SetW( SIMDType v, Type value )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_epi32( v, _mm_set1_epi32( value ), 0b1000 );
+            }
+            else
+            {
+                return _mm256_blend_epi32( v, _mm256_set1_epi32( value ), 0b1000 );
+            }
         }
 
 

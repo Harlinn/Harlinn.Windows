@@ -37,6 +37,347 @@ namespace
 
 BOOST_FIXTURE_TEST_SUITE( SIMDInt32Tests, LocalFixture )
 
+// --run_test=SIMDInt32Tests/Set1Test1
+BOOST_AUTO_TEST_CASE( Set1Test1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Set( 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set1Test2
+BOOST_AUTO_TEST_CASE( Set1Test2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set2Test1
+BOOST_AUTO_TEST_CASE( Set2Test1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Set( 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set2Test2
+BOOST_AUTO_TEST_CASE( Set2Test2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set3Test1
+BOOST_AUTO_TEST_CASE( Set3Test1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Set( 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set3Test2
+BOOST_AUTO_TEST_CASE( Set3Test2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set4Test1
+BOOST_AUTO_TEST_CASE( Set4Test1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Set( 4, 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3);
+    BOOST_CHECK( result[ 3 ] == 4 );
+}
+
+// --run_test=SIMDInt32Tests/Set4Test2
+BOOST_AUTO_TEST_CASE( Set4Test2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 4, 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3 );
+    BOOST_CHECK( result[ 3 ] == 4 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set5Test1
+BOOST_AUTO_TEST_CASE( Set5Test1 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 5, 4, 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3 );
+    BOOST_CHECK( result[ 3 ] == 4 );
+    BOOST_CHECK( result[ 4 ] == 5 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set6Test1
+BOOST_AUTO_TEST_CASE( Set6Test1 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 6, 5, 4, 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3 );
+    BOOST_CHECK( result[ 3 ] == 4 );
+    BOOST_CHECK( result[ 4 ] == 5 );
+    BOOST_CHECK( result[ 5 ] == 6 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set7Test1
+BOOST_AUTO_TEST_CASE( Set7Test1 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 7, 6, 5, 4, 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3 );
+    BOOST_CHECK( result[ 3 ] == 4 );
+    BOOST_CHECK( result[ 4 ] == 5 );
+    BOOST_CHECK( result[ 5 ] == 6 );
+    BOOST_CHECK( result[ 6 ] == 7 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/Set8Test1
+BOOST_AUTO_TEST_CASE( Set8Test1 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 8, 7, 6, 5, 4, 3, 2, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 2 );
+    BOOST_CHECK( result[ 2 ] == 3 );
+    BOOST_CHECK( result[ 3 ] == 4 );
+    BOOST_CHECK( result[ 4 ] == 5 );
+    BOOST_CHECK( result[ 5 ] == 6 );
+    BOOST_CHECK( result[ 6 ] == 7 );
+    BOOST_CHECK( result[ 7 ] == 8 );
+}
+
+
+// --run_test=SIMDInt32Tests/SetXTest1
+BOOST_AUTO_TEST_CASE( SetXTest1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetX( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/SetXTest2
+BOOST_AUTO_TEST_CASE( SetXTest2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetX( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 1 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+
+// --run_test=SIMDInt32Tests/SetYTest1
+BOOST_AUTO_TEST_CASE( SetYTest1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetY( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 0 );
+    BOOST_CHECK( result[ 1 ] == 1 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/SetYTest2
+BOOST_AUTO_TEST_CASE( SetYTest2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetY( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 0 );
+    BOOST_CHECK( result[ 1 ] == 1 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+
+// --run_test=SIMDInt32Tests/SetZTest1
+BOOST_AUTO_TEST_CASE( SetZTest1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetZ( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 0 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 1 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/SetZTest2
+BOOST_AUTO_TEST_CASE( SetZTest2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetZ( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 0 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 1 );
+    BOOST_CHECK( result[ 3 ] == 0 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+// --run_test=SIMDInt32Tests/SetWTest1
+BOOST_AUTO_TEST_CASE( SetWTest1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetW( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 4> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 0 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 1 );
+}
+
+// --run_test=SIMDInt32Tests/SetWTest2
+BOOST_AUTO_TEST_CASE( SetWTest2 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Zero( );
+    rmm1 = Traits::SetW( rmm1, 1 );
+    alignas( Traits::AlignAs ) std::array<int, 8> result;
+    Traits::Store( result.data( ), rmm1 );
+
+    BOOST_CHECK( result[ 0 ] == 0 );
+    BOOST_CHECK( result[ 1 ] == 0 );
+    BOOST_CHECK( result[ 2 ] == 0 );
+    BOOST_CHECK( result[ 3 ] == 1 );
+    BOOST_CHECK( result[ 4 ] == 0 );
+    BOOST_CHECK( result[ 5 ] == 0 );
+    BOOST_CHECK( result[ 6 ] == 0 );
+    BOOST_CHECK( result[ 7 ] == 0 );
+}
+
+
+
 // --run_test=SIMDInt32Tests/HSum1Test1
 BOOST_AUTO_TEST_CASE( HSum1Test1 )
 {
