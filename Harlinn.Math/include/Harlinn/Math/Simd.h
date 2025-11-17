@@ -3300,7 +3300,7 @@ namespace Harlinn::Math::SIMD
 
 
 
-
+        /*
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3348,6 +3348,56 @@ namespace Harlinn::Math::SIMD
                 }
             }
         }
+        */
+
+        static SIMDType Load( const Type* src ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return _mm_load_ss( src );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src ) ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast<const float*>( src + 2 ) );
+                    return _mm_insert_ps( low, high, 0x20 );
+                }
+                else
+                {
+                    return _mm_loadu_ps( src );
+                }
+            }
+            else
+            {
+                if constexpr ( N == 5 )
+                {
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_loadu_ps( src ) ), _mm_load_ss( src + 4 ), 1 );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_loadu_ps( src ) ), _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) ), 1 );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    auto rmm1 = _mm_loadu_ps( src );
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast<const float*>( src + 6 ) );
+                    auto rmm2 = _mm_insert_ps( low, high, 0x20 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm2, 1 );
+                }
+                else
+                {
+                    return _mm256_loadu_ps( src );
+                }
+            }
+        }
+
 
         /*
         struct alignas( AlignAs ) Loadable
