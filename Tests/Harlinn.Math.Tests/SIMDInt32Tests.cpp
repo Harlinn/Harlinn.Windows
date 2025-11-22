@@ -377,6 +377,147 @@ BOOST_AUTO_TEST_CASE( SetWTest2 )
 }
 
 
+// --run_test=SIMDInt32Tests/Add1Test1
+BOOST_AUTO_TEST_CASE( Add1Test1 )
+{
+    using Traits = SIMD::Traits<int, 1>;
+    auto rmm1 = Traits::Set( 1 );
+    auto rmm2 = Traits::Set( 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 1 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+}
+
+// --run_test=SIMDInt32Tests/Add2Test1
+BOOST_AUTO_TEST_CASE( Add2Test1 )
+{
+    using Traits = SIMD::Traits<int, 2>;
+    auto rmm1 = Traits::Set( 2, 1 );
+    auto rmm2 = Traits::Set( 3, 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 2 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+    BOOST_CHECK( result[ 1 ] == 5 );
+}
+
+// --run_test=SIMDInt32Tests/Add3Test1
+BOOST_AUTO_TEST_CASE( Add3Test1 )
+{
+    using Traits = SIMD::Traits<int, 3>;
+    auto rmm1 = Traits::Set( 3, 2, 1 );
+    auto rmm2 = Traits::Set( 4, 3, 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 3 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+    BOOST_CHECK( result[ 1 ] == 5 );
+    BOOST_CHECK( result[ 2 ] == 7 );
+}
+
+// --run_test=SIMDInt32Tests/Add4Test1
+BOOST_AUTO_TEST_CASE( Add4Test1 )
+{
+    using Traits = SIMD::Traits<int, 4>;
+    auto rmm1 = Traits::Set( 4, 3, 2, 1 );
+    auto rmm2 = Traits::Set( 5, 4, 3, 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 4 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+    BOOST_CHECK( result[ 1 ] == 5 );
+    BOOST_CHECK( result[ 2 ] == 7 );
+    BOOST_CHECK( result[ 3 ] == 9 );
+}
+
+// --run_test=SIMDInt32Tests/Add5Test1
+BOOST_AUTO_TEST_CASE( Add5Test1 )
+{
+    using Traits = SIMD::Traits<int, 5>;
+    auto rmm1 = Traits::Set( 5, 4, 3, 2, 1 );
+    auto rmm2 = Traits::Set( 6, 5, 4, 3, 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 5 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+    BOOST_CHECK( result[ 1 ] == 5 );
+    BOOST_CHECK( result[ 2 ] == 7 );
+    BOOST_CHECK( result[ 3 ] == 9 );
+    BOOST_CHECK( result[ 4 ] == 11 );
+}
+
+// --run_test=SIMDInt32Tests/Add6Test1
+BOOST_AUTO_TEST_CASE( Add6Test1 )
+{
+    using Traits = SIMD::Traits<int, 6>;
+    auto rmm1 = Traits::Set( 6, 5, 4, 3, 2, 1 );
+    auto rmm2 = Traits::Set( 7, 6, 5, 4, 3, 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 6 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+    BOOST_CHECK( result[ 1 ] == 5 );
+    BOOST_CHECK( result[ 2 ] == 7 );
+    BOOST_CHECK( result[ 3 ] == 9 );
+    BOOST_CHECK( result[ 4 ] == 11 );
+    BOOST_CHECK( result[ 5 ] == 13 );
+}
+
+// --run_test=SIMDInt32Tests/Add7Test1
+BOOST_AUTO_TEST_CASE( Add7Test1 )
+{
+    using Traits = SIMD::Traits<int, 7>;
+    auto rmm1 = Traits::Set( 7, 6, 5, 4, 3, 2, 1 );
+    auto rmm2 = Traits::Set( 8, 7, 6, 5, 4, 3, 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 7 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+    BOOST_CHECK( result[ 1 ] == 5 );
+    BOOST_CHECK( result[ 2 ] == 7 );
+    BOOST_CHECK( result[ 3 ] == 9 );
+    BOOST_CHECK( result[ 4 ] == 11 );
+    BOOST_CHECK( result[ 5 ] == 13 );
+    BOOST_CHECK( result[ 6 ] == 15 );
+}
+
+// --run_test=SIMDInt32Tests/Add8Test1
+BOOST_AUTO_TEST_CASE( Add8Test1 )
+{
+    using Traits = SIMD::Traits<int, 8>;
+    auto rmm1 = Traits::Set( 8, 7, 6, 5, 4, 3, 2, 1 );
+    auto rmm2 = Traits::Set( 9, 8, 7, 6, 5, 4, 3, 2 );
+    auto rmm3 = Traits::Add( rmm1, rmm2 );
+
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result.size( ) == 8 );
+    BOOST_CHECK( result[ 0 ] == 3 );
+    BOOST_CHECK( result[ 1 ] == 5 );
+    BOOST_CHECK( result[ 2 ] == 7 );
+    BOOST_CHECK( result[ 3 ] == 9 );
+    BOOST_CHECK( result[ 4 ] == 11 );
+    BOOST_CHECK( result[ 5 ] == 13 );
+    BOOST_CHECK( result[ 6 ] == 15 );
+    BOOST_CHECK( result[ 7 ] == 17 );
+}
+
+
 
 // --run_test=SIMDInt32Tests/HSum1Test1
 BOOST_AUTO_TEST_CASE( HSum1Test1 )

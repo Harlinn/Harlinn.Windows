@@ -3300,7 +3300,7 @@ namespace Harlinn::Math::SIMD
 
 
 
-        /*
+        
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3315,9 +3315,12 @@ namespace Harlinn::Math::SIMD
                 }
                 else if constexpr ( N == 3 )
                 {
+                    /*
                     __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
                     __m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
                     return _mm_insert_ps( low, high, 0x20 );
+                    */
+                    return Set( src[ 2 ], src[ 1 ], src[0] );
                 }
                 else
                 {
@@ -3348,8 +3351,8 @@ namespace Harlinn::Math::SIMD
                 }
             }
         }
-        */
-
+        
+        /*
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3397,7 +3400,7 @@ namespace Harlinn::Math::SIMD
                 }
             }
         }
-
+        */
 
         /*
         struct alignas( AlignAs ) Loadable
