@@ -3002,7 +3002,17 @@ namespace Harlinn::Math::SIMD
         using PermuteType = m128Permute;
 
 
-
+        /// <summary>
+        /// Returns a SIMD register with all elements set to zero.
+        /// </summary>
+        /// <remarks>
+        /// For N &lt;= 4 (short SIMD type), returns a static __m128 register initialized to zero using _mm_setzero_ps.
+        /// For N &gt; 4 (long SIMD type), returns a static __m256 register initialized to zero using _mm256_setzero_ps.
+        /// The static variable ensures the zeroed register is only initialized once, improving performance.
+        /// </remarks>
+        /// <returns>
+        /// A SIMDType with all elements set to zero.
+        /// </returns>
         static SIMDType Zero( ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3017,6 +3027,15 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Broadcasts a single value to all elements of the SIMD register.
+        /// </summary>
+        /// <param name="value">
+        /// The value to broadcast to all elements of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with all elements set to <c>value</c>.
+        /// </returns>
         static SIMDType Fill( Type value ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3028,6 +3047,19 @@ namespace Harlinn::Math::SIMD
                 return _mm256_broadcast_ss( &value );
             }
         }
+
+        /**
+         * @brief Fills a SIMD register with a specified value for a given number of elements.
+         *
+         * This function broadcasts the provided value to the first Num elements of the SIMD register.
+         * For short SIMD types (N &lt;= 4), it uses specialized Set functions for Num = 1, 2, or 3, and
+         * _mm_set_ps1 for other cases. For long SIMD types (N &gt; 4), it uses specialized Set functions
+         * for Num = 5, 6, or 7, and _mm256_broadcast_ss for other cases.
+         *
+         * @tparam Num Number of elements to fill (must be > 0 and <= Size).
+         * @param value The value to broadcast to the SIMD register.
+         * @return SIMDType with the first Num elements set to value.
+         */
         template<size_t Num>
         static SIMDType Fill( Type value ) noexcept requires ( Num > 0 && Num <= Size )
         {
@@ -3071,6 +3103,19 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /**
+         * @brief Fills a SIMD register with a specified value for a given number of elements, with remaining elements set to 1.0f.
+         *
+         * This function broadcasts the provided value to the lowest Num elements of the SIMD register.
+         * The remaining elements are set to 1.0f. For short SIMD types (N &lt;= 4), it uses specialized
+         * _mm_set_ps patterns for Num = 1, 2, or 3, and _mm_set_ps1 for other cases. For long SIMD types
+         * (N &gt; 4), it uses specialized _mm256_set_ps patterns for Num = 5, 6, or 7, and _mm256_broadcast_ss
+         * for other cases.
+         *
+         * @tparam Num Number of elements to fill (must be > 0 and <= SIMDTypeCapacity).
+         * @param value The value to broadcast to the SIMD register.
+         * @return SIMDType with the lowest Num elements set to value, remaining elements set to 1.0f.
+         */
         template<size_t Num>
         static SIMDType FillDivisor( Type value ) noexcept requires ( Num > 0 && Num <= SIMDTypeCapacity )
         {
@@ -3114,7 +3159,22 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /// <summary>
+        /// Returns a SIMD register with only the valid elements for the current vector size.
+        /// 
+        /// If the vector size (<c>Size</c>) matches the SIMD register capacity (<c>SIMDTypeCapacity</c>),
+        /// the input vector <c>v</c> is returned unchanged.
+        /// Otherwise, the function applies a mask to zero out any unused elements, ensuring that only
+        /// the lowest <c>Size</c> elements are preserved and the rest are set to zero.
+        /// 
+        /// This is useful for operations where the SIMD register may contain extra elements that should
+        /// not participate in further calculations, such as when working with vectors smaller than the
+        /// full SIMD width.
+        /// </summary>
+        /// <param name="v">The SIMD register to trim.</param>
+        /// <returns>
+        /// A SIMD register with only the valid elements for the current vector size.
+        /// </returns>
         static SIMDType Trim( SIMDType v ) noexcept
         {
             if constexpr ( Size == SIMDTypeCapacity )
@@ -3128,7 +3188,20 @@ namespace Harlinn::Math::SIMD
         }
 
 
-
+        /**
+         * @brief Creates a mask SIMD register for extracting the lowest <c>Size</c> elements.
+         *
+         * This function generates a mask suitable for extracting the <c>Size</c> lowest elements from a SIMD register.
+         * The mask is constructed such that only the lowest <c>Size</c> elements are set to the provided <c>value</c>,
+         * and the remaining elements are set to zero. The mask can be used with bitwise operations (e.g., And)
+         * to isolate or operate on only the valid elements of a SIMD register.
+         *
+         * For short SIMD types (N <= 4), the mask is created using _mm_set_epi32 and cast to __m128.
+         * For long SIMD types (N > 4), the mask is created using _mm256_set_epi32 and cast to __m256.
+         *
+         * @param value The value to set for the valid elements in the mask.
+         * @return SIMDType A mask SIMD register with the lowest <c>Size</c> elements set to <c>value</c>, others zero.
+         */
         static SIMDType Mask( UIntType value ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3172,16 +3245,30 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Returns a mask suitable for extracting
-        /// the <c>Size</c> lowest elements from
+        /// Returns a mask suitable for extracting the <c>Size</c> lowest elements from
         /// the <c>SIMDType</c> using the <c>And</c> function.
+        /// 
+        /// This overload sets all bits of the mask to 0xFFFFFFFF, which is commonly used
+        /// to select all elements in a SIMD register. For partial selection, use the overload
+        /// that accepts a value parameter.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A SIMDType mask with all bits set to 0xFFFFFFFF.
+        /// </returns>
         static SIMDType Mask( ) noexcept
         {
             return Mask( 0xFFFFFFFF );
         }
 
+        /// <summary>
+        /// Sets the SIMD register with a single value in the lowest element, zeroing all other elements.
+        /// </summary>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest element set to <c>value1</c> and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value1 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3194,6 +3281,18 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the SIMD register with two values in the lowest elements, zeroing all other elements.
+        /// </summary>
+        /// <param name="value2">
+        /// The value to set in the second-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest two elements set to <c>value2</c> and <c>value1</c>, and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value2, Type value1 ) noexcept requires ( N > 1 )
         {
             if constexpr ( UseShortSIMDType )
@@ -3206,6 +3305,21 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the SIMD register with three values in the lowest elements, zeroing all other elements.
+        /// </summary>
+        /// <param name="value3">
+        /// The value to set in the third-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value2">
+        /// The value to set in the second-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest three elements set to <c>value3</c>, <c>value2</c>, and <c>value1</c>, and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value3, Type value2, Type value1 ) noexcept requires ( N > 2 )
         {
             if constexpr ( UseShortSIMDType )
@@ -3218,6 +3332,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the SIMD register with four values in the lowest elements, zeroing all other elements.
+        /// </summary>
+        /// <param name="value4">
+        /// The value to set in the fourth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value3">
+        /// The value to set in the third-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value2">
+        /// The value to set in the second-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest four elements set to <c>value4</c>, <c>value3</c>, <c>value2</c>, and <c>value1</c>, and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 3 )
         {
             if constexpr ( UseShortSIMDType )
@@ -3230,26 +3362,141 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the SIMD register with five values in the lowest elements, zeroing all other elements.
+        /// </summary>
+        /// <param name="value5">
+        /// The value to set in the fifth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value4">
+        /// The value to set in the fourth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value3">
+        /// The value to set in the third-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value2">
+        /// The value to set in the second-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest five elements set to <c>value5</c>, <c>value4</c>, <c>value3</c>, <c>value2</c>, and <c>value1</c>, and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 4 )
         {
             return _mm256_set_ps( 0.f, 0.f, 0.f, value5, value4, value3, value2, value1 );
         }
 
+        /// <summary>
+        /// Sets the SIMD register with six values in the lowest elements, zeroing all other elements.
+        /// </summary>
+        /// <param name="value6">
+        /// The value to set in the sixth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value5">
+        /// The value to set in the fifth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value4">
+        /// The value to set in the fourth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value3">
+        /// The value to set in the third-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value2">
+        /// The value to set in the second-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest six elements set to <c>value6</c>, <c>value5</c>, <c>value4</c>, <c>value3</c>, <c>value2</c>, and <c>value1</c>, and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 5 )
         {
             return _mm256_set_ps( 0.f, 0.f, value6, value5, value4, value3, value2, value1 );
         }
 
+        /// <summary>
+        /// Sets the SIMD register with seven values in the lowest elements, zeroing all other elements.
+        /// </summary>
+        /// <param name="value7">
+        /// The value to set in the seventh-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value6">
+        /// The value to set in the sixth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value5">
+        /// The value to set in the fifth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value4">
+        /// The value to set in the fourth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value3">
+        /// The value to set in the third-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value2">
+        /// The value to set in the second-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest seven elements set to <c>value7</c>, <c>value6</c>, <c>value5</c>, <c>value4</c>, <c>value3</c>, <c>value2</c>, and <c>value1</c>, and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 6 )
         {
             return _mm256_set_ps( 0.f, value7, value6, value5, value4, value3, value2, value1 );
         }
 
+        /// <summary>
+        /// Sets the SIMD register with eight values in the lowest elements, zeroing all other elements.
+        /// </summary>
+        /// <param name="value8">
+        /// The value to set in the eighth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value7">
+        /// The value to set in the seventh-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value6">
+        /// The value to set in the sixth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value5">
+        /// The value to set in the fifth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value4">
+        /// The value to set in the fourth-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value3">
+        /// The value to set in the third-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value2">
+        /// The value to set in the second-lowest element of the SIMD register.
+        /// </param>
+        /// <param name="value1">
+        /// The value to set in the lowest element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the lowest eight elements set to <c>value8</c>, <c>value7</c>, <c>value6</c>, <c>value5</c>, <c>value4</c>, <c>value3</c>, <c>value2</c>, and <c>value1</c>, and all other elements set to zero.
+        /// </returns>
         static SIMDType Set( Type value8, Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 7 )
         {
             return _mm256_set_ps( value8, value7, value6, value5, value4, value3, value2, value1 );
         }
 
+
+        /// <summary>
+        /// Sets the X (lowest) element of the SIMD register to the specified value.
+        /// </summary>
+        /// <param name="v">
+        /// The SIMD register whose X element will be set.
+        /// </param>
+        /// <param name="value">
+        /// The value to set in the X element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the X element set to <c>value</c>, and all other elements unchanged.
+        /// </returns>
         static SIMDType SetX( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -3262,6 +3509,18 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the Y (second-lowest) element of the SIMD register to the specified value.
+        /// </summary>
+        /// <param name="v">
+        /// The SIMD register whose Y element will be set.
+        /// </param>
+        /// <param name="value">
+        /// The value to set in the Y element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the Y element set to <c>value</c>, and all other elements unchanged.
+        /// </returns>
         static SIMDType SetY( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -3274,6 +3533,18 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the Z (third-lowest) element of the SIMD register to the specified value.
+        /// </summary>
+        /// <param name="v">
+        /// The SIMD register whose Z element will be set.
+        /// </param>
+        /// <param name="value">
+        /// The value to set in the Z element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the Z element set to <c>value</c>, and all other elements unchanged.
+        /// </returns>
         static SIMDType SetZ( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -3286,6 +3557,18 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the W (fourth) element of the SIMD register to the specified value.
+        /// </summary>
+        /// <param name="v">
+        /// The SIMD register whose W element will be set.
+        /// </param>
+        /// <param name="value">
+        /// The value to set in the W element of the SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with the W element set to <c>value</c>, and all other elements unchanged.
+        /// </returns>
         static SIMDType SetW( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -3299,8 +3582,78 @@ namespace Harlinn::Math::SIMD
         }
 
 
-
-        
+        /**
+         * @brief Loads N float values from memory into a SIMD register.
+         *
+         * This function loads N elements of type float from the memory location pointed to by src
+         * into a SIMD register. The loading strategy depends on the value of N and whether a short
+         * SIMD type (128-bit) or a long SIMD type (256-bit) is used.
+         *
+         * - For N == 1: Loads a single float using _mm_load_ss.
+         * - For N == 2: Loads two floats as a double using _mm_load_sd and casts to __m128.
+         * - For N == 3: Loads three floats using the Set function, which fills the SIMD register
+         *   with the provided values.
+         * - For N >= 4 (short SIMD): Loads four floats using _mm_load_ps.
+         * - For N == 5, 6, 7 (long SIMD): Loads the first four floats using _mm_load_ps, then
+         *   inserts additional values using _mm256_insertf128_ps and appropriate intrinsics.
+         * - For N == 8 (long SIMD): Loads eight floats using _mm256_load_ps.
+         *
+         * @param src Pointer to the source array of floats to load.
+         * @return SIMDType The loaded SIMD register containing the N float values.
+         */
+        static SIMDType Load( const Type* src ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return _mm_load_ss( src );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src ) ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    //__m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
+                    //__m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
+                    //return _mm_insert_ps( low, high, 0x20 );
+                    
+                    return Set( src[ 2 ], src[ 1 ], src[ 0 ] );
+                }
+                else
+                {
+                    return _mm_load_ps( src );
+                }
+            }
+            else
+            {
+                if constexpr ( N == 5 )
+                {
+                    // Loads first 4 floats, inserts the 5th as a scalar in the upper lane.
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_load_ss( src + 4 ), 1 );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    // Loads first 4 floats, inserts the next two as a double in the upper lane.
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) ), 1 );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    // Loads first 4 floats, inserts next two as a double and the 7th as a scalar.
+                    auto rmm1 = _mm_load_ps( src );
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast<const float*>( src + 6 ) );
+                    auto rmm2 = _mm_insert_ps( low, high, 0x20 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm2, 1 );
+                }
+                else
+                {
+                    return _mm256_load_ps( src );
+                }
+            }
+        }
+        /*
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3315,11 +3668,11 @@ namespace Harlinn::Math::SIMD
                 }
                 else if constexpr ( N == 3 )
                 {
-                    /*
-                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
-                    __m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
-                    return _mm_insert_ps( low, high, 0x20 );
-                    */
+                    
+                    //__m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
+                    //__m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
+                    //return _mm_insert_ps( low, high, 0x20 );
+                    
                     return Set( src[ 2 ], src[ 1 ], src[0] );
                 }
                 else
@@ -3351,7 +3704,7 @@ namespace Harlinn::Math::SIMD
                 }
             }
         }
-        
+        */
         /*
         static SIMDType Load( const Type* src ) noexcept
         {
@@ -3431,7 +3784,18 @@ namespace Harlinn::Math::SIMD
         }
         */
 
-
+        /// <summary>
+        /// Loads SIMDType from a std::array of elements.
+        /// </summary>
+        /// <typeparam name="NA">
+        /// The number of elements in the source array. Must be greater than or equal to N.
+        /// </typeparam>
+        /// <param name="src">
+        /// Reference to the source std::array containing the elements to load.
+        /// </param>
+        /// <returns>
+        /// A SIMDType containing the loaded elements from the array.
+        /// </returns>
         template<size_t NA>
             requires ( NA >= N )
         static SIMDType Load( const std::array<Type, NA>& src ) noexcept
@@ -3440,19 +3804,88 @@ namespace Harlinn::Math::SIMD
         }
 
 
+        /**
+         * @brief Loads N float values from memory into a SIMD register, allowing for unaligned memory access.
+         *
+         * This function loads N elements of type float from the memory location pointed to by src
+         * into a SIMD register, without requiring the memory to be aligned to the SIMD register's alignment.
+         * The loading strategy depends on the value of N and whether a short SIMD type (128-bit) or a long SIMD type (256-bit) is used.
+         *
+         * - For N == 1: Loads a single float using _mm_load_ss.
+         * - For N == 2: Loads two floats as a double using _mm_load_sd and casts to __m128.
+         * - For N == 3: Loads three floats using the Set function, which fills the SIMD register
+         *   with the provided values.
+         * - For N >= 4 (short SIMD): Loads four floats using _mm_loadu_ps.
+         * - For N == 5, 6, 7 (long SIMD): Loads the first four floats using _mm_loadu_ps, then
+         *   inserts additional values using _mm256_insertf128_ps and appropriate intrinsics.
+         * - For N == 8 (long SIMD): Loads eight floats using _mm256_loadu_ps.
+         *
+         * @param src Pointer to the source array of floats to load. The memory does not need to be aligned.
+         * @return SIMDType The loaded SIMD register containing the N float values.
+         */
 
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_loadu_ps( src );
+                if constexpr ( N == 1 )
+                {
+                    return _mm_load_ss( src );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src ) ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return Set( src[ 2 ], src[ 1 ], src[ 0 ] );
+                }
+                else
+                {
+                    return _mm_loadu_ps( src );
+                }
             }
             else
             {
-                return _mm256_loadu_ps( src );
+                if constexpr ( N == 5 )
+                {
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_loadu_ps( src ) ), _mm_load_ss( src + 4 ), 1 );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_loadu_ps( src ) ), _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) ), 1 );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    auto rmm1 = _mm_loadu_ps( src );
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast<const float*>( src + 6 ) );
+                    auto rmm2 = _mm_insert_ps( low, high, 0x20 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm2, 1 );
+                }
+                else
+                {
+                    return _mm256_loadu_ps( src );
+                }
             }
         }
 
+        /// <summary>
+        /// Stores the contents of a SIMD register to a memory location.
+        /// </summary>
+        /// <param name="dest">
+        /// Pointer to the destination memory where the SIMD register contents will be stored.
+        /// The memory must be properly aligned for SIMD operations.
+        /// </param>
+        /// <param name="src">
+        /// The SIMD register whose contents will be stored to memory.
+        /// </param>
+        /// <remarks>
+        /// For short SIMD types (N &lt;= 4), uses _mm_store_ps to store 128-bit data.
+        /// For long SIMD types (N &gt; 4), uses _mm256_store_ps to store 256-bit data.
+        /// The function does not perform bounds or alignment checks; the caller is responsible
+        /// for ensuring the destination pointer is valid and properly aligned.
+        /// </remarks>
         static void Store( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3464,6 +3897,19 @@ namespace Harlinn::Math::SIMD
                 _mm256_store_ps( dest, src );
             }
         }
+
+        /**
+         * @brief Stores the contents of a SIMD register to a memory location, allowing for unaligned memory access.
+         *
+         * This function writes the contents of the SIMD register <c>src</c> to the memory location pointed to by <c>dest</c>.
+         * Unlike the aligned store operation, this function does not require the destination memory to be aligned to the SIMD register's alignment.
+         * For short SIMD types (N <= 4), it uses <c>_mm_storeu_ps</c> to store 128-bit data.
+         * For long SIMD types (N > 4), it uses <c>_mm256_storeu_ps</c> to store 256-bit data.
+         *
+         * @param dest Pointer to the destination memory where the SIMD register contents will be stored. The memory does not need to be aligned.
+         * @param src The SIMD register whose contents will be stored to memory.
+         * @note The function does not perform bounds checks; the caller is responsible for ensuring the destination pointer is valid.
+         */
         static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3477,12 +3923,13 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Returns the first element of <c>src</<>. The first
-        /// element is the element at the lowest position of <c>src</<>.
+        /// Returns the first element of the SIMD register.
         /// </summary>
-        /// <param name="src">SIMDType to extract the first value from.</param>
+        /// <param name="src">
+        /// The SIMDType register from which to extract the first value.
+        /// </param>
         /// <returns>
-        /// The first element of <c>src</<>.
+        /// The value of the lowest element in <c>src</c>.
         /// </returns>
         static Type First( SIMDType src ) noexcept
         {
@@ -3497,15 +3944,13 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Returns an array containing the lower <c>N</c> elements
-        /// of <c>v</c>.
+        /// Converts a SIMD register to a std::array containing the lower <c>N</c> elements.
         /// </summary>
         /// <param name="src">
-        /// The SIMDType holding the values to return
+        /// The SIMDType register to convert.
         /// </param>
         /// <returns>
-        /// An array containing the lower <c>N</c> elements
-        /// of <c>v</c>.
+        /// An ArrayType containing the lower <c>N</c> elements of <c>src</c>.
         /// </returns>
         static ArrayType ToArray( SIMDType src ) noexcept
         {
@@ -3557,19 +4002,16 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Returns a SIMDType with all elements set to the
-        /// value of <c>v[index]</c>.
+        /// Returns a SIMDType with all elements set to the value of <c>v[index]</c>.
         /// </summary>
         /// <typeparam name="index">
-        /// The index of the value, in <c>v</c> to assign to ell the elements
-        /// of the result, 
+        /// The index of the value in <c>v</c> to assign to all the elements of the result.
         /// </typeparam>
         /// <param name="v">
-        /// The SIMDType type containing the the source value.
+        /// The SIMDType containing the source value.
         /// </param>
         /// <returns>
-        /// A SIMDType with all elements set to the
-        /// value of <c>v[index]</c>.
+        /// A SIMDType with all elements set to the value of <c>v[index]</c>.
         /// </returns>
         template<size_t index>
             requires ( index < Size )
@@ -3640,19 +4082,22 @@ namespace Harlinn::Math::SIMD
         }
 
 
-
         /// <summary>
-        /// Returns the value of <c>v[index]</c>.
+        /// Extracts the value of the element at the specified index from a SIMD register.
         /// </summary>
         /// <typeparam name="index">
-        /// The index of the value, in <c>v</c>.
+        /// The index of the element to extract. Must be less than <c>Size</c>.
         /// </typeparam>
         /// <param name="v">
-        /// The SIMDType type containing the the source value.
+        /// The SIMDType register from which to extract the value.
         /// </param>
         /// <returns>
-        /// The value of <c>v[index]</c>.
+        /// The value of the element at the specified index in <c>v</c>.
         /// </returns>
+        /// <remarks>
+        /// For short SIMD types (N &lt;= 4), uses <c>_mm_cvtss_f32</c> for index 0 and <c>_mm_extract_ps</c> for other indices.
+        /// For long SIMD types (N &gt; 4), extracts from the lower or upper 128-bit lane as appropriate.
+        /// </remarks>
         template<size_t index>
             requires ( index < Size )
         static Type Extract( SIMDType v ) noexcept
@@ -3730,9 +4175,14 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Compute the bitwise AND of packed single-precision (32-bit) 
-        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// Computes the bitwise AND of packed single-precision (32-bit) floating-point elements
+        /// in <c>lhs</c> and <c>rhs</c>, returning the results.
         /// </summary>
+        /// <param name="lhs">SIMDType containing the left-hand side values.</param>
+        /// <param name="rhs">SIMDType containing the right-hand side values.</param>
+        /// <returns>
+        /// SIMDType containing the result of the bitwise AND operation for each element.
+        /// </returns>
         static SIMDType And( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3746,9 +4196,22 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Compute the bitwise NOT of packed single-precision (32-bit) floating-point 
-        /// elements in <c>lhs</c> and then AND with <c>rhs</c>, returning the results.
+        /// Computes the bitwise NOT of packed single-precision (32-bit) floating-point 
+        /// elements in <c>lhs</c> and then ANDs with <c>rhs</c>, returning the results.
         /// </summary>
+        /// <param name="lhs">
+        /// SIMDType containing the left-hand side values. Each element is bitwise NOT-ed before AND.
+        /// </param>
+        /// <param name="rhs">
+        /// SIMDType containing the right-hand side values. Each element is AND-ed with the NOT of the corresponding element in <c>lhs</c>.
+        /// </param>
+        /// <returns>
+        /// SIMDType containing the result of the bitwise AND NOT operation for each element.
+        /// </returns>
+        /// <remarks>
+        /// For N &lt;= 4 (short SIMD type), uses _mm_andnot_ps.
+        /// For N &gt; 4 (long SIMD type), uses _mm256_andnot_ps.
+        /// </remarks>
         static SIMDType AndNot( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3762,9 +4225,18 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Compute the bitwise OR of packed single-precision (32-bit) 
-        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// Computes the bitwise OR of packed single-precision (32-bit) floating-point elements
+        /// in <c>lhs</c> and <c>rhs</c>, returning the results.
         /// </summary>
+        /// <param name="lhs">SIMDType containing the left-hand side values.</param>
+        /// <param name="rhs">SIMDType containing the right-hand side values.</param>
+        /// <returns>
+        /// SIMDType containing the result of the bitwise OR operation for each element.
+        /// </returns>
+        /// <remarks>
+        /// For N &lt;= 4 (short SIMD type), uses _mm_or_ps.
+        /// For N &gt; 4 (long SIMD type), uses _mm256_or_ps.
+        /// </remarks>
         static SIMDType Or( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3778,9 +4250,18 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Compute the bitwise XOR of packed single-precision (32-bit) 
-        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// Computes the bitwise XOR of packed single-precision (32-bit) floating-point elements
+        /// in <c>lhs</c> and <c>rhs</c>, returning the results.
         /// </summary>
+        /// <param name="lhs">SIMDType containing the left-hand side values.</param>
+        /// <param name="rhs">SIMDType containing the right-hand side values.</param>
+        /// <returns>
+        /// SIMDType containing the result of the bitwise XOR operation for each element.
+        /// </returns>
+        /// <remarks>
+        /// For N &lt;= 4 (short SIMD type), uses _mm_xor_ps.
+        /// For N &gt; 4 (long SIMD type), uses _mm256_xor_ps.
+        /// </remarks>
         static SIMDType Xor( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3797,15 +4278,21 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Adds two float32 vectors.
+        /// Adds two float32 SIMD vectors element-wise.
         /// </summary>
-        /// <param name="lhs">float32 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">float32 vector used for the right-hand side of the operation</param>
+        /// <param name="lhs">
+        /// The left-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <param name="rhs">
+        /// The right-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the element-wise sum of <c>lhs</c> and <c>rhs</c>.
+        /// </returns>
         /// <remarks>
-        /// Performs an addition of the packed single-precision floating-point elements (float32 elements) 
-        /// in the first source vector, lhs, with the float32 elements in the second source vector, rhs.
+        /// For N &lt;= 4 (short SIMD type), uses <c>_mm_add_ps</c> to add 128-bit vectors.
+        /// For N &gt; 4 (long SIMD type), uses <c>_mm256_add_ps</c> to add 256-bit vectors.
         /// </remarks>
-        /// <returns>Result of the addition operation.</returns>
         static SIMDType Add( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3819,15 +4306,24 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Add Horizontal single-precision floating-point Values
+        /// Performs horizontal addition of two SIMD vectors containing single-precision floating-point values.
         /// </summary>
-        /// <param name="lhs">float32 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">float32 vector used for the right-hand side of the operation</param>
+        /// <param name="lhs">
+        /// The left-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <param name="rhs">
+        /// The right-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the horizontally added results of <c>lhs</c> and <c>rhs</c>.
+        /// </returns>
         /// <remarks>
         /// Adds pairs of adjacent single-precision floating-point values from the first 
         /// source operand, lhs, and the second source operand, rhs.
+        /// 
+        /// For N &lt;= 4 (short SIMD type), uses <c>_mm_hadd_ps</c> to add 128-bit vectors horizontally.
+        /// For N &gt; 4 (long SIMD type), uses <c>_mm256_hadd_ps</c> to add 256-bit vectors horizontally.
         /// </remarks>
-        /// <returns>Result of the addition operation</returns>
         static SIMDType HAdd( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3840,7 +4336,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /**
+         * @brief Computes the horizontal sum of the elements in a SIMD vector.
+         *
+         * This function returns a SIMD vector where all elements are set to the sum of the input vector's elements.
+         * For short SIMD types (N <= 4), the implementation uses permutations and additions to sum the elements.
+         * For long SIMD types (N > 4), the function splits the input into low and high 128-bit lanes, adds them,
+         * then further reduces to a single sum and broadcasts the result to all elements.
+         *
+         * @param v The SIMD vector whose elements will be summed horizontally.
+         * @return SIMDType A SIMD vector with all elements set to the horizontal sum of the input.
+         *
+         * @note
+         * - For N == 1, returns the input vector unchanged.
+         * - For N == 2, uses permutations to sum the two elements.
+         * - For N == 3, uses multiple permutations and additions to sum three elements.
+         * - For N == 4, uses a combination of permutations and additions to sum all four elements.
+         * - For N > 4, splits the vector into two 128-bit lanes, adds them, then reduces to a single sum and broadcasts.
+         */
         static SIMDType HSum( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3873,7 +4386,20 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /// <summary>
+        /// Computes the average value of the elements in a SIMD vector.
+        /// </summary>
+        /// <param name="v">
+        /// The SIMDType vector whose elements will be averaged.
+        /// </param>
+        /// <returns>
+        /// The average value of the elements in <c>v</c>.
+        /// </returns>
+        /// <remarks>
+        /// This function first computes the horizontal sum of all elements in the SIMD vector <c>v</c>
+        /// using <c>HSum</c>, then extracts the first element of the result using <c>First</c>, and
+        /// divides by the number of elements <c>N</c> to obtain the average.
+        /// </remarks>
         static Type Avg( SIMDType v ) noexcept
         {
             return First( HSum( v ) ) / static_cast< Type >( N );
@@ -3882,14 +4408,21 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Subtracts float32 vectors.
+        /// Subtracts two SIMD vectors containing packed single-precision floating-point elements.
         /// </summary>
-        /// <param name="lhs">float32 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">float32 vector used for the right-hand side of the operation</param>
+        /// <param name="lhs">
+        /// The left-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <param name="rhs">
+        /// The right-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the element-wise difference of <c>lhs</c> and <c>rhs</c>.
+        /// </returns>
         /// <remarks>
-        /// Subtracts the packed single-precision floating-point elements (float32 elements) of the second source vector, rhs, from the first source vector, lhs.
+        /// For N &lt;= 4 (short SIMD type), uses <c>_mm_sub_ps</c> to subtract 128-bit vectors.
+        /// For N &gt; 4 (long SIMD type), uses <c>_mm256_sub_ps</c> to subtract 256-bit vectors.
         /// </remarks>
-        /// <returns>Returns the result of the subtraction operation.</returns>
         static SIMDType Sub( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3903,20 +4436,24 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Add/Subtract single-precision floating-point (float32) Values
+        /// Adds odd-numbered single-precision floating-point values of the first
+        /// source operand, <paramref name="lhs"/>, with the corresponding single-precision
+        /// floating-point values from the second source operand, <paramref name="rhs"/>;
+        /// stores the result in the odd-numbered values of the result. Subtracts the
+        /// even-numbered single-precision floating-point values from the second source
+        /// operand, <paramref name="rhs"/>, from the corresponding single-precision
+        /// floating values in the first source operand, <paramref name="lhs"/>;
+        /// stores the result into the even-numbered values of the result.
         /// </summary>
         /// <param name="lhs">float32 vector used for the left-hand side of the operation</param>
         /// <param name="rhs">float32 vector used for the right-hand side of the operation</param>
         /// <remarks>
-        /// Adds odd-numbered single-precision floating-point values of the first
-        /// source operand, lhs, with the corresponding single-precision floating-point
-        /// values from the second source operand, rhs; stores the result in the odd-numbered
-        /// values of the result. Subtracts the even-numbered single-precision
-        /// floating-point values from the second source operand, rhs, from the corresponding
-        /// single-precision floating values in the first source operand, lhs; stores the
-        /// result into the even-numbered values of the result.
+        /// For N &lt;= 4 (short SIMD type), uses <c>_mm_addsub_ps</c> to add/subtract 128-bit vectors.
+        /// For N &gt; 4 (long SIMD type), uses <c>_mm256_addsub_ps</c> to add/subtract 256-bit vectors.
         /// </remarks>
-        /// <returns>Result of the operation is stored in the result vector, which is returned by the intrinsic.</returns>
+        /// <returns>
+        /// Result of the operation is stored in the result vector, which is returned by the intrinsic.
+        /// </returns>
         static SIMDType AddSub( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3931,15 +4468,21 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Multiplies two float32 vectors.
+        /// Multiplies two float32 SIMD vectors element-wise.
         /// </summary>
-        /// <param name="lhs">float32 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">float32 vector used for the right-hand side of the operation</param>
+        /// <param name="lhs">
+        /// The left-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <param name="rhs">
+        /// The right-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the element-wise product of <c>lhs</c> and <c>rhs</c>.
+        /// </returns>
         /// <remarks>
-        /// Multiplies the packed single-precision floating-point elements (float32 elements) 
-        /// in the first source vector, lhs, with the corresponding float32 elements in the second source vector, rhs.
+        /// For N &lt;= 4 (short SIMD type), uses <c>_mm_mul_ps</c> to multiply 128-bit vectors.
+        /// For N &gt; 4 (long SIMD type), uses <c>_mm256_mul_ps</c> to multiply 256-bit vectors.
         /// </remarks>
-        /// <returns>Result of the multiplication operation.</returns>
         static SIMDType Mul( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3952,17 +4495,72 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Multiplies a SIMD vector by a scalar value.
+        /// </summary>
+        /// <param name="lhs">
+        /// The scalar value to multiply each element of the SIMD vector by.
+        /// </param>
+        /// <param name="rhs">
+        /// The SIMD vector whose elements will be multiplied by the scalar value.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the result of multiplying each element of <c>rhs</c> by <c>lhs</c>.
+        /// </returns>
+        /// <remarks>
+        /// This function broadcasts the scalar <c>lhs</c> to all elements of a SIMD register using <c>Fill(lhs)</c>,
+        /// then performs an element-wise multiplication with <c>rhs</c> using the <c>Mul</c> function.
+        /// </remarks>
         static SIMDType Mul( Type lhs, SIMDType rhs ) noexcept
         {
             return Mul( Fill( lhs ), rhs );
         }
 
+        /// <summary>
+        /// Multiplies a SIMD vector by a scalar value.
+        /// </summary>
+        /// <param name="lhs">
+        /// The SIMD vector whose elements will be multiplied by the scalar value.
+        /// </param>
+        /// <param name="rhs">
+        /// The scalar value to multiply each element of the SIMD vector by.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the result of multiplying each element of <c>lhs</c> by <c>rhs</c>.
+        /// </returns>
+        /// <remarks>
+        /// This function broadcasts the scalar <c>rhs</c> to all elements of a SIMD register using <c>Fill(rhs)</c>,
+        /// then performs an element-wise multiplication with <c>lhs</c> using the <c>Mul</c> function.
+        /// </remarks>
         static SIMDType Mul( SIMDType lhs, Type rhs ) noexcept
         {
             return Mul( lhs, Fill( rhs ) );
         }
 
 
+        /**
+         * @brief Multiplies two quaternions using SIMD operations.
+         *
+         * This function computes the product of two quaternions, q1 and q2, using SIMD intrinsics.
+         * It assumes both input vectors represent quaternions with four components (Size == 4).
+         *
+         * The multiplication is performed using a combination of swizzling, element-wise multiplication,
+         * and fused multiply-add operations, following the quaternion multiplication rules.
+         *
+         * @param q1 The first quaternion (SIMDType with 4 elements).
+         * @param q2 The second quaternion (SIMDType with 4 elements).
+         * @return SIMDType The resulting quaternion product.
+         *
+         * @note
+         * - The function requires that Size == 4.
+         * - The implementation uses control vectors to handle sign changes and component selection.
+         * - The result is computed as:
+         *   result = q1 * q2.w
+         *          + controlWZYX * (q1Swizzle * q2.x)
+         *          + controlZWXY * (q1Swizzle * q2.y)
+         *          + controlYXWZ * (q1Swizzle * q2.z)
+         *   where q1Swizzle is permuted as needed for each step.
+         */
         inline static SIMDType QuaternionMultiply( SIMDType q1, SIMDType q2 ) noexcept
             requires ( Size == 4 )
         {
@@ -3999,6 +4597,25 @@ namespace Harlinn::Math::SIMD
             return result;
         }
 
+        /// <summary>
+        /// Computes the horizontal product of the elements in a SIMD vector.
+        /// </summary>
+        /// <param name="v">
+        /// The SIMD vector whose elements will be multiplied horizontally.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector where all elements are set to the product of the input vector's elements.
+        /// For N == 1, returns the input vector unchanged.
+        /// For N == 2, multiplies the two elements and returns the result in both positions.
+        /// For N == 3, multiplies all three elements and returns the result in all positions.
+        /// For N == 4, multiplies all four elements and returns the result in all positions.
+        /// For N > 4, splits the vector into low and high 128-bit lanes, multiplies their elements,
+        /// and combines the results as appropriate for the vector size.
+        /// </returns>
+        /// <remarks>
+        /// This function uses SIMD intrinsics to efficiently compute the product of all elements
+        /// in the vector, broadcasting the result to all elements of the returned SIMD vector.
+        /// </remarks>
         static SIMDType HProd( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -4061,15 +4678,21 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Divides one float32 vector by another.
+        /// Divides two SIMD vectors containing packed single-precision floating-point elements.
         /// </summary>
-        /// <param name="lhs">float32 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">float32 vector used for the right-hand side of the operation</param>
+        /// <param name="lhs">
+        /// The left-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <param name="rhs">
+        /// The right-hand side SIMD vector containing packed single-precision floating-point elements.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the element-wise division of <c>lhs</c> by <c>rhs</c>.
+        /// </returns>
         /// <remarks>
-        /// Divides the packed single-precision floating-point elements (float32 elements) 
-        /// in the first source vector, lhs, by the corresponding float32 elements in the second source vector, rhs.
+        /// For N &lt;= 4 (short SIMD type), uses <c>_mm_div_ps</c> to divide 128-bit vectors.
+        /// For N &gt; 4 (long SIMD type), uses <c>_mm256_div_ps</c> to divide 256-bit vectors.
         /// </remarks>
-        /// <returns>Result of the division operation</returns>
         static SIMDType Div( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -4082,10 +4705,37 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Divides each element of the SIMD vector <c>lhs</c> by the scalar value <c>rhs</c>.
+        /// </summary>
+        /// <param name="lhs">
+        /// The left-hand side SIMD vector containing packed elements to be divided.
+        /// </param>
+        /// <param name="rhs">
+        /// The scalar value to divide each element of the SIMD vector <c>lhs</c> by.
+        /// </param>
+        /// <returns>
+        /// A SIMD vector containing the result of element-wise division of <c>lhs</c> by <c>rhs</c>.
+        /// </returns>
+        /// <remarks>
+        /// This function broadcasts the scalar <c>rhs</c> to all elements of a SIMD register using <c>Fill(rhs)</c>,
+        /// then performs an element-wise division with <c>lhs</c> using the <c>Div</c> function.
+        /// </remarks>
         static SIMDType Div( SIMDType lhs, Type rhs ) noexcept
         {
             return Div( lhs, Fill( rhs ) );
         }
+
+        /**
+         * @brief Permutes elements of a SIMD register according to a specified pattern.
+         *
+         * This is a variadic template placeholder for SIMD permutation operations.
+         * No matching overload is provided; attempting to use this function will result in a static assertion failure.
+         *
+         * @tparam Args Variadic template arguments specifying permutation parameters.
+         * @param args Permutation arguments.
+         * @note This function is intentionally not implemented and will always trigger a static assertion.
+         */
 
         template<typename ... Args>
         static SIMDType Permute( Args&& ... args )
@@ -4093,6 +4743,21 @@ namespace Harlinn::Math::SIMD
             static_assert( false, "No matching overload" );
         }
 
+        /// <summary>
+        /// Permutes the elements of a SIMD register according to the specified shuffle mask.
+        /// </summary>
+        /// <param name="v">The SIMD register whose elements will be permuted.</param>
+        /// <param name="shuffleMask">
+        /// The mask that determines the permutation pattern. Each element in the result is selected
+        /// from the input register according to the mask.
+        /// </param>
+        /// <returns>
+        /// A SIMD register with elements permuted as specified by <paramref name="shuffleMask"/>.
+        /// </returns>
+        /// <remarks>
+        /// For short SIMD types (128-bit), uses <c>_mm_permute_ps</c>.
+        /// For long SIMD types (256-bit), uses <c>_mm256_permute_ps</c>.
+        /// </remarks>
         template<int shuffleMask>
         static SIMDType Permute( SIMDType v ) noexcept
         {
@@ -4107,6 +4772,22 @@ namespace Harlinn::Math::SIMD
         }
         
 
+        /// <summary>
+        /// Permutes the elements of a SIMD register according to the specified shuffle mask.
+        /// </summary>
+        /// <typeparam name="shuffle">
+        /// The shuffle mask to use for permuting the elements. Each element in the result is selected
+        /// from the input register according to the mask.
+        /// </typeparam>
+        /// <param name="v">
+        /// The SIMD register whose elements will be permuted.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by <paramref name="shuffle"/>.
+        /// </returns>
+        /// <remarks>
+        /// For short SIMD types (128-bit), uses <c>_mm_permute_ps</c>.
+        /// </remarks>
         template<UInt32 shuffle>
         static SIMDType Swizzle( SIMDType v ) noexcept requires( UseShortSIMDType )
         {
@@ -4114,6 +4795,55 @@ namespace Harlinn::Math::SIMD
         }
 
         
+        /**
+         * <summary>
+         * Permute elements of a 128-bit float vector (<c>__m128</c>) using runtime selection indices.
+         * </summary>
+         *
+         * <remarks>
+         * This overload of <c>Swizzle</c> is only available for the "short" SIMD type (128-bit)
+         * and is constrained by <c>requires(UseShortSIMDType)</c>. It constructs a 128-bit integer
+         * control vector from the provided selection indices and uses the <c>_mm_permutevar_ps</c>
+         * intrinsic to permute the packed single-precision floating-point elements of <paramref name="v"/>.
+         *
+         * The selection indices are ordered as (selection4, selection3, selection2, selection1)
+         * corresponding to the resulting element slots from highest to lowest (element 3 .. element 0).
+         * Each selection value must be in the range [0,3] and selects which source element is placed
+         * in the corresponding destination slot. For example, passing (3,2,1,0) yields the identity
+         * permutation; passing (0,0,0,0) broadcasts the lowest element to all lanes.
+         *
+         * The control vector is created from a temporary std::array<UInt32,4> with the layout
+         * { selection1, selection2, selection3, selection4 } before being loaded into an
+         * <c>__m128i</c> and passed to <c>_mm_permutevar_ps</c>. The array is aligned to
+         * <c>AlignAs</c> to satisfy the aligned load intrinsic.
+         *
+         * <para>
+         * Notes:
+         * - The intrinsic <c>_mm_permutevar_ps</c> requires the control vector to be a 128-bit
+         *   integer lane; this implementation builds that control vector at runtime.
+         * - Validity of the selection indices (0..3) is the caller's responsibility; values
+         *   outside this range produce implementation-defined results.
+         * - This function is noexcept and expects the <c>UseShortSIMDType</c> specialization.
+         * - Ensure the target CPU and compiler support the used intrinsics.
+         * </para>
+         *
+         * <example>
+         * // Example: broadcast element 0 into all lanes
+         * auto r = Swizzle( v, 0, 0, 0, 0 );
+         *
+         * // Example: reverse elements (3,2,1,0)
+         * auto r2 = Swizzle( v, 3, 2, 1, 0 );
+         * </example>
+         *
+         * <param name="v">Input SIMD register containing four single-precision floats.</param>
+         * <param name="selection4">Index (0..3) selecting the source element for result lane 3 (highest).</param>
+         * <param name="selection3">Index (0..3) selecting the source element for result lane 2.</param>
+         * <param name="selection2">Index (0..3) selecting the source element for result lane 1.</param>
+         * <param name="selection1">Index (0..3) selecting the source element for result lane 0 (lowest).</param>
+         * <returns>
+         * A <c>SIMDType</c> (<c>__m128</c>) with elements permuted according to the provided indices.
+         * </returns>
+         */
         static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept
             requires( UseShortSIMDType )
         {
@@ -4122,6 +4852,45 @@ namespace Harlinn::Math::SIMD
             return _mm_permutevar_ps( v, selectionControl );
         }
 
+
+        /// <summary>
+        /// Permutes the elements of a 256-bit SIMD register according to the specified selection indices.
+        /// </summary>
+        /// <param name="v">
+        /// The SIMD register whose elements will be permuted.
+        /// </param>
+        /// <param name="selection8">
+        /// The index for the highest element in the result.
+        /// </param>
+        /// <param name="selection7">
+        /// The index for the next-highest element in the result.
+        /// </param>
+        /// <param name="selection6">
+        /// The index for the next element in the result.
+        /// </param>
+        /// <param name="selection5">
+        /// The index for the next element in the result.
+        /// </param>
+        /// <param name="selection4">
+        /// The index for the next element in the result.
+        /// </param>
+        /// <param name="selection3">
+        /// The index for the next element in the result.
+        /// </param>
+        /// <param name="selection2">
+        /// The index for the next element in the result.
+        /// </param>
+        /// <param name="selection1">
+        /// The index for the lowest element in the result.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by the selection indices.
+        /// </returns>
+        /// <remarks>
+        /// This function constructs a control vector from the provided selection indices and uses
+        /// the _mm256_permutevar8x32_ps intrinsic to permute the elements of the input SIMD register.
+        /// The selection indices should be in the range [0, 7] for a 256-bit SIMD register.
+        /// </remarks>
         static SIMDType Swizzle( SIMDType v, UInt32 selection8, UInt32 selection7, UInt32 selection6, UInt32 selection5, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept
             requires( UseShortSIMDType == false )
         {
@@ -4131,6 +4900,16 @@ namespace Harlinn::Math::SIMD
         }
         
 
+        /**
+         * @brief Variadic template placeholder for SIMD shuffle operations.
+         *
+         * This function serves as a catch-all for unsupported or unimplemented shuffle overloads.
+         * Attempting to use this function will result in a static assertion failure.
+         *
+         * @tparam Args Variadic template arguments specifying shuffle parameters.
+         * @param args Shuffle arguments.
+         * @note This function is intentionally not implemented and will always trigger a static assertion.
+         */
 
         template<typename ... Args>
         static SIMDType Shuffle( Args&& ... args )
@@ -4138,11 +4917,55 @@ namespace Harlinn::Math::SIMD
             static_assert( false, "No matching overload" );
         }
 
+        /// <summary>
+        /// Permutes the elements of two 128-bit SIMD registers according to the specified selection indices.
+        /// </summary>
+        /// <param name="v1">
+        /// The first SIMD register whose elements will be permuted.
+        /// </param>
+        /// <param name="v2">
+        /// The second SIMD register whose elements will be permuted.
+        /// </param>
+        /// <param name="selection4">
+        /// The index for the highest element in the result.
+        /// </param>
+        /// <param name="selection3">
+        /// The index for the next-highest element in the result.
+        /// </param>
+        /// <param name="selection2">
+        /// The index for the next-lowest element in the result.
+        /// </param>
+        /// <param name="selection1">
+        /// The index for the lowest element in the result.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by the selection indices.
+        /// </returns>
+        /// <remarks>
+        /// This function uses the _mm_shuffle_ps intrinsic to permute the elements of the input SIMD registers.
+        /// The selection indices should be in the range [0, 3] for a 128-bit SIMD register.
+        /// </remarks>
         template<UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1>
         static SIMDType Shuffle( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType )
         {
             return _mm_shuffle_ps( v1, v2, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
         }
+
+        /// <summary>
+        /// Permutes the elements of a 128-bit SIMD register according to the specified selection indices.
+        /// </summary>
+        /// <typeparam name="selection4">The index for the highest element in the result.</typeparam>
+        /// <typeparam name="selection3">The index for the next-highest element in the result.</typeparam>
+        /// <typeparam name="selection2">The index for the next-lowest element in the result.</typeparam>
+        /// <typeparam name="selection1">The index for the lowest element in the result.</typeparam>
+        /// <param name="v1">The SIMD register whose elements will be permuted.</param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by the selection indices.
+        /// </returns>
+        /// <remarks>
+        /// This function uses the _mm_shuffle_ps intrinsic to permute the elements of the input SIMD register.
+        /// The selection indices should be in the range [0, 3] for a 128-bit SIMD register.
+        /// </remarks>
 
         template<UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1>
         static SIMDType Shuffle( SIMDType v1 ) noexcept requires( UseShortSIMDType )
@@ -4151,20 +4974,22 @@ namespace Harlinn::Math::SIMD
         }
 
 
-
-
-
         /// <summary>
-        /// Set each bit of the result based on the most significant bit of 
-        /// the corresponding packed single-precision (32-bit) floating-point 
-        /// element in v.
+        /// Creates a bitmask from the most significant bits of each packed single-precision (32-bit) 
+        /// floating-point element in the SIMD register <paramref name="v"/>.
         /// </summary>
-        /// <param name="v">Elements to test</param>
+        /// <param name="v">
+        /// SIMD register containing packed single-precision floating-point elements.
+        /// </param>
         /// <returns>
-        /// Bit mask based on the most significant bit of 
-        /// the corresponding packed single-precision (32-bit) floating-point 
-        /// element in v.
+        /// An integer bitmask where each bit corresponds to the most significant bit of each element in <paramref name="v"/>.
+        /// For 128-bit SIMD, returns a 4-bit mask; for 256-bit SIMD, returns an 8-bit mask.
         /// </returns>
+        /// <remarks>
+        /// - For short SIMD types (128-bit), uses <c>_mm_movemask_ps</c>.
+        /// - For long SIMD types (256-bit), uses <c>_mm256_movemask_ps</c>.
+        /// This is typically used for quick checks of sign bits or for conditional operations.
+        /// </remarks>
         static int MoveMask( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -4178,16 +5003,21 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Set each bit of the result based on the most significant bit of 
-        /// the corresponding packed single-precision (32-bit) floating-point 
-        /// element in v.
+        /// Creates a bitmask from the most significant bits of each packed single-precision (32-bit)
+        /// floating-point element in the SIMD integer register <paramref name="v"/>.
         /// </summary>
-        /// <param name="v">Elements to test</param>
+        /// <param name="v">
+        /// SIMD integer register containing packed 32-bit integer elements.
+        /// </param>
         /// <returns>
-        /// Bit mask based on the most significant bit of 
-        /// the corresponding packed single-precision (32-bit) floating-point 
-        /// element in v.
+        /// An integer bitmask where each bit corresponds to the most significant bit of each element in <paramref name="v"/>.
+        /// For 128-bit SIMD, returns a 4-bit mask; for 256-bit SIMD, returns an 8-bit mask.
         /// </returns>
+        /// <remarks>
+        /// - For short SIMD types (128-bit), uses <c>_mm_movemask_ps</c> after casting to <c>__m128</c>.
+        /// - For long SIMD types (256-bit), uses <c>_mm256_movemask_ps</c> after casting to <c>__m256</c>.
+        /// This is typically used for quick checks of sign bits or for conditional operations.
+        /// </remarks>
         static int MoveMask( SIMDIntegerType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -4201,7 +5031,32 @@ namespace Harlinn::Math::SIMD
         }
 
     private:
-        // Handles permutes that cannot be performed using a single _mm_shuffle_ps.
+        /// <summary>
+        /// Permute implementation for shuffle masks that select elements from both input vectors.
+        ///
+        /// This generic implementation of <c>PermuteImpl</c> allows for flexible permutation of elements
+        /// from two SIMD registers (<c>v1</c> and <c>v2</c>) based on the shuffle mask and selection flags.
+        /// The <c>shuffle</c> parameter specifies the permutation pattern, while the <c>v2x</c>, <c>v2y</c>,
+        /// <c>v2z</c>, and <c>v2w</c> flags indicate whether each corresponding element in the result should
+        /// be selected from <c>v2</c> (<c>true</c>) or <c>v1</c> (<c>false</c>).
+        ///
+        /// The function creates a selection mask, permutes both input vectors, and blends the results
+        /// according to the mask, returning the final permuted SIMD register.
+        ///
+        /// <typeparam name="shuffle">The shuffle mask to use for permuting the elements.</typeparam>
+        /// <typeparam name="v2x">If true, select the X element from v2; otherwise from v1.</typeparam>
+        /// <typeparam name="v2y">If true, select the Y element from v2; otherwise from v1.</typeparam>
+        /// <typeparam name="v2z">If true, select the Z element from v2; otherwise from v1.</typeparam>
+        /// <typeparam name="v2w">If true, select the W element from v2; otherwise from v1.</typeparam>
+        /// <param name="v1">The first SIMD register.</param>
+        /// <param name="v2">The second SIMD register.</param>
+        /// <returns>
+        /// A SIMDType with elements permuted and selected from <c>v1</c> and <c>v2</c> as specified.
+        /// </returns>
+        /// <remarks>
+        /// Uses <c>_mm_shuffle_ps</c> to permute both input vectors, then blends the results using
+        /// bitwise operations and the selection mask.
+        /// </remarks>
         template<UInt32 shuffle, bool v2x, bool v2y, bool v2z, bool v2w>
         struct PermuteImpl
         {
@@ -4225,7 +5080,28 @@ namespace Harlinn::Math::SIMD
             }
         };
 
-        // Handles permutes that only read from the first vector.
+        /// <summary>
+        /// Permute implementation for shuffle masks that only read from the first vector.
+        /// 
+        /// This specialization of <c>PermuteImpl</c> is used when all elements of the result
+        /// are selected from the first input SIMD vector (<c>v1</c>). The shuffle mask
+        /// determines the permutation pattern, and the second input vector is ignored.
+        /// 
+        /// <typeparam name="shuffle">
+        /// The shuffle mask to use for permuting the elements.
+        /// </typeparam>
+        /// <param name="v1">
+        /// The SIMD register whose elements will be permuted.
+        /// </param>
+        /// <param name="">
+        /// Unused second SIMD register.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by the shuffle mask.
+        /// </returns>
+        /// <remarks>
+        /// Uses <c>_mm_shuffle_ps</c> to permute the elements of <c>v1</c>.
+        /// </remarks>
         template<UInt32 shuffle>
         struct PermuteImpl<shuffle, false, false, false, false>
         {
@@ -4235,7 +5111,28 @@ namespace Harlinn::Math::SIMD
             }
         };
 
-        // Handles permutes that only read from the second vector.
+        /// <summary>
+        /// Permute implementation for shuffle masks that only read from the second vector.
+        /// 
+        /// This specialization of <c>PermuteImpl</c> is used when all elements of the result
+        /// are selected from the second input SIMD vector (<c>v2</c>). The shuffle mask
+        /// determines the permutation pattern, and the first input vector is ignored.
+        /// 
+        /// <typeparam name="shuffle">
+        /// The shuffle mask to use for permuting the elements.
+        /// </typeparam>
+        /// <param name="">
+        /// Unused first SIMD register.
+        /// </param>
+        /// <param name="v2">
+        /// The SIMD register whose elements will be permuted.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by the shuffle mask.
+        /// </returns>
+        /// <remarks>
+        /// Uses <c>_mm_shuffle_ps</c> to permute the elements of <c>v2</c>.
+        /// </remarks>
         template<UInt32 shuffle>
         struct PermuteImpl<shuffle, true, true, true, true>
         {
@@ -4245,7 +5142,29 @@ namespace Harlinn::Math::SIMD
             }
         };
 
-        // Handles permutes that read XY from the first vector, ZW from the second.
+        /// <summary>
+        /// Permute implementation for shuffle masks that read the first two elements from the first vector
+        /// and the last two elements from the second vector.
+        /// 
+        /// This specialization of <c>PermuteImpl</c> is used when the result vector's first two elements
+        /// are selected from the first input SIMD vector (<c>v1</c>), and the last two elements are selected
+        /// from the second input SIMD vector (<c>v2</c>). The shuffle mask determines the permutation pattern.
+        /// 
+        /// <typeparam name="shuffle">
+        /// The shuffle mask to use for permuting the elements.
+        /// </typeparam>
+        /// <param name="v1">
+        /// The SIMD register whose first two elements will be used in the result.
+        /// </param>
+        /// <param name="v2">
+        /// The SIMD register whose last two elements will be used in the result.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by the shuffle mask.
+        /// </returns>
+        /// <remarks>
+        /// Uses <c>_mm_shuffle_ps</c> to permute the elements of <c>v1</c> and <c>v2</c>.
+        /// </remarks>
         template<UInt32 shuffle>
         struct PermuteImpl<shuffle, false, false, true, true>
         {
@@ -4255,7 +5174,28 @@ namespace Harlinn::Math::SIMD
             }
         };
 
-        // Handles permutes that read XY from the second vector, ZW from the first.
+        /// <summary>
+        /// Permute implementation for shuffle masks that read XY from the second vector and ZW from the first.
+        /// 
+        /// This specialization of <c>PermuteImpl</c> is used when the result vector's first two elements
+        /// are selected from the second input SIMD vector (<c>v2</c>), and the last two elements are selected
+        /// from the first input SIMD vector (<c>v1</c>). The shuffle mask determines the permutation pattern.
+        /// 
+        /// <typeparam name="shuffle">
+        /// The shuffle mask to use for permuting the elements.
+        /// </typeparam>
+        /// <param name="v1">
+        /// The SIMD register whose last two elements will be used in the result.
+        /// </param>
+        /// <param name="v2">
+        /// The SIMD register whose first two elements will be used in the result.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with elements permuted as specified by the shuffle mask.
+        /// </returns>
+        /// <remarks>
+        /// Uses <c>_mm_shuffle_ps</c> to permute the elements of <c>v2</c> and <c>v1</c>.
+        /// </remarks>
         template<UInt32 shuffle>
         struct PermuteImpl<shuffle, true, true, false, false>
         {
@@ -4265,6 +5205,28 @@ namespace Harlinn::Math::SIMD
             }
         };
     public:
+
+         /// <summary>
+         /// Permutes and blends elements from two SIMD vectors according to the compile-time indices.
+         /// </summary>
+         /// <typeparam name="X">Index for the lowest element in the result (0..7). If &gt;=4 selects from v2.</typeparam>
+         /// <typeparam name="Y">Index for the next element in the result (0..7). If &gt;=4 selects from v2.</typeparam>
+         /// <typeparam name="Z">Index for the next element in the result (0..7). If &gt;=4 selects from v2.</typeparam>
+         /// <typeparam name="W">Index for the highest element in the result (0..7). If &gt;=4 selects from v2.</typeparam>
+         /// <param name="v1">First input SIMD vector. Elements with indices 0..3 are taken from this vector when index &lt; 4.</param>
+         /// <param name="v2">Second input SIMD vector. Elements with indices 4..7 are taken from this vector when index &gt;= 4.</param>
+         /// <returns>
+         /// A SIMDType containing elements selected and arranged according to template indices X, Y, Z and W.
+         /// Elements are chosen from v1 when the corresponding index is in range [0,3], otherwise from v2
+         /// (index values are masked to their low two bits when forming the shuffle control).
+         /// </returns>
+         /// <remarks>
+         /// The implementation computes a 4-lane shuffle mask using _MM_SHUFFLE applied to the low two
+         /// bits of each index. It then determines, for each lane, whether the element should be selected
+         /// from v2 (index > 3). Finally, the function dispatches to an appropriate PermuteImpl specialization
+         /// selected by the computed shuffle and per-lane source flags (v2x/v2y/v2z/v2w).
+         /// This provides a compile-time optimized permutation/blend that avoids runtime branching.
+         /// </remarks>
         template<UInt32 X, UInt32 Y, UInt32 Z, UInt32 W>
         static inline SIMDType Permute( SIMDType v1, SIMDType v2 ) noexcept
         {
@@ -4279,44 +5241,234 @@ namespace Harlinn::Math::SIMD
         }
 
         // Special-case permute templates
+        
+        /// <summary>
+        /// Specialization of the compile-time Permute template for the identity permutation.
+        /// </summary>
+        /// <remarks>
+        /// This overload corresponds to the compile-time indices &lt;0,1,2,3&gt; which represent
+        /// the identity shuffle for a 4-lane 128-bit SIMD register (or the corresponding lower
+        /// 4 lanes of a wider register). Because the requested permutation selects each element
+        /// from the same position it occupies in the input, the function simply returns the
+        /// first input operand unchanged.
+        /// 
+        /// The second SIMD operand is intentionally unused in this specialization and is present
+        /// only to match the general Permute signature that accepts two inputs. The function is
+        /// constexpr and noexcept, enabling use in compile-time contexts and guaranteeing no
+        /// side-effects.
+        /// </remarks>
+        /// <param name="v1">The input SIMD value whose elements are returned unchanged.</param>
+        /// <param name="">Unused second SIMD operand (ignored).</param>
+        /// <returns>Returns <paramref name="v1"/> unchanged.</returns>
         template<>
         static inline constexpr SIMDType Permute<0, 1, 2, 3>( SIMDType v1, SIMDType ) noexcept
         {
             return v1;
         }
+
+        /**
+         * <summary>
+         * Specialization of the compile-time Permute template that selects all elements from the
+         * second input SIMD vector.
+         * </summary>
+         *
+         * <remarks>
+         * When the compile-time permutation indices are &lt;4,5,6,7&gt; it means "select lanes 0..3
+         * from the second input operand" for a 4-lane view (or the corresponding upper lanes when
+         * working with a wider register). This specialization short-circuits the general permute
+         * implementation and returns the second input vector unchanged. The first input parameter
+         * is intentionally unused.
+         *
+         * This overload is constexpr and noexcept and is intended as a compile-time optimization:
+         * the identity permutation for the second operand can be returned directly without any
+         * shuffle or blend intrinsics.
+         * </remarks>
+         *
+         * <param name="v1">Unused first SIMD operand (ignored by this specialization).</param>
+         * <param name="v2">The second SIMD operand whose elements are returned unchanged.</param>
+         * <returns>Returns <paramref name="v2"/> unchanged.</returns>
+         */
         template<>
         static inline constexpr SIMDType Permute<4, 5, 6, 7>( SIMDType, SIMDType v2 ) noexcept
         {
             return v2;
         }
 
+        /// <summary>
+        /// Permute specialization that builds a 4-element result by taking the lower two element
+        /// from the first operand <c>v1</c> and the lower two element from the second operand <c>v2</c>.
+        /// </summary>
+        /// <remarks>
+        /// This is a compile-time specialization of the generic <c>Permute</c> template for the
+        /// indices &lt;0,1,4,5&gt;. It produces the result vector:
+        /// result[0] = v1[0], result[1] = v1[1], result[2] = v2[0], result[3] = v2[1].
+        ///
+        /// The implementation uses the SSE intrinsic <c>_mm_movelh_ps</c> which moves the low
+        /// 64 bits (two floats) from the second source into the high 64 bits of the result and
+        /// keeps the low 64 bits from the first source. This provides an efficient hardware
+        /// instruction for this particular lane combination.
+        ///
+        /// Constraints:
+        /// - This specialization is valid for the "short" SIMD type (128-bit, __m128).
+        /// - The function is noexcept and constexpr-eligible via compile-time template selection.
+        /// </remarks>
+        /// <param name="v1">The first input SIMD register (source for lanes 0 and 1).</param>
+        /// <param name="v2">The second input SIMD register (source for lanes 2 and 3).</param>
+        /// <returns>
+        /// A SIMDType containing lanes { v1[0], v1[1], v2[0], v2[1] } in that order.
+        /// </returns>
 
         template<>
         static inline SIMDType Permute<0, 1, 4, 5>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_movelh_ps( v1, v2 );
         }
+
+        /// <summary>
+        /// Permutes the elements of two 128-bit SIMD registers according to the indices &lt;6,7,2,3&gt;.
+        ///
+        /// This specialization combines the high 64-bit lanes (upper halves) of the two input
+        /// 128-bit vectors using the SSE intrinsic <c>_mm_movehl_ps</c>. It produces a new
+        /// 128-bit vector composed from parts of both inputs by moving the high-order lanes
+        /// appropriately into the result.
+        ///
+        /// Parameters:
+        /// - v1: First input SIMD register.
+        /// - v2: Second input SIMD register.
+        ///
+        /// Returns:
+        /// A SIMDType value constructed by combining the high halves of the inputs using
+        /// a single intrinsic. The operation is constexpr-like in effect and is marked
+        /// noexcept because it uses a hardware intrinsic with no runtime failure modes.
+        ///
+        /// Remarks:
+        /// - This function maps directly to the SSE intrinsic <c>_mm_movehl_ps</c>, which
+        ///   moves the high-order 64 bits from the source registers to form the result.
+        /// - Do not change the implementation unless the corresponding permutation semantics
+        ///   are carefully validated on all target architectures.
         template<>
         static inline SIMDType Permute<6, 7, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_movehl_ps( v1, v2 );
         }
+
+        /// <summary>
+        /// Permute specialization that builds a 4-element result by interleaving the lower two elements
+        /// from the first operand <c>v1</c> and the lower two elements from the second operand <c>v2</c>.
+        /// 
+        /// The resulting vector contains elements in the following order:
+        /// 
+        /// result[0] = v1[0] 
+        /// result[1] = v2[0] 
+        /// result[2] = v1[1] 
+        /// result[3] = v2[1]
+        /// 
+        /// This overload maps directly to the SSE intrinsic <c>_mm_unpacklo_ps</c>, which interleaves
+        /// the low-order 64 bits (two floats) of the sources to form the result.
+        /// </summary>
+        /// <param name="v1">The first input SIMD register (provides lanes 0 and 1).</param>
+        /// <param name="v2">The second input SIMD register (provides lanes 2 and 3).</param>
+        /// <returns>
+        /// A <c>SIMDType</c> containing the interleaved low halves of <c>v1</c> and <c>v2</c>.
+        /// </returns>
         template<>
         static inline SIMDType Permute<0, 4, 1, 5>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_unpacklo_ps( v1, v2 );
         }
+        
+        /// <summary>
+        /// Permute specialization that interleaves the high 64-bit halves of two 128-bit float vectors.
+        /// </summary>
+        /// <remarks>
+        /// This specialization implements the compile-time permutation indices &lt;2, 6, 3, 7&gt;.
+        /// Indices are interpreted as follows: values 0..3 select lanes from the first input operand
+        /// <c>v1</c>, and values 4..7 select lanes from the second input operand <c>v2</c> (index - 4).
+        ///
+        /// The implementation uses the SSE intrinsic <c>_mm_unpackhi_ps</c> which takes the high
+        /// 64-bit halves (elements 2 and 3) of each source and interleaves them. The resulting element
+        /// mapping (lowest to highest element) is:
+        /// 
+        /// result[0] = v1[2]
+        /// result[1] = v2[2]
+        /// result[2] = v1[3]
+        /// result[3] = v2[3]
+        ///
+        /// This specialization provides an efficient hardware mapping for the requested element selection
+        /// by directly leveraging the unpack high intrinsic without additional shuffles or blends.
+        /// </remarks>
+        /// <param name="v1">First input SIMD vector (source for indices 0..3).</param>
+        /// <param name="v2">Second input SIMD vector (source for indices 4..7).</param>
+        /// <returns>
+        /// A <c>SIMDType</c> containing lanes { v1[2], v2[2], v1[3], v2[3] } in that order.
+        /// </returns>
         template<>
         static inline SIMDType Permute<2, 6, 3, 7>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_unpackhi_ps( v1, v2 );
         }
+
+        /// <summary>
+        /// Permute specialization that builds a 4-element result by selecting
+        /// the high 64-bit lanes from two 128-bit float vectors.
+        /// </summary>
+        /// <remarks>
+        /// This specialization corresponds to the compile-time permutation indices
+        /// &lt;2, 3, 6, 7&gt; where indices in the range [0,3] select lanes from the
+        /// first operand (<c>v1</c>) and indices in the range [4,7] select lanes
+        /// from the second operand (<c>v2</c>) (an index &gt;= 4 selects from <c>v2</c>
+        /// using index-4). The resulting element mapping (lowest to highest element) is:
+        /// 
+        /// result[0] = v1[2]
+        /// result[1] = v1[3]
+        /// result[2] = v2[2]
+        /// result[3] = v2[3]
+        ///
+        /// The implementation uses an efficient 64-bit-lane unpack of the high halves:
+        /// it reinterprets the input <c>__m128</c> values as <c>__m128d</c> (two 64-bit
+        /// lanes), performs <c>_mm_unpackhi_pd</c> to assemble the desired high-lane
+        /// elements and then reinterprets the result back to <c>__m128</c>.
+        /// </remarks>
+        /// <param name="v1">First input SIMD vector (source for indices 0..3).</param>
+        /// <param name="v2">Second input SIMD vector (source for indices 4..7).</param>
+        /// <returns>
+        /// A <c>SIMDType</c> containing elements selected and arranged according
+        /// to the compile-time indices &lt;2,3,6,7&gt;.
+        /// </returns>
         template<>
         static inline SIMDType Permute<2, 3, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_castpd_ps( _mm_unpackhi_pd( _mm_castps_pd( v1 ), _mm_castps_pd( v2 ) ) );
         }
 
+        /// <summary>
+        /// Permute specialization that selects lane mapping &lt;4,1,2,3&gt; from two 4-element float vectors.
+        /// </summary>
+        /// <remarks>
+        /// This specialization produces a 4-element result where:
+        /// result[0] is taken from the second input operand <paramref name="v2"/> (index 4 maps to v2[0]),
+        /// result[1]..result[3] are taken from the first input operand <paramref name="v1"/> (indices 1,2,3).
+        /// The resulting element mapping (lowest to highest element) is:
+        /// 
+        /// result[0] = v2[0]
+        /// result[1] = v1[1]
+        /// result[2] = v1[2]
+        /// result[3] = v1[3]
+        /// 
+        /// Implementation details:
+        /// - Uses the SSE intrinsic <c>_mm_blend_ps</c> with an 8-bit immediate mask of <c>0x1</c>.
+        ///   The mask bit layout for <c>_mm_blend_ps</c> sets which lanes come from the second operand;
+        ///   mask bit 0 corresponds to the lowest lane. Therefore <c>0x1</c> selects only the lowest
+        ///   lane from <paramref name="v2"/>, leaving the remaining lanes from <paramref name="v1"/>.
+        /// - The function is noexcept and has no side effects.
+        /// </remarks>
+        /// 
+        /// <param name="v1">First input SIMD register (provides elements 1..3 in the result).</param>
+        /// <param name="v2">Second input SIMD register (provides element 0 in the result).</param>
+        ///
+        /// <returns>
+        /// A <c>SIMDType</c> (typically <c>__m128</c>) containing lanes { v2[0], v1[1], v1[2], v1[3] }.
+        /// </returns>
         template<>
         static inline SIMDType Permute<4, 1, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
@@ -8825,3 +9977,4 @@ namespace Harlinn::Math::SIMD
 
 
 #endif
+
