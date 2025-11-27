@@ -18,7 +18,7 @@ namespace Harlinn.Hydrology
     /// <summary>
     /// Hydrological process types
     /// </summary>
-    public enum ProcessType
+    public enum HydroProcessType
     {
         
         RICHARDS,

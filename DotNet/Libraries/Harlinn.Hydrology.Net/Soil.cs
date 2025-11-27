@@ -269,6 +269,15 @@ namespace Harlinn.Hydrology
         /// [mm/d]    exchange flow rate with mixing zone (greater than 0)
         /// </summary>
         double exchange_flow;
+
+
+        public double CapRatio => _capRatio;
+
+        public double FieldCapacity => field_capacity;
+
+        public double WiltingPointSaturation => sat_wilt;
+
+
     }
 
 

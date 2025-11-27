@@ -21,7 +21,6 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class AbstractionHydroProcess : HydroProcess
     {
-        
     }
 
 

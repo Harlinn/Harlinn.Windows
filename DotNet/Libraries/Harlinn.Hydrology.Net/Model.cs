@@ -826,6 +826,21 @@ namespace Harlinn.Hydrology
         {
             throw new NotImplementedException();
         }
+
+        internal double GetConcentration(int global_k, int i)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal double GetCumulativeFlux(int global_k, int i, bool to)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal double GetCumulFluxBetween(int global_k, int iFrom, int iTo)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

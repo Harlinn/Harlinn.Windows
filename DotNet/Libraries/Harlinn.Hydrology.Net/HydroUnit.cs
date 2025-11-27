@@ -141,14 +141,154 @@ namespace Harlinn.Hydrology
         /// </summary>
         VegetationVariable _VegVar;
 
-        internal Location GetCentroid()
+        public long GetHRUID() 
+        { 
+            return _ID;          
+        }
+        public int GetGlobalIndex() 
+        { 
+            return _global_k;    
+        }
+        public bool IsEnabled => !_Disabled;
+        public Location GetCentroid() 
+        { 
+            return _Centroid;    
+        }
+        public Location Centroid => _Centroid;
+        public double GetArea() 
+        { 
+            return _Area;        
+        }
+        public double Area => _Area;
+        public int GetSubBasinIndex() 
+        { 
+            return _SubbasinInd; 
+        }
+        public int SubBasinIndex => _SubbasinInd;
+        public HRUType GetHRUType() 
+        { 
+            return _HRUType;
+        }
+        public bool IsLake => (_HRUType== HRUType.HRU_LAKE);
+        public bool IsLinkedToReservoir => _res_linked;
+
+        public double GetStateVarValue(int i) 
+        { 
+            return _aStateVar[i]; 
+        }
+        public double GetConcentration(int i) 
+        { 
+            return _pModel.GetConcentration(_global_k, i); 
+        }
+        public double[] GetStateVarArray()
         {
+            return _aStateVar;
+        }
+        public double[] StateVariables => _aStateVar;
+
+        public double GetElevation()
+        {
+            return _AvgElevation;
+        }
+        public double Elevation => _AvgElevation;
+        public double GetSlope()
+        {
+            return _AvgSlope;
+        }
+        public double Slope => _AvgSlope;
+
+        public double GetAspect()
+        {
+            return _AvgAspect;
+        }
+        public double Aspect => _AvgAspect;
+
+        public double GetLatRad()
+        {
+            return _LatRad;
+        }
+        public double GetLatEq()
+        {
+            return _LatEq;
+        }
+        public double GetSolarNoon()
+        {
+            return _SolarNoon;
+        }
+
+        public double GetPrecipMultiplier()
+        {
+            return _PrecipMult;
+        }
+        public int GetSpecifiedGaugeIndex()
+        {
+            return _SpecifiedGaugeIdx;
+        }
+
+        public Soil GetSoilProps(int m)
+        {
+            return _pSoil[m];
+        }
+        public double GetSoilThickness(int m)
+        {
+            return aThickness[m] * MM_PER_METER;
+        }
+        public double GetSoilCapacity(int m)
+        {
+            return aThickness[m] * MM_PER_METER * _pSoil[m].CapRatio;
+        }
+        public double GetSoilTensionStorageCapacity(int m)
+        {
+            double result = aThickness[m] * MM_PER_METER * _pSoil[m].CapRatio * (_pSoil[m].FieldCapacity - _pSoil[m].WiltingPointSaturation);
+            if (result < -REAL_SMALL)
+            {
+                Runtime.ExitGracefully("Wilting point saturation is greater than field capacity for one or more soil classes, leading to negative tension storage", ExitCode.BAD_DATA);
+            }
+            return result;
+        }
+
+        public Vegetation GetVegetationProps()
+        {
+            return _pVeg;
+        }
+        public VegetationVariable GetVegVarProps()
+        {
+            return _VegVar;
+        }
+        public Surface GetSurfaceProps()
+        {
+            return _pSurface;
+        }
+        public Terrain GetTerrainProps()
+        {
+            return _pTerrain;
+        }
+
+
+        public Force GetForcingFunctions()
+        {
+            return _Forcings;
+        }
+        public double GetForcing(ForcingType forcingType)
+        {
+            return _Forcings[forcingType];
+        }
+
+
+        public double GetCumulFlux(int i, bool to)
+        {
+            return _pModel.GetCumulativeFlux(_global_k, i, to);
+        }
+        public double GetCumulFluxBet(int iFrom, int iTo)
+        {
+            return _pModel.GetCumulFluxBetween(_global_k, iFrom, iTo);
+        }
+
+        public double GetStateVarMax(int i, double[] curr_state_var, Options options, bool ignorevar = false)
+        { 
             throw new NotImplementedException();
         }
 
-        internal double GetElevation()
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

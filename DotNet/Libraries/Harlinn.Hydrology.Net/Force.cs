@@ -183,6 +183,18 @@ namespace Harlinn.Hydrology
         /// a subdaily correction factor to re-distribute daily average PET or snowmelt [-]
         /// </summary>
         public double subdaily_corr;
+
+
+        public double GetForcing(ForcingType forcingType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double this[ForcingType forcingType]
+        {
+            get { return GetForcing(forcingType); }
+        }
+
     }
 
 }

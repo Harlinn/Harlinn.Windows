@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
+using static Harlinn.Hydrology.Constants;
 namespace Harlinn.Hydrology
 {
     /// <summary>
@@ -21,5 +23,27 @@ namespace Harlinn.Hydrology
     public class FlushHydroProcess : HydroProcess
     {
         double _percentage;
+        static SVType[] _emptySVTypeArray = new SVType[0];
+        static int[] _emptyIntArray = new int[0];
+
+        public FlushHydroProcess(Model model, int inIndex, int outIndex, double pct)
+            : base(model, HydroProcessType.FLUSH, inIndex, outIndex)
+        {
+            Runtime.ExitGracefullyIf(inIndex == DOESNT_EXIST, "FlushHydroProcess Constructor: invalid 'from' compartment specified", ExitCode.BAD_DATA);
+            Runtime.ExitGracefullyIf(outIndex == DOESNT_EXIST, "FlushHydroProcess Constructor: invalid 'to' compartment specified", ExitCode.BAD_DATA);
+
+            _percentage = pct;
+        }
+
+        public static void GetParticipatingStateVarList(out SVType[] aSV, out int[] aLev)
+        {
+            aSV = _emptySVTypeArray;
+            aLev = _emptyIntArray;
+        }
+
+        public override void GetRatesOfChange(double[] storage, HydroUnit hydroUnit, Options options, TimeStruct tt, double[] rates)
+        {
+            rates[0] = _percentage * storage[FromIndices[0]] / options.timestep;
+        }
     }
 }

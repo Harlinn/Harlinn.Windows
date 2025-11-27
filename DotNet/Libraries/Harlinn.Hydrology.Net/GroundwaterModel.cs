@@ -75,7 +75,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// map of GWSW Processes with type as key (IMPORTANT: are also in Model _pProcesses).
         /// </summary>
-        Dictionary<ProcessType, GWSWProcess> _mGWSWProcesses;
+        Dictionary<HydroProcessType, GWSWProcess> _mGWSWProcesses;
 
         /// <summary>
         /// Length of each stress period [d] (perlen in MFUSG)

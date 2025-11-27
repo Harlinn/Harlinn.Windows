@@ -5474,6 +5474,39 @@ namespace Harlinn::Math::SIMD
         {
             return _mm_blend_ps( v1, v2, 0x1 );
         }
+
+        /**
+         * Permute specialization: <0,5,2,3>
+         *
+         * Produces a 4-element float SIMD result constructed by selecting elements from
+         * the two input 4-element vectors `v1` and `v2` according to the compile-time
+         * indices <0,5,2,3>.
+         *
+         * Interpretation of indices:
+         * - An index in range [0..3] selects the corresponding lane from `v1`.
+         * - An index in range [4..7] selects lane (index - 4) from `v2`.
+         *
+         * For <0,5,2,3> the mapping (lowest..highest) is:
+         *   result[0] = v1[0]        // index 0 -> lane 0 of v1
+         *   result[1] = v2[1]        // index 5 -> lane (5-4)=1 of v2
+         *   result[2] = v1[2]        // index 2 -> lane 2 of v1
+         *   result[3] = v1[3]        // index 3 -> lane 3 of v1
+         *
+         * Implementation notes:
+         * - This specialization is implemented using the SSE intrinsic _mm_blend_ps
+         *   with immediate mask 0x2. The immediate mask's bit 1 selects the second
+         *   (Y) lane from the second operand `v2`, while other lanes are taken from `v1`.
+         * - The function is marked noexcept and is intended for the "short" SIMD
+         *   implementation that uses __m128 (i.e., the 128-bit path).
+         *
+         * Parameters:
+         * - v1: first source vector (provides lanes 0,2,3 in the result)
+         * - v2: second source vector (provides lane 1 in the result)
+         *
+         * Returns:
+         * - A SIMDType (__m128) where lanes are assembled as described above.
+         */
+
         template<>
         static inline SIMDType Permute<0, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
