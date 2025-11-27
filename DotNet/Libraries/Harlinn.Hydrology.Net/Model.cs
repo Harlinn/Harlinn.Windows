@@ -841,6 +841,24 @@ namespace Harlinn.Hydrology
         {
             throw new NotImplementedException();
         }
+
+        public ModelParameters GetGlobalParams()
+        {
+            return _pGlobalParams;
+        }
+
+        public Options GetOptions()
+        {
+            return _pOptStruct;
+        }
+
+        internal int GetStateVarIndex(SVType sOIL, int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Options Options => _pOptStruct;
+
     }
 
 

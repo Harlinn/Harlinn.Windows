@@ -290,5 +290,192 @@ namespace Harlinn.Hydrology
         }
 
 
+        // specialized state variable accessors
+        public double GetSnowAlbedo()
+        {
+            int snowAlbedoIndex = _pModel.GetStateVarIndex(SVType.SNOW_ALBEDO);
+            
+            if (snowAlbedoIndex == DOESNT_EXIST) 
+            { 
+                return DEFAULT_SNOW_ALBEDO; 
+            }
+            else 
+            { 
+                return GetStateVarValue(snowAlbedoIndex); 
+            }
+        }
+        public double GetSnowTemperature()
+        {
+            int iSnTemp = _pModel.GetStateVarIndex(SVType.SNOW_TEMP);
+            if (iSnTemp == DOESNT_EXIST)
+            {
+                double sntmp = _pModel.GetGlobalParams().snow_temperature;
+                if (sntmp == NOT_NEEDED_AUTO)
+                {
+                    return 0.0;
+                }
+                return sntmp;
+            }
+            else
+            {
+                return GetStateVarValue(iSnTemp);
+            }
+        }
+        public double GetSnowSWE()
+        {
+            int iSnow = _pModel.GetStateVarIndex(SVType.SNOW);
+            if (iSnow == DOESNT_EXIST) 
+            { 
+                return 0.0; 
+            }
+            else 
+            { 
+                return GetStateVarValue(iSnow); 
+            }
+        }
+        public double GetSnowCover()
+        {
+            var options = _pModel.Options;
+
+            int iSnFrac = _pModel.GetStateVarIndex(SVType.SNOW_COVER);
+            int iSnow = _pModel.GetStateVarIndex(SVType.SNOW);
+
+            if (iSnow == DOESNT_EXIST) 
+            { 
+                return 0.0; 
+            }
+            double SWE = GetStateVarValue(iSnow);
+
+            if (iSnFrac != DOESNT_EXIST)
+            { 
+                //snow cover explicitly simulated
+                return GetStateVarValue(iSnFrac);
+            }
+            else  
+            {
+                //snowcover depletion curves
+                if (options.snow_depletion == SnowcovMethod.SNOWCOV_NONE)
+                {
+                    if (GetSnowSWE() < NEGLIGBLE_SNOW) { return 0.0; }
+                    else { return 1.0; }
+                }
+                else if (options.snow_depletion == SnowcovMethod.SNOWCOV_LINEAR)
+                {
+                    double snowthresh = 200;
+                    return Math.Min(Math.Max(SWE, 0.0) / snowthresh, 1.0);
+                }
+            }
+            return 0.0;
+        }
+        public double GetSurfaceTemperature()
+        {
+            double snow_cover = GetSnowCover();
+            double snow_temp = GetSnowTemperature();
+            double ground_temp = _Forcings.temp_ave; //temp - more proper methods
+
+            if (_HRUType == HRUType.HRU_GLACIER)
+            {
+                ground_temp = FREEZING_TEMP;
+            }
+
+            return (1 - snow_cover) * ground_temp + snow_cover * snow_temp;
+        }
+        public double GetTotalAlbedo(bool subcanopy)
+        {
+            double veg_albedo, land_albedo = 0.0;
+
+            double snow_albedo = GetSnowAlbedo();
+            double snow_cover = GetSnowCover();
+            double svf = _VegVar.skyview_fact;
+            double Fc = _pSurface.forest_coverage;
+
+            if (_HRUType == HRUType.HRU_STANDARD)
+            {
+                int iTopSoil = _pModel.GetStateVarIndex(SVType.SOIL, 0);
+                double soil_sat = Math.Max(Math.Min(_aStateVar[iTopSoil] / GetSoilCapacity(0), 1.0), 0.0);
+                land_albedo = (soil_sat) * _pSoil[0].albedo_wet + (1.0 - soil_sat) * _pSoil[0].albedo_dry;
+            }
+            else if (_HRUType == HRUType.HRU_GLACIER)
+            {
+                land_albedo = 0.4;
+            }
+            else if (_HRUType == HRUType.HRU_LAKE)
+            {
+                land_albedo = 0.1;
+            }
+            else if (_HRUType == HRUType.HRU_WATER)
+            {
+                land_albedo = 0.1;
+            }
+            else if (_HRUType == HRUType.HRU_ROCK)
+            {
+                land_albedo = 0.35;
+            }
+            else if (_HRUType == HRUType.HRU_WETLAND)
+            {
+                land_albedo = 0.15;
+            }
+            land_albedo = (snow_cover) * snow_albedo + (1.0 - snow_cover) * land_albedo;
+
+            if (subcanopy)
+            {
+                return land_albedo;
+            }
+            else 
+            {
+            // above canopy
+            veg_albedo = _pVeg.albedo;
+
+                if (veg_albedo < 0) 
+                { 
+                    veg_albedo = 0.14; 
+                }
+                if (svf > 1.0) 
+                { 
+                    svf = 0.0; 
+                }
+                if (land_albedo < 0) 
+                { 
+                    land_albedo = 0.3; 
+                }
+
+                return (1.0 - svf) * (Fc) * veg_albedo + ((svf) * (Fc) + (1.0 - Fc)) * land_albedo;
+            }
+        }
+
+        public double GetSnowDepth()
+        {
+            int iSnow = _pModel.GetStateVarIndex(SVType.SNOW);
+            if (iSnow == DOESNT_EXIST) 
+            { 
+                return 0.0; 
+            }
+
+            int iSnowDep = _pModel.GetStateVarIndex(SVType.SNOW_DEPTH);
+            if (iSnowDep != DOESNT_EXIST) 
+            { 
+                return GetStateVarValue(iSnowDep); 
+            }
+
+            double SWE = GetStateVarValue(iSnow);
+            return (SWE / TYPICAL_SNOW_DENS) * DENSITY_WATER;
+        }
+
+
+        // Manipulator functions
+        public void Disable()
+        { 
+            _Disabled = true; 
+        }
+        public void Enable()
+        { 
+            _Disabled = false; 
+        }
+        public void LinkToReservoir(long SBID)
+        { 
+            _res_linked = true; 
+        }
+
+
     }
 }

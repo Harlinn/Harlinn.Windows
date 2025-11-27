@@ -182,291 +182,291 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// method for correcting interpolated temperatures for elevation
         /// </summary>
-        OrographicCorr orocorr_temp;
+        public OrographicCorr orocorr_temp;
         /// <summary>
         /// method for correcting interpolated precipitation for elevation
         /// </summary>
-        OrographicCorr orocorr_precip;
+        public OrographicCorr orocorr_precip;
         /// <summary>
         /// method for correcting interpolated PET for elevation
         /// </summary>
-        OrographicCorr orocorr_PET;
+        public OrographicCorr orocorr_PET;
 
         // Algorithm Choices
 
         /// <summary>
         /// method for converting total precip to rain/snow
         /// </summary>
-        RainsnowMethod rainsnow;
+        public RainsnowMethod rainsnow;
 
         /// <summary>
         /// cloud cover estimation method
         /// </summary>
-        CloudcovMethod cloud_cover;
+        public CloudcovMethod cloud_cover;
         /// <summary>
         /// method for estimating snow albedo
         /// </summary>
-        SnowAlbedoMethod snow_albedo;
+        public SnowAlbedoMethod snow_albedo;
         /// <summary>
         /// net longwave radiation estimation method
         /// </summary>
-        LWMethod LW_radiation;
+        public LWMethod LW_radiation;
         /// <summary>
         /// incoming longwave radiation estimation method
         /// </summary>
-        LWincMethod LW_incoming;
+        public LWincMethod LW_incoming;
         /// <summary>
         /// shortwave radiation estimation method
         /// </summary>
-        SWMethod SW_radiation;
+        public SWMethod SW_radiation;
         /// <summary>
         /// method for cloudcover correction of shortwave radiation
         /// </summary>
-        SWCloudcoverCorr SW_cloudcovercorr;
+        public SWCloudcoverCorr SW_cloudcovercorr;
         /// <summary>
         /// method for estimating canopy transmittance of shortwave radiation
         /// </summary>
-        SWCanopyCorr SW_canopycorr;
+        public SWCanopyCorr SW_canopycorr;
         /// <summary>
         /// method for calculating net shortwave radiation (calculated or data)
         /// </summary>
-        NetSWRadMethod SW_radia_net;
+        public NetSWRadMethod SW_radia_net;
         /// <summary>
         /// PET estimation method
         /// </summary>
-        EvapMethod evaporation;
+        public EvapMethod evaporation;
         /// <summary>
         /// Open Water PET estimation method
         /// </summary>
-        EvapMethod ow_evaporation;
+        public EvapMethod ow_evaporation;
         /// <summary>
         /// PET estimation method when infilling blank PET_DATA
         /// </summary>
-        EvapMethod evap_infill;
+        public EvapMethod evap_infill;
         /// <summary>
         /// Open Water PET estimation method when infilling blank PET_DATA
         /// </summary>
-        EvapMethod ow_evap_infill;
+        public EvapMethod ow_evap_infill;
         /// <summary>
         /// Relative humidity estimation method
         /// </summary>
-        RelhumMethod rel_humidity;
+        public RelhumMethod rel_humidity;
         /// <summary>
         /// Air pressure estimation method
         /// </summary>
-        AirpressMethod air_pressure;
+        public AirpressMethod air_pressure;
         /// <summary>
         /// Wind velocity estimation mehtod
         /// </summary>
-        WindvelMethod wind_velocity;
+        public WindvelMethod wind_velocity;
         /// <summary>
         /// Wind vertical profile approximation method
         /// </summary>
-        WindProfMeth wind_profile;
+        public WindProfMeth wind_profile;
         /// <summary>
         /// Potential melt estimation method
         /// </summary>
-        PotmeltMethod pot_melt;
+        public PotmeltMethod pot_melt;
         /// <summary>
         /// Subdaily PET/Snowmelt temporal downscaling correction
         /// </summary>
-        SubdailyMethod subdaily;
+        public SubdailyMethod subdaily;
         /// <summary>
         /// aquifer/soil recharge method
         /// </summary>
-        RechargeMethod recharge;
+        public RechargeMethod recharge;
         /// <summary>
         /// true if PET is used to directly reduce precipitation
         /// </summary>
-        bool direct_evap;
+        public bool direct_evap;
         /// <summary>
         /// method for handling snowcover depletion curve
         /// </summary>
-        SnowcovMethod snow_depletion;
+        public SnowcovMethod snow_depletion;
 
         /// <summary>
         /// method for calculating canopy interception factor
         /// </summary>
-        PrecipIceptMethod interception_factor;
+        public PrecipIceptMethod interception_factor;
 
         /// <summary>
         /// channel routing method
         /// </summary>
-        RoutingMethod routing;
+        public RoutingMethod routing;
         /// <summary>
         /// catchment routing method
         /// </summary>
-        CatchmentRoute catchment_routing;
+        public CatchmentRoute catchment_routing;
         /// <summary>
         /// method used for allocating upstream reservoir support to meet downstream irrigation demand
         /// </summary>
-        DemandAlloc res_demand_alloc;
+        public DemandAlloc res_demand_alloc;
         /// <summary>
         /// method used for handling outflow estimates when max stage exceeded in reservoir
         /// </summary>
-        Overflowmode res_overflowmode;
+        public Overflowmode res_overflowmode;
         /// <summary>
         /// means of interpolating monthly data
         /// </summary>
-        MonthlyInterp month_interp;
+        public MonthlyInterp month_interp;
 
         /// <summary>
         /// true if peculiar UBCWM bugs are retained (only really for BC Hydro use)
         /// </summary>
-        bool keepUBCWMbugs;
+        public bool keepUBCWMbugs;
         /// <summary>
         /// true if competitive ET should be suppressed (for backward compatibility)
         /// </summary>
-        bool suppressCompetitiveET;
+        public bool suppressCompetitiveET;
         /// <summary>
         /// true if presence of snow should set PET to zero
         /// </summary>
-        bool snow_suppressPET;
+        public bool snow_suppressPET;
         /// <summary>
         /// true if soil can be filled above capacity (to be handled using overflow routine)
         /// </summary>
-        bool allow_soil_overfill;
+        public bool allow_soil_overfill;
 
         // Soil model information
         /// <summary>
         /// number of soil layers
         /// </summary>
-        int num_soillayers;
+        public int num_soillayers;
 
         /// <summary>
         /// characteristic curves for unsaturated flow
         /// </summary>
-        SoilCharact soil_representation;
+        public SoilCharact soil_representation;
 
         // Output Options
         /// <summary>
         /// true if debugging mode is on
         /// </summary>
-        bool debug_mode;
+        public bool debug_mode;
         /// <summary>
         /// true if parsing information written to screen
         /// </summary>
-        bool noisy;
+        public bool noisy;
         /// <summary>
         /// true if nothing should be written to screen (overrides noisy)
         /// </summary>
-        bool silent;
+        public bool silent;
         /// <summary>
         /// true if specific setings for PAVICS system are applied (such as simulation status JSON file) (default: FALSE)
         /// </summary>
-        bool pavics;
+        public bool pavics;
         /// <summary>
         /// true if input is generated by Deltares FEWS
         /// </summary>
-        bool deltaresFEWS;
+        public bool deltaresFEWS;
         /// <summary>
         /// output format (default: OUTPUT_STANDARD)
         /// </summary>
-        OutFormat output_format;
+        public OutFormat output_format;
         /// <summary>
         /// custom output interval (i.e., for generating 10-day interval outputs)
         /// </summary>
-        double custom_interval;
+        public double custom_interval;
         /// <summary>
         /// true if ForcingFunctions.csv is written
         /// </summary>
-        bool write_forcings;
+        public bool write_forcings;
         /// <summary>
         /// true if WatershedMassEnergyBalance.csv is written
         /// </summary>
-        bool write_mass_bal;
+        public bool write_mass_bal;
         /// <summary>
         /// true if GWHead.csv is written
         /// </summary>
-        bool write_gwhead;
+        public bool write_gwhead;
         /// <summary>
         /// true if GWFlow.csv is written
         /// </summary>
-        bool write_gwflow;
+        public bool write_gwflow;
         /// <summary>
         /// true if ReservoirStages.csv is written
         /// </summary>
-        bool write_reservoir;
+        public bool write_reservoir;
         /// <summary>
         /// true if ReservoirMassBalance.csv is written
         /// </summary>
-        bool write_reservoirMB;
+        public bool write_reservoirMB;
         /// <summary>
         /// true if WaterLevels.csv is written
         /// </summary>
-        bool write_waterlevels;
+        public bool write_waterlevels;
         /// <summary>
         /// true if average flows over timestep are reported in hydrograph output
         /// </summary>
-        bool ave_hydrograph;
+        public bool ave_hydrograph;
         /// <summary>
         /// true if exhaustive mass balance diagnostics are written
         /// </summary>
-        bool write_exhaustiveMB;
+        public bool write_exhaustiveMB;
         /// <summary>
         /// index (kk) of HRU Group for MB writing, DOESNT_EXIST if not to be written
         /// </summary>
-        int write_group_mb;
+        public int write_group_mb;
         /// <summary>
         /// true if writing channel rating curve information
         /// </summary>
-        bool write_channels;
+        public bool write_channels;
         /// <summary>
         /// true if WatershedStorage.csv/tb0/nc is written (default: true)
         /// </summary>
-        bool write_watershed_storage;
+        public bool write_watershed_storage;
         /// <summary>
         /// true if constituent mass [mg/m2] is written instead of concentration [mg/L] in output files
         /// </summary>
-        bool write_constitmass;
+        public bool write_constitmass;
         /// <summary>
         /// true if subbasins params are written to SubbasinParams.csv
         /// </summary>
-        bool write_basinfile;
+        public bool write_basinfile;
         /// <summary>
         /// true if interpolation weights are written to InterpolationWeights.csv
         /// </summary>
-        bool write_interp_wts;
+        public bool write_interp_wts;
         /// <summary>
         /// true if demands.csv file is to be written
         /// </summary>
-        bool write_demandfile;
+        public bool write_demandfile;
         /// <summary>
         /// true if simple_out.csv file is to be written (for scripting)
         /// </summary>
-        bool write_simpleout;
+        public bool write_simpleout;
         /// <summary>
         /// true if MassLoadings.csv file is to be written
         /// </summary>
-        bool write_massloading;
+        public bool write_massloading;
         /// <summary>
         /// true if local flows are written to Hydrographs file (csv or nc)
         /// </summary>
-        bool write_localflow;
+        public bool write_localflow;
         /// <summary>
         /// true if reservoir net inflows are written to Hydrographs file (csv or nc)
         /// </summary>
-        bool write_netresinflow;
+        public bool write_netresinflow;
         /// <summary>
         /// true if benchmarking output - removes version/timestamps in output
         /// </summary>
-        bool benchmarking;
+        public bool benchmarking;
         /// <summary>
         /// true if initial conditions are suppressed when writing output time series
         /// </summary>
-        bool suppressICs;
+        public bool suppressICs;
         /// <summary>
         /// true if period ending convention should be used for reading/writing Ensim files
         /// </summary>
-        bool period_ending;
+        public bool period_ending;
         /// <summary>
         /// true if all timestep-averaged output is reported using starttime of timestep
         /// </summary>
-        bool period_starting;
+        public bool period_starting;
         /// <summary>
         /// determines whether the simulation pauses at the end of the model run
         /// </summary>
-        bool pause;
+        public bool pause;
         /// <summary>
         /// working directory
         /// </summary>

@@ -25,74 +25,74 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// [m2/m2] Leaf Area Index
         /// </summary>
-        double LAI;
+        public double LAI;
         /// <summary>
         /// [m2/m2] Stem Area Index
         /// </summary>
-        double SAI;
+        public double SAI;
         /// <summary>
         /// [m]     vegetation height
         /// </summary>
-        double height;
+        public double height;
         /// <summary>
         /// [mm]    rain storage capacity
         /// </summary>
-        double capacity;
+        public double capacity;
         /// <summary>
         /// [mm SWE]snow storage capacity
         /// </summary>
-        double snow_capacity;
+        public double snow_capacity;
         /// <summary>
         /// [mm/s]  leaf conductance (same as stomatal conductance?)
         /// </summary>
-        double leaf_cond;
+        public double leaf_cond;
         /// <summary>
         /// [mm/s]  leaf conductance corrected for shelter & LAI
         /// </summary>
-        double canopy_conductance;
+        public double canopy_conductance;
         /// <summary>
         /// [0..1]  percentage of rain intercepted  (only on canopy portion)
         /// </summary>
-        double rain_icept_pct;
+        public double rain_icept_pct;
 
         /// <summary>
         /// [0..1]  percentage of snow intercepted  (only on canopy portion)
         /// </summary>
-        double snow_icept_pct;
+        public double snow_icept_pct;
 
         /// <summary>
         /// [-]    accounts for sheltered leaves : about 0.5-1.0
         /// </summary>
-        double shelter_factor;
+        public double shelter_factor;
         /// <summary>
         /// [0..1] skyview factor, pct of ground visible from sky
         /// </summary>
-        double skyview_fact;
+        public double skyview_fact;
 
         /// <summary>
         /// [m]    surface roughness parameter for momentum transfer
         /// </summary>
-        double roughness;
+        public double roughness;
         /// <summary>
         /// [m]    zero-plane displacement, height where wind vel. goes to zero
         /// </summary>
-        double zero_pln_disp;
+        public double zero_pln_disp;
         /// <summary>
         /// [m]    reference height for air properties above ground
         /// </summary>
-        double reference_height;
+        public double reference_height;
 
         // derived root properties (temporally variable)
-        
+
         /// <summary>
         /// [mm/m2]root length per unit land area
         /// </summary>
-        double root_length;
+        public double root_length;
 
         /// <summary>
         /// [d/mm] plant resistance to water flow
         /// </summary>
-        double resistivity;
+        public double resistivity;
 
 
         // other
@@ -100,15 +100,15 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// [m/m3] relative values of root length per unit volume
         /// </summary>
-        double rel_rootden;
+        public double rel_rootden;
         /// <summary>
         /// [d]    root resistance for layer
         /// </summary>
-        double root_resistance;
+        public double root_resistance;
         /// <summary>
         /// [MPa]  modified Cowan alpha for layer
         /// </summary>
-        double cowan_alpha;
+        public double cowan_alpha;
 
 
     }
