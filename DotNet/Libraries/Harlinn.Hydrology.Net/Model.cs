@@ -857,6 +857,16 @@ namespace Harlinn.Hydrology
             throw new NotImplementedException();
         }
 
+        internal SVType GetStateVarType(int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal int GetStateVarLayer(int v)
+        {
+            throw new NotImplementedException();
+        }
+
         public Options Options => _pOptStruct;
 
     }

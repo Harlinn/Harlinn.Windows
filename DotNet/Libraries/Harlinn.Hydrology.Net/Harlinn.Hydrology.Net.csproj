@@ -15,4 +15,8 @@
     <Folder Include="Input\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Harlinn.Mathematics.Net\Harlinn.Mathematics.Net.csproj" />
+  </ItemGroup>
+
 </Project>

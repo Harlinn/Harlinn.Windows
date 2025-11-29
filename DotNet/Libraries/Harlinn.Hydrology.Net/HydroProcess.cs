@@ -158,6 +158,8 @@ namespace Harlinn.Hydrology
             _model = model;
         }
 
+        public Model Model => _model;
+
         public void AddCondition(ConditionBasis basis, Comparison compare_method, string data)
         {
 

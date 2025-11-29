@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Common.Core", "Harlinn.Common.Core\Harlinn.Common.Core.vcxproj", "{B47470E4-2B24-4119-BAC1-4E8BC52FB19D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -3355,6 +3355,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harlinn.Hydrology.Net", "DotNet\Libraries\Harlinn.Hydrology.Net\Harlinn.Hydrology.Net.csproj", "{6FE3ED53-A242-90C5-6327-4BFCD7957B19}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Numerics.Net", "DotNet\Libraries\Harlinn.Numerics.Net\Harlinn.Numerics.Net.vcxproj", "{849BC960-B0DE-AB3E-F038-4B6FA77FC760}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harlinn.Mathematics.Net", "DotNet\Libraries\Harlinn.Mathematics.Net\Harlinn.Mathematics.Net.csproj", "{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18056,6 +18058,30 @@ Global
 		{849BC960-B0DE-AB3E-F038-4B6FA77FC760}.Release|x64.Build.0 = Release|x64
 		{849BC960-B0DE-AB3E-F038-4B6FA77FC760}.Release|x86.ActiveCfg = Release|Win32
 		{849BC960-B0DE-AB3E-F038-4B6FA77FC760}.Release|x86.Build.0 = Release|Win32
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|x64.Build.0 = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|Any CPU.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|Any CPU.Build.0 = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|ARM64.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|ARM64.Build.0 = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|x64.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|x64.Build.0 = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|x86.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Profile|x86.Build.0 = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|ARM64.Build.0 = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|x64.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|x64.Build.0 = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -18813,6 +18839,7 @@ Global
 		{3F8B6AF7-0375-7371-31E2-8906FE86483A} = {7A305772-A436-43CB-A660-0E1ADEC4BD7D}
 		{6FE3ED53-A242-90C5-6327-4BFCD7957B19} = {7A305772-A436-43CB-A660-0E1ADEC4BD7D}
 		{849BC960-B0DE-AB3E-F038-4B6FA77FC760} = {7A305772-A436-43CB-A660-0E1ADEC4BD7D}
+		{6D8164C3-A189-4758-A7C7-FA54C1DB07DD} = {7A305772-A436-43CB-A660-0E1ADEC4BD7D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}
