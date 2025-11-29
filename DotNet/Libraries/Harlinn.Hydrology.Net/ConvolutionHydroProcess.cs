@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using static Harlinn.Hydrology.Constants;
 using static Harlinn.Mathematics.Net.Common;
 using static System.Math;
@@ -46,6 +47,40 @@ namespace Harlinn.Hydrology
         /// </summary>
         int _iTarget;
 
+
+        public ConvolutionHydroProcess(Model model, ConvolutionType type,
+                               int to_index,
+                               int conv_index)
+            : base(model, HydroProcessType.CONVOLVE)
+        {
+            _type = type;
+            _iTarget = to_index;
+
+            if (!_smartmode) 
+            { 
+                _nStores = MAX_CONVOL_STORES; 
+            }
+
+            int N = _nStores; 
+
+            DynamicSpecifyConnections(2 * N);
+            for (int i = 0; i < N; i++)
+            {
+                //for applying convolution
+                FromIndices[i] = model.GetStateVarIndex(SVType.CONV_STOR, i + conv_index * N);
+                ToIndices[i] = _iTarget;
+
+                //for shifting storage history
+                if (i < N - 1)
+                {
+                    FromIndices[N + i] = model.GetStateVarIndex(SVType.CONV_STOR, i + conv_index * N);
+                    ToIndices[N + i] = model.GetStateVarIndex(SVType.CONV_STOR, i + 1 + conv_index * N);
+                }
+            }
+            //updating total convolution storage
+            FromIndices[2 * N - 1] = model.GetStateVarIndex(SVType.CONVOLUTION, conv_index);
+            ToIndices[2 * N - 1] = model.GetStateVarIndex(SVType.CONVOLUTION, conv_index);
+        }
 
         double LocalCumulDist(double t, HydroUnit hydroUnit)
         {
@@ -86,7 +121,7 @@ namespace Harlinn.Hydrology
         }
 
 
-        void GenerateUnitHydrograph(HydroUnit hydroUnit, Options options, double[] aUnitHydro, int[] aInterval, int N)
+        void GenerateUnitHydrograph(HydroUnit hydroUnit, Options options, Span<double> aUnitHydro, Span<int> aInterval, out int N)
         {
             double tstep = options.timestep;
             double max_time = 0;
@@ -113,7 +148,10 @@ namespace Harlinn.Hydrology
                 double beta = hydroUnit.GetSurfaceProps().gamma_scale2;
                 max_time = 4.5 * Pow(alpha, 0.6) / beta;
             }
-            throw new InvalidOperationException("GenerateUnitHydrograph: negative or zero duration of unit hydrograph (bad GR4J_x4, or GAMMA_SHAPE/GAMMA_SCALE)");
+            else
+            {
+                throw new InvalidOperationException("GenerateUnitHydrograph: negative or zero duration of unit hydrograph (bad GR4J_x4, or GAMMA_SHAPE/GAMMA_SCALE)");
+            }
 
             int NN;
 
@@ -175,6 +213,152 @@ namespace Harlinn.Hydrology
                 N = i;
             }
         }
+
+
+        public override void GetParticipatingParamList(out string[] aP, out ClassType[] aPC)
+        {
+            if ((_type == ConvolutionType.CONVOL_GR4J_1) || (_type == ConvolutionType.CONVOL_GR4J_2))
+            {
+                aP = ["GR4J_X4"];
+                aPC = [ClassType.CLASS_LANDUSE];
+            }
+            else if (_type == ConvolutionType.CONVOL_GAMMA)
+            {
+                aP = ["GAMMA_SHAPE", "GAMMA_SCALE"];
+                aPC = [ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE];
+            }
+            else if (_type == ConvolutionType.CONVOL_GAMMA_2)
+            {
+                aP = ["GAMMA_SHAPE2", "GAMMA_SCALE2"];
+                aPC = [ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE];
+            }
+            else
+            {
+                throw new InvalidOperationException("ConvolutionHydroProcess.GetParticipatingParamList: invalid convolution type");
+            }
+        }
+
+        public static void GetParticipatingStateVarList(ConvolutionType absttype, out SVType[] aSV, out int[] aLev, int conv_index)
+        {
+            aSV = new SVType[_nStores + 1];
+            aLev = new int[_nStores + 1];
+
+            for (int i = 0; i < _nStores; i++)
+            {
+                aSV[i] = SVType.CONV_STOR;
+                aLev[i] = (conv_index * _nStores) + i;
+            }
+            aSV[_nStores] = SVType.CONVOLUTION;
+            aLev[_nStores] = conv_index;
+        }
+
+        public override void GetRatesOfChange(double[] stateVars, HydroUnit hydroUnit, Options options, TimeStruct tt, double[] rates)
+        {
+            int i;
+            double TS_old;
+            double tstep = options.timestep;
+            Span<double> S = stackalloc double[MAX_CONVOL_STORES];
+            Span<double> aUnitHydro = stackalloc double[MAX_CONVOL_STORES];
+            Span<int> aInterval = stackalloc int[MAX_CONVOL_STORES];
+
+            int N = 0;
+            GenerateUnitHydrograph(hydroUnit, options, aUnitHydro, aInterval, out N);
+
+            // Calculate S[0] as change in convolution total storage
+            // total storage after water added to convol stores earlier in process list
+            TS_old = stateVars[FromIndices[2 * _nStores - 1]]; 
+            double sum = 0.0;
+            int NN = 0;
+            for (i = 0; i < N; i++)
+            {
+                S[i] = stateVars[FromIndices[i]];
+                sum += S[i];
+                NN += aInterval[i];
+            }
+            // amount of water added this time step to convol stores
+            S[0] += (TS_old - sum); 
+
+            //outflow from convolution storage
+            double orig_storage;
+            double sumrem;
+            if (!_smartmode)
+            {
+                //usually, we just would do Q=sum UH(n)*R(t-n), but we store depleted R rather than original inputs
+                sumrem = 1.0;
+                for (i = 0; i < N; i++)
+                {
+                    if (sumrem < REAL_SMALL) 
+                    { 
+                        orig_storage = 0.0; 
+                    }
+                    else 
+                    { 
+                        orig_storage = S[i] / sumrem; 
+                    }
+                    rates[i] = aUnitHydro[i] * orig_storage / tstep; //water released to target store from internal store
+                    S[i] -= rates[i] * tstep;
+                    sumrem -= aUnitHydro[i];
+                }//sumrem should ==0 at end, so should S[N-1]
+                 //challengee here - original storage is not necessarily S/sum_0^i-1 UH because of partial shifts of mass
+            }
+            if (_smartmode)
+            {
+                int sumn = 0;
+                sumrem = 1.0;
+                i = 0;
+                double rel;
+                for (int n = 0; n < NN; n++)
+                {
+                    if (i < _nStores)
+                    {
+                        if (sumrem < REAL_SMALL) 
+                        { 
+                            orig_storage = 0.0; 
+                        }
+                        else 
+                        { 
+                            orig_storage = S[i] / aInterval[i]; 
+                        }
+                        rel = aUnitHydro[i] * orig_storage / tstep;
+                        
+                        //water released to target store from internal store
+                        rates[i] += rel;
+                        S[i] -= rel * tstep;
+
+                        sumrem -= aUnitHydro[i] / aInterval[i];
+                        if ((n + 1 - sumn) >= aInterval[i])
+                        {
+                            sumn = n + 1;
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        rates[i] = S[i] / tstep;
+                        S[i] = 0;
+                    }
+                }
+            }
+
+            // time shift convolution history
+            
+            for (i = N - 2; i >= 0; i--)
+            {
+                double move = S[i] / aInterval[i];
+                rates[_nStores + i] = move / tstep;
+                S[i] -= move;
+                S[i + 1] += move;
+            }
+
+            // Update total convolution storage:
+            double TS_new = 0;
+            for (i = 1; i < N; i++) 
+            { 
+                TS_new += S[i]; 
+            }
+            rates[2 * _nStores - 1] = (TS_new - TS_old) / tstep;
+        }
+
 
     }
 }

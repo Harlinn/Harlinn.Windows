@@ -20,10 +20,25 @@ namespace Harlinn.Hydrology
     /// </summary>
     public enum ConvolutionType
     {
-        CONVOL_TRIANGLE,      ///< Triangular UH
-        CONVOL_GR4J_1,        ///< GR4J UH type 1
-        CONVOL_GR4J_2,        ///< GR4J UH type 2
-        CONVOL_GAMMA,         ///< Gamma distribution unit hydrograph - uses params alpha_Gamma, beta_Gamma
-        CONVOL_GAMMA_2        ///< Gamma distribution unit hydrograph 2 - uses params alpha_Gamma2, beta_Gamma2
+        /// <summary>
+        /// Triangular UH
+        /// </summary>
+        CONVOL_TRIANGLE,
+        /// <summary>
+        /// GR4J UH type 1
+        /// </summary>
+        CONVOL_GR4J_1,
+        /// <summary>
+        /// GR4J UH type 2
+        /// </summary>
+        CONVOL_GR4J_2,
+        /// <summary>
+        /// Gamma distribution unit hydrograph - uses params alpha_Gamma, beta_Gamma
+        /// </summary>
+        CONVOL_GAMMA,
+        /// <summary>
+        /// Gamma distribution unit hydrograph 2 - uses params alpha_Gamma2, beta_Gamma2
+        /// </summary>
+        CONVOL_GAMMA_2
     }
 }
