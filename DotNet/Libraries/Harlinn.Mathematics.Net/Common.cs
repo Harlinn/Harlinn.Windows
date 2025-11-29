@@ -1,7 +1,89 @@
-﻿namespace Harlinn.Mathematics.Net
+﻿/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+namespace Harlinn.Mathematics.Net
 {
     public class Common
     {
+
+        /// <summary>
+        /// Enforces positivity of input value
+        /// </summary>
+        /// <param name="val">input value</param>
+        /// <returns>x, or 0.0 if x &lt; 0.0</returns>
+        public static double ThreshPositive(double x)
+        {
+          return Math.Max(x,0.0);
+        }
+
+        /// <summary>
+        /// Implementation of Chen-Harker-Kanzow-Smale max function.
+        /// </summary>
+        /// <remarks>
+        /// Result is normalized: deviation from actual max does not exceed smoothCoeff (@ v1-v2=0)
+        /// </remarks>
+        /// <param name="v1">First input value to function</param>
+        /// <param name="v2">Second input value to function</param>
+        /// <param name="smoothCoeff">Smoothing coefficient</param>
+        /// <returns>Double output of function</returns>
+        public static double ThreshMax(double v1, double v2, double smoothCoeff)
+        {
+            double x = (v2 - v1);
+            if(smoothCoeff==0.0)
+            {
+                return Math.Max(v1, v2);
+            }
+            else if (Math.Abs(x)/smoothCoeff>100.0)
+            {
+                return Math.Max(v1, v2 );
+            }
+            else
+            {
+                return v1 + 0.5 * (x + Math.Sqrt(x * x + 4.0 * smoothCoeff * smoothCoeff));
+            }
+        }
+
+        /// <summary>
+        /// Implementation of Chen-Harker-Kanzow-Smale min function
+        /// </summary>
+        /// <remarks>
+        /// Result is normalized: deviation from actual min does not exceed smoothCoeff (@ v1-v2=0)
+        /// </remarks>
+        /// <param name="v1">First input value to function</param>
+        /// <param name="v2">Second input value to function</param>
+        /// <param name="smoothCoeff">Smoothing coefficient</param>
+        /// <returns>Double output of function</returns>
+        public static double ThreshMin(double v1, double v2, double smoothCoeff)
+        {
+            double x = (v2 - v1);
+            if (smoothCoeff==0.0)
+            {
+                return Math.Min(v1, v2);
+            }
+            else if (Math.Abs(x)/smoothCoeff>100.0)
+            {
+                return Math.Min(v1, v2);
+            }
+            else
+            {
+                return v2 - 0.5 * (x + Math.Sqrt(x * x + 4.0 * smoothCoeff * smoothCoeff));
+            }
+        }
+
+
         /// <summary>
         /// Determines the complementary error of x.
         /// </summary>
