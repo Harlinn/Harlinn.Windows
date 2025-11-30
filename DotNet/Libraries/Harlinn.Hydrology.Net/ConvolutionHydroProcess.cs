@@ -28,6 +28,11 @@ namespace Harlinn.Hydrology
     {
         const int MAX_CONVOL_STORES = 50;
 
+        static readonly IReadOnlyList<ParameterInfo> _gr4jParameters = [new ParameterInfo("GR4J_X4", ClassType.CLASS_LANDUSE)];
+        static readonly IReadOnlyList<ParameterInfo> _gammaParameters = [new ParameterInfo("GAMMA_SHAPE", ClassType.CLASS_LANDUSE), new ParameterInfo("GAMMA_SCALE", ClassType.CLASS_LANDUSE)];
+        static readonly IReadOnlyList<ParameterInfo> _gamma2Parameters = [new ParameterInfo("GAMMA_SHAPE2", ClassType.CLASS_LANDUSE), new ParameterInfo("GAMMA_SCALE2", ClassType.CLASS_LANDUSE)];
+
+
         /// <summary>
         /// True if smart algorithm is used to reduce stores
         /// </summary>
@@ -214,23 +219,19 @@ namespace Harlinn.Hydrology
             }
         }
 
-
-        public override void GetParticipatingParamList(out string[] aP, out ClassType[] aPC)
+        public override IReadOnlyList<ParameterInfo> GetParticipatingParamList()
         {
             if ((_type == ConvolutionType.CONVOL_GR4J_1) || (_type == ConvolutionType.CONVOL_GR4J_2))
             {
-                aP = ["GR4J_X4"];
-                aPC = [ClassType.CLASS_LANDUSE];
+                return _gr4jParameters;
             }
             else if (_type == ConvolutionType.CONVOL_GAMMA)
             {
-                aP = ["GAMMA_SHAPE", "GAMMA_SCALE"];
-                aPC = [ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE];
+                return _gammaParameters;
             }
             else if (_type == ConvolutionType.CONVOL_GAMMA_2)
             {
-                aP = ["GAMMA_SHAPE2", "GAMMA_SCALE2"];
-                aPC = [ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE];
+                return _gamma2Parameters;
             }
             else
             {
@@ -238,18 +239,16 @@ namespace Harlinn.Hydrology
             }
         }
 
-        public static void GetParticipatingStateVarList(ConvolutionType absttype, out SVType[] aSV, out int[] aLev, int conv_index)
+        public static IReadOnlyList<StateVariableInfo> GetParticipatingStateVarList(ConvolutionType absttype, int conv_index)
         {
-            aSV = new SVType[_nStores + 1];
-            aLev = new int[_nStores + 1];
+            var result = new List<StateVariableInfo>(_nStores+1);
 
             for (int i = 0; i < _nStores; i++)
             {
-                aSV[i] = SVType.CONV_STOR;
-                aLev[i] = (conv_index * _nStores) + i;
+                result.Add(new StateVariableInfo(SVType.CONV_STOR, (conv_index * _nStores) + i));
             }
-            aSV[_nStores] = SVType.CONVOLUTION;
-            aLev[_nStores] = conv_index;
+            result.Add(new StateVariableInfo(SVType.CONVOLUTION, conv_index) );
+            return result;
         }
 
         public override void GetRatesOfChange(double[] stateVars, HydroUnit hydroUnit, Options options, TimeStruct tt, double[] rates)

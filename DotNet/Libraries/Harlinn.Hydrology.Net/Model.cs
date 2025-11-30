@@ -867,6 +867,11 @@ namespace Harlinn.Hydrology
             throw new NotImplementedException();
         }
 
+        internal int GetLakeStorageIndex()
+        {
+            throw new NotImplementedException();
+        }
+
         public Options Options => _pOptStruct;
 
     }

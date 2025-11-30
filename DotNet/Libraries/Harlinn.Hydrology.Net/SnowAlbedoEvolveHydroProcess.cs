@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using Microsoft.VisualBasic;
 using static Harlinn.Hydrology.Constants;
 
 namespace Harlinn.Hydrology
@@ -24,6 +23,59 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class SnowAlbedoEvolveHydroProcess : HydroProcess
     {
+        static IReadOnlyList<ParameterInfo> ubcwmParameters = new ParameterInfo[]
+        {
+            new ParameterInfo("MAX_SNOW_ALBEDO", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("MIN_SNOW_ALBEDO", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("UBC_ALBASE", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("UBC_ALBREC", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("UBC_MAX_CUM_MELT", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("UBC_ALBSNW", ClassType.CLASS_GLOBAL)
+        };
+
+        static IReadOnlyList<ParameterInfo> crhmEsseryParameters = new ParameterInfo[]
+        {
+            new ParameterInfo("ALB_DECAY_COLD", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("ALB_DECAY_MELT", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("MIN_SNOW_ALBEDO", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("MAX_SNOW_ALBEDO", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("BARE_GROUND_ALBEDO", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("SNOWFALL_ALBTHRESH", ClassType.CLASS_GLOBAL)
+        };
+
+        static IReadOnlyList<ParameterInfo> bakerParameters = new ParameterInfo[]
+        {
+            new ParameterInfo("BARE_GROUND_ALBEDO", ClassType.CLASS_GLOBAL),
+            new ParameterInfo("SNOWFALL_ALBTHRESH", ClassType.CLASS_GLOBAL)
+        };
+
+
+        static readonly IReadOnlyList<StateVariableInfo> ubcwmStateVariableInfos = new StateVariableInfo[]
+        {
+            new StateVariableInfo(SVType.SNOW_ALBEDO),
+            new StateVariableInfo(SVType.SNOW),
+            new StateVariableInfo(SVType.CUM_SNOWMELT)
+        };
+
+        static readonly IReadOnlyList<StateVariableInfo> crhmEsseryStateVariableInfos = new StateVariableInfo[]
+        {
+            new StateVariableInfo(SVType.SNOW_ALBEDO),
+            new StateVariableInfo(SVType.SNOW),
+            new StateVariableInfo(SVType.SNOW_TEMP)
+        };
+
+        static readonly IReadOnlyList<StateVariableInfo> bakerStateVariableInfos = new StateVariableInfo[]
+        {
+            new StateVariableInfo(SVType.SNOW_ALBEDO),
+            new StateVariableInfo(SVType.SNOW),
+            new StateVariableInfo(SVType.SNOW_AGE)
+        };
+
+        static readonly IReadOnlyList<StateVariableInfo> defaultStateVariableInfos = new StateVariableInfo[]
+        {
+            new StateVariableInfo(SVType.SNOW_ALBEDO)
+        };
+
         /// <summary>
         /// Type of albedo algorithm selected
         /// </summary>
@@ -58,78 +110,48 @@ namespace Harlinn.Hydrology
             }
         }
 
+        
 
-        public override void GetParticipatingParamList(out string[] aP, out ClassType[] aPC)
+        public override IReadOnlyList<ParameterInfo> GetParticipatingParamList()
         {
             if (type == SnowAlbedoType.SNOALB_UBCWM)
             {
-                aP = new string[6];
-                aPC = new ClassType[6] { ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL };
-                aP[0] = "MAX_SNOW_ALBEDO"; 
-                aP[1] = "MIN_SNOW_ALBEDO"; 
-                aP[2] = "UBC_ALBASE"; 
-                aP[3] = "UBC_ALBREC"; 
-                aP[4] = "UBC_MAX_CUM_MELT"; 
-                aP[5] = "UBC_ALBSNW"; 
+                return ubcwmParameters;
             }
             else if (type == SnowAlbedoType.SNOALB_CRHM_ESSERY)
             {
-                aP = new string[6];
-                aPC = new ClassType[6] { ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL };
-                aP[0] = "ALB_DECAY_COLD";
-                aP[1] = "ALB_DECAY_MELT";
-                aP[2] = "MIN_SNOW_ALBEDO";
-                aP[3] = "MAX_SNOW_ALBEDO";
-                aP[4] = "BARE_GROUND_ALBEDO"; 
-                aP[5] = "SNOWFALL_ALBTHRESH"; 
+                return crhmEsseryParameters;
             }
             else if (type == SnowAlbedoType.SNOALB_BAKER)
             {
-                aP = new string[2];
-                aPC = new ClassType[2] { ClassType.CLASS_GLOBAL, ClassType.CLASS_GLOBAL };
-                aP[0] = "BARE_GROUND_ALBEDO";
-                aP[1] = "SNOWFALL_ALBTHRESH";
+                return bakerParameters;
             }
             else
             {
-                aP = new string[0];
-                aPC = new ClassType[0];
-                Runtime.ExitGracefully("SnowAlbedoEvolveHydroProcess GetParticipatingParamList: undefined snow albedo algorithm", ExitCode.BAD_DATA);
+                throw new InvalidOperationException("SnowAlbedoEvolveHydroProcess GetParticipatingParamList: undefined snow albedo algorithm");
             }
         }
 
-        public static void GetParticipatingStateVarList(SnowAlbedoType snowAlbedoType, out SVType[] aSV, out int[] aLev)
-        {
 
+        
+
+        public static IReadOnlyList<StateVariableInfo> GetParticipatingStateVarList(SnowAlbedoType snowAlbedoType)
+        {
             if (snowAlbedoType == SnowAlbedoType.SNOALB_UBCWM)
             {
-                aSV = new SVType[3];
-                aLev = [DOESNT_EXIST, DOESNT_EXIST, DOESNT_EXIST ];
-                aSV[0] = SVType.SNOW_ALBEDO; 
-                aSV[1] = SVType.SNOW; 
-                aSV[2] = SVType.CUM_SNOWMELT;
+                return ubcwmStateVariableInfos;
             }
             else if (snowAlbedoType == SnowAlbedoType.SNOALB_CRHM_ESSERY)
             {
-                aSV = new SVType[3];
-                aLev = [DOESNT_EXIST, DOESNT_EXIST, DOESNT_EXIST];
-                aSV[0] = SVType.SNOW_ALBEDO;
-                aSV[1] = SVType.SNOW;
-                aSV[2] = SVType.SNOW_TEMP;
+                return crhmEsseryStateVariableInfos;
             }
             else if (snowAlbedoType == SnowAlbedoType.SNOALB_BAKER)
             {
-                aSV = new SVType[3];
-                aLev = [DOESNT_EXIST, DOESNT_EXIST, DOESNT_EXIST];
-                aSV[0] = SVType.SNOW_ALBEDO;
-                aSV[1] = SVType.SNOW;
-                aSV[2] = SVType.SNOW_AGE;
+                return bakerStateVariableInfos;
             }
             else
             {
-                aSV = new SVType[1];
-                aLev = [DOESNT_EXIST];
-                aSV[0] = SVType.SNOW_ALBEDO;
+                return defaultStateVariableInfos;
             }
         }
 

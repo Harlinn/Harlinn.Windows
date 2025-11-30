@@ -23,6 +23,8 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class ExchangeFlowHydroProcess : HydroProcess
     {
+        static readonly IReadOnlyList<ParameterInfo> parameters = [new ParameterInfo("EXCHANGE_FLOW", ClassType.CLASS_SOIL)];
+
         public ExchangeFlowHydroProcess(Model model, int inIndex, int outIndex)
             : base(model, HydroProcessType.EXCHANGE_FLOW, inIndex, outIndex)
         {
@@ -44,10 +46,10 @@ namespace Harlinn.Hydrology
             Runtime.ExitGracefullyIf((toType != SVType.SOIL), "ExchangeFlowHydroProcess.Initialize: exchange flow  must be between two soil units", ExitCode.BAD_DATA);
         }
 
-        public override void GetParticipatingParamList(out string[] aP, out ClassType[] aPC)
+        
+        public override IReadOnlyList<ParameterInfo> GetParticipatingParamList()
         {
-            aP = new string[1] { "EXCHANGE_FLOW" };
-            aPC = new ClassType[1] { ClassType.CLASS_SOIL };
+            return parameters;
         }
 
         public override void GetRatesOfChange(double[] stateVars, HydroUnit hydroUnit, Options options, TimeStruct tt, double[] rates)

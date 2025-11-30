@@ -25,6 +25,12 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class DepressionOverflowHydroProcess : HydroProcess
     {
+        static readonly IReadOnlyList<ParameterInfo> threshpowParameters = [new ParameterInfo("DEP_THRESHOLD", ClassType.CLASS_LANDUSE), new ParameterInfo("DEP_N", ClassType.CLASS_LANDUSE), new ParameterInfo("DEP_MAX_FLOW", ClassType.CLASS_LANDUSE), new ParameterInfo("DEP_MAX", ClassType.CLASS_LANDUSE)];
+        static readonly IReadOnlyList<ParameterInfo> linearParameters = [new ParameterInfo("DEP_THRESHOLD", ClassType.CLASS_LANDUSE), new ParameterInfo("DEP_K", ClassType.CLASS_LANDUSE)];
+        static readonly IReadOnlyList<ParameterInfo> weirParameters = [new ParameterInfo("DEP_THRESHOLD", ClassType.CLASS_LANDUSE), new ParameterInfo("DEP_CRESTRATIO", ClassType.CLASS_LANDUSE)];
+
+        static readonly IReadOnlyList<StateVariableInfo> stateVariableInfos = [new StateVariableInfo(SVType.DEPRESSION), new StateVariableInfo(SVType.SURFACE_WATER)];
+
         /// <summary>
         /// Model of abstaction selected
         /// </summary>
@@ -41,33 +47,31 @@ namespace Harlinn.Hydrology
             ToIndices[0] = model.GetStateVarIndex(SVType.SURFACE_WATER);
         }
 
-        public override void GetParticipatingParamList(out string[] aP, out ClassType[] aPC)
+        
+
+        public override IReadOnlyList<ParameterInfo> GetParticipatingParamList()
         {
             if (_type == DepflowType.DFLOW_THRESHPOW)
             {
-                aP = [ "DEP_THRESHOLD", "DEP_N", "DEP_MAX_FLOW", "DEP_MAX" ]; 
-                aPC = [ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE];
+                return threshpowParameters;
             }
             else if (_type == DepflowType.DFLOW_LINEAR)
             {
-                aP = [ "DEP_THRESHOLD", "DEP_K" ];
-                aPC = [ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE];
+                return linearParameters;
             }
             else if (_type == DepflowType.DFLOW_WEIR)
             {
-                aP = [ "DEP_THRESHOLD", "DEP_CRESTRATIO" ];
-                aPC = [ClassType.CLASS_LANDUSE, ClassType.CLASS_LANDUSE];
+                return weirParameters;
             }
             else
             {
-                throw new InvalidOperationException("CmvDepressionOverflow::GetParticipatingParamList: undefined depression overflow algorithm");
+                throw new InvalidOperationException("DepressionOverflowHydroProcess.GetParticipatingParamList: undefined depression overflow algorithm");
             }
         }
 
-        public static void GetParticipatingStateVarList(DepflowType dtype, SVType[] aSV, int[] aLev)
+        public static IReadOnlyList<StateVariableInfo> GetParticipatingStateVarList(DepflowType dtype)
         {
-            aSV = [SVType.DEPRESSION, SVType.SURFACE_WATER];
-            aLev = [ DOESNT_EXIST, DOESNT_EXIST];
+            return stateVariableInfos;
         }
 
         public override void GetRatesOfChange(double[] stateVars, HydroUnit hydroUnit, Options options, TimeStruct tt, double[] rates)

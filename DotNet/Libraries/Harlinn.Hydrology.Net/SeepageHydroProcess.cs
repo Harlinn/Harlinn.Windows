@@ -25,6 +25,16 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class SeepageHydroProcess : HydroProcess
     {
+        static readonly IReadOnlyList<ParameterInfo> linearParameters = new ParameterInfo[]
+        {
+            new ParameterInfo("DEP_SEEP_K", ClassType.CLASS_LANDUSE)
+        };
+
+        static readonly IReadOnlyList<StateVariableInfo> stateVariableInfos = new StateVariableInfo[]
+        {
+            new StateVariableInfo(SVType.DEPRESSION)
+        };
+
         /// <summary>
         /// Model of abstaction selected
         /// </summary>
@@ -54,12 +64,11 @@ namespace Harlinn.Hydrology
             }
         }
 
-        public override void GetParticipatingParamList(out string[] aP, out ClassType[] aPC)
+        public override IReadOnlyList<ParameterInfo> GetParticipatingParamList()
         {
             if (_type == SeepageType.SEEP_LINEAR)
             {
-                aP = ["DEP_SEEP_K"]; 
-                aPC = [ClassType.CLASS_LANDUSE];
+                return linearParameters;
             }
             else
             {
@@ -67,10 +76,11 @@ namespace Harlinn.Hydrology
             }
         }
 
-        public static void GetParticipatingStateVarList(SeepageType seepageType, SVType[] aSV, int[] aLev)
+        
+
+        public static IReadOnlyList<StateVariableInfo> GetParticipatingStateVarList(SeepageType seepageType)
         {
-            aSV = [SVType.DEPRESSION];
-            aLev = [DOESNT_EXIST];
+            return stateVariableInfos;
         }
 
         public override void GetRatesOfChange(double[] stateVars, HydroUnit hydroUnit, Options options, TimeStruct tt, double[] rates)

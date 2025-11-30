@@ -24,8 +24,7 @@ namespace Harlinn.Hydrology
     public abstract class HydroProcess
     {
     
-        readonly static string[] _emptyStringArray = new string[0];
-        readonly static ClassType[] _emptyClassTypeArray = new ClassType[0];
+        readonly static IReadOnlyList<ParameterInfo> _emptyParameters = [];
 
         Model _model;
 
@@ -173,10 +172,9 @@ namespace Harlinn.Hydrology
         {
         }
 
-        public virtual void GetParticipatingParamList(out string[] aP, out ClassType[] aPC)
+        public virtual IReadOnlyList<ParameterInfo> GetParticipatingParamList()
         {
-            aP = _emptyStringArray;
-            aPC = _emptyClassTypeArray;
+            return _emptyParameters;
         }
 
 

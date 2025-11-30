@@ -1,4 +1,5 @@
 ﻿
+
 namespace Harlinn.Hydrology
 {
     public class Runtime
@@ -19,6 +20,11 @@ namespace Harlinn.Hydrology
             {
                 ExitGracefully(statement, code);
             }
+        }
+
+        internal static void WriteWarning(string warn, bool v)
+        {
+            throw new NotImplementedException();
         }
     }
 }
