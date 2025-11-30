@@ -23,8 +23,7 @@ namespace Harlinn.Hydrology
     public class FlushHydroProcess : HydroProcess
     {
         double _percentage;
-        static SVType[] _emptySVTypeArray = new SVType[0];
-        static int[] _emptyIntArray = new int[0];
+        static readonly IReadOnlyList<StateVariableInfo> stateVariableInfos = Array.Empty<StateVariableInfo>();
 
         public FlushHydroProcess(Model model, int inIndex, int outIndex, double pct)
             : base(model, HydroProcessType.FLUSH, inIndex, outIndex)
@@ -35,10 +34,11 @@ namespace Harlinn.Hydrology
             _percentage = pct;
         }
 
-        public static void GetParticipatingStateVarList(out SVType[] aSV, out int[] aLev)
+        
+
+        public static IReadOnlyList<StateVariableInfo> GetParticipatingStateVarList()
         {
-            aSV = _emptySVTypeArray;
-            aLev = _emptyIntArray;
+            return stateVariableInfos;
         }
 
         public override void GetRatesOfChange(double[] storage, HydroUnit hydroUnit, Options options, TimeStruct tt, double[] rates)
