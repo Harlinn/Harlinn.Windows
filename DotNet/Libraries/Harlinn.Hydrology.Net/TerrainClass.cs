@@ -19,6 +19,9 @@ namespace Harlinn.Hydrology
     {
         string _tag;
         Terrain _terrain;
+
+        public string Tag { get => _tag; set => _tag = value; }
+        public Terrain Terrain { get => _terrain; set => _terrain = value; }
     }
 
 }

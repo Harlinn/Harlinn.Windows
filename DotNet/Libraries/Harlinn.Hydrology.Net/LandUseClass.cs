@@ -24,5 +24,13 @@ namespace Harlinn.Hydrology
         {
             throw new NotImplementedException();
         }
+
+        public Surface GetSurfaceStruct()
+        {
+            return _surface;
+        }
+
+        public Surface Surface => _surface;
+        
     }
 }

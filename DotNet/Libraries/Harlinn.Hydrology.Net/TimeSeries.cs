@@ -491,6 +491,16 @@ namespace Harlinn.Hydrology
         {
             throw new NotImplementedException();
         }
+
+        internal void SetLocID(long sBID)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ShiftInTime(double v, Options options)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

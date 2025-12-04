@@ -20,9 +20,16 @@ namespace Harlinn.Hydrology
     {
         Vegetation _vegetation;
 
+        public Vegetation Vegetation => _vegetation; 
+
         internal string GetVegetationName()
         {
-            throw new NotImplementedException();
+            return _vegetation.vegetation_name;
+        }
+
+        public Vegetation GetVegetationStruct()
+        {
+            return _vegetation;
         }
     }
 

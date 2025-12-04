@@ -23,16 +23,16 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// [km/km2] length of *all* rivers in a basin divided by the area of the drainage basin
         /// </summary>
-        double drainage_density;
+        public double drainage_density;
         /// <summary>
         /// [m]      representative hillslope length within the watershed
         /// </summary>
-        double hillslope_length;
+        public double hillslope_length;
 
         /// <summary>
         /// [m]      TOPMODEL mean of the log-transformed topographic index (between 5.0 - 10.0)
         /// </summary>
-        double topmodel_lambda;
+        public double topmodel_lambda;
     }
 
 }

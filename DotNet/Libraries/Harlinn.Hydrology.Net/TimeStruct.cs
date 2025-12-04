@@ -33,6 +33,12 @@ namespace Harlinn.Hydrology
             _start = value;
         }
 
+        public TimeStruct(DateTime start, TimeSpan elapsed)
+        {
+            _start = start;
+            _elapsed = elapsed;
+        }
+
         public DateTime Start { get => _start; set => _start = value; }
         public TimeSpan Elapsed { get => _elapsed; set => _elapsed = value; }
 

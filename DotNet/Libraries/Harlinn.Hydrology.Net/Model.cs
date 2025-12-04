@@ -24,6 +24,7 @@ using static Harlinn.Hydrology.Common;
 using static Harlinn.Hydrology.Constants;
 using static Harlinn.Mathematics.Net.Common;
 using static System.Math;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Harlinn.Hydrology
 {
@@ -44,25 +45,25 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// Hydro units
         /// </summary>
-        List<HydroUnit> _pHydroUnits;
+        readonly List<HydroUnit> _pHydroUnits = new();
 
         /// <summary>
         /// number of HRU groups in model
         /// </summary>
         int _nHRUGroups;
-        List<HRUGroup> _pHRUGroups;
+        readonly List<HRUGroup> _pHRUGroups = new();
 
         /// <summary>
         /// number of Subbasin groups in model
         /// </summary>
         int _nSBGroups;
-        List<SubbasinGroup> _pSBGroups;
+        readonly List<SubbasinGroup> _pSBGroups = new();
 
         /// <summary>
         /// number of subbasins
         /// </summary>
         int _nSubBasins;
-        List<SubBasin> _pSubBasins;
+        readonly List<SubBasin> _pSubBasins = new();
         /// <summary>
         /// stores order of subbasin for routing [size:_nSubBasins] (may be relegated to local variable in InitializeRoutingNetwork)
         /// </summary>
@@ -104,7 +105,7 @@ namespace Harlinn.Hydrology
 
         int _nProcesses;  ///< number of hydrological processes that move water, mass, or energy from one storage unit to another
         /// hydrological processes
-        List<HydroProcess> _pProcesses;
+        readonly List<HydroProcess> _pProcesses = new();
         /// <summary>
         /// array of flags for whether or not each process applies to each HRU [_nProcesses][_nHydroUnits]
         /// </summary>
@@ -121,7 +122,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// gauges which store time series info [size:_nGauges]
         /// </summary>
-        List<Gauge> _pGauges;
+        readonly List<Gauge> _pGauges = new();
         /// <summary>
         /// array of weights for each gauge/HRU pair[_nHydroUnits,_nGauges]
         /// </summary>
@@ -136,7 +137,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// gridded input data [size: _nForcingGrids]
         /// </summary>
-        List<ForcingGrid> _pForcingGrids;
+        readonly List<ForcingGrid> _pForcingGrids = new();
 
         /// <summary>
         /// model-wide UTM zone used for interpolation
@@ -151,7 +152,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// global parameters  (used to be global, static)
         /// </summary>
-        ModelParameters _pGlobalParams;
+        ModelParameters _pGlobalParams = new();
 
         /// <summary>
         /// number of transient parameters
@@ -160,12 +161,12 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// Transient parameters with time series
         /// </summary>
-        List<TransientParam> _pTransParams;
+        readonly List<TransientParam> _pTransParams = new();
         /// <summary>
         /// number of HRU Group class changes
         /// </summary>
         int _nClassChanges;  
-        List<ClassChange> _pClassChanges;
+        readonly List<ClassChange> _pClassChanges = new();
         /// <summary>
         /// number of local parameter overrides
         /// </summary>
@@ -173,12 +174,12 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// local parameter overrides
         /// </summary>
-        List<ParameterOverride> _pParamOverrides;
+        readonly List<ParameterOverride> _pParamOverrides = new();
 
         /// <summary>
         /// corresponding groundwater model
         /// </summary>
-        GroundwaterModel _pGWModel;
+        GroundwaterModel _pGWModel = new();
         /// <summary>
         /// corresponding transport model
         /// </summary>
@@ -197,11 +198,11 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// observation time series [size: _nObservedTS]
         /// </summary>
-        List<TimeSeries> _pObservedTS;
+        readonly List<TimeSeries> _pObservedTS = new();
         /// <summary>
         /// modeled time series corresponding to observations [size: _nObservedTS]
         /// </summary>
-        List<TimeSeries> _pModeledTS;
+        readonly List<TimeSeries> _pModeledTS = new();
         /// <summary>
         /// number of observation time series
         /// </summary>
@@ -214,7 +215,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// observation weight time series [size: _nObsWeightTS]
         /// </summary>
-        List<TimeSeries> _pObsWeightTS;
+        readonly List<TimeSeries> _pObsWeightTS = new();
         /// <summary>
         /// number of observation weight time series
         /// </summary>
@@ -223,7 +224,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// diagnostics to be calculated [size: _nDiagnostics]
         /// </summary>
-        List<Diagnostic> _pDiagnostics;
+        readonly List<Diagnostic> _pDiagnostics = new();
         /// <summary>
         /// number of diagnostics to be calculated comparing obs. vs modeled
         /// </summary>
@@ -231,7 +232,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// diagnostic periods [size _nDiagPeriods]
         /// </summary>
-        List<DiagPeriod> _pDiagPeriods;
+        readonly List<DiagPeriod> _pDiagPeriods = new();
         /// <summary>
         /// number of diagnostic periods
         /// </summary>
@@ -239,7 +240,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// aggregate diagnostic structures [size: _nAggDiagnostics]
         /// </summary>
-        List<AggDiag> _pAggDiagnostics;
+        readonly List<AggDiag> _pAggDiagnostics = new();
         /// <summary>
         /// number of aggregated diagnostics
         /// </summary>
@@ -287,7 +288,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// perturbation data; defines which forcing functions to perturb and how [size: _nPerturbations]
         /// </summary>
-        List<ForcePerturb> _pPerturbations;
+        readonly List<ForcePerturb> _pPerturbations = new();
         /// <summary>
         /// number of forcing functions to perturb
         /// </summary>
@@ -337,7 +338,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// custom output objects [size:_nCustomOutputs]
         /// </summary>
-        List<CustomOutput> _pCustomOutputs;
+        readonly List<CustomOutput> _pCustomOutputs = new();
         /// <summary>
         /// Nuber of custom output objects
         /// </summary>
@@ -345,7 +346,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// custom table objects [size:_nCustomTables]
         /// </summary>
-        List<CustomTable> _pCustomTables;
+        readonly List<CustomTable> _pCustomTables = new();
         /// <summary>
         /// Number of custom tables
         /// </summary>
@@ -398,7 +399,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// Set of model major output times (LOCAL times at which full solution is written)
         /// </summary>
-        SortedSet<TimeSpan> _outputTimes;
+        readonly SortedSet<TimeSpan> _outputTimes = new();
         /// <summary>
         /// index of current output time
         /// </summary>
@@ -431,9 +432,9 @@ namespace Harlinn.Hydrology
         /// number of land use classes
         /// </summary>
         int _nLandUseClasses;
-        List<SoilClass> _pAllSoilClasses;
+        readonly List<SoilClass> _pAllSoilClasses = new List<SoilClass>();
         int _nAllSoilClasses;
-        List<VegetationClass> _pAllVegClasses;
+        readonly List<VegetationClass> _pAllVegClasses = [];
         int _numVegClasses;
         /// <summary>
         /// all terrain classes that have been created
@@ -1882,6 +1883,353 @@ namespace Harlinn.Hydrology
             _pProcesses.Add(hydroProcess);
         }
 
+        /// <summary>
+        /// Adds state variables during model construction
+        /// </summary>
+        /// <remarks>
+        /// Called during model construction (only from parse of RVI file) to dynamically
+        /// generate a list of state variables in the model.
+        /// </remarks>
+        /// <param name="aSV">
+        /// array of state variables types to be added
+        /// </param>
+        /// <param name="aLev">
+        /// array of state variable levels to be added
+        /// </param>
+        /// <exception cref="ArgumentException"></exception>
+        public void AddStateVariables( SVType[] aSV, int[] aLev)
+        {
+            
+            if(aSV.Length != aLev.Length)
+            {
+                throw new ArgumentException("State variable type and layer arrays must have the same length");
+            }
+            if(aSV.Length > MAX_STATE_VARS)
+            {
+                throw new ArgumentException("Exceeded maximum number of state variables manipulable by one process");
+            }
+            int nSV = aSV.Length;
+            bool found;
+            for (int ii=0;ii<nSV;ii++)
+            {
+                found=false;
+                for (int i=0;i<_nStateVars;i++)
+                {
+                    if ((_aStateVarType[i]==aSV[ii]) && (_aStateVarLayer[i]==aLev[ii]))
+                    {
+                        found=true;
+                    }
+                }
+        
+                if (!found)
+                {
+                    var tmpSV = new SVType[_nStateVars + 1];
+                    var tmpLy = new int[_nStateVars + 1];
+                    
+                    for (int i = 0; i < _nStateVars; i++)//copy old arrays
+                    {
+                        tmpSV[i] = _aStateVarType[i];
+                        tmpLy[i] = _aStateVarLayer[i];
+                    }
+                    // set values of new array items
+                    tmpSV[_nStateVars] = aSV[ii];
+                    tmpLy[_nStateVars] = aLev[ii];
+                    
+                    //add index to state variable lookup table
+                    if((int)(aSV[ii]) > MAX_STATE_VAR_TYPES)
+                    {
+                        throw new ArgumentException("bad type specified");
+                    }
+                    if((aLev[ii] < -1) || (aLev[ii] >= MAX_SV_LAYERS) )
+                    {
+                        throw new ArgumentException("bad layer index specified");
+                    }
+
+                    if (aLev[ii] == DOESNT_EXIST) 
+                    { 
+                        _aStateVarIndices[(int)(aSV[ii]),0] = _nStateVars; 
+                    }
+                    else 
+                    { 
+                        _aStateVarIndices[(int)(aSV[ii]),aLev[ii]] = _nStateVars; 
+                    }
+                    // replace old arrays
+                    _aStateVarType = tmpSV;
+                    _aStateVarLayer = tmpLy;
+                    _nStateVars++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds custom output object
+        /// </summary>
+        /// <param name="customOutput">
+        /// The custom output object to be added
+        /// </param>
+        public void AddCustomOutput(CustomOutput customOutput)
+        {
+            _pCustomOutputs.Add(customOutput);
+            _nCustomOutputs++;
+        }
+
+        /// <summary>
+        /// Adds custom table object
+        /// </summary>
+        /// <param name="customTable">
+        /// The custom table object to be added.
+        /// </param>
+        public void AddCustomTable(CustomTable customTable)
+        {
+            _pCustomTables.Add(customTable);
+            _nCustomTables++;
+        }
+
+
+        /// <summary>
+        /// Adds additional forcing perturbation
+        /// </summary>
+        /// <param name="type">
+        /// forcing type to be perturbed
+        /// </param>
+        /// <param name="distrib">
+        /// sampling distribution type
+        /// </param>
+        /// <param name="distpars">
+        /// array of distribution parameters
+        /// </param>
+        /// <param name="group_index">
+        /// HRU group ID (or DOESNT_EXIST if all HRUs should be perturbed)
+        /// </param>
+        /// <param name="adj">
+        /// type of perturbation (e.g., additive or multiplicative)
+        /// </param>
+        /// <param name="nStepsPerDay">
+        /// Number of simulation steps per day
+        /// </param>
+        /// <exception cref="ArgumentException"></exception>
+        public void AddForcingPerturbation(ForcingType type, DistType distrib, double[] distpars, int group_index, Adjustment adj, int nStepsPerDay)
+        {
+            if (!((type == ForcingType.F_PRECIP) || (type == ForcingType.F_SNOWFALL) || (type == ForcingType.F_RAINFALL) || (type == ForcingType.F_TEMP_AVE)))
+            {
+                throw new ArgumentException("Only PRECIP, RAINFALL, SNOWFALL, and TEMP_AVE are supported for forcing perturbation.");
+            }
+
+            ForcePerturb pFP = new ForcePerturb();
+            pFP.forcing = type;
+            pFP.distribution = distrib;
+            pFP.kk = group_index;
+            pFP.adj_type = adj;
+            for (int i = 0; i < 3; i++)
+            {
+                pFP.distpar[i] = distpars[i];
+            }
+            pFP.eps = new double[nStepsPerDay];
+            for (int n = 0; n < nStepsPerDay; n++)
+            {
+                pFP.eps[n] = 0;
+            }
+            _pPerturbations.Add(pFP);
+            _nPerturbations++;
+        }
+
+        /// <summary>
+        /// Sets lake storage state variable index based on SV type and layer
+        /// </summary>
+        /// <param name="lak_sv">
+        /// Lake storage state variable type.
+        /// </param>
+        /// <param name="lev">
+        /// Layer of interest.
+        /// </param>
+        /// <exception cref="Exception"></exception>
+        public void SetLakeStorage(SVType lak_sv, int lev)
+        {
+            var lake_sv = GetStateVarIndex(lak_sv, lev);
+            if (lake_sv == DOESNT_EXIST)
+            {
+                throw new Exception("non-existent state variable");
+            }
+            _lake_sv = lake_sv;
+        }
+
+        /// <summary>
+        /// Sets HRU group for which storage output files are generated
+        /// </summary>
+        /// <param name="outputGroup">
+        /// The HRU group for which storage output files are generated.
+        /// </param>
+        public void SetOutputGroup(HRUGroup outputGroup)
+        {
+            _pOutputGroup = outputGroup;
+        }
+
+        /// <summary>
+        /// Sets Ensemble mode for model
+        /// </summary>
+        /// <param name="ensemble">
+        /// The Ensemble instance.
+        /// </param>
+        public void SetEnsembleMode(Ensemble ensemble)
+        {
+            _pEnsemble = ensemble;
+        }
+
+        /// <summary>
+        /// Sets demand optimizer
+        /// </summary>
+        /// <param name="demandOptimizer">
+        /// The DemandOptimizer instance.
+        /// </param>
+        public void AddDemandOptimization(DemandOptimizer demandOptimizer)
+        {
+            _pDO = demandOptimizer;
+        }
+
+        /// <summary>
+        /// Sets the PET blend values.
+        /// </summary>
+        /// <param name="aEv">The array of evaporation methods.</param>
+        /// <param name="wts">The array of weights corresponding to the evaporation methods.</param>
+        /// <exception cref="ArgumentException">Thrown when the lengths of the input arrays do not match.</exception>
+        public void SetPETBlendValues(EvapMethod[] aEv, double[] wts) 
+        {
+            if(aEv.Length != wts.Length) 
+            {
+                throw new ArgumentException("PET evaporation method and weight arrays must have same length");
+            }
+            _PETBlends_type = (EvapMethod[])aEv.Clone();
+            _PETBlends_wts = (double[])wts.Clone();
+        }
+
+        /// <summary>
+        /// Sets the blend types and corresponding weights for the pot melt process.
+        /// </summary>
+        /// <param name="aPM">An array of blend types to be used in the pot melt process. Each element specifies a blend method for the
+        /// corresponding weight.</param>
+        /// <param name="wts">An array of weights associated with each blend type. The length must match the number of blend types in
+        /// <paramref name="aPM"/>.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="aPM"/> and <paramref name="wts"/> do not have the same length.</exception>
+        public void SetPotMeltBlendValues(PotmeltMethod[] aPM, double[] wts)
+        {
+            if (aPM.Length != wts.Length)
+            {
+                throw new ArgumentException("PET blend type and weight arrays must have same length");
+            }
+            _PotMeltBlends_type = (PotmeltMethod[])aPM.Clone();
+            _PotMeltBlends_wts = (double[])wts.Clone();
+        }
+
+        /// <summary>
+        /// Gets basin blended forcing number of weighted groups.
+        /// </summary>
+        /// <param name="label">
+        /// property identifier.
+        /// </param>
+        /// <returns>
+        /// number of blended weights of basin corresponding to label.
+        /// </returns>
+        /// <exception cref="ArgumentException"></exception>
+        public int GetBlendedForcingsNumWeights(string label)
+        {
+            string label_n = label.ToUpperInvariant();
+            if(label_n == "PET_BLEND_WTS") 
+            { 
+                return _PETBlends_wts?.Length ?? 0; 
+            }
+            else if (label_n == "POTMELT_BLEND_WTS") 
+            { 
+                return _PotMeltBlends_wts?.Length ?? 0; 
+            }
+            else
+            {
+                throw new ArgumentException("unrecognized blend type");
+            }
+        }
+
+        /// <summary>
+        /// Removes all custom outputs (For FEWS override)
+        /// </summary>
+        public void DeleteCustomOutputs()
+        {
+            _pCustomOutputs.Clear();
+            _nCustomOutputs = 0;
+        }
+
+        /// <summary>
+        /// Sets number of layers used to simulate snowpack.
+        /// </summary>
+        /// <param name="nLayers">The number of snow layers to set. Must be zero or greater.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="nLayers"/> is less than zero.</exception>
+        public void SetNumSnowLayers(int nLayers)
+        {
+            if (nLayers < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nLayers), "Number of snow layers cannot be negative");
+            }
+  
+            var aSV = new SVType[nLayers];
+            var aLev = new int[nLayers];
+            for (int m=0;m<nLayers;m++)
+            {
+                aSV[m]=SVType.SNOW;
+                aLev[m]=m;
+            }
+            AddStateVariables(aSV, aLev);
+        }
+
+        /// <summary>
+        /// overrides streamflow with observed streamflow
+        /// </summary>
+        /// <param name="SBID">
+        /// Subbasin identifier of basin with observations at outflow
+        /// </param>
+        public void OverrideStreamflow(long SBID)
+        {
+            for (int i = 0; i < _nObservedTS; i++)
+            {
+                if (IsContinuousFlowObs(_pObservedTS[i], SBID))
+                {
+                    //check for blanks in observation TS
+                    bool bad = false;
+                    for (int n = 0; n < _pObservedTS[i].GetNumValues(); n++)
+                    {
+                        if (_pObservedTS[i].GetValue(n) == RAV_BLANK_DATA) { bad = true; break; }
+                    }
+                    if (bad)
+                    {
+                        Runtime.WriteWarning("CModel::OverrideStreamflow::cannot override streamflow if there are blanks in observation data", Options.noisy);
+                        return;
+                    }
+
+                    long downID = GetSubBasinByID(SBID)!.GetDownstreamID();
+                    if (downID != DOESNT_EXIST)
+                    {
+                        //Copy time series of observed flows to new time series
+                        string name = $"Inflow_Hydrograph_{SBID}";
+                        TimeSeries pObs = _pObservedTS[i];
+                        TimeSeries pTS = new TimeSeries(name, pObs);
+                        pTS.SetLocID(SBID);
+
+                        //need to shift everything by one interval, since HYDROGRAPHS are stored as period-ending
+                        pTS.ShiftInTime(-(pTS.GetInterval()), Options);
+
+                        //add as inflow hydrograph to downstream
+                        GetSubBasinByID(downID).AddInflowHydrograph(pTS);
+                        GetSubBasinByID(SBID).SetDownstreamID(DOESNT_EXIST);
+                        GetSubBasinByID(SBID).SetDownstreamBasin(null);
+                        return;
+                    }
+                    else
+                    {
+                        Runtime.WriteWarning("CModel::OverrideStreamflow: overriding streamflow at an outlet subbasin has no impact on model operation", Options.noisy);
+                    }
+                }
+            }
+        }
+
+
+
 
         /// <summary>
         /// Returns the LU class corresponding to passed string
@@ -1920,6 +2268,137 @@ namespace Harlinn.Hydrology
             return null;
         }
 
+        /// <summary>
+        /// Returns the land use  class corresponding to the passed index
+        /// </summary>
+        /// <param name="index">
+        /// LandUse class index
+        /// </param>
+        /// <returns>
+        /// Reference to land use class corresponding to the index.
+        /// </returns>
+        public LandUseClass GetLanduseClass(int index)
+        {
+            return _pLandUseClasses[index];
+        }
+
+        /// <summary>
+        /// Summarize LU class information to screen
+        /// </summary>
+        public void SummarizeLUClassesToScreen()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine($"Land Use Class Summary: {_nLandUseClasses} LU/LT classes in database");
+            for (int c = 0; c < _nLandUseClasses; c++)
+            {
+                Console.WriteLine($"-LULT. class \"{_pLandUseClasses[c].GetLanduseName()}\" ");
+                Console.WriteLine($"    impermeable: {_pLandUseClasses[c].GetSurfaceStruct().impermeable_frac * 100} %");
+                Console.WriteLine($"       forested: {_pLandUseClasses[c].GetSurfaceStruct().forest_coverage * 100} %");
+            }
+        }
+
+
+        /// <summary>
+        /// Destroy all LU classes
+        /// </summary>
+        public void DestroyAllLanduseClasses()
+        {
+            _pLandUseClasses.Clear();
+            _nLandUseClasses = 0;
+        }
+
+
+        /// <summary>
+        /// Returns the soil class corresponding to passed string
+        /// </summary>
+        /// <remarks>
+        /// Converts string (e.g., "SILT" in HRU file) to soilclass
+        /// can accept either soilclass index or soilclass _tag
+        /// if string is invalid, returns NULL
+        /// </remarks>
+        /// <param name="s">Soil class identifier (_tag or index)</param>
+        /// <returns>Reference to soil class corresponding to identifier s</returns>
+        public SoilClass StringToSoilClass(string s)
+        {
+            int value = -1;
+            if (!int.TryParse(s, out value))
+            {
+                value = -1;
+            }
+            string sup = s.ToUpperInvariant();
+            for (int c = 0; c < _nAllSoilClasses; c++)
+            {
+                if (sup == _pAllSoilClasses[c].Tag.ToUpperInvariant())
+                {
+                    return _pAllSoilClasses[c];
+                }
+                else if (value == (c + 1)) { return _pAllSoilClasses[c]; }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the soil class corresponding to the passed index
+        /// </summary>
+        /// <param name="index">
+        /// Soil class index
+        /// </param>
+        /// <returns>
+        /// Reference to soil class corresponding to index
+        /// </returns>
+        public SoilClass? GetSoilClass(int index)
+        {
+            if ((index < 0) || (index >= _pAllSoilClasses.Count)) 
+            { 
+                return null; 
+            }
+            return _pAllSoilClasses[index];
+        }
+
+        /// <summary>
+        /// Return number of soil classes
+        /// </summary>
+        /// <returns>The number of soil classes</returns>
+        public int GetNumSoilClasses()
+        {
+            return _pAllSoilClasses.Count;
+        }
+
+        /// <summary>
+        /// Adds a soil class to the model
+        /// </summary>
+        /// <param name="soilClass">
+        /// The soil class to be added to the model. 
+        /// </param>
+        public void AddSoilClass(SoilClass soilClass)
+        {
+            _pAllSoilClasses.Add(soilClass);
+            _nAllSoilClasses++;
+        }
+
+        public void SummarizeSoilClassesToScreen()
+        {
+            Console.WriteLine( "===================" );
+            Console.WriteLine($"Soil Class Summary:{_nAllSoilClasses} soils in database");
+            for (int c = 0; c < _nAllSoilClasses; c++)
+            {
+                Console.WriteLine($"-Soil class \"{_pAllSoilClasses[c].Tag}\" ");
+                Console.WriteLine($"       %sand: {_pAllSoilClasses[c].Soil._sandContent}");
+                Console.WriteLine($"       %clay: {_pAllSoilClasses[c].Soil._clayContent}");
+                Console.WriteLine($"    %organic: {_pAllSoilClasses[c].Soil._organicContent}");
+            }
+        }
+
+
+        /// <summary>
+        /// Remove all soil classes from the model.
+        /// </summary>
+        public void DestroyAllSoilClasses()
+        {
+            _pAllSoilClasses.Clear();
+            _nAllSoilClasses = 0;
+        }
+
 
         /// <summary>
         /// Returns the vegetation class corresponding to passed string
@@ -1938,7 +2417,8 @@ namespace Harlinn.Hydrology
                 value = -1;
             }
             string sup = s.ToUpperInvariant();
-            for (int c = 0; c < _numVegClasses; c++)
+            var count = _pAllVegClasses.Count;
+            for (int c = 0; c < count; c++)
             {
                 if (sup == _pAllVegClasses[c].GetVegetationName())
                 {
@@ -1952,6 +2432,169 @@ namespace Harlinn.Hydrology
             return null;
         }
 
+        /// <summary>
+        /// Returns the vegetation class corresponding to the passed index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns>
+        /// Reference to vegetation class corresponding to index.
+        /// </returns>
+        public VegetationClass? GetVegClass(int index)
+        {
+            if ((index < 0) || (index >= _numVegClasses)) 
+            { 
+                return null; 
+            }
+            return _pAllVegClasses[index];
+        }
+
+        /// <summary>
+        /// Return the number of vegetation classes.
+        /// </summary>
+        /// <returns>
+        /// The number of vegetation classes.
+        /// </returns>
+        public int GetNumVegClasses()
+        {
+            return _pAllVegClasses.Count;
+        }
+
+        /// <summary>
+        /// Adds a vegetation to the model.
+        /// </summary>
+        /// <param name="vegetationClass">
+        /// The vegetation class to add.
+        /// </param>
+        public void AddVegClass(VegetationClass vegetationClass)
+        {
+            _pAllVegClasses.Add(vegetationClass);
+            _numVegClasses++;
+        }
+
+        /// <summary>
+        /// Summarize vegetation class information to screen
+        /// </summary>
+        public void SummarizeVegClassesToScreen()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine($"Vegetation Class Summary: {_numVegClasses} vegetation classes in database");
+            for (int c = 0; c < _numVegClasses; c++)
+            {
+                Console.WriteLine($"-Veg. class \"{_pAllVegClasses[c].GetVegetationName()}\" ");
+                Console.WriteLine($"    max. height: {_pAllVegClasses[c].GetVegetationStruct().max_height} m");
+                Console.WriteLine($"       max. LAI: {_pAllVegClasses[c].GetVegetationStruct().max_LAI}");
+                Console.WriteLine($"   max. conduct: {_pAllVegClasses[c].GetVegetationStruct().max_leaf_cond} mm/s");
+                Console.WriteLine($"         albedo: {_pAllVegClasses[c].GetVegetationStruct().albedo}");
+            }
+        }
+
+        /// <summary>
+        /// Removes all vegetation class entries and resets the vegetation class count to zero.
+        /// </summary>
+        public void DestroyAllVegClasses()
+        {
+            _pAllVegClasses.Clear();
+            _numVegClasses = 0;
+        }
+
+
+        /// <summary>
+        /// Returns the terrain class corresponding to passed string.
+        /// </summary>
+        /// <remarks>
+        /// Converts string (e.g., "HUMMOCKY" in HRU file) to Terrain class
+        ///  can accept either terrainclass index or terrainclass tag
+        ///  if string is invalid, returns NULL
+        /// </remarks>
+        /// <param name="s">
+        /// The terrain class identifier (tag or index).
+        /// </param>
+        /// <returns>
+        /// Reference to terrain class corresponding to identifier s.
+        /// </returns>
+        public TerrainClass? StringToTerrainClass(string s)
+        {
+            int value = -1;
+            if (!int.TryParse(s, out value))
+            {
+                value = -1;
+            }
+            string sup = s.ToUpperInvariant();
+            var count = _pAllTerrainClasses.Count;
+            for (int c = 0; c < count; c++)
+            {
+                if (sup == _pAllTerrainClasses[c].Tag)
+                {
+                    return _pAllTerrainClasses[c];
+                }
+                else if (value == (c + 1))
+                {
+                    return _pAllTerrainClasses[c];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the total number of terrain classes currently available.
+        /// </summary>
+        /// <returns>The number of terrain classes. Returns 0 if no terrain classes are present.</returns>
+        public int GetNumTerrainClasses()
+        {
+            return _pAllTerrainClasses.Count;
+        }
+
+        /// <summary>
+        /// Retrieves the terrain class at the specified index, if available.
+        /// </summary>
+        /// <param name="index">The zero-based index of the terrain class to retrieve. Must be greater than or equal to 0 and less than the
+        /// total number of terrain classes.</param>
+        /// <returns>The terrain class at the specified index, or null if the index is out of range.</returns>
+        public TerrainClass? GetTerrainClass(int index)
+        {
+            if ((index < 0) || (index >= _pAllTerrainClasses.Count))
+            {
+                return null;
+            }
+            return _pAllTerrainClasses[index];
+        }
+
+        /// <summary>
+        /// Adds a terrain class to the collection of available terrain classes.
+        /// </summary>
+        /// <param name="terrainClass">The terrain class to add to the collection. Cannot be null.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="terrainClass"/> is null.</exception>
+        public void AddTerrainClass(TerrainClass terrainClass)
+        {
+            if (terrainClass == null)
+            {
+                throw new ArgumentNullException(nameof(terrainClass), "Terrain class cannot be null");
+            }
+            _pAllTerrainClasses.Add(terrainClass);
+        }
+
+        /// <summary>
+        /// Summarize terrain class information to screen
+        /// </summary>
+        public void SummarizeTerrainClassesToScreen()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine($"Terrain Class Summary: {_pAllTerrainClasses.Count} terrain classes in database");
+            foreach (var terrainClass in _pAllTerrainClasses)
+            {
+                Console.WriteLine($"-Terrain. class \"{terrainClass.Tag}\" ");
+                Console.WriteLine($"    drainage density: {terrainClass.Terrain.drainage_density}");
+            }
+        }
+
+        /// <summary>
+        /// Removes all terrain class entries from the collection, resetting its state.
+        /// </summary>
+        public void DestroyAllTerrainClasses()
+        {
+            _pAllTerrainClasses.Clear();
+            _nAllTerrainClasses = 0;
+        }
 
     }
 

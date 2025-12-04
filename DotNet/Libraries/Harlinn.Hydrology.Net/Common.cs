@@ -18,6 +18,7 @@ using System.Globalization;
 using static Harlinn.Hydrology.Constants;
 using static Harlinn.Mathematics.Net.Common;
 using static System.Math;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Harlinn.Hydrology
 {
@@ -460,70 +461,12 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// Converts model_time and start date/year into full TimeStruct (fills fields similar to C++ JulianConvert).
         /// </summary>
-        public static void JulianConvert(double model_time, double start_date, int start_year, Calendars calendar, out TimeStruct tt)
+        public static void JulianConvert(TimeSpan model_time, double start_date, int start_year, Calendars calendar, out TimeStruct tt)
         {
-            tt = new TimeStruct();
-            int leap = 0;
-            string mon;
-            double sum, days, ddate;
-            double dday;
-            int dmonth, dyear;
+            var start = new DateTime(start_year, 1, 1).AddDays(start_date);
 
-            // handles daily roundoff error
-            if ((model_time - Math.Floor(model_time)) > (1 - TIME_CORRECTION))
-            {
-                model_time = Math.Floor(model_time + TIME_CORRECTION);
-            }
-            // handles hourly roundoff error
-            if ((model_time * HR_PER_DAY - Math.Floor(model_time * HR_PER_DAY)) > (1.0 - TIME_CORRECTION) * HR_PER_DAY)
-            {
-                model_time = Math.Floor(HR_PER_DAY * (model_time + TIME_CORRECTION)) / HR_PER_DAY;
-            }
 
-            double dec_date = start_date + model_time; // decimal day-of-year relative to start year
-            dyear = start_year;
-            ddate = dec_date;
-
-            if (IsLeapYear(dyear, calendar)) leap = 1;
-            while (ddate >= (365 + leap))
-            {
-                ddate -= (365.0 + leap);
-                dyear++;
-                leap = 0;
-                if (IsLeapYear(dyear, calendar)) leap = 1;
-            }
-            // ddate is decimal julian date from Jan 1 0:00:00 of current dyear
-
-            dmonth = 1; days = 31; sum = 31 - TIME_CORRECTION; mon = "Jan";
-            if (ddate >= sum) { dmonth += 1; days = 28 + leap; sum += days; mon = "Feb"; }
-            if (ddate >= sum) { dmonth += 1; days = 31; sum += days; mon = "Mar"; }
-            if (ddate >= sum) { dmonth += 1; days = 30; sum += days; mon = "Apr"; }
-            if (ddate >= sum) { dmonth += 1; days = 31; sum += days; mon = "May"; }
-            if (ddate >= sum) { dmonth += 1; days = 30; sum += days; mon = "Jun"; }
-            if (ddate >= sum) { dmonth += 1; days = 31; sum += days; mon = "Jul"; }
-            if (ddate >= sum) { dmonth += 1; days = 31; sum += days; mon = "Aug"; }
-            if (ddate >= sum) { dmonth += 1; days = 30; sum += days; mon = "Sep"; }
-            if (ddate >= sum) { dmonth += 1; days = 31; sum += days; mon = "Oct"; }
-            if (ddate >= sum) { dmonth += 1; days = 30; sum += days; mon = "Nov"; }
-            if (ddate >= sum) { dmonth += 1; days = 31; sum += days; mon = "Dec"; }
-
-            dday = ddate - sum + days; // decimal days since 0:00 on first of month
-
-            tt.model_time = model_time;
-            tt.julian_day = ddate;
-            tt.day_of_month = (int)(Math.Ceiling(dday + REAL_SMALL));
-            if (tt.day_of_month == 0) tt.day_of_month = 1;
-            tt.month = dmonth;
-            tt.year = dyear;
-
-            tt.day_changed = false;
-            if ((model_time <= PRETTY_SMALL) || (tt.julian_day - Math.Floor(tt.julian_day + TIME_CORRECTION) < 0.001))
-            {
-                tt.day_changed = true;
-            }
-
-            tt.date_string = string.Format("{0:0000}-{1:00}-{2:00}", dyear, tt.month, tt.day_of_month);
-            tt.leap_yr = IsLeapYear(tt.year, calendar);
+            tt = new TimeStruct(start, model_time);
         }
 
         /// <summary>
@@ -552,6 +495,18 @@ namespace Harlinn.Hydrology
             }
         }
 
+        static string[] dateTimeFormats = new[]
+        {
+            "yyyy-MM-dd",
+            "yyyy/MM/dd",
+            "yyyy-M-d",
+            "yyyy/M/d",
+            "yyyy-MM-d",
+            "yyyy-M-dd",
+            "yyyy/MM-d",
+            "yyyy/M-dd"
+        };
+
         /// <summary>
         /// Parse ISO date and time strings into TimeStruct.
         /// sDate must be "yyyy-mm-dd" (or "yyyy/mm/dd"). sTime is "hh:mm:ss" (or "h:mm:ss" accepted).
@@ -568,69 +523,49 @@ namespace Harlinn.Hydrology
             { 
                 throw new ArgumentException("DateStringToTimeStruct: Invalid time format used (hourstamp): " + sTime, nameof(sTime));
             }
-
-            var tt = new TimeStruct();
-            tt.date_string = sDate;
-            tt.year = ParseIntSafe(sDate.Substring(0, 4), "DateStringToTimeStruct: year parse");
-            tt.month = ParseIntSafe(sDate.Substring(5, 2), "DateStringToTimeStruct: month parse");
-            if (tt.month > 12)
+            if (DateTime.TryParseExact(sDate, dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
             {
-                throw new ArgumentOutOfRangeException(nameof(sDate), "DateStringToTimeStruct: Invalid time format used (month>12): " + sDate);
-            }
-            tt.day_of_month = ParseIntSafe(sDate.Substring(8, 2), "DateStringToTimeStruct: day parse");
-            tt.model_time = 0.0;
-            tt.leap_yr = IsLeapYear(tt.year, calendar);
+                var parts = sTime.Split(':');
+                if (parts.Length < 2 || parts.Length > 3)
+                {
+                    throw new ArgumentException("Invalid time format: " + sTime, nameof(sTime));
+                }
 
-            tt.julian_day = tt.day_of_month - 1;
-            // add month offsets
-            if (tt.month >= 2) tt.julian_day += 31;
-            if (tt.month >= 3) tt.julian_day += 28;
-            if (tt.month >= 4) tt.julian_day += 31;
-            if (tt.month >= 5) tt.julian_day += 30;
-            if (tt.month >= 6) tt.julian_day += 31;
-            if (tt.month >= 7) tt.julian_day += 30;
-            if (tt.month >= 8) tt.julian_day += 31;
-            if (tt.month >= 9) tt.julian_day += 31;
-            if (tt.month >= 10) tt.julian_day += 30;
-            if (tt.month >= 11) tt.julian_day += 31;
-            if (tt.month == 12) tt.julian_day += 30;
-            if ((tt.leap_yr) && (tt.month > 2)) tt.julian_day += 1;
+                if (!int.TryParse(parts[0], NumberStyles.None, CultureInfo.InvariantCulture, out int h))
+                {
+                    throw new ArgumentException("Invalid time format: " + sTime, nameof(sTime));
+                }
+                if (!int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out int m))
+                {
+                    throw new ArgumentException("Invalid time format: " + sTime, nameof(sTime));
+                }
+                int s = 0;
+                if (parts.Length == 3)
+                {
+                    if (!int.TryParse(parts[2], NumberStyles.None, CultureInfo.InvariantCulture, out s))
+                    {
+                        throw new ArgumentException("Invalid time format: " + sTime, nameof(sTime));
+                    }
+                }
 
-            int leap = tt.leap_yr ? 1 : 0;
-            if (tt.day_of_month > (DAYS_PER_MONTH[tt.month - 1] + leap))
-            {
-                throw new ArgumentOutOfRangeException(nameof(sDate), "DateStringToTimeStruct: Invalid time format used - exceeded max day of month: " + sDate);
-            }
-            if(tt.month <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(sDate), "DateStringToTimeStruct: Invalid time format used - negative or zero month: " + sDate);
-            }
+                if (m < 0 || m > 59)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(sTime), "Invalid minutes value in time string: " + sTime);
+                }
+                if (s < 0 || s > 59)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(sTime), "Invalid seconds value in time string: " + sTime);
+                }
+                if (h < 0 || h > 23)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(sTime), "Invalid hours value in time string: " + sTime);
+                }
 
-            // normalize time string "h:mm:ss" -> "hh:mm:ss"
-            if (sTime.Length >= 2 && sTime[1] == ':')
-            {
-                sTime = "0" + sTime;
-            }
-            if(sTime.Length < 8 || sTime[2] != ':')
-            {
-                throw new ArgumentException("DateStringToTimeStruct: Invalid time format used: " + sTime, nameof(sTime));
-            }
-            if(sTime.Length < 8 || sTime[5] != ':')
-            {
-                throw new ArgumentException("DateStringToTimeStruct: Invalid time format used: " + sTime, nameof(sTime));
-            }
+                var time = new TimeSpan(h, m, s);
+                return new TimeStruct(date + time);
 
-            int hr = ParseIntSafe(sTime.Substring(0, 2), "hour parse");
-            int min = ParseIntSafe(sTime.Substring(3, 2), "min parse");
-            double sec = ParseDoubleSafe(sTime.Substring(6, Math.Min(6, sTime.Length - 6)), "sec parse");
-
-            tt.julian_day += (double)hr / HR_PER_DAY;
-            tt.julian_day += (double)min / (HR_PER_DAY * 60.0);
-            tt.julian_day += sec / SEC_PER_DAY;
-
-            // reprocess to fill tt fields consistently with JulianConvert
-            JulianConvert(0.0, tt.julian_day, tt.year, calendar, out tt);
-            return tt;
+            }
+            return null;
         }
 
         private static int ParseIntSafe(string s, string context)
@@ -1075,6 +1010,184 @@ namespace Harlinn.Hydrology
 
 
             return HRUType.HRU_INVALID_TYPE;
+        }
+
+        /// <summary>
+        /// returns true if specified observation time series is the flow series for subbasin SBID
+        /// </summary>
+        /// <param name="pObs">
+        /// observation time series
+        /// </param>
+        /// <param name="SBID">
+        /// subbasin ID
+        /// </param>
+        /// <returns>
+        /// true if specified observation time series is the flow series for subbasin SBID
+        /// </returns>
+        public static bool IsContinuousFlowObs(TimeSeries pObs,long SBID)
+        {
+            if (pObs == null)
+            { 
+                return false; 
+            }
+            if (pObs.GetLocID() != SBID)
+            { 
+                return false; 
+            }
+            if (pObs.Type != TimeSeriesType.TS_REGULAR)
+            {
+                return false;
+            }
+            return pObs.Name == "HYDROGRAPH";
+        }
+
+        /// <summary>
+        /// Returns true if specified observation time series is the continuous water level series for subbasin SBID
+        /// </summary>
+        /// <param name="pObs">
+        /// observation time series
+        /// </param>
+        /// <param name="SBID">
+        /// subbasin ID
+        /// </param>
+        /// <returns>
+        /// true if specified observation time series is the continuous water level series for subbasin SBID
+        /// </returns>
+        public static bool IsContinuousLevelObs(TimeSeries pObs, long SBID)
+        {
+            if (pObs == null) 
+            { 
+                return false; 
+            }
+            if (pObs.GetLocID() != SBID) 
+            { 
+                return false; 
+            }
+            if (pObs.Type != TimeSeriesType.TS_REGULAR) 
+            { 
+                return false; 
+            }
+            return pObs.Name == "WATER_LEVEL"; 
+        }
+        /// <summary>
+        /// Returns true if specified observation time series is a stream concentration or temperature series for subbasin SBID.
+        /// </summary>
+        /// <param name="pObs">
+        /// observation time series
+        /// </param>
+        /// <param name="SBID">
+        /// subbasin ID
+        /// </param>
+        /// <returns>
+        /// true if specified observation time series is a stream concentration or temperature series for subbasin SBID.
+        /// </returns>
+        public static bool IsContinuousConcObs(TimeSeries pObs, long SBID, int c)
+        {
+            if (pObs == null) 
+            { 
+                return false; 
+            }
+            if (pObs.GetLocID() != SBID) 
+            { 
+                return false; 
+            }
+            if (pObs.Type != TimeSeriesType.TS_REGULAR) 
+            { 
+                return false; 
+            }
+            if (pObs.GetConstitInd() != c) 
+            { 
+                return false; 
+            }
+            return (pObs.Name == "STREAM_CONCENTRATION") ||
+                   (pObs.Name == "STREAM_TEMPERATURE");
+        }
+        
+        /// <summary>
+        /// Returns true if specified observation time series is the reservoir stage series for subbasin SBID.
+        /// </summary>
+        /// <param name="pObs">
+        /// observation time series
+        /// </param>
+        /// <param name="SBID">
+        /// subbasin ID
+        /// </param>
+        /// <returns>
+        /// true if specified observation time series is the reservoir stage series for subbasin SBID.
+        /// </returns>
+        public static bool IsContinuousStageObs(TimeSeries pObs, long SBID)
+        {
+            if (pObs == null) 
+            { 
+                return false; 
+            }
+            if (pObs.GetLocID() != SBID) 
+            { 
+                return false; 
+            }
+            if (pObs.Type != TimeSeriesType.TS_REGULAR) 
+            { 
+                return false; 
+            }
+            return pObs.Name == "RESERVOIR_STAGE";
+        }
+
+        /// <summary>
+        /// Returns true if specified observation time series is a reservoir inflow series for subbasin SBID.
+        /// </summary>
+        /// <param name="pObs">
+        /// observation time series
+        /// </param>
+        /// <param name="SBID">
+        /// subbasin ID
+        /// </param>
+        /// <returns>
+        /// true if specified observation time series is a reservoir inflow series for subbasin SBID.
+        /// </returns>
+        public static bool IsContinuousInflowObs(TimeSeries pObs, long SBID)
+        {
+            if (pObs == null) 
+            { 
+                return false; 
+            }
+            if (pObs.GetLocID() != SBID) 
+            { 
+                return false; 
+            }
+            if (pObs.Type != TimeSeriesType.TS_REGULAR) 
+            { 
+                return false; 
+            }
+            return pObs.Name == "RESERVOIR_INFLOW";
+        }
+
+        /// <summary>
+        /// Returns true if specified observation time series is a continuous net reservoir inflow series for subbasin SBID.
+        /// </summary>
+        /// <param name="pObs">
+        /// observation time series
+        /// </param>
+        /// <param name="SBID">
+        /// subbasin ID
+        /// </param>
+        /// <returns>
+        /// true if specified observation time series is a continuous net reservoir inflow series for subbasin SBID.
+        /// </returns>
+        public static bool IsContinuousNetInflowObs(TimeSeries pObs, long SBID)
+        {
+            if (pObs == null) 
+            { 
+                return false; 
+            }
+            if (pObs.GetLocID() != SBID) 
+            { 
+                return false; 
+            }
+            if (pObs.Type != TimeSeriesType.TS_REGULAR) 
+            { 
+                return false; 
+            }
+            return (pObs.Name == "RESERVOIR_NETINFLOW"); 
         }
 
 

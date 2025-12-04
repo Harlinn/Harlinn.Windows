@@ -19,6 +19,14 @@ namespace Harlinn.Hydrology
     {
         string _tag;
         Soil _soil;
+        public SoilClass(string tag, Soil soil)
+        {
+            _tag = tag;
+            _soil = soil;
+        }
+
+        public string Tag { get; internal set; }
+        public Soil Soil { get => _soil; set => _soil = value; }
     }
 
 }
