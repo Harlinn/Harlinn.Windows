@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 namespace Harlinn.Hydrology
 {
     /// <summary>
@@ -84,5 +85,14 @@ namespace Harlinn.Hydrology
         /// </summary>
         double[] _aPerim;
 
+        internal double GetBedslope()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal double GetMinMannings()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

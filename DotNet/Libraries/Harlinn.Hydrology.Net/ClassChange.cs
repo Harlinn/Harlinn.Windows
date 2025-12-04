@@ -20,18 +20,20 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// HRU group id (kk)
         /// </summary>
-        int HRU_groupID; 
+        public int HRU_groupID;
         /// <summary>
         /// type of class (e.g., CLASS_LANDUSE)
         /// </summary>
-        ClassType tclass;
+        public ClassType tclass;
         /// <summary>
         /// new class tag
         /// </summary>
-        string newclass;
+        public string newclass;
         /// <summary>
         /// modeltime of shift
         /// </summary>
-        double modeltime;
+        public TimeSpan modeltime;
+
+
     }
 }

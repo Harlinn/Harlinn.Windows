@@ -20,37 +20,117 @@ namespace Harlinn.Hydrology
     /// </summary>
     public class TimeStruct
     {
-        /// <summary>
-        /// String date
-        /// </summary>
-        public string date_string;
+        DateTime _start;
+        TimeSpan _elapsed;
+
+        public TimeStruct()
+        {
+            _start = DateTime.UtcNow;
+        }
+
+        public TimeStruct(DateTime value)
+        {
+            _start = value;
+        }
+
+        public DateTime Start { get => _start; set => _start = value; }
+        public TimeSpan Elapsed { get => _elapsed; set => _elapsed = value; }
+
+
         /// <summary>
         /// [d] time elapsed since model start time
         /// </summary>
-        public double model_time;
+        public double model_time
+        {
+            get
+            {
+                return _elapsed.TotalDays;
+            }
+        }
+
+        /// <summary>
+        /// String date
+        /// </summary>
+        public string date_string
+        {
+            get
+            {
+                return _start.Add(_elapsed).ToString("yyyy-MM-dd HH:mm:ss");
+            }
+        }
+
         /// <summary>
         /// [d] Julian-format decimal date (time in days since 0:00 Jan 1 of current year)
         /// </summary>
-        public double julian_day;
+        public double julian_day
+        {
+            get
+            {
+                var current = _start.Add(_elapsed);
+                var startOfYear = new DateTime(current.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                return (current - startOfYear).TotalDays;
+            }
+        }
+
         /// <summary>
         /// Day of month
         /// </summary>
-        public int day_of_month;
+        public int day_of_month
+        {
+            get
+            {
+                var current = _start.Add(_elapsed);
+                return current.Day;
+            }
+        }
+
         /// <summary>
         /// [1..12] month of year
         /// </summary>
-        public int month;
+        public int month
+        {
+            get
+            {
+                var current = _start.Add(_elapsed);
+                return current.Month;
+            }
+        }
+
         /// <summary>
         /// year
         /// </summary>
-        public int year;
+        public int year
+        {
+            get
+            {
+                var current = _start.Add(_elapsed);
+                return current.Year;
+            }
+        }
+
         /// <summary>
         /// Boolean flag that indicates leap year
         /// </summary>
-        public bool leap_yr;
+        public bool leap_yr
+        {
+            get
+            {
+                var current = _start.Add(_elapsed);
+                return DateTime.IsLeapYear(current.Year);
+            }
+        }
+
         /// <summary>
         /// Boolean flag indicating change of day for subdaily time steps
         /// </summary>
-        public bool day_changed;
+        public bool day_changed
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        
     }
 }

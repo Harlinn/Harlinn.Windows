@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 namespace Harlinn.Hydrology
 {
     /// <summary>
@@ -40,6 +41,26 @@ namespace Harlinn.Hydrology
         /// true if all Subbasins in group are disabled
         /// </summary>
         bool _disabled;
+
+        internal int GetGlobalIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetName()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal int GetNumSubbasins()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal SubBasin? GetSubBasin(int p_loc)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

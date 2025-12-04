@@ -13,10 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 namespace Harlinn.Hydrology
 {
-    class LandUseClass
+    public class LandUseClass
     {
         Surface _surface;
+
+        internal string GetLanduseName()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

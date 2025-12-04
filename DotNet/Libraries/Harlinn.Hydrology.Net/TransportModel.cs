@@ -122,6 +122,11 @@ namespace Harlinn.Hydrology
             _model = model;
         }
 
+        internal double GetConcentration(int k, int i)
+        {
+            throw new NotImplementedException();
+        }
+
         internal string GetConstituentLongName(int layerIndex)
         {
             throw new NotImplementedException();

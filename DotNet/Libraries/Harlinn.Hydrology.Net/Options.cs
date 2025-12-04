@@ -25,7 +25,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// corresponding to t=0, simulation time
         /// </summary>
-        public DateTime start_day;
+        public DateTime start;
         /// <summary>
         /// simulation duration
         /// </summary>
@@ -34,7 +34,7 @@ namespace Harlinn.Hydrology
         /// int that specifies calendar of all dates used,
         /// e.g., 2 = "CALENDAR_PROLEPTIC_GREGORIAN"
         /// </summary>
-        public int calendar;
+        public Calendars calendar;
 
         /// <summary>
         /// int that specifies time zone relative to GMT for writing to NetCDF output

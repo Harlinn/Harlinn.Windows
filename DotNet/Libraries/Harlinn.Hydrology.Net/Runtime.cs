@@ -26,5 +26,15 @@ namespace Harlinn.Hydrology
         {
             throw new NotImplementedException();
         }
+
+        internal static void WriteWarning(string warningMessage, ExitCode bAD_DATA_WARN)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void WriteAdvisory(string warn, bool noisy)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

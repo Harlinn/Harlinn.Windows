@@ -13,8 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-using Serilog;
+using Harlinn.Hydrology;
+using System;
+using System.Diagnostics.Metrics;
+using System.Formats.Asn1;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Threading;
+using static Harlinn.Hydrology.Common;
 using static Harlinn.Hydrology.Constants;
+using static Harlinn.Mathematics.Net.Common;
+using static System.Math;
 
 namespace Harlinn.Hydrology
 {
@@ -151,7 +160,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// Transient parameters with time series
         /// </summary>
-        TransientParam[] _pTransParams;
+        List<TransientParam> _pTransParams;
         /// <summary>
         /// number of HRU Group class changes
         /// </summary>
@@ -214,7 +223,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// diagnostics to be calculated [size: _nDiagnostics]
         /// </summary>
-        List<DiagnosticType> _pDiagnostics;
+        List<Diagnostic> _pDiagnostics;
         /// <summary>
         /// number of diagnostics to be calculated comparing obs. vs modeled
         /// </summary>
@@ -222,7 +231,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// diagnostic periods [size _nDiagPeriods]
         /// </summary>
-        DiagPeriod[] _pDiagPeriods;
+        List<DiagPeriod> _pDiagPeriods;
         /// <summary>
         /// number of diagnostic periods
         /// </summary>
@@ -230,7 +239,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// aggregate diagnostic structures [size: _nAggDiagnostics]
         /// </summary>
-        AggDiag[] _pAggDiagnostics;
+        List<AggDiag> _pAggDiagnostics;
         /// <summary>
         /// number of aggregated diagnostics
         /// </summary>
@@ -387,13 +396,9 @@ namespace Harlinn.Hydrology
         int _RESMB_ncid;
 
         /// <summary>
-        /// array of model major output times (LOCAL times at which full solution is written)
+        /// Set of model major output times (LOCAL times at which full solution is written)
         /// </summary>
-        double[] _aOutputTimes;
-        /// <summary>
-        /// size of array of model major output times
-        /// </summary>
-        int _nOutputTimes;
+        SortedSet<TimeSpan> _outputTimes;
         /// <summary>
         /// index of current output time
         /// </summary>
@@ -458,426 +463,1495 @@ namespace Harlinn.Hydrology
         /// </summary>
         int _nLatFlowProcesses;
 
+        public Options Options => _pOptStruct;
+
+        // Variable used for search optimizations
+
+        int _lastHruIndex = 0;
+        int _lastSubBasinIndex = 0;
+
+        bool[]? isUpstr;
+
+        // Derived counters kept for compatibility with C++ API
+        public int NumSubBasins => _pSubBasins.Count;
+        public int NumHRUs => _pHydroUnits.Count;
+        public int NumHRUGroups => _pHRUGroups.Count;
+        public int NumSBGroups => _pSBGroups.Count;
+        public int NumGauges => _pGauges.Count;
+        public int NumForcingGrids => _pForcingGrids.Count;
+        public int NumProcesses => _pProcesses.Count;
+        public int NumObservedTS => _pObservedTS.Count;
+        public double WatershedArea => _WatershedArea;
+
+        // --- Constructor ---
+        public Model(int nSoilLayers, Options options)
+        {
+            if (nSoilLayers < 1)
+            {
+                throw new ArgumentException("Model constructor: improper number of soil layers.", nameof(nSoilLayers));
+            }
+            _pOptStruct = options ?? throw new ArgumentNullException(nameof(options));
+
+            _pGlobalParams = new ModelParameters();
+
+            _HYDRO_ncid = -9;
+            _STORAGE_ncid = -9;
+            _FORCINGS_ncid = -9;
+            _RESSTAGE_ncid = -9;
+            _RESMB_ncid = -9;
+
+            // initialize state variable index table with DOESNT_EXIST sentinel
+            const int MAX_STATE_VAR_TYPES = 64;  // should match project constant
+            const int MAX_SV_LAYERS = 64;        // should match project constant
+            _aStateVarIndices = new int[MAX_STATE_VAR_TYPES, MAX_SV_LAYERS];
+            for (int i = 0; i < MAX_STATE_VAR_TYPES; i++)
+            {
+                for (int j = 0; j < MAX_SV_LAYERS; j++)
+                {
+                    _aStateVarIndices[i, j] = Constants.DOESNT_EXIST;
+                }
+            }
+
+            //determine first group of state variables based upon soil model
+            //SW, atmosphere, atmos_precip always present, one for each soil layer, and 1 for GW (unless lumped)
+            _nStateVars = 5 + nSoilLayers;
+
+            _aStateVarType = new SVType[_nStateVars];
+            _aStateVarLayer = new int[_nStateVars];
+            _nSoilVars = nSoilLayers;
+
+            _aStateVarType[0] = SVType.SURFACE_WATER; _aStateVarLayer[0] = DOESNT_EXIST; _aStateVarIndices[(int)(SVType.SURFACE_WATER),0] = 0;
+            _aStateVarType[1] = SVType.ATMOSPHERE; _aStateVarLayer[1] = DOESNT_EXIST; _aStateVarIndices[(int)(SVType.ATMOSPHERE),0] = 1;
+            _aStateVarType[2] = SVType.ATMOS_PRECIP; _aStateVarLayer[2] = DOESNT_EXIST; _aStateVarIndices[(int)(SVType.ATMOS_PRECIP),0] = 2;
+            _aStateVarType[3] = SVType.PONDED_WATER; _aStateVarLayer[3] = DOESNT_EXIST; _aStateVarIndices[(int)(SVType.PONDED_WATER),0] = 3;
+            _aStateVarType[4] = SVType.RUNOFF; _aStateVarLayer[4] = (int)SVType.RUNOFF; _aStateVarIndices[(int)(SVType.RUNOFF),0] = 4;
+
+            int count = 0;
+            for (int i = 5; i < 5 + _nSoilVars; i++)
+            {
+                _aStateVarType[i] = SVType.SOIL;
+                _aStateVarLayer[i] = count;
+                _aStateVarIndices[(int)(SVType.SOIL),count] = i;
+                count++;
+            }
+            _UTM_zone = -1;
+
+            _pTransModel = new TransportModel(this);
+            
+        }
+
+
+        // --- Basic accessors translated from C++ ---
+        public ModelParameters GetGlobalParams() => _pGlobalParams;
+        public int GetNumSubBasins() => _pSubBasins.Count;
+        public int GetNumHRUs() => _pHydroUnits.Count;
+        public int GetNumHRUGroups() => _pHRUGroups.Count;
+        public int GetNumForcingGrids() => _pForcingGrids.Count;
+        public int GetNumProcesses() => _pProcesses.Count;
+        public double GetWatershedArea() => _WatershedArea;
+        public int GetNumObservedTS() => _pObservedTS.Count;
+
+        public TimeSeriesBase GetObservedTS(int i) => _pObservedTS[i];
+        public TimeSeriesBase GetSimulatedTS(int i) => _pModeledTS[i];
+
+        public HydroProcess GetProcess(int j)
+        {
+            if (j < 0 || j >= _pProcesses.Count) throw new IndexOutOfRangeException("GetProcess: improper index");
+            return _pProcesses[j];
+        }
+
+        public Gauge GetGauge(int g)
+        {
+            if (g < 0 || g >= _pGauges.Count) throw new IndexOutOfRangeException("GetGauge: improper index");
+            return _pGauges[g];
+        }
+
+        public ForcingGrid GetForcingGrid(ForcingType ftype)
+        {
+            var f = _pForcingGrids.FindIndex(x => x.GetForcingType() == ftype);
+            if (f < 0)
+            {
+                throw new InvalidOperationException("GetForcingGrid: no forcing grid of requested type");
+            }
+            return _pForcingGrids[f];
+        }
+
+        public HydroUnit GetHydroUnit(int k)
+        {
+            if (k < 0 || k >= _pHydroUnits.Count)
+            {
+                throw new IndexOutOfRangeException("GetHydroUnit: improper index");
+            }
+            return _pHydroUnits[k];
+        }
+
+        public HydroUnit? GetHRUByID(long hruId)
+        {
+            for (int i = 0; i < _nHydroUnits; i++)
+            {
+                int k = NearSearchIndex(i, _lastHruIndex, _nHydroUnits);
+                if (hruId == _pHydroUnits[k].GetHRUID()) 
+                {
+                    _lastHruIndex = k; 
+                    return _pHydroUnits[k]; 
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns specific HRU group denoted by parameter kk
+        /// </summary>
+        /// <param name="kk">
+        /// Index of the HRU group to retrieve.
+        /// </param>
+        /// <returns>
+        /// The HRU group corresponding to the specified index.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when the specified index is out of range.
+        /// </exception>
+        public HRUGroup GetHRUGroup(int kk)
+        {
+            if (kk < 0 || kk >= _pHRUGroups.Count)
+            {
+                throw new ArgumentOutOfRangeException("GetHRUGroup: improper index");
+            }
+            return _pHRUGroups[kk];
+        }
+
+
+        /// <summary>
+        /// Returns specific HRU group denoted by string parameter
+        /// </summary>
+        /// <param name="name">
+        /// Name of the HRU group to retrieve.
+        /// </param>
+        /// <returns>
+        /// The HRU group corresponding to the specified name.
+        /// </returns>
+        public HRUGroup? GetHRUGroup(string name)
+        {
+            for (int kk=0;kk<_nHRUGroups;kk++)
+            {
+                if (_pHRUGroups[kk].GetName() == name)
+                {
+                    return _pHRUGroups[kk];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns true if HRU with global index k is in specified HRU Group
+        /// </summary>
+        /// <param name="k">
+        /// HRU global index
+        /// </param>
+        /// <param name="HRUGroupName">
+        /// The name of the HRU group
+        /// </param>
+        /// <returns>
+        /// true if HRU k is in HRU Group specified by HRUGroupName.
+        /// </returns>
+        public bool IsInHRUGroup(int k, string HRUGroupName)
+        {
+            HRUGroup? pGrp = GetHRUGroup(HRUGroupName);
+            if (pGrp == null) 
+            { 
+                return false; 
+            }
+            return pGrp.IsInGroup(k);
+        }
+
+
+        /// <summary>
+        /// Returns specific Sub basin denoted by index parameter.
+        /// </summary>
+        /// <param name="subBasinIndex">
+        /// Index of the sub basin to retrieve.
+        /// </param>
+        /// <returns>
+        /// The sub basin corresponding to the specified index.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when the specified index is out of range.
+        /// </exception>
+        public SubBasin GetSubBasin(int subBasinIndex)
+        {
+            if (subBasinIndex < 0 || subBasinIndex >= _pSubBasins.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(subBasinIndex));
+            }
+            return _pSubBasins[subBasinIndex];
+        }
+
+        /// <summary>
+        /// Returns index of subbasin downstream from subbasin referred to by index.
+        /// </summary>
+        /// <param name="subBasinIndex">The downstream index of the sub basin</param>
+        /// <returns>
+        /// The downstream subbasin index.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public int GetDownstreamBasin(int subBasinIndex)
+        {
+            if (subBasinIndex < 0 || subBasinIndex >= _aDownstreamInds.Length )
+            {
+                throw new ArgumentOutOfRangeException(nameof(subBasinIndex));
+            }
+            return _aDownstreamInds[subBasinIndex];
+        }
+
+        /// <summary>
+        /// Returns subbasin object corresponding to passed subbasin ID
+        /// </summary>
+        /// <param name="subBasinId">The sub basin ID</param>
+        /// <returns>The subbasin object corresponding to passed subbasin ID.</returns>
+        public SubBasin? GetSubBasinByID(long subBasinId)
+        {
+            if (subBasinId < 0)
+            {
+                return null;
+            }
+            int n = _pSubBasins.Count;
+            for (int i = 0; i < n; i++)
+            {
+                int index = NearSearchIndex(i, _lastSubBasinIndex, n);
+                var subBasin = _pSubBasins[index];
+                if (subBasin.Id == subBasinId) 
+                { 
+                    _lastSubBasinIndex = index; 
+                    return subBasin; 
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns sub basin index corresponding to passed subbasin ID
+        /// </summary>
+        /// <param name="subBasinId">The sub basin ID</param>
+        /// <returns>The sub basin index corresponding to passed subbasin ID</returns>
+        public int GetSubBasinIndex(long subBasinId)
+        {
+            if (subBasinId < 0)
+            {
+                return DOESNT_EXIST;
+            }
+            int n = _pSubBasins.Count;
+            for (int i = 0; i < n; i++)
+            {
+                int index = NearSearchIndex(i, _lastSubBasinIndex, n);
+                var subBasin = _pSubBasins[index];
+                if (subBasin.Id == subBasinId)
+                {
+                    _lastSubBasinIndex = index;
+                    return index;
+                }
+            }
+            return INDEX_NOT_FOUND;
+        }
+
+        /// <summary>
+        /// Returns array of subbasins upstream of subbasin SBID, including that subbasin
+        /// </summary>
+        /// <param name="SBID">
+        /// subbasin ID
+        /// </param>
+        /// <returns>
+        /// An array of subbasins upstream of subbasin SBID, including that subbasin.
+        /// </returns>
+        /// <exception cref="ArgumentException"></exception>
+        public SubBasin[] GetUpstreamSubbasins(long SBID)
+        {
+            if((isUpstr?.Length ?? 0) != _pSubBasins.Count)
+            {
+                isUpstr = new bool[_nSubBasins];
+            }
+
+            Array.Fill(isUpstr!, false);
+
+            int p = GetSubBasinIndex(SBID);
+            if((p==DOESNT_EXIST) || (p==INDEX_NOT_FOUND)) 
+            {
+                throw new ArgumentException(nameof(SBID));
+            }
+            isUpstr![p] = true;
+            int upstrCount = 1;
+            const int MAX_ITER = 1000;
+            int numUpstr = 0;
+            int numUpstrOld = 1;
+            int iter = 0;
+            int down_p;
+            do
+            {
+                numUpstrOld = numUpstr;
+                for (p = 0; p < _nSubBasins; p++)
+                {
+                    down_p = GetSubBasinIndex(_pSubBasins[p].GetDownstreamID());
+                    if (down_p != DOESNT_EXIST)
+                    {
+                        if (isUpstr[down_p] == true) 
+                        {
+                            if (!isUpstr[p])
+                            {
+                                isUpstr[p] = true;
+                                upstrCount++;
+                            }
+                        }
+                    }
+                }
+                numUpstr = 0;
+                for (p = 0; p < _nSubBasins; p++)
+                {
+                    if (isUpstr[p] == true) 
+                    { 
+                        numUpstr++; 
+                    }
+                }
+                iter++;
+            } while ((iter < MAX_ITER) && (numUpstr != numUpstrOld));
+
+            var pSBs = new SubBasin[upstrCount];
+            int count = 0;
+            for (p = 0; p < _nSubBasins; p++)
+            {
+                if (isUpstr[p] == true) 
+                { 
+                    pSBs[count] = _pSubBasins[p]; count++; 
+                }
+            }
+            return pSBs;
+        }
+
+
+        /// <summary>
+        /// Returns true if subbasin with ID SBID is upstream of (or is) basin with subbasin SBIDdown
+        /// </summary>
+        /// <remarks>
+        /// Recursive call, keeps marching downstream until outlet or SBIDdown is encounterd
+        /// </remarks>
+        /// <param name="SBID">
+        /// ID of subbasin being queried
+        /// </param>
+        /// <param name="SBIDdown">
+        /// subbasin ID basis of query
+        /// </param>
+        /// <returns>
+        /// true if subbasin with ID SBID is upstream of (or is) basin with subbasin SBIDdown
+        /// </returns>
+        public bool IsSubBasinUpstream(long SBID, long SBIDdown)
+        {
+            if (SBID == DOESNT_EXIST) 
+            {
+                //end of the recursion line
+                return false; 
+            } 
+            else if (SBIDdown == SBID) 
+            {
+                //a subbasin is upstream of itself (even handles loops on bad networks)
+                return true; 
+            } 
+            else if (SBIDdown == DOESNT_EXIST) 
+            {
+                //everything is upstream of an outlet
+                return true; 
+            } 
+            else if (GetSubBasinByID(SBID)!.GetDownstreamID() == SBIDdown) 
+            {
+                //directly upstream
+                return true; 
+            } 
+            else 
+            {
+                return IsSubBasinUpstream(GetSubBasinByID(SBID)!.GetDownstreamID(), SBIDdown);
+            }
+        }
+
+        /// <summary>
+        /// Returns specific subbasin group at index subBasinGroupIndex.
+        /// </summary>
+        /// <param name="subBasinGroupIndex">
+        /// subbasin group index
+        /// </param>
+        /// <returns>
+        /// The subbasin group corresponding to passed index (subBasinGroupIndex).
+        /// </returns>
+        public SubbasinGroup GetSubBasinGroup(int subBasinGroupIndex)
+        {
+            return _pSBGroups[subBasinGroupIndex];
+        }
+
+        /// <summary>
+        /// Returns specific subbasin group denoted by string parameter
+        /// </summary>
+        /// <param name="name">
+        /// The name of the subbasin group
+        /// </param>
+        /// <returns>
+        /// The subbasin group corresponding to passed name, or null if this group doesn't exist.
+        /// </returns>
+        public SubbasinGroup? GetSubBasinGroup(string name)
+        {
+            for(int i=0;i<_nSBGroups;i++) 
+            {
+                var subbasinGroup = _pSBGroups[i];
+                if (subbasinGroup.GetName() == name) 
+                {
+                    return subbasinGroup;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns true if subbasin with subbasin ID SBID is in specified subbasin Group
+        /// </summary>
+        /// <param name="SBID">
+        /// subbasin identifier
+        /// </param>
+        /// <param name="SBGroupName">
+        /// The name of the subbasin group.
+        /// </param>
+        /// <returns>
+        /// true if subbasin SBID is in subbasin Group specified by SBGroupName.
+        /// </returns>
+        public bool IsInSubBasinGroup(long SBID, string SBGroupName)
+        {
+            var pGrp = GetSubBasinGroup(SBGroupName);
+            if(pGrp == null) 
+            { 
+                return false; 
+            }
+
+            int pp = pGrp.GetGlobalIndex();
+            for(int p_loc=0; p_loc<_pSBGroups[pp].GetNumSubbasins(); p_loc++)
+            {
+                if(_pSBGroups[pp].GetSubBasin(p_loc)!.GetID()==SBID) 
+                { 
+                    return true; 
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns hydrologic process type corresponding to passed index
+        /// </summary>
+        /// <param name="index">
+        /// Index of the hydro process type to retrieve.
+        /// </param>
+        /// <returns>
+        /// Hydrologic process type corresponding to passed index.
+        /// </returns>
+        public HydroProcessType GetProcessType(int index)
+        { 
+            return _pProcesses[index].GetProcessType();
+        }
+
+        /// <summary>
+        /// Returns number of connections of hydrological process associated with passed index.
+        /// </summary>
+        /// <param name="index">
+        /// index corresponding to the hydrological process.
+        /// </param>
+        /// <returns>
+        /// The number of connections associated with hydrological process symbolized by index.
+        /// </returns>
+        public int GetNumConnections(int index)
+        {
+            return _pProcesses[index].GetNumConnections();
+        }
+
+        /// <summary>
+        /// Returns number of forcing perturbations in the model.
+        /// </summary>
+        /// <returns>
+        /// The number of forcing perturbations in the model.
+        /// </returns>
+        public int GetNumForcingPerturbations() => _nPerturbations;
+
+        /// <summary>
+        /// Returns state variable type corresponding to passed state variable array index.
+        /// </summary>
+        /// <param name="stateVariableIndex">
+        /// State variable array index.
+        /// </param>
+        /// <returns>
+        /// State variable type corresponding to passed state variable array index.
+        /// </returns>
+        public SVType GetStateVarType(int stateVariableIndex)
+        {
+            return _aStateVarType[stateVariableIndex];
+        }
+
         /// <summary>
         /// Returns index of state variable type passed
         /// </summary>
+        /// <remarks>
+        /// Should only be used for state variable types without multiple levels.
+        /// </remarks>
         /// <param name="type">
-        /// State variable type
+        /// State variable type.
         /// </param>
         /// <returns>
-        /// Index which corresponds to the state variable type passed, if it exists; DOESNT_EXIST (-1) otherwise.
+        /// Index which corresponds to the state variable type passed, if it exists; DOESNT_EXIST (-1) otherwise
         /// </returns>
-        /// <remarks>
-        /// should only be used for state variable types without multiple levels; issues for soils, e.g.
-        /// </remarks>
         public int GetStateVarIndex(SVType type)
         {
             return _aStateVarIndices[(int)(type),0];
         }
 
         /// <summary>
-        /// Checks if state variable passed exists in model
+        /// Returns index of state variable type passed (for repeated state variables)
         /// </summary>
         /// <param name="type">
         /// State variable type
         /// </param>
+        /// <param name="layer">
+        /// Identifies the layer of interest.
+        /// </param>
         /// <returns>
-        /// bool indicating whether state variable exists in model
+        /// Index which corresponds to the state variable type passed, if it exists; DOESNT_EXIST (-1) otherwise.
         /// </returns>
-        public bool StateVarExists(SVType type)
+        public int GetStateVarIndex(SVType type, int layer)
         {
-            return (GetStateVarIndex(type) != DOESNT_EXIST);
+            if (layer == DOESNT_EXIST) 
+            { 
+                return _aStateVarIndices[(int)(type),0]; 
+            }
+            else 
+            { 
+                return _aStateVarIndices[(int)(type),layer]; 
+            }
         }
 
-
-        int GetForcingGridIndexFromType(ForcingType typ)
+        /// <summary>
+        /// Uses state variable type index to access index of layer to which it corresponds
+        /// </summary>
+        /// <param name="ii">
+        /// Index referencing a type of state variable
+        /// </param>
+        /// <returns>
+        /// Index which corresponds to soil layer, or 0 for a non-layered state variable
+        /// </returns>
+        public int GetStateVarLayer(int ii)
         {
-            for (int f=0;f<_nForcingGrids;f++)
+            int count = 0;
+            for (int i = 0; i < ii; i++)
             {
-                if (typ==_pForcingGrids[f].GetForcingType())
-                {
-                    return f;
+                if (_aStateVarType[i] == _aStateVarType[ii]) 
+                { 
+                    count++; 
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Determines whether a state variable of the specified type exists in the model.
+        /// </summary>
+        /// <param name="typ">The type of the state variable to check for existence.</param>
+        /// <returns>true if a state variable of the specified type exists; otherwise, false.</returns>
+        public bool StateVarExists(SVType typ)
+        {
+            return (GetStateVarIndex(typ) != DOESNT_EXIST);
+        }
+
+        /// <summary>
+        /// Returns lake storage variable index
+        /// </summary>
+        /// <returns>The index of lake storage variable.</returns>
+        public int GetLakeStorageIndex() 
+        { 
+            return _lake_sv; 
+        }
+
+        /// <summary>
+        /// Returns gauge index of gauge with specified name
+        /// </summary>
+        /// <param name="name">
+        /// The specified name.
+        /// </param>
+        /// <returns>
+        /// The index of the gauge.
+        /// </returns>
+        public int GetGaugeIndexFromName(string name)
+        {
+            for (int i = 0; i < _nGauges; i++)
+            {
+                if (name == _pGauges[i].GetName()) 
+                { 
+                    return i; 
                 }
             }
             return DOESNT_EXIST;
         }
 
-        public bool ForcingGridIsAvailable(ForcingType ftype)
+        /// <summary>
+        /// Returns forcing grid index of forcing grid with specified type
+        /// </summary>
+        /// <param name="typ">
+        /// specified type
+        /// </param>
+        /// <returns>
+        /// The index of the forcing grid
+        /// </returns>
+        public int GetForcingGridIndexFromType(ForcingType typ)
         {
-            return (GetForcingGridIndexFromType(ftype) != DOESNT_EXIST);
+            for (int f = 0; f < _nForcingGrids; f++)
+            {
+                if (typ == _pForcingGrids[f].GetForcingType()) 
+                { 
+                    return f; 
+                }
+            }
+            return DOESNT_EXIST;
         }
 
-        ///
-
-        void GenerateGaugeWeights(ForcingType forcing, Options options, out double[,] aWts)
+        /// <summary>
+        /// Returns current mass/energy flux (mm/d, MJ/m2/d, mg/m2/d) between two storage compartments FromIndices and ToIndices
+        /// </summary>
+        /// <param name="k">
+        /// HRU index
+        /// </param>
+        /// <param name="js">
+        /// index of process connection (i.e., j*)
+        /// </param>
+        /// <param name="options">
+        /// Global model options information
+        /// </param>
+        /// <returns></returns>
+        public double GetFlux(int k, int js, Options options)
         {
-            int k, g;
-            bool[] has_data = new bool[_nGauges];
-            Location xyh, xyg;
+            return _aFlowBal[k, js] / options.timestep;
+        }
 
-            // allocate memory
+        /// <summary>
+        /// returns concentration or temperature within hru k with storage index i
+        /// </summary>
+        /// <param name="k">
+        /// HRU index
+        /// </param>
+        /// <param name="i">
+        /// mass/energy state variable index
+        /// </param>
+        /// <returns></returns>
+        public double GetConcentration(int k, int i)
+        {
+            return _pTransModel.GetConcentration(k, i);
+        }
 
-            aWts = new double[_nHydroUnits, _nGauges];
+        /// <summary>
+        /// Returns current mass/energy flow (mm-m2/d, MJ/d, mg/d) between two storage compartments FromIndices and ToIndices
+        /// </summary>
+        /// <remarks>Used by advective transport processes.</remarks>
+        /// <param name="qs">
+        /// global index of process connection (i.e., q*)
+        /// </param>
+        /// <param name="options">
+        /// Global model options information
+        /// </param>
+        /// <returns></returns>
+        public double GetLatFlow(int qs,Options options)
+        {
+            return _aFlowLatBal[qs] / options.timestep;
+        }
 
-            int nGaugesWithData = 0;
-            for (g = 0; g < _nGauges; g++)
+        /// <summary>
+        /// Returns cumulative flux to/from storage unit i
+        /// </summary>
+        /// <param name="k">
+        /// index of HRU
+        /// </param>
+        /// <param name="i">
+        /// index of storage compartment
+        /// </param>
+        /// <param name="to">
+        /// true if evaluating cumulative flux to storage compartment, false for 'from'
+        /// </param>
+        /// <returns>
+        /// cumulative flux to storage compartment i in hru K
+        /// </returns>
+        public double GetCumulativeFlux(int k, int i, bool to)
+        {
+            int js = 0;
+            double sum = 0;
+            double area = _pHydroUnits[k].GetArea();
+            int jss = 0;
+            for(int j = 0; j<_nProcesses; j++)
             {
-                has_data[g] = _pGauges[g].TimeSeriesExists(forcing);
-                if (has_data[g])
+                // Each process may have multiple connections
+                for(int q = 0; q<_pProcesses[j].GetNumConnections(); q++)
                 {
-                    nGaugesWithData++;
-                }
-            }
-
-            //handle the case that weights are allowed to sum to zero -netCDF is available
-            //still need to allocate all zeros
-            if (ForcingGridIsAvailable(forcing))
-            {
-                return;
-            }
-            if ((forcing == ForcingType.F_TEMP_AVE) && (ForcingGridIsAvailable(ForcingType.F_TEMP_DAILY_MIN)))
-            {
-                //this is also acceptable
-                return;
-            }
-            if ((forcing == ForcingType.F_TEMP_AVE) && (ForcingGridIsAvailable(ForcingType.F_TEMP_DAILY_AVE)))
-            {
-                //this is also acceptable
-                return;
-            }
-            if ((forcing == ForcingType.F_PRECIP) && (ForcingGridIsAvailable(ForcingType.F_RAINFALL)))
-            {
-                //this is also acceptable
-                return;
-            }
-
-            if (nGaugesWithData == 0)
-            {
-                Log.Warning("GenerateGaugeWeights: no gauges present with the following data: {:Forcing}", forcing);
-                string message = "GenerateGaugeWeights: no gauges present with the following data: " + forcing;
-                throw new InvalidOperationException(message);
-            }
-
-            switch (options.interpolation)
-            {
-                case (InterpMethod.INTERP_NEAREST_NEIGHBOR):
-                {
-                    //w=1.0 for nearest gauge, 0.0 for all others
-                    double distmin, dist;
-                    int g_min = 0;
-                    for (k = 0; k < _nHydroUnits; k++)
-                    {
-                        xyh = _pHydroUnits[k].GetCentroid();
-                        g_min = 0;
-                        distmin = ALMOST_INF;
-                        for (g = 0; g < _nGauges; g++)
-                        {
-                            if (has_data[g])
-                            {
-                                xyg = _pGauges[g].GetLocation();
-                                dist = Math.Pow(xyh.UTM_x - xyg.UTM_x, 2) + Math.Pow(xyh.UTM_y - xyg.UTM_y, 2);
-                                if (dist < distmin) 
-                                { 
-                                    distmin = dist; g_min = g; 
-                                }
-                            }
-                            aWts[k,g] = 0.0;
-                        }
-                        aWts[k,g_min] = 1.0;
-
-                    }
-                }
-                break;
-                case (InterpMethod.INTERP_AVERAGE_ALL):
-                {
-                    for (k = 0; k < _nHydroUnits; k++)
-                    {
-                        for (g = 0; g < _nGauges; g++)
-                        {
-                            if (has_data[g]) 
-                            { 
-                                aWts[k,g] = 1.0 / (double)(nGaugesWithData); 
-                            }
-                            else 
-                            { 
-                                aWts[k,g] = 0.0; 
-                            }
-                        }
-                    }
-                }
-                break;
-                case (InterpMethod.INTERP_INVERSE_DISTANCE):
-                {
-                    //wt_i = (1/r_i^2) / (sum{1/r_j^2})
-                    double dist;
-                    double denomsum;
-                    const double IDW_POWER = 2.0;
-                    int atop_gauge = DOESNT_EXIST;
-                    for (k = 0; k < _nHydroUnits; k++)
-                    {
-                        xyh = _pHydroUnits[k].GetCentroid();
-                        atop_gauge = DOESNT_EXIST;
-                        denomsum = 0;
-                        for (g = 0; g < _nGauges; g++)
-                        {
-                            if (has_data[g])
-                            {
-                                xyg = _pGauges[g].GetLocation();
-                                dist = Math.Sqrt(Math.Pow(xyh.UTM_x - xyg.UTM_x, 2) + Math.Pow(xyh.UTM_y - xyg.UTM_y, 2));
-                                denomsum += Math.Pow(dist, -IDW_POWER);
-                                if (dist < REAL_SMALL) 
-                                {
-                                    //handles limiting case where weight= large number/large number
-                                    atop_gauge = g; 
-                                }
-                            }
-                        }
-
-                        for (g = 0; g < _nGauges; g++)
-                        {
-                            aWts[k,g] = 0.0;
-                            if (has_data[g])
-                            {
-                                xyg = _pGauges[g].GetLocation();
-                                dist = Math.Sqrt(Math.Pow(xyh.UTM_x - xyg.UTM_x, 2) + Math.Pow(xyh.UTM_y - xyg.UTM_y, 2));
-
-                                if (atop_gauge != DOESNT_EXIST) 
-                                { 
-                                    aWts[k,g] = 0.0; 
-                                    aWts[k,atop_gauge] = 1.0; 
-                                }
-                                else 
-                                { 
-                                    aWts[k,g] = Math.Pow(dist, -IDW_POWER) / denomsum; 
-                                }
-                            }
-                        }
-                    }
-                }
-                break;
-                case (InterpMethod.INTERP_INVERSE_DISTANCE_ELEVATION):
-                {
-                    double dist;
-                    double elevh, elevg;
-                    double denomsum;
-                    const double IDW_POWER = 2.0;
-                    int atop_gauge = DOESNT_EXIST;
-                    for (k = 0; k < _nHydroUnits; k++)
-                    {
-                        elevh = _pHydroUnits[k].GetElevation();
-                        atop_gauge = DOESNT_EXIST;
-                        denomsum = 0;
-                        for (g = 0; g < _nGauges; g++)
-                        {
-                            if (has_data[g])
-                            {
-                                elevg = _pGauges[g].GetElevation();
-                                dist = Math.Abs(elevh - elevg);
-                                denomsum += Math.Pow(dist, -IDW_POWER);
-                                if (dist < REAL_SMALL) 
-                                {
-                                    //handles limiting case where weight= large number/large number
-                                    atop_gauge = g; 
-                                }
-                            }
-                        }
-
-                        for (g = 0; g < _nGauges; g++)
-                        {
-                            aWts[k,g] = 0.0;
-                            if (has_data[g])
-                            {
-                                elevg = _pGauges[g].GetElevation();
-                                dist = Math.Abs(elevh - elevg);
-                                if (atop_gauge != DOESNT_EXIST) 
-                                { 
-                                    aWts[k,g] = 0.0; 
-                                    aWts[k,atop_gauge] = 1.0; 
-                                }
-                                else 
-                                { 
-                                    aWts[k,g] = Math.Pow(dist, -IDW_POWER) / denomsum; 
-                                }
-                            }
-                        }
-                    }
-                }
-                break;
-                case (InterpMethod.INTERP_FROM_FILE):
-                {
-                    //format:
-                    //:GaugeWeightTable
-                    //  nGauges nHydroUnits
-                    //  v11 v12 v13 v14 ... v_1,nGauges
-                    //  ...
-                    //  vN1 vN2 vN3 vN4 ... v_N,nGauges
-                    //:EndGaugeWeightTable
-                    //ExitGracefullyIf no gauge file
-
-                    /*
-                    int Len, line = 0 ;
-                    char* s[MAXINPUTITEMS];
-                    ifstream INPUT;
-                    INPUT.open(Options.interp_file.c_str());
-                    if (INPUT.fail())
-                    {
-                        INPUT.close();
-                        string errString = "GenerateGaugeWeights:: Cannot find gauge weighting file " + Options.interp_file;
-                        ExitGracefully(errString.c_str(), BAD_DATA);
-                    }
-                    else
-                    {
-                        CParser* p = new CParser(INPUT, Options.interp_file, line);
-                        bool done(false);
-                        while (!done)
-                        {
-                            p->Tokenize(s, Len);
-                            if (IsComment(s[0], Len)) { }
-                            else if (!strcmp(s[0], ":GaugeWeightTable")) { }
-                            else if (Len >= 2)
-                            {
-                                ExitGracefullyIf(s_to_i(s[0]) != _nGauges,
-                                                 "GenerateGaugeWeights: the gauge weighting file has an improper number of gauges specified", BAD_DATA);
-                                ExitGracefullyIf(s_to_i(s[1]) != _nHydroUnits,
-                                                 "GenerateGaugeWeights: the gauge weighting file has an improper number of HRUs specified", BAD_DATA);
-                                done = true;
-                            }
-                        }
-                        int junk;
-                        p->Parse2DArray_dbl(aWts, _nHydroUnits, _nGauges, junk);
-
-                        for (k = 0; k < _nHydroUnits; k++)
-                        {
-                            double sum = 0;
-                            for (g = 0; g < _nGauges; g++)
-                            {
-                                sum += aWts[k][g];
-                            }
-                            if (fabs(sum - 1.0) > 1e-4)
-                            {
-                                ExitGracefully("GenerateGaugeWeights: INTERP_FROM_FILE: user-specified weights for gauge don't add up to 1.0", BAD_DATA);
-                            }
-                        }
-                        INPUT.close();
-                        delete p;
-                    }
-                    */
                     
-                }
-                break;
-                default:
-                {
-                    throw new InvalidOperationException("Invalid interpolation method");
-                }
-                break;
-            }
-            /*
-            //Override weights where specified
-            for (k = 0; k < _nHydroUnits; k++)
-            {
-                if (_pHydroUnits[k]->GetSpecifiedGaugeIndex() != DOESNT_EXIST)
-                {
-                    for (g = 0; g < _nGauges; g++)
-                    {
-                        aWts[k][g] = 0.0;
+                    if ((to) && (_pProcesses[j].GetToIndices()[q]   == i))
+                    { 
+                        sum+=_aCumulativeBal[k,js]; 
                     }
-                    g = _pHydroUnits[k]->GetSpecifiedGaugeIndex();
-                    aWts[k][g] = 1.0;
+                    if((!to) && (_pProcesses[j].GetFromIndices()[q] == i))
+                    { 
+                        sum+=_aCumulativeBal[k,js]; 
+                    }
+                    js++;
                 }
-            }
 
-            //check quality - weights for each HRU should add to 1
-            double sum;
-            for (k = 0; k < _nHydroUnits; k++)
-            {
-                sum = 0.0;
-                for (g = 0; g < _nGauges; g++) { sum += aWts[k][g]; }
-
-                ExitGracefullyIf((fabs(sum - 1.0) > REAL_SMALL) && (INTERP_FROM_FILE) && (_nGauges > 1),
-                                 "GenerateGaugeWeights: Bad weighting scheme- weights for each HRU must sum to 1", BAD_DATA);
-                ExitGracefullyIf((fabs(sum - 1.0) > REAL_SMALL) && !(INTERP_FROM_FILE) && (_nGauges > 1),
-                                 "GenerateGaugeWeights: Bad weighting scheme- weights for each HRU must sum to 1", RUNTIME_ERR);
-            }
-
-            if (Options.write_interp_wts)
-            {
-                ofstream WTS;
-                string tmpFilename = FilenamePrepare("InterpolationWeights.csv", Options);
-                WTS.open(tmpFilename.c_str(), ios::app);
-                WTS << "Weights for " << ForcingToString(forcing) << "--------------------------------------" << endl;
-                WTS << "HRU index (k), HRU ID";
-                for (g = 0; g < _nGauges; g++) { WTS << "," << _pGauges[g]->GetName(); }
-                WTS << endl;
-                for (k = 0; k < _nHydroUnits; k++)
+                if (_pProcesses[j].GetNumLatConnections() > 0)
                 {
-                    WTS << k << "," << _pHydroUnits[k]->GetHRUID();
-
-                    for (g = 0; g < _nGauges; g++) { WTS << "," << aWts[k][g]; }
-                    WTS << endl;
+                    var pProc = (LateralExchangeHydroProcess)_pProcesses[j];
+                    // Each process may have multiple connections
+                    for (int q = 0; q < _pProcesses[j].GetNumLatConnections(); q++)
+                    {
+                        if ((to) && (pProc.GetToHRUIndices()[q] == k) && (pProc.GetLateralToIndices()[q] == i)) 
+                        { 
+                            sum += _aCumulativeLatBal[jss] / area; 
+                        }
+                        if ((!to) && (pProc.GetFromHRUIndices()[q] == k) && (pProc.GetLateralFromIndices()[q] == i)) 
+                        { 
+                            sum += _aCumulativeLatBal[jss] / area; 
+                        }
+                        jss++;
+                    }
                 }
-                WTS.close();
+            }
+            return sum;
+        }
+
+        /// <summary>
+        /// Returns cumulative gross flux between unit iFrom and iTo in HRU k
+        /// </summary>
+        /// <param name="k">
+        /// index of HRU
+        /// </param>
+        /// <param name="iFrom">
+        /// index of storage compartment
+        /// </param>
+        /// <param name="iTo">
+        /// index of storage compartment
+        /// </param>
+        /// <returns>
+        /// cumulative gross flux between unit iFrom and iTo in HRU k
+        /// </returns>
+        public double GetCumulFluxBetween(int k, int iFrom, int iTo)
+        {
+            int q, js = 0;
+            double sum = 0;
+            for(int j = 0; j<_nProcesses; j++)
+            {
+                var hydroProcess = _pProcesses[j];
+                var iFromp = hydroProcess.GetFromIndices();
+                var iTop  = hydroProcess.GetToIndices();
+                var nConn = hydroProcess.GetNumConnections();
+                // Each process may have multiple connections
+                for (q = 0; q<nConn; q++)
+                {
+                    if((iTop[q]== iTo) && (iFromp[q]== iFrom))
+                    { 
+                        sum += _aCumulativeBal[k,js]; 
+                    }
+                    if((iFromp[q]== iTo) && (iTop[q]== iFrom))
+                    { 
+                        sum -= _aCumulativeBal[k,js]; 
+                    }
+                    js++;
+                }
             }
 
-            has_data;
-            */
+            return sum;
         }
 
-        internal int GetNumSubBasins()
+        /// <summary>
+        /// Returns area-weighted average of specified cumulative flux over watershed
+        /// </summary>
+        /// <param name="i">
+        /// index of storage compartment
+        /// </param>
+        /// <param name="to">
+        /// true if evaluating cumulative flux to storage compartment, false for 'from'
+        /// </param>
+        /// <returns>
+        /// Area-weighted average of cumulative flux to storage compartment i
+        /// </returns>
+        public double GetAvgCumulFlux(int i,bool to)
         {
-            throw new NotImplementedException();
+            //Area-weighted average
+            double sum = 0.0;
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    sum += GetCumulativeFlux(k, i, to) * _pHydroUnits[k].GetArea();
+                }
+            }
+            return sum / _WatershedArea;
         }
 
-        internal double GetConcentration(int global_k, int i)
+        /// <summary>
+        /// Returns area-weighted average of  cumulative flux between two compartments over watershed
+        /// </summary>
+        /// <param name="iFrom">
+        /// index of 'from' storage compartment
+        /// </param>
+        /// <param name="iTo">
+        /// index of 'to' storage compartment
+        /// </param>
+        /// <returns>
+        /// Area-weighted average of cumulative flux between two compartments over watershed
+        /// </returns>
+        public double GetAvgCumulFluxBet(int iFrom, int iTo)
         {
-            throw new NotImplementedException();
+            // Area-weighted average
+            double sum = 0.0;
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    sum += GetCumulFluxBetween(k, iFrom, iTo) * _pHydroUnits[k].GetArea();
+                }
+            }
+            return sum / _WatershedArea;
         }
 
-        internal double GetCumulativeFlux(int global_k, int i, bool to)
+        /// <summary>
+        /// Returns options structure model
+        /// </summary>
+        public Options GetOptStruct() 
+        { 
+            return _pOptStruct; 
+        }
+
+        /// <summary>
+        /// Returns transport model
+        /// </summary>
+        public TransportModel GetTransportModel() 
         {
-            throw new NotImplementedException();
+            return _pTransModel;
         }
 
-        internal double GetCumulFluxBetween(int global_k, int iFrom, int iTo)
+        /// <summary>
+        /// Returns groundwater model
+        /// </summary>
+        public GroundwaterModel GetGroundwaterModel() 
         {
-            throw new NotImplementedException();
+            return _pGWModel;
         }
 
-        public ModelParameters GetGlobalParams()
+        /// <summary>
+        /// Returns ensemble setup
+        /// </summary>
+        public Ensemble GetEnsemble() 
+        { 
+            return _pEnsemble; 
+        }
+
+        /// <summary>
+        /// Returns demand optimizer
+        /// </summary>
+        public DemandOptimizer GetManagementOptimizer() 
+        { 
+            return _pDO; 
+        }
+
+        /// <summary>
+        /// Returns area-weighted average total precipitation + irrigation rate at all HRUs [mm/d]
+        /// </summary>
+        /// <returns>Area-weighted average of total precipitation rate [mm/d] over all HRUs</returns>
+        public double GetAveragePrecip()
         {
-            return _pGlobalParams;
+            double sum = 0;
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    sum += (_pHydroUnits[k].GetForcingFunctions().precip + _pHydroUnits[k].GetForcingFunctions().irrigation) * _pHydroUnits[k].GetArea();
+                }
+            }
+            return sum / _WatershedArea;
         }
 
-        public Options GetOptions()
+        /// <summary>
+        /// Returns current area-weighted average snowfall rate [mm/d] at all HRUs
+        /// </summary>
+        /// <returns>
+        /// Current area-weighted average snowfall rate [mm/d] at all HRUs
+        /// </returns>
+        public double GetAverageSnowfall()
         {
-            return _pOptStruct;
+            double sum = 0;
+
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    var f = _pHydroUnits[k].GetForcingFunctions();
+                    sum += (f.precip * f.snow_frac) * _pHydroUnits[k].GetArea();
+                }
+            }
+            return sum / _WatershedArea;
         }
 
-        internal int GetStateVarIndex(SVType sOIL, int v)
+        /// <summary>
+        /// Returns current area-weighted average forcing functions at all HRUs
+        /// </summary>
+        /// <returns>
+        /// Current area-weighted average forcing functions at all HRUs
+        /// </returns>
+        public Force GetAverageForcings()
         {
-            throw new NotImplementedException();
+            Force Fave = new Force();
+            double area_wt;
+            Fave.ZeroOutForcings();
+
+
+
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    var pF_hru = _pHydroUnits[k].GetForcingFunctions();
+                    area_wt = _pHydroUnits[k].GetArea() / _WatershedArea;
+
+                    Fave.precip += area_wt * pF_hru.precip;
+                    Fave.precip_daily_ave += area_wt * pF_hru.precip_daily_ave;
+                    Fave.precip_5day += area_wt * pF_hru.precip_5day;
+                    Fave.snow_frac += area_wt * pF_hru.snow_frac;
+
+                    Fave.temp_ave += area_wt * pF_hru.temp_ave;
+                    Fave.temp_daily_min += area_wt * pF_hru.temp_daily_min;
+                    Fave.temp_daily_max += area_wt * pF_hru.temp_daily_max;
+                    Fave.temp_daily_ave += area_wt * pF_hru.temp_daily_ave;
+                    Fave.temp_month_max += area_wt * pF_hru.temp_month_max;
+                    Fave.temp_month_min += area_wt * pF_hru.temp_month_min;
+                    Fave.temp_month_ave += area_wt * pF_hru.temp_month_ave;
+
+                    Fave.temp_ave_unc += area_wt * pF_hru.temp_ave_unc;
+                    Fave.temp_min_unc += area_wt * pF_hru.temp_min_unc;
+                    Fave.temp_max_unc += area_wt * pF_hru.temp_max_unc;
+
+                    Fave.air_dens += area_wt * pF_hru.air_dens;
+                    Fave.air_pres += area_wt * pF_hru.air_pres;
+                    Fave.rel_humidity += area_wt * pF_hru.rel_humidity;
+
+                    Fave.cloud_cover += area_wt * pF_hru.cloud_cover;
+                    Fave.ET_radia += area_wt * pF_hru.ET_radia;
+                    Fave.ET_radia_flat += area_wt * pF_hru.ET_radia_flat;
+                    Fave.SW_radia += area_wt * pF_hru.SW_radia;
+                    Fave.SW_radia_unc += area_wt * pF_hru.SW_radia_unc;
+                    Fave.SW_radia_net += area_wt * pF_hru.SW_radia_net;
+                    Fave.SW_radia_subcan += area_wt * pF_hru.SW_radia_subcan;
+                    Fave.SW_subcan_net += area_wt * pF_hru.SW_subcan_net;
+                    Fave.LW_incoming += area_wt * pF_hru.LW_incoming;
+                    Fave.LW_radia_net += area_wt * pF_hru.LW_radia_net;
+                    Fave.day_length += area_wt * pF_hru.day_length;
+                    Fave.day_angle += area_wt * pF_hru.day_angle;   //not really necc.
+
+                    Fave.wind_vel += area_wt * pF_hru.wind_vel;
+
+                    Fave.PET += area_wt * pF_hru.PET;
+                    Fave.OW_PET += area_wt * pF_hru.OW_PET;
+                    Fave.PET_month_ave += area_wt * pF_hru.PET_month_ave;
+
+                    Fave.potential_melt += area_wt * pF_hru.potential_melt;
+
+                    Fave.recharge += area_wt * pF_hru.recharge;
+                    Fave.precip_temp += area_wt * pF_hru.precip_temp;
+                    Fave.precip_conc += area_wt * pF_hru.precip_conc;
+
+                    Fave.subdaily_corr += area_wt * pF_hru.subdaily_corr;
+                }
+            }
+            return Fave;
         }
 
-        internal SVType GetStateVarType(int v)
+        /// <summary>
+        /// Returns area weighted average of state variables across all modeled HRUs
+        /// </summary>
+        /// <param name="i">
+        /// State variable index
+        /// </param>
+        /// <returns>
+        /// Area weighted average of state variables across all modeled HRUs
+        /// </returns>
+        public double GetAvgStateVar(int i)
         {
-            throw new NotImplementedException();
+            //Area-weighted average
+            double sum = 0.0;
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    sum += (_pHydroUnits[k].GetStateVarValue(i) * _pHydroUnits[k].GetArea());
+                }
+            }
+            return sum / _WatershedArea;
         }
 
-        internal int GetStateVarLayer(int v)
+        /// <summary>
+        /// Returns area weighted average of concentrations across all modeled HRUs
+        /// </summary>
+        /// <param name="i">
+        /// State variable index
+        /// </param>
+        /// <returns>
+        /// Area weighted average of concentrations across all modeled HRUs
+        /// </returns>
+        public double GetAvgConcentration(int i)
         {
-            throw new NotImplementedException();
+            //Area-weighted average
+            double sum = 0.0;
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    sum += (_pTransModel.GetConcentration(k, i) * _pHydroUnits[k].GetArea());
+                }
+            }
+            return sum / _WatershedArea;
         }
 
-        internal int GetLakeStorageIndex()
+        /// <summary>
+        /// Returns area-weighted average of specified forcing function over watershed
+        /// </summary>
+        /// <param name="ftype">
+        /// identifier of forcing function to assess
+        /// </param>
+        /// <returns>
+        /// Area-weighted average of specified forcing function
+        /// </returns>
+        public double GetAvgForcing(ForcingType ftype)
         {
-            throw new NotImplementedException();
+            //Area-weighted average
+            double sum = 0.0;
+            for (int k = 0; k < _nHydroUnits; k++)
+            {
+                if (_pHydroUnits[k].IsEnabled)
+                {
+                    sum += (_pHydroUnits[k].GetForcing(ftype) * _pHydroUnits[k].GetArea());
+                }
+            }
+            return sum / _WatershedArea;
         }
 
-        internal int GetNumSoilLayers()
+        /// <summary>
+        /// Returns total channel storage [mm]
+        /// </summary>
+        /// <returns>
+        /// Total channel storage in all of watershed [mm]
+        /// </returns>
+        public double GetTotalChannelStorage()
         {
-            throw new NotImplementedException();
+            double sum = 0;
+
+            for (int p = 0; p < _nSubBasins; p++)
+            {
+                sum += _pSubBasins[p].GetChannelStorage();
+            }
+            return sum / (_WatershedArea * M2_PER_KM2) * MM_PER_METER;
         }
 
-        public Options Options => _pOptStruct;
+
+        /// <summary>
+        /// Returns total reservoir storage [mm]
+        /// </summary>
+        /// <returns>
+        /// Total reservoir storage in all of watershed [mm]
+        /// </returns>
+        public double GetTotalReservoirStorage()
+        {
+            double sum = 0;
+
+            for (int p = 0; p < _nSubBasins; p++)
+            {
+                sum += _pSubBasins[p].GetReservoirStorage();
+            }
+            return sum / (_WatershedArea * M2_PER_KM2) * MM_PER_METER;
+        }
+
+        /// <summary>
+        /// Returns total rivulet storage distributed over watershed [mm]
+        /// </summary>
+        /// <returns>
+        /// Total rivulet storage distributed over watershed [mm]
+        /// </returns>
+        public double GetTotalRivuletStorage()
+        {
+            double sum = 0;
+
+            for (int p = 0; p < _nSubBasins; p++)
+            {
+                sum += _pSubBasins[p].GetRivuletStorage();
+            }
+
+            return sum / (_WatershedArea * M2_PER_KM2) * MM_PER_METER;
+        }
+
+        /// <summary>
+        /// Adds additional HRU to model
+        /// </summary>
+        /// <param name="hydroUnit">
+        /// HydroUnit to add
+        /// </param>
+        public void AddHRU(HydroUnit hydroUnit)
+        {
+            _pHydroUnits.Add(hydroUnit);
+            _nHydroUnits++;
+        }
+
+
+        /// <summary>
+        /// Adds the specified HRU group to the model.
+        /// </summary>
+        /// <param name="pHRUGroup">The HRU group to add. Cannot be null and must have a unique name within the model.</param>
+        /// <exception cref="ArgumentException">Thrown if an HRU group with the same name already exists in the model.</exception>
+        public void AddHRUGroup(HRUGroup pHRUGroup)
+        {
+            if ( GetHRUGroup(pHRUGroup.GetName()) != null)
+            {
+                throw new ArgumentException("HRU Group with name "+ pHRUGroup.GetName() + " already exists in model.");
+            }
+            _pHRUGroups.Add(pHRUGroup);
+            _nHRUGroups++;
+        }
+
+        /// <summary>
+        /// Adds a sub-basin to the collection of sub-basins managed by this instance.
+        /// </summary>
+        /// <param name="subBasin">The sub-basin to add to the collection. Cannot be null.</param>
+        public void AddSubBasin(SubBasin subBasin)
+        {
+            _pSubBasins.Add(subBasin);
+            _nSubBasins++;
+        }
+
+        /// <summary>
+        /// Adds a sub-basin group to the model.
+        /// </summary>
+        /// <param name="subBasinGroup">The sub-basin group to add. Cannot be null. The group's name must be unique within the model.</param>
+        /// <exception cref="ArgumentException">Thrown if a sub-basin group with the same name already exists in the model.</exception>
+        public void AddSubBasinGroup(SubbasinGroup subBasinGroup)
+        {
+            if (GetSubBasinGroup(subBasinGroup.GetName()) != null)
+            {
+                throw new ArgumentException("Sub-basin Group with name " + subBasinGroup.GetName() + " already exists in model.");
+            }
+            _pSBGroups.Add(subBasinGroup);
+            _nSBGroups++;
+        }
+
+
+        /// <summary>
+        /// Adds the specified gauge to the collection of gauges managed by this instance.  
+        /// </summary>
+        /// <param name="gauge">The gauge to add to the collection. Cannot be null.</param>
+        public void AddGauge(Gauge gauge)
+        {
+            _pGauges.Add(gauge);
+            _nGauges++;
+        }
+
+        /// <summary>
+        /// Adds gridded forcing to model
+        /// </summary>
+        /// <param name="forcingGrid">
+        /// The forcing grid to add.
+        /// </param>
+        /// <param name="typ">
+        /// The type of forcing.
+        /// </param>
+        public void AddForcingGrid(ForcingGrid forcingGrid, ForcingType typ)
+        {
+            int f = GetForcingGridIndexFromType(typ);
+            if (f == DOESNT_EXIST)
+            {
+                _pForcingGrids.Add(forcingGrid);
+                _nForcingGrids++;
+            }
+            else
+            {
+                // Overwrite grid
+                _pForcingGrids[f] = forcingGrid;
+            }
+        }
+
+        /// <summary>
+        /// Adds transient parameter to model
+        /// </summary>
+        /// <param name="transientParameter">
+        /// Transient parameter to be added to model
+        /// </param>
+        public void AddTransientParameter(TransientParam transientParameter)
+        {
+            _pTransParams.Add(transientParameter);
+            _nTransParams++;
+        }
+
+
+        /// <summary>
+        /// Adds parameter override to model
+        /// </summary>
+        /// <param name="parameterOverride">
+        /// Parameter override to be added to model
+        /// </param>
+        public void AddParameterOverride(ParameterOverride parameterOverride)
+        {
+            _pParamOverrides.Add(parameterOverride);
+            _nParamOverrides++;
+        }
+
+        /// <summary>
+        /// Adds class change to model
+        /// </summary>
+        /// <param name="HRUgroup">
+        /// The name of the HRU group to change.
+        /// </param>
+        /// <param name="tclass">
+        /// The class type to change.
+        /// </param>
+        /// <param name="new_class">
+        /// The new class to assign to the HRU group.
+        /// </param>
+        /// <param name="tt">
+        /// The time struct representing the time of the change.
+        /// </param>
+        /// <param name="options">
+        /// The options for the change.
+        /// </param>
+        /// <exception cref="ArgumentException"></exception>
+        public void AddPropertyClassChange(string HRUgroup, ClassType tclass, string new_class, TimeStruct tt, Options options)
+        {
+
+            var pCC = new ClassChange();
+            pCC.HRU_groupID = DOESNT_EXIST;
+            for (int kk = 0; kk < _nHRUGroups; kk++)
+            {
+                if (_pHRUGroups[kk].GetName() == HRUgroup)
+                {
+                    pCC.HRU_groupID = kk;
+                }
+            }
+            if (pCC.HRU_groupID == DOESNT_EXIST)
+            {
+                throw new ArgumentException("Invalid HRU Group name: " + HRUgroup + ". HRU group names should be defined in .rvi file using :DefineHRUGroups command. ", nameof(HRUgroup));
+            }
+            pCC.newclass = new_class;
+            if ((tclass == ClassType.CLASS_LANDUSE) && (StringToLUClass(new_class) == null))
+            {
+                throw new ArgumentException("Invalid land use class specified: " + new_class, nameof(new_class));
+            }
+            if ((tclass == ClassType.CLASS_VEGETATION) && (StringToVegClass(new_class) == null))
+            {
+                throw new ArgumentException("Invalid vegetation class specified: " + new_class, nameof(new_class));
+            }
+            if ((tclass == ClassType.CLASS_HRUTYPE) && (StringToHRUType(new_class) == HRUType.HRU_INVALID_TYPE))
+            {
+                throw new ArgumentException("Invalid HRU type specified: " + new_class, nameof(new_class));
+            }
+
+            pCC.tclass = tclass;
+            if ((tclass != ClassType.CLASS_VEGETATION) && (tclass != ClassType.CLASS_LANDUSE) && (tclass != ClassType.CLASS_HRUTYPE))
+            {
+                throw new ArgumentException("Only vegetation, land use, and HRU type classes may be changed during the course of simulation", nameof(tclass));
+            }
+
+            //convert time to model time
+            pCC.modeltime = tt.Elapsed;
+
+            if (pCC.modeltime > options.duration)
+            {
+                string warn;
+                warn = "Property Class change dated " + tt.date_string + " occurs after model simulation is done; it will not effect results.";
+                Runtime.WriteWarning(warn, Options.noisy);
+            }
+            if (pCC.modeltime.Ticks < 0)
+            {
+                string warn;
+                warn = "Property Class change dated " + tt.date_string + " occurs before model simulation. All such changes will be processed before time zero, and these changes MUST be input in chronological order.";
+                Runtime.WriteAdvisory(warn, Options.noisy);
+            }
+
+            _pClassChanges.Add(pCC);
+            _nClassChanges++;
+        }
+
+
+        /// <summary>
+        /// Adds observed time series to model
+        /// </summary>
+        /// <param name="timeSeries">
+        /// The observed time series to be added to model.
+        /// </param>
+        public void AddObservedTimeSeries(TimeSeries timeSeries)
+        {
+            _pObservedTS.Add(timeSeries);
+            _nObservedTS++;
+        }
+
+        /// <summary>
+        /// Adds observation weighting time series to model
+        /// </summary>
+        /// <param name="timeSeries">
+        /// The observation weights time series to be added to model.
+        /// </param>
+        public void AddObservedWeightsTS(TimeSeries timeSeries)
+        {
+            _pObsWeightTS.Add(timeSeries);
+            _nObsWeightTS++;
+        }
+
+
+        /// <summary>
+        /// Adds diagnostic to model
+        /// </summary>
+        /// <param name="diagnostic">
+        /// The diagnostic to be added to model
+        /// </param>
+        public void AddDiagnostic(Diagnostic diagnostic)
+        {
+            _pDiagnostics.Add(diagnostic);
+            _nDiagnostics++;
+        }
+
+
+        /// <summary>
+        /// Adds aggregate diagnostic to model
+        /// </summary>
+        /// <param name="stat">
+        /// The aggregation statistic to be used
+        /// </param>
+        /// <param name="datatype">
+        /// The observation datatype string e.g., "HYDROGRAPH"
+        /// </param>
+        /// <param name="group_ind">
+        /// The group index (or DOESNT_EXIST, if applied to all)
+        /// </param>
+        public void AddAggregateDiagnostic(AggStat stat, string datatype, int group_ind)
+        {
+            var agg = new AggDiag(stat, datatype, group_ind);
+            _pAggDiagnostics.Add(agg);
+            _nAggDiagnostics++;
+        }
+
+        /// <summary>
+        /// Adds diagnostic period to model
+        /// </summary>
+        /// <param name="diagPeriod">
+        /// The diagnostic period to be added to model.
+        /// </param>
+        public void AddDiagnosticPeriod(DiagPeriod diagPeriod)
+        {   
+            _pDiagPeriods.Add(diagPeriod);
+            _nDiagPeriods++;
+        }
+
+        /// <summary>
+        /// Adds model output time to model
+        /// </summary>
+        /// <param name="outputTime">The output time to add</param>
+        public void AddModelOutputTime(TimeSpan outputTime)
+        {
+            _outputTimes.Add(outputTime);
+        }
+
+        /// <summary>
+        /// Adds a hydrological process to system.
+        /// </summary>
+        /// <remarks>
+        /// Adds a hydrological process that moves water or energy from state
+        /// variable (e.g., an array of storage units) i[] to state variables j[]
+        /// </remarks>
+        /// <param name="hydroProcess">The Hydrological process to be added</param>
+        /// <exception cref="ArgumentException"></exception>
+        public void AddProcess(HydroProcess hydroProcess)
+        {
+            ArgumentNullException.ThrowIfNull(hydroProcess);
+            var numConnections = hydroProcess.GetNumConnections();
+            for (int i = 0; i < numConnections; i++)
+            {
+                int fi = hydroProcess.FromIndices[i];
+                if(fi < 0 && fi >= _nStateVars)
+                {
+                    throw new ArgumentException($"Invalid from storage index:{fi}");
+                }
+                int ti = hydroProcess.ToIndices[i];
+                if (ti < 0 && ti >= _nStateVars)
+                {
+                    throw new ArgumentException($"Invalid to storage index:{ti}");
+                }
+            }
+            _pProcesses.Add(hydroProcess);
+        }
+
+
+        /// <summary>
+        /// Returns the LU class corresponding to passed string
+        /// </summary>
+        /// <remarks>
+        /// Converts string (e.g., "AGRICULTURAL" in HRU file) to LU class
+        ///  can accept either lultclass index or lultclass tag
+        ///  if string is invalid, returns null.
+        /// </remarks>
+        /// <param name="s">
+        /// LU class identifier (tag or index)
+        /// </param>
+        /// <returns>
+        /// LU class corresponding to the passed string, or null if invalid.
+        /// </returns>
+        public LandUseClass? StringToLUClass(string s)
+        {
+            int value = -1;
+            if (!int.TryParse(s, out value))
+            {
+                value = -1;
+            }
+            string s_sup = s.ToUpperInvariant();
+            for (int c = 0; c < _nLandUseClasses; c++)
+            {
+                if (s_sup == _pLandUseClasses[c].GetLanduseName())
+                {
+                    return this._pLandUseClasses[c];
+                }
+                else if (value == (c + 1))
+                {
+                    return this._pLandUseClasses[c];
+                }
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// Returns the vegetation class corresponding to passed string
+        /// </summary>
+        /// <param name="s">
+        /// Vegetation class identifier (tag or index)
+        /// </param>
+        /// <returns>
+        /// Reference to vegetation class corresponding to identifier s
+        /// </returns>
+        public VegetationClass? StringToVegClass(string s)
+        {
+            int value = -1;
+            if (!int.TryParse(s, out value))
+            {
+                value = -1;
+            }
+            string sup = s.ToUpperInvariant();
+            for (int c = 0; c < _numVegClasses; c++)
+            {
+                if (sup == _pAllVegClasses[c].GetVegetationName())
+                {
+                    return _pAllVegClasses[c];
+                }
+                else if (value == (c + 1))
+                {
+                    return _pAllVegClasses[c];
+                }
+            }
+            return null;
+        }
+
 
     }
 
@@ -885,3 +1959,5 @@ namespace Harlinn.Hydrology
 
 
 }
+
+

@@ -13,11 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 namespace Harlinn.Hydrology
 {
     public class VegetationClass
     {
         Vegetation _vegetation;
+
+        internal string GetVegetationName()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

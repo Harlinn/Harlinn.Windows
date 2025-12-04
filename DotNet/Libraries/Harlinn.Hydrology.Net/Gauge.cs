@@ -176,5 +176,10 @@ namespace Harlinn.Hydrology
         {
             throw new NotImplementedException();
         }
+
+        internal string GetName()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

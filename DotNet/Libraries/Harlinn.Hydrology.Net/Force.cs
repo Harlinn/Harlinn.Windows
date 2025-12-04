@@ -195,6 +195,57 @@ namespace Harlinn.Hydrology
             get { return GetForcing(forcingType); }
         }
 
+        public void ZeroOutForcings()
+        {
+            precip = 0.0;
+            precip_daily_ave = 0.0;
+            precip_5day = 0.0;
+            snow_frac = 0.0;
+            irrigation = 0.0;
+
+            temp_ave = 0.0;
+            temp_daily_min = 0.0;
+            temp_daily_max = 0.0;
+            temp_daily_ave = 0.0;
+            temp_month_max = 0.0;
+            temp_month_min = 0.0;
+            temp_month_ave = 0.0;
+            temp_ave_unc = 0.0;
+            temp_max_unc = 0.0;
+            temp_min_unc = 0.0;
+
+
+            air_dens = 0.0;
+            air_pres = 0.0;
+            rel_humidity = 0.0;
+
+            cloud_cover = 0.0;
+            ET_radia = 0.0;
+            SW_radia = 0.0;
+            SW_radia_subcan = 0.0;
+            SW_subcan_net = 0.0;
+            LW_incoming = 0.0;
+            SW_radia_net = 0.0;
+            LW_radia_net = 0.0;
+
+            day_length = 0.0;
+            day_angle = 0.0;
+
+            wind_vel = 0.0;
+
+            PET = 0.0;
+            OW_PET = 0.0;
+            PET_month_ave = 0.0;
+
+            potential_melt = 0.0;
+
+            recharge = 0.0;
+            precip_temp = 0.0;
+            precip_conc = 0.0;
+
+            subdaily_corr = 0.0;
+        }
+
     }
 
 }

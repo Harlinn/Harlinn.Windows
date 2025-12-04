@@ -17,18 +17,41 @@ namespace Harlinn.Hydrology
 {
     public struct AggDiag
     {
+        AggStat _aggType;
+        string _dataType;
+        int _groupIndex;
+
+        public AggDiag()
+        {
+            _dataType = string.Empty;
+            _groupIndex = -1;
+        }
+
+        public AggDiag(AggStat aggType, string dataType, int groupIndex = Constants.DOESNT_EXIST)
+        {
+            _aggType = aggType;
+            _dataType = dataType;
+            _groupIndex = groupIndex;
+        }
+
         /// <summary>
         /// aggregation type (supports AVERAGE/MEDIAN/MIN/MAX)
         /// </summary>
-        AggStat aggtype;
+        public AggStat AggType { get => _aggType; set => _aggType = value; }
         /// <summary>
         /// observation datatype string e.g., "HYDROGRAPH"
         /// </summary>
-        string datatype;
+        public string DataType { get => _dataType; set => _dataType = value; }
         /// <summary>
         /// group index (or DOESNT_EXIST, if applied to all)
         /// </summary>
-        int kk;
+        public int GroupIndex { get => _groupIndex; set => _groupIndex = value; }
+
+        /// <summary>
+        /// group index (or DOESNT_EXIST, if applied to all)
+        /// </summary>
+        public int kk { get => _groupIndex; set => _groupIndex = value; }
+
     }
 
 

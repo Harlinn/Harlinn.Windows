@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using System.Drawing;
+
 namespace Harlinn.Mathematics.Net
 {
     public class Common
@@ -458,6 +460,39 @@ namespace Harlinn.Mathematics.Net
                 sum += aWeights[q];
             }
             aWeights[N - 1] = 1.0 - sum;
+        }
+
+
+        public static int NearSearchIndex(int i, int guess_p, int size)
+        {
+            int p;
+            if ((guess_p >= size) || (guess_p < 0)) 
+            {
+                //fix bad guess
+                guess_p = 0; 
+            }
+            if ((i < 0) || (i >= size))
+            {
+                throw new ArgumentOutOfRangeException(nameof(i));
+            }
+            if (i % 2 == 0) 
+            { 
+                p = guess_p - ((i + 0) / 2); 
+            }
+            else 
+            { 
+                p = guess_p + ((i + 1) / 2); 
+            }
+            if (p < 0) 
+            {
+                // valid wraparound
+                p += size; 
+            } 
+            if (p >= size) 
+            { 
+                p -= size; 
+            }
+            return p;
         }
 
         static int SmartIntervalSearch(double x,double[] ax,int iguess)

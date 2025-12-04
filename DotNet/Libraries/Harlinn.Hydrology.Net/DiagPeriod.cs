@@ -17,26 +17,40 @@ namespace Harlinn.Hydrology
 {
     public class DiagPeriod
     {
+        string _name;
+        TimeSpan _start;
+        TimeSpan _end;
+        Comparison _comp;
+        double _thresh;
+
+        public DiagPeriod(string name, TimeSpan start, TimeSpan end, Comparison comp, double thresh)
+        {
+            _name = name;
+            _start = start;
+            _end = end;
+            _comp = comp;
+            _thresh = thresh;
+        }
+
         /// <summary>
         /// period name (e.g., "CALIBRATION")
         /// </summary>
-        string _name;
+        public string Name { get => _name; set => _name = value; }
         /// <summary>
         /// starttime (in local model time)
         /// </summary>
-        double _t_start;
+        public TimeSpan Start { get => _start; set => _start = value; }
         /// <summary>
         /// endtime (in local model time)
         /// </summary>
-        double _t_end;
+        public TimeSpan End { get => _end; set => _end = value; }
         /// <summary>
         /// comparison criterion (> or <)
         /// </summary>
-        Comparison _comp;
+        public Comparison Comp { get => _comp; set => _comp = value; }
         /// <summary>
         /// threshold percentage
         /// </summary>
-        double _thresh;  
-
+        public double Thresh { get => _thresh; set => _thresh = value; }
     }
 }

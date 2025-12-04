@@ -45,6 +45,31 @@ namespace Harlinn.Hydrology
         /// </summary>
         long _demand_ID;
 
+        /// <summary>
+        /// Constructs a TimeSeriesBase (equivalent to CTimeSeriesABC constructor).
+        /// </summary>
+        public TimeSeriesBase(TimeSeriesType type, string name, long locID, string filename = "")
+        {
+            _type = type;
+            _name = name ?? string.Empty;
+            _loc_ID = locID;
+            _srcfile = filename ?? string.Empty;
+            _constit_ind = Constants.DOESNT_EXIST;
+            _demand_ID = Constants.DOESNT_EXIST;
+        }
+
+        /// <summary>
+        /// Copy-like constructor (preserves semantics of C++ copy constructor variant).
+        /// </summary>
+        public TimeSeriesBase(string name, TimeSeriesBase t)
+        {
+            _name = name ?? string.Empty;
+
+            _type = t._type;
+            _loc_ID = t._loc_ID;
+            _srcfile = string.Empty;
+        }
+
 
         /// <summary>
         /// type - regular or irregular
