@@ -21,6 +21,73 @@ namespace Harlinn.Mathematics.Net
     public class Common
     {
 
+
+        public static bool SameLength<T>(T[]? a, T[]? b)
+        {
+            if (a is null) 
+            { 
+                return b is null; 
+            }
+            else if (b is null)
+            {
+                return false;
+            }
+            return a.Length == b.Length;
+        }
+
+        public static bool SameLength<T>(T[]? a, T[]? b, T[]? c)
+        {
+            if (a is null)
+            {
+                return b is null && c is null;
+            }
+            else if (b is null || c is null)
+            {
+                return false;
+            }
+            return a.Length == b.Length && a.Length == c.Length;
+        }
+
+        public static bool SameLength<T>(T[]? a, T[]? b, T[]? c, T[]? d)
+        {
+            if (a is null)
+            {
+                return b is null && c is null && d is null;
+            }
+            else if (b is null || c is null || d is null)
+            {
+                return false;
+            }
+            return a.Length == b.Length && a.Length == c.Length && a.Length == d.Length;
+        }
+
+        public static bool SameLength<T>(T[]? a, T[]? b, T[]? c, T[]? d, T[]? e)
+        {
+            if (a is null)
+            {
+                return b is null && c is null && d is null && e is null;
+            }
+            else if (b is null || c is null || d is null || e is null)
+            {
+                return false;
+            }
+            return a.Length == b.Length && a.Length == c.Length && a.Length == d.Length && a.Length == e.Length;
+        }
+
+        public static bool SameLength<T>(T[]? a, T[]? b, T[]? c, T[]? d, T[]? e, T[]? f)
+        {
+            if (a is null)
+            {
+                return b is null && c is null && d is null && e is null && f is null;
+            }
+            else if (b is null || c is null || d is null || e is null || f is null)
+            {
+                return false;
+            }
+            return a.Length == b.Length && a.Length == c.Length && a.Length == d.Length && a.Length == e.Length && a.Length == f.Length;
+        }
+
+
         /// <summary>
         /// Enforces positivity of input value
         /// </summary>

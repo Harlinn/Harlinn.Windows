@@ -23,19 +23,50 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// nickname for profile
         /// </summary>
-        string tag;
-        /// <summary>
-        /// Number of soil horizons in stack
-        /// </summary>
-        int nHorizons;
+        string _tag;
         /// <summary>
         /// Array of soil horizones making up profile
         /// </summary>
-        SoilClass[] pSoilClasses;
+        readonly List<SoilClass> _soilClasses = new();
         /// <summary>
         /// Array of Thickness of horizons [m]
         /// </summary>
-        double[] thicknesses;
+        readonly List<double> _thicknesses = new();
+
+        public SoilProfile(string tag)
+        {
+            _tag = tag;
+        }
+
+        public string Tag { get => _tag; set => _tag = value; }
+        public int NumHorizons => _soilClasses.Count;
+        public int GetNumHorizons( ) => _soilClasses.Count;
+
+        public IReadOnlyList<SoilClass> SoilClasses => _soilClasses;
+
+        public IReadOnlyList<double> Thicknesses => _thicknesses;
+
+        public void AddSoilLayer(SoilClass soilClass, double thickness)
+        {
+            _soilClasses.Add(soilClass);
+            _thicknesses.Add(thickness);
+        }
+
+        public SoilClass GetSoilClass(int index)
+        {
+            return _soilClasses[index];
+        }
+
+        public string GetSoilTag(int index)
+        {
+            return _soilClasses[index].Tag;
+        }
+
+        public double GetThickness(int index)
+        {
+            return _thicknesses[index];
+        }
+
 
     }
 }

@@ -2596,6 +2596,187 @@ namespace Harlinn.Hydrology
             _nAllTerrainClasses = 0;
         }
 
+        /// <summary>
+        /// Adds a soil profile to the collection of managed soil profiles.
+        /// </summary>
+        /// <param name="soilProfile">The soil profile to add to the collection. Cannot be null.</param>
+        public void AddSoilProfile(SoilProfile soilProfile)
+        {
+            ArgumentNullException.ThrowIfNull(soilProfile);
+            _pAllSoilProfiles.Add(soilProfile);
+            _nAllSoilProfiles++;
+        }
+
+        /// <summary>
+        /// Writes a summary of all soil profiles to the standard output.
+        /// </summary>
+        public void SummarizeSoilProfilesToScreen()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine($"Soil Profile Summary: {_nAllSoilProfiles} soils in database");
+            for (int p = 0; p < _nAllSoilProfiles; p++)
+            {
+                Console.WriteLine($"-Soil profile \"{_pAllSoilProfiles[p].Tag}\" ");
+                Console.WriteLine($"    #horizons: {_pAllSoilProfiles[p].GetNumHorizons()}");
+                for (int m = 0; m < _pAllSoilProfiles[p].GetNumHorizons(); m++)
+                {
+                    Console.WriteLine($"      -layer #{m + 1}: {_pAllSoilProfiles[p].GetSoilTag(m)} (thickness: {_pAllSoilProfiles[p].GetThickness(m)} m)");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Converts the specified string to a corresponding soil profile, if a match is found.
+        /// </summary>
+        /// <remarks>The method attempts to match the input string to a soil profile by comparing it to
+        /// profile tags (case-insensitive) or by interpreting it as a 1-based index into the list of available
+        /// profiles.</remarks>
+        /// <param name="s">The string representation of the soil profile to convert. This can be a profile tag (case-insensitive) or a
+        /// 1-based index as a string.</param>
+        /// <returns>A <see cref="SoilProfile"/> object that matches the specified string, or <see langword="null"/> if no
+        /// matching profile is found.</returns>
+        public SoilProfile? StringToSoilProfile(string s)
+        {
+            int value = -1;
+            if (!int.TryParse(s, out value))
+            {
+                value = -1;
+            }
+            string sup = s.ToUpperInvariant();
+            var count = _pAllSoilProfiles.Count;
+            for (int c = 0; c < count; c++)
+            {
+                if (sup == _pAllSoilProfiles[c].Tag)
+                {
+                    return _pAllSoilProfiles[c];
+                }
+                else if (value == (c + 1))
+                {
+                    return _pAllSoilProfiles[c];
+                }
+            }
+            return null;
+        }
+
+        
+        /// <summary>
+        /// Gets the number of soil profiles currently available.
+        /// </summary>
+        /// <returns>The total number of soil profiles. Returns 0 if no soil profiles are present.</returns>
+        public int GetNumSoilProfiles()
+        {
+            return _pAllSoilProfiles.Count;
+        }
+
+        /// <summary>
+        /// Removes all soil profiles from the model.
+        /// </summary>
+        public void DestroyAllSoilProfiles()
+        {
+            _pAllSoilProfiles.Clear();
+            _nAllSoilProfiles = 0;
+        }
+
+        /// <summary>
+        /// Converts string (e.g., "X2305" in Basin file) to channel profile
+        /// </summary>
+        /// <param name="s">The string representation of the channel cross-section to convert. This can be a profile tag (case-insensitive) or a 1-based index as a string.</param>
+        /// <returns>A <see cref="ChannelXSect"/> object that matches the specified string, or <see langword="null"/> if no matching profile is found.</returns>
+        public ChannelXSect? StringToChannelXSect(string s)
+        {
+            int value = -1;
+            if (!int.TryParse(s, out value))
+            {
+                value = -1;
+            }
+            string sup = s.ToUpperInvariant();
+            var count = _pAllChannelXSects.Count;
+            for (int c = 0; c < count; c++)
+            {
+                if (sup == _pAllChannelXSects[c].Name)
+                {
+                    return _pAllChannelXSects[c];
+                }
+                else if (value == (c + 1))
+                {
+                    return _pAllChannelXSects[c];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the number of channel cross-sections currently available.
+        /// </summary>
+        /// <returns>The total count of channel cross-sections. The value is zero if no cross-sections are present.</returns>
+        public int GetNumChannelXSects()
+        {
+            return _pAllChannelXSects.Count;
+        }
+
+        /// <summary>
+        /// Adds a channel cross-section to the collection of channel cross-sections managed by this instance.
+        /// </summary>
+        /// <param name="pXSect">The channel cross-section to add. Cannot be null.</param>
+        public void AddChannelXSect(ChannelXSect pXSect)
+        {
+            ArgumentNullException.ThrowIfNull(pXSect);
+            _pAllChannelXSects.Add(pXSect);
+            _nAllChannelXSects++;
+        }
+
+        /// <summary>
+        /// Summarize profile information to screen
+        /// </summary>
+        public void SummarizeChannelXSectToScreen()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine("Channel Profile Summary:" + this._nAllChannelXSects + " profiles in database");
+            for (int p = 0; p < _pAllChannelXSects.Count; p++)
+            {
+                Console.WriteLine("-Channel profile \"" + this._pAllChannelXSects[p].Name + "\" ");
+                Console.WriteLine("           slope: " + this._pAllChannelXSects[p].Bedslope);
+            }
+        }
+
+        /// <summary>
+        /// Removes all channel cross-section entries from the collection and resets the count to zero.
+        /// </summary>
+        /// <remarks>After calling this method, the collection of channel cross-sections will be empty and
+        /// the count will be reset. This operation is irreversible; any previously stored channel cross-section data
+        /// will be lost.</remarks>
+        public void DestroyAllChannelXSections()
+        {
+            _pAllChannelXSects.Clear();
+            _nAllChannelXSects = 0;
+        }
+
+        /// <summary>
+        /// Checks for duplicate channel cross-section names and issues a warning if any duplicates are found.
+        /// </summary>
+        /// <remarks>This method scans the collection of channel cross-sections and writes a warning for
+        /// each pair of items that share the same name. No exceptions are thrown; duplicates are reported via the
+        /// runtime warning mechanism.</remarks>
+        public void CheckForChannelXSectsDuplicates()
+        {
+            var count = _pAllChannelXSects.Count;
+            for (int p = 0; p < count; p++)
+            {
+                for (int pp = 0; pp < p; pp++)
+                {
+                    if (_pAllChannelXSects[p].Name == _pAllChannelXSects[pp].Name)
+                    {
+                        string warn = "CheckForChannelXSectsDuplicates: found duplicated channel name: " + _pAllChannelXSects[p].Name;
+                        Runtime.WriteWarning(warn, Options.noisy);
+                    }
+                }
+            }
+        }
+
+
+
+
+
     }
 
 
