@@ -17,9 +17,11 @@ using Harlinn.Hydrology;
 using System;
 using System.Diagnostics.Metrics;
 using System.Formats.Asn1;
+using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Threading;
+using System.Xml.Linq;
 using static Harlinn.Hydrology.Common;
 using static Harlinn.Hydrology.Constants;
 using static Harlinn.Mathematics.Net.Common;
@@ -2773,13 +2775,304 @@ namespace Harlinn.Hydrology
             }
         }
 
+        /// <summary>
+        /// Write rating curves to file rating_curves.csv
+        /// </summary>
+        public void WriteRatingCurves(Options options)
+        {
+            string tmpFilename = options.FilenamePrepare("rating_curves.csv");
+            using StreamWriter CURVES = new StreamWriter(tmpFilename);
+  
+            var count = _pAllChannelXSects.Count;
+            for (int p=0; p< count; p++)
+            {
+                ChannelXSect pP = _pAllChannelXSects[p];
+                CURVES.WriteLine(pP.GetName() + "----------------");
+                CURVES.Write("Flow Rate [m3/s],"); for (int i = 0; i < pP.GetNPoints(); i++) { CURVES.Write(pP.GetAQAt(i) + ","); }
+                CURVES.WriteLine();
+                CURVES.Write("Stage Height [m],"); for (int i = 0; i < pP.GetNPoints(); i++) { CURVES.Write(pP.GetAStageAt(i) + ","); }
+                CURVES.WriteLine();
+                CURVES.Write("Top Width [m],"); for (int i = 0; i < pP.GetNPoints(); i++) { CURVES.Write(pP.GetATopWidthAt(i) + ","); }
+                CURVES.WriteLine();
+                CURVES.Write("X-sect area [m2],"); for (int i = 0; i < pP.GetNPoints(); i++) { CURVES.Write(pP.GetAXAreaAt(i) + ","); }
+                CURVES.WriteLine();
+                CURVES.Write("Wetted Perimeter [m],"); for (int i = 0; i < pP.GetNPoints(); i++) { CURVES.Write(pP.GetAPerimAt(i) + ","); }
+                CURVES.WriteLine();
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of convolution variables
+        /// </summary>
+        /// <returns>
+        /// Number of convolution variables
+        /// </returns>
+        public int GetNumConvolutionVariables() 
+        {
+            return _nConvVariables;
+        }
 
 
+        /// <summary>
+        /// Increments the number of convolution variables
+        /// </summary>
+        public void IncrementConvolutionCount()
+        {
+            _nConvVariables++;
+        }
+
+        /// <summary>
+        /// Gets the state variables
+        /// </summary>
+        /// <returns>
+        /// the state variables
+        /// </returns>
+        public IReadOnlyList<StateVariable> GetStateVarInfo() 
+        {
+            return _pStateVar;
+        }
+
+        /// <summary>
+        /// Sets the state variables
+        /// </summary>
+        /// <param name="stateVariables">the state variables</param>
+        public void SetStateVarInfo(List<StateVariable> stateVariables)
+        {
+            _pStateVar = stateVariables;
+        }
+
+        /// <summary>
+        /// Sets the state variables
+        /// </summary>
+        /// <param name="stateVariables">the state variables</param>
+        public void SetStateVarInfo(StateVariable[] stateVariables)
+        {
+            SetStateVarInfo(new List<StateVariable>(stateVariables));
+        }
+
+        /// <summary>
+        /// Gets the number of lateral flow processes currently configured.
+        /// </summary>
+        /// <returns>The number of lateral flow processes. The value is zero if no processes are configured.</returns>
+        public int GetNumLatFlowProcesses()
+        {
+            return _nLatFlowProcesses;
+        }
+
+        /// <summary>
+        /// Increments the number of lateral flow processes
+        /// </summary>
+        public void CountOneMoreLatFlowProcess()
+        {
+            _nLatFlowProcesses++;
+        }
+
+        /// <summary>
+        /// Increments water/mass/energy balance
+        /// </summary>
+        /// <remarks>
+        /// add cumulative amount of water/mass/energy for each process connection
+        /// </remarks>
+        /// <param name="q_star">
+        /// Integer index of hydrologic process connection
+        /// </param>
+        /// <param name="k">
+        /// Integer index of HRU
+        /// </param>
+        /// <param name="moved">
+        /// amount balance is to be incremented (mm or mg/m2 or MJ/m2)
+        /// </param>
+        public void IncrementBalance(int q_star, int k, double moved)
+        {
+            _aCumulativeBal[k,q_star]+=moved;
+            _aFlowBal[k,q_star]= moved;
+        }
+
+        /// <summary>
+        /// Increments lateral flow water/energy balance
+        /// </summary>
+        /// <remarks>
+        /// add cumulative amount of water/energy for each lateral process connection
+        /// </remarks>
+        /// <param name="jss">
+        /// Integer index of hydrologic lateral process connection
+        /// </param>
+        /// <param name="moved">
+        /// amount balance is to be incremented [mm-m2] or [MJ] or [mg]
+        /// </param>
+        public void IncrementLatBalance( int jss, double moved)
+        {
+            _aCumulativeLatBal[jss] += moved;
+            _aFlowLatBal[jss] = moved;
+        }
+
+        /// <summary>
+        /// Increments cumulative mass & energy added to system (precipitation/ustream basin flows, etc.)
+        /// </summary>
+        /// <remarks>
+        /// Increment cumulative precipitation based on average preciptation and corresponding timestep [mm]
+        /// </remarks>
+        /// <param name="options">
+        /// Global model options information
+        /// </param>
+        /// <param name="tt">
+        /// current time
+        /// </param>
+        public void IncrementCumulInput(Options options, TimeStruct tt)
+        {
+            double area;
+            area = _WatershedArea * M2_PER_KM2;
+
+            _CumulInput += GetAveragePrecip() * Options.timestep;
+
+            _CumulInput += GetAverageForcings().recharge * Options.timestep;
+
+            for (int p = 0; p < _nSubBasins; p++)
+            {
+                _CumulInput += _pSubBasins[p].GetIntegratedSpecInflow(tt.model_time, Options.timestep) / area * MM_PER_METER;//converted to [mm] over  basin
+            }
+
+            //add from groundwater
+            if (options.modeltype != ModelType.MODELTYPE_SURFACE)
+            {
+                int iGW = GetStateVarIndex(SVType.GROUNDWATER);
+                for (int k = 0; k < _nHydroUnits; k++)
+                {
+                    double GW = _pHydroUnits[k].GetStateVarValue(iGW);
+                    area = _pHydroUnits[k].GetArea();
+                    if (GW < 0) { _CumulInput -= GW * area / _WatershedArea; } //negative recharge
+                }
+            }
+
+            _pTransModel.IncrementCumulInput(Options, tt);
+        }
+
+        /// <summary>
+        /// Increments cumulative outflow from system for mass balance diagnostics
+        /// </summary>
+        /// <remarks>
+        /// Increment cumulative outflow according to timestep, flow, and area of basin
+        /// </remarks>
+        /// <param name="options">
+        /// Global model options information
+        /// </param>
+        /// <param name="tt">
+        /// Current time
+        /// </param>
+        public void IncrementCumOutflow(Options options, TimeStruct tt)
+        {
+            double Qdiv;
+            double area = (_WatershedArea * M2_PER_KM2);
+            for (int p = 0; p < _nSubBasins; p++)
+            {
+                bool outflowdisabled;
+                SubBasin? pSBdown = null;
+                if (_aDownstreamInds[p] >= 0)
+                {
+                    pSBdown = _pSubBasins[_aDownstreamInds[p]];
+                }
+
+                outflowdisabled = ((pSBdown == null) || (!pSBdown.IsEnabled()));
+
+                if (_pSubBasins[p].IsEnabled())
+                {
+                    if ((_aSubBasinOrder[p] == 0) || (outflowdisabled))//outlet does not drain into another subbasin
+                    {
+                        _CumulOutput += _pSubBasins[p].GetIntegratedOutflow(options.timestep) / area * MM_PER_METER;//converted to [mm] over entire watershed
+                    }
+                    _CumulOutput += _pSubBasins[p].GetReservoirLosses(options.timestep) / area * MM_PER_METER;
+                    _CumulOutput += _pSubBasins[p].GetIrrigationLosses(options.timestep) / area * MM_PER_METER;
+                    _CumulOutput += _pSubBasins[p].GetDiversionLosses(options.timestep) / area * MM_PER_METER; //includes all diverted water, whether or not it stays in watershed
+
+                    //Diversion losses that were actually just redirected to other basins
+                    for (int i = 0; i < _pSubBasins[p].GetNumDiversions(); i++)
+                    {
+                        Qdiv = _pSubBasins[p].GetDiversionFlow(i, _pSubBasins[p].GetLastChannelOutflowRate(), options, tt, out var pDivert) * options.timestep * SEC_PER_DAY;
+                        if (pDivert != DOESNT_EXIST)
+                        {
+                            _CumulOutput -= Qdiv / area * MM_PER_METER; //water that is not diverted out of the watershed
+                        }
+                    }
+                }
+            }
+            //lost to groundwater
+            if (options.modeltype != ModelType.MODELTYPE_SURFACE)
+            {
+                int iGW = GetStateVarIndex(SVType.GROUNDWATER);
+                for (int k = 0; k < _nHydroUnits; k++)
+                {
+                    double GW = _pHydroUnits[k].GetStateVarValue(iGW);
+                    area = _pHydroUnits[k].GetArea();
+                    if (GW > 0) { _CumulOutput += GW * area / _WatershedArea; }
+                }
+            }
+            _pTransModel.IncrementCumulOutput(options);
+        }
+
+        void UpdateTransientParams(Options Options, TimeStruct tt)
+        {
+            //--update parameters linked to time series
+            int nn = (int)((tt.model_time + REAL_SMALL) / Options.timestep);//current timestep index
+            for (int j = 0; j < _nTransParams; j++)
+            {
+                TransientParam transParam = _pTransParams[j];
+                ClassType ctype = transParam.GetParameterClassType();
+                string pname = transParam.GetParameterName();
+                string cname = transParam.GetParameterClass();
+                double value = transParam.GetTimeSeries()->GetSampledValue(nn);
+
+                UpdateParameter(ctype, pname, cname, value);
+            }
+
+  //--update land use and HRU types-----------------------------------------------
+  int k;
+  for (int j = 0; j<_nClassChanges; j++)
+  {
+    if(((_pClassChanges[j]->modeltime > tt.model_time - TIME_CORRECTION) &&
+         (_pClassChanges[j]->modeltime<tt.model_time + Options.timestep)) ||
+	    ((tt.model_time == 0.0) && (_pClassChanges[j]->modeltime< 0.0)) )
+    {//change happens this time step
+
+      //cout<<"updating classes on "<<tt.date_string<< endl;
+      int kk = _pClassChanges[j]->HRU_groupID;
+      for(int k_loc = 0; k_loc<_pHRUGroups[kk]->GetNumHRUs(); k_loc++)
+      {
+        k=_pHRUGroups[kk]->GetHRU(k_loc)->GetGlobalIndex();
+
+        if      (_pClassChanges[j]->tclass == CLASS_LANDUSE)
+        {
+          CLandUseClass* lult_class = StringToLUClass(_pClassChanges[j]->newclass);
+    _pHydroUnits[k]->ChangeLandUse(lult_class);
+}
+        else if (_pClassChanges[j]->tclass == CLASS_VEGETATION)
+{
+    CVegetationClass* veg_class = StringToVegClass(_pClassChanges[j]->newclass);
+    _pHydroUnits[k]->ChangeVegetation(veg_class);
+}
+else if (_pClassChanges[j]->tclass == CLASS_HRUTYPE)
+{
+    HRU_type typ = StringToHRUType(_pClassChanges[j]->newclass);
+    _pHydroUnits[k]->ChangeHRUType(typ);
+}
+
+for (int jj = 0; jj < _nProcesses; jj++)// kt
+{
+    _aShouldApplyProcess[jj][k] = _pProcesses[jj]->ShouldApply(_pHydroUnits[k]);
+}
+      }
+    }
+  }
+
+}
+
+
+        void UpdateParameter(ClassType ctype, string pname, string cname, double value)
+        { }
 
 
     }
 
-
+    
 
 
 }

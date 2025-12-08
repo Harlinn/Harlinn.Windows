@@ -652,7 +652,7 @@ namespace Harlinn.Hydrology
 
         public int GetNumDiversions() => _nDiversions;
 
-        public double GetDiversionFlow(int i, double Q, OptStruct Options, TimeStruct tt, out int p_Divert)
+        public double GetDiversionFlow(int i, double Q, Options Options, TimeStruct tt, out int p_Divert)
         {
             p_Divert = Constants.DOESNT_EXIST;
             if (i < 0 || i >= _nDiversions) throw new InvalidOperationException("CSubBasin::GetDiversionFlow");

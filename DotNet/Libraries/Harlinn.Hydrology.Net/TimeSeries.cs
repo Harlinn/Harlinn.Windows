@@ -27,16 +27,12 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// Day corresponding to local TS time 0.0 (beginning of time series)
         /// </summary>
-        double _start_day;
-        /// <summary>
-        /// Year corresponding to local TS time 0.0 (beginning of time series)
-        /// </summary>
-        int _start_year;
+        DateTime _start;
 
         /// <summary>
-        /// uniform interval between data points (in days)
+        /// uniform interval between data points
         /// </summary>
-        double _interval;
+        TimeSpan _interval;
         /// <summary>
         /// Array of magnitude of pulse (variable units)
         /// </summary>
@@ -57,7 +53,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// timestep of resampled timeseries
         /// </summary>
-        double _sampInterval;
+        TimeSpan _sampInterval;
 
         /// <summary>
         /// true if smallest time interval is sub-daily
@@ -68,7 +64,7 @@ namespace Harlinn.Hydrology
         /// number of days between model start date and gauge start date (positive if data exists before model start date)
         /// correction from model time (t) to time series/local time
         /// </summary>
-        double _t_corr;
+        TimeSpan _t_corr;
 
         /// <summary>
         /// flag determining whether this is a pulse-based or piecewise-linear time series
@@ -81,37 +77,35 @@ namespace Harlinn.Hydrology
         public TimeSeries(string name, long locID, double oneValue)
             : base(TimeSeriesType.TS_REGULAR, name, locID, string.Empty)
         {
-            _start_day = 0.0;
-            _start_year = 0;
+            _start = DateTime.MinValue;
             _nPulses = 2;
-            _interval = double.PositiveInfinity;
+            _interval = TimeSpan.MaxValue;
             _aVal = new double[_nPulses];
             _aVal[0] = oneValue;
             _aVal[1] = oneValue;
             _sub_daily = false;
-            _t_corr = 0.0;
+            _t_corr = TimeSpan.Zero;
             _pulse = true;
             _aSampVal = null;
             _nSampVal = 0;
-            _sampInterval = 1.0;
+            _sampInterval = TimeSpan.FromDays( 1.0 );
         }
 
         // Regular time series from arrays
-        public TimeSeries(string name, long locID, string filename, double strt_day, int start_yr,
-                          double data_interval, double[] aValues, int numPulses, bool isPulse)
+        public TimeSeries(string name, long locID, string filename, DateTime start,
+                          TimeSpan data_interval, double[] aValues, int numPulses, bool isPulse)
             : base(TimeSeriesType.TS_REGULAR, name, locID, filename)
         {
             if(numPulses <= 0)
             {
                 throw new ArgumentException("TimeSeries: Constructor: no entries in time series");
             }
-            if(data_interval <= 0.0)
+            if(data_interval <= TimeSpan.Zero)
             {
                 throw new ArgumentException("TimeSeries: Constructor: negative time interval is not allowed");
             }
 
-            _start_day = strt_day;
-            _start_year = start_yr;
+            _start = start;
             _pulse = isPulse;
             _interval = data_interval;
             _nPulses = numPulses;
@@ -119,17 +113,17 @@ namespace Harlinn.Hydrology
             _aVal = new double[_nPulses];
             Array.Copy(aValues, _aVal, _nPulses);
 
-            _sub_daily = (_interval < (1.0 - Constants.TIME_CORRECTION));
-            _t_corr = 0.0;
+            _sub_daily = (_interval < (TimeSpan.FromDays( 1.0 ) - Constants.TIME_CORRECTION));
+            _t_corr = TimeSpan.Zero;
 
             _aSampVal = null;
             _nSampVal = 0;
-            _sampInterval = 1.0;
+            _sampInterval = TimeSpan.FromDays(1.0);
         }
 
         // Empty time series of given length (initialized to RAV_BLANK_DATA)
-        public TimeSeries(string name, long locID, string filename, double strt_day, int start_yr,
-                          double data_interval, int numPulses, bool isPulse)
+        public TimeSeries(string name, long locID, string filename, DateTime start,
+                          TimeSpan data_interval, int numPulses, bool isPulse)
             : base(TimeSeriesType.TS_REGULAR, name, locID, filename)
         {
 
@@ -137,25 +131,24 @@ namespace Harlinn.Hydrology
             {
                 throw new ArgumentException("TimeSeries: Constructor: no entries in time series");
             }
-            if (data_interval <= 0.0)
+            if (data_interval <= TimeSpan.Zero)
             {
                 throw new ArgumentException("TimeSeries: Constructor: negative time interval is not allowed");
             }
 
-            _start_day = strt_day;
-            _start_year = start_yr;
+            _start = start;
             _pulse = isPulse;
             _interval = data_interval;
             _nPulses = numPulses;
 
             _aVal = Enumerable.Repeat(Constants.RAV_BLANK_DATA, _nPulses).ToArray();
 
-            _sub_daily = (_interval < (1.0 - Constants.TIME_CORRECTION));
-            _t_corr = 0.0;
+            _sub_daily = (_interval < (TimeSpan.FromDays(1.0) - Constants.TIME_CORRECTION));
+            _t_corr = TimeSpan.Zero;
 
             _aSampVal = null;
             _nSampVal = 0;
-            _sampInterval = 1.0;
+            _sampInterval = TimeSpan.FromDays(1.0);
         }
 
         // Copy constructor
@@ -163,8 +156,7 @@ namespace Harlinn.Hydrology
             : base(name, t)
         {
 
-            _start_day = t._start_day;
-            _start_year = t._start_year;
+            _start = t._start;
             _pulse = t._pulse;
             _interval = t._interval;
             _nPulses = t._nPulses;
@@ -172,11 +164,11 @@ namespace Harlinn.Hydrology
             Array.Copy(t._aVal, _aVal, _nPulses);
 
             _sub_daily = t._sub_daily;
-            _t_corr = 0.0;
+            _t_corr = TimeSpan.Zero;
 
             _aSampVal = null;
             _nSampVal = 0;
-            _sampInterval = 1.0;
+            _sampInterval = TimeSpan.FromDays(1.0);
         }
 
         // Dispose
@@ -190,24 +182,24 @@ namespace Harlinn.Hydrology
         // --- Accessors ---
         public bool IsDaily() => !_sub_daily;
         public override int GetNumValues() => _nPulses;
-        public override double GetInterval() => _interval;
-        public int GetStartYear() => _start_year;
-        public double GetStartDay() => _start_day;
-        public override double GetTime(int n) => _interval * n;
+        public override TimeSpan GetInterval() => _interval;
+        public DateTime GetStart() => _start;
+        
+        public override DateTime GetTime(int n) => _start + _interval * n;
         public override double GetValue(int n) => _aVal[n];
         public bool IsPulseType() => _pulse;
 
         // Initialize (set _t_corr and resample)
-        public void Initialize(double model_start_day, int model_start_year, double model_duration, double timestep, bool isObservation, Calendars calendar)
+        public void Initialize(DateTime modelStart, TimeSpan modelDuration, TimeSpan timestep, bool isObservation, Calendars calendar)
         {
             // _t_corr is number of days between model start date and gauge start date (positive if data exists before model start)
-            _t_corr = -TimeDifference(model_start_day, model_start_year, _start_day, _start_year, calendar);
+            _t_corr = _start - modelStart;
 
             if (!isObservation)
             {
-                double duration = (double)(_nPulses) * _interval;
-                double local_simulation_start = (_t_corr);
-                double local_simulation_end = (_t_corr + model_duration);
+                TimeSpan duration = _nPulses * _interval;
+                TimeSpan local_simulation_start = _t_corr;
+                TimeSpan local_simulation_end = _t_corr + modelDuration;
 
                 if (duration < local_simulation_start)
                 {
@@ -217,7 +209,7 @@ namespace Harlinn.Hydrology
                 {
                     throw new InvalidOperationException("Initialize: time series forcing data not available at end of model simulation");
                 }
-                if ((local_simulation_start < 0) || (_start_year > model_start_year))
+                if ((local_simulation_start < TimeSpan.Zero) || (_start > modelStart))
                 {
                     throw new InvalidOperationException("Initialize: time series forcing data not available at beginning of model simulation");
                 }
@@ -227,41 +219,41 @@ namespace Harlinn.Hydrology
             if (isObservation)
             {
                 // extra step for last observation of continuous hydrograph
-                Resample(timestep, model_duration + timestep);
+                Resample(timestep, modelDuration + timestep);
             }
             else
             {
-                Resample(timestep, model_duration);
+                Resample(timestep, modelDuration);
             }
         }
 
         // Resample
-        public void Resample(double tstep, double model_duration)
+        public void Resample(TimeSpan timeStep, TimeSpan modelDuration)
         {
-            int nSampVal = (int)Math.Ceiling(model_duration / tstep - Constants.TIME_CORRECTION);
+            int nSampVal = (int)((modelDuration.Ticks / timeStep.Ticks) - Constants.TIME_CORRECTION.Ticks);
             if (!_pulse)
             {
                 nSampVal++;
             }
 
-            InitializeResample(nSampVal, tstep);
+            InitializeResample(nSampVal, timeStep);
 
-            double t = 0.0;
+            DateTime t = DateTime.MinValue;
             for (int nn = 0; nn < _nSampVal; nn++)
             {
                 if (_pulse)
                 {
-                    _aSampVal[nn] = GetAvgValue(t, tstep);
+                    _aSampVal[nn] = GetAvgValue(t, timeStep);
                 }
                 else
                 {
                     _aSampVal[nn] = GetValue(t);
                 }
-                t += tstep;
+                t += timeStep;
             }
         }
 
-        public void InitializeResample(int nSampVal, double sampInterval)
+        public void InitializeResample(int nSampVal, TimeSpan sampInterval)
         {
             if(nSampVal <= 0)
             {
@@ -277,38 +269,45 @@ namespace Harlinn.Hydrology
             }
         }
 
-        public int GetTimeIndex(double t_loc)
+        public int GetTimeIndex(DateTime t_loc)
         {
-            int idx = (int)Math.Min(Math.Max(Math.Floor(t_loc / _interval), 0.0), _nPulses - 1);
+            int idx = (int)Math.Min(Math.Max(t_loc.Ticks / _interval.Ticks, 0), _nPulses - 1);
             return idx;
         }
 
-        public override int GetTimeIndexFromModelTime(double t_mod)
+        public override int GetTimeIndexFromModelTime(DateTime t_mod)
         {
-            int idx = (int)Math.Min(Math.Max(Math.Floor((t_mod + Constants.TIME_CORRECTION) / _sampInterval), 0.0), _nSampVal - 1);
+            int idx = (int)Math.Min(Math.Max(((t_mod.Ticks + Constants.TIME_CORRECTION.Ticks) / _sampInterval.Ticks), 0), _nSampVal - 1);
             return idx;
         }
 
         // Global-time GetValue
-        public double GetValue(double t)
+        public double GetValue(DateTime t)
         {
-            double t_loc = t + _t_corr;
+            DateTime t_loc = t + _t_corr;
             int n = GetTimeIndex(t_loc);
 
-            if (_pulse) return _aVal[n];
+            if (_pulse)
+            {
+                return _aVal[n];
+            }
             else
             {
-                if (n == _nPulses - 1) return _aVal[n];
-                return _aVal[n] + (t_loc - (double)(n) * _interval) / (_interval) * (_aVal[n + 1] - _aVal[n]);
+                if (n == _nPulses - 1)
+                {
+                    return _aVal[n];
+                }
+                return double.Lerp(_aVal[n], _aVal[n + 1], (double)((t - (_start + n * _interval)).Ticks) / (double)_interval.Ticks);
+                //return _aVal[n] + (t_loc - (double)(n) * _interval) / (_interval) * (_aVal[n + 1] - _aVal[n]);
             }
         }
 
         // Average across interval t..t+tstep
-        public override double GetAvgValue(double t, double tstep)
+        public override double GetAvgValue(DateTime t, TimeSpan tstep)
         {
             int n1 = 0, n2 = 0;
             double sum = 0.0;
-            double t_loc = t + _t_corr;
+            TimeSpan t_loc = t + _t_corr;
             n1 = GetTimeIndex(t_loc);
             n2 = GetTimeIndex(t_loc + tstep);
 

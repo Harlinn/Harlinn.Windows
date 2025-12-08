@@ -524,6 +524,21 @@ namespace Harlinn.Hydrology
         public bool in_bmi_mode;
 
 
+        public string FilenamePrepare(string filebase)
+        {
+            string fn;
+            if (run_name == "")
+            { 
+                fn = output_dir + filebase; 
+            }
+            else 
+            { 
+                fn = output_dir + run_name + "_" + filebase; 
+            }
+            return fn;
+        }
+
+
     }
 
 }

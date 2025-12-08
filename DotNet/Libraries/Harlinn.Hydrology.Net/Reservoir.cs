@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 namespace Harlinn.Hydrology
 {
     enum CurveFunction
@@ -378,6 +379,11 @@ namespace Harlinn.Hydrology
         /// local head [m] (same  for groundwater losses Q=k*(h-h_loc)
         /// </summary>
         double _local_GW_head;
+
+        internal int GetNumWaterDemands()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

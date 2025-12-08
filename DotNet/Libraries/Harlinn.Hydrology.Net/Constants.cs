@@ -529,7 +529,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// double corresponding to blank/void data item (also used in input files)
         /// </summary>
-        public const double RAV_BLANK_DATA = -1.2345;
+        public const double BLANK_DATA = -1.2345;
         /// <summary>
         /// dirichlet concentration flag corresponding to air temperature
         /// </summary>
@@ -559,7 +559,7 @@ namespace Harlinn.Hydrology
         /// <summary>
         /// [d]      offset for time series min/max functions
         /// </summary>
-        public const double TIME_CORRECTION = 0.0001;
+        public static readonly TimeSpan TIME_CORRECTION = TimeSpan.FromDays(0.0001);
         /// <summary>
         /// [km]     very large maximum reach length (defaults to single segment per reach)
         /// </summary>

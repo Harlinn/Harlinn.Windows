@@ -137,6 +137,16 @@ namespace Harlinn.Hydrology
             throw new NotImplementedException();
         }
 
+        internal void IncrementCumulInput(Options options, TimeStruct tt)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void IncrementCumulOutput(Options options)
+        {
+            throw new NotImplementedException();
+        }
+
         private void m_to_cj(int m, ref int c, ref int j)
         {
             if((m < 0) || (m > (_nConstituents * _nWaterCompartments)))

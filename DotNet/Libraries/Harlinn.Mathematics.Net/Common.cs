@@ -226,6 +226,24 @@ namespace Harlinn.Mathematics.Net
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static float Lerp(float a, float b, float t)
+        {
+            return ( 1 - t ) * a + t* b;
+        }
+
+        public static double Lerp(double a, double b, double t)
+        {
+            return (1 - t) * a + t * b;
+        }
+
+
+        /// <summary>
         /// Returns Nth recursive approximation of Lambert W_{-1} function
         /// </summary>
         /// <param name="x"></param>

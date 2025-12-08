@@ -17,6 +17,7 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace Harlinn.Hydrology
 {
+    
 
     public abstract class TimeSeriesBase
     {
@@ -125,20 +126,20 @@ namespace Harlinn.Hydrology
             return _demand_ID; 
         }
 
-        public abstract double GetInterval();
-        public abstract double GetTime(int n);
+        public abstract TimeSpan GetInterval();
+        public abstract DateTime GetTime(int n);
         public abstract double GetValue(int n);
         public abstract int GetNumValues();
-        public abstract double GetAvgValue(double t, double tstep);
-        public abstract double GetMinValue(double t, double tstep);
-        public abstract double GetMaxValue(double t, double tstep);
+        public abstract double GetAvgValue(DateTime t, TimeSpan tstep);
+        public abstract double GetMinValue(DateTime t, TimeSpan tstep);
+        public abstract double GetMaxValue(DateTime t, TimeSpan tstep);
 
         public abstract double GetSampledValue(int nn);
-        public abstract double GetSampledTime(int nn);
-        public abstract double GetSampledInterval();
+        public abstract DateTime GetSampledTime(int nn);
+        public abstract TimeSpan GetSampledInterval();
         public abstract int GetNumSampledValues();
 
-        public abstract int GetTimeIndexFromModelTime(double t_mod);
+        public abstract int GetTimeIndexFromModelTime(DateTime t_mod);
 
 
 
