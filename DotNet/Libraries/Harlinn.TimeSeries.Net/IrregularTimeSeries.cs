@@ -19,15 +19,16 @@ namespace Harlinn.TimeSeries.Net
 {
     public class IrregularTimeSeries : TimeSeriesBase
     {
-        public IrregularTimeSeries()
+        public IrregularTimeSeries(bool pulse = false)
+            : base(pulse)
         {
         }
 
-        public IrregularTimeSeries(int capacity) : base(capacity)
+        public IrregularTimeSeries(int capacity, bool pulse = false) : base(capacity, pulse)
         {
         }
 
-        public IrregularTimeSeries(Value[] values) : base(values)
+        public IrregularTimeSeries(Value[] values, bool pulse = false) : base(values, pulse)
         {
         }
 

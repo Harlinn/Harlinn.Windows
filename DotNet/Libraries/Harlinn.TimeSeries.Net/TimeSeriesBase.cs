@@ -55,17 +55,19 @@ namespace Harlinn.TimeSeries.Net
             }
         }
 
-        public TimeSeriesBase()
+        public TimeSeriesBase(bool pulse = false)
         {
+            _pulse = pulse;
         }
 
-        public TimeSeriesBase(int capacity)
+        public TimeSeriesBase(int capacity, bool pulse = false)
         {
             if (capacity < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(capacity), "capacity cannot be less than 0.");
             }
-            if(capacity > 0)
+            _pulse = pulse;
+            if (capacity > 0)
             {
                 int newCapacity = CalculateCapacity(capacity, DeltaCapacity);
                 _values = new Value[newCapacity];
@@ -73,9 +75,10 @@ namespace Harlinn.TimeSeries.Net
 
         }
 
-        public TimeSeriesBase(Value[] values)
+        public TimeSeriesBase(Value[] values, bool pulse = false)
         {
-            if( values != null && values.Length > 0)
+            _pulse = pulse;
+            if ( values != null && values.Length > 0)
             {
                 int newCapacity = CalculateCapacity(values.Length, DeltaCapacity);
                 _values = new Value[newCapacity];
@@ -237,7 +240,7 @@ namespace Harlinn.TimeSeries.Net
                                     if(endValue.Time > interval.End)
                                     {
                                         // Need to interpolate end value
-                                        endValue = Interpolate(endValue, _values[range.End - 1], interval.End);
+                                        endValue = Interpolate(_values[range.End - 1], endValue, interval.End);
                                     }
                                     var result = new Value[rangeCount + 1];
                                     result[0] = startValue;
@@ -251,7 +254,7 @@ namespace Harlinn.TimeSeries.Net
                                 }
                                 else
                                 {
-                                    // Cannot interpolate end value, just add start interpolated value and copy rest
+                                    // Cannot interpolate end value, just add interpolated start value and copy rest
                                     var result = new Value[rangeCount];
                                     result[0] = new Value(startValue, interval.Start);
                                     Array.Copy(_values, range.Start + 1, result, 1, rangeCount - 1);
@@ -267,27 +270,16 @@ namespace Harlinn.TimeSeries.Net
                                     if (endValue.Time > interval.End)
                                     {
                                         // Need to interpolate end value
-                                        endValue = Interpolate(endValue, _values[range.End - 1], interval.End);
+                                        endValue = Interpolate(_values[range.End - 1], endValue, interval.End);
                                         var result = new Value[rangeCount + 1];
-                                        Array.Copy(_values, range.Start, result, 0, rangeCount - 1);
+                                        Array.Copy(_values, range.Start, result, 0, rangeCount);
                                         result[rangeCount] = endValue;
                                         return result;
                                     }
-                                    else
-                                    {
-                                        // No need to interpolate end value
-                                        var result = new Value[rangeCount];
-                                        Array.Copy(_values, range.Start, result, 0, rangeCount);
-                                        return result;
-                                    }
                                 }
-                                else
-                                {
-                                    // Cannot interpolate end value, just copy all values in range
-                                    var result = new Value[rangeCount];
-                                    Array.Copy(_values, range.Start, result, 0, rangeCount);
-                                    return result;
-                                }
+                                var simpleResult = new Value[rangeCount];
+                                Array.Copy(_values, range.Start, simpleResult, 0, rangeCount);
+                                return simpleResult;
                             }
                         }
                         else
@@ -297,13 +289,14 @@ namespace Harlinn.TimeSeries.Net
                         }
 
                     }
-                    else
+                    else // Pulse == true
                     {
                         var result = new Value[rangeCount];
                         var startValue = _values[range.Start];
-                        if (interval.Start < startValue.Time)
+                        if ( startValue.Time < interval.Start )
                         {
-                            result[0] = new Value(interval.Start, startValue.Flags, startValue.Code, startValue.Data);
+                            // Need to adjust start value time
+                            result[0] = new Value(startValue, interval.Start);
                             if (rangeCount > 1)
                             {
                                 Array.Copy(_values, range.Start + 1, result, 1, rangeCount - 1);
@@ -329,8 +322,10 @@ namespace Harlinn.TimeSeries.Net
                 {
                     if (_values[_count - 1].Time < newValue.Time)
                     {
+                        // Append to end
                         if (_count == _values.Length)
                         {
+                            // Need to grow array
                             var newCapacity = CalculateCapacity(_values.Length + 1, DeltaCapacity);
                             Array.Resize(ref _values, newCapacity);
                         }
@@ -339,16 +334,25 @@ namespace Harlinn.TimeSeries.Net
                     }
                     else
                     {
-                        //var index = Array.BinarySearch(_values, 0, _count, newValue, _valueDateTimeComparer);
-                        var index = FindIndex(_values, _count, newValue.Time);
-                        if (index < 0)
+                        if (_values[_count - 1].Time == newValue.Time)
                         {
-                            var insertIndex = ~index;
-                            _values = Insert(_values, ref _count, DeltaCapacity, insertIndex, newValue);
+                            // Replace last value
+                            _values[_count - 1] = newValue;
                         }
                         else
                         {
-                            _values[index] = newValue;
+                            var index = FindIndex(_values, _count, newValue.Time);
+                            if (index < 0)
+                            {
+                                // Insert at index
+                                var insertIndex = ~index;
+                                _values = Insert(_values, ref _count, DeltaCapacity, insertIndex, newValue);
+                            }
+                            else
+                            {
+                                // Replace existing value at index
+                                _values[index] = newValue;
+                            }
                         }
                     }
                 }

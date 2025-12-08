@@ -279,8 +279,11 @@ namespace Harlinn.TimeSeries.Net.Tests
 
             Assert.HasCount(3, retrievedValues);
             Assert.AreEqual(0.5, retrievedValues[0].Data);
+            Assert.AreEqual(intervalStart, retrievedValues[0].Time);
             Assert.AreEqual(1.0, retrievedValues[1].Data);
+            Assert.AreEqual(intervalStart + halfMin, retrievedValues[1].Time);
             Assert.AreEqual(1.5, retrievedValues[2].Data);
+            Assert.AreEqual(intervalEnd, retrievedValues[2].Time);
         }
 
         [TestMethod]
@@ -301,7 +304,9 @@ namespace Harlinn.TimeSeries.Net.Tests
 
             Assert.HasCount(2, retrievedValues);
             Assert.AreEqual(0.0, retrievedValues[0].Data);
+            Assert.AreEqual(startTime, retrievedValues[0].Time);
             Assert.AreEqual(0.5, retrievedValues[1].Data);
+            Assert.AreEqual(intervalEnd, retrievedValues[1].Time);
         }
 
 
@@ -323,8 +328,11 @@ namespace Harlinn.TimeSeries.Net.Tests
 
             Assert.HasCount(3, retrievedValues);
             Assert.AreEqual(0.0, retrievedValues[0].Data);
+            Assert.AreEqual(startTime, retrievedValues[0].Time);
             Assert.AreEqual(1.0, retrievedValues[1].Data);
+            Assert.AreEqual(startTime + minute, retrievedValues[1].Time);
             Assert.AreEqual(2.0, retrievedValues[2].Data);
+            Assert.AreEqual(startTime + (2 * minute), retrievedValues[2].Time);
         }
 
         [TestMethod]
@@ -345,6 +353,7 @@ namespace Harlinn.TimeSeries.Net.Tests
 
             Assert.HasCount(1, retrievedValues);
             Assert.AreEqual(2.0, retrievedValues[0].Data);
+            Assert.AreEqual(intervalStart, retrievedValues[0].Time);
         }
 
         [TestMethod]
@@ -365,13 +374,39 @@ namespace Harlinn.TimeSeries.Net.Tests
 
             Assert.HasCount(5, retrievedValues);
             Assert.AreEqual(0.5, retrievedValues[0].Data);
+            Assert.AreEqual(intervalStart, retrievedValues[0].Time);
             Assert.AreEqual(1.0, retrievedValues[1].Data);
+            Assert.AreEqual(startTime + minute, retrievedValues[1].Time);
             Assert.AreEqual(2.0, retrievedValues[2].Data);
+            Assert.AreEqual(startTime + (2 * minute), retrievedValues[2].Time);
             Assert.AreEqual(3.0, retrievedValues[3].Data);
+            Assert.AreEqual(startTime + (3 * minute), retrievedValues[3].Time);
             Assert.AreEqual(3.5, retrievedValues[4].Data);
+            Assert.AreEqual(intervalEnd, retrievedValues[4].Time);
         }
 
+        [TestMethod]
+        public void GetValuesTest6()
+        {
+            int numberOfGeneratedValues = 3;
+            DateTime startTime = DateTime.Now;
+            TimeSpan minute = TimeSpan.FromMinutes(1);
+            TimeSpan halfMin = TimeSpan.FromMinutes(0.5);
+            var timeSeries = new IrregularTimeSeries(true);
+            var values = Common.Generate(startTime, minute, numberOfGeneratedValues);
+            timeSeries.Add(values);
 
+            var intervalStart = startTime + halfMin;
+            var intervalEnd = intervalStart + minute;
+            var interval = new Interval(intervalStart, intervalEnd);
+            var retrievedValues = timeSeries.GetValues(interval);
+
+            Assert.HasCount(2, retrievedValues);
+            Assert.AreEqual(0.0, retrievedValues[0].Data);
+            Assert.AreEqual(intervalStart, retrievedValues[0].Time);
+            Assert.AreEqual(1.0, retrievedValues[1].Data);
+            Assert.AreEqual(startTime + minute, retrievedValues[1].Time);
+        }
 
 
 
