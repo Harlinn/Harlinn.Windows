@@ -14,27 +14,13 @@
    limitations under the License.
 */
 
-
-namespace Harlinn.TimeSeries.Net
+namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public class IrregularTimeSeries : TimeSeriesBase
+    [Serializable]
+    public class StoredProcedureDefinition : SchemaObject
     {
-        public IrregularTimeSeries(bool step = false)
-            : base(step)
-        {
-        }
-
-        public IrregularTimeSeries(int capacity, bool step = false) 
-            : base(capacity, step)
-        {
-        }
-
-        public IrregularTimeSeries(Value[] values, bool step = false) 
-            : base(values, step)
-        {
-        }
-
-        public override TimeSeriesType Type => TimeSeriesType.Irregular;
+        public override SchemaObjectType Type => SchemaObjectType.StoredProcedure;
     }
+
 
 }

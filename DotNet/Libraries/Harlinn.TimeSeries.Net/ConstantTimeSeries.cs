@@ -63,7 +63,7 @@ namespace Harlinn.TimeSeries.Net
         public TimeSeriesType Type => TimeSeriesType.Constant;
         public Value this[DateTime time] => _constantValue;
 
-        public bool Pulse => true;
+        public bool Step => true;
 
         public Value First => _constantValue;
 

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project Name="TestProject">
+	<Databases>
+		<Database Name="TestDatabase">
+			<Schemas>
+				<Schema Name="dbo">
+					<Objects>
+						<Entity Name="TestEntity">
+							<Fields>
+								<Int64 Name="Id" IsNullable="false" />
+								<String Name="Name" IsNullable="false" />
+							</Fields>
+							<PrimaryKey>
+								<Field Name="Id" IsDescending="false" />
+							</PrimaryKey>
+						</Entity>
+						<Entity Name="TestEntity2">
+							<Fields>
+								<Int64 Name="Id" IsNullable="false" />
+								<String Name="Name" IsNullable="false" />
+								<Int64 Name="TestEntity" IsNullable="false" />
+							</Fields>
+							<PrimaryKey>
+								<Field Name="Id" IsDescending="false" />
+							</PrimaryKey>
+							<ForeignKeys>
+								<ForeignKey Name="FK_TestEntity2_TestEntity" Entity="TestEntity">
+									<References>
+										<Reference Field="TestEntity" References="Id" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_TestEntity2_Name" IsUnique="false">
+									<Fields>
+										<Field Name="Name" IsDescending="false" />
+									</Fields>
+								</Index>
+							</Indexes>
+						</Entity>
+					</Objects>
+				</Schema>
+			</Schemas>
+		</Database>
+	</Databases>
+</Project>

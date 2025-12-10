@@ -125,9 +125,9 @@ namespace Harlinn.TimeSeries.Net
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int FindStartIndex(Value[] values, int count, DateTime time)
+        public static int FindStartIndex(Value[] values, int count, int startIndex, DateTime time)
         {
-            int low = 0;
+            int low = startIndex;
             int high = count - 1;
             while (low <= high)
             {
@@ -146,17 +146,23 @@ namespace Harlinn.TimeSeries.Net
                     high = mid - 1;
                 }
             }
-            return Math.Max(0, high);
+            return Math.Max(startIndex, high);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int FindEndIndex(Value[] values, int count, DateTime time)
+        public static int FindStartIndex(Value[] values, int count, DateTime time)
+        {
+            return FindStartIndex(values, count, 0, time);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FindEndIndex(Value[] values, int count, int startIndex, DateTime time)
         {
             if (values[count - 1].Time < time)
             {
                 return count;
             }
-            int low = 0;
+            int low = startIndex;
             int high = count - 1;
             while (low <= high)
             {
@@ -178,12 +184,11 @@ namespace Harlinn.TimeSeries.Net
             return Math.Min(low, count);
         }
 
-
-
-
-
-
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FindEndIndex(Value[] values, int count, DateTime time)
+        {
+            return FindEndIndex(values, count, 0, time);
+        }
 
 
 

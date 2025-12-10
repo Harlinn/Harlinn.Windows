@@ -14,27 +14,18 @@
    limitations under the License.
 */
 
+using System.Xml.Serialization;
 
-namespace Harlinn.TimeSeries.Net
+namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public class IrregularTimeSeries : TimeSeriesBase
+    public class ForeignKeyReferenceDefinition
     {
-        public IrregularTimeSeries(bool step = false)
-            : base(step)
-        {
-        }
+        [XmlAttribute]
+        public string Field { get; set; } = string.Empty;
 
-        public IrregularTimeSeries(int capacity, bool step = false) 
-            : base(capacity, step)
-        {
-        }
-
-        public IrregularTimeSeries(Value[] values, bool step = false) 
-            : base(values, step)
-        {
-        }
-
-        public override TimeSeriesType Type => TimeSeriesType.Irregular;
+        [XmlAttribute]
+        public string References { get; set; } = string.Empty;
     }
+
 
 }

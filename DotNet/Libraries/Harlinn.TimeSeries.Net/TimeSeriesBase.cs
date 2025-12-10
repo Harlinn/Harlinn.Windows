@@ -15,6 +15,7 @@
 */
 
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using static Harlinn.TimeSeries.Net.Common;
 
 namespace Harlinn.TimeSeries.Net
@@ -25,7 +26,7 @@ namespace Harlinn.TimeSeries.Net
         
         static readonly ValueDateTimeComparer _valueDateTimeComparer = new();
         const int DeltaCapacity = 4096; // 2*8192; // 4096; //8192;
-        readonly bool _pulse;
+        readonly bool _step;
         Value[]? _values;
         int _count;
 
@@ -55,18 +56,18 @@ namespace Harlinn.TimeSeries.Net
             }
         }
 
-        public TimeSeriesBase(bool pulse = false)
+        public TimeSeriesBase(bool step = false)
         {
-            _pulse = pulse;
+            _step = step;
         }
 
-        public TimeSeriesBase(int capacity, bool pulse = false)
+        public TimeSeriesBase(int capacity, bool step = false)
         {
             if (capacity < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(capacity), "capacity cannot be less than 0.");
             }
-            _pulse = pulse;
+            _step = step;
             if (capacity > 0)
             {
                 int newCapacity = CalculateCapacity(capacity, DeltaCapacity);
@@ -75,9 +76,9 @@ namespace Harlinn.TimeSeries.Net
 
         }
 
-        public TimeSeriesBase(Value[] values, bool pulse = false)
+        public TimeSeriesBase(Value[] values, bool step = false)
         {
-            _pulse = pulse;
+            _step = step;
             if ( values != null && values.Length > 0)
             {
                 int newCapacity = CalculateCapacity(values.Length, DeltaCapacity);
@@ -106,7 +107,7 @@ namespace Harlinn.TimeSeries.Net
                         var previousIndex = nextIndex - 1;
                         if(previousIndex >= 0)
                         {
-                            if( nextIndex < _count && !Pulse)
+                            if( nextIndex < _count && !Step)
                             {
                                 var previousValue = _values[previousIndex];
                                 var nextValue = _values[nextIndex];
@@ -166,7 +167,7 @@ namespace Harlinn.TimeSeries.Net
             }
         }
 
-        public bool Pulse => _pulse;
+        public bool Step => _step;
 
         public Range ToRange(Interval interval)
         {
@@ -181,12 +182,32 @@ namespace Harlinn.TimeSeries.Net
             return new Range(0, 0);
         }
 
+        public int FindStartIndex(int beginIndex, DateTime start)
+        {
+            if (_values != null && _count > 0)
+            {
+                var startIndex = Common.FindStartIndex(_values, _count, beginIndex, start);
+                return startIndex;
+            }
+            return 0;
+        }
+
         public int FindStartIndex(DateTime start)
         {
             if (_values != null && _count > 0)
             {
-                var startIndex = Common.FindStartIndex(_values, _count, start);
+                var startIndex = Common.FindStartIndex(_values, _count, 0, start);
                 return startIndex;
+            }
+            return 0;
+        }
+
+        public int FindEndIndex(int beginIndex, DateTime end)
+        {
+            if (_values != null && _count > 0)
+            {
+                var endIndex = Common.FindEndIndex(_values, _count, beginIndex, end);
+                return endIndex;
             }
             return 0;
         }
@@ -195,7 +216,7 @@ namespace Harlinn.TimeSeries.Net
         {
             if (_values != null && _count > 0)
             {
-                var endIndex = Common.FindEndIndex(_values, _count, end);
+                var endIndex = Common.FindEndIndex(_values, _count, 0, end);
                 return endIndex;
             }
             return 0;
@@ -222,7 +243,7 @@ namespace Harlinn.TimeSeries.Net
                 var rangeCount = range.Count;
                 if (rangeCount > 0)
                 {
-                    if(!Pulse)
+                    if(!Step)
                     {
                         var remaining = _count - range.Start;
                         if (remaining > 1)
@@ -313,6 +334,47 @@ namespace Harlinn.TimeSeries.Net
             }
             return Array.Empty<Value>();
         }
+
+
+        public Value GetValue(DateTime time, TimeSpan duration, int beginIndex, out int endIndex)
+        {
+            throw new NotImplementedException();
+            if ( beginIndex < 0 || beginIndex >= _count )
+            {
+                throw new ArgumentOutOfRangeException(nameof(beginIndex));
+            }
+            if(duration <= TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(duration));
+            }
+            if (_values == null || _count == 0 )
+            {
+                throw new KeyNotFoundException("No values in time series");
+            }
+            var endTime = time + duration;
+            var startIndex = beginIndex;
+            var remaining = _count - startIndex;
+            var value = _values[startIndex];
+
+            startIndex = Common.FindStartIndex(_values, _count, beginIndex, time);
+
+            
+            
+            endIndex = Common.FindEndIndex(_values, _count, startIndex, endTime);
+
+
+        }
+
+
+        public void Clear()
+        {
+            _values = null;
+            _count = 0;
+        }
+
+
+
+
 
         public void Add(Value newValue)
         {

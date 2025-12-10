@@ -1,0 +1,61 @@
+﻿/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+using CommandLine;
+
+
+namespace Harlinn.MSSql.Tool
+{
+    public class Options
+    {
+        static string defaultConnectionString = "Data Source=(local);Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+        public Options()
+        { 
+            
+        }
+
+        [Option('c', "connection_string", Required = false, HelpText = "SQL Server connection string.")]
+        public string? ConnectionString { get; set; }
+
+        [Option('i', "initial_catalog", Required = false, HelpText = "SQL Server initial catalog.")]
+        public string? InitialCatalog { get; set; }
+
+
+
+        public string GetConnectionString()
+        {
+            if (!string.IsNullOrEmpty(ConnectionString))
+            {
+                return ConnectionString;
+            }
+            else if (!string.IsNullOrEmpty(InitialCatalog))
+            {
+                return $"Data Source=(local);Initial Catalog={InitialCatalog};Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+            }
+            else
+            {
+                return defaultConnectionString;
+            }
+        }
+
+        [Option('p', "project", Required = true, HelpText = "Project file path.")]
+        public string Project { get; set; }
+        
+
+
+
+    }
+}

@@ -18,16 +18,17 @@ namespace Harlinn.TimeSeries.Net
 {
     public class RegularTimeSeries : TimeSeriesBase
     {
-        public RegularTimeSeries(bool pulse = false)
-            : base(pulse)
+        public RegularTimeSeries(bool step = false)
+            : base(step)
         {
         }
 
-        public RegularTimeSeries(int capacity, bool pulse = false) : base(capacity, pulse)
+        public RegularTimeSeries(int capacity, bool step = false) 
+            : base(capacity, step)
         {
         }
-        public RegularTimeSeries(Value[] values, bool pulse = false)
-            : base(values, pulse)
+        public RegularTimeSeries(Value[] values, bool step = false)
+            : base(values, step)
         {
         }
 

@@ -17,25 +17,7 @@ namespace Harlinn.Hydrology
 {
     public class ConstTimeSeries : TimeSeriesBase
     {
-        public override double GetAvgValue(double t, double tstep)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override double GetInterval()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override double GetMaxValue(double t, double tstep)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override double GetMinValue(double t, double tstep)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public override int GetNumSampledValues()
         {

@@ -14,27 +14,18 @@
    limitations under the License.
 */
 
-
-namespace Harlinn.TimeSeries.Net
+namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public class IrregularTimeSeries : TimeSeriesBase
+    [Serializable]
+    public class BinaryFieldDefinition : FieldDefinition
     {
-        public IrregularTimeSeries(bool step = false)
-            : base(step)
-        {
-        }
-
-        public IrregularTimeSeries(int capacity, bool step = false) 
-            : base(capacity, step)
-        {
-        }
-
-        public IrregularTimeSeries(Value[] values, bool step = false) 
-            : base(values, step)
-        {
-        }
-
-        public override TimeSeriesType Type => TimeSeriesType.Irregular;
+        public override FieldType FieldType => FieldType.Binary;
+        public int Size { get; set; } = 128;
     }
+
+
+
+
+
 
 }

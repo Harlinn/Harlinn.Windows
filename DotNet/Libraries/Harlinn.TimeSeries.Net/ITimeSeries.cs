@@ -27,7 +27,7 @@ namespace Harlinn.TimeSeries.Net
     {
         TimeSeriesType Type { get; }
 
-        bool Pulse { get; }
+        bool Step { get; }
 
         Value First { get; }
         Value Last { get; }

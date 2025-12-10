@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Harlinn.MSSql.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": "-i BIR -p TestProject.xml"
+    }
+  }
+}

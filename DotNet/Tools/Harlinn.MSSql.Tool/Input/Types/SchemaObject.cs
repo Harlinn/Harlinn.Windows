@@ -14,27 +14,21 @@
    limitations under the License.
 */
 
+using System.Xml.Serialization;
 
-namespace Harlinn.TimeSeries.Net
+namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public class IrregularTimeSeries : TimeSeriesBase
+    [Serializable]
+    public abstract class SchemaObject
     {
-        public IrregularTimeSeries(bool step = false)
-            : base(step)
-        {
-        }
+        public abstract SchemaObjectType Type { get; }
 
-        public IrregularTimeSeries(int capacity, bool step = false) 
-            : base(capacity, step)
-        {
-        }
+        [XmlIgnore]
+        public Schema? Schema { get; set; } = null;
 
-        public IrregularTimeSeries(Value[] values, bool step = false) 
-            : base(values, step)
-        {
-        }
-
-        public override TimeSeriesType Type => TimeSeriesType.Irregular;
+        [XmlAttribute]
+        public string Name { get; set; } = string.Empty;
     }
+
 
 }
