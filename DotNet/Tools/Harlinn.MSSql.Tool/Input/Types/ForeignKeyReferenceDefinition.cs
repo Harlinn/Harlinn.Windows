@@ -20,11 +20,19 @@ namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class ForeignKeyReferenceDefinition
     {
+        [XmlIgnore]
+        public ForeignKeyDefinition? Owner { get; set; } = null;
+
         [XmlAttribute]
         public string Field { get; set; } = string.Empty;
 
         [XmlAttribute]
         public string References { get; set; } = string.Empty;
+
+        internal void Initialize()
+        {
+            
+        }
     }
 
 

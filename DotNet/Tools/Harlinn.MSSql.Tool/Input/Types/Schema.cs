@@ -14,12 +14,16 @@
    limitations under the License.
 */
 
+using Microsoft.SqlServer.Management.Smo;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class Schema
     {
+        [XmlIgnore]
+        public Database? Owner { get; set; } = null;
+
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
 
@@ -30,6 +34,22 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(FunctionDefinition), ElementName = "Function")]
         public List<SchemaObject> Objects { get; set; } = new List<SchemaObject>();
 
+        internal void Initialize()
+        {
+            foreach (var schemaObject in Objects)
+            {
+                schemaObject.Owner = this;
+                schemaObject.Initialize();
+            }
+        }
+
+        internal void Initialize2()
+        {
+            foreach (var schemaObject in Objects)
+            {
+                schemaObject.Initialize2();
+            }
+        }
     }
 
 

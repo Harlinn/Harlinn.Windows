@@ -18,4 +18,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CodeGenerators\" />
+  </ItemGroup>
+
 </Project>

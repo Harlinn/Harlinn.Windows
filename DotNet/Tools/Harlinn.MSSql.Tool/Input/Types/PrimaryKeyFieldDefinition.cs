@@ -20,10 +20,17 @@ namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class PrimaryKeyFieldDefinition
     {
+        [XmlIgnore]
+        public PrimaryKeyDefinition? Owner { get; set; } = null;
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
         [XmlAttribute]
         public bool IsDescending { get; set; } = false;
+
+        internal void Initialize()
+        {
+            
+        }
     }
 
 

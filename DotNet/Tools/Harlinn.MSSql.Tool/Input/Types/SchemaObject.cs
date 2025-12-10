@@ -24,10 +24,25 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public abstract SchemaObjectType Type { get; }
 
         [XmlIgnore]
-        public Schema? Schema { get; set; } = null;
+        public Schema? Owner { get; set; } = null;
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
+
+        internal virtual void Initialize()
+        {
+            var project = Owner?.Owner?.Project;
+            if (project != null)
+            {
+                var key = $"{Owner?.Owner?.Name}.{Owner?.Name}.{Name}";
+                project.SchemaObjects[key] = this;
+            }
+        }
+
+        internal virtual void Initialize2()
+        {
+            
+        }
     }
 
 

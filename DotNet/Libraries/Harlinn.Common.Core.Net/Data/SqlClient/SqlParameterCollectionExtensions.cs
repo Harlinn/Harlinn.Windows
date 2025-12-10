@@ -22,6 +22,7 @@ using Microsoft.Data.SqlClient;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient
 {
+
     /// <summary>
     /// Useful extensions to the SqlParameterCollection class.
     /// </summary>

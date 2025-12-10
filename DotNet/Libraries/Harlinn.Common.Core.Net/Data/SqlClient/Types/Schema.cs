@@ -14,28 +14,26 @@
    limitations under the License.
 */
 
-using System.Xml.Serialization;
 
-namespace Harlinn.MSSql.Tool.Input.Types
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
-    public class PrimaryKeyDefinition
+
+    public class Schema
     {
-        [XmlIgnore]
-        public EntityDefinition? Owner { get; set; } = null;
+        readonly string name_;
+        readonly int schemaId_;
+        readonly int principalId_;
 
-        [XmlArray("Fields")]
-        [XmlArrayItem(typeof(PrimaryKeyFieldDefinition), ElementName = "Field")]
-        public List<PrimaryKeyFieldDefinition> Fields { get; set; } = new List<PrimaryKeyFieldDefinition>();
-
-        internal void Initialize()
+        public Schema(string name, int schemaId, int principalId)
         {
-            foreach (var field in Fields)
-            {
-                field.Owner = this;
-                field.Initialize();
-            }
+            name_ = name;
+            schemaId_ = schemaId;
+            principalId_ = principalId;
         }
-    }
 
+        public string Name => name_;
+        public int SchemaId => schemaId_;
+        public int PrincipalId => principalId_;
+    }
 
 }

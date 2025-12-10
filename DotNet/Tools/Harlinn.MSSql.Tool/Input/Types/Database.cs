@@ -29,6 +29,23 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArray("Schemas")]
         [XmlArrayItem(typeof(Schema), ElementName = "Schema")]
         public List<Schema> Schemas { get; set; } = new List<Schema>();
+
+        internal void Initialize()
+        {
+            foreach (var schema in Schemas)
+            {
+                schema.Owner = this;
+                schema.Initialize();
+            }
+        }
+
+        internal void Initialize2()
+        {
+            foreach (var schema in Schemas)
+            {
+                schema.Initialize2();
+            }
+        }
     }
 
 

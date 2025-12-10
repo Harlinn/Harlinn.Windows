@@ -1,0 +1,239 @@
+﻿/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
+{
+
+    public class ForeignKeyReader : DataReaderWrapper
+    {
+        public const string Sql = """
+        SELECT [name]
+            ,[object_id]
+            ,[principal_id]
+            ,[schema_id]
+            ,[parent_object_id]
+            ,[type]
+            ,[type_desc]
+            ,[create_date]
+            ,[modify_date]
+            ,[is_ms_shipped]
+            ,[is_published]
+            ,[is_schema_published]
+            ,[referenced_object_id]
+            ,[key_index_id]
+            ,[is_disabled]
+            ,[is_not_for_replication]
+            ,[is_not_trusted]
+            ,[delete_referential_action]
+            ,[delete_referential_action_desc]
+            ,[update_referential_action]
+            ,[update_referential_action_desc]
+            ,[is_system_named]
+        FROM [sys].[foreign_keys]
+        """;
+
+        public const int NameOrdinal = 0;
+        public const int ObjectIdOrdinal = 1;
+        public const int PrincipalIdOrdinal = 2;
+        public const int SchemaIdOrdinal = 3;
+        public const int ParentObjectIdOrdinal = 4;
+        public const int TypeOrdinal = 5;
+        public const int TypeDescOrdinal = 6;
+        public const int CreateDateOrdinal = 7;
+        public const int ModifyDateOrdinal = 8;
+        public const int IsMsShippedOrdinal = 9;
+        public const int IsPublishedOrdinal = 10;
+        public const int IsSchemaPublishedOrdinal = 11;
+        public const int ReferencedObjectIdOrdinal = 12;
+        public const int KeyIndexIdOrdinal = 13;
+        public const int IsDisabledOrdinal = 14;
+        public const int IsNotForReplicationOrdinal = 15;
+        public const int IsNotTrustedOrdinal = 16;
+        public const int DeleteReferentialActionOrdinal = 17;
+        public const int DeleteReferentialActionDescOrdinal = 18;
+        public const int UpdateReferentialActionOrdinal = 19;
+        public const int UpdateReferentialActionDescOrdinal = 20;
+        public const int IsSystemNamedOrdinal = 21;
+
+        public ForeignKeyReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true) 
+            : base(loggerFactory, sqlDataReader, ownsReader)
+        {
+        }
+
+        public ForeignKeyReader([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+            : base(sqlDataReader, ownsReader)
+        {
+        }
+
+        public ForeignKeyReader([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+            : base(logger, sqlDataReader, ownsReader)
+        {
+        }
+
+        public string GetName()
+        {
+            return base.GetString(NameOrdinal);
+        }
+
+        public int GetObjectId()
+        {
+            return base.GetInt32(ObjectIdOrdinal);
+        }
+
+        public int? GetPrincipalId()
+        {
+            return base.GetNullableInt32(PrincipalIdOrdinal);
+        }
+
+        public int GetSchemaId()
+        {
+            return base.GetInt32(SchemaIdOrdinal);
+        }
+
+        public int GetParentObjectId()
+        {
+            return base.GetInt32(ParentObjectIdOrdinal);
+        }
+
+        public string GetSchemaObjectType()
+        {
+            return base.GetString(TypeOrdinal);
+        }
+
+        public string GetSchemaObjectTypeDesc()
+        {
+            return base.GetString(TypeDescOrdinal);
+        }
+
+        public DateTime GetCreateDate()
+        {
+            return base.GetDateTime(CreateDateOrdinal);
+        }
+
+        public DateTime GetModifyDate()
+        {
+            return base.GetDateTime(ModifyDateOrdinal);
+        }
+
+        public bool GetIsMsShipped()
+        {
+            return base.GetBoolean(IsMsShippedOrdinal);
+        }
+
+        public bool GetIsPublished()
+        {
+            return base.GetBoolean(IsPublishedOrdinal);
+        }
+
+        public bool GetIsSchemaPublished()
+        {
+            return base.GetBoolean(IsSchemaPublishedOrdinal);
+        }
+
+        public int GetReferencedObjectId()
+        {
+            return base.GetInt32(ReferencedObjectIdOrdinal);
+        }
+
+        public int GetKeyIndexId()
+        {
+            return base.GetInt32(KeyIndexIdOrdinal);
+        }
+
+        public bool GetIsDisabled()
+        {
+            return base.GetBoolean(IsDisabledOrdinal);
+        }
+
+        public bool GetIsNotForReplication()
+        {
+            return base.GetBoolean(IsNotForReplicationOrdinal);
+        }
+
+        public bool GetIsNotTrusted()
+        {
+            return base.GetBoolean(IsNotTrustedOrdinal);
+        }
+
+        public sbyte GetDeleteReferentialAction()
+        {
+            return base.GetSByte(DeleteReferentialActionOrdinal);
+        }
+
+        public string GetDeleteReferentialActionDesc()
+        {
+            return base.GetString(DeleteReferentialActionDescOrdinal);
+        }
+
+        public sbyte GetUpdateReferentialAction()
+        {
+            return base.GetSByte(UpdateReferentialActionOrdinal);
+        }
+
+        public string GetUpdateReferentialActionDesc()
+        {
+            return base.GetString(UpdateReferentialActionDescOrdinal);
+        }
+
+        public bool GetIsSystemNamed()
+        {
+            return base.GetBoolean(IsSystemNamedOrdinal);
+        }
+
+        public Types.ForeignKey GetForeignKey()
+        {
+            return new Types.ForeignKey(
+                GetName(),
+                GetObjectId(),
+                GetPrincipalId(),
+                GetSchemaId(),
+                GetParentObjectId(),
+                GetSchemaObjectType(),
+                GetSchemaObjectTypeDesc(),
+                GetCreateDate(),
+                GetModifyDate(),
+                GetIsMsShipped(),
+                GetIsPublished(),
+                GetIsSchemaPublished(),
+                GetReferencedObjectId(),
+                GetKeyIndexId(),
+                GetIsDisabled(),
+                GetIsNotForReplication(),
+                GetIsNotTrusted(),
+                GetDeleteReferentialAction(),
+                GetDeleteReferentialActionDesc(),
+                GetUpdateReferentialAction(),
+                GetUpdateReferentialActionDesc(),
+                GetIsSystemNamed());
+        }
+
+        public IReadOnlyList<Types.ForeignKey> GetForeignKeys()
+        {
+            var foreignKeys = new List<Types.ForeignKey>();
+            while (Read())
+            {
+                foreignKeys.Add(GetForeignKey());
+            }
+            return foreignKeys;
+        }
+
+    }
+
+}

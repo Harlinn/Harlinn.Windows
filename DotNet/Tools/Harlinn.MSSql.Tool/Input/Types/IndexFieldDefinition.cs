@@ -20,10 +20,18 @@ namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class IndexFieldDefinition
     {
+        [XmlIgnore]
+        public IndexDefinition? Owner { get; set; } = null;
+
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
         [XmlAttribute]
         public bool IsDescending { get; set; } = false;
+
+        internal void Initialize()
+        {
+            
+        }
     }
 
 

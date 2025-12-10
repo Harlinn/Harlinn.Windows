@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2024 Espen Harlinn
+   Copyright 2024-2025 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
 using System.Runtime.CompilerServices;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient
 {
@@ -39,6 +39,21 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             _reader = sqlDataReader;
             _ownsReader = ownsReader;
         }
+
+        public DataReaderWrapper([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        {
+            _logger = NullLogger<DataReaderWrapper>.Instance;
+            _reader = sqlDataReader;
+            _ownsReader = ownsReader;
+        }
+
+        public DataReaderWrapper([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        {
+            _logger = logger;
+            _reader = sqlDataReader;
+            _ownsReader = ownsReader;
+        }
+
 
         #region IDisposable Members
         public void Dispose()

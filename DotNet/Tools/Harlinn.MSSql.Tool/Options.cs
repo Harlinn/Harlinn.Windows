@@ -53,8 +53,9 @@ namespace Harlinn.MSSql.Tool
 
         [Option('p', "project", Required = true, HelpText = "Project file path.")]
         public string Project { get; set; }
-        
 
+        [Option('o', "output", Required = true, HelpText = "Output directory.")]
+        public string OutputDirectory { get; set; }
 
 
     }

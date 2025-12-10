@@ -20,6 +20,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class ForeignKeyDefinition
     {
+        [XmlIgnore]
+        public EntityDefinition? Owner { get; set; } = null;
+
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
         
@@ -28,6 +31,15 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArray("References")]
         [XmlArrayItem("Reference")]
         public List<ForeignKeyReferenceDefinition> References { get; set; } = new List<ForeignKeyReferenceDefinition>();
+
+        internal void Initialize()
+        {
+            foreach (var reference in References)
+            {
+                reference.Owner = this;
+                reference.Initialize();
+            }
+        }
     }
 
 

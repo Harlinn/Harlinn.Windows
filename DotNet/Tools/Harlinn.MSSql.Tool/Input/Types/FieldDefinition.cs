@@ -24,7 +24,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public abstract class FieldDefinition
     {
         [XmlIgnore]
-        public EntityDefinition? Entity { get; set; } = null;
+        public EntityDefinition? Owner { get; set; } = null;
         public abstract FieldType FieldType { get; }
 
         [XmlAttribute]
@@ -112,5 +112,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 return FieldType.Unknown;
             }
         }
+
+        internal virtual void Initialize()
+        { }
     }
 }

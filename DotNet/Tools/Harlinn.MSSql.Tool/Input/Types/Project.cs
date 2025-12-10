@@ -21,11 +21,31 @@ namespace Harlinn.MSSql.Tool.Input.Types
     [XmlRoot("Project")]
     public class Project
     {
+        [XmlIgnore]
+        public Dictionary<string, SchemaObject> SchemaObjects { get; set; } = new Dictionary<string, SchemaObject>();
+
+
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
         [XmlArray("Databases")]
         [XmlArrayItem(typeof(Database), ElementName = "Database")]
         public List<Database> Databases { get; set; } = new List<Database>();
+
+        public void Initialize()
+        {
+            foreach (var database in Databases)
+            {
+                database.Project = this;
+                database.Initialize();
+            }
+
+            foreach (var database in Databases)
+            {
+                database.Initialize2();
+            }
+
+        }
+
     }
 
 

@@ -20,6 +20,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class IndexDefinition
     {
+        [XmlIgnore]
+        public EntityDefinition? Owner { get; set; } = null;
+
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
         [XmlArray("Fields")]
@@ -27,6 +30,15 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public List<IndexFieldDefinition> Fields { get; set; } = new List<IndexFieldDefinition>();
         [XmlAttribute]
         public bool IsUnique { get; set; } = false;
+
+        internal void Initialize()
+        {
+            foreach (var field in Fields)
+            {
+                field.Owner = this;
+                field.Initialize();
+            }
+        }
     }
 
 

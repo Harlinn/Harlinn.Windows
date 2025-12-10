@@ -18,23 +18,12 @@ using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public class PrimaryKeyDefinition
+    [Serializable]
+    public class QueryDefinition 
     {
-        [XmlIgnore]
-        public EntityDefinition? Owner { get; set; } = null;
-
-        [XmlArray("Fields")]
-        [XmlArrayItem(typeof(PrimaryKeyFieldDefinition), ElementName = "Field")]
-        public List<PrimaryKeyFieldDefinition> Fields { get; set; } = new List<PrimaryKeyFieldDefinition>();
-
-        internal void Initialize()
-        {
-            foreach (var field in Fields)
-            {
-                field.Owner = this;
-                field.Initialize();
-            }
-        }
+        
+        [XmlElement("Sql")]
+        public string Sql { get; set; } = string.Empty;
     }
 
 

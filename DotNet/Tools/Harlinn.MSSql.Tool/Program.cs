@@ -41,6 +41,7 @@ namespace Harlinn.MSSql.Tool
             using FileStream fileStream = new FileStream(options.Project, FileMode.Open, FileAccess.Read);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Input.Types.Project));
             _project = (Input.Types.Project)xmlSerializer.Deserialize(fileStream)!;
+            _project.Initialize();
         }
 
         public Options Options => _options;

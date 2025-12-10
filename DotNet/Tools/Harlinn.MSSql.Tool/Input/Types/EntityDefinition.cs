@@ -68,7 +68,42 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         [XmlElement("PrimaryKey")]
         public PrimaryKeyDefinition? PrimaryKey { get; set; }
-        
+
+        internal override void Initialize()
+        {
+            base.Initialize();
+            foreach (var field in Fields)
+            {
+                field.Owner = this;
+                field.Initialize();
+            }
+            foreach (var foreignKey in ForeignKeys)
+            {
+                foreignKey.Owner = this;
+                foreignKey.Initialize();
+            }
+            foreach (var index in Indexes)
+            {
+                index.Owner = this;
+                index.Initialize();
+            }
+            if (PrimaryKey != null)
+            {
+                PrimaryKey.Owner = this;
+                PrimaryKey.Initialize();
+            }
+        }
+
+        internal override void Initialize2()
+        {
+            base.Initialize2();
+            foreach (var foreignKey in ForeignKeys)
+            {
+                foreignKey.Owner = this;
+            }
+        }
+
+
     }
 
 
