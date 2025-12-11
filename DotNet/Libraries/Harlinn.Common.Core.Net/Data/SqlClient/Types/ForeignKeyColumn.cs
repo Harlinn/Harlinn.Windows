@@ -24,8 +24,10 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly int _parentColumnId;
         readonly int _referencedObjectId;
         readonly int _referencedColumnId;
+        readonly string _columnName;  
+        readonly string _referencedColumnName;
 
-        public ForeignKeyColumn(int constraintObjectId, int constraintColumnId, int parentObjectId, int parentColumnId, int referencedObjectId, int referencedColumnId)
+        public ForeignKeyColumn(int constraintObjectId, int constraintColumnId, int parentObjectId, int parentColumnId, int referencedObjectId, int referencedColumnId, string columnName, string referencedColumnName)
         {
             _constraintObjectId = constraintObjectId;
             _constraintColumnId = constraintColumnId;
@@ -33,6 +35,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             _parentColumnId = parentColumnId;
             _referencedObjectId = referencedObjectId;
             _referencedColumnId = referencedColumnId;
+            _columnName = columnName;
+            _referencedColumnName = referencedColumnName;
         }
 
         /// <summary>
@@ -64,6 +68,16 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// ID of the referenced column (candidate key column).
         /// </summary>
         public int ReferencedColumnId => _referencedColumnId;
+
+        /// <summary>
+        /// Gets the name of the referencing column.
+        /// </summary>
+        public string ColumnName => _columnName;               
+
+        /// <summary>
+        /// Gets the name of the referenced column.
+        /// </summary>
+        public string ReferencedColumnName => _referencedColumnName;
     }
 
 }

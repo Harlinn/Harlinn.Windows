@@ -90,7 +90,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         readonly string? _graphTypeDesc;
 
-        public Column(int objectId, string name, int columnId, sbyte systemTypeId, int userTypeId, short maxLength, sbyte precision, sbyte scale, string? collationName, bool isNullable, bool isAnsiPadded, bool isRowguidcol, bool isIdentity, bool isComputed, bool isFilestream, bool isReplicated, bool isNonSqlSubscribed, bool isMergePublished, bool isDtsReplicated, bool isXmlDocument, int xmlCollectionId, int defaultObjectId, int ruleObjectId, bool isSparse, bool isColumnSet, sbyte generatedAlwaysType, string generatedAlwaysTypeDesc, int? encryptionType, string? encryptionTypeDesc, string? encryptionAlgorithmName, int? columnEncryptionKeyId, string? columnEncryptionKeyDatabaseName, bool isHidden, bool isMasked, int? graphType, string? graphTypeDesc)
+        readonly string _typeName;
+
+        public Column(int objectId, string name, int columnId, sbyte systemTypeId, int userTypeId, short maxLength, sbyte precision, sbyte scale, string? collationName, bool isNullable, bool isAnsiPadded, bool isRowguidcol, bool isIdentity, bool isComputed, bool isFilestream, bool isReplicated, bool isNonSqlSubscribed, bool isMergePublished, bool isDtsReplicated, bool isXmlDocument, int xmlCollectionId, int defaultObjectId, int ruleObjectId, bool isSparse, bool isColumnSet, sbyte generatedAlwaysType, string generatedAlwaysTypeDesc, int? encryptionType, string? encryptionTypeDesc, string? encryptionAlgorithmName, int? columnEncryptionKeyId, string? columnEncryptionKeyDatabaseName, bool isHidden, bool isMasked, int? graphType, string? graphTypeDesc, string typeName)
         {
             _objectId = objectId;
             _name = name;
@@ -128,32 +130,80 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             _isMasked = isMasked;
             _graphType = graphType;
             _graphTypeDesc = graphTypeDesc;
+            _typeName = typeName;
         }
 
+        /// <summary>
+        /// ID of the object to which this column belongs
+        /// </summary>
         public int ObjectId => _objectId;
 
+        /// <summary>
+        /// Name of the column. Is unique within the object.
+        /// </summary>
         public string Name => _name;
 
+        /// <summary>
+        /// ID of the column. Is unique within the object. Column IDs might not be sequential.
+        /// </summary>
         public int ColumnId => _columnId;
 
+        /// <summary>
+        /// ID of the system type of the column.
+        /// </summary>
         public sbyte SystemTypeId => _systemTypeId;
 
+        /// <summary>
+        /// ID of the type of the column as defined by the user.
+        /// </summary>
         public int UserTypeId => _userTypeId;
 
+        /// <summary>
+        /// Maximum length (in bytes) of the column.
+        /// <para>
+        /// -1 = Column data type is varchar(max), nvarchar(max), varbinary(max), or xml.
+        /// </para>
+        /// <para>
+        /// For text, ntext, and image columns, the max_length value is 16 
+        /// (representing the 16-byte pointer only) or the value set by 
+        /// sp_tableoption 'text in row'.
+        /// </para>
+        /// </summary>
         public short MaxLength => _maxLength;
 
+        /// <summary>
+        /// Precision of the column if numeric-based; otherwise, 0.
+        /// </summary>
         public sbyte Precision => _precision;
 
+        /// <summary>
+        /// Scale of column if numeric-based; otherwise, 0.
+        /// </summary>
         public sbyte Scale => _scale;
 
+        /// <summary>
+        /// Name of the collation of the column if character-based; otherwise null.
+        /// </summary>
         public string? CollationName => _collationName;
 
+        /// <summary>
+        /// true if the column allows nulls; otherwise, false.
+        /// </summary>
         public bool IsNullable => _isNullable;
 
+        /// <summary>
+        /// Gets a value indicating whether the column value is padded with ANSI spaces to match its defined length.
+        /// </summary>
         public bool IsAnsiPadded => _isAnsiPadded;
 
+        /// <summary>
+        /// Column is a declared ROWGUIDCOL
+        /// </summary>
         public bool IsRowguidcol => _isRowguidcol;
 
+        /// <summary>
+        /// Column has identity values
+        /// </summary>
         public bool IsIdentity => _isIdentity;
 
         public bool IsComputed => _isComputed;
@@ -201,6 +251,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         public int? GraphType => _graphType;
 
         public string? GraphTypeDesc => _graphTypeDesc;
+
+        public string TypeName => _typeName;
     }
 
 }

@@ -24,43 +24,45 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
     public class ColumnsReader : DataReaderWrapper
     {
         public const string Sql = """
-            SELECT [object_id]
-                ,[name]
-                ,[column_id]
-                ,[system_type_id]
-                ,[user_type_id]
-                ,[max_length]
-                ,[precision]
-                ,[scale]
-                ,[collation_name]
-                ,[is_nullable]
-                ,[is_ansi_padded]
-                ,[is_rowguidcol]
-                ,[is_identity]
-                ,[is_computed]
-                ,[is_filestream]
-                ,[is_replicated]
-                ,[is_non_sql_subscribed]
-                ,[is_merge_published]
-                ,[is_dts_replicated]
-                ,[is_xml_document]
-                ,[xml_collection_id]
-                ,[default_object_id]
-                ,[rule_object_id]
-                ,[is_sparse]
-                ,[is_column_set]
-                ,[generated_always_type]
-                ,[generated_always_type_desc]
-                ,[encryption_type]
-                ,[encryption_type_desc]
-                ,[encryption_algorithm_name]
-                ,[column_encryption_key_id]
-                ,[column_encryption_key_database_name]
-                ,[is_hidden]
-                ,[is_masked]
-                ,[graph_type]
-                ,[graph_type_desc]
-            FROM [sys].[columns]
+            SELECT c.[object_id]
+                ,c.[name]
+                ,c.[column_id]
+                ,c.[system_type_id]
+                ,c.[user_type_id]
+                ,c.[max_length]
+                ,c.[precision]
+                ,c.[scale]
+                ,c.[collation_name]
+                ,c.[is_nullable]
+                ,c.[is_ansi_padded]
+                ,c.[is_rowguidcol]
+                ,c.[is_identity]
+                ,c.[is_computed]
+                ,c.[is_filestream]
+                ,c.[is_replicated]
+                ,c.[is_non_sql_subscribed]
+                ,c.[is_merge_published]
+                ,c.[is_dts_replicated]
+                ,c.[is_xml_document]
+                ,c.[xml_collection_id]
+                ,c.[default_object_id]
+                ,c.[rule_object_id]
+                ,c.[is_sparse]
+                ,c.[is_column_set]
+                ,c.[generated_always_type]
+                ,c.[generated_always_type_desc]
+                ,c.[encryption_type]
+                ,c.[encryption_type_desc]
+                ,c.[encryption_algorithm_name]
+                ,c.[column_encryption_key_id]
+                ,c.[column_encryption_key_database_name]
+                ,c.[is_hidden]
+                ,c.[is_masked]
+                ,c.[graph_type]
+                ,c.[graph_type_desc]
+                ,t.[name] AS [type_name]
+            FROM [sys].[columns] c
+            INNER JOIN sys.types t ON c.user_type_id = t.user_type_id
             """;
 
         public const int ObjectIdOrdinal = 0;
@@ -99,7 +101,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int IsMaskedOrdinal = 33;
         public const int GraphTypeOrdinal = 34;
         public const int GraphTypeDescOrdinal = 35;
-
+        public const int TypeNameOrdinal = 36;
 
         public ColumnsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(loggerFactory, sqlDataReader, ownsReader)
@@ -296,6 +298,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetNullableString(GraphTypeDescOrdinal);
         }
 
+        public string GetTypeName()
+        {
+            return base.GetString(TypeNameOrdinal);
+        }
+
         public Types.Column GetColumn()
         {
             var objectId = GetObjectId();
@@ -334,7 +341,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             var isMasked = GetIsMasked();
             var graphType = GetGraphType();
             var graphTypeDesc = GetGraphTypeDesc();
-            return new Types.Column(objectId, name, columnId, systemTypeId, userTypeId, maxLength, precision, scale, collationName, isNullable, isAnsiPadded, isRowguidcol, isIdentity, isComputed, isFilestream, isReplicated, isNonSqlSubscribed, isMergePublished, isDtsReplicated, isXmlDocument, xmlCollectionId, defaultObjectId, ruleObjectId, isSparse, isColumnSet, generatedAlwaysType, generatedAlwaysTypeDesc, encryptionType, encryptionTypeDesc, encryptionAlgorithmName, columnEncryptionKeyId, columnEncryptionKeyDatabaseName, isHidden, isMasked, graphType, graphTypeDesc);
+            var typeName = GetTypeName();
+            return new Types.Column(objectId, name, columnId, systemTypeId, userTypeId, maxLength, precision, scale, collationName, isNullable, isAnsiPadded, isRowguidcol, isIdentity, isComputed, isFilestream, isReplicated, isNonSqlSubscribed, isMergePublished, isDtsReplicated, isXmlDocument, xmlCollectionId, defaultObjectId, ruleObjectId, isSparse, isColumnSet, generatedAlwaysType, generatedAlwaysTypeDesc, encryptionType, encryptionTypeDesc, encryptionAlgorithmName, columnEncryptionKeyId, columnEncryptionKeyDatabaseName, isHidden, isMasked, graphType, graphTypeDesc, typeName);
         }
 
         public IReadOnlyList<Types.Column> GetColumns()

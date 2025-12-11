@@ -19,12 +19,11 @@ using CommandLine;
 
 namespace Harlinn.MSSql.Tool
 {
-    public class Options
+    public class OptionsBase
     {
         static string defaultConnectionString = "Data Source=(local);Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
-        public Options()
-        { 
-            
+        public OptionsBase()
+        {
         }
 
         [Option('c', "connection_string", Required = false, HelpText = "SQL Server connection string.")]
@@ -32,8 +31,6 @@ namespace Harlinn.MSSql.Tool
 
         [Option('i', "initial_catalog", Required = false, HelpText = "SQL Server initial catalog.")]
         public string? InitialCatalog { get; set; }
-
-
 
         public string GetConnectionString()
         {
@@ -52,11 +49,38 @@ namespace Harlinn.MSSql.Tool
         }
 
         [Option('p', "project", Required = true, HelpText = "Project file path.")]
-        public string Project { get; set; }
+        public string Project { get; set; } = string.Empty;
 
-        [Option('o', "output", Required = true, HelpText = "Output directory.")]
-        public string OutputDirectory { get; set; }
+        
 
 
     }
+
+
+    [Verb("build", isDefault: true, HelpText = "Build the project.")]
+    public class BuildOptions : OptionsBase
+    {
+        public BuildOptions()
+        { 
+        }
+
+        [Option('o', "output", Required = true, HelpText = "Output directory.")]
+        public string OutputDirectory { get; set; } = string.Empty;
+    }
+
+    [Verb("import", HelpText = "Import database objects into the project.")]
+    public class ImportOptions : OptionsBase
+    {
+        public ImportOptions()
+        {
+        }
+
+        [Option('s', "schema", Required = false, HelpText = "Schema name.")]
+        public string Schema { get; set; } = string.Empty;
+
+        [Option('t', "table", Required = false, HelpText = "Table name.")]
+        public string Table { get; set; } = string.Empty;
+
+    }
+
 }

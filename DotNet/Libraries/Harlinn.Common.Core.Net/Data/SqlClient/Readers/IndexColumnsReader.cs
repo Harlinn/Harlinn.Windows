@@ -24,16 +24,18 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
     public class IndexColumnsReader : DataReaderWrapper
     {
         public const string Sql = """
-        SELECT [object_id]
-            ,[index_id]
-            ,[index_column_id]
-            ,[column_id]
-            ,[key_ordinal]
-            ,[partition_ordinal]
-            ,[is_descending_key]
-            ,[is_included_column]
-            ,[column_store_order_ordinal]
-        FROM [sys].[index_columns]
+        SELECT ic.[object_id]
+            ,ic.[index_id]
+            ,ic.[index_column_id]
+            ,ic.[column_id]
+            ,ic.[key_ordinal]
+            ,ic.[partition_ordinal]
+            ,ic.[is_descending_key]
+            ,ic.[is_included_column]
+            ,ic.[column_store_order_ordinal]
+            , c.[name] AS [column_name]
+        FROM [sys].[index_columns] ic
+        INNER JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id
         """;
 
         public const int ObjectIdOrdinal = 0;
@@ -45,6 +47,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int IsDescendingKeyOrdinal = 6;
         public const int IsIncludedColumnOrdinal = 7;
         public const int ColumnStoreOrderOrdinalOrdinal = 8;
+        public const int ColumnNameOrdinal = 9;
 
         public IndexColumnsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true) 
             : base(loggerFactory, sqlDataReader, ownsReader)
@@ -106,6 +109,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetByte(ColumnStoreOrderOrdinalOrdinal);
         }
 
+        public string GetColumnName()
+        {
+            return base.GetString(ColumnNameOrdinal);
+        }
+
         public Types.IndexColumn GetIndexColumn()
         {
             var objectId = GetObjectId();
@@ -117,7 +125,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             var isDescendingKey = GetIsDescendingKey();
             var isIncludedColumn = GetIsIncludedColumn();
             var columnStoreOrderOrdinal = GetColumnStoreOrderOrdinal();
-            return new Types.IndexColumn(objectId, indexId, indexColumnId, columnId, keyOrdinal, partitionOrdinal, isDescendingKey, isIncludedColumn, columnStoreOrderOrdinal);
+            var columnName = GetColumnName();
+            return new Types.IndexColumn(objectId, indexId, indexColumnId, columnId, keyOrdinal, partitionOrdinal, isDescendingKey, isIncludedColumn, columnStoreOrderOrdinal, columnName);
         }
 
         public IReadOnlyList<Types.IndexColumn> GetIndexColumns()

@@ -36,6 +36,11 @@ namespace Harlinn.MSSql.Tool.Input.Types
         TimeSpan,
         Guid,
         String,
-        Binary
+        Binary,
+        SqlVariant,
+        HierarchyId,
+        Geometry,
+        Geography,
+        Xml
     }
 }

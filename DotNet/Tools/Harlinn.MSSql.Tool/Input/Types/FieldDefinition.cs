@@ -15,13 +15,14 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
 
     [Serializable]
-    public abstract class FieldDefinition
+    public abstract class FieldDefinition : IEquatable<FieldDefinition>
     {
         [XmlIgnore]
         public EntityDefinition? Owner { get; set; } = null;
@@ -30,8 +31,20 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
 
-        [XmlAttribute]
+        [XmlAttribute, DefaultValue(false)]
         public bool IsNullable { get; set; } = false;
+
+        [XmlAttribute]
+        public String? DatabaseType { get; set; } = null;
+
+        public virtual bool Equals(FieldDefinition? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+            return FieldType == other.FieldType && Name == other.Name && IsNullable == other.IsNullable && DatabaseType == other.DatabaseType;
+        }
 
         public static FieldType GetFieldType(Type type)
         {
@@ -112,6 +125,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 return FieldType.Unknown;
             }
         }
+
+        
 
         internal virtual void Initialize()
         { }

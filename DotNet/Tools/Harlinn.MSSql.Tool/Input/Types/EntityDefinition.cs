@@ -15,6 +15,10 @@
 */
 
 using System.Xml.Serialization;
+using Microsoft.Data.SqlClient;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using Harlinn.MSSql.Tool.Import;
+using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -22,6 +26,16 @@ namespace Harlinn.MSSql.Tool.Input.Types
     [Serializable]
     public class EntityDefinition : SchemaObject
     {
+        [XmlIgnore]
+        public Dictionary<string, FieldDefinition> FieldsByName { get; set; } = new Dictionary<string, FieldDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        [XmlIgnore]
+        public Dictionary<string, IndexDefinition> IndexesByName { get; set; } = new Dictionary<string, IndexDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        [XmlIgnore]
+        public Dictionary<string, ForeignKeyDefinition> ForeignKeysByName { get; set; } = new Dictionary<string, ForeignKeyDefinition>(StringComparer.OrdinalIgnoreCase);
+
+
         [XmlIgnore]
         string? _baseName;
 
@@ -56,6 +70,11 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(GuidFieldDefinition),ElementName ="Guid")]
         [XmlArrayItem(typeof(StringFieldDefinition),ElementName ="String")]
         [XmlArrayItem(typeof(BinaryFieldDefinition),ElementName ="Binary")]
+        [XmlArrayItem(typeof(SqlVariantFieldDefinition),ElementName ="SqlVariant")]
+        [XmlArrayItem(typeof(HierarchyIdFieldDefinition),ElementName ="HierarchyId")]
+        [XmlArrayItem(typeof(GeometryFieldDefinition),ElementName ="Geometry")]
+        [XmlArrayItem(typeof(GeographyFieldDefinition),ElementName ="Geography")]
+        [XmlArrayItem(typeof(XmlFieldDefinition),ElementName ="Xml")]
         public List<FieldDefinition> Fields { get; set; } = new List<FieldDefinition>();
 
         [XmlArray("ForeignKeys")]
@@ -67,7 +86,172 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public List<IndexDefinition> Indexes { get; set; } = new List<IndexDefinition>();
 
         [XmlElement("PrimaryKey")]
-        public PrimaryKeyDefinition? PrimaryKey { get; set; }
+        public IndexDefinition? PrimaryKey { get; set; }
+
+
+        internal int GetFieldIndex(string fieldName)
+        {
+            for (int i = 0; i < Fields.Count; i++)
+            {
+                if (string.Equals(Fields[i].Name, fieldName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        internal int GetIndexIndex(string indexName)
+        {
+            for (int i = 0; i < Indexes.Count; i++)
+            {
+                if (string.Equals(Indexes[i].Name, indexName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        internal int GetForeignKeyIndex(string foreignKeyName)
+        {
+            for (int i = 0; i < ForeignKeys.Count; i++)
+            {
+                if (string.Equals(ForeignKeys[i].Name, foreignKeyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+
+
+        internal void ImportColumn(SchemaTypes.Column column)
+        {
+            var fieldDefinition = column.ToFieldDefinition();
+            if (FieldsByName.ContainsKey(fieldDefinition.Name))
+            {
+                var index = GetFieldIndex(fieldDefinition.Name);
+                if (index >= 0)
+                {
+                    Fields[index] = fieldDefinition;
+                }
+            }
+            else
+            {
+                Fields.Add(fieldDefinition);
+            }
+            FieldsByName[fieldDefinition.Name] = fieldDefinition;
+
+        }
+
+        internal void ImportColumns(IReadOnlyList<SchemaTypes.Column> columns)
+        {
+            foreach (var column in columns)
+            {
+                ImportColumn(column);
+            }
+        }
+
+        internal void ImportIndex(SqlConnection sqlConnection, SchemaTypes.Index index)
+        {
+            if (IndexesByName.TryGetValue(index.Name, out var indexDefinition))
+            {
+                var offset = GetIndexIndex(index.Name);
+                if (offset >= 0)
+                {
+                    Indexes.RemoveAt(offset);
+                }
+            }
+
+            indexDefinition = new IndexDefinition
+            {
+                Name = index.Name,
+                IsUnique = index.IsUnique,
+            };
+
+            Indexes.Add(indexDefinition);
+            IndexesByName[indexDefinition.Name] = indexDefinition;
+
+            var indexColumns = sqlConnection.GetIndexColumns(index);
+            foreach (var indexColumn in indexColumns)
+            {
+                var indexFieldDefinition = new IndexFieldDefinition
+                {
+                    Name = indexColumn.ColumnName,
+                    IsDescending = indexColumn.IsDescendingKey
+                };
+                indexDefinition.Fields.Add(indexFieldDefinition);
+            }
+            if(index.IsPrimaryKey)
+            {
+                PrimaryKey = indexDefinition;
+            }
+        }
+
+        internal void ImportIndexes(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.Index> indexes)
+        {
+            foreach (var index in indexes)
+            {
+                ImportIndex(sqlConnection, index);
+            }
+        }
+
+        internal void ImportForeignKey(SqlConnection sqlConnection, SchemaTypes.ForeignKey foreignKey)
+        {
+            if (ForeignKeysByName.TryGetValue(foreignKey.Name, out var foreignKeyDefinition))
+            {
+                var offset = GetForeignKeyIndex(foreignKey.Name);
+                if (offset >= 0)
+                {
+                    ForeignKeys.RemoveAt(offset);
+                }
+            }
+
+            foreignKeyDefinition = new ForeignKeyDefinition
+            {
+                Name = foreignKey.Name,
+                ReferencedTableName = foreignKey.ReferencedTableName,
+                ReferencedSchemaName = foreignKey.ReferencedSchemaName,
+
+            };
+
+            ForeignKeys.Add(foreignKeyDefinition);
+            ForeignKeysByName[foreignKeyDefinition.Name] = foreignKeyDefinition;
+
+            var foreignKeyColumns = sqlConnection.GetForeignKeyColumns(foreignKey);
+            foreach (var foreignKeyColumn in foreignKeyColumns)
+            {
+                var foreignKeyFieldDefinition = new ForeignKeyReferenceDefinition
+                {
+                    Field = foreignKeyColumn.ColumnName,
+                    References = foreignKeyColumn.ReferencedColumnName
+                };
+                foreignKeyDefinition.References.Add(foreignKeyFieldDefinition);
+            }
+        }
+
+        internal void ImportForeignKeys(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.ForeignKey> foreignKeys)
+        {
+            foreach (var foreignKey in foreignKeys)
+            {
+                ImportForeignKey(sqlConnection, foreignKey);
+            }
+        }
+
+        internal void ImportTable(SqlConnection sqlConnection, SchemaTypes.Table table)
+        {
+            var columns = sqlConnection.GetColumns(table);
+            ImportColumns(columns);
+            
+            var indexes = sqlConnection.GetIndexes(table);
+            ImportIndexes(sqlConnection, indexes);
+
+            var foreignKeys = sqlConnection.GetForeignKeys(table);
+            ImportForeignKeys(sqlConnection, foreignKeys);
+
+        }
 
         internal override void Initialize()
         {
@@ -76,6 +260,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
             {
                 field.Owner = this;
                 field.Initialize();
+                FieldsByName[field.Name] = field;
             }
             foreach (var foreignKey in ForeignKeys)
             {

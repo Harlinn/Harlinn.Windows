@@ -24,7 +24,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly int? _principalId;
         readonly int _schemaId;
         readonly int _parentObjectId;
-        readonly string _type;
+        readonly SchemaObjectType _type;
         readonly string _typeDesc;
         readonly DateTime _createDate;
         readonly DateTime _modifyDate;
@@ -41,15 +41,19 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly sbyte _updateReferentialAction;
         readonly string _updateReferentialActionDesc;
         readonly bool _isSystemNamed;
+        readonly string _tableName;
+        readonly string _schemaName;
+        readonly string _referencedTableName;
+        readonly string _referencedSchemaName;
 
-        public ForeignKey(string name, int objectId, int? principalId, int schemaId, int parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool isMsShipped, bool isPublished, bool isSchemaPublished, int referencedObjectId, int keyIndexId, bool isDisabled, bool isNotForReplication, bool isNotTrusted, sbyte deleteReferentialAction, string deleteReferentialActionDesc, sbyte updateReferentialAction, string updateReferentialActionDesc, bool isSystemNamed)
+        public ForeignKey(string name, int objectId, int? principalId, int schemaId, int parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool isMsShipped, bool isPublished, bool isSchemaPublished, int referencedObjectId, int keyIndexId, bool isDisabled, bool isNotForReplication, bool isNotTrusted, sbyte deleteReferentialAction, string deleteReferentialActionDesc, sbyte updateReferentialAction, string updateReferentialActionDesc, bool isSystemNamed, string tableName, string schemaName, string referencedTableName, string referencedSchemaName)
         {
             _name = name;
             _objectId = objectId;
             _principalId = principalId;
             _schemaId = schemaId;
             _parentObjectId = parentObjectId;
-            _type = type;
+            _type = type.ToSchemaObjectType();
             _typeDesc = typeDesc;
             _createDate = createDate;
             _modifyDate = modifyDate;
@@ -66,6 +70,10 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             _updateReferentialAction = updateReferentialAction;
             _updateReferentialActionDesc = updateReferentialActionDesc;
             _isSystemNamed = isSystemNamed;
+            _tableName = tableName;
+            _schemaName = schemaName;
+            _referencedTableName = referencedTableName;
+            _referencedSchemaName = referencedSchemaName;
         }
 
         public string Name => _name;
@@ -78,7 +86,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public int ParentObjectId => _parentObjectId;
 
-        public string Type => _type;
+        public SchemaObjectType Type => _type;
 
         public string TypeDesc => _typeDesc;
 
@@ -111,6 +119,14 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         public string UpdateReferentialActionDesc => _updateReferentialActionDesc;
 
         public bool IsSystemNamed => _isSystemNamed;
+
+        public string TableName => _tableName;
+
+        public string SchemaName => _schemaName;
+
+        public string ReferencedTableName => _referencedTableName;
+
+        public string ReferencedSchemaName => _referencedSchemaName;
     }
 
 }

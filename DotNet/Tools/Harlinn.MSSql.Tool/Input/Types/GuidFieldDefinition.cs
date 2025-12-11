@@ -21,4 +21,36 @@ namespace Harlinn.MSSql.Tool.Input.Types
     {
         public override FieldType FieldType => FieldType.Guid;
     }
+
+    [Serializable]
+    public class SqlVariantFieldDefinition : FieldDefinition
+    {
+        public override FieldType FieldType => FieldType.SqlVariant;
+    }
+
+    [Serializable]
+    public class HierarchyIdFieldDefinition : FieldDefinition
+    {
+        public override FieldType FieldType => FieldType.HierarchyId;
+    }
+
+    [Serializable]
+    public class GeometryFieldDefinition : FieldDefinition
+    {
+        public override FieldType FieldType => FieldType.Geometry;
+    }
+
+    [Serializable]
+    public class GeographyFieldDefinition : FieldDefinition
+    {
+        public override FieldType FieldType => FieldType.Geography;
+    }
+
+    [Serializable]
+    public class XmlFieldDefinition : FieldDefinition
+    {
+        public override FieldType FieldType => FieldType.Xml;
+    }
+
+
 }

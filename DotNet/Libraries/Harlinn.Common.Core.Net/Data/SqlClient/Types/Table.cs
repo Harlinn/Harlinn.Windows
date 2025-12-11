@@ -24,7 +24,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly int? _principalId;
         readonly int _schemaId;
         readonly int _parentObjectId;
-        readonly string _type;
+        readonly SchemaObjectType _type;
         readonly string _typeDesc;
         readonly DateTime _createDate;
         readonly DateTime _modifyDate;
@@ -68,7 +68,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             _principalId = principalId;
             _schemaId = schemaId;
             _parentObjectId = parentObjectId;
-            _type = type;
+            _type = type.ToSchemaObjectType();
             _typeDesc = typeDesc;
             _createDate = createDate;
             _modifyDate = modifyDate;
@@ -116,7 +116,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public int ParentObjectId => _parentObjectId;
 
-        public string Type => _type;
+        public SchemaObjectType Type => _type;
 
         public string TypeDesc => _typeDesc;
 

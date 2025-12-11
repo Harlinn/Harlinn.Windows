@@ -24,29 +24,37 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
     public class ForeignKeyReader : DataReaderWrapper
     {
         public const string Sql = """
-        SELECT [name]
-            ,[object_id]
-            ,[principal_id]
-            ,[schema_id]
-            ,[parent_object_id]
-            ,[type]
-            ,[type_desc]
-            ,[create_date]
-            ,[modify_date]
-            ,[is_ms_shipped]
-            ,[is_published]
-            ,[is_schema_published]
-            ,[referenced_object_id]
-            ,[key_index_id]
-            ,[is_disabled]
-            ,[is_not_for_replication]
-            ,[is_not_trusted]
-            ,[delete_referential_action]
-            ,[delete_referential_action_desc]
-            ,[update_referential_action]
-            ,[update_referential_action_desc]
-            ,[is_system_named]
-        FROM [sys].[foreign_keys]
+        SELECT fk.[name]
+            ,fk.[object_id]
+            ,fk.[principal_id]
+            ,fk.[schema_id]
+            ,fk.[parent_object_id]
+            ,fk.[type]
+            ,fk.[type_desc]
+            ,fk.[create_date]
+            ,fk.[modify_date]
+            ,fk.[is_ms_shipped]
+            ,fk.[is_published]
+            ,fk.[is_schema_published]
+            ,fk.[referenced_object_id]
+            ,fk.[key_index_id]
+            ,fk.[is_disabled]
+            ,fk.[is_not_for_replication]
+            ,fk.[is_not_trusted]
+            ,fk.[delete_referential_action]
+            ,fk.[delete_referential_action_desc]
+            ,fk.[update_referential_action]
+            ,fk.[update_referential_action_desc]
+            ,fk.[is_system_named]
+            , t.[name] AS [table_name]
+            , s.[name] AS [schema_name]
+            , rt.[name] AS [referenced_table_name]
+            , rs.[name] AS [referenced_schema_name]
+        FROM [sys].[foreign_keys] fk
+        INNER JOIN sys.tables t ON fk.[parent_object_id] = t.object_id
+        INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+        INNER JOIN sys.tables rt ON fk.referenced_object_id = rt.object_id
+        INNER JOIN sys.schemas rs ON rt.schema_id = rs.schema_id
         """;
 
         public const int NameOrdinal = 0;
@@ -71,6 +79,10 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int UpdateReferentialActionOrdinal = 19;
         public const int UpdateReferentialActionDescOrdinal = 20;
         public const int IsSystemNamedOrdinal = 21;
+        public const int TableNameOrdinal = 22;
+        public const int SchemaNameOrdinal = 23;
+        public const int ReferencedTableNameOrdinal = 24;
+        public const int ReferencedSchemaNameOrdinal = 25;
 
         public ForeignKeyReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true) 
             : base(loggerFactory, sqlDataReader, ownsReader)
@@ -197,6 +209,25 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetBoolean(IsSystemNamedOrdinal);
         }
 
+        public string GetTableName()
+        {
+            return base.GetString(TableNameOrdinal);
+        }
+        public string GetSchemaName()
+        {
+            return base.GetString(SchemaNameOrdinal);
+        }
+
+        public string GetReferencedTableName()
+        {
+            return base.GetString(ReferencedTableNameOrdinal);
+        }
+
+        public string GetReferencedSchemaName()
+        {
+            return base.GetString(ReferencedSchemaNameOrdinal);
+        }
+
         public Types.ForeignKey GetForeignKey()
         {
             return new Types.ForeignKey(
@@ -221,7 +252,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
                 GetDeleteReferentialActionDesc(),
                 GetUpdateReferentialAction(),
                 GetUpdateReferentialActionDesc(),
-                GetIsSystemNamed());
+                GetIsSystemNamed(),
+                GetTableName(),
+                GetSchemaName(),
+                GetReferencedTableName(),
+                GetReferencedSchemaName());
         }
 
         public IReadOnlyList<Types.ForeignKey> GetForeignKeys()

@@ -15,10 +15,7 @@
 */
 
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 using Harlinn.Common.Core.Net.Data.SqlClient.Readers;
 using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
@@ -35,7 +32,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return command;
         }
 
-        public static IReadOnlyList<Types.Schema> GetSchemas(this SqlConnection connection)
+        public static IReadOnlyList<Schema> GetSchemas(this SqlConnection connection)
         {
             using (var command = connection.CreateCommand(SchemasReader.Sql))
             {
@@ -47,7 +44,44 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
-        public static IReadOnlyList<Types.SchemaObject> GetSchemaObjects(this SqlConnection connection)
+        public static Schema? GetSchema(this SqlConnection connection, int schemaId)
+        {
+            var sql = $"{SchemasReader.Sql} WHERE [schema_id] = @SchemaId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemasReader = new SchemasReader(reader, false);
+                    if (schemasReader.Read())
+                    {
+                        return schemasReader.GetSchema();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static Schema? GetSchemaByName(this SqlConnection connection, string schemaName)
+        {
+            var sql = $"{SchemasReader.Sql} WHERE [name] = @SchemaName";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaName", schemaName);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemasReader = new SchemasReader(reader, false);
+                    if (schemasReader.Read())
+                    {
+                        return schemasReader.GetSchema();
+                    }
+                    return null;
+                }
+            }
+        }
+
+
+        public static IReadOnlyList<SchemaObject> GetSchemaObjects(this SqlConnection connection)
         {
             using (var command = connection.CreateCommand(SchemaObjectsReader.Sql))
             {
@@ -59,7 +93,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
-        public static IReadOnlyList<Types.SchemaObject> GetSchemaObjects(this SqlConnection connection, int schemaId)
+        public static IReadOnlyList<SchemaObject> GetSchemaObjects(this SqlConnection connection, int schemaId)
         {
             var sql = $"{SchemaObjectsReader.Sql} WHERE [schema_id] = @SchemaId";
             using (var command = connection.CreateCommand(sql))
@@ -76,6 +110,44 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         public static IReadOnlyList<Types.SchemaObject> GetSchemaObjects(this SqlConnection connection, Schema schema)
         {
             return connection.GetSchemaObjects(schema.SchemaId);
+        }
+
+        public static SchemaObject? GetSchemaObject(this SqlConnection connection, int schemaId, int objectId)
+        {
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [schema_id] = @SchemaId AND [object_id] = @ObjectId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    if (schemaObjectsReader.Read())
+                    {
+                        return schemaObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static SchemaObject? GetSchemaObject(this SqlConnection connection, int schemaId, string objectName)
+        {
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [schema_id] = @SchemaId AND [name] = @ObjectName";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectName", objectName);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    if (schemaObjectsReader.Read())
+                    {
+                        return schemaObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
         }
 
         public static IReadOnlyList<Types.Table> GetTables(this SqlConnection connection)
@@ -109,6 +181,56 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return connection.GetTables(schema.SchemaId);
         }
 
+        public static Types.Table? GetTable(this SqlConnection connection, int schemaId, int objectId)
+        {
+            var sql = $"{TablesReader.Sql} WHERE [schema_id] = @SchemaId AND [object_id] = @ObjectId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var tablesReader = new TablesReader(reader, false);
+                    if (tablesReader.Read())
+                    {
+                        return tablesReader.GetTable();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static Types.Table? GetTable(this SqlConnection connection, Types.Schema schema, int objectId)
+        {     
+            return connection.GetTable(schema.SchemaId, objectId); 
+        }
+
+        public static Types.Table? GetTable(this SqlConnection connection, int schemaId, string objectName)
+        {
+            var sql = $"{TablesReader.Sql} WHERE [schema_id] = @SchemaId AND [name] = @ObjectName";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectName", objectName);
+                using (var reader = command.ExecuteReader())
+                {
+                    var tablesReader = new TablesReader(reader, false);
+                    if (tablesReader.Read())
+                    {
+                        return tablesReader.GetTable();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static Types.Table? GetTable(this SqlConnection connection, Types.Schema schema, string objectName)
+        {
+            return connection.GetTable(schema.SchemaId, objectName);
+        }
+
+
+
         public static IReadOnlyList<Types.View> GetViews(this SqlConnection connection)
         {
             using (var command = connection.CreateCommand(ViewsReader.Sql))
@@ -140,6 +262,44 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return connection.GetViews(schema.SchemaId);
         }
 
+        public static Types.View? GetView(this SqlConnection connection, int schemaId, int objectId)
+        {
+            var sql = $"{ViewsReader.Sql} WHERE [schema_id] = @SchemaId AND [object_id] = @ObjectId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var viewsReader = new ViewsReader(reader, false);
+                    if (viewsReader.Read())
+                    {
+                        return viewsReader.GetView();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static Types.View? GetView(this SqlConnection connection, int schemaId, string objectName)
+        {
+            var sql = $"{ViewsReader.Sql} WHERE [schema_id] = @SchemaId AND [name] = @ObjectName";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectName", objectName);
+                using (var reader = command.ExecuteReader())
+                {
+                    var viewsReader = new ViewsReader(reader, false);
+                    if (viewsReader.Read())
+                    {
+                        return viewsReader.GetView();
+                    }
+                    return null;
+                }
+            }
+        }
+
         public static IReadOnlyList<Types.ForeignKey> GetForeignKeys(this SqlConnection connection)
         {
             using (var command = connection.CreateCommand(ForeignKeyReader.Sql))
@@ -154,7 +314,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
         public static IReadOnlyList<Types.ForeignKey> GetForeignKeys(this SqlConnection connection, int parentObjectId)
         {
-            var sql = $"{ForeignKeyReader.Sql} WHERE [parent_object_id] = @ParentObjectId";
+            var sql = $"{ForeignKeyReader.Sql} WHERE fk.[parent_object_id] = @ParentObjectId";
             using (var command = connection.CreateCommand(sql))
             {
                 command.Parameters.AddWithValue("@ParentObjectId", parentObjectId);
@@ -174,7 +334,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
         public static IReadOnlyList<Types.ForeignKeyColumn> GetForeignKeyColumns(this SqlConnection connection, int parentObjectId, int objectId)
         {
-            var sql = $"{ForeignKeyColumnsReader.Sql} WHERE [parent_object_id] = @ParentObjectId AND [constraint_object_id] = @ObjectId ORDER BY [constraint_column_id]";
+            var sql = $"{ForeignKeyColumnsReader.Sql} WHERE fkc.[parent_object_id] = @ParentObjectId AND fkc.[constraint_object_id] = @ObjectId ORDER BY fkc.[constraint_column_id]";
             using (var command = connection.CreateCommand(sql))
             {
                 command.Parameters.AddWithValue("@ParentObjectId", parentObjectId);
@@ -262,9 +422,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
 
-        public static IReadOnlyList<Types.IndexColumn> GetIndexColumns(this SqlConnection connection, int objectId, int indexId)
+        public static IReadOnlyList<IndexColumn> GetIndexColumns(this SqlConnection connection, int objectId, int indexId)
         {
-            var sql = $"{IndexColumnsReader.Sql} WHERE [object_id] = @ObjectId AND [index_id] = @IndexId ORDER BY [key_ordinal]";
+            var sql = $"{IndexColumnsReader.Sql} WHERE ic.[object_id] = @ObjectId AND ic.[index_id] = @IndexId ORDER BY [key_ordinal]";
             using (var command = connection.CreateCommand(sql))
             {
                 command.Parameters.AddWithValue("@ObjectId", objectId);
@@ -277,7 +437,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
-       public static IReadOnlyList<Types.IndexColumn> GetIndexColumns(this SqlConnection connection, Types.Index index)
+       public static IReadOnlyList<IndexColumn> GetIndexColumns(this SqlConnection connection, Types.Index index)
        {
            return connection.GetIndexColumns(index.ObjectId, index.IndexId);
        }

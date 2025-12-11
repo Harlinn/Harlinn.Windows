@@ -14,13 +14,18 @@
    limitations under the License.
 */
 
-using Microsoft.SqlServer.Management.Smo;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class Schema
     {
+        [XmlIgnore]
+        public Dictionary<string, SchemaObject> ObjectsByName { get; set; } = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
+
         [XmlIgnore]
         public Database? Owner { get; set; } = null;
 
@@ -40,7 +45,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
             {
                 schemaObject.Owner = this;
                 schemaObject.Initialize();
+                ObjectsByName[schemaObject.Name] = schemaObject;
             }
+        }
+
+        public EntityDefinition AddEntity(string name) 
+        {
+            var entity = new EntityDefinition
+            {
+                Name = name,
+                Owner = this
+            };
+            entity.Initialize();
+            Objects.Add(entity);
+            ObjectsByName[entity.Name] = entity;
+            return entity;
         }
 
         internal void Initialize2()
@@ -48,6 +67,27 @@ namespace Harlinn.MSSql.Tool.Input.Types
             foreach (var schemaObject in Objects)
             {
                 schemaObject.Initialize2();
+            }
+        }
+
+        internal void ImportTables(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.Table> tables)
+        {
+            foreach (var table in tables)
+            {
+                ImportTable(sqlConnection, table);
+            }
+        }
+
+        internal void ImportTable(SqlConnection sqlConnection, SchemaTypes.Table table)
+        {
+            if (!ObjectsByName.TryGetValue(table.Name, out var schemaObject))
+            {
+                schemaObject = AddEntity(table.Name);
+            }
+
+            if (schemaObject is EntityDefinition entity)
+            {
+                entity.ImportTable(sqlConnection, table);
             }
         }
     }

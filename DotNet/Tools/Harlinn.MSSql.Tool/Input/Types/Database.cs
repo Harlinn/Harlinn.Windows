@@ -15,11 +15,17 @@
 */
 
 using System.Xml.Serialization;
+using Microsoft.Data.SqlClient;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class Database
     {
+        [XmlIgnore]
+        public Dictionary<string, Schema> SchemasByName { get; set; } = new Dictionary<string, Schema>(StringComparer.OrdinalIgnoreCase);
+
         [XmlIgnore]
         public Project? Project { get; set; } = null;
 
@@ -30,12 +36,59 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(Schema), ElementName = "Schema")]
         public List<Schema> Schemas { get; set; } = new List<Schema>();
 
+
+
+        public Schema AddSchema(string schemaName)
+        {
+            var schema = new Schema
+            {
+                Name = schemaName,
+                Owner = this
+            };
+            Schemas.Add(schema);
+            SchemasByName[schemaName] = schema;
+            return schema;
+        }
+
+        internal void Import(SqlConnection sqlConnection, ImportOptions options)
+        {
+            var schemaName = "dbo";
+            if (!string.IsNullOrEmpty(options.Schema))
+            {
+                schemaName = options.Schema;
+            }
+            if(!SchemasByName.TryGetValue(schemaName, out var schema))
+            {
+                schema = AddSchema(schemaName);
+            }
+            var schemaObject = sqlConnection.GetSchemaByName(schemaName);
+            if (schemaObject != null)
+            {
+                var tableName = options.Table;
+                if (string.IsNullOrEmpty(tableName) || tableName == "*")
+                {
+                    var tables = sqlConnection.GetTables(schemaObject);
+                    schema.ImportTables(sqlConnection, tables);
+                }
+                else
+                {
+                    var table = sqlConnection.GetTable(schemaObject, tableName);
+                    if (table != null)
+                    {
+                        schema.ImportTable(sqlConnection, table);
+                    }
+                }
+            }
+
+        }
+
         internal void Initialize()
         {
             foreach (var schema in Schemas)
             {
                 schema.Owner = this;
                 schema.Initialize();
+                SchemasByName[schema.Name] = schema;
             }
         }
 

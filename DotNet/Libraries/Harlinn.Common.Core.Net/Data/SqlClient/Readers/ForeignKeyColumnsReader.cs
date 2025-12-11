@@ -24,13 +24,17 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
     public class ForeignKeyColumnsReader : DataReaderWrapper
     {
         public const string Sql = """
-        SELECT [constraint_object_id]
-            ,[constraint_column_id]
-            ,[parent_object_id]
-            ,[parent_column_id]
-            ,[referenced_object_id]
-            ,[referenced_column_id]
-        FROM [sys].[foreign_key_columns]
+        SELECT fkc.[constraint_object_id]
+            ,fkc.[constraint_column_id]
+            ,fkc.[parent_object_id]
+            ,fkc.[parent_column_id]
+            ,fkc.[referenced_object_id]
+            ,fkc.[referenced_column_id]
+            ,  c.[name] AS [column_name]
+            , cr.[name] AS [referenced_column_name]
+        FROM [sys].[foreign_key_columns] fkc
+        INNER JOIN sys.columns c ON fkc.parent_object_id = c.object_id AND fkc.parent_column_id = c.column_id
+        INNER JOIN sys.columns cr ON fkc.referenced_object_id = cr.object_id AND fkc.referenced_column_id = cr.column_id
         """;
 
         public const int ConstraintObjectIdOrdinal = 0;
@@ -39,7 +43,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int ParentColumnIdOrdinal = 3;
         public const int ReferencedObjectIdOrdinal = 4;
         public const int ReferencedColumnIdOrdinal = 5;
-
+        public const int ColumnNameOrdinal = 6;
+        public const int ReferencedColumnNameOrdinal = 7;
 
         public ForeignKeyColumnsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true) 
             : base(loggerFactory, sqlDataReader, ownsReader)
@@ -86,6 +91,16 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetInt32(ReferencedColumnIdOrdinal);
         }
 
+        public string GetColumnName()
+        {
+            return base.GetString(ColumnNameOrdinal);
+        }
+
+        public string GetReferencedColumnName()
+        {
+            return base.GetString(ReferencedColumnNameOrdinal);
+        }
+
         public ForeignKeyColumn GetForeignKeyColumn()
         {
             ForeignKeyColumn result = new ForeignKeyColumn(GetConstraintObjectId(),
@@ -93,7 +108,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
                                         GetParentObjectId(),
                                         GetParentColumnId(),
                                         GetReferencedObjectId(),
-                                        GetReferencedColumnId() );
+                                        GetReferencedColumnId(),
+                                        GetColumnName(),
+                                        GetReferencedColumnName());
             return result;
         }
 

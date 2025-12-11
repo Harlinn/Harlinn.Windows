@@ -14,12 +14,16 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class BinaryFieldDefinition : FieldDefinition
     {
         public override FieldType FieldType => FieldType.Binary;
+        [XmlAttribute, DefaultValue(128)]
         public int Size { get; set; } = 128;
     }
 

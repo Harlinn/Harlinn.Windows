@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using Microsoft.Data.SqlClient;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
@@ -21,6 +22,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
     [XmlRoot("Project")]
     public class Project
     {
+        [XmlIgnore]
+        public Dictionary<string, Database> DatabasesByName { get; set; } = new Dictionary<string, Database>(StringComparer.OrdinalIgnoreCase);
+
         [XmlIgnore]
         public Dictionary<string, SchemaObject> SchemaObjects { get; set; } = new Dictionary<string, SchemaObject>();
 
@@ -37,14 +41,45 @@ namespace Harlinn.MSSql.Tool.Input.Types
             {
                 database.Project = this;
                 database.Initialize();
+                DatabasesByName[database.Name] = database;
             }
 
             foreach (var database in Databases)
             {
                 database.Initialize2();
             }
-
         }
+
+        public Database AddDatabase(string name)
+        {
+            var database = new Database { Name = name, Project = this };
+            DatabasesByName[name] = database;
+            Databases.Add(database);
+            return database;
+        }
+
+
+        public void SaveToFile(string filePath)
+        {
+            using FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Project));
+            xmlSerializer.Serialize(fileStream, this);
+        }
+
+        public void Import(SqlConnection sqlConnection, ImportOptions options)
+        {
+            var databaseName = sqlConnection.Database;
+            if (DatabasesByName.TryGetValue(databaseName, out var database))
+            {
+                database.Import(sqlConnection, options);
+            }
+            else
+            {
+                var newDatabase = AddDatabase(databaseName);
+                newDatabase.Import(sqlConnection, options);
+            }
+        }
+
 
     }
 

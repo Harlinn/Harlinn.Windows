@@ -26,13 +26,13 @@ namespace Harlinn.MSSql.Tool
     {
         static Program? _instance;
         private bool disposedValue;
-        readonly Options _options;
+        readonly OptionsBase _options;
         readonly SqlConnection _sqlConnection;
         //ServerConnection _serverConnection;
 
         Input.Types.Project _project;
 
-        public Program(Options options)
+        public Program(OptionsBase options)
         {
             _options = options;
             _sqlConnection = new SqlConnection(options.GetConnectionString());
@@ -44,7 +44,7 @@ namespace Harlinn.MSSql.Tool
             _project.Initialize();
         }
 
-        public Options Options => _options;
+        public OptionsBase Options => _options;
         public Input.Types.Project Project => _project;
 
         public Program Instance
@@ -73,14 +73,33 @@ namespace Harlinn.MSSql.Tool
             }
         }
 
+        void Import()
+        {
+            _instance = this;
+            try
+            {
+                _project.Import(_sqlConnection, (ImportOptions)_options);
+                _project.SaveToFile(Options.Project);
+            }
+            finally
+            {
+                _instance = null;
+            }
+        }
+
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<Options>(args)
-                    .WithParsed<Options>(o =>
-                {
-                    using Program program = new Program(o);
-                    program.Run();
-                });
+            Parser.Default.ParseArguments<BuildOptions, ImportOptions>(args)
+                    .WithParsed<BuildOptions>(o => 
+                    { 
+                        using Program program = new Program(o); 
+                        program.Run(); 
+                    })
+                    .WithParsed<ImportOptions>(o => 
+                    {
+                        using Program program = new Program(o);
+                        program.Import();
+                    } );
         }
 
         protected virtual void Dispose(bool disposing)

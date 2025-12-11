@@ -21,16 +21,49 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class ForeignKeyDefinition
     {
         [XmlIgnore]
+        string? _entity;
+        [XmlIgnore]
         public EntityDefinition? Owner { get; set; } = null;
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
         
         [XmlAttribute]
-        public string Entity { get; set; } = string.Empty;
+        public string Entity
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_entity) )
+                {
+                    if (string.IsNullOrEmpty(ReferencedTableName) == false)
+                    {
+                        if (string.IsNullOrEmpty(ReferencedSchemaName) == false)
+                        {
+                            return $"{ReferencedSchemaName}.{ReferencedTableName}";
+                        }
+                        return ReferencedTableName;
+                    }
+                    
+                }
+                return _entity ?? string.Empty;
+            }
+
+            set
+            {
+                _entity = value;
+            }
+        }
+
+        [XmlAttribute]
+        public string ReferencedTableName { get; set; } = string.Empty;
+        [XmlAttribute]
+        public string ReferencedSchemaName { get; set; } = string.Empty;
+
         [XmlArray("References")]
         [XmlArrayItem("Reference")]
         public List<ForeignKeyReferenceDefinition> References { get; set; } = new List<ForeignKeyReferenceDefinition>();
+        
+        
 
         internal void Initialize()
         {
