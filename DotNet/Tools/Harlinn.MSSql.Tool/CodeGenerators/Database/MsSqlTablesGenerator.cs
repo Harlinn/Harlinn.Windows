@@ -1,0 +1,166 @@
+﻿using Harlinn.MSSql.Tool.Input.Types;
+using Harlinn.MSSql.Tool.Output;
+
+namespace Harlinn.MSSql.Tool.CodeGenerators.Database
+{
+    public class MsSqlTablesGenerator : CodeWriter
+    {
+        public MsSqlTablesGenerator(Context context) : base(context)
+        {
+        }
+
+        public void Run()
+        {
+            var entities = Context.Project.Entities;
+            var schemas = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var entity in entities)
+            {
+                var schemaName = entity.Owner?.Name ?? "dbo";
+                if (!schemas.Contains(schemaName))
+                {
+                    schemas.Add(schemaName);
+                }
+            }
+
+            foreach (var schema in schemas)
+            {
+                if (schema.Equals("dbo", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                WriteLine( "/*");
+                WriteLine($" * Schema: [{schema}]");
+                WriteLine( " */");
+                WriteLine($"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{schema}')");
+                WriteLine("BEGIN");
+                WriteLine($"    EXEC('CREATE SCHEMA [{schema}]');");
+                WriteLine("END");
+                WriteLine("go");
+                WriteLine();
+            }
+
+
+            foreach (var entity in entities)
+            {
+                WriteCreateTable(entity);
+            }
+            foreach (var entity in entities)
+            {
+                WriteForeignKeys(entity);
+            }
+        }
+
+        void WriteCreateTable(EntityDefinition entity)
+        {
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableName(entity);
+
+            WriteLine( "/*");
+            WriteLine($" * {qualifiedTableName}");
+            WriteLine( " */");
+            WriteLine($"CREATE TABLE {qualifiedTableName}");
+            WriteLine("(");
+            foreach (var field in entity.Fields)
+            {
+                WriteColumn(entity, field);
+            }
+            WritePrimaryKey(entity);
+            WriteLine(")");
+            WriteLine("go");
+            WriteLine();
+            WriteIndexes(entity);
+            WriteLine();
+        }
+
+        void WriteColumn(EntityDefinition entity, FieldDefinition field)
+        {
+            var columnName = MsSqlHelper.GetColumnName( field );
+            var columnType = MsSqlHelper.GetColumnType(field);
+            WriteLine($"    {columnName} {columnType},");
+        }
+
+        void WriteIndexes(EntityDefinition entity)
+        {
+            var indexes = entity.Indexes;
+            foreach (var index in indexes)
+            {
+                WriteIndex(entity, index);
+            }
+        }
+
+        void WriteIndex(EntityDefinition entity, IndexDefinition index)
+        {
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableName(entity);
+
+            var indexColumnList = IndexColumnList(index);
+            var indexName = index.Name;
+
+            if (index.IsUnique)
+            {
+                WriteLine($"ALTER TABLE {qualifiedTableName}");
+                WriteLine($"  ADD CONSTRAINT {indexName} UNIQUE({indexColumnList})");
+                WriteLine("go");
+            }
+            else
+            {
+                WriteLine($"CREATE INDEX {indexName} ON {qualifiedTableName}({indexColumnList})");
+                WriteLine("go");
+            }
+            WriteLine();
+        }
+
+        static string IndexColumnList(IndexDefinition index)
+        {
+            var columnNames = index.Fields.Select(f => MsSqlHelper.GetColumnName(f.Definition!));
+            return string.Join(", ", columnNames);
+        }
+
+        void WritePrimaryKey(EntityDefinition entity)
+        {
+            var primaryKey = entity.PrimaryKey;
+            var primaryKeyName = primaryKey?.Name;
+            var primaryKeyColumnList = IndexColumnList(primaryKey!);
+
+            WriteLine($"    CONSTRAINT [{primaryKeyName}] PRIMARY KEY({primaryKeyColumnList})");
+        }
+
+
+        static string ForeignKeyColumnList(ForeignKeyDefinition foreignKey)
+        {
+            var columnNames = foreignKey.References.Select(f => MsSqlHelper.GetColumnName(f.Definition!));
+            return string.Join(", ", columnNames);
+        }
+
+        static string ForeignKeyReferencedColumnList(ForeignKeyDefinition foreignKey)
+        {
+            var columnNames = foreignKey.References.Select(f => MsSqlHelper.GetColumnName(f.ReferencesDefinition!));
+            return string.Join(", ", columnNames);
+        }
+
+        void WriteForeignKeys(EntityDefinition entity)
+        {
+            var foreignKeys = entity.ForeignKeys;
+            foreach (var foreignKey in foreignKeys)
+            {
+                WriteForeignKey(entity, foreignKey);
+            }
+        }
+
+        void WriteForeignKey(EntityDefinition entity, ForeignKeyDefinition foreignKey)
+        {
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableName(entity);
+            var qualifiedReferencedTableName = MsSqlHelper.GetQualifiedTableName(foreignKey.Entity!);
+
+            var foreignKeyName = foreignKey.Name;
+            var foreignKeyColumnList = ForeignKeyColumnList(foreignKey!);
+            var foreignKeyReferencedColumnList = ForeignKeyReferencedColumnList(foreignKey!);
+
+            WriteLine($"ALTER TABLE {qualifiedTableName}");
+            WriteLine($"  ADD CONSTRAINT {foreignKeyName} FOREIGN KEY({foreignKeyColumnList})");
+            WriteLine($"  REFERENCES {qualifiedReferencedTableName}({foreignKeyReferencedColumnList})");
+            WriteLine("go");
+            WriteLine();
+        }
+    }
+
+}

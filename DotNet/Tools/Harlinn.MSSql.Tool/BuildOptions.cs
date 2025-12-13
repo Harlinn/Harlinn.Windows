@@ -64,8 +64,19 @@ namespace Harlinn.MSSql.Tool
         { 
         }
 
-        [Option('o', "output", Required = true, HelpText = "Output directory.")]
+        [Option('o', "output", HelpText = "Output directory.")]
         public string OutputDirectory { get; set; } = string.Empty;
+
+        public static string GetDefaultOutputDirectory(string projectFilePath)
+        {
+            var projectDirectory = System.IO.Path.GetDirectoryName(projectFilePath);
+            if (string.IsNullOrEmpty(projectDirectory))
+            {
+                projectDirectory = System.IO.Directory.GetCurrentDirectory();
+            }
+            return System.IO.Path.Combine(projectDirectory, "Generated");
+        }
+
     }
 
     [Verb("import", HelpText = "Import database objects into the project.")]

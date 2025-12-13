@@ -19,6 +19,8 @@ using Microsoft.Data.SqlClient;
 using Harlinn.Common.Core.Net.Data.SqlClient;
 using Harlinn.MSSql.Tool.Import;
 using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
+using Harlinn.Common.Core.Net;
+using System.ComponentModel;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -37,7 +39,26 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
 
         [XmlIgnore]
+        List<FieldDefinition>? _primaryKeyFields;
+
+        [XmlIgnore]
+        List<FieldDefinition>? _nullableReferenceFields;
+
+        [XmlIgnore]
+        List<FieldDefinition>? _notReferenceAndNotNullableReferenceFields;
+
+        [XmlIgnore]
+        List<FieldDefinition>? _primaryKeyAndNullableReferenceFields;
+
+        [XmlIgnore]
+        List<FieldDefinition>? _nonPrimaryKeyFields;
+
+
+        [XmlIgnore]
         string? _baseName;
+
+        [XmlIgnore]
+        string? _shortName;
 
         [XmlIgnore]
         public EntityDefinition? Base { get; set; }
@@ -50,6 +71,73 @@ namespace Harlinn.MSSql.Tool.Input.Types
         }
 
         public override SchemaObjectType Type => SchemaObjectType.Entity;
+
+        [XmlAttribute]
+        public string? Table { get; set; }
+
+        [XmlAttribute,DefaultValue(0)]
+        public uint Id { get; set; }
+
+        [XmlAttribute]
+        public string? ShortName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_shortName))
+                {
+                    if (!string.IsNullOrEmpty(Name))
+                    {
+                        var project = Project;
+                        if (project != null)
+                        {
+                            var shortName = Name.ToAcronym();
+                            if(!project.EntitiesByAcronym.ContainsKey(shortName!))
+                            {
+                                project.EntitiesByAcronym[shortName!] = this;
+                                _shortName = shortName;
+                            }
+                            else
+                            {
+                                for (int i = 0; i < 100; i++)
+                                {
+                                    var newShortName = $"{shortName}{i}";
+                                    if (!project.EntitiesByAcronym.ContainsKey(newShortName!))
+                                    {
+                                        project.EntitiesByAcronym[newShortName!] = this;
+                                        _shortName = newShortName;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            
+                        }
+                    }
+                }
+                return _shortName;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("ShortName cannot be null or empty.", nameof(value));
+                }
+                var previousShortName = _shortName;
+                _shortName = value;
+                if ( !string.IsNullOrEmpty(previousShortName))
+                {
+                    var project = Project;
+                    if (project != null)
+                    {
+                        if (project.EntitiesByAcronym.ContainsKey(previousShortName))
+                        {
+                            project.EntitiesByAcronym.Remove(previousShortName);
+                        }
+                        project.EntitiesByAcronym[_shortName] = this;
+                    }
+                }
+            }
+        }
 
         [XmlArray("Fields")]
         [XmlArrayItem(typeof(BooleanFieldDefinition),ElementName ="Boolean")]
@@ -101,6 +189,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
             return -1;
         }
 
+        internal void AddField(FieldDefinition field)
+        {
+            var index = GetFieldIndex(field.Name);
+            if (index >= 0)
+            {
+                Fields[index] = field;
+            }
+            else
+            {
+                Fields.Add(field);
+            }
+            FieldsByName[field.Name] = field;
+        }
+
+
         internal int GetIndexIndex(string indexName)
         {
             for (int i = 0; i < Indexes.Count; i++)
@@ -112,6 +215,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
             return -1;
         }
+
+        internal void AddIndex(IndexDefinition index)
+        {
+            var idx = GetIndexIndex(index.Name);
+            if (idx >= 0)
+            {
+                Indexes[idx] = index;
+            }
+            else
+            {
+                Indexes.Add(index);
+            }
+            IndexesByName[index.Name] = index;
+        }
+
 
         internal int GetForeignKeyIndex(string foreignKeyName)
         {
@@ -125,25 +243,26 @@ namespace Harlinn.MSSql.Tool.Input.Types
             return -1;
         }
 
+        internal void AddForeignKey(ForeignKeyDefinition foreignKey)
+        {
+            var idx = GetForeignKeyIndex(foreignKey.Name);
+            if (idx >= 0)
+            {
+                ForeignKeys[idx] = foreignKey;
+            }
+            else
+            {
+                ForeignKeys.Add(foreignKey);
+            }
+            ForeignKeysByName[foreignKey.Name] = foreignKey;
+        }
 
 
         internal void ImportColumn(SchemaTypes.Column column)
         {
             var fieldDefinition = column.ToFieldDefinition();
-            if (FieldsByName.ContainsKey(fieldDefinition.Name))
-            {
-                var index = GetFieldIndex(fieldDefinition.Name);
-                if (index >= 0)
-                {
-                    Fields[index] = fieldDefinition;
-                }
-            }
-            else
-            {
-                Fields.Add(fieldDefinition);
-            }
-            FieldsByName[fieldDefinition.Name] = fieldDefinition;
-
+            fieldDefinition.Owner = this;
+            AddField(fieldDefinition);
         }
 
         internal void ImportColumns(IReadOnlyList<SchemaTypes.Column> columns)
@@ -156,23 +275,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         internal void ImportIndex(SqlConnection sqlConnection, SchemaTypes.Index index)
         {
-            if (IndexesByName.TryGetValue(index.Name, out var indexDefinition))
+            var indexDefinition = new IndexDefinition
             {
-                var offset = GetIndexIndex(index.Name);
-                if (offset >= 0)
-                {
-                    Indexes.RemoveAt(offset);
-                }
-            }
-
-            indexDefinition = new IndexDefinition
-            {
+                Owner = this,
                 Name = index.Name,
                 IsUnique = index.IsUnique,
+                IsPrimaryKey = index.IsPrimaryKey
             };
-
-            Indexes.Add(indexDefinition);
-            IndexesByName[indexDefinition.Name] = indexDefinition;
+            if (index.IsPrimaryKey)
+            {
+                PrimaryKey = indexDefinition;
+            }
+            else
+            {
+                AddIndex(indexDefinition);
+            }
 
             var indexColumns = sqlConnection.GetIndexColumns(index);
             foreach (var indexColumn in indexColumns)
@@ -182,11 +299,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     Name = indexColumn.ColumnName,
                     IsDescending = indexColumn.IsDescendingKey
                 };
-                indexDefinition.Fields.Add(indexFieldDefinition);
-            }
-            if(index.IsPrimaryKey)
-            {
-                PrimaryKey = indexDefinition;
+                indexDefinition.AddField(indexFieldDefinition);
             }
         }
 
@@ -200,25 +313,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         internal void ImportForeignKey(SqlConnection sqlConnection, SchemaTypes.ForeignKey foreignKey)
         {
-            if (ForeignKeysByName.TryGetValue(foreignKey.Name, out var foreignKeyDefinition))
+            string entityName = string.Empty;
+            if(ForeignKeysByName.TryGetValue(foreignKey.Name, out var existingForeignKeyDefinition))
             {
-                var offset = GetForeignKeyIndex(foreignKey.Name);
-                if (offset >= 0)
-                {
-                    ForeignKeys.RemoveAt(offset);
-                }
+                entityName = existingForeignKeyDefinition.EntityName;
             }
-
-            foreignKeyDefinition = new ForeignKeyDefinition
+            var foreignKeyDefinition = new ForeignKeyDefinition
             {
+                Owner = this,
                 Name = foreignKey.Name,
+                EntityName = entityName,
                 ReferencedTableName = foreignKey.ReferencedTableName,
                 ReferencedSchemaName = foreignKey.ReferencedSchemaName,
-
             };
 
-            ForeignKeys.Add(foreignKeyDefinition);
-            ForeignKeysByName[foreignKeyDefinition.Name] = foreignKeyDefinition;
+            AddForeignKey(foreignKeyDefinition);
 
             var foreignKeyColumns = sqlConnection.GetForeignKeyColumns(foreignKey);
             foreach (var foreignKeyColumn in foreignKeyColumns)
@@ -228,7 +337,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     Field = foreignKeyColumn.ColumnName,
                     References = foreignKeyColumn.ReferencedColumnName
                 };
-                foreignKeyDefinition.References.Add(foreignKeyFieldDefinition);
+                foreignKeyDefinition.AddReference(foreignKeyFieldDefinition);
             }
         }
 
@@ -242,6 +351,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         internal void ImportTable(SqlConnection sqlConnection, SchemaTypes.Table table)
         {
+            Table = table.Name;
             var columns = sqlConnection.GetColumns(table);
             ImportColumns(columns);
             
@@ -284,10 +394,130 @@ namespace Harlinn.MSSql.Tool.Input.Types
             base.Initialize2();
             foreach (var foreignKey in ForeignKeys)
             {
-                foreignKey.Owner = this;
+                foreignKey.Initialize2();
             }
         }
 
+
+        [XmlIgnore]
+        public List<FieldDefinition> PrimaryKeyFields
+        {
+            get
+            {
+                if (_primaryKeyFields == null)
+                {
+                    _primaryKeyFields = new List<FieldDefinition>();
+                    if (PrimaryKey != null)
+                    {
+                        foreach (var indexField in PrimaryKey.Fields)
+                        {
+                            if (FieldsByName.TryGetValue(indexField.Name, out var fieldDefinition))
+                            {
+                                _primaryKeyFields.Add(fieldDefinition);
+                            }
+                        }
+                    }
+                }
+                return _primaryKeyFields;
+            }
+        }
+
+        internal bool GetIsReference(FieldDefinition fieldDefinition)
+        {
+            foreach (var foreignKey in ForeignKeys)
+            {
+                foreach (var reference in foreignKey.References)
+                {
+                    if (string.Equals(reference.Field, fieldDefinition.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        [XmlIgnore]
+        public List<FieldDefinition> NullableReferenceFields
+        {
+            get
+            {
+                if (_nullableReferenceFields == null)
+                {
+                    _nullableReferenceFields = new List<FieldDefinition>();
+                    foreach (var fieldDefinition in Fields)
+                    {
+                        if (fieldDefinition.IsReference && fieldDefinition.IsNullable)
+                        {
+                            _nullableReferenceFields.Add(fieldDefinition);
+                        }
+                    }
+                }
+                return _nullableReferenceFields;
+            }
+        }
+        
+
+        [XmlIgnore]
+        public List<FieldDefinition> NotReferenceAndNotNullableReferenceFields
+        {             
+            get
+            {
+                if (_notReferenceAndNotNullableReferenceFields == null)
+                {
+                    _notReferenceAndNotNullableReferenceFields = new List<FieldDefinition>();
+                    foreach (var fieldDefinition in Fields)
+                    {
+                        if (fieldDefinition.IsReference == false ||( fieldDefinition.IsReference && !fieldDefinition.IsNullable ))
+                        {
+                            _notReferenceAndNotNullableReferenceFields.Add(fieldDefinition);
+                        }
+                    }
+                }
+                return _notReferenceAndNotNullableReferenceFields;
+            }
+        }
+
+        [XmlIgnore]
+        public List<FieldDefinition> PrimaryKeyAndNullableReferenceFields
+        {
+            get
+            {
+                if (_primaryKeyAndNullableReferenceFields == null)
+                {
+                    _primaryKeyAndNullableReferenceFields = new List<FieldDefinition>();
+                    _primaryKeyAndNullableReferenceFields.AddRange(PrimaryKeyFields);
+                    _primaryKeyAndNullableReferenceFields.AddRange(NullableReferenceFields);
+                }
+                return _primaryKeyAndNullableReferenceFields;
+            }
+        }
+
+        [XmlIgnore]
+        public List<FieldDefinition> NonPrimaryKeyFields
+        {
+            get
+            {
+                if (_nonPrimaryKeyFields == null)
+                {
+                    _nonPrimaryKeyFields = new List<FieldDefinition>();
+                    var primaryKeyFieldNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var primaryKeyField in PrimaryKeyFields)
+                    {
+                        primaryKeyFieldNames.Add(primaryKeyField.Name);
+                    }
+                    foreach (var fieldDefinition in Fields)
+                    {
+                        if (!primaryKeyFieldNames.Contains(fieldDefinition.Name))
+                        {
+                            _nonPrimaryKeyFields.Add(fieldDefinition);
+                        }
+                    }
+                }
+                return _nonPrimaryKeyFields;
+            }
+        }
+        
 
     }
 

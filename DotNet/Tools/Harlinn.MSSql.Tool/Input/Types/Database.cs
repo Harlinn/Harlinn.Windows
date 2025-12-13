@@ -52,34 +52,36 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         internal void Import(SqlConnection sqlConnection, ImportOptions options)
         {
-            var schemaName = "dbo";
+            string[] schemaNames = ["dbo"];
             if (!string.IsNullOrEmpty(options.Schema))
             {
-                schemaName = options.Schema;
+                schemaNames = options.Schema.Split(';');
             }
-            if(!SchemasByName.TryGetValue(schemaName, out var schema))
+            foreach (var schemaName in schemaNames)
             {
-                schema = AddSchema(schemaName);
-            }
-            var schemaObject = sqlConnection.GetSchemaByName(schemaName);
-            if (schemaObject != null)
-            {
-                var tableName = options.Table;
-                if (string.IsNullOrEmpty(tableName) || tableName == "*")
+                if (!SchemasByName.TryGetValue(schemaName, out var schema))
                 {
-                    var tables = sqlConnection.GetTables(schemaObject);
-                    schema.ImportTables(sqlConnection, tables);
+                    schema = AddSchema(schemaName);
                 }
-                else
+                var schemaObject = sqlConnection.GetSchemaByName(schemaName);
+                if (schemaObject != null)
                 {
-                    var table = sqlConnection.GetTable(schemaObject, tableName);
-                    if (table != null)
+                    var tableName = options.Table;
+                    if (string.IsNullOrEmpty(tableName) || tableName == "*")
                     {
-                        schema.ImportTable(sqlConnection, table);
+                        var tables = sqlConnection.GetTables(schemaObject);
+                        schema.ImportTables(sqlConnection, tables);
+                    }
+                    else
+                    {
+                        var table = sqlConnection.GetTable(schemaObject, tableName);
+                        if (table != null)
+                        {
+                            schema.ImportTable(sqlConnection, table);
+                        }
                     }
                 }
             }
-
         }
 
         internal void Initialize()

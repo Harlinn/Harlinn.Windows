@@ -2,7 +2,7 @@
   "profiles": {
     "Harlinn.MSSql.Tool": {
       "commandName": "Project",
-      "commandLineArgs": "import -s matrikkel -i BIR -p TestProject.xml"
+      "commandLineArgs": "-i BIR -p TestProject.xml"
     }
   }
 }

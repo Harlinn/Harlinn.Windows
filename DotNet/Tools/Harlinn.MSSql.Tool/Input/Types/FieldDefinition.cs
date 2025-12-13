@@ -25,8 +25,24 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public abstract class FieldDefinition : IEquatable<FieldDefinition>
     {
         [XmlIgnore]
+        bool? _isReference;
+
+        [XmlIgnore]
         public EntityDefinition? Owner { get; set; } = null;
         public abstract FieldType FieldType { get; }
+
+        [XmlIgnore]
+        public bool IsReference
+        {
+            get
+            {
+                if(_isReference.HasValue == false)
+                {
+                    _isReference = Owner!.GetIsReference(this);
+                }
+                return _isReference.Value;
+            }
+        }
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;

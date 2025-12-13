@@ -21,6 +21,35 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class ForeignKeyReferenceDefinition
     {
         [XmlIgnore]
+        public FieldDefinition? Definition
+        {
+            get
+            {
+                if (Owner != null && Owner.Owner != null)
+                {
+                    var entity = Owner.Owner;
+                    return entity.FieldsByName.TryGetValue(Field, out var fieldDefinition) ? fieldDefinition : null;
+                }
+                return null;
+            }
+        }
+
+        [XmlIgnore]
+        public FieldDefinition? ReferencesDefinition
+        {
+            get
+            {
+                if (Owner != null && Owner.Owner != null)
+                {
+                    var entity = Owner.Entity!;
+                    return entity.FieldsByName.TryGetValue(References, out var fieldDefinition) ? fieldDefinition : null;
+                }
+                return null;
+            }
+        }
+
+
+        [XmlIgnore]
         public ForeignKeyDefinition? Owner { get; set; } = null;
 
         [XmlAttribute]

@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
@@ -21,11 +22,26 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class IndexFieldDefinition
     {
         [XmlIgnore]
+        public FieldDefinition? Definition
+        {
+            get
+            {
+                if (Owner != null && Owner.Owner != null)
+                {
+                    var entity = Owner.Owner;
+                    return entity.FieldsByName.TryGetValue(Name, out var fieldDefinition) ? fieldDefinition : null;
+                }
+                return null;
+            }
+        }
+
+
+        [XmlIgnore]
         public IndexDefinition? Owner { get; set; } = null;
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
-        [XmlAttribute]
+        [XmlAttribute,DefaultValue(false)]
         public bool IsDescending { get; set; } = false;
 
         internal void Initialize()

@@ -14,9 +14,11 @@
    limitations under the License.
 */
 
-using System.Xml.Serialization;
 using Harlinn.Common.Core.Net.Data.SqlClient;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 using Microsoft.Data.SqlClient;
+using System.ComponentModel;
+using System.Xml.Serialization;
 using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
@@ -27,10 +29,19 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, SchemaObject> ObjectsByName { get; set; } = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
+        public Dictionary<string, EntityDefinition> EntitiesByTableName { get; set; } = new Dictionary<string, EntityDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        [XmlIgnore]
         public Database? Owner { get; set; } = null;
+
+        [XmlIgnore]
+        public Project? Project => Owner?.Project;
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
+
+        [XmlAttribute, DefaultValue("")]
+        public string Namespace { get; set; } = string.Empty;
 
         [XmlArray("Objects")]
         [XmlArrayItem(typeof(EntityDefinition), ElementName = "Entity")]
@@ -46,19 +57,30 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 schemaObject.Owner = this;
                 schemaObject.Initialize();
                 ObjectsByName[schemaObject.Name] = schemaObject;
+                if (schemaObject is EntityDefinition entity && entity.Table != null)
+                {
+                    var tableName = string.IsNullOrEmpty(entity.Table) ? entity.Name : entity.Table;
+                    EntitiesByTableName[tableName] = entity;
+                }
             }
         }
 
-        public EntityDefinition AddEntity(string name) 
+        public EntityDefinition AddEntity(SchemaTypes.Table table) 
         {
+            if(EntitiesByTableName.TryGetValue(table.Name, out var existingEntity))
+            {
+                return existingEntity;
+            }
             var entity = new EntityDefinition
             {
-                Name = name,
-                Owner = this
+                Name = table.Name,
+                Owner = this,
+                Table = table.Name
             };
-            entity.Initialize();
             Objects.Add(entity);
             ObjectsByName[entity.Name] = entity;
+            EntitiesByTableName[entity.Table] = entity;
+            entity.AddToProject();
             return entity;
         }
 
@@ -80,10 +102,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         internal void ImportTable(SqlConnection sqlConnection, SchemaTypes.Table table)
         {
-            if (!ObjectsByName.TryGetValue(table.Name, out var schemaObject))
-            {
-                schemaObject = AddEntity(table.Name);
-            }
+            var schemaObject = AddEntity(table);
 
             if (schemaObject is EntityDefinition entity)
             {

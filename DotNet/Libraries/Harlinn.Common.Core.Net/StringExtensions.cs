@@ -1,327 +1,79 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Harlinn.Common.Core.Net
+﻿namespace Harlinn.Common.Core.Net
 {
-
     public static class StringExtensions
     {
-        private static bool IsIdentifierFirst(char c)
+        /// <summary>
+        /// Creates an acronym from the given string.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
+        public static string? ToAcronym(this string? self)
         {
-            return c == '_' || char.IsLetter(c);
-        }
-
-        private static bool IsIdentifier(char c)
-        {
-            return c == '_' || char.IsLetterOrDigit(c);
-        }
-
-        private static bool TryGetIdentifier(this ReadOnlySpan<Char> self, int start, [NotNullWhen(true)] out string? token)
-        {
-            var index = start;
-            var length = self.Length;
-            if (index < length)
+            if (string.IsNullOrEmpty(self))
             {
-                var c1 = self[index];
-                if (IsIdentifierFirst(c1))
+                return null;
+            }
+
+            var sb = new System.Text.StringBuilder();
+            var count = self.Length;
+            int i = 0;
+            bool nextToUpper = false;
+            while (i < count)
+            {
+                var ch = self[i];
+                if (nextToUpper)
                 {
-                    index++;
-                    while (index < length)
-                    {
-                        var c2 = self[index];
-                        if (IsIdentifier(c2) == false)
-                        {
-                            break;
-                        }
-                        index++;
-                    }
+                    ch = char.ToUpper(ch);
+                    nextToUpper = false;
                 }
-            }
-            if(index != start)
-            {
-                token = new string( self.Slice(start, index - start) );
-            }
-            else
-            {
-                token = null;
-            }
-            return index != start;
-        }
-
-        private static bool IsOtherTokenFirst(char c)
-        {
-            switch(c)
-            {
-                case '+': 
-                    return true;
-                case '-':
-                    return true;
-                case '*':
-                    return true;
-                case '/':
-                    return true;
-                case '%':
-                    return true;
-                case '^':
-                    return true;
-                case '.':
-                    return true;
-                case ',':
-                    return true;
-                case ':':
-                    return true;
-                case ';':
-                    return true;
-                case '!':
-                    return true;
-                case '~':
-                    return true;
-                case '|':
-                    return true;
-                case '&':
-                    return true;
-                case '=':
-                    return true;
-                case '"':
-                    return true;
-                case '\'':
-                    return true;
-                case '?':
-                    return true;
-                case '(':
-                    return true;
-                case ')':
-                    return true;
-                case '{':
-                    return true;
-                case '}':
-                    return true;
-                case '[':
-                    return true;
-                case ']':
-                    return true;
-                case '<':
-                    return true;
-                case '>':
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        private static bool IsOtherTwoLetterToken(char first, char second)
-        {
-            switch (first)
-            {
-                case '+':
-                    return second == '+' || second == '=';
-                case '-':
-                    return second == '-' || second == '=';
-                case '*':
-                    return second == '=';
-                case '/':
-                    return second == '=';
-                case '%':
-                    return second == '=';
-                case '^':
-                    return second == '=';
-                case '!':
-                    return second == '=';
-                case '|':
-                    return second == '|' || second == '=';
-                case '&':
-                    return second == '&' || second == '=';
-                case '=':
-                    return second == '=';
-                case '<':
-                    return second == '<' || second == '=';
-                case '>':
-                    return second == '>' || second == '=';
-                default:
-                    return false;
-            }
-        }
-
-        private static bool IsOtherThreeLetterToken(char first, char second, char third)
-        {
-            switch (first)
-            {
-                case '|':
-                    return second == '|' && third == '=';
-                case '&':
-                    return second == '&' && third == '=';
-                case '<':
-                    return second == '<' && third == '=';
-                case '>':
-                    return second == '>' && (third == '>' || third == '=');
-                default:
-                    return false;
-            }
-        }
-
-        private static bool IsOtherFourLetterToken(char first, char second, char third, char fourth)
-        {
-            switch (first)
-            {
-                case '>':
-                    return second == '>' && third == '>' && fourth == '=';
-                default:
-                    return false;
-            }
-        }
-
-
-
-        private static bool TryGetOneLetterToken(this ReadOnlySpan<Char> self, int start, [NotNullWhen(true)] out string? token)
-        {
-            var index = start;
-            var length = self.Length;
-            if (length > index + 1)
-            {
-                var first = self[index];
-                if (IsOtherTokenFirst(first))
+                if (char.IsUpper(ch))
                 {
-                    token = new string(self.Slice(index, 1));
-                    return true;
+                    sb.Append(ch);
                 }
+                else if (ch == '_' || ch == ' ')
+                {
+                    nextToUpper = true;
+                }
+                i++;
             }
-            token = null;
-            return false;
+            return sb.ToString();
         }
 
-        private static bool TryGetTwoLetterToken(this ReadOnlySpan<Char> self, int start, [NotNullWhen(true)] out string? token)
+        /// <summary>
+        /// Returns a copy of the input string with the first character converted to uppercase.
+        /// </summary>
+        /// <param name="self">The string to convert. Can be null or empty.</param>
+        /// <returns>A new string with the first character in uppercase; or null if the input string is null or empty.</returns>
+        public static string? FirstToUpper(this string? self)
         {
-            var index = start;
-            var length = self.Length;
-            if (length > index + 2)
+            if (string.IsNullOrEmpty(self))
             {
-                var first = self[index];
-                var second = self[index + 1];
-                if (IsOtherTwoLetterToken(first, second))
-                {
-                    token = new string(self.Slice(index, 2));
-                    return true;
-                }
+                return null;
             }
-            token = null;
-            return false;
+
+            var chars = self.ToCharArray();
+            chars[0] = char.ToUpper(chars[0]);
+            return new string(chars);
         }
 
-        private static bool TryGetThreeLetterToken(this ReadOnlySpan<Char> self, int start, [NotNullWhen(true)] out string? token)
+        /// <summary>
+        /// Returns a copy of the input string with the first character converted to lowercase.
+        /// </summary>
+        /// <param name="self">The string to convert. Can be null or empty.</param>
+        /// <returns>A new string with the first character in lowercase; or null if the input string is null or empty.</returns>
+        public static string? FirstToLower(this string? self)
         {
-            var index = start;
-            var length = self.Length;
-            if(length > index + 3)
+            if (string.IsNullOrEmpty(self))
             {
-                var first = self[index];
-                var second = self[index + 1];
-                var third = self[index + 2];
-                if(IsOtherThreeLetterToken(first, second, third))
-                {
-                    token = new string(self.Slice( index, 3 ));
-                    return true;
-                }
+                return null;
             }
-            token = null;
-            return false;
-        }
 
-        private static bool TryGetFourLetterToken(this ReadOnlySpan<Char> self, int start, [NotNullWhen(true)] out string? token)
-        {
-            var index = start;
-            var length = self.Length;
-            if (length > index + 4)
-            {
-                var first = self[index];
-                var second = self[index + 1];
-                var third = self[index + 2];
-                var fourth = self[index + 3];
-                if (IsOtherFourLetterToken(first, second, third, fourth))
-                {
-                    token = new string(self.Slice(index, 4));
-                    return true;
-                }
-            }
-            token = null;
-            return false;
+            var chars = self.ToCharArray();
+            chars[0] = char.ToLower(chars[0]);
+            return new string(chars);
         }
 
 
-        private static bool TryGetOtherToken(this ReadOnlySpan<Char> self, int start, [NotNullWhen(true)] out string? token)
-        {
-            if (TryGetFourLetterToken(self, start, out token))
-            {
-                return true;
-            }
-            else if (TryGetThreeLetterToken(self, start, out token))
-            { 
-                return true; 
-            }
-            else if (TryGetTwoLetterToken(self, start, out token))
-            {
-                return true;
-            }
-            else if (TryGetOneLetterToken(self, start, out token))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private static bool TryGetWhitespace(this ReadOnlySpan<Char> self, int start, out int whitespacelength)
-        {
-            var index = start;
-            var length = self.Length;
-            while (index < length)
-            {
-                var c = self[index];
-                if (char.IsWhiteSpace(c))
-                {
-                    index++;
-                }
-            }
-            whitespacelength = index - start;
-            return whitespacelength != 0;
-        }
-
-
-        public static bool TryTokenize(this ReadOnlySpan<Char> self, out string[] tokens)
-        {
-            var list = new List<string>();
-            var index = 0;
-            var length = self.Length;
-            while (index < length)
-            {
-                if(self.TryGetOtherToken(index, out var token))
-                {
-                    list.Add(token);
-                    index += token.Length;
-                }
-                else if (self.TryGetIdentifier(index, out var identfier))
-                {
-                    list.Add(identfier);
-                    index += identfier.Length;
-                }
-                else if (self.TryGetWhitespace(index, out var whitespacelength))
-                {
-                    index += whitespacelength;
-                }
-                else
-                {
-                    throw new Exception("Unexpected ");
-                }
-            }
-            if (list.Count > 0)
-            {
-                tokens = list.ToArray();
-                return true;
-            }
-            else
-            {
-                tokens =null;
-                return false;
-            }
-        }
 
     }
 }

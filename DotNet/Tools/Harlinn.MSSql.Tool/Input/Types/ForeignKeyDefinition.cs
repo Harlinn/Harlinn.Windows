@@ -21,36 +21,51 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class ForeignKeyDefinition
     {
         [XmlIgnore]
-        string? _entity;
+        public Dictionary<string, ForeignKeyReferenceDefinition> ReferencesByName { get; set; } = new Dictionary<string, ForeignKeyReferenceDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        [XmlIgnore]
+        EntityDefinition? _entity;
+        [XmlIgnore]
+        string? _entityName;
         [XmlIgnore]
         public EntityDefinition? Owner { get; set; } = null;
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
-        
-        [XmlAttribute]
-        public string Entity
+
+        [XmlIgnore]
+        public EntityDefinition? Entity
         {
             get
             {
-                if (string.IsNullOrEmpty(_entity) )
+                if (_entity == null)
                 {
-                    if (string.IsNullOrEmpty(ReferencedTableName) == false)
+                    var entityName = EntityName;
+                    if (Owner != null && string.IsNullOrEmpty(entityName) == false)
                     {
-                        if (string.IsNullOrEmpty(ReferencedSchemaName) == false)
-                        {
-                            return $"{ReferencedSchemaName}.{ReferencedTableName}";
-                        }
-                        return ReferencedTableName;
+                        _entity = Owner.GetSchemaObject(entityName) as EntityDefinition;
                     }
-                    
                 }
-                return _entity ?? string.Empty;
+                return _entity;
             }
 
+            set => _entity = value;
+        }
+
+        [XmlAttribute("Entity")]
+        public string EntityName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_entityName) )
+                {
+                    _entityName = GetEntityName();
+                }
+                return _entityName ?? string.Empty;
+            }
             set
             {
-                _entity = value;
+                _entityName = value;
             }
         }
 
@@ -63,16 +78,122 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem("Reference")]
         public List<ForeignKeyReferenceDefinition> References { get; set; } = new List<ForeignKeyReferenceDefinition>();
         
-        
 
         internal void Initialize()
         {
             foreach (var reference in References)
             {
                 reference.Owner = this;
+                ReferencesByName[reference.Field] = reference;
                 reference.Initialize();
             }
         }
+
+        internal void Initialize2()
+        {
+            FixupEntityName();
+            foreach (var reference in References)
+            {
+                //reference.Initialize2();
+            }
+        }
+
+        string GetEntityName()
+        {
+            if (Owner != null)
+            {
+                if (null != _entity)
+                {
+                    var schemaName = _entity.Owner!.Name;
+                    return $"{schemaName}.{_entity.Name}";
+                }
+                if (string.IsNullOrEmpty(ReferencedTableName) == false)
+                {
+                    string fullName;
+                    if (string.IsNullOrEmpty(ReferencedSchemaName) == false)
+                    {
+                        fullName = $"{ReferencedSchemaName}.{ReferencedTableName}";
+                    }
+                    else
+                    {
+                        fullName = ReferencedTableName;
+                    }
+                    var entity = Owner.GetSchemaObject(fullName) as EntityDefinition;
+                    if (null != entity)
+                    {
+                        var schemaName = entity.Owner!.Name;
+                        return $"{schemaName}.{entity.Name}";
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        void FixupEntityName()
+        {
+            if (Owner != null)
+            {
+                if(string.IsNullOrEmpty(_entityName) == false)
+                {
+                    _entity = Owner.GetSchemaObject(_entityName) as EntityDefinition;
+                    if (null != _entity)
+                    {
+                        // Valid _entityName
+                        var schemaName = _entity.Owner!.Name;
+                        _entityName = $"{schemaName}.{_entity.Name}";
+                        return; 
+                    }
+                }
+                if (string.IsNullOrEmpty(ReferencedTableName) == false)
+                {
+                    string fullName;
+                    if (string.IsNullOrEmpty(ReferencedSchemaName) == false)
+                    {
+                        fullName = $"{ReferencedSchemaName}.{ReferencedTableName}";
+                    }
+                    else
+                    {
+                        fullName = ReferencedTableName;
+                    }
+                    _entity = Owner.GetSchemaObject(fullName) as EntityDefinition;
+                    if (null != _entity)
+                    {
+                        var schemaName = _entity.Owner!.Name;
+                        _entityName = $"{schemaName}.{_entity.Name}";
+                        return;
+                    }
+                }
+            }
+        }
+
+        internal int GetIndexOfReference(string fieldName)
+        {
+            for (int i = 0; i < References.Count; i++)
+            {
+                if (References[i].Field.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        internal void AddReference(ForeignKeyReferenceDefinition reference)
+        {
+            reference.Owner = this;
+            int index = GetIndexOfReference(reference.Field);
+            if (index >= 0)
+            {
+                References[index] = reference;
+            }
+            else
+            {
+                References.Add(reference);
+            }
+            ReferencesByName[reference.Field] = reference;
+            reference.Initialize();
+        }
+
     }
 
 

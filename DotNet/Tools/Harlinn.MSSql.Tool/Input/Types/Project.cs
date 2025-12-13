@@ -26,11 +26,24 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, Database> DatabasesByName { get; set; } = new Dictionary<string, Database>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
-        public Dictionary<string, SchemaObject> SchemaObjects { get; set; } = new Dictionary<string, SchemaObject>();
+        public Dictionary<string, SchemaObject> SchemaObjects { get; set; } = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
+
+        [XmlIgnore]
+        public Dictionary<string, EntityDefinition> EntitiesByTableName { get; set; } = new Dictionary<string, EntityDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        [XmlIgnore]
+        public Dictionary<string, EntityDefinition> EntitiesByAcronym { get; set; } = new Dictionary<string, EntityDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        [XmlIgnore]
+        public List<EntityDefinition> Entities { get; set; } = new List<EntityDefinition>();
 
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
+
+        [XmlAttribute]
+        public string Namespace { get; set; } = string.Empty;
+
         [XmlArray("Databases")]
         [XmlArrayItem(typeof(Database), ElementName = "Database")]
         public List<Database> Databases { get; set; } = new List<Database>();

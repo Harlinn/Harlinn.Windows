@@ -52,5 +52,11 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public override FieldType FieldType => FieldType.Xml;
     }
 
+    [Serializable]
+    public class TypedFieldDefinition : FieldDefinition
+    {
+        public override FieldType FieldType => FieldType.Typed;
+    }
+
 
 }

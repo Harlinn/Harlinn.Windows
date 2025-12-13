@@ -23,7 +23,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         Table,
         View,
         StoredProcedure,
-        Function
+        Function,
+        Type
     }
 
 

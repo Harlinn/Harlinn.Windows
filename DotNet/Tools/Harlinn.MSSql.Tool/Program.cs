@@ -65,7 +65,14 @@ namespace Harlinn.MSSql.Tool
             _instance = this;
             try
             {
-
+                var options = (BuildOptions)_options;
+                if (string.IsNullOrEmpty(options.OutputDirectory))
+                {
+                    options.OutputDirectory = BuildOptions.GetDefaultOutputDirectory(Options.Project);
+                }
+                var context = new CodeGenerators.Context(_project, options);
+                var generator = new CodeGenerators.Generator(context);
+                generator.Run();
             }
             finally
             {

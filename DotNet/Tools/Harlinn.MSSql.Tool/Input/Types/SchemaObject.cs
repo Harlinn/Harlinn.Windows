@@ -26,16 +26,34 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlIgnore]
         public Schema? Owner { get; set; } = null;
 
+        [XmlIgnore]
+        public Project? Project => Owner?.Project;
+
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
 
         internal virtual void Initialize()
         {
+            AddToProject();
+        }
+
+        internal void AddToProject()
+        {
             var project = Owner?.Owner?.Project;
             if (project != null)
             {
-                var key = $"{Owner?.Owner?.Name}.{Owner?.Name}.{Name}";
+                var databaseName = Owner?.Owner?.Name;
+                var schemaName = Owner?.Name;
+                var objectName = Name;
+                var key = $"{databaseName}.{schemaName}.{objectName}";
                 project.SchemaObjects[key] = this;
+                if (this is EntityDefinition entity)
+                {
+                    var tableName = entity.Name;
+                    var qualifiedTableName = $"{databaseName}.{schemaName}.{tableName}";
+                    project.EntitiesByTableName[qualifiedTableName] = entity;
+                    project.Entities.Add(entity);
+                }
             }
         }
 
@@ -43,6 +61,72 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
             
         }
+
+        internal SchemaObject? GetSchemaObject( string schemaObjectName)
+        {
+            if (string.IsNullOrEmpty(schemaObjectName))
+            {
+                throw new ArgumentException("Schema object name cannot be null or empty.", nameof(schemaObjectName));
+            }
+            var parts = schemaObjectName.Split('.');
+            if (parts.Length == 1)
+            {
+                // Only object name provided, use current schema
+                var objectName = parts[0];
+                if (Owner != null)
+                {
+                    if (Owner.ObjectsByName.TryGetValue(objectName, out var schemaObject))
+                    {  
+                        return schemaObject; 
+                    }
+                    if (Owner.EntitiesByTableName.TryGetValue(objectName, out var entity))
+                    {
+                        return entity;
+                    }
+                }
+            }
+            else if (parts.Length == 2)
+            {
+                // Schema and object name provided
+                var schemaName = parts[0];
+                var objectName = parts[1];
+                var database = Owner?.Owner;
+                if (database != null)
+                {
+                    foreach (var schema in database.Schemas)
+                    {
+                        if (schema.Name.Equals(schemaName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (schema.ObjectsByName.TryGetValue(objectName, out var schemaObject))
+                            {
+                                return schemaObject;
+                            }
+                            if (schema.EntitiesByTableName.TryGetValue(objectName, out var entity))
+                            {
+                                return entity;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (parts.Length == 3)
+            {
+                var project = Owner?.Owner?.Project;
+                if (project != null)
+                {
+                    if (project.SchemaObjects.TryGetValue(schemaObjectName, out var schemaObject))
+                    {
+                        return schemaObject;
+                    }
+                    if (project.EntitiesByTableName.TryGetValue(schemaObjectName, out var entity))
+                    {
+                        return entity;
+                    }
+                }
+            }
+            return null;
+        }
+
     }
 
 
