@@ -139,6 +139,25 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
         }
 
+        [XmlIgnore]
+        public string DataTypeNamespace
+        {
+            get
+            {
+                var project = Project;
+                var rootNamespace = project?.Namespace;
+                var schemaNamespace = Owner?.Namespace;
+                if (!string.IsNullOrEmpty(schemaNamespace))
+                {
+                    return $"{rootNamespace}.Types.{schemaNamespace}";
+                }
+                else
+                {
+                    return rootNamespace! + ".Types";
+                }
+            }
+        }
+
         [XmlArray("Fields")]
         [XmlArrayItem(typeof(BooleanFieldDefinition),ElementName ="Boolean")]
         [XmlArrayItem(typeof(ByteFieldDefinition),ElementName ="Byte")]

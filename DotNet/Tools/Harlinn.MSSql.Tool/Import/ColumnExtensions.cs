@@ -197,7 +197,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName,
-                        Size = column.MaxLength
+                        Size = column.MaxLength / 2
                     };
                     return result;
                 }
@@ -343,7 +343,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName,
-                        Size = column.MaxLength
+                        Size = column.MaxLength / 2
                     };
                     return result;
                 }
@@ -354,7 +354,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName,
-                        Size = column.MaxLength
+                        Size = column.MaxLength / 2
                     };
                     return result;
                 }
@@ -375,7 +375,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName,
-                        Size = column.MaxLength
+                        Size = column.MaxLength / 2
                     };
                     return result;
                 } 

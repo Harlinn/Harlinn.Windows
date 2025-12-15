@@ -17,6 +17,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators
         {
             Database.MsSqlGenerator msSqlGenerator = new Database.MsSqlGenerator(_context);
             msSqlGenerator.Run();
+            CSharp.CSharpGenerator csharpGenerator = new CSharp.CSharpGenerator(_context);
+            csharpGenerator.Run();
         }
 
     }
