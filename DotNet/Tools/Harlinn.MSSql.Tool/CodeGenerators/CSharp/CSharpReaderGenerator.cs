@@ -34,7 +34,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             WriteLine("{");
             WriteLine($"    public const string QualifiedTableName = \"{MsSqlHelper.GetQualifiedTableName(Entity)}\";");
             WriteLine($"    public const string TableName = \"{MsSqlHelper.GetTableName(Entity)}\";");
-            WriteLine($"    public const string ShortName = \"{MsSqlHelper.GetShortName(Entity)}\";");
+            var shortName = MsSqlHelper.GetShortName(Entity).ToLower();
+            WriteLine($"    public const string ShortName = \"{shortName}\";");
             WriteLine($"    public const string Sql = \"\"\"");
             WriteLine($"        SELECT");
             var fieldDefinitions = Entity.Fields;
@@ -44,12 +45,12 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             {
                 var fieldDefinition = fieldDefinitions[i];
                 var columnName = MsSqlHelper.GetColumnName(fieldDefinition);
-                columnNamesList.Add(columnName);
+                columnNamesList.Add(shortName + "." + columnName);
             }
             var columnNames = string.Join($",{Environment.NewLine}          ", columnNamesList);
             WriteLine($"          {columnNames}");
             WriteLine($"        FROM");
-            WriteLine($"          {MsSqlHelper.GetQualifiedTableName(Entity)}");
+            WriteLine($"          {MsSqlHelper.GetQualifiedTableName(Entity)} {shortName}");
             WriteLine("        \"\"\";");
             WriteLine();
             for (int i = 0; i < fieldDefinitionsCount; i++)
@@ -105,6 +106,35 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
             }
             WriteLine();
+            var dataTypeName = CSharpHelper.GetDataType(Entity);
+            var qualifiedDataTypeNamespace = CSharpHelper.GetQualifiedDataTypeNamespace(Entity);
+            WriteLine($"    public {qualifiedDataTypeNamespace}.{dataTypeName} ToDataObject()");
+            WriteLine("    {");
+            var propertyNameList = new List<string>();
+            for (int i = 0; i < fieldDefinitionsCount; i++)
+            {
+                var fieldDefinition = fieldDefinitions[i];
+                var propertyName = CSharpHelper.GetMemberPropertyName(fieldDefinition);
+                propertyNameList.Add(propertyName);
+            }
+            var propertyNames = string.Join($",{Environment.NewLine}            ", propertyNameList);
+
+            WriteLine($"        return new {qualifiedDataTypeNamespace}.{dataTypeName}({propertyNames});");
+            
+            WriteLine("    }");
+            WriteLine();
+
+            WriteLine($"    public List<{qualifiedDataTypeNamespace}.{dataTypeName}> ToList()");
+            WriteLine("    {");
+            WriteLine($"        var list = new List<{qualifiedDataTypeNamespace}.{dataTypeName}>();");
+            WriteLine("        while (Read())");
+            WriteLine("        {");
+            WriteLine("            list.Add(ToDataObject());");
+            WriteLine("        }");
+            WriteLine("        return list;");
+            WriteLine("    }");
+            WriteLine();
+
 
             WriteLine("}");
 
