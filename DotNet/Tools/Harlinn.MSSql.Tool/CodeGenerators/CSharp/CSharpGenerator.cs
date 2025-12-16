@@ -30,6 +30,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             storedProceduresGenerator.Run();
             storedProceduresGenerator.SaveToFile(Context.Output.CSharp.StoredProcedures);
 
+            CSharpSqlDataReaderExtensionsGenerator sqlDataReaderExtensionsGenerator = new CSharpSqlDataReaderExtensionsGenerator(Context);
+            sqlDataReaderExtensionsGenerator.Run();
+            sqlDataReaderExtensionsGenerator.SaveToFile(Path.Combine(Context.Output.CSharp.ReadersDirectory, "SqlDataReaderExtensions.cs"));
+
             foreach (var entity in entities)
             {
                 CSharpReaderGenerator dataTypeGenerator = new CSharpReaderGenerator(Context, entity);

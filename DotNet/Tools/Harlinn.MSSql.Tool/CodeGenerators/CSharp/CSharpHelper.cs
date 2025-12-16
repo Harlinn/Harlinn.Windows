@@ -451,6 +451,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return projectNamespace + ".Database";
         }
 
+        public static string GetDatabaseReaderNamespace(Context context)
+        {
+            var project = context.Project;
+            var projectNamespace = string.IsNullOrEmpty(project.Namespace) ? project.Name.FirstToUpper() : project.Namespace;
+            return projectNamespace + ".Database.Readers";
+        }
+
         public static string GetDatabaseReaderNamespace(EntityDefinition entityDefinition)
         {
             var project = entityDefinition.Project!;

@@ -6,6 +6,7 @@ using System.Xml.Linq;
 
 namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 {
+
     public class CSharpStoredProceduresGenerator : CodeWriter
     {
         public CSharpStoredProceduresGenerator(Context context) : base(context)
