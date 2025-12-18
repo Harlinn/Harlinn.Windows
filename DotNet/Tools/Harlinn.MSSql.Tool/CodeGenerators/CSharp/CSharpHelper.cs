@@ -116,114 +116,159 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
             return result;
         }
-        public static string GetBaseType(FieldDefinition fieldDefinition)
+
+
+        public static string GetNotNullableBaseType(PropertyDefinition propertyDefinition)
         {
             string result = "<unknown>";
-            var fieldType = fieldDefinition.FieldType;
+            var fieldType = propertyDefinition.Kind;
             switch (fieldType)
             {
-                case FieldType.Boolean:
+                case PropertyKind.Boolean:
                 {
-                    result = fieldDefinition.IsNullable ? "bool?" : "bool";
+                    result = "bool";
                 }
                 break;
-                case FieldType.SByte:
+                case PropertyKind.SByte:
                 {
-                    result = fieldDefinition.IsNullable ? "sbyte?" : "sbyte";
+                    result = "sbyte";
                 }
                 break;
-                case FieldType.Byte:
+                case PropertyKind.Byte:
                 {
-                    result = fieldDefinition.IsNullable ? "byte?" : "byte";
+                    result = "byte";
                 }
                 break;
-                case FieldType.Int16:
+                case PropertyKind.Char:
                 {
-                    result = fieldDefinition.IsNullable ? "short?" : "short";
+                    result = "char";
                 }
                 break;
-                case FieldType.UInt16:
+                case PropertyKind.Int16:
                 {
-                    result = fieldDefinition.IsNullable ? "ushort?" : "ushort";
+                    result = "short";
                 }
                 break;
-                case FieldType.Int32:
+                case PropertyKind.UInt16:
                 {
-                    result = fieldDefinition.IsNullable ? "int?" : "int";
+                    result = "ushort";
                 }
                 break;
-                case FieldType.UInt32:
+                case PropertyKind.Int32:
                 {
-                    result = fieldDefinition.IsNullable ? "uint?" : "uint";
+                    result = "int";
                 }
                 break;
-                case FieldType.Int64:
+                case PropertyKind.UInt32:
                 {
-                    result = fieldDefinition.IsNullable ? "long?" : "long";
+                    result = "uint";
                 }
                 break;
-                case FieldType.UInt64:
+                case PropertyKind.Int64:
                 {
-                    result = fieldDefinition.IsNullable ? "ulong?" : "ulong";
+                    result = "long";
                 }
                 break;
-                case FieldType.Single:
+                case PropertyKind.UInt64:
                 {
-                    result = fieldDefinition.IsNullable ? "float?" : "float";
+                    result = "ulong";
                 }
                 break;
-                case FieldType.Double:
+                case PropertyKind.Single:
                 {
-                    result = fieldDefinition.IsNullable ? "double?" : "double";
+                    result = "float";
                 }
                 break;
-                case FieldType.DateTime:
+                case PropertyKind.Double:
                 {
-                    result = fieldDefinition.IsNullable ? "DateTime?" : "DateTime";
+                    result = "double";
                 }
                 break;
-                case FieldType.TimeSpan:
+                case PropertyKind.Decimal:
                 {
-                    result = fieldDefinition.IsNullable ? "TimeSpan?" : "TimeSpan";
+                    result = "decimal";
                 }
                 break;
-                case FieldType.Guid:
+                case PropertyKind.DateTime:
                 {
-                    result = fieldDefinition.IsNullable ? "Guid?" : "Guid";
+                    result = "DateTime";
                 }
                 break;
-                case FieldType.String:
+                case PropertyKind.TimeSpan:
                 {
-                    result = fieldDefinition.IsNullable ? "string?" : "string";
+                    result = "TimeSpan";
                 }
                 break;
-                case FieldType.Binary:
+                case PropertyKind.Guid:
                 {
-                    result = fieldDefinition.IsNullable ? "byte[]?" : "byte[]";
+                    result = "Guid";
                 }
                 break;
-                case FieldType.Unknown:
-                    break;
-                case FieldType.Char:
-                    break;
-                case FieldType.Decimal:
-                    break;
-                case FieldType.SqlVariant:
-                    break;
-                case FieldType.HierarchyId:
-                    break;
-                case FieldType.Geometry:
-                    break;
-                case FieldType.Geography:
-                    break;
-                case FieldType.Xml:
-                    break;
-                case FieldType.Typed:
-                    break;
+                case PropertyKind.String:
+                {
+                    result = "string";
+                }
+                break;
+                case PropertyKind.Binary:
+                {
+                    result = "byte[]";
+                }
+                break;
+                case PropertyKind.Enum:
+                {
+                    var enumPropertyDefinition = propertyDefinition as EnumPropertyDefinition;
+                    var enumDefinition = enumPropertyDefinition?.Type;
+                    if (enumDefinition != null)
+                    {
+                        result = enumDefinition.Name;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Enum property '{propertyDefinition.Name}' does not have a type defined.");
+                    }
+                }
+                break;
+                case PropertyKind.Object:
+                {
+                    var typedPropertyDefinition = propertyDefinition as TypedPropertyDefinition;
+                    var typeDefinition = typedPropertyDefinition?.Type;
+                    if(typeDefinition != null)
+                    {
+                        result = typeDefinition.Name;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Typed property '{propertyDefinition.Name}' does not have a type defined.");
+                    }
+                }
+                break;
+
+
             }
 
             return result;
         }
+
+        public static string GetBaseType(FieldDefinition fieldDefinition)
+        {
+            string result = GetNotNullableBaseType(fieldDefinition);
+            if (fieldDefinition.IsNullable)
+            {
+                result += "?";
+            }
+            return result;
+        }
+
+        public static string GetBaseType(PropertyDefinition propertyDefinition)
+        {
+            string result = GetNotNullableBaseType(propertyDefinition);
+            if(propertyDefinition.IsNullable)
+            {
+                result += "?";
+            }
+            return result;
+        }
+
 
         public static string GetDataReaderFunction(FieldDefinition fieldDefinition)
         {
@@ -357,6 +402,145 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return result;
         }
 
+        public static string GetDefaultValue(PropertyDefinition propertyDefinition)
+        {
+            string result = "<unknown>";
+            var fieldType = propertyDefinition.Kind;
+            switch (fieldType)
+            {
+                case PropertyKind.Boolean:
+                {
+                    result = "false";
+                }
+                break;
+                case PropertyKind.SByte:
+                {
+                    result = "0";
+                }
+                break;
+                case PropertyKind.Byte:
+                {
+                    result = "0";
+                }
+                break;
+                case PropertyKind.Char:
+                {
+                    result = "\'\\0\'";
+                }
+                break;
+                case PropertyKind.Int16:
+                {
+                    result = "0";
+                }
+                break;
+                case PropertyKind.UInt16:
+                {
+                    result = "0";
+                }
+                break;
+                case PropertyKind.Int32:
+                {
+                    result = "0";
+                }
+                break;
+                case PropertyKind.UInt32:
+                {
+                    result = "0";
+                }
+                break;
+                case PropertyKind.Int64:
+                {
+                    result = "0L";
+                }
+                break;
+                case PropertyKind.UInt64:
+                {
+                    result = "0UL";
+                }
+                break;
+                case PropertyKind.Single:
+                {
+                    result = "0.0f";
+                }
+                break;
+                case PropertyKind.Double:
+                {
+                    result = "0.0";
+                }
+                break;
+                case PropertyKind.Decimal:
+                {
+                    result = "0.0m";
+                }
+                break;
+                case PropertyKind.DateTime:
+                {
+                    result = "default(DateTime)";
+                }
+                break;
+                case PropertyKind.TimeSpan:
+                {
+                    result = "default(TimeSpan)";
+                }
+                break;
+                case PropertyKind.Guid:
+                {
+                    result = "Guid.Empty";
+                }
+                break;
+                case PropertyKind.String:
+                {
+                    result = "string.Empty";
+                }
+                break;
+                case PropertyKind.Binary:
+                {
+                    result = "Array.Empty<byte>()";
+                }
+                break;
+                case PropertyKind.Enum:
+                {
+                    var enumPropertyDefinition = propertyDefinition as EnumPropertyDefinition;
+                    var enumDefinition = enumPropertyDefinition?.Type as EnumDefinition;
+                    if (enumDefinition != null)
+                    {
+                        result = enumDefinition.DefaultValue;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Enum property '{propertyDefinition.Name}' does not have a type defined.");
+                    }
+                }
+                break;
+                case PropertyKind.Object:
+                {
+                    var typedPropertyDefinition = propertyDefinition as TypedPropertyDefinition;
+                    var typeDefinition = typedPropertyDefinition?.Type;
+                    if (typeDefinition != null)
+                    {
+                        if (typeDefinition.Kind == TypeKind.Class)
+                        {
+                            result = "null";
+                        }
+                        else
+                        {
+                            result = $"new {typeDefinition.Name}()";
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Typed property '{propertyDefinition.Name}' does not have a type defined.");
+                    }
+                }
+                break;
+
+
+            }
+
+            return result;
+        }
+
+
         public static string GetInputArgumentType(FieldDefinition fieldDefinition)
         {
             return GetBaseType(fieldDefinition);
@@ -365,6 +549,21 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         public static string GetInputArgumentName(FieldDefinition fieldDefinition)
         {
             var name = fieldDefinition.Name.FirstToLower();
+            if (keyWords.Contains(name))
+            {
+                name = name + "__";
+            }
+            return name;
+        }
+
+        public static string GetInputArgumentType(PropertyDefinition propertyDefinition)
+        {
+            return GetBaseType(propertyDefinition);
+        }
+
+        public static string GetInputArgumentName(PropertyDefinition propertyDefinition)
+        {
+            var name = propertyDefinition.Name.FirstToLower();
             if (keyWords.Contains(name))
             {
                 name = name + "__";
@@ -393,16 +592,45 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return name;
         }
 
+        public static string GetMemberFieldType(PropertyDefinition propertyDefinition)
+        {
+            return GetBaseType(propertyDefinition);
+        }
+
+        public static string GetMemberFieldName(PropertyDefinition propertyDefinition)
+        {
+            var name = "_" + propertyDefinition.Name.FirstToLower();
+            return name;
+        }
+
+
         public static string GetMemberPropertyName(FieldDefinition fieldDefinition)
         {
             var name = fieldDefinition.Name.FirstToUpper();
             return name!;
         }
 
+        public static string GetMemberPropertyName(PropertyDefinition propertyDefinition)
+        {
+            var name = propertyDefinition.Name.FirstToUpper();
+            return name!;
+        }
+
+
         public static bool MemberFieldRequiresDefaultValue(FieldDefinition fieldDefinition)
         {
             FieldType memberType = fieldDefinition.FieldType;
             if (fieldDefinition.IsNullable == false && (memberType <= FieldType.Decimal || memberType == FieldType.String || memberType == FieldType.Binary))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool MemberFieldRequiresDefaultValue(PropertyDefinition propertyDefinition)
+        {
+            var memberType = propertyDefinition.Kind;
+            if (propertyDefinition.IsNullable == false && (memberType <= PropertyKind.Decimal || memberType == PropertyKind.String || memberType == PropertyKind.Binary))
             {
                 return true;
             }
@@ -431,6 +659,29 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return string.Join($",{Environment.NewLine}", arguments);
         }
 
+        public static string GetConstructorArguments(ObjectDefinition objectDefinition, string indentation, IReadOnlyList<PropertyDefinition> propertyDefinitions)
+        {
+            var fieldDefinitionsCount = propertyDefinitions.Count;
+            var arguments = new List<string>();
+            for (int i = 0; i < fieldDefinitionsCount; i++)
+            {
+                var member = propertyDefinitions[i];
+                var argumentType = GetInputArgumentType(member);
+                var argumentName = GetInputArgumentName(member);
+                if (i == 0)
+                {
+                    arguments.Add($"{argumentType} {argumentName}");
+                }
+                else
+                {
+                    arguments.Add($"{indentation}{argumentType} {argumentName}");
+                }
+
+            }
+            return string.Join($",{Environment.NewLine}", arguments);
+        }
+
+
         public static string GetDataTypeNamespace(EntityDefinition entityDefinition)
         {
             return entityDefinition.DataTypeNamespace;
@@ -443,6 +694,20 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
             return "Types."+ schemaNamespace;
         }
+
+        public static string GetTypeNamespace(TypeDefinition typeDefinition)
+        {
+            return typeDefinition.TypeNamespace;
+        }
+
+        public static string GetQualifiedTypeNamespace(TypeDefinition typeDefinition)
+        {
+            var schema = typeDefinition.Owner!;
+            var schemaNamespace = string.IsNullOrEmpty(schema.Namespace) ? schema.Name.FirstToUpper() : schema.Namespace;
+
+            return "Types." + schemaNamespace;
+        }
+
 
         public static string GetDatabaseNamespace(Context context)
         {

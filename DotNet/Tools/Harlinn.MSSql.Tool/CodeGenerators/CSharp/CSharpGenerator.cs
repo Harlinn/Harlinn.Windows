@@ -44,6 +44,31 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                 var filename = System.IO.Path.Combine(schemaDirectory, $"{readerClassName}.cs");
                 dataTypeGenerator.SaveToFile(filename);
             }
+            var typeDefinitions = Context.Project.TypeDefinitions;
+            foreach (var entry in typeDefinitions)
+            {
+                var typeDefinition = entry.Value;
+                if(typeDefinition is Input.Types.EnumDefinition enumDefinition)
+                {
+                    CSharpEnumGenerator enumGenerator = new CSharpEnumGenerator(Context, enumDefinition);
+                    enumGenerator.Run();
+                    var typesDirectory = Context.Output.CSharp.TypesDirectory;
+                    var schemaDirectory = System.IO.Path.Combine(typesDirectory, string.IsNullOrEmpty(enumDefinition.Owner!.Namespace) ? enumDefinition.Owner!.Name.FirstToUpper()! : enumDefinition.Owner!.Namespace);
+                    var filename = System.IO.Path.Combine(schemaDirectory, $"{enumDefinition.Name}.cs");
+                    enumGenerator.SaveToFile(filename);
+                }
+                else if (typeDefinition is Input.Types.ObjectDefinition objectDefinition)
+                {
+                    CSharpObjectGenerator objectGenerator = new CSharpObjectGenerator(Context, objectDefinition);
+                    objectGenerator.Run();
+                    var typesDirectory = Context.Output.CSharp.TypesDirectory;
+                    var schemaDirectory = System.IO.Path.Combine(typesDirectory, string.IsNullOrEmpty(objectDefinition.Owner!.Namespace) ? objectDefinition.Owner!.Name.FirstToUpper()! : objectDefinition.Owner!.Namespace);
+                    var filename = System.IO.Path.Combine(schemaDirectory, $"{objectDefinition.Name}.cs");
+                    objectGenerator.SaveToFile(filename);
+                }
+
+
+            }
 
         }
 

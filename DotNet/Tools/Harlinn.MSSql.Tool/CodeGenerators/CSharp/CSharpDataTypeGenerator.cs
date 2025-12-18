@@ -3,7 +3,6 @@ using Harlinn.MSSql.Tool.Output;
 
 namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 {
-
     public class CSharpDataTypeGenerator : CodeWriter
     {
         readonly EntityDefinition _entityDefinition;

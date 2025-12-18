@@ -32,6 +32,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, EntityDefinition> EntitiesByTableName { get; set; } = new Dictionary<string, EntityDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
+        public Dictionary<string, TypeDefinition> TypeDefinitions { get; set; } = new Dictionary<string, TypeDefinition>();
+
+        [XmlIgnore]
         public Database? Owner { get; set; } = null;
 
         [XmlIgnore]
@@ -43,6 +46,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute, DefaultValue("")]
         public string Namespace { get; set; } = string.Empty;
 
+        [XmlArray("Types")]
+        [XmlArrayItem(typeof(EnumDefinition), ElementName = "Enum")]
+        [XmlArrayItem(typeof(ClassDefinition), ElementName = "Class")]
+        [XmlArrayItem(typeof(StructDefinition), ElementName = "Struct")]
+        public List<TypeDefinition> Types { get; set; } = new List<TypeDefinition>();
+
         [XmlArray("Objects")]
         [XmlArrayItem(typeof(EntityDefinition), ElementName = "Entity")]
         [XmlArrayItem(typeof(ViewDefinition), ElementName = "View")]
@@ -50,8 +59,18 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(FunctionDefinition), ElementName = "Function")]
         public List<SchemaObject> Objects { get; set; } = new List<SchemaObject>();
 
+        
+
+
         internal void Initialize()
         {
+            foreach (var typeDefinition in Types)
+            {
+                typeDefinition.Owner = this;
+                TypeDefinitions[typeDefinition.Name] = typeDefinition;
+                typeDefinition.Initialize();
+            }
+
             foreach (var schemaObject in Objects)
             {
                 schemaObject.Owner = this;
@@ -86,6 +105,11 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         internal void Initialize2()
         {
+            foreach (var typeDefinition in Types)
+            {
+                typeDefinition.Initialize2();
+            }
+
             foreach (var schemaObject in Objects)
             {
                 schemaObject.Initialize2();
@@ -109,6 +133,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 entity.ImportTable(sqlConnection, table);
             }
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 
 

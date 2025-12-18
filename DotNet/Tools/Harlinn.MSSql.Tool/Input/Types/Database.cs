@@ -101,6 +101,11 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 schema.Initialize2();
             }
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
 

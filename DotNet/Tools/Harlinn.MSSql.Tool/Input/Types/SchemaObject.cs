@@ -127,6 +127,64 @@ namespace Harlinn.MSSql.Tool.Input.Types
             return null;
         }
 
+        internal TypeDefinition? GetTypeDefinition(string typeDefinitionName)
+        {
+            if (string.IsNullOrEmpty(typeDefinitionName))
+            {
+                throw new ArgumentException("Type definition name cannot be null or empty.", nameof(typeDefinitionName));
+            }
+            var parts = typeDefinitionName.Split('.');
+            if (parts.Length == 1)
+            {
+                // Only object name provided, use current schema
+                var objectName = parts[0];
+                if (Owner != null)
+                {
+                    if (Owner.TypeDefinitions.TryGetValue(objectName, out var typeDefinition))
+                    {
+                        return typeDefinition;
+                    }
+                }
+            }
+            else if (parts.Length == 2)
+            {
+                // Schema and object name provided
+                var schemaName = parts[0];
+                var objectName = parts[1];
+                var database = Owner?.Owner;
+                if (database != null)
+                {
+                    foreach (var schema in database.Schemas)
+                    {
+                        if (schema.Name.Equals(schemaName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (Owner.TypeDefinitions.TryGetValue(objectName, out var typeDefinition))
+                            {
+                                return typeDefinition;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (parts.Length == 3)
+            {
+                var project = Owner?.Owner?.Project;
+                if (project != null)
+                {
+                    if (project.TypeDefinitions.TryGetValue(typeDefinitionName, out var typeDefinition))
+                    {
+                        return typeDefinition;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 
 

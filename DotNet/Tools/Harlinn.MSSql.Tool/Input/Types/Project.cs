@@ -37,6 +37,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlIgnore]
         public List<EntityDefinition> Entities { get; set; } = new List<EntityDefinition>();
 
+        [XmlIgnore]
+        public Dictionary<string, TypeDefinition> TypeDefinitions { get; set; } = new Dictionary<string, TypeDefinition>();
+
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
@@ -93,7 +96,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
         }
 
-
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
 
