@@ -74,9 +74,16 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         void WriteColumn(EntityDefinition entity, FieldDefinition field)
         {
-            var columnName = MsSqlHelper.GetColumnName( field );
-            var columnType = MsSqlHelper.GetColumnType(field);
-            WriteLine($"    {columnName} {columnType},");
+            
+            var columnName = MsSqlHelper.GetColumnName(field);
+            var columnType = MsSqlHelper.GetRawColumnType(field);
+            var columnIdentity = MsSqlHelper.GetColumnIdentity(field);
+            if (string.IsNullOrEmpty(columnIdentity) == false)
+            {
+                columnIdentity = " " + columnIdentity;
+            }
+            var columnNull = field.IsNullable ? "NULL" : "NOT NULL";
+            WriteLine($"    {columnName} {columnType}{columnIdentity} {columnNull},");
         }
 
         void WriteIndexes(EntityDefinition entity)

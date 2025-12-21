@@ -434,6 +434,44 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return connection.GetIdentityColumn(column.ObjectId, column.ColumnId);
         }
 
+        public static IReadOnlyList<ComputedColumn> GetComputedColumns(this SqlConnection connection, int objectId)
+        {
+            var sql = $"{ComputedColumnsReader.Sql} WHERE [object_id] = @ObjectId ORDER BY [column_id]";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var columnsReader = new ComputedColumnsReader(reader, false);
+                    return columnsReader.GetComputedColumns();
+                }
+            }
+        }
+
+        public static ComputedColumn? GetComputedColumn(this SqlConnection connection, int objectId, int columnId)
+        {
+            var sql = $"{ComputedColumnsReader.Sql} WHERE [object_id] = @ObjectId AND [column_id] = @ColumnId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@ColumnId", columnId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var columnsReader = new ComputedColumnsReader(reader, false);
+                        return columnsReader.GetComputedColumn();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static ComputedColumn? GetComputedColumn(this SqlConnection connection, Column column)
+        {
+            return connection.GetComputedColumn(column.ObjectId, column.ColumnId);
+        }
+
         public static DefaultConstraint? GetDefaultConstraint(this SqlConnection connection, int parentObjectId, int columnId)
         {
             var sql = $"{DefaultConstraintsReader.Sql} WHERE [parent_object_id] = @ParentObjectId AND [parent_column_id] = @ColumnId";

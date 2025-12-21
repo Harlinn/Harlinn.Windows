@@ -74,6 +74,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute, DefaultValue(false)]
         public bool NewSequentialId { get => _newSequentialId; set => _newSequentialId = value; }
 
+        [XmlIgnore]
+        public override bool IsNewId => _newId || _newSequentialId;
+
+
         public override string ToString()
         {
             var result = base.ToString();

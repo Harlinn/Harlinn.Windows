@@ -40,6 +40,23 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public string? Definition { get => _definition; set => _definition = value; }
     }
 
+    public class FieldComputed
+    {
+        string _expression = string.Empty;
+        bool _isPersisted = false;
+        public FieldComputed()
+        { }
+        public FieldComputed(string expression,  bool isPersisted)
+        {
+            _expression = expression;
+            _isPersisted = isPersisted;
+        }
+        [XmlAttribute, DefaultValue(null)]
+        public string Expression { get => _expression; set => _expression = value; }
+        [XmlAttribute, DefaultValue(false)]
+        public bool IsPersisted { get => _isPersisted; set => _isPersisted = value; }
+    }
+
 
     [Serializable]
     public abstract class FieldDefinition : IEquatable<FieldDefinition>
@@ -47,6 +64,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlIgnore]
         bool? _isReference;
         FieldDefaultConstraint? _defaultConstraint;
+        FieldComputed? _computed = null;
 
         [XmlIgnore]
         public EntityDefinition? Owner { get; set; } = null;
@@ -71,11 +89,24 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute, DefaultValue(false)]
         public bool IsNullable { get; set; } = false;
 
+        [XmlIgnore]
+        public virtual bool IsIdentity => false;
+
+        [XmlIgnore]
+        public virtual bool IsNewId => false;
+
         [XmlAttribute]
         public String? DatabaseType { get; set; } = null;
         
         [XmlElement("DefaultConstraint"), DefaultValue(null)]
         public FieldDefaultConstraint? DefaultConstraint { get => _defaultConstraint; set => _defaultConstraint = value; }
+
+        [XmlElement("Computed"), DefaultValue(null)]
+        public FieldComputed? Computed { get => _computed; set => _computed = value; }
+
+        public bool HasDefaultConstraint => _defaultConstraint != null;
+
+        public bool IsComputed => _computed != null;
 
         public virtual bool Equals(FieldDefinition? other)
         {
@@ -354,9 +385,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
     public abstract class IntegerFieldDefinition<T> : NumberFieldDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
     {
-        Identity<T> _identity;
+        Identity<T>? _identity;
 
-        public Identity<T> Identity { get => _identity; set => _identity = value; }
+        [XmlElement("Identity"), DefaultValue(null)]
+        public Identity<T>? Identity { get => _identity; set => _identity = value; }
+
+        public override bool IsIdentity => _identity != null;
     }
 
     public abstract class NumericFieldDefinition<T> : NumberFieldDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>

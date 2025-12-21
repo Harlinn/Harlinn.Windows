@@ -57,11 +57,30 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
                 case FieldType.UInt64:
                     return "[bigint]";
                 case FieldType.Single:
+                {
+                    var singleFieldDefinition = (SingleFieldDefinition)fieldDefinition;
+                    if (singleFieldDefinition.Precision != 24)
+                    {
+                        return $"[float]({singleFieldDefinition.Precision})";
+                    }
                     return "[real]";
+                }
                 case FieldType.Double:
+                {
+                    var doubleFieldDefinition = (DoubleFieldDefinition)fieldDefinition;
+                    if (doubleFieldDefinition.Precision != 53)
+                    {
+                        return $"[float]({doubleFieldDefinition.Precision})";
+                    }
                     return "[float]";
+                }
                 case FieldType.Decimal:
-                    return "[decimal](18, 2)";
+                    var decimalFieldDefinition = (DecimalFieldDefinition)fieldDefinition;
+                    if (decimalFieldDefinition!.Precision != 18 || decimalFieldDefinition.Scale != 0)
+                    {
+                        return $"[decimal]({decimalFieldDefinition.Precision}, {decimalFieldDefinition.Scale})";
+                    }
+                    return "[decimal]";
                 case FieldType.DateTime:
                     return "[datetime2]";
                 case FieldType.TimeSpan:
@@ -69,14 +88,14 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
                 case FieldType.Guid:
                     return "[uniqueidentifier]";
                 case FieldType.String:
-                    var stringFieldDefinition = fieldDefinition as StringFieldDefinition;
+                    var stringFieldDefinition = (StringFieldDefinition)fieldDefinition;
                     if (stringFieldDefinition!.Size > 0 && stringFieldDefinition.Size <= 4000)
                     {
                         return $"[nvarchar]({stringFieldDefinition.Size})";
                     }
                     return "[nvarchar](max)";
                 case FieldType.Binary:
-                    var binaryFieldDefinition = fieldDefinition as BinaryFieldDefinition;
+                    var binaryFieldDefinition = (BinaryFieldDefinition)fieldDefinition;
                     if (binaryFieldDefinition!.Size > 0 && binaryFieldDefinition.Size <= 8000)
                     {
                         return $"[varbinary]({binaryFieldDefinition.Size})";
@@ -96,6 +115,179 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
                     throw new NotSupportedException($"Field type {fieldType} is not supported.");
             }
         }
+
+        public static string GetColumnIdentity(FieldDefinition fieldDefinition)
+        {
+            string result = string.Empty;
+            var fieldType = fieldDefinition.FieldType;
+            switch (fieldType)
+            {
+                case FieldType.Byte:
+                {
+                    var byteFieldDefinition = (ByteFieldDefinition)fieldDefinition;
+                    var identity = byteFieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.SByte:
+                {
+                    var sbyteFieldDefinition = (SByteFieldDefinition)fieldDefinition;
+                    var identity = sbyteFieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.Int16:
+                {
+                    var int16FieldDefinition = (Int16FieldDefinition)fieldDefinition;
+                    var identity = int16FieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.UInt16:
+                {
+                    var uint16FieldDefinition = (UInt16FieldDefinition)fieldDefinition;
+                    var identity = uint16FieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.Int32:
+                {
+                    var int32FieldDefinition = (Int32FieldDefinition)fieldDefinition;
+                    var identity = int32FieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.UInt32:
+                {
+                    var uint32FieldDefinition = (UInt32FieldDefinition)fieldDefinition;
+                    var identity = uint32FieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.Int64:
+                {
+                    var int64FieldDefinition = (Int64FieldDefinition)fieldDefinition;
+                    var identity = int64FieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.UInt64:
+                {
+                    var uint64FieldDefinition = (UInt64FieldDefinition)fieldDefinition;
+                    var identity = uint64FieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+                case FieldType.Decimal:
+                {
+                    var uint64FieldDefinition = (UInt64FieldDefinition)fieldDefinition;
+                    var identity = uint64FieldDefinition.Identity;
+                    if (identity != null)
+                    {
+                        if (identity.Seed != 1 || identity.Increment != 1)
+                        {
+                            result = $"IDENTITY({identity.Seed},{identity.Increment})";
+                        }
+                        else
+                        {
+                            result = "IDENTITY";
+                        }
+                    }
+                }
+                break;
+
+            }
+            return result;
+        }
+
+
+        public static bool IsOutputParameter(FieldDefinition fieldDefinition)
+        {
+            return fieldDefinition.IsIdentity || fieldDefinition.IsNewId;
+        }
+
+
+
 
         public static string GetColumnType(FieldDefinition fieldDefinition)
         {

@@ -24,7 +24,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
     {
         int _precision = 18;
         int _scale = 0;
-        Identity<decimal> _identity;
+        Identity<decimal>? _identity;
         public override FieldType FieldType => FieldType.Decimal;
 
         [XmlAttribute, DefaultValue(18)]
@@ -33,7 +33,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public int Scale { get => _scale; set => _scale = value; }
 
 
-        [DefaultValue(null)]
-        public Identity<decimal> Identity { get => _identity; set => _identity = value; }
+        [XmlElement("Identity"), DefaultValue(null)]
+        public Identity<decimal>? Identity { get => _identity; set => _identity = value; }
+
+        [XmlIgnore]
+        public override bool IsIdentity => _identity != null;
     }
 }

@@ -168,9 +168,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return new DefaultConstraint(name, objectId, principalId, schemaId, parentObjectId, type, typeDesc, createDate, modifyDate, isMsShipped, isPublished, isSchemaPublished, parentColumnId, definition, isSystemNamed);
         }
 
-        public IReadOnlyList<SchemaObject> GetSchemaObjects()
+        public IReadOnlyList<DefaultConstraint> GetDefaultConstraints()
         {
-            var schemaObjects = new List<SchemaObject>();
+            var schemaObjects = new List<DefaultConstraint>();
             while (Read())
             {
                 schemaObjects.Add(GetDefaultConstraint());

@@ -28,14 +28,15 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             {
                 var paramName = MsSqlHelper.GetParameterName(field);
                 var paramType = MsSqlHelper.GetRawColumnType(field);
+                var output = MsSqlHelper.IsOutputParameter(field) ? " OUTPUT" : string.Empty;
                 if (first)
                 {
                     first = false;
-                    parameters.Add($"  {paramName} {paramType}");
+                    parameters.Add($"  {paramName} {paramType}{output}");
                 }
                 else
                 {
-                    parameters.Add($"{Environment.NewLine}  {paramName} {paramType}");
+                    parameters.Add($"{Environment.NewLine}  {paramName} {paramType}{output}");
                 }
             }
             return string.Join(", ", parameters);
