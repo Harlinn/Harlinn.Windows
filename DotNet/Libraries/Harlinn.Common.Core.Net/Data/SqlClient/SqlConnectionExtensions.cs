@@ -366,6 +366,26 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        public static Column? GetColumn(this SqlConnection connection, int objectId, int columnId)
+        {
+            var sql = $"{ColumnsReader.Sql} WHERE [object_id] = @ObjectId AND [column_id] = @ColumnId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@ColumnId", columnId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var columnsReader = new ColumnsReader(reader, false);
+                        return columnsReader.GetColumn();
+                    }
+                    return null;
+                }
+            }
+        }
+
+
         public static IReadOnlyList<Column> GetColumns(this SqlConnection connection, Table table)
         {
             return connection.GetColumns(table.ObjectId);
@@ -374,6 +394,68 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         public static IReadOnlyList<Column> GetColumns(this SqlConnection connection, View view)
         {
             return connection.GetColumns(view.ObjectId);
+        }
+
+        public static IReadOnlyList<IdentityColumn> GetIdentityColumns(this SqlConnection connection, int objectId)
+        {
+            var sql = $"{IdentityColumnsReader.Sql} WHERE [object_id] = @ObjectId ORDER BY [column_id]";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var columnsReader = new IdentityColumnsReader(reader, false);
+                    return columnsReader.GetIdentityColumns();
+                }
+            }
+        }
+
+        public static IdentityColumn? GetIdentityColumn(this SqlConnection connection, int objectId, int columnId)
+        {
+            var sql = $"{IdentityColumnsReader.Sql} WHERE [object_id] = @ObjectId AND [column_id] = @ColumnId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@ColumnId", columnId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var columnsReader = new IdentityColumnsReader(reader, false);
+                        return columnsReader.GetIdentityColumn();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static IdentityColumn? GetIdentityColumn(this SqlConnection connection, Column column)
+        {
+            return connection.GetIdentityColumn(column.ObjectId, column.ColumnId);
+        }
+
+        public static DefaultConstraint? GetDefaultConstraint(this SqlConnection connection, int parentObjectId, int columnId)
+        {
+            var sql = $"{DefaultConstraintsReader.Sql} WHERE [parent_object_id] = @ParentObjectId AND [parent_column_id] = @ColumnId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ParentObjectId", parentObjectId);
+                command.Parameters.AddWithValue("@ColumnId", columnId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var columnsReader = new DefaultConstraintsReader(reader, false);
+                        return columnsReader.GetDefaultConstraint();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static DefaultConstraint? GetDefaultConstraint(this SqlConnection connection, Column column)
+        {
+            return connection.GetDefaultConstraint(column.ObjectId, column.ColumnId);
         }
 
         public static IReadOnlyList<Types.Index> GetIndexes(this SqlConnection connection, int objectId)

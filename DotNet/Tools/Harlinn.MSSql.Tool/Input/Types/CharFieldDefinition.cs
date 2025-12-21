@@ -14,10 +14,11 @@
    limitations under the License.
 */
 
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class CharFieldDefinition : FieldDefinition
+    public class CharFieldDefinition : RangeFieldDefinition<char>
     {
         public override FieldType FieldType => FieldType.Char;
     }

@@ -17,7 +17,7 @@
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class BooleanFieldDefinition : FieldDefinition
+    public class BooleanFieldDefinition : ValueFieldDefinition<bool>
     {
         public override FieldType FieldType => FieldType.Boolean;
     }

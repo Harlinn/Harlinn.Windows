@@ -110,7 +110,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                     break;
                 case FieldType.Xml:
                     break;
-                case FieldType.Typed:
+                case FieldType.Object:
                     break;
             }
 
@@ -395,7 +395,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                     break;
                 case FieldType.Xml:
                     break;
-                case FieldType.Typed:
+                case FieldType.Object:
                     break;
             }
 

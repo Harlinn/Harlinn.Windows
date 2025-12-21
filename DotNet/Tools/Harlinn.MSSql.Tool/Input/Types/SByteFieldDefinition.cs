@@ -17,7 +17,7 @@
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class SByteFieldDefinition : FieldDefinition
+    public class SByteFieldDefinition : IntegerFieldDefinition<sbyte>
     {
         public override FieldType FieldType => FieldType.SByte;
     }

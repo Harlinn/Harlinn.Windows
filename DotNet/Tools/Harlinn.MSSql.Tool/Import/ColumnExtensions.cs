@@ -17,13 +17,18 @@
 
 using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
 using Harlinn.MSSql.Tool.Input.Types;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace Harlinn.MSSql.Tool.Import
 {
     public static class ColumnExtensions
     {
-        public static FieldDefinition ToFieldDefinition(this SchemaTypes.Column column)
+        public static FieldDefinition ToFieldDefinition(this SchemaTypes.Column column, SqlConnection sqlConnection)
         {
+            var identityColumn = sqlConnection.GetIdentityColumn(column);
+            var defaultConstraint = sqlConnection.GetDefaultConstraint(column);
+
             var typeName = column.TypeName.ToLowerInvariant();
             switch (typeName)
             {
@@ -36,6 +41,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = -1
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "text":
@@ -47,6 +56,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = -1
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "uniqueidentifier":
@@ -57,6 +70,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if(defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint( defaultConstraint.Name, defaultConstraint.Definition );
+                    }
                     return result;
                 }
                 case "date":
@@ -67,6 +84,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "time":
@@ -77,6 +98,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "datetime2":
@@ -87,6 +112,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "datetimeoffset":
@@ -97,6 +126,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "tinyint":
@@ -107,6 +140,16 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
+                    if(identityColumn != null)
+                    {
+                        var seed = Convert.ToByte(identityColumn.SeedValue);
+                        var increment = Convert.ToByte(identityColumn.IncrementValue);
+                        result.Identity = new Identity<byte>(seed, increment);
+                    }
                     return result;
                 }
                 case "smallint":
@@ -117,6 +160,16 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
+                    if (identityColumn != null)
+                    {
+                        var seed = Convert.ToInt16(identityColumn.SeedValue);
+                        var increment = Convert.ToInt16(identityColumn.IncrementValue);
+                        result.Identity = new Identity<short>(seed, increment);
+                    }
                     return result;
                 }
                 case "int":
@@ -127,6 +180,16 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
+                    if (identityColumn != null)
+                    {
+                        var seed = Convert.ToInt32(identityColumn.SeedValue);
+                        var increment = Convert.ToInt32(identityColumn.IncrementValue);
+                        result.Identity = new Identity<int>(seed, increment);
+                    }
                     return result;
                 }
                 case "smalldatetime":
@@ -137,6 +200,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "real":
@@ -145,8 +212,13 @@ namespace Harlinn.MSSql.Tool.Import
                     {
                         Name = column.Name,
                         IsNullable = column.IsNullable,
+                        Precision = column.Precision,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "money":
@@ -157,6 +229,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "datetime":
@@ -167,6 +243,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "float":
@@ -175,8 +255,13 @@ namespace Harlinn.MSSql.Tool.Import
                     {
                         Name = column.Name,
                         IsNullable = column.IsNullable,
+                        Precision = column.Precision,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "sql_variant":
@@ -187,9 +272,12 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
-                break;
                 case "ntext":
                 {
                     var result = new StringFieldDefinition
@@ -199,6 +287,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "bit":
@@ -209,6 +301,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "decimal":
@@ -217,8 +313,20 @@ namespace Harlinn.MSSql.Tool.Import
                     {
                         Name = column.Name,
                         IsNullable = column.IsNullable,
+                        Precision = column.Precision,
+                        Scale = column.Scale,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
+                    if (identityColumn != null)
+                    {
+                        var seed = Convert.ToDecimal(identityColumn.SeedValue);
+                        var increment = Convert.ToDecimal(identityColumn.IncrementValue);
+                        result.Identity = new Identity<decimal>(seed, increment);
+                    }
                     return result;
                 }
                 case "numeric":
@@ -227,8 +335,20 @@ namespace Harlinn.MSSql.Tool.Import
                     {
                         Name = column.Name,
                         IsNullable = column.IsNullable,
+                        Precision = column.Precision,
+                        Scale = column.Scale,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
+                    if (identityColumn != null)
+                    {
+                        var seed = Convert.ToDecimal(identityColumn.SeedValue);
+                        var increment = Convert.ToDecimal(identityColumn.IncrementValue);
+                        result.Identity = new Identity<decimal>(seed, increment);
+                    }
                     return result;
                 }
                 case "smallmoney":
@@ -239,6 +359,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "bigint":
@@ -249,6 +373,16 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
+                    if (identityColumn != null)
+                    {
+                        var seed = Convert.ToInt64(identityColumn.SeedValue);
+                        var increment = Convert.ToInt64(identityColumn.IncrementValue);
+                        result.Identity = new Identity<long>(seed, increment);
+                    }
                     return result;
                 }
                 case "hierarchyid":
@@ -259,6 +393,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "geometry":
@@ -269,6 +407,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "geography":
@@ -279,6 +421,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "varbinary":
@@ -290,6 +436,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "varchar":
@@ -301,6 +451,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 break;
@@ -313,6 +467,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "char":
@@ -324,6 +482,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "timestamp":
@@ -334,6 +496,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "nvarchar":
@@ -345,6 +511,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "nchar":
@@ -356,6 +526,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "xml":
@@ -366,6 +540,10 @@ namespace Harlinn.MSSql.Tool.Import
                         IsNullable = column.IsNullable,
                         DatabaseType = typeName
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 }
                 case "sysname":
@@ -377,6 +555,10 @@ namespace Harlinn.MSSql.Tool.Import
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };
+                    if (defaultConstraint != null)
+                    {
+                        result.DefaultConstraint = new FieldDefaultConstraint(defaultConstraint.Name, defaultConstraint.Definition);
+                    }
                     return result;
                 } 
                 default:

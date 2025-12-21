@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="180.10.0" />
+    <PackageReference Include="Microsoft.SqlServer.Types" Version="170.1000.7" />
   </ItemGroup>
 
   <ItemGroup>

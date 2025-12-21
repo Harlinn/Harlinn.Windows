@@ -27,7 +27,7 @@ namespace Harlinn.MSSql.Tool
         static Program? _instance;
         private bool disposedValue;
         readonly OptionsBase _options;
-        readonly SqlConnection _sqlConnection;
+        SqlConnection? _sqlConnection;
         //ServerConnection _serverConnection;
 
         Input.Types.Project _project;
@@ -35,8 +35,6 @@ namespace Harlinn.MSSql.Tool
         public Program(OptionsBase options)
         {
             _options = options;
-            _sqlConnection = new SqlConnection(options.GetConnectionString());
-            _sqlConnection.Open();
 
             using FileStream fileStream = new FileStream(options.Project, FileMode.Open, FileAccess.Read);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Input.Types.Project));
@@ -57,6 +55,18 @@ namespace Harlinn.MSSql.Tool
                 }
                 return _instance;
             }
+        }
+
+
+        SqlConnection GetSqlConnection()
+        {
+            if(_sqlConnection == null)
+            {
+                var importOptions = (ImportOptions)_options;
+                _sqlConnection = new SqlConnection(importOptions.GetConnectionString());
+                _sqlConnection.Open();
+            }
+            return _sqlConnection;
         }
 
 
@@ -85,7 +95,8 @@ namespace Harlinn.MSSql.Tool
             _instance = this;
             try
             {
-                _project.Import(_sqlConnection, (ImportOptions)_options);
+                var sqlConnection = GetSqlConnection();
+                _project.Import(sqlConnection, (ImportOptions)_options);
                 _project.SaveToFile(Options.Project);
             }
             finally

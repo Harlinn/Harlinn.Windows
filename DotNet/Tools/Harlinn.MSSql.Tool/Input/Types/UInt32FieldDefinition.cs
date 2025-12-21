@@ -17,7 +17,7 @@
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class UInt32FieldDefinition : FieldDefinition
+    public class UInt32FieldDefinition : IntegerFieldDefinition<uint>
     {
         public override FieldType FieldType => FieldType.UInt32;
     }

@@ -14,11 +14,99 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class DateTimeFieldDefinition : FieldDefinition
+    public class DateTimeFieldDefinition : ValueFieldDefinition<DateTime>
     {
+        static readonly DateTime DefaultMinValue = DateTime.MinValue;
+        static readonly DateTime DefaultMaxValue = DateTime.MaxValue;
+        DateTime _minValue = DefaultMinValue;
+        DateTime _maxValue = DefaultMaxValue;
+
+        [XmlIgnore]
         public override FieldType FieldType => FieldType.DateTime;
+
+        [XmlAttribute("Min"), DefaultValue(null)]
+        public string? MinAsString
+        {
+            get
+            {
+                if (_minValue.Equals(DefaultMinValue))
+                {
+                    return null;
+                }
+                return _minValue.ToString();
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    _minValue = (DateTime)Convert.ChangeType(value, typeof(DateTime));
+                }
+                else
+                {
+                    _minValue = DefaultMinValue;
+                }
+            }
+        }
+
+        [XmlAttribute("Max"), DefaultValue(null)]
+        public string? MaxAsString
+        {
+            get
+            {
+                if (_maxValue.Equals(DefaultMaxValue))
+                {
+                    return null;
+                }
+                return _maxValue.ToString();
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    _maxValue = (DateTime)Convert.ChangeType(value, typeof(DateTime));
+                }
+                else
+                {
+                    _maxValue = DefaultMaxValue;
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public DateTime Min { get => _minValue; set => _minValue = value; }
+        [XmlIgnore]
+        public DateTime Max { get => _maxValue; set => _maxValue = value; }
+
+        [XmlIgnore]
+        public bool HasMin => _minValue.Equals(DefaultMinValue) == false;
+
+        [XmlIgnore]
+        public bool HasMax => _maxValue.Equals(DefaultMaxValue) == false;
+
+        public override string ToString()
+        {
+            var result = base.ToString();
+            if (HasMin)
+            {
+                if (HasMax)
+                {
+                    return $"{result} Min({Min}) Max({Max})";
+                }
+                return $"{result} Min({Min})";
+            }
+            else if (HasMax)
+            {
+                return $"{result} Max({Max})";
+            }
+            return result;
+        }
     }
 }

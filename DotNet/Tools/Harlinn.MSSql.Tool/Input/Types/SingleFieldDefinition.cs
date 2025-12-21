@@ -14,11 +14,18 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class SingleFieldDefinition : FieldDefinition
+    public class SingleFieldDefinition : NumericFieldDefinition<float>
     {
+        int _precision = 24;
         public override FieldType FieldType => FieldType.Single;
+
+        [XmlAttribute, DefaultValue(24)]
+        public int Precision { get => _precision; set => _precision = value; }
     }
 }

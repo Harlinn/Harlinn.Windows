@@ -21,32 +21,12 @@ namespace Harlinn.MSSql.Tool
 {
     public class OptionsBase
     {
-        static string defaultConnectionString = "Data Source=(local);Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+        
         public OptionsBase()
         {
         }
 
-        [Option('c', "connection_string", Required = false, HelpText = "SQL Server connection string.")]
-        public string? ConnectionString { get; set; }
-
-        [Option('i', "initial_catalog", Required = false, HelpText = "SQL Server initial catalog.")]
-        public string? InitialCatalog { get; set; }
-
-        public string GetConnectionString()
-        {
-            if (!string.IsNullOrEmpty(ConnectionString))
-            {
-                return ConnectionString;
-            }
-            else if (!string.IsNullOrEmpty(InitialCatalog))
-            {
-                return $"Data Source=(local);Initial Catalog={InitialCatalog};Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
-            }
-            else
-            {
-                return defaultConnectionString;
-            }
-        }
+        
 
         [Option('p', "project", Required = true, HelpText = "Project file path.")]
         public string Project { get; set; } = string.Empty;
@@ -82,15 +62,40 @@ namespace Harlinn.MSSql.Tool
     [Verb("import", HelpText = "Import database objects into the project.")]
     public class ImportOptions : OptionsBase
     {
+        static string defaultConnectionString = "Data Source=(local);Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
         public ImportOptions()
         {
         }
+
+        [Option('c', "connection_string", Required = false, HelpText = "SQL Server connection string.")]
+        public string? ConnectionString { get; set; }
+
+        [Option('i', "initial_catalog", Required = false, HelpText = "SQL Server initial catalog.")]
+        public string? InitialCatalog { get; set; }
 
         [Option('s', "schema", Required = false, HelpText = "Schema name.")]
         public string Schema { get; set; } = string.Empty;
 
         [Option('t', "table", Required = false, HelpText = "Table name.")]
         public string Table { get; set; } = string.Empty;
+
+        
+
+        public string GetConnectionString()
+        {
+            if (!string.IsNullOrEmpty(ConnectionString))
+            {
+                return ConnectionString;
+            }
+            else if (!string.IsNullOrEmpty(InitialCatalog))
+            {
+                return $"Data Source=(local);Initial Catalog={InitialCatalog};Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+            }
+            else
+            {
+                return defaultConnectionString;
+            }
+        }
 
     }
 

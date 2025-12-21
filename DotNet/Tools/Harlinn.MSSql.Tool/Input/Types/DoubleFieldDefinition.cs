@@ -14,11 +14,22 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class DoubleFieldDefinition : FieldDefinition
+    public class DoubleFieldDefinition : NumericFieldDefinition<double>
     {
+        int _precision = 53;
         public override FieldType FieldType => FieldType.Double;
+
+        [XmlAttribute, DefaultValue(53)]
+        public int Precision { get => _precision; set => _precision = value; }
+
+        
+
+        
     }
 }

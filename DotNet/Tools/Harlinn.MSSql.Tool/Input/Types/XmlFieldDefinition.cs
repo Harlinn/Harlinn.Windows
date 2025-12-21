@@ -14,35 +14,24 @@
    limitations under the License.
 */
 
+using Microsoft.SqlServer.Types;
+using System.ComponentModel;
+using System.Data.SqlTypes;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public enum FieldType
+    [Serializable]
+    public class XmlFieldDefinition : FieldDefinition
     {
-        Unknown,
-        Boolean,
-        Byte,
-        SByte,
-        Char,
-        Int16,
-        UInt16,
-        Int32,
-        UInt32,
-        Int64,
-        UInt64,
-        Single,
-        Double,
-        Decimal,
-        DateTime,
-        TimeSpan,
-        Guid,
-        String,
-        Binary,
-        SqlVariant,
-        HierarchyId,
-        Geometry,
-        Geography,
-        Xml,
-        Object,
-        Enum
+        string? _default;
+        public override FieldType FieldType => FieldType.Xml;
+
+        [XmlAttribute("Default"), DefaultValue(null)]
+        public string? Default { get => _default; set => _default = value; }
     }
+
+
 }

@@ -14,10 +14,11 @@
    limitations under the License.
 */
 
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class ByteFieldDefinition : FieldDefinition
+    public class ByteFieldDefinition : IntegerFieldDefinition<byte>
     {
         public override FieldType FieldType => FieldType.Byte;
     }

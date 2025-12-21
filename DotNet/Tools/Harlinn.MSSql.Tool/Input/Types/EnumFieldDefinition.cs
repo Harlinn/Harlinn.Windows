@@ -16,33 +16,10 @@
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public enum FieldType
+    [Serializable]
+    public class EnumFieldDefinition : TypedFieldDefinition
     {
-        Unknown,
-        Boolean,
-        Byte,
-        SByte,
-        Char,
-        Int16,
-        UInt16,
-        Int32,
-        UInt32,
-        Int64,
-        UInt64,
-        Single,
-        Double,
-        Decimal,
-        DateTime,
-        TimeSpan,
-        Guid,
-        String,
-        Binary,
-        SqlVariant,
-        HierarchyId,
-        Geometry,
-        Geography,
-        Xml,
-        Object,
-        Enum
+        public override FieldType FieldType => FieldType.Enum;
     }
+
 }

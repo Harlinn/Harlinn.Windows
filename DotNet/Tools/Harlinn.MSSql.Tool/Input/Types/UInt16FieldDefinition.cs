@@ -17,7 +17,7 @@
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class UInt16FieldDefinition : FieldDefinition
+    public class UInt16FieldDefinition : IntegerFieldDefinition<ushort>
     {
         public override FieldType FieldType => FieldType.UInt16;
     }

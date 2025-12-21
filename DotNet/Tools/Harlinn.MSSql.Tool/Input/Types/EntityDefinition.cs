@@ -182,6 +182,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(GeometryFieldDefinition),ElementName ="Geometry")]
         [XmlArrayItem(typeof(GeographyFieldDefinition),ElementName ="Geography")]
         [XmlArrayItem(typeof(XmlFieldDefinition),ElementName ="Xml")]
+        [XmlArrayItem(typeof(ObjectFieldDefinition), ElementName = "Object")]
+        [XmlArrayItem(typeof(EnumFieldDefinition), ElementName = "Enum")]
         public List<FieldDefinition> Fields { get; set; } = new List<FieldDefinition>();
 
         [XmlArray("ForeignKeys")]
@@ -277,18 +279,18 @@ namespace Harlinn.MSSql.Tool.Input.Types
         }
 
 
-        internal void ImportColumn(SchemaTypes.Column column)
+        internal void ImportColumn(SqlConnection sqlConnection, SchemaTypes.Column column)
         {
-            var fieldDefinition = column.ToFieldDefinition();
+            var fieldDefinition = column.ToFieldDefinition(sqlConnection);
             fieldDefinition.Owner = this;
             AddField(fieldDefinition);
         }
 
-        internal void ImportColumns(IReadOnlyList<SchemaTypes.Column> columns)
+        internal void ImportColumns(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.Column> columns)
         {
             foreach (var column in columns)
             {
-                ImportColumn(column);
+                ImportColumn(sqlConnection, column);
             }
         }
 
@@ -372,7 +374,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
             Table = table.Name;
             var columns = sqlConnection.GetColumns(table);
-            ImportColumns(columns);
+            ImportColumns(sqlConnection, columns);
             
             var indexes = sqlConnection.GetIndexes(table);
             ImportIndexes(sqlConnection, indexes);
@@ -411,6 +413,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         internal override void Initialize2()
         {
             base.Initialize2();
+            foreach (var field in Fields)
+            {
+                field.Initialize2();
+            }
             foreach (var foreignKey in ForeignKeys)
             {
                 foreignKey.Initialize2();

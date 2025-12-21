@@ -21,9 +21,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
 {
-    
-
-    public class SchemaObjectsReader : DataReaderWrapper
+    public class DefaultConstraintsReader : DataReaderWrapper
     {
         public const string Sql = """
         SELECT [name]
@@ -38,7 +36,10 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             ,[is_ms_shipped]
             ,[is_published]
             ,[is_schema_published]
-        FROM [sys].[objects]
+            ,[parent_column_id]
+            ,[definition]
+            ,[is_system_named]
+        FROM [sys].[default_constraints]
         """;
 
         public const int NameOrdinal = 0;
@@ -53,18 +54,21 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int IsMsShippedOrdinal = 9;
         public const int IsPublishedOrdinal = 10;
         public const int IsSchemaPublishedOrdinal = 11;
+        public const int ParentColumnIdOrdinal = 12;
+        public const int DefinitionOrdinal = 13;
+        public const int IsSystemNamedOrdinal = 14;
 
-        public SchemaObjectsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        public DefaultConstraintsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(loggerFactory, sqlDataReader, ownsReader)
         {
         }
 
-        public SchemaObjectsReader([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        public DefaultConstraintsReader([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(sqlDataReader, ownsReader)
         {
         }
 
-        public SchemaObjectsReader([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        public DefaultConstraintsReader([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(logger, sqlDataReader, ownsReader)
         {
         }
@@ -129,7 +133,22 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetBoolean(IsSchemaPublishedOrdinal);
         }
 
-        public SchemaObject GetSchemaObject()
+        public int GetParentColumnId()
+        {
+            return base.GetInt32(ParentColumnIdOrdinal);
+        }
+
+        public string GetDefinition()
+        {
+            return base.GetString(DefinitionOrdinal);
+        }
+
+        public bool GetIsSystemNamed()
+        {
+            return base.GetBoolean(IsSystemNamedOrdinal);
+        }
+
+        public DefaultConstraint GetDefaultConstraint()
         {
             var name = GetName();
             var objectId = GetObjectId();
@@ -143,7 +162,10 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             var isMsShipped = GetIsMsShipped();
             var isPublished = GetIsPublished();
             var isSchemaPublished = GetIsSchemaPublished();
-            return new SchemaObject(name, objectId, principalId, schemaId, parentObjectId, type, typeDesc, createDate, modifyDate, isMsShipped, isPublished, isSchemaPublished);
+            var parentColumnId = GetParentColumnId();
+            var definition = GetDefinition();
+            var isSystemNamed = GetIsSystemNamed();
+            return new DefaultConstraint(name, objectId, principalId, schemaId, parentObjectId, type, typeDesc, createDate, modifyDate, isMsShipped, isPublished, isSchemaPublished, parentColumnId, definition, isSystemNamed);
         }
 
         public IReadOnlyList<SchemaObject> GetSchemaObjects()
@@ -151,7 +173,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             var schemaObjects = new List<SchemaObject>();
             while (Read())
             {
-                schemaObjects.Add(GetSchemaObject());
+                schemaObjects.Add(GetDefaultConstraint());
             }
             return schemaObjects;
         }

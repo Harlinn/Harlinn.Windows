@@ -14,21 +14,38 @@
    limitations under the License.
 */
 
+using Microsoft.SqlServer.Types;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class StringFieldDefinition : FieldDefinition
+    public class GeometryFieldDefinition : FieldDefinition
     {
-        string? _default = null;
-        public override FieldType FieldType => FieldType.String;
-
-        [XmlAttribute, DefaultValue(128)]
-        public int Size { get; set; } = 128;
+        SqlGeometry? _default;
+        public override FieldType FieldType => FieldType.Geometry;
 
         [XmlAttribute("Default"), DefaultValue(null)]
-        public string? Default { get => _default; set => _default = value; }
+        public string? DefaultAsString
+        {
+            get => _default?.ToString();
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    _default = null;
+                }
+                else
+                {
+                    _default = SqlGeometry.Parse(new System.Data.SqlTypes.SqlString(value));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public SqlGeometry? Default { get => _default; set => _default = value; }
     }
+
+
 }

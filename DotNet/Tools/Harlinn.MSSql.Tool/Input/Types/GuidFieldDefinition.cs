@@ -14,48 +14,77 @@
    limitations under the License.
 */
 
+using Microsoft.SqlServer.Types;
+using System.ComponentModel;
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class GuidFieldDefinition : FieldDefinition
     {
+        Guid _default = Guid.Empty;
+
+        bool _newId;
+        bool _newSequentialId;
+
+        [XmlIgnore]
         public override FieldType FieldType => FieldType.Guid;
-    }
 
-    [Serializable]
-    public class SqlVariantFieldDefinition : FieldDefinition
-    {
-        public override FieldType FieldType => FieldType.SqlVariant;
-    }
+        [XmlAttribute("Default"), DefaultValue(null)]
+        public string? DefaultAsString
+        {
+            get
+            {
+                if (_default == Guid.Empty)
+                {
+                    return null;
+                }
+                return _default.ToString();
+            }
 
-    [Serializable]
-    public class HierarchyIdFieldDefinition : FieldDefinition
-    {
-        public override FieldType FieldType => FieldType.HierarchyId;
-    }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value) == false)
+                {
+                    if (Guid.TryParse(value, out var guid) == false)
+                    {
+                        _default = Guid.Parse($"{{{value}}}");
+                    }
+                    else
+                    {
+                        _default = guid;
+                    }
+                }
+                else
+                {
+                    _default = Guid.Empty;
+                }
+            }
+        }
 
-    [Serializable]
-    public class GeometryFieldDefinition : FieldDefinition
-    {
-        public override FieldType FieldType => FieldType.Geometry;
-    }
+        [XmlIgnore]
+        public Guid Default { get => _default; set => _default = value; }
 
-    [Serializable]
-    public class GeographyFieldDefinition : FieldDefinition
-    {
-        public override FieldType FieldType => FieldType.Geography;
-    }
+        [XmlIgnore]
+        public bool HasDefault => _default != Guid.Empty;
 
-    [Serializable]
-    public class XmlFieldDefinition : FieldDefinition
-    {
-        public override FieldType FieldType => FieldType.Xml;
-    }
+        [XmlAttribute, DefaultValue(false)]
+        public bool NewId { get => _newId; set => _newId = value; }
+        [XmlAttribute, DefaultValue(false)]
+        public bool NewSequentialId { get => _newSequentialId; set => _newSequentialId = value; }
 
-    [Serializable]
-    public class TypedFieldDefinition : FieldDefinition
-    {
-        public override FieldType FieldType => FieldType.Typed;
+        public override string ToString()
+        {
+            var result = base.ToString();
+            if (HasDefault)
+            {
+                return $"{result} Default({_default})";
+            }
+            return result;
+        }
+
+        
     }
 
 

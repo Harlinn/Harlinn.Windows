@@ -14,11 +14,100 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
+using System.Xml;
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class TimeSpanFieldDefinition : FieldDefinition
+    public class TimeSpanFieldDefinition : ValueFieldDefinition<TimeSpan>
     {
+        static readonly TimeSpan DefaultMinValue = TimeSpan.MinValue;
+        static readonly TimeSpan DefaultMaxValue = TimeSpan.MaxValue;
+        TimeSpan _minValue = DefaultMinValue;
+        TimeSpan _maxValue = DefaultMaxValue;
+
+        [XmlIgnore]
         public override FieldType FieldType => FieldType.TimeSpan;
+
+        [XmlAttribute("Min", DataType = "duration"), DefaultValue(null)]
+        public string? MinAsString
+        {
+            get
+            {
+                if (_minValue.Equals(DefaultMinValue))
+                {
+                    return null;
+                }
+                return XmlConvert.ToString(_minValue);
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    _minValue = XmlConvert.ToTimeSpan(value);
+                }
+                else
+                {
+                    _minValue = DefaultMinValue;
+                }
+            }
+        }
+
+        [XmlAttribute("Max", DataType = "duration"), DefaultValue(null)]
+        public string? MaxAsString
+        {
+            get
+            {
+                if (_maxValue.Equals(DefaultMaxValue))
+                {
+                    return null;
+                }
+                return XmlConvert.ToString(_maxValue);
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    _maxValue = XmlConvert.ToTimeSpan(value);
+                }
+                else
+                {
+                    _maxValue = DefaultMaxValue;
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public TimeSpan Min { get => _minValue; set => _minValue = value; }
+        [XmlIgnore]
+        public TimeSpan Max { get => _maxValue; set => _maxValue = value; }
+
+        [XmlIgnore]
+        public bool HasMin => _minValue.Equals(DefaultMinValue) == false;
+
+        [XmlIgnore]
+        public bool HasMax => _maxValue.Equals(DefaultMaxValue) == false;
+
+        public override string ToString()
+        {
+            var result = base.ToString();
+            if (HasMin)
+            {
+                if (HasMax)
+                {
+                    return $"{result} Min({Min}) Max({Max})";
+                }
+                return $"{result} Min({Min})";
+            }
+            else if (HasMax)
+            {
+                return $"{result} Max({Max})";
+            }
+            return result;
+        }
     }
 }

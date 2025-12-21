@@ -14,26 +14,40 @@
    limitations under the License.
 */
 
+using Microsoft.SqlServer.Types;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class DecimalFieldDefinition : NumericFieldDefinition<decimal>
+    public class SqlVariantFieldDefinition : FieldDefinition
     {
-        int _precision = 18;
-        int _scale = 0;
-        Identity<decimal> _identity;
-        public override FieldType FieldType => FieldType.Decimal;
+        object? _default;
+        public override FieldType FieldType => FieldType.SqlVariant;
 
-        [XmlAttribute, DefaultValue(18)]
-        public int Precision { get => _precision; set => _precision = value; }
-        [XmlAttribute, DefaultValue(0)]
-        public int Scale { get => _scale; set => _scale = value; }
+        [XmlAttribute("Default"), DefaultValue(null)]
+        public string? DefaultAsString
+        {
+            get => _default?.ToString();
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    _default = null;
+                }
+                else
+                {
+                    _default = value;
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public object? Default { get => _default; set => _default = value; }
 
 
-        [DefaultValue(null)]
-        public Identity<decimal> Identity { get => _identity; set => _identity = value; }
     }
+
+
 }

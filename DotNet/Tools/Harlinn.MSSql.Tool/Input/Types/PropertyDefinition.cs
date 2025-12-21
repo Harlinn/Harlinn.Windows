@@ -45,7 +45,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         Guid,
         String,
         Binary,
-        Enum,
+        Enum,   
         Object
     }
 
@@ -222,7 +222,15 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
     }
 
-    public abstract class NumericPropertyDefinition<T> : RangePropertyDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
+    public abstract class NumberPropertyDefinition<T> : RangePropertyDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
+    {
+    }
+
+    public abstract class IntegerPropertyDefinition<T> : NumberPropertyDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
+    {
+    }
+
+    public abstract class NumericPropertyDefinition<T> : NumberPropertyDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
     {
     }
 
@@ -233,51 +241,51 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public override PropertyKind Kind => PropertyKind.Boolean;
     }
 
-    public class SBytePropertyDefinition : NumericPropertyDefinition<sbyte>
+    public class SBytePropertyDefinition : IntegerPropertyDefinition<sbyte>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.SByte;
     }
 
-    public class BytePropertyDefinition : NumericPropertyDefinition<byte>
+    public class BytePropertyDefinition : IntegerPropertyDefinition<byte>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.Byte;
     }
 
-    public class CharPropertyDefinition : NumericPropertyDefinition<char>
+    public class CharPropertyDefinition : IntegerPropertyDefinition<char>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.Char;
     }
 
-    public class Int16PropertyDefinition : NumericPropertyDefinition<short>
+    public class Int16PropertyDefinition : IntegerPropertyDefinition<short>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.Int16;
     }
-    public class UInt16PropertyDefinition : NumericPropertyDefinition<ushort>
+    public class UInt16PropertyDefinition : IntegerPropertyDefinition<ushort>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.UInt16;
     }
-    public class Int32PropertyDefinition : NumericPropertyDefinition<int>
+    public class Int32PropertyDefinition : IntegerPropertyDefinition<int>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.Int32;
     }
 
-    public class UInt32PropertyDefinition : NumericPropertyDefinition<uint>
+    public class UInt32PropertyDefinition : IntegerPropertyDefinition<uint>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.UInt32;
     }
-    public class Int64PropertyDefinition : NumericPropertyDefinition<long>
+    public class Int64PropertyDefinition : IntegerPropertyDefinition<long>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.Int64;
     }
-    public class UInt64PropertyDefinition : NumericPropertyDefinition<ulong>
+    public class UInt64PropertyDefinition : IntegerPropertyDefinition<ulong>
     {
         [XmlIgnore]
         public override PropertyKind Kind => PropertyKind.UInt64;

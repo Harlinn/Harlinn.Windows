@@ -14,21 +14,40 @@
    limitations under the License.
 */
 
+using Microsoft.SqlServer.Types;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
-    [Serializable]
-    public class StringFieldDefinition : FieldDefinition
-    {
-        string? _default = null;
-        public override FieldType FieldType => FieldType.String;
+    
 
-        [XmlAttribute, DefaultValue(128)]
-        public int Size { get; set; } = 128;
+    [Serializable]
+    public class HierarchyIdFieldDefinition : FieldDefinition
+    {
+        SqlHierarchyId _default;
+        public override FieldType FieldType => FieldType.HierarchyId;
 
         [XmlAttribute("Default"), DefaultValue(null)]
-        public string? Default { get => _default; set => _default = value; }
+        public string? DefaultAsString
+        {
+            get => _default.IsNull ? null : _default.ToString();
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    _default = SqlHierarchyId.Null;
+                }
+                else
+                {
+                    _default = SqlHierarchyId.Parse(new System.Data.SqlTypes.SqlString(value));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public SqlHierarchyId Default { get => _default; set => _default = value; }
     }
+
+
 }
