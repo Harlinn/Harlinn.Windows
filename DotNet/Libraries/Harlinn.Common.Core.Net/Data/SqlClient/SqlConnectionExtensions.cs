@@ -510,6 +510,45 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        public static IReadOnlyList<Types.CheckConstraint> GetCheckConstraints(this SqlConnection connection, int objectId)
+        {
+            var sql = $"{CheckConstraintsReader.Sql} WHERE cc.[parent_object_id] = @ObjectId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var checkConstraintsReader = new CheckConstraintsReader(reader, false);
+                    return checkConstraintsReader.GetCheckConstraints();
+                }
+            }
+        }
+
+        public static IReadOnlyList<Types.CheckConstraint> GetCheckConstraints(this SqlConnection connection, Table table)
+        {
+            return connection.GetCheckConstraints(table.ObjectId);
+        }
+
+        public static IReadOnlyList<Types.CheckConstraint> GetCheckConstraints(this SqlConnection connection, int objectId, int columnId)
+        {
+            var sql = $"{CheckConstraintsReader.Sql} WHERE cc.[parent_object_id] = @ObjectId AND cc.[parent_column_id] = @ColumnId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@ColumnId", columnId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var checkConstraintsReader = new CheckConstraintsReader(reader, false);
+                    return checkConstraintsReader.GetCheckConstraints();
+                }
+            }
+        }
+
+        public static IReadOnlyList<Types.CheckConstraint> GetCheckConstraints(this SqlConnection connection, Column column)
+        {
+            return connection.GetCheckConstraints(column.ObjectId, column.ColumnId);
+        }
+
         public static IReadOnlyList<Types.Index> GetIndexes(this SqlConnection connection, Table table)
         {
             return connection.GetIndexes(table.ObjectId);

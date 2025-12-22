@@ -32,6 +32,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, FieldDefinition> FieldsByName { get; set; } = new Dictionary<string, FieldDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
+        List<FieldDefinition>? _persistentFields;
+
+        [XmlIgnore]
         public Dictionary<string, IndexDefinition> IndexesByName { get; set; } = new Dictionary<string, IndexDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
@@ -185,6 +188,26 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(ObjectFieldDefinition), ElementName = "Object")]
         [XmlArrayItem(typeof(EnumFieldDefinition), ElementName = "Enum")]
         public List<FieldDefinition> Fields { get; set; } = new List<FieldDefinition>();
+
+        [XmlIgnore]
+        public List<FieldDefinition> PersistentFields
+        {
+            get
+            {
+                if(_persistentFields == null)
+                {
+                    _persistentFields = new List<FieldDefinition>();
+                    foreach (var fieldDefinition in Fields)
+                    {
+                        if (fieldDefinition.IsComputed == false)
+                        {
+                            _persistentFields.Add(fieldDefinition);
+                        }
+                    }
+                }
+                return _persistentFields;
+            }
+        }
 
         [XmlArray("ForeignKeys")]
         [XmlArrayItem("ForeignKey")]

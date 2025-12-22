@@ -74,17 +74,50 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         void WriteColumn(EntityDefinition entity, FieldDefinition field)
         {
-            
+            var columnDefault = GetColumnDefault(field);
             var columnName = MsSqlHelper.GetColumnName(field);
-            var columnType = MsSqlHelper.GetRawColumnType(field);
-            var columnIdentity = MsSqlHelper.GetColumnIdentity(field);
-            if (string.IsNullOrEmpty(columnIdentity) == false)
+            if (field.IsComputed)
             {
-                columnIdentity = " " + columnIdentity;
+                var computedDefinition = field.Computed!.Expression;
+                var computedIsPersisted = field.Computed.IsPersisted;
+                if (computedIsPersisted)
+                {
+                    WriteLine($"    {columnName} AS ({computedDefinition}) PERSISTED,");
+                }
+                else
+                {
+                    WriteLine($"    {columnName} AS {computedDefinition},");
+                }
+
+                return;
             }
-            var columnNull = field.IsNullable ? "NULL" : "NOT NULL";
-            WriteLine($"    {columnName} {columnType}{columnIdentity} {columnNull},");
+            else
+            {
+                var columnType = MsSqlHelper.GetRawColumnType(field);
+                var columnIdentity = MsSqlHelper.GetColumnIdentity(field);
+                if (string.IsNullOrEmpty(columnIdentity) == false)
+                {
+                    columnIdentity = " " + columnIdentity;
+                }
+                var columnNull = field.IsNullable ? "NULL" : "NOT NULL";
+                WriteLine($"    {columnName} {columnType}{columnIdentity} {columnNull}{columnDefault},");
+            }
         }
+
+        static string GetColumnDefault(FieldDefinition field)
+        {
+            if (field.DefaultConstraint != null)
+            {
+                var defaultConstraint = field.DefaultConstraint;
+                var definition = defaultConstraint.Definition;
+                return $" DEFAULT {definition}";
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
 
         void WriteIndexes(EntityDefinition entity)
         {

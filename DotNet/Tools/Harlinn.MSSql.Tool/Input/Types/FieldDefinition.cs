@@ -44,6 +44,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
     {
         string _expression = string.Empty;
         bool _isPersisted = false;
+        
         public FieldComputed()
         { }
         public FieldComputed(string expression,  bool isPersisted)
@@ -51,10 +52,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
             _expression = expression;
             _isPersisted = isPersisted;
         }
+
         [XmlAttribute, DefaultValue(null)]
         public string Expression { get => _expression; set => _expression = value; }
         [XmlAttribute, DefaultValue(false)]
         public bool IsPersisted { get => _isPersisted; set => _isPersisted = value; }
+        
     }
 
 
