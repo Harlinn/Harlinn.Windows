@@ -94,9 +94,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetInt32(ObjectIdOrdinal);
         }
 
-        public string GetName()
+        public string? GetName()
         {
-            return base.GetString(NameOrdinal);
+            return base.GetNullableString(NameOrdinal);
         }
 
         public int GetIndexId()

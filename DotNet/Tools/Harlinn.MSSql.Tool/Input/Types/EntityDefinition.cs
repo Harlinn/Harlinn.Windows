@@ -275,7 +275,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
             {
                 Indexes.Add(index);
             }
-            IndexesByName[index.Name] = index;
+            if (string.IsNullOrEmpty(index.Name) == false)
+            {
+                IndexesByName[index.Name] = index;
+            }
         }
 
 

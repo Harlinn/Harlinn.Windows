@@ -35,5 +35,4 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         public int SchemaId => schemaId_;
         public int PrincipalId => principalId_;
     }
-
 }

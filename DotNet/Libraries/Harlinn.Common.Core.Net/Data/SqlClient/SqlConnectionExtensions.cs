@@ -170,6 +170,34 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
         /// <summary>
+        /// Retrieves the schema information for a database object with the specified object ID from the connected SQL
+        /// Server database.
+        /// </summary>
+        /// <param name="connection">The <see cref="SqlConnection"/> to use for querying the database. The connection must be valid and
+        /// open.</param>
+        /// <param name="objectId">The unique identifier of the database object whose schema information is to be retrieved.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the schema of the specified database object, or <see
+        /// langword="null"/> if no object with the given ID exists.</returns>
+        public static SchemaObject? GetSchemaObject(this SqlConnection connection, int objectId)
+        {
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [object_id] = @ObjectId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    if (schemaObjectsReader.Read())
+                    {
+                        return schemaObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Retrieves a schema object from the database by schema ID and object name.
         /// </summary>
         /// <remarks>The connection must be open before calling this method. The search is case-sensitive
@@ -956,7 +984,62 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
 
-        
+        public static Types.DatabaseType? GetDatabaseType(this SqlConnection connection, int schemaId, string typeName )
+        { 
+            var sql = $"{TypesReader.Sql} WHERE st.[schema_id] = @SchemaId AND st.[name] = @TypeName";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@TypeName", typeName);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var typesReader = new TypesReader(reader, false);
+                        return typesReader.GetDatabaseType();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static Types.DatabaseType? GetDatabaseType(this SqlConnection connection, string typeName)
+        {
+            var sql = $"{TypesReader.Sql} WHERE st.[name] = @TypeName";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@TypeName", typeName);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var typesReader = new TypesReader(reader, false);
+                        return typesReader.GetDatabaseType();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        public static Types.DatabaseType? GetSystemDatabaseType(this SqlConnection connection, byte systemTypeId)
+        {
+            var sql = $"{TypesReader.Sql} WHERE st.[system_type_id] = @SystemTypeId AND st.[is_user_defined] = 0";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SystemTypeId", systemTypeId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var typesReader = new TypesReader(reader, false);
+                        return typesReader.GetDatabaseType();
+                    }
+                    return null;
+                }
+            }
+        }
+
+
 
     }
 

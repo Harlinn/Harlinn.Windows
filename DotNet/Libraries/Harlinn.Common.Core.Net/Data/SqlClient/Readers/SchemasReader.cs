@@ -85,4 +85,5 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         }
 
     }
+
 }

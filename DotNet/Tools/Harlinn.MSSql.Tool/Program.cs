@@ -36,10 +36,17 @@ namespace Harlinn.MSSql.Tool
         {
             _options = options;
 
-            using FileStream fileStream = new FileStream(options.Project, FileMode.Open, FileAccess.Read);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Input.Types.Project));
-            _project = (Input.Types.Project)xmlSerializer.Deserialize(fileStream)!;
-            _project.Initialize();
+            if (File.Exists(options.Project))
+            {
+                using FileStream fileStream = new FileStream(options.Project, FileMode.Open, FileAccess.Read);
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Input.Types.Project));
+                _project = (Input.Types.Project)xmlSerializer.Deserialize(fileStream)!;
+                _project.Initialize();
+            }
+            else
+            {
+                _project = new Input.Types.Project();
+            }
         }
 
         public OptionsBase Options => _options;
