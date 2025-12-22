@@ -15,50 +15,10 @@
 */
 
 using System.ComponentModel;
-using System.Numerics;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public class FieldDefaultConstraint
-    { 
-        string _name = string.Empty;
-        string? _definition;
-
-        public FieldDefaultConstraint()
-        { }
-
-        public FieldDefaultConstraint(string name, string? definition)
-        {
-            _name = name;
-            _definition = definition;
-        }
-
-        [XmlAttribute, DefaultValue(null)]
-        public string Name { get => _name; set => _name = value; }
-        [XmlAttribute, DefaultValue(null)]
-        public string? Definition { get => _definition; set => _definition = value; }
-    }
-
-    public class FieldComputed
-    {
-        string _expression = string.Empty;
-        bool _isPersisted = false;
-        
-        public FieldComputed()
-        { }
-        public FieldComputed(string expression,  bool isPersisted)
-        {
-            _expression = expression;
-            _isPersisted = isPersisted;
-        }
-
-        [XmlAttribute, DefaultValue(null)]
-        public string Expression { get => _expression; set => _expression = value; }
-        [XmlAttribute, DefaultValue(false)]
-        public bool IsPersisted { get => _isPersisted; set => _isPersisted = value; }
-        
-    }
 
 
     [Serializable]
@@ -107,8 +67,14 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlElement("Computed"), DefaultValue(null)]
         public FieldComputed? Computed { get => _computed; set => _computed = value; }
 
+
+        [XmlArray("Checks"), XmlArrayItem(typeof(FieldCheckConstraint), ElementName = "Check"), DefaultValue(null)]
+        public List<FieldCheckConstraint>? Checks { get; set; }
+
+        [XmlIgnore]
         public bool HasDefaultConstraint => _defaultConstraint != null;
 
+        [XmlIgnore]
         public bool IsComputed => _computed != null;
 
         public virtual bool Equals(FieldDefinition? other)
@@ -220,185 +186,6 @@ namespace Harlinn.MSSql.Tool.Input.Types
         { }
         internal virtual void Initialize2()
         { }
-    }
-
-
-    public abstract class ValueFieldDefinition<T> : FieldDefinition where T : struct
-    {
-        T _default = default(T);
-
-        [XmlAttribute("Default"), DefaultValue(null)]
-        public string? DefaultAsString
-        {
-            get
-            {
-                if (_default.Equals(default(T)))
-                {
-                    return null;
-                }
-                return _default.ToString();
-            }
-
-            set
-            {
-                if (value != null)
-                {
-                    _default = (T)Convert.ChangeType(value, typeof(T));
-                }
-                else
-                {
-                    _default = default(T);
-                }
-            }
-        }
-
-        [XmlIgnore]
-        public T Default
-        {
-            get => _default;
-            set => _default = value;
-        }
-
-        [XmlIgnore]
-        public bool HasDefault => _default.Equals(default(T)) == false;
-
-        public override string ToString()
-        {
-            var result = base.ToString();
-            if (HasDefault)
-            {
-                return $"{result} Default({_default})";
-            }
-            return result;
-        }
-    }
-
-    public abstract class RangeFieldDefinition<T> : ValueFieldDefinition<T> where T : struct, IMinMaxValue<T>
-    {
-        static readonly T DefaultMinValue = T.MinValue;
-        static readonly T DefaultMaxValue = T.MaxValue;
-        T _minValue = DefaultMinValue;
-        T _maxValue = DefaultMaxValue;
-
-        [XmlAttribute("Min"), DefaultValue(null)]
-        public string? MinAsString
-        {
-            get
-            {
-                if (_minValue.Equals(DefaultMinValue))
-                {
-                    return null;
-                }
-                return _minValue.ToString();
-            }
-
-            set
-            {
-                if (value != null)
-                {
-                    _minValue = (T)Convert.ChangeType(value, typeof(T));
-                }
-                else
-                {
-                    _minValue = DefaultMinValue;
-                }
-            }
-        }
-
-        [XmlAttribute("Max"), DefaultValue(null)]
-        public string? MaxAsString
-        {
-            get
-            {
-                if (_maxValue.Equals(DefaultMaxValue))
-                {
-                    return null;
-                }
-                return _maxValue.ToString();
-            }
-
-            set
-            {
-                if (value != null)
-                {
-                    _maxValue = (T)Convert.ChangeType(value, typeof(T));
-                }
-                else
-                {
-                    _maxValue = DefaultMaxValue;
-                }
-            }
-        }
-
-        [XmlIgnore]
-        public T Min { get => _minValue; set => _minValue = value; }
-        [XmlIgnore]
-        public T Max { get => _maxValue; set => _maxValue = value; }
-
-        [XmlIgnore]
-        public bool HasMin => _minValue.Equals(DefaultMinValue) == false;
-
-        [XmlIgnore]
-        public bool HasMax => _maxValue.Equals(DefaultMaxValue) == false;
-
-        public override string ToString()
-        {
-            var result = base.ToString();
-            if (HasMin)
-            {
-                if (HasMax)
-                {
-                    return $"{result} Min({Min}) Max({Max})";
-                }
-                return $"{result} Min({Min})";
-            }
-            else if (HasMax)
-            {
-                return $"{result} Max({Max})";
-            }
-            return result;
-        }
-
-    }
-
-    public abstract class NumberFieldDefinition<T> : RangeFieldDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
-    {
-
-    }
-
-    public class Identity<T> where T : struct, INumber<T>, IMinMaxValue<T>
-    {
-        T _seed = T.One;
-        T _increment = T.One;
-
-        public Identity()
-        { }
-
-        public Identity(T seed, T increment)
-        {
-            _seed = seed;
-            _increment = increment;
-        }
-
-        [XmlAttribute]
-        public T Seed { get => _seed; set => _seed = value; }
-        [XmlAttribute]
-        public T Increment { get => _increment; set => _increment = value; }
-    }
-
-    public abstract class IntegerFieldDefinition<T> : NumberFieldDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
-    {
-        Identity<T>? _identity;
-
-        [XmlElement("Identity"), DefaultValue(null)]
-        public Identity<T>? Identity { get => _identity; set => _identity = value; }
-
-        public override bool IsIdentity => _identity != null;
-    }
-
-    public abstract class NumericFieldDefinition<T> : NumberFieldDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
-    {
-        
     }
 
 

@@ -1,4 +1,5 @@
-﻿namespace Harlinn.Common.Core.Net
+﻿using System.Net;
+namespace Harlinn.Common.Core.Net
 {
     public static class StringExtensions
     {
@@ -73,7 +74,35 @@
             return new string(chars);
         }
 
+        /// <summary>
+        /// Encodes a string to be safely displayed in HTML by replacing special characters with their corresponding
+        /// HTML entities.
+        /// </summary>
+        /// <param name="self">The string to encode. Can be null.</param>
+        /// <returns>A string containing the HTML-encoded representation of the input, or null if the input is null or empty.</returns>
+        public static string? HtmlEncode(this string? self)
+        {
+            if (string.IsNullOrEmpty(self))
+            {
+                return null;
+            }
+            return WebUtility.HtmlEncode(self);
+        }
 
+        /// <summary>
+        /// Decodes a string that contains HTML-encoded characters into a decoded string.   
+        /// </summary>
+        /// <param name="self">The HTML-encoded string to decode. Can be null.</param>
+        /// <returns>A decoded string with HTML entities converted to their corresponding characters, or null if the input is
+        /// null or empty.</returns>
+        public static string? HtmlDecode(this string? self)
+        {
+            if (string.IsNullOrEmpty(self))
+            {
+                return null;
+            }
+            return WebUtility.HtmlDecode(self);
+        }
 
     }
 }

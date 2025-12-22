@@ -25,6 +25,7 @@ using System.ComponentModel;
 namespace Harlinn.MSSql.Tool.Input.Types
 {
 
+
     [Serializable]
     public class EntityDefinition : SchemaObject
     {
@@ -219,6 +220,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         [XmlElement("PrimaryKey")]
         public IndexDefinition? PrimaryKey { get; set; }
+
+        [XmlArray("Checks"), XmlArrayItem(typeof(EntityCheckConstraint), ElementName = "Check"), DefaultValue(null)]
+        public List<EntityCheckConstraint>? Checks { get; set; }
 
 
         internal int GetFieldIndex(string fieldName)

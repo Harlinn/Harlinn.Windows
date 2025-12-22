@@ -78,7 +78,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             var columnName = MsSqlHelper.GetColumnName(field);
             if (field.IsComputed)
             {
-                var computedDefinition = field.Computed!.Expression;
+                var computedDefinition = field.Computed!.Definition;
                 var computedIsPersisted = field.Computed.IsPersisted;
                 if (computedIsPersisted)
                 {

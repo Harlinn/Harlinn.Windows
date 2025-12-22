@@ -25,7 +25,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly string _definition;
         readonly bool _usesDatabaseCollation;
         readonly bool _isSystemNamed;
-        public CheckConstraint(string name, int objectId, int? principalId, int schemaId, int parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool isMsShipped, bool isPublished, bool isSchemaPublished, bool isDisabled,  bool isNotForReplication, bool isNotTrusted, int parentColumnId, string definition, bool usesDatabaseCollation, bool isSystemNamed)
+        readonly string? _columnName;
+        public CheckConstraint(string name, int objectId, int? principalId, int schemaId, int parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool isMsShipped, bool isPublished, bool isSchemaPublished, bool isDisabled,  bool isNotForReplication, bool isNotTrusted, int parentColumnId, string definition, bool usesDatabaseCollation, bool isSystemNamed, string? columnName)
             : base(name, objectId, principalId, schemaId, parentObjectId, type, typeDesc, createDate, modifyDate, isMsShipped, isPublished, isSchemaPublished)
         {
             _isDisabled = isDisabled;
@@ -35,14 +36,39 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             _definition = definition;
             _usesDatabaseCollation = usesDatabaseCollation;
             _isSystemNamed = isSystemNamed;
+            _columnName = columnName;
         }
+
+        /// <summary>
+        /// Indicates whether the CHECK constraint is currently disabled.
+        /// </summary>
         public bool IsDisabled => _isDisabled;
+        /// <summary>
+        /// Indicates that the CHECK constraint was created with the NOT FOR REPLICATION option.
+        /// </summary>
         public bool IsNotForReplication => _isNotForReplication;
+        /// <summary>
+        /// Indicates that the CHECK constraint has not been verified by the system for all rows.
+        /// </summary>
         public bool IsNotTrusted => _isNotTrusted;
+        /// <summary>
+        /// If the CHECK constraint is defined on a specific column, this property contains the ID of that column; otherwise, it is 0.
+        /// </summary>
         public int ParentColumnId => _parentColumnId;
+        /// <summary>
+        /// SQL expression that defines this CHECK constraint.
+        /// </summary>
         public string Definition => _definition;
+        /// <summary>
+        /// true if the CHECK constraint definition depends on the default collation of the database
+        /// for correct evaluation; otherwise, false. Such a dependency prevents changing the database default collation.
+        /// </summary>
         public bool UsesDatabaseCollation => _usesDatabaseCollation;
         public bool IsSystemNamed => _isSystemNamed;
+        /// <summary>
+        /// If the check constraint is defined on a specific column, this property contains the name of that column; otherwise, it is null.
+        /// </summary>
+        public string? ColumnName => _columnName;
     }
 
 }

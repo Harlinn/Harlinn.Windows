@@ -43,7 +43,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             ,cc.[definition]
             ,cc.[uses_database_collation]
             ,cc.[is_system_named]
+            ,c.[name] AS [column_name]
         FROM [sys].[check_constraints] cc
+        JOIN [sys].[columns] c ON cc.[parent_object_id] = c.[object_id] AND cc.[parent_column_id] = c.[column_id]
         """;
 
         public const int NameOrdinal = 0;
@@ -65,6 +67,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int DefinitionOrdinal = 16;
         public const int UsesDatabaseCollationOrdinal = 17;
         public const int IsSystemNamedOrdinal = 18;
+        public const int ColumnNameOrdinal = 19;
 
         public CheckConstraintsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(loggerFactory, sqlDataReader, ownsReader)
@@ -176,6 +179,15 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetBoolean(IsSystemNamedOrdinal);
         }
 
+        public string? GetColumnName()
+        {
+            if (base.IsDBNull(ColumnNameOrdinal))
+            {
+                return null;
+            }
+            return base.GetString(ColumnNameOrdinal);
+        }
+
         public CheckConstraint GetCheckConstraint()
         {
             var name = GetName();
@@ -197,7 +209,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             var definition = GetDefinition();
             var usesDatabaseCollation = GetUsesDatabaseCollation();
             var isSystemNamed = GetIsSystemNamed();
-            return new CheckConstraint(name, objectId, principalId, schemaId, parentObjectId, type, typeDesc, createDate, modifyDate, isMsShipped, isPublished, isSchemaPublished, isDisabled, isNotForReplication, isNotTrusted, parentColumnId, definition, usesDatabaseCollation, isSystemNamed);
+            var columnName = GetColumnName();
+            return new CheckConstraint(name, objectId, principalId, schemaId, parentObjectId, type, typeDesc, createDate, modifyDate, isMsShipped, isPublished, isSchemaPublished, isDisabled, isNotForReplication, isNotTrusted, parentColumnId, definition, usesDatabaseCollation, isSystemNamed, columnName);
         }
 
         public IReadOnlyList<CheckConstraint> GetCheckConstraints()
