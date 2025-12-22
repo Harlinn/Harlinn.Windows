@@ -397,6 +397,48 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
         }
 
+        internal void ImportTableCheckConstraints(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.CheckConstraint> checkConstraints)
+        {
+            if(checkConstraints != null && checkConstraints.Count > 0)
+            {
+                foreach (var checkConstraint in checkConstraints)
+                {
+                    var entityCheckConstraint = new EntityCheckConstraint
+                    {
+                        Name = checkConstraint.Name,
+                        Definition = checkConstraint.Definition
+                    };
+
+                    AddCheckConstraint(entityCheckConstraint);
+                }
+
+            }
+            
+        }
+
+        private void AddCheckConstraint(EntityCheckConstraint entityCheckConstraint)
+        {
+            if (Checks == null)
+            {
+                Checks = new List<EntityCheckConstraint>();
+            }
+
+            entityCheckConstraint.Owner = this;
+
+            for (int i = 0; i < Checks.Count; i++)
+            {
+                var existingCheckConstraint = Checks[i];
+                if (string.Equals(existingCheckConstraint.Name, entityCheckConstraint.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    // If a check constraint with the same name exists, replace it
+                    existingCheckConstraint.Definition = entityCheckConstraint.Definition;
+                    return;
+                }
+            }
+            // If no existing check constraint was found, add a new one
+            Checks.Add(entityCheckConstraint);
+        }
+
         internal void ImportTable(SqlConnection sqlConnection, SchemaTypes.Table table)
         {
             Table = table.Name;
@@ -408,6 +450,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
             var foreignKeys = sqlConnection.GetForeignKeys(table);
             ImportForeignKeys(sqlConnection, foreignKeys);
+
+            var tableCheckConstraints = sqlConnection.GetTableCheckConstraints(table);
+            ImportTableCheckConstraints(sqlConnection, tableCheckConstraints);
 
         }
 

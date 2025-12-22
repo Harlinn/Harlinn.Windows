@@ -30,6 +30,17 @@ namespace Harlinn.MSSql.Tool.Import
             var defaultConstraint = sqlConnection.GetDefaultConstraint(column);
             var computedColumn = sqlConnection.GetComputedColumn(column);
             FieldComputed? fieldComputed = computedColumn != null ? new FieldComputed(computedColumn.ComputedDefinition, computedColumn.IsPersisted) : null;
+            var checkConstraints = sqlConnection.GetCheckConstraints(column);
+            List<FieldCheckConstraint>? fieldCheckConstraints = null;
+
+            if (checkConstraints != null)
+            {
+                fieldCheckConstraints = new List<FieldCheckConstraint>();
+                foreach (var constraint in checkConstraints)
+                {
+                    fieldCheckConstraints.Add(new FieldCheckConstraint(constraint));
+                }
+            }
 
             var typeName = column.TypeName.ToLowerInvariant();
             switch (typeName)
@@ -41,6 +52,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = -1
                     };
@@ -57,6 +69,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = -1
                     };
@@ -73,6 +86,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if(defaultConstraint != null)
@@ -88,6 +102,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -103,6 +118,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -118,6 +134,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -133,6 +150,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -148,6 +166,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -169,6 +188,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -190,6 +210,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -211,6 +232,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -226,6 +248,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         Precision = column.Precision,
                         DatabaseType = typeName
                     };
@@ -242,6 +265,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -257,6 +281,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -272,6 +297,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         Precision = column.Precision,
                         DatabaseType = typeName
                     };
@@ -288,6 +314,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -303,6 +330,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };
@@ -319,6 +347,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -334,6 +363,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         Precision = column.Precision,
                         Scale = column.Scale,
                         DatabaseType = typeName
@@ -357,6 +387,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         Precision = column.Precision,
                         Scale = column.Scale,
                         DatabaseType = typeName
@@ -380,6 +411,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -395,6 +427,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -416,6 +449,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -431,6 +465,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -446,6 +481,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -461,6 +497,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
@@ -477,6 +514,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
@@ -494,6 +532,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
@@ -510,6 +549,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength
                     };
@@ -526,6 +566,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -541,6 +582,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };
@@ -557,6 +599,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };
@@ -573,6 +616,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName
                     };
                     if (defaultConstraint != null)
@@ -588,6 +632,7 @@ namespace Harlinn.MSSql.Tool.Import
                         Name = column.Name,
                         IsNullable = column.IsNullable,
                         Computed = fieldComputed,
+                        Checks = fieldCheckConstraints,
                         DatabaseType = typeName,
                         Size = column.MaxLength / 2
                     };

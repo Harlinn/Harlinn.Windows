@@ -26,6 +26,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public FieldCheckConstraint()
         { }
 
+        public FieldCheckConstraint(SchemaTypes.CheckConstraint checkConstraint)
+            : base(checkConstraint)
+        {
+            
+        }
+
         public FieldCheckConstraint(FieldDefinition? owner, SchemaTypes.CheckConstraint checkConstraint)
             : base(checkConstraint)
         {
