@@ -28,6 +28,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         bool? _isReference;
         FieldDefaultConstraint? _defaultConstraint;
         FieldComputed? _computed = null;
+        private List<FieldCheckConstraint>? checks;
 
         [XmlIgnore]
         public EntityDefinition? Owner { get; set; } = null;
@@ -69,7 +70,26 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
 
         [XmlArray("Checks"), XmlArrayItem(typeof(FieldCheckConstraint), ElementName = "Check"), DefaultValue(null)]
-        public List<FieldCheckConstraint>? Checks { get; set; }
+        public List<FieldCheckConstraint>? ChecksNullIfEmpty
+        {
+            get
+            {
+                return checks?.Count > 0 ? checks : null;
+            }
+
+            set => checks = value;
+        }
+
+        [XmlIgnore]
+        public List<FieldCheckConstraint>? Checks
+        {
+            get
+            {
+                return checks;
+            }
+
+            set => checks = value;
+        }
 
         [XmlIgnore]
         public bool HasDefaultConstraint => _defaultConstraint != null;

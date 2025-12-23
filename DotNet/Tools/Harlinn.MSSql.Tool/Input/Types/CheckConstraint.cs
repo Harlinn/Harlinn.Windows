@@ -48,6 +48,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute]
         public string? Name { get => _name; set => _name = value; }
 
+        /*
         [XmlElement("Definition"), DefaultValue(null)]
         public string? DefinitionHtmlEncoded
         {
@@ -61,6 +62,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
         }
         [XmlIgnore]
+        */
+        [XmlElement("Definition"), DefaultValue(null)]
         public string? Definition { get => _definition; set => _definition = value; }
         [XmlAttribute, DefaultValue(false)]
         public bool IsSystemNamed { get => _isSystemNamed; set => _isSystemNamed = value; }

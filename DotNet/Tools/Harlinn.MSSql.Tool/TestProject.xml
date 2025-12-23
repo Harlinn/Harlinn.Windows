@@ -1,42 +1,3653 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Project Name="TestProject">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="" Namespace="AdventureWorks">
 	<Databases>
-		<Database Name="TestDatabase">
+		<Database Name="AdventureWorks2019">
 			<Schemas>
 				<Schema Name="dbo">
+					<Types />
 					<Objects>
-						<Entity Name="TestEntity">
+						<Entity Name="AWBuildVersion" Table="AWBuildVersion" ShortName="AWBV">
 							<Fields>
-								<Int64 Name="Id" IsNullable="false" />
-								<String Name="Name" IsNullable="false" />
+								<Byte Name="SystemInformationID" DatabaseType="tinyint">
+									<Identity Seed="1" Increment="1" />
+								</Byte>
+								<String Name="Database Version" DatabaseType="nvarchar" Size="25" />
+								<DateTime Name="VersionDate" DatabaseType="datetime" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_AWBuildVersion_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
 							</Fields>
-							<PrimaryKey>
-								<Field Name="Id" IsDescending="false" />
+							<ForeignKeys />
+							<Indexes />
+							<PrimaryKey Name="PK_AWBuildVersion_SystemInformationID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SystemInformationID" />
+								</Fields>
 							</PrimaryKey>
+							<Checks />
 						</Entity>
-						<Entity Name="TestEntity2">
+						<Entity Name="DatabaseLog" Table="DatabaseLog" ShortName="DL">
 							<Fields>
-								<Int64 Name="Id" IsNullable="false" />
-								<String Name="Name" IsNullable="false" />
-								<Int64 Name="TestEntity" IsNullable="false" />
+								<Int32 Name="DatabaseLogID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<DateTime Name="PostTime" DatabaseType="datetime" />
+								<String Name="DatabaseUser" DatabaseType="sysname" />
+								<String Name="Event" DatabaseType="sysname" />
+								<String Name="Schema" IsNullable="true" DatabaseType="sysname" />
+								<String Name="Object" IsNullable="true" DatabaseType="sysname" />
+								<String Name="TSQL" DatabaseType="nvarchar" Size="0" />
+								<Xml Name="XmlEvent" DatabaseType="xml" />
 							</Fields>
-							<PrimaryKey>
-								<Field Name="Id" IsDescending="false" />
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="">
+									<Fields />
+								</Index>
+								<Index Name="">
+									<Fields />
+								</Index>
+								<Index Name="">
+									<Fields />
+								</Index>
+								<Index>
+									<Fields />
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_DatabaseLog_DatabaseLogID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="DatabaseLogID" />
+								</Fields>
 							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ErrorLog" Table="ErrorLog" ShortName="EL">
+							<Fields>
+								<Int32 Name="ErrorLogID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<DateTime Name="ErrorTime" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ErrorLog_ErrorTime">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<String Name="UserName" DatabaseType="sysname" />
+								<Int32 Name="ErrorNumber" DatabaseType="int" />
+								<Int32 Name="ErrorSeverity" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="ErrorState" IsNullable="true" DatabaseType="int" />
+								<String Name="ErrorProcedure" IsNullable="true" DatabaseType="nvarchar" Size="126" />
+								<Int32 Name="ErrorLine" IsNullable="true" DatabaseType="int" />
+								<String Name="ErrorMessage" DatabaseType="nvarchar" Size="4000" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<PrimaryKey Name="PK_ErrorLog_ErrorLogID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ErrorLogID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+					</Objects>
+				</Schema>
+				<Schema Name="HumanResources">
+					<Types />
+					<Objects>
+						<Entity Name="Department" Table="Department" ShortName="D">
+							<Fields>
+								<Int16 Name="DepartmentID" DatabaseType="smallint">
+									<Identity Seed="1" Increment="1" />
+								</Int16>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<String Name="GroupName" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Department_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_Department_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Department_DepartmentID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="DepartmentID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Employee" Table="Employee" ShortName="E">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<String Name="NationalIDNumber" DatabaseType="nvarchar" Size="15" />
+								<String Name="LoginID" DatabaseType="nvarchar" Size="256" />
+								<HierarchyId Name="OrganizationNode" IsNullable="true" DatabaseType="hierarchyid" />
+								<Int16 Name="OrganizationLevel" IsNullable="true" DatabaseType="smallint">
+									<Computed>
+										<Definition>([OrganizationNode].[GetLevel]())</Definition>
+									</Computed>
+								</Int16>
+								<String Name="JobTitle" DatabaseType="nvarchar" Size="50" />
+								<DateTime Name="BirthDate" DatabaseType="date">
+									<Checks>
+										<Check Name="CK_Employee_BirthDate">
+											<Definition>([BirthDate]&gt;='1930-01-01' AND [BirthDate]&lt;=dateadd(year,(-18),getdate()))</Definition>
+										</Check>
+									</Checks>
+								</DateTime>
+								<String Name="MaritalStatus" DatabaseType="nchar" Size="1">
+									<Checks>
+										<Check Name="CK_Employee_MaritalStatus">
+											<Definition>(upper([MaritalStatus])='S' OR upper([MaritalStatus])='M')</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<String Name="Gender" DatabaseType="nchar" Size="1">
+									<Checks>
+										<Check Name="CK_Employee_Gender">
+											<Definition>(upper([Gender])='F' OR upper([Gender])='M')</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<DateTime Name="HireDate" DatabaseType="date">
+									<Checks>
+										<Check Name="CK_Employee_HireDate">
+											<Definition>([HireDate]&gt;='1996-07-01' AND [HireDate]&lt;=dateadd(day,(1),getdate()))</Definition>
+										</Check>
+									</Checks>
+								</DateTime>
+								<Boolean Name="SalariedFlag" DatabaseType="flag">
+									<DefaultConstraint Name="DF_Employee_SalariedFlag">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<Int16 Name="VacationHours" DatabaseType="smallint">
+									<DefaultConstraint Name="DF_Employee_VacationHours">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_Employee_VacationHours">
+											<Definition>([VacationHours]&gt;=(-40) AND [VacationHours]&lt;=(240))</Definition>
+										</Check>
+									</Checks>
+								</Int16>
+								<Int16 Name="SickLeaveHours" DatabaseType="smallint">
+									<DefaultConstraint Name="DF_Employee_SickLeaveHours">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_Employee_SickLeaveHours">
+											<Definition>([SickLeaveHours]&gt;=(0) AND [SickLeaveHours]&lt;=(120))</Definition>
+										</Check>
+									</Checks>
+								</Int16>
+								<Boolean Name="CurrentFlag" DatabaseType="flag">
+									<DefaultConstraint Name="DF_Employee_CurrentFlag">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Employee_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Employee_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_TestEntity2_TestEntity" Entity="TestEntity">
+								<ForeignKey Name="FK_Employee_Person_BusinessEntityID" Entity="Person.Person" ReferencedTableName="Person" ReferencedSchemaName="Person">
 									<References>
-										<Reference Field="TestEntity" References="Id" />
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
 							</ForeignKeys>
 							<Indexes>
-								<Index Name="IX_TestEntity2_Name" IsUnique="false">
+								<Index Name="IX_Employee_OrganizationNode">
 									<Fields>
-										<Field Name="Name" IsDescending="false" />
+										<Field Name="OrganizationNode" />
+									</Fields>
+								</Index>
+								<Index Name="IX_Employee_OrganizationLevel_OrganizationNode">
+									<Fields>
+										<Field Name="OrganizationLevel" />
+										<Field Name="OrganizationNode" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Employee_LoginID" IsUnique="true">
+									<Fields>
+										<Field Name="LoginID" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Employee_NationalIDNumber" IsUnique="true">
+									<Fields>
+										<Field Name="NationalIDNumber" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Employee_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
 									</Fields>
 								</Index>
 							</Indexes>
+							<PrimaryKey Name="PK_Employee_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="EmployeeDepartmentHistory" Table="EmployeeDepartmentHistory" ShortName="EDH">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int16 Name="DepartmentID" DatabaseType="smallint" />
+								<Byte Name="ShiftID" DatabaseType="tinyint" />
+								<DateTime Name="StartDate" DatabaseType="date" />
+								<DateTime Name="EndDate" IsNullable="true" DatabaseType="date" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_EmployeeDepartmentHistory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_EmployeeDepartmentHistory_Department_DepartmentID" Entity="HumanResources.Department" ReferencedTableName="Department" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="DepartmentID" References="DepartmentID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_EmployeeDepartmentHistory_Employee_BusinessEntityID" Entity="HumanResources.Employee" ReferencedTableName="Employee" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_EmployeeDepartmentHistory_Shift_ShiftID" Entity="HumanResources.Shift" ReferencedTableName="Shift" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="ShiftID" References="ShiftID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_EmployeeDepartmentHistory_DepartmentID">
+									<Fields>
+										<Field Name="DepartmentID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_EmployeeDepartmentHistory_ShiftID">
+									<Fields>
+										<Field Name="ShiftID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_EmployeeDepartmentHistory_BusinessEntityID_StartDate_DepartmentID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="StartDate" />
+									<Field Name="DepartmentID" />
+									<Field Name="ShiftID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="EmployeePayHistory" Table="EmployeePayHistory" ShortName="EPH">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<DateTime Name="RateChangeDate" DatabaseType="datetime" />
+								<Decimal Name="Rate" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_EmployeePayHistory_Rate">
+											<Definition>([Rate]&gt;=(6.50) AND [Rate]&lt;=(200.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Byte Name="PayFrequency" DatabaseType="tinyint">
+									<Checks>
+										<Check Name="CK_EmployeePayHistory_PayFrequency">
+											<Definition>([PayFrequency]=(2) OR [PayFrequency]=(1))</Definition>
+										</Check>
+									</Checks>
+								</Byte>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_EmployeePayHistory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_EmployeePayHistory_Employee_BusinessEntityID" Entity="HumanResources.Employee" ReferencedTableName="Employee" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_EmployeePayHistory_BusinessEntityID_RateChangeDate" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="RateChangeDate" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="JobCandidate" Table="JobCandidate" ShortName="JC">
+							<Fields>
+								<Int32 Name="JobCandidateID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="BusinessEntityID" IsNullable="true" DatabaseType="int" />
+								<Xml Name="Resume" IsNullable="true" DatabaseType="xml" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_JobCandidate_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_JobCandidate_Employee_BusinessEntityID" Entity="HumanResources.Employee" ReferencedTableName="Employee" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_JobCandidate_BusinessEntityID">
+									<Fields>
+										<Field Name="BusinessEntityID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_JobCandidate_JobCandidateID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="JobCandidateID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Shift" Table="Shift" ShortName="S">
+							<Fields>
+								<Byte Name="ShiftID" DatabaseType="tinyint">
+									<Identity Seed="1" Increment="1" />
+								</Byte>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="StartTime" DatabaseType="time" />
+								<DateTime Name="EndTime" DatabaseType="time" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Shift_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_Shift_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Shift_StartTime_EndTime" IsUnique="true">
+									<Fields>
+										<Field Name="StartTime" />
+										<Field Name="EndTime" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Shift_ShiftID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ShiftID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+					</Objects>
+				</Schema>
+				<Schema Name="Person">
+					<Types />
+					<Objects>
+						<Entity Name="Address" Table="Address" ShortName="A">
+							<Fields>
+								<Int32 Name="AddressID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="AddressLine1" DatabaseType="nvarchar" Size="60" />
+								<String Name="AddressLine2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
+								<String Name="City" DatabaseType="nvarchar" Size="30" />
+								<Int32 Name="StateProvinceID" DatabaseType="int" />
+								<String Name="PostalCode" DatabaseType="nvarchar" Size="15" />
+								<Geography Name="SpatialLocation" IsNullable="true" DatabaseType="geography" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Address_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Address_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Address_StateProvince_StateProvinceID" Entity="Person.StateProvince" ReferencedTableName="StateProvince" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="StateProvinceID" References="StateProvinceID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_Address_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="IX_Address_AddressLine1_AddressLine2_City_StateProvinceID_PostalCode" IsUnique="true">
+									<Fields>
+										<Field Name="AddressLine1" />
+										<Field Name="AddressLine2" />
+										<Field Name="City" />
+										<Field Name="StateProvinceID" />
+										<Field Name="PostalCode" />
+									</Fields>
+								</Index>
+								<Index Name="IX_Address_StateProvinceID">
+									<Fields>
+										<Field Name="StateProvinceID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Address_AddressID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="AddressID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="AddressType" Table="AddressType" ShortName="AT">
+							<Fields>
+								<Int32 Name="AddressTypeID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_AddressType_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_AddressType_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_AddressType_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="AK_AddressType_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_AddressType_AddressTypeID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="AddressTypeID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="BusinessEntity" Table="BusinessEntity" ShortName="BE">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_BusinessEntity_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_BusinessEntity_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_BusinessEntity_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_BusinessEntity_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="BusinessEntityAddress" Table="BusinessEntityAddress" ShortName="BEA">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int32 Name="AddressID" DatabaseType="int" />
+								<Int32 Name="AddressTypeID" DatabaseType="int" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_BusinessEntityAddress_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_BusinessEntityAddress_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_BusinessEntityAddress_Address_AddressID" Entity="Person.Address" ReferencedTableName="Address" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="AddressID" References="AddressID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_BusinessEntityAddress_AddressType_AddressTypeID" Entity="Person.AddressType" ReferencedTableName="AddressType" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="AddressTypeID" References="AddressTypeID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_BusinessEntityAddress_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_BusinessEntityAddress_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="IX_BusinessEntityAddress_AddressID">
+									<Fields>
+										<Field Name="AddressID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_BusinessEntityAddress_AddressTypeID">
+									<Fields>
+										<Field Name="AddressTypeID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_BusinessEntityAddress_BusinessEntityID_AddressID_AddressTypeID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="AddressID" />
+									<Field Name="AddressTypeID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="BusinessEntityContact" Table="BusinessEntityContact" ShortName="BEC">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int32 Name="PersonID" DatabaseType="int" />
+								<Int32 Name="ContactTypeID" DatabaseType="int" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_BusinessEntityContact_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_BusinessEntityContact_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_BusinessEntityContact_Person_PersonID" Entity="Person.Person" ReferencedTableName="Person" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="PersonID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_BusinessEntityContact_ContactType_ContactTypeID" Entity="Person.ContactType" ReferencedTableName="ContactType" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="ContactTypeID" References="ContactTypeID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_BusinessEntityContact_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_BusinessEntityContact_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="IX_BusinessEntityContact_PersonID">
+									<Fields>
+										<Field Name="PersonID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_BusinessEntityContact_ContactTypeID">
+									<Fields>
+										<Field Name="ContactTypeID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_BusinessEntityContact_BusinessEntityID_PersonID_ContactTypeID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="PersonID" />
+									<Field Name="ContactTypeID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ContactType" Table="ContactType" ShortName="CT">
+							<Fields>
+								<Int32 Name="ContactTypeID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ContactType_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_ContactType_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ContactType_ContactTypeID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ContactTypeID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="CountryRegion" Table="CountryRegion" ShortName="CR">
+							<Fields>
+								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_CountryRegion_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_CountryRegion_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_CountryRegion_CountryRegionCode" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="CountryRegionCode" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="EmailAddress" Table="EmailAddress" ShortName="EA">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int32 Name="EmailAddressID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="EmailAddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_EmailAddress_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_EmailAddress_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_EmailAddress_Person_BusinessEntityID" Entity="Person.Person" ReferencedTableName="Person" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_EmailAddress_EmailAddress">
+									<Fields>
+										<Field Name="EmailAddress" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_EmailAddress_BusinessEntityID_EmailAddressID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="EmailAddressID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Password" Table="Password" ShortName="P">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<String Name="PasswordHash" DatabaseType="varchar" />
+								<String Name="PasswordSalt" DatabaseType="varchar" Size="10" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Password_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Password_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Password_Person_BusinessEntityID" Entity="Person.Person" ReferencedTableName="Person" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_Password_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Person" Table="Person" ShortName="P0">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<String Name="PersonType" DatabaseType="nchar" Size="2">
+									<Checks>
+										<Check Name="CK_Person_PersonType">
+											<Definition>([PersonType] IS NULL OR (upper([PersonType])='GC' OR upper([PersonType])='SP' OR upper([PersonType])='EM' OR upper([PersonType])='IN' OR upper([PersonType])='VC' OR upper([PersonType])='SC'))</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<Boolean Name="NameStyle" DatabaseType="namestyle">
+									<DefaultConstraint Name="DF_Person_NameStyle">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="FirstName" DatabaseType="name" Size="50" />
+								<String Name="MiddleName" IsNullable="true" DatabaseType="name" Size="50" />
+								<String Name="LastName" DatabaseType="name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<Int32 Name="EmailPromotion" DatabaseType="int">
+									<DefaultConstraint Name="DF_Person_EmailPromotion">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_Person_EmailPromotion">
+											<Definition>([EmailPromotion]&gt;=(0) AND [EmailPromotion]&lt;=(2))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Xml Name="AdditionalContactInfo" IsNullable="true" DatabaseType="xml" />
+								<Xml Name="Demographics" IsNullable="true" DatabaseType="xml" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Person_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Person_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Person_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_Person_LastName_FirstName_MiddleName">
+									<Fields>
+										<Field Name="LastName" />
+										<Field Name="FirstName" />
+										<Field Name="MiddleName" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Person_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="PXML_Person_AddContact">
+									<Fields>
+										<Field Name="AdditionalContactInfo" />
+									</Fields>
+								</Index>
+								<Index Name="PXML_Person_Demographics">
+									<Fields>
+										<Field Name="Demographics" />
+									</Fields>
+								</Index>
+								<Index Name="XMLPATH_Person_Demographics">
+									<Fields>
+										<Field Name="Demographics" />
+									</Fields>
+								</Index>
+								<Index Name="XMLPROPERTY_Person_Demographics">
+									<Fields>
+										<Field Name="Demographics" />
+									</Fields>
+								</Index>
+								<Index Name="XMLVALUE_Person_Demographics">
+									<Fields>
+										<Field Name="Demographics" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Person_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="PersonPhone" Table="PersonPhone" ShortName="PP">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<String Name="PhoneNumber" DatabaseType="phone" Size="25" />
+								<Int32 Name="PhoneNumberTypeID" DatabaseType="int" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_PersonPhone_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_PersonPhone_Person_BusinessEntityID" Entity="Person.Person" ReferencedTableName="Person" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_PersonPhone_PhoneNumberType_PhoneNumberTypeID" Entity="Person.PhoneNumberType" ReferencedTableName="PhoneNumberType" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="PhoneNumberTypeID" References="PhoneNumberTypeID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_PersonPhone_PhoneNumber">
+									<Fields>
+										<Field Name="PhoneNumber" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_PersonPhone_BusinessEntityID_PhoneNumber_PhoneNumberTypeID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="PhoneNumber" />
+									<Field Name="PhoneNumberTypeID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="PhoneNumberType" Table="PhoneNumberType" ShortName="PNT">
+							<Fields>
+								<Int32 Name="PhoneNumberTypeID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_PhoneNumberType_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<PrimaryKey Name="PK_PhoneNumberType_PhoneNumberTypeID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="PhoneNumberTypeID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="StateProvince" Table="StateProvince" ShortName="SP">
+							<Fields>
+								<Int32 Name="StateProvinceID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="StateProvinceCode" DatabaseType="nchar" Size="3" />
+								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
+								<Boolean Name="IsOnlyStateProvinceFlag" DatabaseType="flag">
+									<DefaultConstraint Name="DF_StateProvince_IsOnlyStateProvinceFlag">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Int32 Name="TerritoryID" DatabaseType="int" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_StateProvince_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_StateProvince_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_StateProvince_CountryRegion_CountryRegionCode" Entity="Person.CountryRegion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="CountryRegionCode" References="CountryRegionCode" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_StateProvince_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="TerritoryID" References="TerritoryID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_StateProvince_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_StateProvince_StateProvinceCode_CountryRegionCode" IsUnique="true">
+									<Fields>
+										<Field Name="StateProvinceCode" />
+										<Field Name="CountryRegionCode" />
+									</Fields>
+								</Index>
+								<Index Name="AK_StateProvince_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_StateProvince_StateProvinceID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="StateProvinceID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+					</Objects>
+				</Schema>
+				<Schema Name="Production">
+					<Types />
+					<Objects>
+						<Entity Name="BillOfMaterials" Table="BillOfMaterials" ShortName="BOM">
+							<Fields>
+								<Int32 Name="BillOfMaterialsID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="ProductAssemblyID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="ComponentID" DatabaseType="int" />
+								<DateTime Name="StartDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_BillOfMaterials_StartDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
+								<String Name="UnitMeasureCode" DatabaseType="nchar" Size="3" />
+								<Int16 Name="BOMLevel" DatabaseType="smallint" />
+								<Decimal Name="PerAssemblyQty" DatabaseType="decimal" Precision="8" Scale="2">
+									<DefaultConstraint Name="DF_BillOfMaterials_PerAssemblyQty">
+										<Definition>((1.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_BillOfMaterials_PerAssemblyQty">
+											<Definition>([PerAssemblyQty]&gt;=(1.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_BillOfMaterials_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_BillOfMaterials_Product_ProductAssemblyID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductAssemblyID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_BillOfMaterials_Product_ComponentID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ComponentID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_BillOfMaterials_UnitMeasure_UnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="UnitMeasureCode" References="UnitMeasureCode" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_BillOfMaterials_ProductAssemblyID_ComponentID_StartDate" IsUnique="true">
+									<Fields>
+										<Field Name="ProductAssemblyID" />
+										<Field Name="ComponentID" />
+										<Field Name="StartDate" />
+									</Fields>
+								</Index>
+								<Index Name="IX_BillOfMaterials_UnitMeasureCode">
+									<Fields>
+										<Field Name="UnitMeasureCode" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_BillOfMaterials_BillOfMaterialsID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BillOfMaterialsID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Culture" Table="Culture" ShortName="C">
+							<Fields>
+								<String Name="CultureID" DatabaseType="nchar" Size="6" />
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Culture_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_Culture_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Culture_CultureID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="CultureID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Document" Table="Document" ShortName="D0">
+							<Fields>
+								<HierarchyId Name="DocumentNode" DatabaseType="hierarchyid" />
+								<Int16 Name="DocumentLevel" IsNullable="true" DatabaseType="smallint">
+									<Computed>
+										<Definition>([DocumentNode].[GetLevel]())</Definition>
+									</Computed>
+								</Int16>
+								<String Name="Title" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Owner" DatabaseType="int" />
+								<Boolean Name="FolderFlag" DatabaseType="bit">
+									<DefaultConstraint Name="DF_Document_FolderFlag">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<String Name="FileName" DatabaseType="nvarchar" Size="400" />
+								<String Name="FileExtension" DatabaseType="nvarchar" Size="8" />
+								<String Name="Revision" DatabaseType="nchar" Size="5" />
+								<Int32 Name="ChangeNumber" DatabaseType="int">
+									<DefaultConstraint Name="DF_Document_ChangeNumber">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Int32>
+								<Byte Name="Status" DatabaseType="tinyint">
+									<Checks>
+										<Check Name="CK_Document_Status">
+											<Definition>([Status]&gt;=(1) AND [Status]&lt;=(3))</Definition>
+										</Check>
+									</Checks>
+								</Byte>
+								<String Name="DocumentSummary" IsNullable="true" DatabaseType="nvarchar" Size="0" />
+								<Binary Name="Document" IsNullable="true" DatabaseType="varbinary" Size="-1" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Document_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Document_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Document_Employee_Owner" Entity="HumanResources.Employee" ReferencedTableName="Employee" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="Owner" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="UQ__Document__F73921F7C81C642F" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Document_DocumentLevel_DocumentNode" IsUnique="true">
+									<Fields>
+										<Field Name="DocumentLevel" />
+										<Field Name="DocumentNode" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Document_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="IX_Document_FileName_Revision">
+									<Fields>
+										<Field Name="FileName" />
+										<Field Name="Revision" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Document_DocumentNode" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="DocumentNode" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Illustration" Table="Illustration" ShortName="I">
+							<Fields>
+								<Int32 Name="IllustrationID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Xml Name="Diagram" IsNullable="true" DatabaseType="xml" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Illustration_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<PrimaryKey Name="PK_Illustration_IllustrationID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="IllustrationID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Location" Table="Location" ShortName="L">
+							<Fields>
+								<Int16 Name="LocationID" DatabaseType="smallint">
+									<Identity Seed="1" Increment="1" />
+								</Int16>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Decimal Name="CostRate" DatabaseType="smallmoney">
+									<DefaultConstraint Name="DF_Location_CostRate">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_Location_CostRate">
+											<Definition>([CostRate]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="Availability" DatabaseType="decimal" Precision="8" Scale="2">
+									<DefaultConstraint Name="DF_Location_Availability">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_Location_Availability">
+											<Definition>([Availability]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Location_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_Location_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Location_LocationID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="LocationID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Product" Table="Product" ShortName="P1">
+							<Fields>
+								<Int32 Name="ProductID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<String Name="ProductNumber" DatabaseType="nvarchar" Size="25" />
+								<Boolean Name="MakeFlag" DatabaseType="flag">
+									<DefaultConstraint Name="DF_Product_MakeFlag">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<Boolean Name="FinishedGoodsFlag" DatabaseType="flag">
+									<DefaultConstraint Name="DF_Product_FinishedGoodsFlag">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<String Name="Color" IsNullable="true" DatabaseType="nvarchar" Size="15" />
+								<Int16 Name="SafetyStockLevel" DatabaseType="smallint">
+									<Checks>
+										<Check Name="CK_Product_SafetyStockLevel">
+											<Definition>([SafetyStockLevel]&gt;(0))</Definition>
+										</Check>
+									</Checks>
+								</Int16>
+								<Int16 Name="ReorderPoint" DatabaseType="smallint">
+									<Checks>
+										<Check Name="CK_Product_ReorderPoint">
+											<Definition>([ReorderPoint]&gt;(0))</Definition>
+										</Check>
+									</Checks>
+								</Int16>
+								<Decimal Name="StandardCost" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_Product_StandardCost">
+											<Definition>([StandardCost]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="ListPrice" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_Product_ListPrice">
+											<Definition>([ListPrice]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<String Name="Size" IsNullable="true" DatabaseType="nvarchar" Size="5" />
+								<String Name="SizeUnitMeasureCode" IsNullable="true" DatabaseType="nchar" Size="3" />
+								<String Name="WeightUnitMeasureCode" IsNullable="true" DatabaseType="nchar" Size="3" />
+								<Decimal Name="Weight" IsNullable="true" DatabaseType="decimal" Precision="8" Scale="2">
+									<Checks>
+										<Check Name="CK_Product_Weight">
+											<Definition>([Weight]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Int32 Name="DaysToManufacture" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_Product_DaysToManufacture">
+											<Definition>([DaysToManufacture]&gt;=(0))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<String Name="ProductLine" IsNullable="true" DatabaseType="nchar" Size="2">
+									<Checks>
+										<Check Name="CK_Product_ProductLine">
+											<Definition>(upper([ProductLine])='R' OR upper([ProductLine])='M' OR upper([ProductLine])='T' OR upper([ProductLine])='S' OR [ProductLine] IS NULL)</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<String Name="Class" IsNullable="true" DatabaseType="nchar" Size="2">
+									<Checks>
+										<Check Name="CK_Product_Class">
+											<Definition>(upper([Class])='H' OR upper([Class])='M' OR upper([Class])='L' OR [Class] IS NULL)</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<String Name="Style" IsNullable="true" DatabaseType="nchar" Size="2">
+									<Checks>
+										<Check Name="CK_Product_Style">
+											<Definition>(upper([Style])='U' OR upper([Style])='M' OR upper([Style])='W' OR [Style] IS NULL)</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<Int32 Name="ProductSubcategoryID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="ProductModelID" IsNullable="true" DatabaseType="int" />
+								<DateTime Name="SellStartDate" DatabaseType="datetime" />
+								<DateTime Name="SellEndDate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="DiscontinuedDate" IsNullable="true" DatabaseType="datetime" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Product_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Product_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Product_UnitMeasure_SizeUnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="SizeUnitMeasureCode" References="UnitMeasureCode" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_Product_UnitMeasure_WeightUnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="WeightUnitMeasureCode" References="UnitMeasureCode" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_Product_ProductModel_ProductModelID" Entity="Production.ProductModel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductModelID" References="ProductModelID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_Product_ProductSubcategory_ProductSubcategoryID" Entity="Production.ProductSubcategory" ReferencedTableName="ProductSubcategory" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductSubcategoryID" References="ProductSubcategoryID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_Product_ProductNumber" IsUnique="true">
+									<Fields>
+										<Field Name="ProductNumber" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Product_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Product_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Product_ProductID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductCategory" Table="ProductCategory" ShortName="PC">
+							<Fields>
+								<Int32 Name="ProductCategoryID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_ProductCategory_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductCategory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_ProductCategory_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_ProductCategory_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ProductCategory_ProductCategoryID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductCategoryID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductCostHistory" Table="ProductCostHistory" ShortName="PCH">
+							<Fields>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<DateTime Name="StartDate" DatabaseType="datetime" />
+								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="StandardCost" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_ProductCostHistory_StandardCost">
+											<Definition>([StandardCost]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductCostHistory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductCostHistory_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_ProductCostHistory_ProductID_StartDate" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductID" />
+									<Field Name="StartDate" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductDescription" Table="ProductDescription" ShortName="PD">
+							<Fields>
+								<Int32 Name="ProductDescriptionID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Description" DatabaseType="nvarchar" Size="400" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_ProductDescription_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductDescription_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_ProductDescription_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ProductDescription_ProductDescriptionID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductDescriptionID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductDocument" Table="ProductDocument" ShortName="PD0">
+							<Fields>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<HierarchyId Name="DocumentNode" DatabaseType="hierarchyid" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductDocument_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductDocument_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductDocument_Document_DocumentNode" Entity="Production.Document" ReferencedTableName="Document" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="DocumentNode" References="DocumentNode" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_ProductDocument_ProductID_DocumentNode" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductID" />
+									<Field Name="DocumentNode" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductInventory" Table="ProductInventory" ShortName="PI">
+							<Fields>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int16 Name="LocationID" DatabaseType="smallint" />
+								<String Name="Shelf" DatabaseType="nvarchar" Size="10">
+									<Checks>
+										<Check Name="CK_ProductInventory_Shelf">
+											<Definition>([Shelf] like '[A-Za-z]' OR [Shelf]='N/A')</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<Byte Name="Bin" DatabaseType="tinyint">
+									<Checks>
+										<Check Name="CK_ProductInventory_Bin">
+											<Definition>([Bin]&gt;=(0) AND [Bin]&lt;=(100))</Definition>
+										</Check>
+									</Checks>
+								</Byte>
+								<Int16 Name="Quantity" DatabaseType="smallint">
+									<DefaultConstraint Name="DF_ProductInventory_Quantity">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Int16>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_ProductInventory_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductInventory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductInventory_Location_LocationID" Entity="Production.Location" ReferencedTableName="Location" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="LocationID" References="LocationID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductInventory_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_ProductInventory_ProductID_LocationID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductID" />
+									<Field Name="LocationID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductListPriceHistory" Table="ProductListPriceHistory" ShortName="PLPH">
+							<Fields>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<DateTime Name="StartDate" DatabaseType="datetime" />
+								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="ListPrice" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_ProductListPriceHistory_ListPrice">
+											<Definition>([ListPrice]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductListPriceHistory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductListPriceHistory_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_ProductListPriceHistory_ProductID_StartDate" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductID" />
+									<Field Name="StartDate" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductModel" Table="ProductModel" ShortName="PM">
+							<Fields>
+								<Int32 Name="ProductModelID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Xml Name="CatalogDescription" IsNullable="true" DatabaseType="xml" />
+								<Xml Name="Instructions" IsNullable="true" DatabaseType="xml" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_ProductModel_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductModel_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_ProductModel_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_ProductModel_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="PXML_ProductModel_CatalogDescription">
+									<Fields>
+										<Field Name="CatalogDescription" />
+									</Fields>
+								</Index>
+								<Index Name="PXML_ProductModel_Instructions">
+									<Fields>
+										<Field Name="Instructions" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ProductModel_ProductModelID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductModelID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductModelIllustration" Table="ProductModelIllustration" ShortName="PMI">
+							<Fields>
+								<Int32 Name="ProductModelID" DatabaseType="int" />
+								<Int32 Name="IllustrationID" DatabaseType="int" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductModelIllustration_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductModelIllustration_ProductModel_ProductModelID" Entity="Production.ProductModel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductModelID" References="ProductModelID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductModelIllustration_Illustration_IllustrationID" Entity="Production.Illustration" ReferencedTableName="Illustration" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="IllustrationID" References="IllustrationID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_ProductModelIllustration_ProductModelID_IllustrationID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductModelID" />
+									<Field Name="IllustrationID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductModelProductDescriptionCulture" Table="ProductModelProductDescriptionCulture" ShortName="PMPDC">
+							<Fields>
+								<Int32 Name="ProductModelID" DatabaseType="int" />
+								<Int32 Name="ProductDescriptionID" DatabaseType="int" />
+								<String Name="CultureID" DatabaseType="nchar" Size="6" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductModelProductDescriptionCulture_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductModelProductDescriptionCulture_ProductDescription_ProductDescriptionID" Entity="Production.ProductDescription" ReferencedTableName="ProductDescription" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductDescriptionID" References="ProductDescriptionID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductModelProductDescriptionCulture_Culture_CultureID" Entity="Production.Culture" ReferencedTableName="Culture" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="CultureID" References="CultureID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductModelProductDescriptionCulture_ProductModel_ProductModelID" Entity="Production.ProductModel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductModelID" References="ProductModelID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_ProductModelProductDescriptionCulture_ProductModelID_ProductDescriptionID_CultureID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductModelID" />
+									<Field Name="ProductDescriptionID" />
+									<Field Name="CultureID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductPhoto" Table="ProductPhoto" ShortName="PP0">
+							<Fields>
+								<Int32 Name="ProductPhotoID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Binary Name="ThumbNailPhoto" IsNullable="true" DatabaseType="varbinary" Size="-1" />
+								<String Name="ThumbnailPhotoFileName" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Binary Name="LargePhoto" IsNullable="true" DatabaseType="varbinary" Size="-1" />
+								<String Name="LargePhotoFileName" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductPhoto_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<PrimaryKey Name="PK_ProductPhoto_ProductPhotoID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductPhotoID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductProductPhoto" Table="ProductProductPhoto" ShortName="PPP">
+							<Fields>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int32 Name="ProductPhotoID" DatabaseType="int" />
+								<Boolean Name="Primary" DatabaseType="flag">
+									<DefaultConstraint Name="DF_ProductProductPhoto_Primary">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductProductPhoto_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductProductPhoto_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductProductPhoto_ProductPhoto_ProductPhotoID" Entity="Production.ProductPhoto" ReferencedTableName="ProductPhoto" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductPhotoID" References="ProductPhotoID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="">
+									<Fields />
+								</Index>
+								<Index Name="">
+									<Fields />
+								</Index>
+								<Index Name="">
+									<Fields />
+								</Index>
+								<Index>
+									<Fields />
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ProductProductPhoto_ProductID_ProductPhotoID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductID" />
+									<Field Name="ProductPhotoID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductReview" Table="ProductReview" ShortName="PR">
+							<Fields>
+								<Int32 Name="ProductReviewID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<String Name="ReviewerName" DatabaseType="name" Size="50" />
+								<DateTime Name="ReviewDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductReview_ReviewDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<String Name="EmailAddress" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Rating" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_ProductReview_Rating">
+											<Definition>([Rating]&gt;=(1) AND [Rating]&lt;=(5))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<String Name="Comments" IsNullable="true" DatabaseType="nvarchar" Size="3850" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductReview_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductReview_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_ProductReview_ProductID_Name">
+									<Fields>
+										<Field Name="Comments" />
+										<Field Name="ProductID" />
+										<Field Name="ReviewerName" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ProductReview_ProductReviewID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductReviewID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ProductSubcategory" Table="ProductSubcategory" ShortName="PS">
+							<Fields>
+								<Int32 Name="ProductSubcategoryID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="ProductCategoryID" DatabaseType="int" />
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_ProductSubcategory_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductSubcategory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductSubcategory_ProductCategory_ProductCategoryID" Entity="Production.ProductCategory" ReferencedTableName="ProductCategory" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductCategoryID" References="ProductCategoryID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_ProductSubcategory_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_ProductSubcategory_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ProductSubcategory_ProductSubcategoryID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductSubcategoryID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ScrapReason" Table="ScrapReason" ShortName="SR">
+							<Fields>
+								<Int16 Name="ScrapReasonID" DatabaseType="smallint">
+									<Identity Seed="1" Increment="1" />
+								</Int16>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ScrapReason_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_ScrapReason_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ScrapReason_ScrapReasonID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ScrapReasonID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="TransactionHistory" Table="TransactionHistory" ShortName="TH">
+							<Fields>
+								<Int32 Name="TransactionID" DatabaseType="int">
+									<Identity Seed="100000" Increment="1" />
+								</Int32>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int32 Name="ReferenceOrderID" DatabaseType="int" />
+								<Int32 Name="ReferenceOrderLineID" DatabaseType="int">
+									<DefaultConstraint Name="DF_TransactionHistory_ReferenceOrderLineID">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Int32>
+								<DateTime Name="TransactionDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_TransactionHistory_TransactionDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<String Name="TransactionType" DatabaseType="nchar" Size="1">
+									<Checks>
+										<Check Name="CK_TransactionHistory_TransactionType">
+											<Definition>(upper([TransactionType])='P' OR upper([TransactionType])='S' OR upper([TransactionType])='W')</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<Int32 Name="Quantity" DatabaseType="int" />
+								<Decimal Name="ActualCost" DatabaseType="money" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_TransactionHistory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_TransactionHistory_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_TransactionHistory_ProductID">
+									<Fields>
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_TransactionHistory_ReferenceOrderID_ReferenceOrderLineID">
+									<Fields>
+										<Field Name="ReferenceOrderID" />
+										<Field Name="ReferenceOrderLineID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_TransactionHistory_TransactionID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="TransactionID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="TransactionHistoryArchive" Table="TransactionHistoryArchive" ShortName="THA">
+							<Fields>
+								<Int32 Name="TransactionID" DatabaseType="int" />
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int32 Name="ReferenceOrderID" DatabaseType="int" />
+								<Int32 Name="ReferenceOrderLineID" DatabaseType="int">
+									<DefaultConstraint Name="DF_TransactionHistoryArchive_ReferenceOrderLineID">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Int32>
+								<DateTime Name="TransactionDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_TransactionHistoryArchive_TransactionDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<String Name="TransactionType" DatabaseType="nchar" Size="1">
+									<Checks>
+										<Check Name="CK_TransactionHistoryArchive_TransactionType">
+											<Definition>(upper([TransactionType])='P' OR upper([TransactionType])='S' OR upper([TransactionType])='W')</Definition>
+										</Check>
+									</Checks>
+								</String>
+								<Int32 Name="Quantity" DatabaseType="int" />
+								<Decimal Name="ActualCost" DatabaseType="money" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_TransactionHistoryArchive_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="IX_TransactionHistoryArchive_ProductID">
+									<Fields>
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_TransactionHistoryArchive_ReferenceOrderID_ReferenceOrderLineID">
+									<Fields>
+										<Field Name="ReferenceOrderID" />
+										<Field Name="ReferenceOrderLineID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_TransactionHistoryArchive_TransactionID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="TransactionID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="UnitMeasure" Table="UnitMeasure" ShortName="UM">
+							<Fields>
+								<String Name="UnitMeasureCode" DatabaseType="nchar" Size="3" />
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_UnitMeasure_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_UnitMeasure_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_UnitMeasure_UnitMeasureCode" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="UnitMeasureCode" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="WorkOrder" Table="WorkOrder" ShortName="WO">
+							<Fields>
+								<Int32 Name="WorkOrderID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int32 Name="OrderQty" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_WorkOrder_OrderQty">
+											<Definition>([OrderQty]&gt;(0))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Int32 Name="StockedQty" DatabaseType="int">
+									<Computed>
+										<Definition>(isnull([OrderQty]-[ScrappedQty],(0)))</Definition>
+									</Computed>
+								</Int32>
+								<Int16 Name="ScrappedQty" DatabaseType="smallint">
+									<Checks>
+										<Check Name="CK_WorkOrder_ScrappedQty">
+											<Definition>([ScrappedQty]&gt;=(0))</Definition>
+										</Check>
+									</Checks>
+								</Int16>
+								<DateTime Name="StartDate" DatabaseType="datetime" />
+								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="DueDate" DatabaseType="datetime" />
+								<Int16 Name="ScrapReasonID" IsNullable="true" DatabaseType="smallint" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_WorkOrder_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_WorkOrder_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_WorkOrder_ScrapReason_ScrapReasonID" Entity="Production.ScrapReason" ReferencedTableName="ScrapReason" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ScrapReasonID" References="ScrapReasonID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_WorkOrder_ScrapReasonID">
+									<Fields>
+										<Field Name="ScrapReasonID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_WorkOrder_ProductID">
+									<Fields>
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_WorkOrder_WorkOrderID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="WorkOrderID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="WorkOrderRouting" Table="WorkOrderRouting" ShortName="WOR">
+							<Fields>
+								<Int32 Name="WorkOrderID" DatabaseType="int" />
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int16 Name="OperationSequence" DatabaseType="smallint" />
+								<Int16 Name="LocationID" DatabaseType="smallint" />
+								<DateTime Name="ScheduledStartDate" DatabaseType="datetime" />
+								<DateTime Name="ScheduledEndDate" DatabaseType="datetime" />
+								<DateTime Name="ActualStartDate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="ActualEndDate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="ActualResourceHrs" IsNullable="true" DatabaseType="decimal" Precision="9" Scale="4">
+									<Checks>
+										<Check Name="CK_WorkOrderRouting_ActualResourceHrs">
+											<Definition>([ActualResourceHrs]&gt;=(0.0000))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="PlannedCost" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_WorkOrderRouting_PlannedCost">
+											<Definition>([PlannedCost]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="ActualCost" IsNullable="true" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_WorkOrderRouting_ActualCost">
+											<Definition>([ActualCost]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_WorkOrderRouting_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_WorkOrderRouting_Location_LocationID" Entity="Production.Location" ReferencedTableName="Location" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="LocationID" References="LocationID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_WorkOrderRouting_WorkOrder_WorkOrderID" Entity="Production.WorkOrder" ReferencedTableName="WorkOrder" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="WorkOrderID" References="WorkOrderID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_WorkOrderRouting_ProductID">
+									<Fields>
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_WorkOrderRouting_WorkOrderID_ProductID_OperationSequence" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="WorkOrderID" />
+									<Field Name="ProductID" />
+									<Field Name="OperationSequence" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+					</Objects>
+				</Schema>
+				<Schema Name="Purchasing">
+					<Types />
+					<Objects>
+						<Entity Name="ProductVendor" Table="ProductVendor" ShortName="PV">
+							<Fields>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int32 Name="AverageLeadTime" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_ProductVendor_AverageLeadTime">
+											<Definition>([AverageLeadTime]&gt;=(1))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Decimal Name="StandardPrice" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_ProductVendor_StandardPrice">
+											<Definition>([StandardPrice]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="LastReceiptCost" IsNullable="true" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_ProductVendor_LastReceiptCost">
+											<Definition>([LastReceiptCost]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<DateTime Name="LastReceiptDate" IsNullable="true" DatabaseType="datetime" />
+								<Int32 Name="MinOrderQty" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_ProductVendor_MinOrderQty">
+											<Definition>([MinOrderQty]&gt;=(1))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Int32 Name="MaxOrderQty" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_ProductVendor_MaxOrderQty">
+											<Definition>([MaxOrderQty]&gt;=(1))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Int32 Name="OnOrderQty" IsNullable="true" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_ProductVendor_OnOrderQty">
+											<Definition>([OnOrderQty]&gt;=(0))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<String Name="UnitMeasureCode" DatabaseType="nchar" Size="3" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ProductVendor_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ProductVendor_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductVendor_UnitMeasure_UnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="UnitMeasureCode" References="UnitMeasureCode" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_ProductVendor_Vendor_BusinessEntityID" Entity="Purchasing.Vendor" ReferencedTableName="Vendor" ReferencedSchemaName="Purchasing">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_ProductVendor_UnitMeasureCode">
+									<Fields>
+										<Field Name="UnitMeasureCode" />
+									</Fields>
+								</Index>
+								<Index Name="IX_ProductVendor_BusinessEntityID">
+									<Fields>
+										<Field Name="BusinessEntityID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ProductVendor_ProductID_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ProductID" />
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="PurchaseOrderDetail" Table="PurchaseOrderDetail" ShortName="POD">
+							<Fields>
+								<Int32 Name="PurchaseOrderID" DatabaseType="int" />
+								<Int32 Name="PurchaseOrderDetailID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<DateTime Name="DueDate" DatabaseType="datetime" />
+								<Int16 Name="OrderQty" DatabaseType="smallint">
+									<Checks>
+										<Check Name="CK_PurchaseOrderDetail_OrderQty">
+											<Definition>([OrderQty]&gt;(0))</Definition>
+										</Check>
+									</Checks>
+								</Int16>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Decimal Name="UnitPrice" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_PurchaseOrderDetail_UnitPrice">
+											<Definition>([UnitPrice]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="LineTotal" DatabaseType="money">
+									<Computed>
+										<Definition>(isnull([OrderQty]*[UnitPrice],(0.00)))</Definition>
+									</Computed>
+								</Decimal>
+								<Decimal Name="ReceivedQty" DatabaseType="decimal" Precision="8" Scale="2">
+									<Checks>
+										<Check Name="CK_PurchaseOrderDetail_ReceivedQty">
+											<Definition>([ReceivedQty]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="RejectedQty" DatabaseType="decimal" Precision="8" Scale="2">
+									<Checks>
+										<Check Name="CK_PurchaseOrderDetail_RejectedQty">
+											<Definition>([RejectedQty]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="StockedQty" DatabaseType="decimal" Precision="9" Scale="2">
+									<Computed>
+										<Definition>(isnull([ReceivedQty]-[RejectedQty],(0.00)))</Definition>
+									</Computed>
+								</Decimal>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_PurchaseOrderDetail_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_PurchaseOrderDetail_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_PurchaseOrderDetail_PurchaseOrderHeader_PurchaseOrderID" Entity="Purchasing.PurchaseOrderHeader" ReferencedTableName="PurchaseOrderHeader" ReferencedSchemaName="Purchasing">
+									<References>
+										<Reference Field="PurchaseOrderID" References="PurchaseOrderID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_PurchaseOrderDetail_ProductID">
+									<Fields>
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_PurchaseOrderDetail_PurchaseOrderID_PurchaseOrderDetailID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="PurchaseOrderID" />
+									<Field Name="PurchaseOrderDetailID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="PurchaseOrderHeader" Table="PurchaseOrderHeader" ShortName="POH">
+							<Fields>
+								<Int32 Name="PurchaseOrderID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Byte Name="RevisionNumber" DatabaseType="tinyint">
+									<DefaultConstraint Name="DF_PurchaseOrderHeader_RevisionNumber">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Byte>
+								<Byte Name="Status" DatabaseType="tinyint">
+									<DefaultConstraint Name="DF_PurchaseOrderHeader_Status">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_PurchaseOrderHeader_Status">
+											<Definition>([Status]&gt;=(1) AND [Status]&lt;=(4))</Definition>
+										</Check>
+									</Checks>
+								</Byte>
+								<Int32 Name="EmployeeID" DatabaseType="int" />
+								<Int32 Name="VendorID" DatabaseType="int" />
+								<Int32 Name="ShipMethodID" DatabaseType="int" />
+								<DateTime Name="OrderDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_PurchaseOrderHeader_OrderDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<DateTime Name="ShipDate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="SubTotal" DatabaseType="money">
+									<DefaultConstraint Name="DF_PurchaseOrderHeader_SubTotal">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_PurchaseOrderHeader_SubTotal">
+											<Definition>([SubTotal]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="TaxAmt" DatabaseType="money">
+									<DefaultConstraint Name="DF_PurchaseOrderHeader_TaxAmt">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_PurchaseOrderHeader_TaxAmt">
+											<Definition>([TaxAmt]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="Freight" DatabaseType="money">
+									<DefaultConstraint Name="DF_PurchaseOrderHeader_Freight">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_PurchaseOrderHeader_Freight">
+											<Definition>([Freight]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="TotalDue" DatabaseType="money">
+									<Computed IsPersisted="true">
+										<Definition>(isnull(([SubTotal]+[TaxAmt])+[Freight],(0)))</Definition>
+									</Computed>
+								</Decimal>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_PurchaseOrderHeader_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_PurchaseOrderHeader_Employee_EmployeeID" Entity="HumanResources.Employee" ReferencedTableName="Employee" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="EmployeeID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_PurchaseOrderHeader_Vendor_VendorID" Entity="Purchasing.Vendor" ReferencedTableName="Vendor" ReferencedSchemaName="Purchasing">
+									<References>
+										<Reference Field="VendorID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_PurchaseOrderHeader_ShipMethod_ShipMethodID" Entity="Purchasing.ShipMethod" ReferencedTableName="ShipMethod" ReferencedSchemaName="Purchasing">
+									<References>
+										<Reference Field="ShipMethodID" References="ShipMethodID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_PurchaseOrderHeader_VendorID">
+									<Fields>
+										<Field Name="VendorID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_PurchaseOrderHeader_EmployeeID">
+									<Fields>
+										<Field Name="EmployeeID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_PurchaseOrderHeader_PurchaseOrderID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="PurchaseOrderID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ShipMethod" Table="ShipMethod" ShortName="SM">
+							<Fields>
+								<Int32 Name="ShipMethodID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Decimal Name="ShipBase" DatabaseType="money">
+									<DefaultConstraint Name="DF_ShipMethod_ShipBase">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_ShipMethod_ShipBase">
+											<Definition>([ShipBase]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="ShipRate" DatabaseType="money">
+									<DefaultConstraint Name="DF_ShipMethod_ShipRate">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_ShipMethod_ShipRate">
+											<Definition>([ShipRate]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_ShipMethod_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ShipMethod_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_ShipMethod_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_ShipMethod_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ShipMethod_ShipMethodID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ShipMethodID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Vendor" Table="Vendor" ShortName="V">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<String Name="AccountNumber" DatabaseType="accountnumber" Size="15" />
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Byte Name="CreditRating" DatabaseType="tinyint">
+									<Checks>
+										<Check Name="CK_Vendor_CreditRating">
+											<Definition>([CreditRating]&gt;=(1) AND [CreditRating]&lt;=(5))</Definition>
+										</Check>
+									</Checks>
+								</Byte>
+								<Boolean Name="PreferredVendorStatus" DatabaseType="flag">
+									<DefaultConstraint Name="DF_Vendor_PreferredVendorStatus">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<Boolean Name="ActiveFlag" DatabaseType="flag">
+									<DefaultConstraint Name="DF_Vendor_ActiveFlag">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<String Name="PurchasingWebServiceURL" IsNullable="true" DatabaseType="nvarchar" Size="1024" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Vendor_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Vendor_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_Vendor_AccountNumber" IsUnique="true">
+									<Fields>
+										<Field Name="AccountNumber" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Vendor_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+					</Objects>
+				</Schema>
+				<Schema Name="Sales">
+					<Types />
+					<Objects>
+						<Entity Name="CountryRegionCurrency" Table="CountryRegionCurrency" ShortName="CRC">
+							<Fields>
+								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
+								<String Name="CurrencyCode" DatabaseType="nchar" Size="3" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_CountryRegionCurrency_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_CountryRegionCurrency_CountryRegion_CountryRegionCode" Entity="Person.CountryRegion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="CountryRegionCode" References="CountryRegionCode" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_CountryRegionCurrency_Currency_CurrencyCode" Entity="Sales.Currency" ReferencedTableName="Currency" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="CurrencyCode" References="CurrencyCode" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_CountryRegionCurrency_CurrencyCode">
+									<Fields>
+										<Field Name="CurrencyCode" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_CountryRegionCurrency_CountryRegionCode_CurrencyCode" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="CountryRegionCode" />
+									<Field Name="CurrencyCode" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="CreditCard" Table="CreditCard" ShortName="CC">
+							<Fields>
+								<Int32 Name="CreditCardID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="CardType" DatabaseType="nvarchar" Size="50" />
+								<String Name="CardNumber" DatabaseType="nvarchar" Size="25" />
+								<Byte Name="ExpMonth" DatabaseType="tinyint" />
+								<Int16 Name="ExpYear" DatabaseType="smallint" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_CreditCard_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_CreditCard_CardNumber" IsUnique="true">
+									<Fields>
+										<Field Name="CardNumber" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_CreditCard_CreditCardID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="CreditCardID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Currency" Table="Currency" ShortName="C0">
+							<Fields>
+								<String Name="CurrencyCode" DatabaseType="nchar" Size="3" />
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Currency_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_Currency_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Currency_CurrencyCode" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="CurrencyCode" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="CurrencyRate" Table="CurrencyRate" ShortName="CR0">
+							<Fields>
+								<Int32 Name="CurrencyRateID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<DateTime Name="CurrencyRateDate" DatabaseType="datetime" />
+								<String Name="FromCurrencyCode" DatabaseType="nchar" Size="3" />
+								<String Name="ToCurrencyCode" DatabaseType="nchar" Size="3" />
+								<Decimal Name="AverageRate" DatabaseType="money" />
+								<Decimal Name="EndOfDayRate" DatabaseType="money" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_CurrencyRate_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_CurrencyRate_Currency_FromCurrencyCode" Entity="Sales.Currency" ReferencedTableName="Currency" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="FromCurrencyCode" References="CurrencyCode" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_CurrencyRate_Currency_ToCurrencyCode" Entity="Sales.Currency" ReferencedTableName="Currency" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="ToCurrencyCode" References="CurrencyCode" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_CurrencyRate_CurrencyRateDate_FromCurrencyCode_ToCurrencyCode" IsUnique="true">
+									<Fields>
+										<Field Name="CurrencyRateDate" />
+										<Field Name="FromCurrencyCode" />
+										<Field Name="ToCurrencyCode" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_CurrencyRate_CurrencyRateID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="CurrencyRateID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Customer" Table="Customer" ShortName="C1">
+							<Fields>
+								<Int32 Name="CustomerID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="PersonID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="StoreID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="TerritoryID" IsNullable="true" DatabaseType="int" />
+								<String Name="AccountNumber" DatabaseType="varchar" Size="10">
+									<Computed>
+										<Definition>(isnull('AW'+[dbo].[ufnLeadingZeros]([CustomerID]),''))</Definition>
+									</Computed>
+								</String>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Customer_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Customer_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Customer_Person_PersonID" Entity="Person.Person" ReferencedTableName="Person" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="PersonID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_Customer_Store_StoreID" Entity="Sales.Store" ReferencedTableName="Store" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="StoreID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_Customer_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="TerritoryID" References="TerritoryID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_Customer_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="AK_Customer_AccountNumber" IsUnique="true">
+									<Fields>
+										<Field Name="AccountNumber" />
+									</Fields>
+								</Index>
+								<Index Name="IX_Customer_TerritoryID">
+									<Fields>
+										<Field Name="TerritoryID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Customer_CustomerID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="CustomerID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="PersonCreditCard" Table="PersonCreditCard" ShortName="PCC">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int32 Name="CreditCardID" DatabaseType="int" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_PersonCreditCard_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_PersonCreditCard_Person_BusinessEntityID" Entity="Person.Person" ReferencedTableName="Person" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_PersonCreditCard_CreditCard_CreditCardID" Entity="Sales.CreditCard" ReferencedTableName="CreditCard" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="CreditCardID" References="CreditCardID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_PersonCreditCard_BusinessEntityID_CreditCardID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="CreditCardID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesOrderDetail" Table="SalesOrderDetail" ShortName="SOD">
+							<Fields>
+								<Int32 Name="SalesOrderID" DatabaseType="int" />
+								<Int32 Name="SalesOrderDetailID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="CarrierTrackingNumber" IsNullable="true" DatabaseType="nvarchar" Size="25" />
+								<Int16 Name="OrderQty" DatabaseType="smallint">
+									<Checks>
+										<Check Name="CK_SalesOrderDetail_OrderQty">
+											<Definition>([OrderQty]&gt;(0))</Definition>
+										</Check>
+									</Checks>
+								</Int16>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Int32 Name="SpecialOfferID" DatabaseType="int" />
+								<Decimal Name="UnitPrice" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_SalesOrderDetail_UnitPrice">
+											<Definition>([UnitPrice]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="UnitPriceDiscount" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesOrderDetail_UnitPriceDiscount">
+										<Definition>((0.0))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesOrderDetail_UnitPriceDiscount">
+											<Definition>([UnitPriceDiscount]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="LineTotal" DatabaseType="numeric" Precision="38" Scale="6">
+									<Computed>
+										<Definition>(isnull(([UnitPrice]*((1.0)-[UnitPriceDiscount]))*[OrderQty],(0.0)))</Definition>
+									</Computed>
+								</Decimal>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SalesOrderDetail_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesOrderDetail_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesOrderDetail_SalesOrderHeader_SalesOrderID" Entity="Sales.SalesOrderHeader" ReferencedTableName="SalesOrderHeader" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="SalesOrderID" References="SalesOrderID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderDetail_SpecialOfferProduct_SpecialOfferIDProductID" Entity="Sales.SpecialOfferProduct" ReferencedTableName="SpecialOfferProduct" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="SpecialOfferID" References="SpecialOfferID" />
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SalesOrderDetail_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="IX_SalesOrderDetail_ProductID">
+									<Fields>
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SalesOrderDetail_SalesOrderID_SalesOrderDetailID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SalesOrderID" />
+									<Field Name="SalesOrderDetailID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesOrderHeader" Table="SalesOrderHeader" ShortName="SOH">
+							<Fields>
+								<Int32 Name="SalesOrderID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Byte Name="RevisionNumber" DatabaseType="tinyint">
+									<DefaultConstraint Name="DF_SalesOrderHeader_RevisionNumber">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+								</Byte>
+								<DateTime Name="OrderDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesOrderHeader_OrderDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<DateTime Name="DueDate" DatabaseType="datetime" />
+								<DateTime Name="ShipDate" IsNullable="true" DatabaseType="datetime" />
+								<Byte Name="Status" DatabaseType="tinyint">
+									<DefaultConstraint Name="DF_SalesOrderHeader_Status">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesOrderHeader_Status">
+											<Definition>([Status]&gt;=(0) AND [Status]&lt;=(8))</Definition>
+										</Check>
+									</Checks>
+								</Byte>
+								<Boolean Name="OnlineOrderFlag" DatabaseType="flag">
+									<DefaultConstraint Name="DF_SalesOrderHeader_OnlineOrderFlag">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+								</Boolean>
+								<String Name="SalesOrderNumber" DatabaseType="nvarchar" Size="25">
+									<Computed>
+										<Definition>(isnull(N'SO'+CONVERT([nvarchar](23),[SalesOrderID]),N'*** ERROR ***'))</Definition>
+									</Computed>
+								</String>
+								<String Name="PurchaseOrderNumber" IsNullable="true" DatabaseType="ordernumber" Size="25" />
+								<String Name="AccountNumber" IsNullable="true" DatabaseType="accountnumber" Size="15" />
+								<Int32 Name="CustomerID" DatabaseType="int" />
+								<Int32 Name="SalesPersonID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="TerritoryID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="BillToAddressID" DatabaseType="int" />
+								<Int32 Name="ShipToAddressID" DatabaseType="int" />
+								<Int32 Name="ShipMethodID" DatabaseType="int" />
+								<Int32 Name="CreditCardID" IsNullable="true" DatabaseType="int" />
+								<String Name="CreditCardApprovalCode" IsNullable="true" DatabaseType="varchar" Size="15" />
+								<Int32 Name="CurrencyRateID" IsNullable="true" DatabaseType="int" />
+								<Decimal Name="SubTotal" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesOrderHeader_SubTotal">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesOrderHeader_SubTotal">
+											<Definition>([SubTotal]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="TaxAmt" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesOrderHeader_TaxAmt">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesOrderHeader_TaxAmt">
+											<Definition>([TaxAmt]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="Freight" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesOrderHeader_Freight">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesOrderHeader_Freight">
+											<Definition>([Freight]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="TotalDue" DatabaseType="money">
+									<Computed>
+										<Definition>(isnull(([SubTotal]+[TaxAmt])+[Freight],(0)))</Definition>
+									</Computed>
+								</Decimal>
+								<String Name="Comment" IsNullable="true" DatabaseType="nvarchar" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SalesOrderHeader_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesOrderHeader_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesOrderHeader_Address_BillToAddressID" Entity="Person.Address" ReferencedTableName="Address" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BillToAddressID" References="AddressID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeader_Address_ShipToAddressID" Entity="Person.Address" ReferencedTableName="Address" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="ShipToAddressID" References="AddressID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeader_CreditCard_CreditCardID" Entity="Sales.CreditCard" ReferencedTableName="CreditCard" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="CreditCardID" References="CreditCardID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeader_CurrencyRate_CurrencyRateID" Entity="Sales.CurrencyRate" ReferencedTableName="CurrencyRate" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="CurrencyRateID" References="CurrencyRateID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeader_Customer_CustomerID" Entity="Sales.Customer" ReferencedTableName="Customer" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="CustomerID" References="CustomerID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeader_SalesPerson_SalesPersonID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="SalesPersonID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeader_ShipMethod_ShipMethodID" Entity="Purchasing.ShipMethod" ReferencedTableName="ShipMethod" ReferencedSchemaName="Purchasing">
+									<References>
+										<Reference Field="ShipMethodID" References="ShipMethodID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeader_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="TerritoryID" References="TerritoryID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SalesOrderHeader_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="AK_SalesOrderHeader_SalesOrderNumber" IsUnique="true">
+									<Fields>
+										<Field Name="SalesOrderNumber" />
+									</Fields>
+								</Index>
+								<Index Name="IX_SalesOrderHeader_CustomerID">
+									<Fields>
+										<Field Name="CustomerID" />
+									</Fields>
+								</Index>
+								<Index Name="IX_SalesOrderHeader_SalesPersonID">
+									<Fields>
+										<Field Name="SalesPersonID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SalesOrderHeader_SalesOrderID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SalesOrderID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesOrderHeaderSalesReason" Table="SalesOrderHeaderSalesReason" ShortName="SOHSR">
+							<Fields>
+								<Int32 Name="SalesOrderID" DatabaseType="int" />
+								<Int32 Name="SalesReasonID" DatabaseType="int" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesOrderHeaderSalesReason_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesOrderHeaderSalesReason_SalesReason_SalesReasonID" Entity="Sales.SalesReason" ReferencedTableName="SalesReason" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="SalesReasonID" References="SalesReasonID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesOrderHeaderSalesReason_SalesOrderHeader_SalesOrderID" Entity="Sales.SalesOrderHeader" ReferencedTableName="SalesOrderHeader" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="SalesOrderID" References="SalesOrderID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes />
+							<PrimaryKey Name="PK_SalesOrderHeaderSalesReason_SalesOrderID_SalesReasonID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SalesOrderID" />
+									<Field Name="SalesReasonID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesPerson" Table="SalesPerson" ShortName="SP0">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int32 Name="TerritoryID" IsNullable="true" DatabaseType="int" />
+								<Decimal Name="SalesQuota" IsNullable="true" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_SalesPerson_SalesQuota">
+											<Definition>([SalesQuota]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="Bonus" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesPerson_Bonus">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesPerson_Bonus">
+											<Definition>([Bonus]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="CommissionPct" DatabaseType="smallmoney">
+									<DefaultConstraint Name="DF_SalesPerson_CommissionPct">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesPerson_CommissionPct">
+											<Definition>([CommissionPct]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="SalesYTD" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesPerson_SalesYTD">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesPerson_SalesYTD">
+											<Definition>([SalesYTD]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="SalesLastYear" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesPerson_SalesLastYear">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesPerson_SalesLastYear">
+											<Definition>([SalesLastYear]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SalesPerson_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesPerson_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesPerson_Employee_BusinessEntityID" Entity="HumanResources.Employee" ReferencedTableName="Employee" ReferencedSchemaName="HumanResources">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesPerson_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="TerritoryID" References="TerritoryID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SalesPerson_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SalesPerson_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesPersonQuotaHistory" Table="SalesPersonQuotaHistory" ShortName="SPQH">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<DateTime Name="QuotaDate" DatabaseType="datetime" />
+								<Decimal Name="SalesQuota" DatabaseType="money">
+									<Checks>
+										<Check Name="CK_SalesPersonQuotaHistory_SalesQuota">
+											<Definition>([SalesQuota]&gt;(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SalesPersonQuotaHistory_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesPersonQuotaHistory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesPersonQuotaHistory_SalesPerson_BusinessEntityID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SalesPersonQuotaHistory_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SalesPersonQuotaHistory_BusinessEntityID_QuotaDate" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="QuotaDate" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesReason" Table="SalesReason" ShortName="SR0">
+							<Fields>
+								<Int32 Name="SalesReasonID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<String Name="ReasonType" DatabaseType="name" Size="50" />
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesReason_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<PrimaryKey Name="PK_SalesReason_SalesReasonID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SalesReasonID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesTaxRate" Table="SalesTaxRate" ShortName="STR">
+							<Fields>
+								<Int32 Name="SalesTaxRateID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="StateProvinceID" DatabaseType="int" />
+								<Byte Name="TaxType" DatabaseType="tinyint">
+									<Checks>
+										<Check Name="CK_SalesTaxRate_TaxType">
+											<Definition>([TaxType]&gt;=(1) AND [TaxType]&lt;=(3))</Definition>
+										</Check>
+									</Checks>
+								</Byte>
+								<Decimal Name="TaxRate" DatabaseType="smallmoney">
+									<DefaultConstraint Name="DF_SalesTaxRate_TaxRate">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+								</Decimal>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SalesTaxRate_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesTaxRate_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesTaxRate_StateProvince_StateProvinceID" Entity="Person.StateProvince" ReferencedTableName="StateProvince" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="StateProvinceID" References="StateProvinceID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SalesTaxRate_StateProvinceID_TaxType" IsUnique="true">
+									<Fields>
+										<Field Name="StateProvinceID" />
+										<Field Name="TaxType" />
+									</Fields>
+								</Index>
+								<Index Name="AK_SalesTaxRate_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SalesTaxRate_SalesTaxRateID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SalesTaxRateID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesTerritory" Table="SalesTerritory" ShortName="ST">
+							<Fields>
+								<Int32 Name="TerritoryID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
+								<String Name="Group" DatabaseType="nvarchar" Size="50" />
+								<Decimal Name="SalesYTD" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesTerritory_SalesYTD">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesTerritory_SalesYTD">
+											<Definition>([SalesYTD]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="SalesLastYear" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesTerritory_SalesLastYear">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesTerritory_SalesLastYear">
+											<Definition>([SalesLastYear]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="CostYTD" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesTerritory_CostYTD">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesTerritory_CostYTD">
+											<Definition>([CostYTD]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Decimal Name="CostLastYear" DatabaseType="money">
+									<DefaultConstraint Name="DF_SalesTerritory_CostLastYear">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SalesTerritory_CostLastYear">
+											<Definition>([CostLastYear]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SalesTerritory_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesTerritory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesTerritory_CountryRegion_CountryRegionCode" Entity="Person.CountryRegion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="CountryRegionCode" References="CountryRegionCode" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SalesTerritory_Name" IsUnique="true">
+									<Fields>
+										<Field Name="Name" />
+									</Fields>
+								</Index>
+								<Index Name="AK_SalesTerritory_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SalesTerritory_TerritoryID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="TerritoryID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SalesTerritoryHistory" Table="SalesTerritoryHistory" ShortName="STH">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<Int32 Name="TerritoryID" DatabaseType="int" />
+								<DateTime Name="StartDate" DatabaseType="datetime" />
+								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SalesTerritoryHistory_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SalesTerritoryHistory_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SalesTerritoryHistory_SalesPerson_BusinessEntityID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SalesTerritoryHistory_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="TerritoryID" References="TerritoryID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SalesTerritoryHistory_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SalesTerritoryHistory_BusinessEntityID_StartDate_TerritoryID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+									<Field Name="StartDate" />
+									<Field Name="TerritoryID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="ShoppingCartItem" Table="ShoppingCartItem" ShortName="SCI">
+							<Fields>
+								<Int32 Name="ShoppingCartItemID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="ShoppingCartID" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Quantity" DatabaseType="int">
+									<DefaultConstraint Name="DF_ShoppingCartItem_Quantity">
+										<Definition>((1))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_ShoppingCartItem_Quantity">
+											<Definition>([Quantity]&gt;=(1))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<DateTime Name="DateCreated" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ShoppingCartItem_DateCreated">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_ShoppingCartItem_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_ShoppingCartItem_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="IX_ShoppingCartItem_ShoppingCartID_ProductID">
+									<Fields>
+										<Field Name="ShoppingCartID" />
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_ShoppingCartItem_ShoppingCartItemID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="ShoppingCartItemID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SpecialOffer" Table="SpecialOffer" ShortName="SO">
+							<Fields>
+								<Int32 Name="SpecialOfferID" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Description" DatabaseType="nvarchar" Size="255" />
+								<Decimal Name="DiscountPct" DatabaseType="smallmoney">
+									<DefaultConstraint Name="DF_SpecialOffer_DiscountPct">
+										<Definition>((0.00))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SpecialOffer_DiscountPct">
+											<Definition>([DiscountPct]&gt;=(0.00))</Definition>
+										</Check>
+									</Checks>
+								</Decimal>
+								<String Name="Type" DatabaseType="nvarchar" Size="50" />
+								<String Name="Category" DatabaseType="nvarchar" Size="50" />
+								<DateTime Name="StartDate" DatabaseType="datetime" />
+								<DateTime Name="EndDate" DatabaseType="datetime" />
+								<Int32 Name="MinQty" DatabaseType="int">
+									<DefaultConstraint Name="DF_SpecialOffer_MinQty">
+										<Definition>((0))</Definition>
+									</DefaultConstraint>
+									<Checks>
+										<Check Name="CK_SpecialOffer_MinQty">
+											<Definition>([MinQty]&gt;=(0))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Int32 Name="MaxQty" IsNullable="true" DatabaseType="int">
+									<Checks>
+										<Check Name="CK_SpecialOffer_MaxQty">
+											<Definition>([MaxQty]&gt;=(0))</Definition>
+										</Check>
+									</Checks>
+								</Int32>
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SpecialOffer_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SpecialOffer_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys />
+							<Indexes>
+								<Index Name="AK_SpecialOffer_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SpecialOffer_SpecialOfferID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SpecialOfferID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="SpecialOfferProduct" Table="SpecialOfferProduct" ShortName="SOP">
+							<Fields>
+								<Int32 Name="SpecialOfferID" DatabaseType="int" />
+								<Int32 Name="ProductID" DatabaseType="int" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_SpecialOfferProduct_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_SpecialOfferProduct_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_SpecialOfferProduct_Product_ProductID" Entity="Production.Product" ReferencedTableName="Product" ReferencedSchemaName="Production">
+									<References>
+										<Reference Field="ProductID" References="ProductID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_SpecialOfferProduct_SpecialOffer_SpecialOfferID" Entity="Sales.SpecialOffer" ReferencedTableName="SpecialOffer" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="SpecialOfferID" References="SpecialOfferID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_SpecialOfferProduct_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="IX_SpecialOfferProduct_ProductID">
+									<Fields>
+										<Field Name="ProductID" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_SpecialOfferProduct_SpecialOfferID_ProductID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="SpecialOfferID" />
+									<Field Name="ProductID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
+						</Entity>
+						<Entity Name="Store" Table="Store" ShortName="S0">
+							<Fields>
+								<Int32 Name="BusinessEntityID" DatabaseType="int" />
+								<String Name="Name" DatabaseType="name" Size="50" />
+								<Int32 Name="SalesPersonID" IsNullable="true" DatabaseType="int" />
+								<Xml Name="Demographics" IsNullable="true" DatabaseType="xml" />
+								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+									<DefaultConstraint Name="DF_Store_rowguid">
+										<Definition>(newid())</Definition>
+									</DefaultConstraint>
+								</Guid>
+								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+									<DefaultConstraint Name="DF_Store_ModifiedDate">
+										<Definition>(getdate())</Definition>
+									</DefaultConstraint>
+								</DateTime>
+							</Fields>
+							<ForeignKeys>
+								<ForeignKey Name="FK_Store_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+									<References>
+										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+								<ForeignKey Name="FK_Store_SalesPerson_SalesPersonID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+									<References>
+										<Reference Field="SalesPersonID" References="BusinessEntityID" />
+									</References>
+								</ForeignKey>
+							</ForeignKeys>
+							<Indexes>
+								<Index Name="AK_Store_rowguid" IsUnique="true">
+									<Fields>
+										<Field Name="rowguid" />
+									</Fields>
+								</Index>
+								<Index Name="IX_Store_SalesPersonID">
+									<Fields>
+										<Field Name="SalesPersonID" />
+									</Fields>
+								</Index>
+								<Index Name="PXML_Store_Demographics">
+									<Fields>
+										<Field Name="Demographics" />
+									</Fields>
+								</Index>
+							</Indexes>
+							<PrimaryKey Name="PK_Store_BusinessEntityID" IsUnique="true" IsPrimaryKey="true">
+								<Fields>
+									<Field Name="BusinessEntityID" />
+								</Fields>
+							</PrimaryKey>
+							<Checks />
 						</Entity>
 					</Objects>
 				</Schema>

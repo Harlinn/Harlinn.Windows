@@ -33,6 +33,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
             _isPersisted = isPersisted;
         }
 
+        /*
         [XmlElement("Definition"), DefaultValue(null)]
         public string? DefinitionHtmlEncoded
         {
@@ -47,6 +48,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         }
 
         [XmlIgnore]
+        */
+        [XmlElement("Definition"), DefaultValue(null)]
         public string? Definition { get => _definition; set => _definition = value; }
         [XmlAttribute, DefaultValue(false)]
         public bool IsPersisted { get => _isPersisted; set => _isPersisted = value; }

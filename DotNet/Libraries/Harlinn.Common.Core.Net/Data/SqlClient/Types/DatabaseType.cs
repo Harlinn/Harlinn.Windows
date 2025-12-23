@@ -17,6 +17,9 @@
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
+    /// <summary>
+    /// Represents a SQL Server database type, including both system and user-defined types.
+    /// </summary>
     public class DatabaseType
     {
         readonly string _name;
@@ -54,34 +57,104 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             _isTableType = isTableType;
         }
 
+        /// <summary>
+        /// Name of the type. Is unique within the schema.
+        /// </summary>
         public string Name => _name;
 
+        /// <summary>
+        /// ID of the internal system type.
+        /// </summary>
         public byte SystemTypeId => _systemTypeId;
 
+        /// <summary>
+        /// ID of the internal system type.
+        /// </summary>
+        public SystemType SystemType => (SystemType)_systemTypeId;
+
+        /// <summary>
+        /// <para>ID of the type. Is unique within the database.</para>
+        /// <para>
+        /// CLR assembly types such as hierarchyid, geometry and geography, 
+        /// will have a different system_type_id, and can be identified 
+        /// using IsAssemblyType. The sysname data type is an internal 
+        /// data type based on nvarchar.
+        /// </para>
+        /// </summary>
         public int UserTypeId => _userTypeId;
 
+        /// <summary>
+        /// ID of the schema to which the type belongs.
+        /// </summary>
         public int SchemaId => _schemaId;
 
+        /// <summary>
+        /// <para>
+        /// ID of the individual owner if different from schema owner. 
+        /// By default, schema-contained objects are owned by the schema owner. 
+        /// However, an alternate owner can be specified by using the 
+        /// ALTER AUTHORIZATION statement to change ownership.
+        /// </para>
+        /// <para>
+        /// null if there is no alternate individual owner.
+        /// </para>
+        /// </summary>
         public int? PrincipalId => _principalId;
 
+        /// <summary>
+        /// <para>
+        /// Maximum length (in bytes) of the type.
+        /// </para>
+        /// <para>
+        /// -1 = Column data type is varchar(max), nvarchar(max), varbinary(max), or xml.
+        /// For text columns, the max_length value will be 16.
+        /// </para>
+        /// </summary>
         public short MaxLength => _maxLength;
 
+        /// <summary>
+        /// Max precision of the type if it is numeric-based; otherwise, 0.
+        /// </summary>
         public byte Precision => _precision;
 
+        /// <summary>
+        /// Max scale of the type if it is numeric-based; otherwise, 0.
+        /// </summary>
         public byte Scale => _scale;
 
+        /// <summary>
+        /// Name of the collation of the type if it is character-based; otherwise, null.
+        /// </summary>
         public string? CollationName => _collationName;
 
+        /// <summary>
+        /// Type is nullable.
+        /// </summary>
         public bool IsNullable => _isNullable;
 
+        /// <summary>
+        /// true if the type is user-defined; otherwise, false.
+        /// </summary>
         public bool IsUserDefined => _isUserDefined;
 
+        /// <summary>
+        /// true if the type is defined in a CLR assembly; otherwise, false.
+        /// </summary>
         public bool IsAssemblyType => _isAssemblyType;
 
+        /// <summary>
+        /// ID of the stand-alone default that is bound to the type by using sp_bindefault.
+        /// </summary>
         public int DefaultObjectId => _defaultObjectId;
 
+        /// <summary>
+        /// ID of the stand-alone rule that is bound to the type by using sp_bindrule.
+        /// </summary>
         public int RuleObjectId => _ruleObjectId;
 
+        /// <summary>
+        /// Indicates that the type is a table.
+        /// </summary>
         public bool IsTableType => _isTableType;
     }
 

@@ -30,7 +30,7 @@ namespace Harlinn.MSSql.Tool.Import
             var identityColumn = sqlConnection.GetIdentityColumn(column);
             var defaultConstraint = sqlConnection.GetDefaultConstraint(column);
             var computedColumn = sqlConnection.GetComputedColumn(column);
-            FieldComputed? fieldComputed = computedColumn != null ? new FieldComputed(computedColumn.ComputedDefinition, computedColumn.IsPersisted) : null;
+            FieldComputed? fieldComputed = computedColumn != null ? new FieldComputed(computedColumn.Definition, computedColumn.IsPersisted) : null;
             var checkConstraints = sqlConnection.GetCheckConstraints(column);
             List<FieldCheckConstraint>? fieldCheckConstraints = null;
 
