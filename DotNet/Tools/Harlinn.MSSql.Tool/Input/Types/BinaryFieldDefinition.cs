@@ -16,15 +16,28 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class BinaryFieldDefinition : FieldDefinition
     {
+        private int _size = 128;
+
+        public BinaryFieldDefinition() : base()
+        {
+        }
+
+        public BinaryFieldDefinition(Column column) 
+            : base(column)
+        {
+            _size = column.MaxLength;
+        }
+
         public override FieldType FieldType => FieldType.Binary;
         [XmlAttribute, DefaultValue(128)]
-        public int Size { get; set; } = 128;
+        public int Size { get => _size; set => _size = value; }
     }
 
 

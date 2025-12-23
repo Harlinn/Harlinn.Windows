@@ -16,10 +16,10 @@
 
 using Microsoft.SqlServer.Types;
 using System.ComponentModel;
-using System.Data.SqlTypes;
 using System.Xml;
-using System.Xml.Linq;
 using System.Xml.Serialization;
+
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -27,6 +27,16 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class XmlFieldDefinition : FieldDefinition
     {
         string? _default;
+
+
+        public XmlFieldDefinition() : base()
+        {
+        }
+
+        public XmlFieldDefinition(Column column)
+            : base(column)
+        {
+        }
         public override FieldType FieldType => FieldType.Xml;
 
         [XmlAttribute("Default"), DefaultValue(null)]

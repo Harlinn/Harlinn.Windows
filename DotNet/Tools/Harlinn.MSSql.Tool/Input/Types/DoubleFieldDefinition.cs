@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -23,6 +24,18 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class DoubleFieldDefinition : NumericFieldDefinition<double>
     {
         int _precision = 53;
+
+        public DoubleFieldDefinition()
+            : base()
+        {
+        }
+
+        public DoubleFieldDefinition(Column column)
+            : base(column)
+        {
+            _precision = column.Precision;
+        }
+
         public override FieldType FieldType => FieldType.Double;
 
         [XmlAttribute, DefaultValue(53)]

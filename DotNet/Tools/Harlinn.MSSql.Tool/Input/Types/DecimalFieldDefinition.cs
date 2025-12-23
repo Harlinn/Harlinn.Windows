@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -25,6 +26,19 @@ namespace Harlinn.MSSql.Tool.Input.Types
         int _precision = 18;
         int _scale = 0;
         Identity<decimal>? _identity;
+
+        public DecimalFieldDefinition()
+            : base()
+        {
+        }
+
+        public DecimalFieldDefinition(Column column)
+            : base(column)
+        {
+            _precision = column.Precision;
+            _scale = column.Scale;
+        }
+
         public override FieldType FieldType => FieldType.Decimal;
 
         [XmlAttribute, DefaultValue(18)]

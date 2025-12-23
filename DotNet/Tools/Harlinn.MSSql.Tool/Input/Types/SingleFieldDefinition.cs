@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -23,6 +24,17 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class SingleFieldDefinition : NumericFieldDefinition<float>
     {
         int _precision = 24;
+
+        public SingleFieldDefinition()
+            : base()
+        {
+        }
+
+        public SingleFieldDefinition(Column column)
+            : base(column)
+        {
+            _precision = column.Precision;
+        }
         public override FieldType FieldType => FieldType.Single;
 
         [XmlAttribute, DefaultValue(24)]

@@ -18,6 +18,8 @@ using System.ComponentModel;
 using System.Xml;
 using System.Xml.Serialization;
 
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
@@ -27,6 +29,17 @@ namespace Harlinn.MSSql.Tool.Input.Types
         static readonly TimeSpan DefaultMaxValue = TimeSpan.MaxValue;
         TimeSpan _minValue = DefaultMinValue;
         TimeSpan _maxValue = DefaultMaxValue;
+
+
+        public TimeSpanFieldDefinition()
+            : base()
+        {
+        }
+
+        public TimeSpanFieldDefinition(Column column)
+            : base(column)
+        {
+        }
 
         [XmlIgnore]
         public override FieldType FieldType => FieldType.TimeSpan;

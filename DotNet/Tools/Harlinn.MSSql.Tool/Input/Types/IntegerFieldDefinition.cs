@@ -17,12 +17,23 @@
 using System.ComponentModel;
 using System.Numerics;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     public abstract class IntegerFieldDefinition<T> : NumberFieldDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
     {
         Identity<T>? _identity;
+
+        public IntegerFieldDefinition()
+            : base()
+        {
+        }
+
+        public IntegerFieldDefinition(Column column)
+            : base(column)
+        {
+        }
 
         [XmlElement("Identity"), DefaultValue(null)]
         public Identity<T>? Identity { get => _identity; set => _identity = value; }

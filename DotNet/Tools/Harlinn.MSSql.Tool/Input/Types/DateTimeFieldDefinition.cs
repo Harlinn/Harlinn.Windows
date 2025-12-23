@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -26,6 +27,16 @@ namespace Harlinn.MSSql.Tool.Input.Types
         static readonly DateTime DefaultMaxValue = DateTime.MaxValue;
         DateTime _minValue = DefaultMinValue;
         DateTime _maxValue = DefaultMaxValue;
+
+        public DateTimeFieldDefinition()
+            : base()
+        {
+        }
+
+        public DateTimeFieldDefinition(Column column)
+            : base(column)
+        {
+        }
 
         [XmlIgnore]
         public override FieldType FieldType => FieldType.DateTime;

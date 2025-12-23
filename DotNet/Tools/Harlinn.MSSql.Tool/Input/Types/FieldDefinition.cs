@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -29,9 +30,24 @@ namespace Harlinn.MSSql.Tool.Input.Types
         FieldDefaultConstraint? _defaultConstraint;
         FieldComputed? _computed = null;
         private List<FieldCheckConstraint>? checks;
+        private string? databaseType = null;
+        private bool isNullable = false;
+        private string name = string.Empty;
+        private EntityDefinition? owner = null;
+
+        protected FieldDefinition() 
+        { }
+
+        protected FieldDefinition(Column column)
+        {
+            name = column.Name;
+            databaseType = column.TypeName;
+            isNullable = column.IsNullable;
+        }
+
 
         [XmlIgnore]
-        public EntityDefinition? Owner { get; set; } = null;
+        public EntityDefinition? Owner { get => owner; set => owner = value; }
         public abstract FieldType FieldType { get; }
 
         [XmlIgnore]
@@ -48,11 +64,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
         }
 
         [XmlAttribute]
-        public string Name { get; set; } = string.Empty;
-
+        public string Name { get => name; set => name = value; }
         [XmlAttribute, DefaultValue(false)]
-        public bool IsNullable { get; set; } = false;
-
+        public bool IsNullable { get => isNullable; set => isNullable = value; }
         [XmlIgnore]
         public virtual bool IsIdentity => false;
 
@@ -60,8 +74,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public virtual bool IsNewId => false;
 
         [XmlAttribute]
-        public String? DatabaseType { get; set; } = null;
-        
+        public string? DatabaseType { get => databaseType; set => databaseType = value; }
         [XmlElement("DefaultConstraint"), DefaultValue(null)]
         public FieldDefaultConstraint? DefaultConstraint { get => _defaultConstraint; set => _defaultConstraint = value; }
 

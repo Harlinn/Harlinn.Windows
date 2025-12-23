@@ -14,11 +14,23 @@
    limitations under the License.
 */
 
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class Int32FieldDefinition : IntegerFieldDefinition<int>
     {
+
+        public Int32FieldDefinition()
+            : base()
+        {
+        }
+
+        public Int32FieldDefinition(Column column)
+            : base(column)
+        {
+        }
         public override FieldType FieldType => FieldType.Int32;
     }
 }

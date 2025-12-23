@@ -14,12 +14,23 @@
    limitations under the License.
 */
 
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class ByteFieldDefinition : IntegerFieldDefinition<byte>
     {
+        public ByteFieldDefinition()
+            : base()
+        {
+        }
+
+        public ByteFieldDefinition(Column column)
+            : base(column)
+        {
+        }
+
         public override FieldType FieldType => FieldType.Byte;
     }
 }

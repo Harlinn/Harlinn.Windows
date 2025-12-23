@@ -17,6 +17,7 @@
 using Microsoft.SqlServer.Types;
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -27,6 +28,15 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         bool _newId;
         bool _newSequentialId;
+
+        public GuidFieldDefinition() : base()
+        {
+        }
+
+        public GuidFieldDefinition(Column column)
+            : base(column)
+        {
+        }
 
         [XmlIgnore]
         public override FieldType FieldType => FieldType.Guid;

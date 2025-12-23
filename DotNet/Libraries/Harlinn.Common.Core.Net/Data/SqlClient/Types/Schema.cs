@@ -17,7 +17,6 @@
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
-
     public class Schema
     {
         readonly string name_;

@@ -14,11 +14,23 @@
    limitations under the License.
 */
 
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class UInt64FieldDefinition : IntegerFieldDefinition<ulong>
     {
+        public UInt64FieldDefinition()
+            : base()
+        {
+        }
+
+        public UInt64FieldDefinition(Column column)
+            : base(column)
+        {
+        }
+
         public override FieldType FieldType => FieldType.UInt64;
     }
 }

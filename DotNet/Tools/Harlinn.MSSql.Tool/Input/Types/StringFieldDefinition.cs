@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -23,11 +24,22 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class StringFieldDefinition : FieldDefinition
     {
         string? _default = null;
+        private int _size = 128;
+
+        public StringFieldDefinition() : base()
+        {
+        }
+
+        public StringFieldDefinition(Column column)
+            : base(column)
+        {
+            _size = column.MaxLength;
+        }
+
         public override FieldType FieldType => FieldType.String;
 
         [XmlAttribute, DefaultValue(128)]
-        public int Size { get; set; } = 128;
-
+        public int Size { get => _size; set => _size = value; }
         [XmlAttribute("Default"), DefaultValue(null)]
         public string? Default { get => _default; set => _default = value; }
     }

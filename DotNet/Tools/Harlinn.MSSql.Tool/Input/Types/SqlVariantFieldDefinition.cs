@@ -17,6 +17,7 @@
 using Microsoft.SqlServer.Types;
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -24,6 +25,15 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class SqlVariantFieldDefinition : FieldDefinition
     {
         object? _default;
+
+        public SqlVariantFieldDefinition() : base()
+        {
+        }
+
+        public SqlVariantFieldDefinition(Column column)
+            : base(column)
+        {
+        }
         public override FieldType FieldType => FieldType.SqlVariant;
 
         [XmlAttribute("Default"), DefaultValue(null)]

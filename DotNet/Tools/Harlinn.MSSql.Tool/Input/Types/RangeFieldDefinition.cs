@@ -17,6 +17,7 @@
 using System.ComponentModel;
 using System.Numerics;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -26,6 +27,16 @@ namespace Harlinn.MSSql.Tool.Input.Types
         static readonly T DefaultMaxValue = T.MaxValue;
         T _minValue = DefaultMinValue;
         T _maxValue = DefaultMaxValue;
+
+        public RangeFieldDefinition()
+            : base()
+        {
+        }
+
+        public RangeFieldDefinition(Column column)
+            : base(column)
+        {
+        }
 
         [XmlAttribute("Min"), DefaultValue(null)]
         public string? MinAsString

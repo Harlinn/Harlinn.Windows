@@ -16,11 +16,21 @@
 
 using System.Numerics;
 
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     public abstract class NumberFieldDefinition<T> : RangeFieldDefinition<T> where T : struct, INumber<T>, IMinMaxValue<T>
     {
+        public NumberFieldDefinition() 
+            : base()
+        {
+        }
 
+        public NumberFieldDefinition(Column column) 
+            : base(column)
+        {
+        }
     }
 
 

@@ -14,11 +14,23 @@
    limitations under the License.
 */
 
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class Int16FieldDefinition : IntegerFieldDefinition<short>
     {
+
+        public Int16FieldDefinition()
+            : base()
+        {
+        }
+
+        public Int16FieldDefinition(Column column)
+            : base(column)
+        {
+        }
         public override FieldType FieldType => FieldType.Int16;
     }
 }

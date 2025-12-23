@@ -14,12 +14,21 @@
    limitations under the License.
 */
 
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class CharFieldDefinition : RangeFieldDefinition<char>
     {
+        public CharFieldDefinition()
+            : base()
+        { }
+
+        public CharFieldDefinition(Column column)
+            : base(column)
+        { }
+
         public override FieldType FieldType => FieldType.Char;
     }
 }

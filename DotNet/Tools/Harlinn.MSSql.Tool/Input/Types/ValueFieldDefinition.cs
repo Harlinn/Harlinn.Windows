@@ -16,12 +16,22 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     public abstract class ValueFieldDefinition<T> : FieldDefinition where T : struct
     {
         T _default = default(T);
+
+        public ValueFieldDefinition()
+        {
+        }
+
+        public ValueFieldDefinition(Column column)
+            : base(column)
+        {
+        }
 
         [XmlAttribute("Default"), DefaultValue(null)]
         public string? DefaultAsString

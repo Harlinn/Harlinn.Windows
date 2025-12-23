@@ -17,6 +17,7 @@
 using Microsoft.SqlServer.Types;
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -26,6 +27,17 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class HierarchyIdFieldDefinition : FieldDefinition
     {
         SqlHierarchyId _default;
+
+        public HierarchyIdFieldDefinition() : base()
+        {
+        }
+
+        public HierarchyIdFieldDefinition(Column column)
+            : base(column)
+        {
+        }
+
+
         public override FieldType FieldType => FieldType.HierarchyId;
 
         [XmlAttribute("Default"), DefaultValue(null)]
