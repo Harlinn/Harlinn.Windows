@@ -26,8 +26,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public UInt64FieldDefinition(Column column)
-            : base(column)
+        public UInt64FieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
 

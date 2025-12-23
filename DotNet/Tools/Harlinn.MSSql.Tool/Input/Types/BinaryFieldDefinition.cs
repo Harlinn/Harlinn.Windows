@@ -29,10 +29,17 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public BinaryFieldDefinition(Column column) 
-            : base(column)
+        public BinaryFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks) 
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
-            _size = column.MaxLength;
+            if (systemColumnType == SystemColumnType.Image)
+            {
+                _size = -1;
+            }
+            else
+            {
+                _size = column.MaxLength;
+            }
         }
 
         public override FieldType FieldType => FieldType.Binary;

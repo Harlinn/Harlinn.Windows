@@ -33,8 +33,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public GuidFieldDefinition(Column column)
-            : base(column)
+        public GuidFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
 

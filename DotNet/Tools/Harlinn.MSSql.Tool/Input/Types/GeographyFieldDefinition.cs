@@ -30,8 +30,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public GeographyFieldDefinition(Column column)
-            : base(column)
+        public GeographyFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
 

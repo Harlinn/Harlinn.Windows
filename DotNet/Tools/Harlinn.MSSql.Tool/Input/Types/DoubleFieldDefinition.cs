@@ -30,8 +30,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public DoubleFieldDefinition(Column column)
-            : base(column)
+        public DoubleFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
             _precision = column.Precision;
         }

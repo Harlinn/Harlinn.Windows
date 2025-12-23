@@ -29,25 +29,28 @@ namespace Harlinn.MSSql.Tool.Input.Types
         bool? _isReference;
         FieldDefaultConstraint? _defaultConstraint;
         FieldComputed? _computed = null;
-        private List<FieldCheckConstraint>? checks;
-        private string? databaseType = null;
-        private bool isNullable = false;
-        private string name = string.Empty;
-        private EntityDefinition? owner = null;
+        private List<FieldCheckConstraint>? _checks;
+        private string _name = string.Empty;
+        private bool _isNullable = false;
+        private string? _databaseType = null;
+        private EntityDefinition? _owner = null;
 
         protected FieldDefinition() 
         { }
 
-        protected FieldDefinition(Column column)
+        protected FieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
         {
-            name = column.Name;
-            databaseType = column.TypeName;
-            isNullable = column.IsNullable;
+            _name = column.Name;
+            _isNullable = column.IsNullable;
+            _databaseType = column.TypeName;
+            _defaultConstraint = defaultConstraint;                                                                                           
+            _computed = computed;
+            _checks = checks;
         }
 
 
         [XmlIgnore]
-        public EntityDefinition? Owner { get => owner; set => owner = value; }
+        public EntityDefinition? Owner { get => _owner; set => _owner = value; }
         public abstract FieldType FieldType { get; }
 
         [XmlIgnore]
@@ -64,9 +67,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
         }
 
         [XmlAttribute]
-        public string Name { get => name; set => name = value; }
+        public string Name { get => _name; set => _name = value; }
         [XmlAttribute, DefaultValue(false)]
-        public bool IsNullable { get => isNullable; set => isNullable = value; }
+        public bool IsNullable { get => _isNullable; set => _isNullable = value; }
         [XmlIgnore]
         public virtual bool IsIdentity => false;
 
@@ -74,7 +77,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public virtual bool IsNewId => false;
 
         [XmlAttribute]
-        public string? DatabaseType { get => databaseType; set => databaseType = value; }
+        public string? DatabaseType { get => _databaseType; set => _databaseType = value; }
         [XmlElement("DefaultConstraint"), DefaultValue(null)]
         public FieldDefaultConstraint? DefaultConstraint { get => _defaultConstraint; set => _defaultConstraint = value; }
 
@@ -87,10 +90,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
             get
             {
-                return checks?.Count > 0 ? checks : null;
+                return _checks?.Count > 0 ? _checks : null;
             }
 
-            set => checks = value;
+            set => _checks = value;
         }
 
         [XmlIgnore]
@@ -98,10 +101,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
             get
             {
-                return checks;
+                return _checks;
             }
 
-            set => checks = value;
+            set => _checks = value;
         }
 
         [XmlIgnore]

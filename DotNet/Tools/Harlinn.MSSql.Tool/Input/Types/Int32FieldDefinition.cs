@@ -27,8 +27,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public Int32FieldDefinition(Column column)
-            : base(column)
+        public Int32FieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
         public override FieldType FieldType => FieldType.Int32;

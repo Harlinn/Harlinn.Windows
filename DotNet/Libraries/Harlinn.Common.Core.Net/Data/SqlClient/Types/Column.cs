@@ -154,6 +154,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         public sbyte SystemTypeId => _systemTypeId;
 
         /// <summary>
+        /// ID of the system type of the column.
+        /// </summary>
+        public SystemType SystemType => (SystemType)_systemTypeId;
+
+        /// <summary>
         /// ID of the type of the column as defined by the user.
         /// </summary>
         public int UserTypeId => _userTypeId;

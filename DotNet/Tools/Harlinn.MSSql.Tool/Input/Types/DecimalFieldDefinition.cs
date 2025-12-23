@@ -32,8 +32,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public DecimalFieldDefinition(Column column)
-            : base(column)
+        public DecimalFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
             _precision = column.Precision;
             _scale = column.Scale;

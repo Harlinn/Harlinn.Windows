@@ -25,8 +25,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public NumericFieldDefinition(Column column)
-            : base(column)
+        public NumericFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
 

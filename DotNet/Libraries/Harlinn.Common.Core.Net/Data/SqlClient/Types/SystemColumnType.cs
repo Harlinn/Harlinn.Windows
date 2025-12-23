@@ -14,36 +14,50 @@
    limitations under the License.
 */
 
-namespace Harlinn.MSSql.Tool.Input.Types
+
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
-    public enum FieldType
+    public enum SystemColumnType
     {
         Unknown,
-        Boolean,
-        Byte,
-        SByte,
-        Char,
-        Int16,
-        UInt16,
-        Int32,
-        UInt32,
-        Int64,
-        UInt64,
-        Single,
-        Double,
+        Bit,
+        TinyInt,
+        SmallInt,
+        Int,
+        BigInt,
+        Real,
+        Float,
         Decimal,
+        Numeric,
+        Date,
+        SmallDateTime,
         DateTime,
-        TimeSpan,
-        Guid,
-        String,
+        DateTime2,
+        DateTimeOffset,
+        Timestamp,
+        Time,
+        Money,
+        SmallMoney,
+        UniqueIdentifier,
+        Char,
+        VarChar,
+        Text,
+        NChar,
+        NVarChar,
+        SysName,
+        NText,
+        Xml,
         Binary,
+        VarBinary,
+        Image,
         SqlVariant,
         HierarchyId,
         Geometry,
-        Geography,
-        Xml,
-        Object,
-        Enum
+        Geography
     }
+
+
+
+
 
 }

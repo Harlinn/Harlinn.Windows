@@ -57,4 +57,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
     }
 
 
+
+
+
 }

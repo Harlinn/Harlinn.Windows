@@ -30,8 +30,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public SingleFieldDefinition(Column column)
-            : base(column)
+        public SingleFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
             _precision = column.Precision;
         }

@@ -73,6 +73,17 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        
+        public static int GetSchemaId(this SqlConnection connection, string schemaName)
+        {
+            var schema = connection.GetSchemaByName(schemaName);
+            if (schema == null)
+            {
+                throw new InvalidOperationException($"Schema '{schemaName}' not found.");
+            }
+            return schema.SchemaId;
+        }
+
         /// <summary>
         /// Retrieves a schema by its name.
         /// </summary>
@@ -1036,6 +1047,202 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                     }
                     return null;
                 }
+            }
+        }
+
+        private static int? sysSchemaId;
+
+        private static SystemColumnType ToComplexFieldSystemType(this SqlConnection sqlConnection, Column column)
+        {
+            if (sysSchemaId.HasValue == false)
+            {
+                sysSchemaId = sqlConnection.GetSchemaId("sys");
+            }
+
+            var columnTypeName = column.TypeName;
+            var schemaObject = sqlConnection.GetSchemaObject(column.ObjectId);
+            if (schemaObject == null)
+            {
+                return SystemColumnType.Unknown;
+            }
+            var databaseType = sqlConnection.GetDatabaseType(schemaObject.SchemaId, columnTypeName);
+            if (databaseType == null)
+            {
+                databaseType = sqlConnection.GetDatabaseType(columnTypeName);
+            }
+            if (databaseType == null)
+            {
+                return SystemColumnType.Unknown;
+            }
+
+            if (databaseType.SchemaId == sysSchemaId)
+            {
+                if (databaseType.Name.ToLower() == "sysname")
+                {
+                    return SystemColumnType.SysName;
+                }
+                else if (databaseType.Name.ToLower() == "geometry")
+                {
+                    return SystemColumnType.Geometry;
+                }
+                else if (databaseType.Name.ToLower() == "geography")
+                {
+                    return SystemColumnType.Geography;
+                }
+                else if (databaseType.Name.ToLower() == "hierarchyid")
+                {
+                    return SystemColumnType.HierarchyId;
+                }
+            }
+            var systemType = databaseType.SystemType;
+            switch (systemType)
+            {
+                case SystemType.Image:
+                    return SystemColumnType.Image;
+                case SystemType.Text:
+                    return SystemColumnType.Text;
+                case SystemType.Uniqueidentifier:
+                    return SystemColumnType.UniqueIdentifier;
+                case SystemType.Date:
+                    return SystemColumnType.Date;
+                case SystemType.Time:
+                    return SystemColumnType.Time;
+                case SystemType.DateTime2:
+                    return SystemColumnType.DateTime2;
+                case SystemType.DateTimeOffset:
+                    return SystemColumnType.DateTimeOffset;
+                case SystemType.TinyInt:
+                    return SystemColumnType.TinyInt;
+                case SystemType.SmallInt:
+                    return SystemColumnType.SmallInt;
+                case SystemType.Int:
+                    return SystemColumnType.Int;
+                case SystemType.SmallDateTime:
+                    return SystemColumnType.SmallDateTime;
+                case SystemType.Real:
+                    return SystemColumnType.Real;
+                case SystemType.Money:
+                    return SystemColumnType.Money;
+                case SystemType.DateTime:
+                    return SystemColumnType.DateTime;
+                case SystemType.Float:
+                    return SystemColumnType.Float;
+                case SystemType.SqlVariant:
+                    return SystemColumnType.SqlVariant;
+                case SystemType.NText:
+                    return SystemColumnType.NText;
+                case SystemType.Bit:
+                    return SystemColumnType.Bit;
+                case SystemType.Decimal:
+                    return SystemColumnType.Decimal;
+                case SystemType.Numeric:
+                    return SystemColumnType.Numeric;
+                case SystemType.SmallMoney:
+                    return SystemColumnType.SmallMoney;
+                case SystemType.BigInt:
+                    return SystemColumnType.BigInt;
+                case SystemType.VarBinary:
+                    return SystemColumnType.VarBinary;
+                case SystemType.VarChar:
+                    return SystemColumnType.VarChar;
+                case SystemType.Binary:
+                    return SystemColumnType.Binary;
+                case SystemType.Char:
+                    return SystemColumnType.Char;
+                case SystemType.Timestamp:
+                    return SystemColumnType.Timestamp;
+                case SystemType.NVarChar:
+                    return SystemColumnType.NVarChar;
+                case SystemType.NChar:
+                    return SystemColumnType.NChar;
+                case SystemType.Xml:
+                    return SystemColumnType.Xml;
+            }
+            return SystemColumnType.Unknown;
+        }
+
+
+        public static SystemColumnType GetSystemColumnType(this SqlConnection connection, Column column)
+        {
+            if(connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+            if (column == null)
+            {
+                throw new ArgumentNullException(nameof(column));
+            }
+            var systemType = column.SystemType;
+            switch (systemType)
+            {
+                case SystemType.Image:
+                    return SystemColumnType.Image;
+                case SystemType.Text:
+                    return SystemColumnType.Text;
+                case SystemType.Uniqueidentifier:
+                    return SystemColumnType.UniqueIdentifier;
+                case SystemType.Date:
+                    return SystemColumnType.Date;
+                case SystemType.Time:
+                    return SystemColumnType.Time;
+                case SystemType.DateTime2:
+                    return SystemColumnType.DateTime2;
+                case SystemType.DateTimeOffset:
+                    return SystemColumnType.DateTimeOffset;
+                case SystemType.TinyInt:
+                    return SystemColumnType.TinyInt;
+                case SystemType.SmallInt:
+                    return SystemColumnType.SmallInt;
+                case SystemType.Int:
+                    return SystemColumnType.Int;
+                case SystemType.SmallDateTime:
+                    return SystemColumnType.SmallDateTime;
+                case SystemType.Real:
+                    return SystemColumnType.Real;
+                case SystemType.Money:
+                    return SystemColumnType.Money;
+                case SystemType.DateTime:
+                    return SystemColumnType.DateTime;
+                case SystemType.Float:
+                    return SystemColumnType.Float;
+                case SystemType.SqlVariant:
+                    return SystemColumnType.SqlVariant;
+                case SystemType.NText:
+                    return SystemColumnType.NText;
+                case SystemType.Bit:
+                    return SystemColumnType.Bit;
+                case SystemType.Decimal:
+                    return SystemColumnType.Decimal;
+                case SystemType.Numeric:
+                    return SystemColumnType.Numeric;
+                case SystemType.SmallMoney:
+                    return SystemColumnType.SmallMoney;
+                case SystemType.BigInt:
+                    return SystemColumnType.BigInt;
+                case SystemType.HierarchyId:
+                {
+                    return connection.ToComplexFieldSystemType(column);
+                }
+                case SystemType.VarBinary:
+                    return SystemColumnType.VarBinary;
+                case SystemType.VarChar:
+                    return SystemColumnType.VarChar;
+                case SystemType.Binary:
+                    return SystemColumnType.Binary;
+                case SystemType.Char:
+                    return SystemColumnType.Char;
+                case SystemType.Timestamp:
+                    return SystemColumnType.Timestamp;
+                case SystemType.NVarChar:
+                {
+                    return connection.ToComplexFieldSystemType(column);
+                }
+                case SystemType.NChar:
+                    return SystemColumnType.NChar;
+                case SystemType.Xml:
+                    return SystemColumnType.Xml;
+                default:
+                    return SystemColumnType.Unknown;
             }
         }
 

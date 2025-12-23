@@ -33,8 +33,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public RangeFieldDefinition(Column column)
-            : base(column)
+        public RangeFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
 

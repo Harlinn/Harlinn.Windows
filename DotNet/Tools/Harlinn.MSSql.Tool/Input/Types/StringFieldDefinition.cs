@@ -30,10 +30,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public StringFieldDefinition(Column column)
-            : base(column)
+        public StringFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
-            _size = column.MaxLength;
+            if(systemColumnType >= SystemColumnType.NChar && systemColumnType <= SystemColumnType.SysName)
+            {
+                _size = column.MaxLength != -1 ? column.MaxLength / 2 : -1;
+            }
+            else if (systemColumnType == SystemColumnType.Char || systemColumnType == SystemColumnType.VarChar)
+            {
+                _size = column.MaxLength;
+            }
+            else
+            {
+                _size = -1;
+            }
         }
 
         public override FieldType FieldType => FieldType.String;

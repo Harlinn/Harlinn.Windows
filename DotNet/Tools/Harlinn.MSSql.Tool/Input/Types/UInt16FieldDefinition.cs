@@ -27,8 +27,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public UInt16FieldDefinition(Column column)
-            : base(column)
+        public UInt16FieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
         public override FieldType FieldType => FieldType.UInt16;

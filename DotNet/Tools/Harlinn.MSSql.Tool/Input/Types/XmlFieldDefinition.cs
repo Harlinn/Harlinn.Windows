@@ -33,8 +33,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public XmlFieldDefinition(Column column)
-            : base(column)
+        public XmlFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+            : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }
         public override FieldType FieldType => FieldType.Xml;
