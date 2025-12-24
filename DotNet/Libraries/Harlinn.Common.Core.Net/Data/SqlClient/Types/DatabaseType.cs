@@ -17,6 +17,7 @@
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
+
     /// <summary>
     /// Represents a SQL Server database type, including both system and user-defined types.
     /// </summary>

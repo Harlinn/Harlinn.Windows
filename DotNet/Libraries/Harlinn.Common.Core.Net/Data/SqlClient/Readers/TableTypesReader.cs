@@ -21,25 +21,27 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
 {
-    public class TypesReader : DataReaderWrapper
+    public class TableTypesReader : DataReaderWrapper
     {
         public const string Sql = """
             SELECT st.[name]
-                ,st.[system_type_id]
-                ,st.[user_type_id]
-                ,st.[schema_id]
-                ,st.[principal_id]
-                ,st.[max_length]
-                ,st.[precision]
-                ,st.[scale]
-                ,st.[collation_name]
-                ,st.[is_nullable]
-                ,st.[is_user_defined]
-                ,st.[is_assembly_type]
-                ,st.[default_object_id]
-                ,st.[rule_object_id]
-                ,st.[is_table_type]
-            FROM [sys].[types] st
+                ,stt.[system_type_id]
+                ,stt.[user_type_id]
+                ,stt.[schema_id]
+                ,stt.[principal_id]
+                ,stt.[max_length]
+                ,stt.[precision]
+                ,stt.[scale]
+                ,stt.[collation_name]
+                ,stt.[is_nullable]
+                ,stt.[is_user_defined]
+                ,stt.[is_assembly_type]
+                ,stt.[default_object_id]
+                ,stt.[rule_object_id]
+                ,stt.[is_table_type]
+                ,stt.[type_table_object_id]
+                ,stt.[is_memory_optimized]
+            FROM [sys].[table_types] stt
             """;
 
         public const int NameOrdinal = 0;
@@ -57,18 +59,20 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int DefaultObjectIdOrdinal = 12;
         public const int RuleObjectIdOrdinal = 13;
         public const int IsTableTypeOrdinal = 14;
+        public const int TypeTableObjectIdOrdinal = 15;
+        public const int IsMemoryOptimizedOrdinal = 16;
 
-        public TypesReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        public TableTypesReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(loggerFactory, sqlDataReader, ownsReader)
         {
         }
 
-        public TypesReader([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        public TableTypesReader([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(sqlDataReader, ownsReader)
         {
         }
 
-        public TypesReader([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        public TableTypesReader([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(logger, sqlDataReader, ownsReader)
         {
         }
@@ -176,7 +180,17 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return GetBoolean(IsTableTypeOrdinal);
         }
 
-        public DatabaseType GetDatabaseType()
+        public int GetTypeTableObjectId()
+        {
+            return GetInt32(TypeTableObjectIdOrdinal);
+        }
+
+        public bool GetIsMemoryOptimized()
+        {
+            return GetBoolean(IsMemoryOptimizedOrdinal);
+        }
+
+        public TableType GetTableType( )
         {
             var name = GetName();
             var systemTypeId = GetSystemTypeId();
@@ -193,15 +207,17 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             var defaultObjectId = GetDefaultObjectId();
             var ruleObjectId = GetRuleObjectId();
             var isTableType = GetIsTableType();
-            return new DatabaseType(name, systemTypeId, userTypeId, schemaId, principalId, maxLength, precision, scale, collationName, isNullable, isUserDefined, isAssemblyType, defaultObjectId, ruleObjectId, isTableType);
+            var typeTableObjectId = GetTypeTableObjectId();
+            var isMemoryOptimized = GetIsMemoryOptimized();
+            return new TableType(name, systemTypeId, userTypeId, schemaId, principalId, maxLength, precision, scale, collationName, isNullable, isUserDefined, isAssemblyType, defaultObjectId, ruleObjectId, isTableType, typeTableObjectId, isMemoryOptimized);
         }
 
-        public IReadOnlyList<DatabaseType> ToList()
+        public IReadOnlyList<TableType> ToList()
         {
-            var list = new List<DatabaseType>();
+            var list = new List<TableType>();
             while (Read())
             {
-                list.Add(GetDatabaseType());
+                list.Add(GetTableType());
             }
             return list;
         }

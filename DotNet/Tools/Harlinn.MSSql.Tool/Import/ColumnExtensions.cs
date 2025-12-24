@@ -34,12 +34,6 @@ namespace Harlinn.MSSql.Tool.Import
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            /*
-            if(column.UserTypeId == 260)
-            {
-                Debugger.Break();
-            }
-            */
             var systemColumnType = sqlConnection.GetSystemColumnType(column);
 
             var identityColumn = sqlConnection.GetIdentityColumn(column);
