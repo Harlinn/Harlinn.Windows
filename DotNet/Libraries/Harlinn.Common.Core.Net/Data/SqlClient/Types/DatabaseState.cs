@@ -1,0 +1,32 @@
+﻿/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
+{
+    public enum DatabaseState
+    {
+        Online = 0,
+        Restoring = 1,
+        Recovering = 2,
+        RecoveryPending = 3,
+        Suspect = 4,
+        Emergency = 5,
+        Offline = 6,
+        Copying = 7,
+        OfflineSecondary = 10
+    }
+
+}
