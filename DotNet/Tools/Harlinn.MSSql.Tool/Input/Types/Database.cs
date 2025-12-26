@@ -71,6 +71,15 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     {
                         var tables = sqlConnection.GetTables(schemaObject);
                         schema.ImportTables(sqlConnection, tables);
+
+                        var views = sqlConnection.GetViews(schemaObject);
+                        schema.ImportViews(sqlConnection, views);
+
+                        if ( schemaName.Equals("sys", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var systemViews = sqlConnection.GetSystemViews(schemaObject);
+                            schema.ImportViews(sqlConnection, systemViews);
+                        }
                     }
                     else
                     {

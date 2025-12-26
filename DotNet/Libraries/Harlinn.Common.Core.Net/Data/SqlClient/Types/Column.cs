@@ -19,77 +19,41 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
     public class Column
     {
         readonly int _objectId;
-
         readonly string _name;
-
         readonly int _columnId;
-
         readonly sbyte _systemTypeId;
-
         readonly int _userTypeId;
-
         readonly short _maxLength;
-
         readonly sbyte _precision;
-
         readonly sbyte _scale;
-
         readonly string? _collationName;
-
         readonly bool _isNullable;
-
         readonly bool _isAnsiPadded;
-
         readonly bool _isRowguidcol;
-
         readonly bool _isIdentity;
-
         readonly bool _isComputed;
-
         readonly bool _isFilestream;
-
         readonly bool _isReplicated;
-
         readonly bool _isNonSqlSubscribed;
-
         readonly bool _isMergePublished;
-
         readonly bool _isDtsReplicated;
-
         readonly bool _isXmlDocument;
-
         readonly int _xmlCollectionId;
-
         readonly int _defaultObjectId;
-
         readonly int _ruleObjectId;
-
         readonly bool _isSparse;
-
         readonly bool _isColumnSet;
-
         readonly sbyte _generatedAlwaysType;
-
         readonly string _generatedAlwaysTypeDesc;
-
         readonly int? _encryptionType;
-
         readonly string? _encryptionTypeDesc;
-
         readonly string? _encryptionAlgorithmName;
-
         readonly int? _columnEncryptionKeyId;
-
         readonly string? _columnEncryptionKeyDatabaseName;
-
         readonly bool _isHidden;
-
         readonly bool _isMasked;
-
         readonly int? _graphType;
-
         readonly string? _graphTypeDesc;
-
         readonly string _typeName;
 
         public Column(int objectId, string name, int columnId, sbyte systemTypeId, int userTypeId, short maxLength, sbyte precision, sbyte scale, string? collationName, bool isNullable, bool isAnsiPadded, bool isRowguidcol, bool isIdentity, bool isComputed, bool isFilestream, bool isReplicated, bool isNonSqlSubscribed, bool isMergePublished, bool isDtsReplicated, bool isXmlDocument, int xmlCollectionId, int defaultObjectId, int ruleObjectId, bool isSparse, bool isColumnSet, sbyte generatedAlwaysType, string generatedAlwaysTypeDesc, int? encryptionType, string? encryptionTypeDesc, string? encryptionAlgorithmName, int? columnEncryptionKeyId, string? columnEncryptionKeyDatabaseName, bool isHidden, bool isMasked, int? graphType, string? graphTypeDesc, string typeName)

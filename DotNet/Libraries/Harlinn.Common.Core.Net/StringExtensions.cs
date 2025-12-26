@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text;
 namespace Harlinn.Common.Core.Net
 {
     public static class StringExtensions
@@ -103,6 +104,54 @@ namespace Harlinn.Common.Core.Net
             }
             return WebUtility.HtmlDecode(self);
         }
+
+        public static string ToPascalCase(this string? self)
+        {
+            if (string.IsNullOrWhiteSpace(self))
+            {
+                return string.Empty;
+            }
+
+            // Treat common separators as word boundaries
+            var separators = new[] { '_', '-', ' ', '\t' };
+            var parts = self.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+            var sb = new StringBuilder(parts.Length * 8);
+            foreach (var part in parts)
+            {
+                if (part.Length == 0) continue;
+
+                // Normalize to lower for predictable casing, but preserve non-letter leading characters
+                var lower = part.ToLowerInvariant();
+
+                // If first character is a letter, uppercase it; otherwise leave as-is
+                var firstChar = lower[0];
+                if (char.IsLetter(firstChar))
+                {
+                    sb.Append(char.ToUpperInvariant(firstChar));
+                    if (lower.Length > 1)
+                    {
+                        sb.Append(lower.AsSpan(1));
+                    }
+                }
+                else
+                {
+                    // If first char is not a letter (digit, underscore etc.), append the part trimmed of leading non-alphanumerics
+                    sb.Append(lower.TrimStart(c => !char.IsLetterOrDigit(c)));
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        // Helper for trimming with predicate using Span when available
+        private static string TrimStart(this string s, Func<char, bool> predicate)
+        {
+            int i = 0;
+            while (i < s.Length && predicate(s[i])) i++;
+            return i == 0 ? s : s.Substring(i);
+        }
+
 
     }
 }

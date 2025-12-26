@@ -124,8 +124,16 @@ namespace Harlinn.MSSql.Tool.Import
                     var result = new Int32FieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     if (identityColumn != null)
                     {
-                        var seed = Convert.ToInt32(identityColumn.SeedValue);
-                        var increment = Convert.ToInt32(identityColumn.IncrementValue);
+                        var seed = 1;
+                        var increment = 1;
+                        if (identityColumn.SeedValue is not DBNull)
+                        {
+                            seed = Convert.ToInt32(identityColumn.SeedValue);
+                        }
+                        if (identityColumn.IncrementValue is not DBNull)
+                        {
+                            increment = Convert.ToInt32(identityColumn.IncrementValue);
+                        }
                         result.Identity = new Identity<int>(seed, increment);
                     }
                     return result;

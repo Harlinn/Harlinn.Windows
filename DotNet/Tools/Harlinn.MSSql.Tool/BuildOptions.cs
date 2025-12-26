@@ -47,6 +47,9 @@ namespace Harlinn.MSSql.Tool
         [Option('o', "output", HelpText = "Output directory.")]
         public string OutputDirectory { get; set; } = string.Empty;
 
+        [Option('w', "use_wrappers", HelpText = "Use wrappers.")]
+        public bool UseWrappers { get; set; } = true;
+
         public static string GetDefaultOutputDirectory(string projectFilePath)
         {
             var projectDirectory = System.IO.Path.GetDirectoryName(projectFilePath);

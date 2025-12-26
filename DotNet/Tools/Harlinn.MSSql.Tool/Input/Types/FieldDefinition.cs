@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net;
 using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
@@ -31,16 +32,18 @@ namespace Harlinn.MSSql.Tool.Input.Types
         FieldComputed? _computed = null;
         private List<FieldCheckConstraint>? _checks;
         private string _name = string.Empty;
+        private string _columnName = string.Empty;
         private bool _isNullable = false;
         private string? _databaseType = null;
-        private EntityDefinition? _owner = null;
+        private RowSourceDefinition? _owner = null;
 
         protected FieldDefinition() 
         { }
 
         protected FieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
         {
-            _name = column.Name;
+            _name = column.Name.ToPascalCase();
+            _columnName = column.Name;
             _isNullable = column.IsNullable;
             _databaseType = column.TypeName;
             _defaultConstraint = defaultConstraint;                                                                                           
@@ -50,7 +53,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
 
         [XmlIgnore]
-        public EntityDefinition? Owner { get => _owner; set => _owner = value; }
+        public RowSourceDefinition? Owner { get => _owner; set => _owner = value; }
         public abstract FieldType FieldType { get; }
 
         [XmlIgnore]
@@ -68,6 +71,34 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         [XmlAttribute]
         public string Name { get => _name; set => _name = value; }
+
+        [XmlAttribute("Column"), DefaultValue(null)]
+        public string? Column
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_columnName) || string.Equals(_columnName, _name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+                return _columnName;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    _columnName = _name;
+                }
+                else
+                {
+                    _columnName = value;
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public string ColumnName { get => _columnName; set => _columnName = value; }
+
         [XmlAttribute, DefaultValue(false)]
         public bool IsNullable { get => _isNullable; set => _isNullable = value; }
         [XmlIgnore]

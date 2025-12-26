@@ -14,16 +14,20 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         }
         public Context Context => _context;
 
+        public BuildOptions BuildOptions => (BuildOptions)Context.Options;
+        public bool UseWrappers => BuildOptions.UseWrappers;
+
         public void Run()
         {
             var entities = Context.Project.Entities;
-            foreach (var entity in entities)
+            var rowSources = Context.Project.RowSources;
+            foreach (var rowSource in rowSources)
             {
-                CSharpDataTypeGenerator dataTypeGenerator = new CSharpDataTypeGenerator(Context, entity);
+                CSharpDataTypeGenerator dataTypeGenerator = new CSharpDataTypeGenerator(Context, rowSource, rowSource.Type == Input.Types.SchemaObjectType.View);
                 dataTypeGenerator.Run();
                 var typesDirectory = Context.Output.CSharp.TypesDirectory;
-                var schemaDirectory = System.IO.Path.Combine(typesDirectory, string.IsNullOrEmpty(entity.Owner!.Namespace) ? entity.Owner!.Name.FirstToUpper()! : entity.Owner!.Namespace);
-                var filename = System.IO.Path.Combine(schemaDirectory, $"{entity.Name}DataType.cs");
+                var schemaDirectory = System.IO.Path.Combine(typesDirectory, string.IsNullOrEmpty(rowSource.Owner!.Namespace) ? rowSource.Owner!.Name.FirstToUpper()! : rowSource.Owner!.Namespace);
+                var filename = System.IO.Path.Combine(schemaDirectory, $"{rowSource.Name}DataType.cs");
                 dataTypeGenerator.SaveToFile(filename);
             }
             CSharpStoredProceduresGenerator storedProceduresGenerator = new CSharpStoredProceduresGenerator(Context);

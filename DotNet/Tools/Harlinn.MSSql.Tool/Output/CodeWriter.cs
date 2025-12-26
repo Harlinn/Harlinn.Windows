@@ -24,6 +24,9 @@ namespace Harlinn.MSSql.Tool.Output
         }
         public Context Context => _context;
 
+        public BuildOptions BuildOptions => (BuildOptions)Context.Options;
+        public bool UseWrappers => BuildOptions.UseWrappers;
+
         public void IncreaseIndent()
         {
             indentLevel_++;

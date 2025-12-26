@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using Harlinn.Common.Core.Net;
 using Harlinn.Common.Core.Net.Data.SqlClient;
 using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 using Microsoft.Data.SqlClient;
@@ -29,7 +30,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, SchemaObject> ObjectsByName { get; set; } = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
-        public Dictionary<string, EntityDefinition> EntitiesByTableName { get; set; } = new Dictionary<string, EntityDefinition>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, RowSourceDefinition> RowSourcesByName { get; set; } = new Dictionary<string, RowSourceDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
         public Dictionary<string, TypeDefinition> TypeDefinitions { get; set; } = new Dictionary<string, TypeDefinition>();
@@ -79,26 +80,64 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 if (schemaObject is EntityDefinition entity && entity.Table != null)
                 {
                     var tableName = string.IsNullOrEmpty(entity.Table) ? entity.Name : entity.Table;
-                    EntitiesByTableName[tableName] = entity;
+                    RowSourcesByName[tableName] = entity;
                 }
             }
         }
 
         public EntityDefinition AddEntity(SchemaTypes.Table table) 
         {
-            if(EntitiesByTableName.TryGetValue(table.Name, out var existingEntity))
+            if(RowSourcesByName.TryGetValue(table.Name, out var existingEntity))
             {
-                return existingEntity;
+                return (EntityDefinition)existingEntity;
             }
             var entity = new EntityDefinition
             {
-                Name = table.Name,
+                Name = table.Name.ToPascalCase(),
                 Owner = this,
                 Table = table.Name
             };
             Objects.Add(entity);
             ObjectsByName[entity.Name] = entity;
-            EntitiesByTableName[entity.Table] = entity;
+            RowSourcesByName[entity.Table] = entity;
+            entity.AddToProject();
+            return entity;
+        }
+
+        public ViewDefinition AddView(SchemaTypes.View view)
+        {
+            if (RowSourcesByName.TryGetValue(view.Name, out var existingView))
+            {
+                return (ViewDefinition)existingView;
+            }
+            var entity = new ViewDefinition
+            {
+                Name = view.Name.ToPascalCase(),
+                Owner = this,
+                View = view.Name
+            };
+            Objects.Add(entity);
+            ObjectsByName[entity.Name] = entity;
+            RowSourcesByName[entity.View] = entity;
+            entity.AddToProject();
+            return entity;
+        }
+
+        public ViewDefinition AddView(SchemaTypes.SystemView view)
+        {
+            if (RowSourcesByName.TryGetValue(view.Name, out var existingView))
+            {
+                return (ViewDefinition)existingView;
+            }
+            var entity = new ViewDefinition
+            {
+                Name = view.Name.ToPascalCase(),
+                Owner = this,
+                View = view.Name
+            };
+            Objects.Add(entity);
+            ObjectsByName[entity.Name] = entity;
+            RowSourcesByName[entity.View] = entity;
             entity.AddToProject();
             return entity;
         }
@@ -133,6 +172,44 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 entity.ImportTable(sqlConnection, table);
             }
         }
+
+        internal void ImportViews(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.View> views)
+        {
+            foreach (var view in views)
+            {
+                ImportView(sqlConnection, view);
+            }
+        }
+
+        internal void ImportView(SqlConnection sqlConnection, SchemaTypes.View view)
+        {
+            var schemaObject = AddView(view);
+
+            if (schemaObject is ViewDefinition viewDefinition)
+            {
+                viewDefinition.ImportView(sqlConnection, view);
+            }
+        }
+
+        internal void ImportViews(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.SystemView> views)
+        {
+            foreach (var view in views)
+            {
+                ImportView(sqlConnection, view);
+            }
+        }
+
+        internal void ImportView(SqlConnection sqlConnection, SchemaTypes.SystemView view)
+        {
+            var schemaObject = AddView(view);
+
+            if (schemaObject is ViewDefinition viewDefinition)
+            {
+                viewDefinition.ImportView(sqlConnection, view);
+            }
+        }
+
+
 
         public override string ToString()
         {

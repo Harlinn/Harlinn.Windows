@@ -46,7 +46,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
             WriteLine("public class StoredProcedures");
             WriteLine("{");
-            var entities = Context.Project.Entities;
+            var entities = Context.Project.RowSources;
             foreach (var entity in entities)
             {
                 CreateStoredProcedurs(entity);
@@ -55,7 +55,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
         }
 
-        void CreateStoredProcedurs(EntityDefinition entityDefinition)
+        void CreateStoredProcedurs(RowSourceDefinition entityDefinition)
         {
             CreateInsert(entityDefinition);
 
@@ -78,7 +78,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         }
 
 
-        private void CreateFunction(EntityDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions)
+        private void CreateFunction(RowSourceDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions)
         {
             var fieldDefinitionsCount = fieldDefinitions.Count;
             if (fieldDefinitionsCount > 1)
@@ -137,7 +137,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             WriteLine();
         }
 
-        private void CreateObjectFunction(EntityDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions)
+        private void CreateObjectFunction(RowSourceDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions)
         {
             var fieldDefinitionsCount = fieldDefinitions.Count;
             var dataType = CSharpHelper.GetDataType(entityDefinition);
@@ -160,7 +160,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         }
 
 
-        private void CreateInsert(EntityDefinition entityDefinition)
+        private void CreateInsert(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsertProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsertFunctionName(entityDefinition);
@@ -168,7 +168,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateInsertObject(EntityDefinition entityDefinition)
+        private void CreateInsertObject(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsertProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsertFunctionName(entityDefinition);
@@ -176,7 +176,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateInsert1(EntityDefinition entityDefinition)
+        private void CreateInsert1(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsert1ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsert1FunctionName(entityDefinition);
@@ -184,7 +184,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateInsertObject1(EntityDefinition entityDefinition)
+        private void CreateInsertObject1(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsert1ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsert1FunctionName(entityDefinition);
@@ -192,7 +192,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateUpdate(EntityDefinition entityDefinition)
+        private void CreateUpdate(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedUpdateProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetUpdateFunctionName(entityDefinition);
@@ -200,7 +200,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateUpdateObject(EntityDefinition entityDefinition)
+        private void CreateUpdateObject(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedUpdateProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetUpdateFunctionName(entityDefinition);
@@ -208,7 +208,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateUpdate1(EntityDefinition entityDefinition)
+        private void CreateUpdate1(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedUpdate1ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetUpdate1FunctionName(entityDefinition);
@@ -216,7 +216,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateUpdateObject1(EntityDefinition entityDefinition)
+        private void CreateUpdateObject1(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedUpdate1ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetUpdate1FunctionName(entityDefinition);
@@ -224,7 +224,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateUpdate2(EntityDefinition entityDefinition)
+        private void CreateUpdate2(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedUpdate2ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetUpdate2FunctionName(entityDefinition);
@@ -232,7 +232,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateUpdateObject2(EntityDefinition entityDefinition)
+        private void CreateUpdateObject2(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedUpdate2ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetUpdate2FunctionName(entityDefinition);
@@ -240,7 +240,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateDeleteObject(EntityDefinition entityDefinition)
+        private void CreateDeleteObject(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedDeleteProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetDeleteFunctionName(entityDefinition);
@@ -248,7 +248,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
         }
 
-        private void CreateDelete(EntityDefinition entityDefinition)
+        private void CreateDelete(RowSourceDefinition entityDefinition)
         {
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedDeleteProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetDeleteFunctionName(entityDefinition);

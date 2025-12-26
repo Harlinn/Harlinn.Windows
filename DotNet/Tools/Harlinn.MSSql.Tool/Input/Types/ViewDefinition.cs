@@ -14,12 +14,18 @@
    limitations under the License.
 */
 
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
-    public class ViewDefinition : SchemaObject
+    public class ViewDefinition : RowSourceDefinition
     {
         public override SchemaObjectType Type => SchemaObjectType.View;
+
+        [XmlAttribute]
+        public string? View { get; set; }
+
     }
 
 

@@ -1,5 +1,6 @@
 ﻿using Harlinn.MSSql.Tool.Input.Types;
 using Harlinn.MSSql.Tool.Output;
+using Microsoft.SqlServer.Management.HadrData;
 using System.Text;
 
 namespace Harlinn.MSSql.Tool.CodeGenerators.Database
@@ -12,15 +13,18 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public void Run()
         {
-            var entities = Context.Project.Entities;
-            foreach (var entity in entities)
+            var rowSources = Context.Project.RowSources;
+            foreach (var rowSource in rowSources)
             {
-                CreateInsertProcedure(entity);
-                CreateInsert1Procedure(entity);
+                if (rowSource.Type == SchemaObjectType.Entity)
+                {
+                    CreateInsertProcedure(rowSource);
+                    CreateInsert1Procedure(rowSource);
+                }
             }
         }
 
-        static string GetProcedureParameters(EntityDefinition entityDefinition, IReadOnlyList<FieldDefinition> fields)
+        static string GetProcedureParameters(RowSourceDefinition rowSourceDefinition, IReadOnlyList<FieldDefinition> fields)
         {
             var parameters = new List<string>();
             bool first = true;
@@ -42,27 +46,27 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return string.Join(", ", parameters);
         }
 
-        static string GetProcedureParameters(EntityDefinition entityDefinition)
+        static string GetProcedureParameters(RowSourceDefinition rowSourceDefinition)
         {
-            var fields = entityDefinition.Fields;
-            return GetProcedureParameters(entityDefinition, fields);
+            var fields = rowSourceDefinition.Fields;
+            return GetProcedureParameters(rowSourceDefinition, fields);
         }
 
-        static string GetProcedure1Parameters(EntityDefinition entityDefinition)
+        static string GetProcedure1Parameters(RowSourceDefinition rowSourceDefinition)
         {
-            var fields = entityDefinition.NotReferenceAndNotNullableReferenceFields;
-            return GetProcedureParameters(entityDefinition, fields);
+            var fields = rowSourceDefinition.NotReferenceAndNotNullableReferenceFields;
+            return GetProcedureParameters(rowSourceDefinition, fields);
         }
 
 
-        static string GetInsertStatement(EntityDefinition entityDefinition, IReadOnlyList<FieldDefinition> fieldDefinitions)
+        static string GetInsertStatement(RowSourceDefinition rowSourceDefinition, IReadOnlyList<FieldDefinition> fieldDefinitions)
         {
             StringBuilder statement = new();
 
             var fieldDefinitionsCount = fieldDefinitions.Count;
 
-            var qualifiedTableName = MsSqlHelper.GetQualifiedTableName(entityDefinition);
-            var schemaName = entityDefinition.Owner?.Name;
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableOrViewName(rowSourceDefinition);
+            var schemaName = rowSourceDefinition.Owner?.Name;
             var columnNameList = new List<string>();
             var variableNameList = new List<string>();
 
@@ -87,29 +91,29 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return statement.ToString();
         }
 
-        static string GetInsertStatement(EntityDefinition entityDefinition)
+        static string GetInsertStatement(RowSourceDefinition rowSourceDefinition)
         {
-            return GetInsertStatement(entityDefinition, entityDefinition.Fields);
+            return GetInsertStatement(rowSourceDefinition, rowSourceDefinition.Fields);
         }
 
-        static string GetInsert1Statement(EntityDefinition entityDefinition)
+        static string GetInsert1Statement(RowSourceDefinition rowSourceDefinition)
         {
-            return GetInsertStatement(entityDefinition, entityDefinition.NotReferenceAndNotNullableReferenceFields);
+            return GetInsertStatement(rowSourceDefinition, rowSourceDefinition.NotReferenceAndNotNullableReferenceFields);
         }
 
 
-        static string GetInsertProcedure(EntityDefinition entityDefinition)
+        static string GetInsertProcedure(RowSourceDefinition rowSourceDefinition)
         {
             var procedure = new StringBuilder();
 
-            var procedureName = MsSqlHelper.GetQualifiedInsertProcedureName(entityDefinition);
+            var procedureName = MsSqlHelper.GetQualifiedInsertProcedureName(rowSourceDefinition);
 
             procedure.AppendLine($"CREATE OR ALTER PROCEDURE {procedureName}");
 
-            var parameters = GetProcedureParameters(entityDefinition);
+            var parameters = GetProcedureParameters(rowSourceDefinition);
             procedure.Append(parameters);
 
-            var savePointName = $"SavePoint{entityDefinition.Id}";
+            var savePointName = $"SavePoint{rowSourceDefinition.Id}";
             procedure.AppendLine();
             procedure.AppendLine("AS");
             procedure.AppendLine("  BEGIN");
@@ -121,7 +125,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             procedure.AppendLine("      BEGIN TRANSACTION;");
             procedure.AppendLine("    BEGIN TRY");
 
-            string insertStatement = GetInsertStatement(entityDefinition);
+            string insertStatement = GetInsertStatement(rowSourceDefinition);
             procedure.Append(insertStatement);
 
             procedure.AppendLine("      IF @TranCounter = 0");
@@ -149,18 +153,18 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return procedure.ToString();
         }
 
-        static string GetInsert1Procedure(EntityDefinition entityDefinition)
+        static string GetInsert1Procedure(RowSourceDefinition rowSourceDefinition)
         {
             var procedure = new StringBuilder();
 
-            var procedureName = MsSqlHelper.GetQualifiedInsert1ProcedureName(entityDefinition);
+            var procedureName = MsSqlHelper.GetQualifiedInsert1ProcedureName(rowSourceDefinition);
 
             procedure.AppendLine($"CREATE OR ALTER PROCEDURE {procedureName}");
 
-            var parameters = GetProcedure1Parameters(entityDefinition);
+            var parameters = GetProcedure1Parameters(rowSourceDefinition);
             procedure.Append(parameters);
 
-            var savePointName = $"SavePoint{entityDefinition.Id}";
+            var savePointName = $"SavePoint{rowSourceDefinition.Id}";
             procedure.AppendLine();
             procedure.AppendLine("AS");
             procedure.AppendLine("  BEGIN");
@@ -172,7 +176,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             procedure.AppendLine("      BEGIN TRANSACTION;");
             procedure.AppendLine("    BEGIN TRY");
 
-            string insertStatement = GetInsert1Statement(entityDefinition);
+            string insertStatement = GetInsert1Statement(rowSourceDefinition);
             procedure.Append(insertStatement);
 
             procedure.AppendLine("      IF @TranCounter = 0");
@@ -201,20 +205,20 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
         }
 
 
-        void CreateInsertProcedure(EntityDefinition entityDefinition)
+        void CreateInsertProcedure(RowSourceDefinition rowSourceDefinition)
         {
-            var insertProcedure = GetInsertProcedure(entityDefinition);
+            var insertProcedure = GetInsertProcedure(rowSourceDefinition);
             WriteLine(insertProcedure);
             WriteLine("GO");
             WriteLine();
         }
 
-        void CreateInsert1Procedure(EntityDefinition entityDefinition)
+        void CreateInsert1Procedure(RowSourceDefinition rowSourceDefinition)
         {
-            var nullableReferenceFields = entityDefinition.NullableReferenceFields;
+            var nullableReferenceFields = rowSourceDefinition.NullableReferenceFields;
             if (nullableReferenceFields.Count > 0)
             {
-                var insertProcedure = GetInsert1Procedure(entityDefinition);
+                var insertProcedure = GetInsert1Procedure(rowSourceDefinition);
                 WriteLine(insertProcedure);
                 WriteLine("GO");
                 WriteLine();

@@ -571,12 +571,12 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return name;
         }
 
-        public static string GetDataType(EntityDefinition entityDefinition)
+        public static string GetDataType(RowSourceDefinition entityDefinition)
         {
             return entityDefinition.Name + "DataType";
         }
 
-        public static string GetReaderClassName(EntityDefinition entityDefinition)
+        public static string GetReaderClassName(RowSourceDefinition entityDefinition)
         {
             return entityDefinition.Name + "Reader";
         }
@@ -637,7 +637,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return false;
         }
 
-        public static string GetDataTypeConstructorArguments(EntityDefinition entityDefinition, string indentation, IReadOnlyList<FieldDefinition> fieldDefinitions)
+        public static string GetDataTypeConstructorArguments(RowSourceDefinition entityDefinition, string indentation, IReadOnlyList<FieldDefinition> fieldDefinitions)
         {
             var fieldDefinitionsCount = fieldDefinitions.Count;
             var arguments = new List<string>();
@@ -682,12 +682,12 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         }
 
 
-        public static string GetDataTypeNamespace(EntityDefinition entityDefinition)
+        public static string GetDataTypeNamespace(RowSourceDefinition entityDefinition)
         {
             return entityDefinition.DataTypeNamespace;
         }
 
-        public static string GetQualifiedDataTypeNamespace(EntityDefinition entityDefinition)
+        public static string GetQualifiedDataTypeNamespace(RowSourceDefinition entityDefinition)
         {
             var schema = entityDefinition.Owner!;
             var schemaNamespace = string.IsNullOrEmpty(schema.Namespace) ? schema.Name.FirstToUpper() : schema.Namespace;
@@ -723,7 +723,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return projectNamespace + ".Database.Readers";
         }
 
-        public static string GetDatabaseReaderNamespace(EntityDefinition entityDefinition)
+        public static string GetDatabaseReaderNamespace(RowSourceDefinition entityDefinition)
         {
             var project = entityDefinition.Project!;
             var projectNamespace = string.IsNullOrEmpty(project.Namespace) ? project.Name.FirstToUpper() : project.Namespace;
@@ -732,32 +732,32 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return readersNamespace + "." + schemaNamespace;
         }
 
-        public static string GetInsertFunctionName(EntityDefinition entityDefinition)
+        public static string GetInsertFunctionName(RowSourceDefinition entityDefinition)
         {
             return "Insert" + entityDefinition.Name;
         }
 
-        public static string GetInsert1FunctionName(EntityDefinition entityDefinition)
+        public static string GetInsert1FunctionName(RowSourceDefinition entityDefinition)
         {
             return "Insert1" + entityDefinition.Name;
         }
 
-        public static string GetUpdateFunctionName(EntityDefinition entityDefinition)
+        public static string GetUpdateFunctionName(RowSourceDefinition entityDefinition)
         {
             return "Update" + entityDefinition.Name;
         }
 
-        public static string GetUpdate1FunctionName(EntityDefinition entityDefinition)
+        public static string GetUpdate1FunctionName(RowSourceDefinition entityDefinition)
         {
             return "Update1" + entityDefinition.Name;
         }
 
-        public static string GetUpdate2FunctionName(EntityDefinition entityDefinition)
+        public static string GetUpdate2FunctionName(RowSourceDefinition entityDefinition)
         {
             return "Update2" + entityDefinition.Name;
         }
 
-        public static string GetDeleteFunctionName(EntityDefinition entityDefinition)
+        public static string GetDeleteFunctionName(RowSourceDefinition entityDefinition)
         {
             return "Delete" + entityDefinition.Name;
         }

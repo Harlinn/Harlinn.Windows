@@ -2,7 +2,7 @@
   "profiles": {
     "Harlinn.MSSql.Tool": {
       "commandName": "Project",
-      "commandLineArgs": "import -s dbo;HumanResources;Person;Production;Purchasing;Sales -i AdventureWorks2019 -p AdventureWorks.xml"
+      "commandLineArgs": "import -s dbo;sys;HumanResources;Person;Production;Purchasing;Sales -i AdventureWorks2019 -p AdventureWorks.xml"
     }
   }
 }

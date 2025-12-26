@@ -305,7 +305,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetColumnName(FieldDefinition fieldDefinition)
         {
-            return $"[{fieldDefinition.Name}]";
+            return $"[{fieldDefinition.ColumnName}]";
         }
 
         public static string GetParameterName(FieldDefinition fieldDefinition)
@@ -313,31 +313,39 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"@{fieldDefinition.Name.FirstToLower()}";
         }
 
-        public static string GetQualifiedTableName(EntityDefinition entityDefinition)
+        public static string GetQualifiedTableOrViewName(RowSourceDefinition rowSourceDefinition)
         {
-            var schemaName = entityDefinition.Owner!.Name;
-            var tableName = GetTableName(entityDefinition);
+            var schemaName = rowSourceDefinition.Owner!.Name;
+            var tableName = GetTableOrViewName(rowSourceDefinition);
             return $"[{schemaName}].[{tableName}]";
         }
 
-        public static string GetTableName(EntityDefinition entityDefinition)
+        public static string GetTableOrViewName(RowSourceDefinition rowSourceDefinition)
         {
-            return string.IsNullOrEmpty(entityDefinition.Table) ? entityDefinition.Name : entityDefinition.Table;
+            if (rowSourceDefinition is ViewDefinition viewDefinition)
+            {
+                return string.IsNullOrEmpty(viewDefinition.View) ? viewDefinition.Name : viewDefinition.View;
+            }
+            else if (rowSourceDefinition is EntityDefinition entityDefinition)
+            {
+                return string.IsNullOrEmpty(entityDefinition.Table) ? entityDefinition.Name : entityDefinition.Table;
+            }
+            return rowSourceDefinition.Name;
         }
 
 
-        public static string GetShortName(EntityDefinition entityDefinition)
+        public static string GetShortName(RowSourceDefinition entityDefinition)
         {
             return entityDefinition.ShortName!;
         }
 
-        public static string GetInsertProcedureName(EntityDefinition entityDefinition)
+        public static string GetInsertProcedureName(RowSourceDefinition entityDefinition)
         {
-            var tableName = GetTableName(entityDefinition);
+            var tableName = GetTableOrViewName(entityDefinition);
             return $"[Insert{tableName}]";
         }
 
-        public static string GetQualifiedInsertProcedureName(EntityDefinition entityDefinition)
+        public static string GetQualifiedInsertProcedureName(RowSourceDefinition entityDefinition)
         {
             
             var schemaName = entityDefinition.Owner!.Name;
@@ -345,13 +353,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        public static string GetInsert1ProcedureName(EntityDefinition entityDefinition)
+        public static string GetInsert1ProcedureName(RowSourceDefinition entityDefinition)
         {
-            var tableName = GetTableName(entityDefinition);
+            var tableName = GetTableOrViewName(entityDefinition);
             return $"[Insert1{tableName}]";
         }
 
-        public static string GetQualifiedInsert1ProcedureName(EntityDefinition entityDefinition)
+        public static string GetQualifiedInsert1ProcedureName(RowSourceDefinition entityDefinition)
         {
             var schemaName = entityDefinition.Owner!.Name;
             var procedureName = GetInsert1ProcedureName(entityDefinition);
@@ -359,13 +367,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
         }
 
 
-        public static string GetUpdateProcedureName(EntityDefinition entityDefinition)
+        public static string GetUpdateProcedureName(RowSourceDefinition entityDefinition)
         {
-            var tableName = GetTableName(entityDefinition);
+            var tableName = GetTableOrViewName(entityDefinition);
             return $"[Update{tableName}]";
         }
 
-        public static string GetQualifiedUpdateProcedureName(EntityDefinition entityDefinition)
+        public static string GetQualifiedUpdateProcedureName(RowSourceDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -373,13 +381,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        public static string GetUpdate1ProcedureName(EntityDefinition entityDefinition)
+        public static string GetUpdate1ProcedureName(RowSourceDefinition entityDefinition)
         {
-            var tableName = GetTableName(entityDefinition);
+            var tableName = GetTableOrViewName(entityDefinition);
             return $"[Update1{tableName}]";
         }
 
-        public static string GetQualifiedUpdate1ProcedureName(EntityDefinition entityDefinition)
+        public static string GetQualifiedUpdate1ProcedureName(RowSourceDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -387,13 +395,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        public static string GetUpdate2ProcedureName(EntityDefinition entityDefinition)
+        public static string GetUpdate2ProcedureName(RowSourceDefinition entityDefinition)
         {
-            var tableName = GetTableName(entityDefinition);
+            var tableName = GetTableOrViewName(entityDefinition);
             return $"[Update2{tableName}]";
         }
 
-        public static string GetQualifiedUpdate2ProcedureName(EntityDefinition entityDefinition)
+        public static string GetQualifiedUpdate2ProcedureName(RowSourceDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -403,13 +411,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
 
 
-        public static string GetDeleteProcedureName(EntityDefinition entityDefinition)
+        public static string GetDeleteProcedureName(RowSourceDefinition entityDefinition)
         {
-            var tableName = GetTableName(entityDefinition);
+            var tableName = GetTableOrViewName(entityDefinition);
             return $"[Delete{tableName}]";
         }
 
-        public static string GetQualifiedDeleteProcedureName(EntityDefinition entityDefinition)
+        public static string GetQualifiedDeleteProcedureName(RowSourceDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -417,7 +425,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        internal static object GetPrimaryKeyCondition(EntityDefinition entityDefinition)
+        internal static object GetPrimaryKeyCondition(RowSourceDefinition entityDefinition)
         {
             var primaryKeyFields = entityDefinition.PrimaryKeyFields;
             var sb = new StringBuilder();

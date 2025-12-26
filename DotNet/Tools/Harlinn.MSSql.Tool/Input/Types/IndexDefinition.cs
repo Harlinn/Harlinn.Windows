@@ -25,7 +25,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, IndexFieldDefinition> FieldsByName { get; set; } = new Dictionary<string, IndexFieldDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
-        public EntityDefinition? Owner { get; set; } = null;
+        public RowSourceDefinition? Owner { get; set; } = null;
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;

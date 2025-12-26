@@ -24,17 +24,17 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, ForeignKeyReferenceDefinition> ReferencesByName { get; set; } = new Dictionary<string, ForeignKeyReferenceDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
-        EntityDefinition? _entity;
+        RowSourceDefinition? _entity;
         [XmlIgnore]
         string? _entityName;
         [XmlIgnore]
-        public EntityDefinition? Owner { get; set; } = null;
+        public RowSourceDefinition? Owner { get; set; } = null;
 
         [XmlAttribute]
         public string Name { get; set; } = string.Empty;
 
         [XmlIgnore]
-        public EntityDefinition? Entity
+        public RowSourceDefinition? Entity
         {
             get
             {
@@ -43,7 +43,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     var entityName = EntityName;
                     if (Owner != null && string.IsNullOrEmpty(entityName) == false)
                     {
-                        _entity = Owner.GetSchemaObject(entityName) as EntityDefinition;
+                        _entity = Owner.GetSchemaObject(entityName) as RowSourceDefinition;
                     }
                 }
                 return _entity;
@@ -118,7 +118,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     {
                         fullName = ReferencedTableName;
                     }
-                    var entity = Owner.GetSchemaObject(fullName) as EntityDefinition;
+                    var entity = Owner.GetSchemaObject(fullName) as RowSourceDefinition;
                     if (null != entity)
                     {
                         var schemaName = entity.Owner!.Name;
@@ -135,7 +135,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
             {
                 if(string.IsNullOrEmpty(_entityName) == false)
                 {
-                    _entity = Owner.GetSchemaObject(_entityName) as EntityDefinition;
+                    _entity = Owner.GetSchemaObject(_entityName) as RowSourceDefinition;
                     if (null != _entity)
                     {
                         // Valid _entityName
@@ -155,7 +155,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     {
                         fullName = ReferencedTableName;
                     }
-                    _entity = Owner.GetSchemaObject(fullName) as EntityDefinition;
+                    _entity = Owner.GetSchemaObject(fullName) as RowSourceDefinition;
                     if (null != _entity)
                     {
                         var schemaName = _entity.Owner!.Name;

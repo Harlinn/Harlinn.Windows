@@ -21,11 +21,11 @@ namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class EntityCheckConstraint : CheckConstraint
     {
-        EntityDefinition? _owner;
+        RowSourceDefinition? _owner;
         public EntityCheckConstraint()
         { }
 
-        public EntityCheckConstraint(EntityDefinition? owner, SchemaTypes.CheckConstraint checkConstraint)
+        public EntityCheckConstraint(RowSourceDefinition? owner, SchemaTypes.CheckConstraint checkConstraint)
             : base(checkConstraint)
         {
             _owner = owner;
@@ -37,7 +37,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         }
 
         [XmlIgnore]
-        public EntityDefinition? Owner { get => _owner; set => _owner = value; }
+        public RowSourceDefinition? Owner { get => _owner; set => _owner = value; }
     }
 
 

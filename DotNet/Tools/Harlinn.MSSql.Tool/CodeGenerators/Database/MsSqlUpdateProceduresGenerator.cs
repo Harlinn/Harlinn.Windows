@@ -21,7 +21,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             }
         }
 
-        static string GetProcedureParameters(EntityDefinition entityDefinition, IReadOnlyList<FieldDefinition> fields)
+        static string GetProcedureParameters(RowSourceDefinition entityDefinition, IReadOnlyList<FieldDefinition> fields)
         {
             var parameters = new List<string>();
             bool first = true;
@@ -42,25 +42,25 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return string.Join(", ", parameters);
         }
 
-        static string GetProcedureParameters(EntityDefinition entityDefinition)
+        static string GetProcedureParameters(RowSourceDefinition entityDefinition)
         {
             var fields = entityDefinition.Fields;
             return GetProcedureParameters(entityDefinition, fields);
         }
 
-        static string GetProcedure1Parameters(EntityDefinition entityDefinition)
+        static string GetProcedure1Parameters(RowSourceDefinition entityDefinition)
         {
             var fields = entityDefinition.NotReferenceAndNotNullableReferenceFields;
             return GetProcedureParameters(entityDefinition, fields);
         }
 
-        static string GetProcedure2Parameters(EntityDefinition entityDefinition)
+        static string GetProcedure2Parameters(RowSourceDefinition entityDefinition)
         {
             var fields = entityDefinition.PrimaryKeyAndNullableReferenceFields;
             return GetProcedureParameters(entityDefinition, fields);
         }
 
-        static string GetUpdateProcedure(EntityDefinition entityDefinition)
+        static string GetUpdateProcedure(RowSourceDefinition entityDefinition)
         {
             var procedure = new StringBuilder();
 
@@ -111,11 +111,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return procedure.ToString();
         }
 
-        private static string GetUpdateStatement(EntityDefinition entityDefinition)
+        private static string GetUpdateStatement(RowSourceDefinition entityDefinition)
         {
             var statement = new StringBuilder();
 
-            statement.AppendLine($"      UPDATE {MsSqlHelper.GetQualifiedTableName(entityDefinition)}");
+            statement.AppendLine($"      UPDATE {MsSqlHelper.GetQualifiedTableOrViewName(entityDefinition)}");
             statement.AppendLine( "        SET");
 
             var fields = entityDefinition.NonPrimaryKeyFields;
@@ -133,7 +133,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return statement.ToString();
         }
 
-        static string GetUpdate1Procedure(EntityDefinition entityDefinition)
+        static string GetUpdate1Procedure(RowSourceDefinition entityDefinition)
         {
             var procedure = new StringBuilder();
 
@@ -184,11 +184,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return procedure.ToString();
         }
 
-        private static string GetUpdate1Statement(EntityDefinition entityDefinition)
+        private static string GetUpdate1Statement(RowSourceDefinition entityDefinition)
         {
             var statement = new StringBuilder();
 
-            statement.AppendLine($"      UPDATE {MsSqlHelper.GetQualifiedTableName(entityDefinition)}");
+            statement.AppendLine($"      UPDATE {MsSqlHelper.GetQualifiedTableOrViewName(entityDefinition)}");
             statement.AppendLine("        SET");
 
             var nonPrimaryKeyFields = entityDefinition.NonPrimaryKeyFields;
@@ -215,7 +215,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
         }
 
 
-        static string GetUpdate2Procedure(EntityDefinition entityDefinition)
+        static string GetUpdate2Procedure(RowSourceDefinition entityDefinition)
         {
             var procedure = new StringBuilder();
 
@@ -266,11 +266,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return procedure.ToString();
         }
 
-        private static string GetUpdate2Statement(EntityDefinition entityDefinition)
+        private static string GetUpdate2Statement(RowSourceDefinition entityDefinition)
         {
             var statement = new StringBuilder();
 
-            statement.AppendLine($"      UPDATE {MsSqlHelper.GetQualifiedTableName(entityDefinition)}");
+            statement.AppendLine($"      UPDATE {MsSqlHelper.GetQualifiedTableOrViewName(entityDefinition)}");
             statement.AppendLine("        SET");
 
             var nullableReferenceFields = entityDefinition.NullableReferenceFields;
@@ -289,7 +289,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
         }
 
 
-        void CreateUpdateProcedure(EntityDefinition entityDefinition)
+        void CreateUpdateProcedure(RowSourceDefinition entityDefinition)
         {
             var updateProcedure = GetUpdateProcedure(entityDefinition);
             WriteLine(updateProcedure);
@@ -297,7 +297,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             WriteLine();
         }
 
-        void CreateUpdate1Procedure(EntityDefinition entityDefinition)
+        void CreateUpdate1Procedure(RowSourceDefinition entityDefinition)
         {
             var nullableReferenceFields = entityDefinition.NullableReferenceFields;
             if (nullableReferenceFields.Count > 0)
@@ -309,7 +309,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             }
         }
 
-        void CreateUpdate2Procedure(EntityDefinition entityDefinition)
+        void CreateUpdate2Procedure(RowSourceDefinition entityDefinition)
         {
             var nullableReferenceFields = entityDefinition.NullableReferenceFields;
             if (nullableReferenceFields.Count > 0)

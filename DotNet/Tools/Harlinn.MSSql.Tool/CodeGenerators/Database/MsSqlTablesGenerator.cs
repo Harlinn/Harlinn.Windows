@@ -51,9 +51,9 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             }
         }
 
-        void WriteCreateTable(EntityDefinition entity)
+        void WriteCreateTable(RowSourceDefinition entity)
         {
-            var qualifiedTableName = MsSqlHelper.GetQualifiedTableName(entity);
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableOrViewName(entity);
 
             WriteLine( "/*");
             WriteLine($" * {qualifiedTableName}");
@@ -72,7 +72,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             WriteLine();
         }
 
-        void WriteColumn(EntityDefinition entity, FieldDefinition field)
+        void WriteColumn(RowSourceDefinition entity, FieldDefinition field)
         {
             var columnDefault = GetColumnDefault(field);
             var columnName = MsSqlHelper.GetColumnName(field);
@@ -119,7 +119,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
         }
 
 
-        void WriteIndexes(EntityDefinition entity)
+        void WriteIndexes(RowSourceDefinition entity)
         {
             var indexes = entity.Indexes;
             foreach (var index in indexes)
@@ -128,9 +128,9 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             }
         }
 
-        void WriteIndex(EntityDefinition entity, IndexDefinition index)
+        void WriteIndex(RowSourceDefinition entity, IndexDefinition index)
         {
-            var qualifiedTableName = MsSqlHelper.GetQualifiedTableName(entity);
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableOrViewName(entity);
 
             var indexColumnList = IndexColumnList(index);
             var indexName = index.Name;
@@ -155,7 +155,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return string.Join(", ", columnNames);
         }
 
-        void WritePrimaryKey(EntityDefinition entity)
+        void WritePrimaryKey(RowSourceDefinition entity)
         {
             var primaryKey = entity.PrimaryKey;
             var primaryKeyName = primaryKey?.Name;
@@ -177,7 +177,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return string.Join(", ", columnNames);
         }
 
-        void WriteForeignKeys(EntityDefinition entity)
+        void WriteForeignKeys(RowSourceDefinition entity)
         {
             var foreignKeys = entity.ForeignKeys;
             foreach (var foreignKey in foreignKeys)
@@ -186,10 +186,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             }
         }
 
-        void WriteForeignKey(EntityDefinition entity, ForeignKeyDefinition foreignKey)
+        void WriteForeignKey(RowSourceDefinition entity, ForeignKeyDefinition foreignKey)
         {
-            var qualifiedTableName = MsSqlHelper.GetQualifiedTableName(entity);
-            var qualifiedReferencedTableName = MsSqlHelper.GetQualifiedTableName(foreignKey.Entity!);
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableOrViewName(entity);
+            var qualifiedReferencedTableName = MsSqlHelper.GetQualifiedTableOrViewName(foreignKey.Entity!);
 
             var foreignKeyName = foreignKey.Name;
             var foreignKeyColumnList = ForeignKeyColumnList(foreignKey!);

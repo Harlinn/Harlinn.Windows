@@ -47,12 +47,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 var objectName = Name;
                 var key = $"{databaseName}.{schemaName}.{objectName}";
                 project.SchemaObjects[key] = this;
-                if (this is EntityDefinition entity)
+                if (this is RowSourceDefinition entity)
                 {
                     var tableName = entity.Name;
                     var qualifiedTableName = $"{databaseName}.{schemaName}.{tableName}";
-                    project.EntitiesByTableName[qualifiedTableName] = entity;
-                    project.Entities.Add(entity);
+                    project.RowSourcesByName[qualifiedTableName] = entity;
+                    project.RowSources.Add(entity);
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     {  
                         return schemaObject; 
                     }
-                    if (Owner.EntitiesByTableName.TryGetValue(objectName, out var entity))
+                    if (Owner.RowSourcesByName.TryGetValue(objectName, out var entity))
                     {
                         return entity;
                     }
@@ -101,7 +101,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                             {
                                 return schemaObject;
                             }
-                            if (schema.EntitiesByTableName.TryGetValue(objectName, out var entity))
+                            if (schema.RowSourcesByName.TryGetValue(objectName, out var entity))
                             {
                                 return entity;
                             }
@@ -118,7 +118,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     {
                         return schemaObject;
                     }
-                    if (project.EntitiesByTableName.TryGetValue(schemaObjectName, out var entity))
+                    if (project.RowSourcesByName.TryGetValue(schemaObjectName, out var entity))
                     {
                         return entity;
                     }

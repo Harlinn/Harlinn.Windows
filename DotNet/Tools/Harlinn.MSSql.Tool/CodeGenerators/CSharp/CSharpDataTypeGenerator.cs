@@ -5,25 +5,30 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 {
     public class CSharpDataTypeGenerator : CodeWriter
     {
-        readonly EntityDefinition _entityDefinition;
-        public CSharpDataTypeGenerator(Context context, EntityDefinition entityDefinition) 
+        readonly RowSourceDefinition _rowSourceDefinition;
+        readonly bool _readOnly;
+        public CSharpDataTypeGenerator(Context context, RowSourceDefinition rowSourceDefinition, bool readOnly) 
             : base(context)
         {
-            _entityDefinition = entityDefinition;
+            _rowSourceDefinition = rowSourceDefinition;
+            _readOnly = readOnly;
         }
 
-        public EntityDefinition Entity => _entityDefinition;
+        public RowSourceDefinition RowSource => _rowSourceDefinition;
+
+        
 
         public void Run()
         {
+            string readOnlyModifier = _readOnly ? "readonly " : string.Empty;
             WriteLine("using System;");
             WriteLine();
-            WriteLine($"namespace {CSharpHelper.GetDataTypeNamespace(Entity)};");
+            WriteLine($"namespace {CSharpHelper.GetDataTypeNamespace(RowSource)};");
             WriteLine();
-            var dataTypeName = CSharpHelper.GetDataType(Entity);
+            var dataTypeName = CSharpHelper.GetDataType(RowSource);
             WriteLine($"public class {dataTypeName}");
             WriteLine("{");
-            foreach (var field in Entity.Fields)
+            foreach (var field in RowSource.Fields)
             {
                 var fieldType = CSharpHelper.GetMemberFieldType(field);
                 var fieldName = CSharpHelper.GetMemberFieldName(field);
@@ -33,17 +38,17 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                     defaultValue = " = "+CSharpHelper.GetDefaultValue(field);
                 }
 
-                WriteLine($"    {fieldType} {fieldName}{defaultValue};");
+                WriteLine($"    {readOnlyModifier}{fieldType} {fieldName}{defaultValue};");
             }
             WriteLine();
             WriteLine($"    public {dataTypeName}( )");
             WriteLine("    {");
             WriteLine("    }");
             WriteLine();
-            var constructorArguments = CSharpHelper.GetDataTypeConstructorArguments(Entity, "        ", Entity.Fields);
+            var constructorArguments = CSharpHelper.GetDataTypeConstructorArguments(RowSource, "        ", RowSource.Fields);
             WriteLine($"    public {dataTypeName}({constructorArguments})");
             WriteLine("    {");
-            foreach (var field in Entity.Fields)
+            foreach (var field in RowSource.Fields)
             {
                 var fieldName = CSharpHelper.GetMemberFieldName(field);
                 var argumentName = CSharpHelper.GetInputArgumentName(field);
@@ -52,16 +57,24 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             WriteLine("    }");
             WriteLine();
 
-            foreach (var field in Entity.Fields)
+            foreach (var field in RowSource.Fields)
             {
                 var fieldName = CSharpHelper.GetMemberFieldName(field);
                 var propertyName = CSharpHelper.GetMemberPropertyName(field);
                 var fieldType = CSharpHelper.GetMemberFieldType(field);
-                WriteLine($"    public {fieldType} {propertyName}");
-                WriteLine("    {");
-                WriteLine($"        get => {fieldName};");
-                WriteLine($"        set => {fieldName} = value;");
-                WriteLine("    }");
+                if (_readOnly)
+                {
+                    WriteLine($"    public {fieldType} {propertyName} => {fieldName};");
+                    continue;
+                }
+                else
+                {
+                    WriteLine($"    public {fieldType} {propertyName}");
+                    WriteLine("    {");
+                    WriteLine($"        get => {fieldName};");
+                    WriteLine($"        set => {fieldName} = value;");
+                    WriteLine("    }");
+                }
             }
 
             WriteLine("}");

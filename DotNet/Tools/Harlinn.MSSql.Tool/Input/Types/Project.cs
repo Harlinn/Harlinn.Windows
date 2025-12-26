@@ -29,13 +29,16 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, SchemaObject> SchemaObjects { get; set; } = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
-        public Dictionary<string, EntityDefinition> EntitiesByTableName { get; set; } = new Dictionary<string, EntityDefinition>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, RowSourceDefinition> RowSourcesByName { get; set; } = new Dictionary<string, RowSourceDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
-        public Dictionary<string, EntityDefinition> EntitiesByAcronym { get; set; } = new Dictionary<string, EntityDefinition>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, RowSourceDefinition> RowSourcesByAcronym { get; set; } = new Dictionary<string, RowSourceDefinition>(StringComparer.OrdinalIgnoreCase);
 
         [XmlIgnore]
-        public List<EntityDefinition> Entities { get; set; } = new List<EntityDefinition>();
+        public List<RowSourceDefinition> RowSources { get; set; } = new List<RowSourceDefinition>();
+
+        [XmlIgnore]
+        public List<RowSourceDefinition> Entities => RowSources.Where(rs => rs.Type == SchemaObjectType.Entity).ToList();
 
         [XmlIgnore]
         public Dictionary<string, TypeDefinition> TypeDefinitions { get; set; } = new Dictionary<string, TypeDefinition>();
