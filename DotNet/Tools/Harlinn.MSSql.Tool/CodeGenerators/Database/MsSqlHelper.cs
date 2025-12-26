@@ -260,8 +260,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
                 break;
                 case FieldType.Decimal:
                 {
-                    var uint64FieldDefinition = (UInt64FieldDefinition)fieldDefinition;
-                    var identity = uint64FieldDefinition.Identity;
+                    var decimalFieldDefinition = (DecimalFieldDefinition)fieldDefinition;
+                    var identity = decimalFieldDefinition.Identity;
                     if (identity != null)
                     {
                         if (identity.Seed != 1 || identity.Increment != 1)
@@ -305,7 +305,14 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetColumnName(FieldDefinition fieldDefinition)
         {
-            return $"[{fieldDefinition.ColumnName}]";
+            if (string.IsNullOrEmpty(fieldDefinition.ColumnName))
+            {
+                return $"[{fieldDefinition.Name}]";
+            }
+            else
+            {
+                return $"[{fieldDefinition.ColumnName}]";
+            }
         }
 
         public static string GetParameterName(FieldDefinition fieldDefinition)
@@ -339,13 +346,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return entityDefinition.ShortName!;
         }
 
-        public static string GetInsertProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetInsertProcedureName(EntityDefinition entityDefinition)
         {
             var tableName = GetTableOrViewName(entityDefinition);
             return $"[Insert{tableName}]";
         }
 
-        public static string GetQualifiedInsertProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetQualifiedInsertProcedureName(EntityDefinition entityDefinition)
         {
             
             var schemaName = entityDefinition.Owner!.Name;
@@ -353,13 +360,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        public static string GetInsert1ProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetInsert1ProcedureName(EntityDefinition entityDefinition)
         {
             var tableName = GetTableOrViewName(entityDefinition);
             return $"[Insert1{tableName}]";
         }
 
-        public static string GetQualifiedInsert1ProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetQualifiedInsert1ProcedureName(EntityDefinition entityDefinition)
         {
             var schemaName = entityDefinition.Owner!.Name;
             var procedureName = GetInsert1ProcedureName(entityDefinition);
@@ -367,13 +374,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
         }
 
 
-        public static string GetUpdateProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetUpdateProcedureName(EntityDefinition entityDefinition)
         {
             var tableName = GetTableOrViewName(entityDefinition);
             return $"[Update{tableName}]";
         }
 
-        public static string GetQualifiedUpdateProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetQualifiedUpdateProcedureName(EntityDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -381,13 +388,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        public static string GetUpdate1ProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetUpdate1ProcedureName(EntityDefinition entityDefinition)
         {
             var tableName = GetTableOrViewName(entityDefinition);
             return $"[Update1{tableName}]";
         }
 
-        public static string GetQualifiedUpdate1ProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetQualifiedUpdate1ProcedureName(EntityDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -395,13 +402,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        public static string GetUpdate2ProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetUpdate2ProcedureName(EntityDefinition entityDefinition)
         {
             var tableName = GetTableOrViewName(entityDefinition);
             return $"[Update2{tableName}]";
         }
 
-        public static string GetQualifiedUpdate2ProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetQualifiedUpdate2ProcedureName(EntityDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -411,13 +418,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
 
 
-        public static string GetDeleteProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetDeleteProcedureName(EntityDefinition entityDefinition)
         {
             var tableName = GetTableOrViewName(entityDefinition);
             return $"[Delete{tableName}]";
         }
 
-        public static string GetQualifiedDeleteProcedureName(RowSourceDefinition entityDefinition)
+        public static string GetQualifiedDeleteProcedureName(EntityDefinition entityDefinition)
         {
 
             var schemaName = entityDefinition.Owner!.Name;
@@ -425,7 +432,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
-        internal static object GetPrimaryKeyCondition(RowSourceDefinition entityDefinition)
+        internal static object GetPrimaryKeyCondition(EntityDefinition entityDefinition)
         {
             var primaryKeyFields = entityDefinition.PrimaryKeyFields;
             var sb = new StringBuilder();

@@ -38,7 +38,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public List<RowSourceDefinition> RowSources { get; set; } = new List<RowSourceDefinition>();
 
         [XmlIgnore]
-        public List<RowSourceDefinition> Entities => RowSources.Where(rs => rs.Type == SchemaObjectType.Entity).ToList();
+        public List<EntityDefinition> Entities => RowSources.Where(rs => rs.Type == SchemaObjectType.Entity).Cast<EntityDefinition>().ToList();
+
+        [XmlIgnore]
+        public List<ViewDefinition> Views => RowSources.Where(rs => rs.Type == SchemaObjectType.View).Cast<ViewDefinition>().ToList();
 
         [XmlIgnore]
         public Dictionary<string, TypeDefinition> TypeDefinitions { get; set; } = new Dictionary<string, TypeDefinition>();

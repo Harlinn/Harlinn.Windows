@@ -38,13 +38,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             sqlDataReaderExtensionsGenerator.Run();
             sqlDataReaderExtensionsGenerator.SaveToFile(Path.Combine(Context.Output.CSharp.ReadersDirectory, "SqlDataReaderExtensions.cs"));
 
-            foreach (var entity in entities)
+            foreach (var rowSource in rowSources)
             {
-                CSharpReaderGenerator dataTypeGenerator = new CSharpReaderGenerator(Context, entity);
+                CSharpReaderGenerator dataTypeGenerator = new CSharpReaderGenerator(Context, rowSource);
                 dataTypeGenerator.Run();
                 var readersDirectory = Context.Output.CSharp.ReadersDirectory;
-                var schemaDirectory = System.IO.Path.Combine(readersDirectory, string.IsNullOrEmpty(entity.Owner!.Namespace) ? entity.Owner!.Name.FirstToUpper()! : entity.Owner!.Namespace);
-                var readerClassName = CSharpHelper.GetReaderClassName(entity);
+                var schemaDirectory = System.IO.Path.Combine(readersDirectory, string.IsNullOrEmpty(rowSource.Owner!.Namespace) ? rowSource.Owner!.Name.FirstToUpper()! : rowSource.Owner!.Namespace);
+                var readerClassName = CSharpHelper.GetReaderClassName(rowSource);
                 var filename = System.IO.Path.Combine(schemaDirectory, $"{readerClassName}.cs");
                 dataTypeGenerator.SaveToFile(filename);
             }

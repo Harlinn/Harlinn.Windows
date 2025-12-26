@@ -12,17 +12,14 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public void Run()
         {
-            var rowSources = Context.Project.RowSources;
-            foreach (var rowSource in rowSources)
+            var entities = Context.Project.Entities;
+            foreach (var entity in entities)
             {
-                if (rowSource.Type == SchemaObjectType.Entity)
-                {
-                    CreateDeleteProcedure(rowSource);
-                }
+                CreateDeleteProcedure(entity);
             }
         }
 
-        static string GetProcedureParameters(RowSourceDefinition rowSourceDefinition, IReadOnlyList<FieldDefinition> fields)
+        static string GetProcedureParameters(EntityDefinition entityDefinition, IReadOnlyList<FieldDefinition> fields)
         {
             var parameters = new List<string>();
             bool first = true;
@@ -43,34 +40,34 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return string.Join(", ", parameters);
         }
 
-        static string GetProcedureParameters(RowSourceDefinition rowSourceDefinition)
+        static string GetProcedureParameters(EntityDefinition entityDefinition)
         {
-            var fields = rowSourceDefinition.PrimaryKeyFields;
-            return GetProcedureParameters(rowSourceDefinition, fields);
+            var fields = entityDefinition.PrimaryKeyFields;
+            return GetProcedureParameters(entityDefinition, fields);
         }
 
-        private string GetDeleteStatement(RowSourceDefinition rowSourceDefinition)
+        private string GetDeleteStatement(EntityDefinition entityDefinition)
         {
             var sb = new System.Text.StringBuilder();
-            var qualifiedTableName = MsSqlHelper.GetQualifiedTableOrViewName(rowSourceDefinition);
+            var qualifiedTableName = MsSqlHelper.GetQualifiedTableOrViewName(entityDefinition);
             sb.AppendLine($"      DELETE FROM {qualifiedTableName}");
 
             sb.AppendLine( "        WHERE");
-            sb.AppendLine($"          {MsSqlHelper.GetPrimaryKeyCondition(rowSourceDefinition)}");
+            sb.AppendLine($"          {MsSqlHelper.GetPrimaryKeyCondition(entityDefinition)}");
             return sb.ToString();
         }
 
-        private void CreateDeleteProcedure(RowSourceDefinition rowSourceDefinition)
+        private void CreateDeleteProcedure(EntityDefinition entityDefinition)
         {
-            var procedureName = MsSqlHelper.GetQualifiedDeleteProcedureName(rowSourceDefinition);
+            var procedureName = MsSqlHelper.GetQualifiedDeleteProcedureName(entityDefinition);
 
-            var primaryKey = rowSourceDefinition.PrimaryKey;
+            var primaryKey = entityDefinition.PrimaryKey;
 
             WriteLine($"CREATE OR ALTER PROCEDURE {procedureName}" );
-            var parameters = GetProcedureParameters(rowSourceDefinition);
+            var parameters = GetProcedureParameters(entityDefinition);
             WriteLine(parameters);
 
-            var savePointName = $"SavePoint{rowSourceDefinition.Id}";
+            var savePointName = $"SavePoint{entityDefinition.Id}";
             WriteLine("AS");
             WriteLine("  BEGIN");
             WriteLine("    DECLARE @TranCounter INT;");
@@ -81,7 +78,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             WriteLine("    ELSE");
             WriteLine("      BEGIN TRANSACTION;");
             WriteLine("    BEGIN TRY");
-            string deleteStatement = GetDeleteStatement(rowSourceDefinition);
+            string deleteStatement = GetDeleteStatement(entityDefinition);
             WriteLine(deleteStatement);
             WriteLine("      SET @RowCount = @@ROWCOUNT;");
             WriteLine("      IF @RowCount = 0");

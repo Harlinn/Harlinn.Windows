@@ -26,41 +26,42 @@ namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class Schema
     {
-        [XmlIgnore]
-        public Dictionary<string, SchemaObject> ObjectsByName { get; set; } = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, SchemaObject> _objectsByName = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, RowSourceDefinition> _rowSourcesByName = new Dictionary<string, RowSourceDefinition>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, TypeDefinition> _typeDefinitions = new Dictionary<string, TypeDefinition>();
+        private Database? _owner = null;
+        private string _name = string.Empty;
+        private string _namespace = string.Empty;
+        private List<TypeDefinition> _types = new List<TypeDefinition>();
+        private List<SchemaObject> _objects = new List<SchemaObject>();
 
         [XmlIgnore]
-        public Dictionary<string, RowSourceDefinition> RowSourcesByName { get; set; } = new Dictionary<string, RowSourceDefinition>(StringComparer.OrdinalIgnoreCase);
-
+        public Dictionary<string, SchemaObject> ObjectsByName { get => _objectsByName; set => _objectsByName = value; }
         [XmlIgnore]
-        public Dictionary<string, TypeDefinition> TypeDefinitions { get; set; } = new Dictionary<string, TypeDefinition>();
-
+        public Dictionary<string, RowSourceDefinition> RowSourcesByName { get => _rowSourcesByName; set => _rowSourcesByName = value; }
         [XmlIgnore]
-        public Database? Owner { get; set; } = null;
-
+        public Dictionary<string, TypeDefinition> TypeDefinitions { get => _typeDefinitions; set => _typeDefinitions = value; }
+        [XmlIgnore]
+        public Database? Owner { get => _owner; set => _owner = value; }
         [XmlIgnore]
         public Project? Project => Owner?.Project;
 
         [XmlAttribute]
-        public string Name { get; set; } = string.Empty;
-
+        public string Name { get => _name; set => _name = value; }
         [XmlAttribute, DefaultValue("")]
-        public string Namespace { get; set; } = string.Empty;
-
+        public string Namespace { get => _namespace; set => _namespace = value; }
         [XmlArray("Types")]
         [XmlArrayItem(typeof(EnumDefinition), ElementName = "Enum")]
         [XmlArrayItem(typeof(ClassDefinition), ElementName = "Class")]
         [XmlArrayItem(typeof(StructDefinition), ElementName = "Struct")]
-        public List<TypeDefinition> Types { get; set; } = new List<TypeDefinition>();
-
+        public List<TypeDefinition> Types { get => _types; set => _types = value; }
         [XmlArray("Objects")]
         [XmlArrayItem(typeof(EntityDefinition), ElementName = "Entity")]
         [XmlArrayItem(typeof(ViewDefinition), ElementName = "View")]
         [XmlArrayItem(typeof(StoredProcedureDefinition), ElementName = "StoredProcedure")]
         [XmlArrayItem(typeof(FunctionDefinition), ElementName = "Function")]
-        public List<SchemaObject> Objects { get; set; } = new List<SchemaObject>();
+        public List<SchemaObject> Objects { get => _objects; set => _objects = value; }
 
-        
 
 
         internal void Initialize()
@@ -77,69 +78,76 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 schemaObject.Owner = this;
                 schemaObject.Initialize();
                 ObjectsByName[schemaObject.Name] = schemaObject;
-                if (schemaObject is EntityDefinition entity && entity.Table != null)
+                if (schemaObject is EntityDefinition entityDefinition)
                 {
-                    var tableName = string.IsNullOrEmpty(entity.Table) ? entity.Name : entity.Table;
-                    RowSourcesByName[tableName] = entity;
+                    RowSourcesByName[string.IsNullOrEmpty(entityDefinition.Table) == false ? entityDefinition.Table : entityDefinition.Name] = entityDefinition;
+                }
+                else if (schemaObject is ViewDefinition viewDefinition && viewDefinition.View != null)
+                {
+                    RowSourcesByName[string.IsNullOrEmpty(viewDefinition.View) == false ? viewDefinition.View : viewDefinition.Name] = viewDefinition;
                 }
             }
         }
 
         public EntityDefinition AddEntity(SchemaTypes.Table table) 
         {
-            if(RowSourcesByName.TryGetValue(table.Name, out var existingEntity))
+            var tableName = table.Name;
+            if (RowSourcesByName.TryGetValue(tableName, out var existingEntity))
             {
                 return (EntityDefinition)existingEntity;
             }
-            var entity = new EntityDefinition
+            var entityDefinition = new EntityDefinition
             {
-                Name = table.Name.ToPascalCase(),
+                Name = tableName.ToPascalCase(),
                 Owner = this,
                 Table = table.Name
             };
-            Objects.Add(entity);
-            ObjectsByName[entity.Name] = entity;
-            RowSourcesByName[entity.Table] = entity;
-            entity.AddToProject();
-            return entity;
+            Objects.Add(entityDefinition);
+            ObjectsByName[entityDefinition.Name] = entityDefinition;
+            RowSourcesByName[tableName] = entityDefinition;
+            entityDefinition.AddToProject();
+            return entityDefinition;
         }
 
         public ViewDefinition AddView(SchemaTypes.View view)
         {
-            if (RowSourcesByName.TryGetValue(view.Name, out var existingView))
+            var viewName = view.Name;
+            if (RowSourcesByName.TryGetValue(viewName, out var existingView))
             {
                 return (ViewDefinition)existingView;
             }
-            var entity = new ViewDefinition
+            var viewDefinition = new ViewDefinition
             {
-                Name = view.Name.ToPascalCase(),
+                Name = viewName.ToPascalCase(),
                 Owner = this,
                 View = view.Name
             };
-            Objects.Add(entity);
-            ObjectsByName[entity.Name] = entity;
-            RowSourcesByName[entity.View] = entity;
-            entity.AddToProject();
-            return entity;
+            Objects.Add(viewDefinition);
+            ObjectsByName[viewDefinition.Name] = viewDefinition;
+            RowSourcesByName[viewName] = viewDefinition;
+            viewDefinition.AddToProject();
+            return viewDefinition;
         }
+
 
         public ViewDefinition AddView(SchemaTypes.SystemView view)
         {
-            if (RowSourcesByName.TryGetValue(view.Name, out var existingView))
+            var viewName = view.Name;
+            if (RowSourcesByName.TryGetValue(viewName, out var existingView))
             {
                 return (ViewDefinition)existingView;
             }
-            var entity = new ViewDefinition
+            var viewDefinition = new ViewDefinition
             {
                 Name = view.Name.ToPascalCase(),
                 Owner = this,
                 View = view.Name
             };
-            Objects.Add(entity);
-            ObjectsByName[entity.Name] = entity;
-            RowSourcesByName[entity.View] = entity;
-            entity.AddToProject();
-            return entity;
+            Objects.Add(viewDefinition);
+            ObjectsByName[viewDefinition.Name] = viewDefinition;
+            RowSourcesByName[viewName] = viewDefinition;
+            viewDefinition.AddToProject();
+            return viewDefinition;
         }
 
         internal void Initialize2()

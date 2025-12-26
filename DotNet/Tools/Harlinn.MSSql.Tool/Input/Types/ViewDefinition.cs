@@ -15,6 +15,12 @@
 */
 
 using System.Xml.Serialization;
+using Microsoft.Data.SqlClient;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using Harlinn.MSSql.Tool.Import;
+using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
+using Harlinn.Common.Core.Net;
+using System.ComponentModel;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -25,6 +31,18 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         [XmlAttribute]
         public string? View { get; set; }
+
+        internal void ImportView(SqlConnection sqlConnection, SchemaTypes.View view)
+        {
+            var columns = sqlConnection.GetColumns(view);
+            ImportColumns(sqlConnection, columns);
+        }
+
+        internal void ImportView(SqlConnection sqlConnection, SchemaTypes.SystemView view)
+        {
+            var columns = sqlConnection.GetSystemColumns(view);
+            ImportColumns(sqlConnection, columns);
+        }
 
     }
 

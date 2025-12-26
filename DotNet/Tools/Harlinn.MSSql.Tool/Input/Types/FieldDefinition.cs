@@ -63,7 +63,16 @@ namespace Harlinn.MSSql.Tool.Input.Types
             {
                 if(_isReference.HasValue == false)
                 {
-                    _isReference = Owner!.GetIsReference(this);
+                    if ( Owner is EntityDefinition entityDefinition)
+                    {
+                        _isReference = entityDefinition.GetIsReference(this);
+                    }
+                    else
+                    {
+                        // TODO : Handle views
+                        _isReference = false;
+                    }
+
                 }
                 return _isReference.Value;
             }

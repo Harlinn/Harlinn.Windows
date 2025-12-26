@@ -131,7 +131,7 @@ namespace Harlinn.MSSql.Tool
         {
             if (!disposedValue)
             {
-                if (disposing)
+                if (disposing && _sqlConnection != null)
                 {
                     _sqlConnection.Dispose();
                 }

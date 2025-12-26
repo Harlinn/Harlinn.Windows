@@ -50,5 +50,8 @@ a C# wrapper for the stored procedures.
 
 
 ```
+import -s dbo;sys;HumanResources;Person;Production;Purchasing;Sales -i AdventureWorks2019 -p AdventureWorks.xml
+
+-p AdventureWorks.xml
 
 ```

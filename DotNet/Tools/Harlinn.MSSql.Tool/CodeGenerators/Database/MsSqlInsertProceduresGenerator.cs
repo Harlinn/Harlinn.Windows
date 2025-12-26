@@ -13,18 +13,15 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public void Run()
         {
-            var rowSources = Context.Project.RowSources;
+            var rowSources = Context.Project.Entities;
             foreach (var rowSource in rowSources)
             {
-                if (rowSource.Type == SchemaObjectType.Entity)
-                {
-                    CreateInsertProcedure(rowSource);
-                    CreateInsert1Procedure(rowSource);
-                }
+                CreateInsertProcedure(rowSource);
+                CreateInsert1Procedure(rowSource);
             }
         }
 
-        static string GetProcedureParameters(RowSourceDefinition rowSourceDefinition, IReadOnlyList<FieldDefinition> fields)
+        static string GetProcedureParameters(EntityDefinition rowSourceDefinition, IReadOnlyList<FieldDefinition> fields)
         {
             var parameters = new List<string>();
             bool first = true;
@@ -46,20 +43,20 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return string.Join(", ", parameters);
         }
 
-        static string GetProcedureParameters(RowSourceDefinition rowSourceDefinition)
+        static string GetProcedureParameters(EntityDefinition rowSourceDefinition)
         {
             var fields = rowSourceDefinition.Fields;
             return GetProcedureParameters(rowSourceDefinition, fields);
         }
 
-        static string GetProcedure1Parameters(RowSourceDefinition rowSourceDefinition)
+        static string GetProcedure1Parameters(EntityDefinition rowSourceDefinition)
         {
             var fields = rowSourceDefinition.NotReferenceAndNotNullableReferenceFields;
             return GetProcedureParameters(rowSourceDefinition, fields);
         }
 
 
-        static string GetInsertStatement(RowSourceDefinition rowSourceDefinition, IReadOnlyList<FieldDefinition> fieldDefinitions)
+        static string GetInsertStatement(EntityDefinition rowSourceDefinition, IReadOnlyList<FieldDefinition> fieldDefinitions)
         {
             StringBuilder statement = new();
 
@@ -91,18 +88,18 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return statement.ToString();
         }
 
-        static string GetInsertStatement(RowSourceDefinition rowSourceDefinition)
+        static string GetInsertStatement(EntityDefinition rowSourceDefinition)
         {
             return GetInsertStatement(rowSourceDefinition, rowSourceDefinition.Fields);
         }
 
-        static string GetInsert1Statement(RowSourceDefinition rowSourceDefinition)
+        static string GetInsert1Statement(EntityDefinition rowSourceDefinition)
         {
             return GetInsertStatement(rowSourceDefinition, rowSourceDefinition.NotReferenceAndNotNullableReferenceFields);
         }
 
 
-        static string GetInsertProcedure(RowSourceDefinition rowSourceDefinition)
+        static string GetInsertProcedure(EntityDefinition rowSourceDefinition)
         {
             var procedure = new StringBuilder();
 
@@ -153,7 +150,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return procedure.ToString();
         }
 
-        static string GetInsert1Procedure(RowSourceDefinition rowSourceDefinition)
+        static string GetInsert1Procedure(EntityDefinition rowSourceDefinition)
         {
             var procedure = new StringBuilder();
 
@@ -205,7 +202,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
         }
 
 
-        void CreateInsertProcedure(RowSourceDefinition rowSourceDefinition)
+        void CreateInsertProcedure(EntityDefinition rowSourceDefinition)
         {
             var insertProcedure = GetInsertProcedure(rowSourceDefinition);
             WriteLine(insertProcedure);
@@ -213,7 +210,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             WriteLine();
         }
 
-        void CreateInsert1Procedure(RowSourceDefinition rowSourceDefinition)
+        void CreateInsert1Procedure(EntityDefinition rowSourceDefinition)
         {
             var nullableReferenceFields = rowSourceDefinition.NullableReferenceFields;
             if (nullableReferenceFields.Count > 0)
