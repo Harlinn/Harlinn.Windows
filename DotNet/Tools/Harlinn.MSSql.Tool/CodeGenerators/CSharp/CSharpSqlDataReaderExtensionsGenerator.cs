@@ -215,6 +215,70 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                         return reader.GetSqlBytes(ordinal).Value;
                     }
 
+                    public SqlHierarchyId GetSqlHierarchyId(this SqlDataReader reader, int i)
+                    {
+                        var result = (SqlHierarchyId)reader.GetSqlValue(i);
+                        return result;
+                    }
+
+                    public SqlHierarchyId? GetNullableSqlHierarchyId(this SqlDataReader reader, int i)
+                    {
+                        if (reader.IsDBNull(i))
+                        {
+                            return null;
+                        }
+                        var result = (SqlHierarchyId)reader.GetSqlValue(i);
+                        return result;
+                    }
+
+                    public SqlGeography GetSqlGeography(this SqlDataReader reader, int i)
+                    {
+                        var result = (SqlGeography)reader.GetSqlValue(i);
+                        return result;
+                    }
+
+                    public SqlGeography? GetNullableSqlGeography(this SqlDataReader reader, int i)
+                    {
+                        if (reader.IsDBNull(i))
+                        {
+                            return null;
+                        }
+                        var result = (SqlGeography)reader.GetSqlValue(i);
+                        return result;
+                    }
+
+                    public SqlGeometry GetSqlGeometry(this SqlDataReader reader, int i)
+                    {
+                        var result = (SqlGeometry)reader.GetSqlValue(i);
+                        return result;
+                    }
+
+                    public SqlGeometry? GetNullableSqlGeometry(this SqlDataReader reader, int i)
+                    {
+                        if (reader.IsDBNull(i))
+                        {
+                            return null;
+                        }
+                        var result = (SqlGeometry)reader.GetSqlValue(i);
+                        return result;
+                    }
+
+                    public SqlXml GetSqlXml(this SqlDataReader reader, int i)
+                    {
+                        var result = reader.GetSqlXml(i);
+                        return result;
+                    }
+
+                    public SqlXml? GetNullableSqlXml(this SqlDataReader reader, int i)
+                    {
+                        if (reader.IsDBNull(i))
+                        {
+                            return null;
+                        }
+                        var result = reader.GetSqlXml(i);
+                        return result;
+                    }
+
                 }
             }
             """);
