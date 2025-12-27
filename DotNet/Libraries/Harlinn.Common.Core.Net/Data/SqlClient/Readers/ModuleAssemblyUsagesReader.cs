@@ -1,0 +1,94 @@
+/*
+
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+using System;
+using System.Data;
+using System.Data.Common;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Types;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers;
+
+public class ModuleAssemblyUsagesReader : DataReaderWrapper
+{
+    public const string QualifiedTableName = "[sys].[module_assembly_usages]";
+    public const string TableName = "module_assembly_usages";
+    public const string ShortName = "mau";
+    public const string Sql = """
+        SELECT
+          mau.[object_id],
+          mau.[assembly_id]
+        FROM
+          [sys].[module_assembly_usages] mau
+        """;
+
+    public const int OBJECTID_FIELD_ID = 0;
+    public const int ASSEMBLYID_FIELD_ID = 1;
+
+
+    public ModuleAssemblyUsagesReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        : base(loggerFactory, sqlDataReader, ownsReader)
+    {
+    }
+
+    public ModuleAssemblyUsagesReader([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        : base(sqlDataReader, ownsReader)
+    {
+    }
+
+    public ModuleAssemblyUsagesReader([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        : base(logger, sqlDataReader, ownsReader)
+    {
+    }
+
+    public int ObjectId
+    {
+        get
+        {
+            return base.GetInt32(OBJECTID_FIELD_ID);
+        }
+    }
+
+    public int AssemblyId
+    {
+        get
+        {
+            return base.GetInt32(ASSEMBLYID_FIELD_ID);
+        }
+    }
+
+
+    public Types.ModuleAssemblyUsagesDataType ToDataObject()
+    {
+        return new Types.ModuleAssemblyUsagesDataType(ObjectId,
+            AssemblyId);
+    }
+
+    public List<Types.ModuleAssemblyUsagesDataType> ToList()
+    {
+        var list = new List<Types.ModuleAssemblyUsagesDataType>();
+        while (Read())
+        {
+            list.Add(ToDataObject());
+        }
+        return list;
+    }
+
+}

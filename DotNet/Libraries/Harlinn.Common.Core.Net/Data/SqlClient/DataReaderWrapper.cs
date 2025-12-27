@@ -14,14 +14,16 @@
    limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.SqlServer.Types;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlTypes;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient
 {
@@ -622,6 +624,28 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return null;
         }
 
+        public float GetSingle(int i)
+        {
+            try
+            {
+                return _reader.GetFloat(i);
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public float? GetNullableSingle(int i)
+        {
+            if (!IsDBNull(i))
+            {
+                return GetSingle(i);
+            }
+            return null;
+        }
+
         public double GetDouble(int i)
         {
             try
@@ -842,6 +866,23 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        public object? GetNullableValue(int i)
+        {
+            try
+            {
+                if (!IsDBNull(i))
+                {
+                    return _reader.GetValue(i);
+                }
+                return null;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
         public int GetValues(object[] values)
         {
             try
@@ -943,5 +984,153 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 throw;
             }
         }
+
+        public byte[] GetNullableBinary(int i)
+        {
+            try
+            {
+                byte[] result = null;
+                if (_reader.IsDBNull(i) == false)
+                {
+                    result = _reader.GetSqlBinary(i).Value;
+                }
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlHierarchyId GetSqlHierarchyId(int i)
+        {
+            try
+            {
+                var result = (SqlHierarchyId)_reader.GetSqlValue(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlHierarchyId? GetNullableSqlHierarchyId(int i)
+        {
+            try
+            {
+                if (IsDBNull(i))
+                {
+                    return null;
+                }
+                var result = (SqlHierarchyId)_reader.GetSqlValue(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlGeography GetSqlGeography(int i)
+        {
+            try
+            {
+                var result = (SqlGeography)_reader.GetSqlValue(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlGeography? GetNullableSqlGeography(int i)
+        {
+            try
+            {
+                if (IsDBNull(i))
+                {
+                    return null;
+                }
+                var result = (SqlGeography)_reader.GetSqlValue(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlGeometry GetSqlGeometry(int i)
+        {
+            try
+            {
+                var result = (SqlGeometry)_reader.GetSqlValue(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlGeometry? GetNullableSqlGeometry(int i)
+        {
+            try
+            {
+                if (IsDBNull(i))
+                {
+                    return null;
+                }
+                var result = (SqlGeometry)_reader.GetSqlValue(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlXml GetSqlXml(int i)
+        {
+            try
+            {
+                var result = _reader.GetSqlXml(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+        public SqlXml? GetNullableSqlXml(int i)
+        {
+            try
+            {
+                if (IsDBNull(i))
+                {
+                    return null;
+                }
+                var result = _reader.GetSqlXml(i);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+        }
+
+
     }
 }

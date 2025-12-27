@@ -1,4 +1,20 @@
-﻿using Harlinn.Common.Core.Net;
+﻿/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+using Harlinn.Common.Core.Net;
 using Harlinn.MSSql.Tool.Input.Types;
 using System.Text;
 
@@ -97,20 +113,28 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                 case FieldType.Unknown:
                     break;
                 case FieldType.Char:
+                    result = "string";
                     break;
                 case FieldType.Decimal:
+                    result = "decimal";
                     break;
                 case FieldType.SqlVariant:
+                    result = "object";
                     break;
                 case FieldType.HierarchyId:
+                    result = "SqlHierarchyId";
                     break;
                 case FieldType.Geometry:
+                    result = "SqlGeometry";
                     break;
                 case FieldType.Geography:
+                    result = "SqlGeography";
                     break;
                 case FieldType.Xml:
+                    result = "SqlXml";
                     break;
                 case FieldType.Object:
+                    result = "object";
                     break;
             }
 
@@ -275,6 +299,31 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             var fieldType = fieldDefinition.FieldType;
             var functionName = $"Get{fieldType}";
             var nullableFunctionName = $"GetNullable{fieldType}";
+            if (fieldType == FieldType.HierarchyId)
+            {
+                functionName = "GetSqlHierarchyId";
+                nullableFunctionName = "GetNullableSqlHierarchyId";
+            }
+            else if (fieldType == FieldType.Geometry)
+            {
+                functionName = "GetSqlGeometry";
+                nullableFunctionName = "GetNullableSqlGeometry";
+            }
+            else if (fieldType == FieldType.Geography)
+            {
+                functionName = "GetSqlGeography";
+                nullableFunctionName = "GetNullableSqlGeography";
+            }
+            else if (fieldType == FieldType.Xml)
+            {
+                functionName = "GetSqlXml";
+                nullableFunctionName = "GetNullableSqlXml";
+            }
+            else if (fieldType == FieldType.SqlVariant)
+            {
+                functionName = "GetValue";
+                nullableFunctionName = "GetNullableValue";
+            }
 
             return fieldDefinition.IsNullable ? nullableFunctionName : functionName;
         }

@@ -252,7 +252,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
         public static IReadOnlyList<SchemaObject> GetSystemObjects(this SqlConnection connection, int schemaId)
         {
-            var sql = $"{SystemObjectsReader.Sql} WHERE sso.[schema_id] = @SchemaId";
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId";
             using (var command = connection.CreateCommand(sql))
             {
                 command.Parameters.AddWithValue("@SchemaId", schemaId);
@@ -271,7 +271,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
         public static SchemaObject? GetSystemObject(this SqlConnection connection, int schemaId, int objectId)
         {
-            var sql = $"{SystemObjectsReader.Sql} WHERE sso.[schema_id] = @SchemaId AND sso.[object_id] = @ObjectId";
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId AND so.[object_id] = @ObjectId";
             using (var command = connection.CreateCommand(sql))
             {
                 command.Parameters.AddWithValue("@SchemaId", schemaId);
@@ -291,7 +291,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
         public static SchemaObject? GetSystemObject(this SqlConnection connection, int objectId)
         {
-            var sql = $"{SystemObjectsReader.Sql} WHERE sso.[object_id] = @ObjectId";
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[object_id] = @ObjectId";
             using (var command = connection.CreateCommand(sql))
             {
                 command.Parameters.AddWithValue("@ObjectId", objectId);
@@ -309,7 +309,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
         public static SchemaObject? GetSystemObject(this SqlConnection connection, int schemaId, string objectName)
         {
-            var sql = $"{SystemObjectsReader.Sql} WHERE sso.[schema_id] = @SchemaId AND sso.[name] = @ObjectName";
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId AND so.[name] = @ObjectName";
             using (var command = connection.CreateCommand(sql))
             {
                 command.Parameters.AddWithValue("@SchemaId", schemaId);

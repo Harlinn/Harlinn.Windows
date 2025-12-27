@@ -1,0 +1,105 @@
+/*
+
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+using System;
+using System.Data;
+using System.Data.Common;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Types;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers;
+
+public class DmServerMemoryDumpsReader : DataReaderWrapper
+{
+    public const string QualifiedTableName = "[sys].[dm_server_memory_dumps]";
+    public const string TableName = "dm_server_memory_dumps";
+    public const string ShortName = "dsmd";
+    public const string Sql = """
+        SELECT
+          dsmd.[Filename],
+          dsmd.[creation_time],
+          dsmd.[size_in_bytes]
+        FROM
+          [sys].[dm_server_memory_dumps] dsmd
+        """;
+
+    public const int FILENAME_FIELD_ID = 0;
+    public const int CREATIONTIME_FIELD_ID = 1;
+    public const int SIZEINBYTES_FIELD_ID = 2;
+
+
+    public DmServerMemoryDumpsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        : base(loggerFactory, sqlDataReader, ownsReader)
+    {
+    }
+
+    public DmServerMemoryDumpsReader([DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        : base(sqlDataReader, ownsReader)
+    {
+    }
+
+    public DmServerMemoryDumpsReader([DisallowNull] ILogger logger, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
+        : base(logger, sqlDataReader, ownsReader)
+    {
+    }
+
+    public string Filename
+    {
+        get
+        {
+            return base.GetString(FILENAME_FIELD_ID);
+        }
+    }
+
+    public DateTime CreationTime
+    {
+        get
+        {
+            return base.GetDateTime(CREATIONTIME_FIELD_ID);
+        }
+    }
+
+    public long? SizeInBytes
+    {
+        get
+        {
+            return base.GetNullableInt64(SIZEINBYTES_FIELD_ID);
+        }
+    }
+
+
+    public Types.DmServerMemoryDumpsDataType ToDataObject()
+    {
+        return new Types.DmServerMemoryDumpsDataType(Filename,
+            CreationTime,
+            SizeInBytes);
+    }
+
+    public List<Types.DmServerMemoryDumpsDataType> ToList()
+    {
+        var list = new List<Types.DmServerMemoryDumpsDataType>();
+        while (Read())
+        {
+            list.Add(ToDataObject());
+        }
+        return list;
+    }
+
+}

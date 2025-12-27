@@ -1,4 +1,20 @@
-﻿using Harlinn.MSSql.Tool.Input.Types;
+﻿/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+using Harlinn.MSSql.Tool.Input.Types;
 using Harlinn.MSSql.Tool.Output;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
@@ -21,24 +37,36 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
         public void Run()
         {
+            
+
             WriteLine("using System;");
             WriteLine("using System.Data;");
             WriteLine("using System.Data.Common;");
             WriteLine("using System.Collections.Generic;");
             WriteLine("using Microsoft.Data.SqlClient;");
+            WriteLine("using Microsoft.SqlServer.Types;");
             if (UseWrappers)
             {
                 WriteLine("using Harlinn.Common.Core.Net.Data.SqlClient;");
+                WriteLine("using Microsoft.Extensions.Logging;");
+                WriteLine("using System.Diagnostics.CodeAnalysis;");
             }
             WriteLine();
 
-            string baseClassName = UseWrappers ? "DataReaderWrapper, " : "";
-
             var readerNamespace = CSharpHelper.GetDatabaseReaderNamespace(RowSource);
+
             WriteLine($"namespace {readerNamespace};");
             WriteLine();
             var readerClassName = CSharpHelper.GetReaderClassName(RowSource);
-            WriteLine($"public class {readerClassName} : {baseClassName}IDisposable");
+            if (UseWrappers)
+            {
+                WriteLine($"public class {readerClassName} : DataReaderWrapper");
+            }
+            else
+            {
+                WriteLine($"public class {readerClassName} : IDisposable");
+            }
+
             WriteLine("{");
             WriteLine($"    public const string QualifiedTableName = \"{MsSqlHelper.GetQualifiedTableOrViewName(RowSource)}\";");
             WriteLine($"    public const string TableName = \"{MsSqlHelper.GetTableOrViewName(RowSource)}\";");
@@ -69,9 +97,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             }
             WriteLine();
 
-
-            WriteLine($"    readonly SqlDataReader _reader;");
-            WriteLine($"    readonly bool _ownsReader;");
+            if (UseWrappers == false)
+            {
+                WriteLine($"    readonly SqlDataReader _reader;");
+                WriteLine($"    readonly bool _ownsReader;");
+            }
             WriteLine();
             if (UseWrappers)
             {
@@ -99,21 +129,24 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                 WriteLine("    }");
             }
             WriteLine();
-            WriteLine("    public SqlDataReader Reader => _reader;");
-            WriteLine();
-            WriteLine("    public void Dispose()");
-            WriteLine("    {");
-            WriteLine("        if (_ownsReader)");
-            WriteLine("        {");
-            WriteLine("            ((IDisposable)_reader).Dispose();");
-            WriteLine("        }");
-            WriteLine("    }");
-            WriteLine();
-            WriteLine("    public bool Read()");
-            WriteLine("    {");
-            WriteLine("        return _reader.Read();");
-            WriteLine("    }");
-            WriteLine();
+            if (UseWrappers == false)
+            {
+                WriteLine("    public SqlDataReader Reader => _reader;");
+                WriteLine();
+                WriteLine("    public void Dispose()");
+                WriteLine("    {");
+                WriteLine("        if (_ownsReader)");
+                WriteLine("        {");
+                WriteLine("            ((IDisposable)_reader).Dispose();");
+                WriteLine("        }");
+                WriteLine("    }");
+                WriteLine();
+                WriteLine("    public bool Read()");
+                WriteLine("    {");
+                WriteLine("        return _reader.Read();");
+                WriteLine("    }");
+                WriteLine();
+            }
 
             for (int i = 0; i < fieldDefinitionsCount; i++)
             {
@@ -127,7 +160,14 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                 WriteLine("    {");
                 WriteLine("        get");
                 WriteLine("        {");
-                WriteLine($"            return Reader.{funtion}({fieldId});");
+                if (UseWrappers)
+                {
+                    WriteLine($"            return base.{funtion}({fieldId});");
+                }
+                else
+                {
+                    WriteLine($"            return Reader.{funtion}({fieldId});");
+                }
                 WriteLine("        }");
                 WriteLine("    }");
                 WriteLine();
@@ -136,6 +176,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             WriteLine();
             var dataTypeName = CSharpHelper.GetDataType(RowSource);
             var qualifiedDataTypeNamespace = CSharpHelper.GetQualifiedDataTypeNamespace(RowSource);
+            
             WriteLine($"    public {qualifiedDataTypeNamespace}.{dataTypeName} ToDataObject()");
             WriteLine("    {");
             var propertyNameList = new List<string>();

@@ -1,0 +1,62 @@
+/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+using System;
+
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
+
+public class DmExecDistributedRequestsDataType
+{
+    readonly byte[]? _sqlHandle;
+    readonly string? _executionId;
+    readonly string? _status;
+    readonly string? _errorId;
+    readonly DateTime? _startTime;
+    readonly DateTime? _endTime;
+    readonly int? _totalElapsedTime;
+    readonly int _computePoolId = 0;
+
+    public DmExecDistributedRequestsDataType( )
+    {
+    }
+
+    public DmExecDistributedRequestsDataType(byte[]? sqlHandle,
+        string? executionId,
+        string? status,
+        string? errorId,
+        DateTime? startTime,
+        DateTime? endTime,
+        int? totalElapsedTime,
+        int computePoolId)
+    {
+        _sqlHandle = sqlHandle;
+        _executionId = executionId;
+        _status = status;
+        _errorId = errorId;
+        _startTime = startTime;
+        _endTime = endTime;
+        _totalElapsedTime = totalElapsedTime;
+        _computePoolId = computePoolId;
+    }
+
+    public byte[]? SqlHandle => _sqlHandle;
+    public string? ExecutionId => _executionId;
+    public string? Status => _status;
+    public string? ErrorId => _errorId;
+    public DateTime? StartTime => _startTime;
+    public DateTime? EndTime => _endTime;
+    public int? TotalElapsedTime => _totalElapsedTime;
+    public int ComputePoolId => _computePoolId;
+}
