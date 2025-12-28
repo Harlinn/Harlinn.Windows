@@ -40,7 +40,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// <summary>
         /// ID of the system type of the column.
         /// </summary>
-        public sbyte SystemTypeId { get; }
+        public byte SystemTypeId { get; }
 
         /// <summary>
         /// ID of the system type of the column.
@@ -68,12 +68,12 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// <summary>
         /// Precision of the column if numeric-based; otherwise, 0.
         /// </summary>
-        public sbyte Precision { get; }
+        public byte Precision { get; }
 
         /// <summary>
         /// Scale of column if numeric-based; otherwise, 0.
         /// </summary>
-        public sbyte Scale { get; }
+        public byte Scale { get; }
 
         /// <summary>
         /// Name of the collation of the column if character-based; otherwise null.
@@ -124,7 +124,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public bool IsColumnSet { get; }
 
-        public sbyte GeneratedAlwaysType { get; }
+        public byte GeneratedAlwaysType { get; }
 
         public string GeneratedAlwaysTypeDesc { get; }
 

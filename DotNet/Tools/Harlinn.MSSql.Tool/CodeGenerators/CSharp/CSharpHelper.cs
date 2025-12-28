@@ -598,7 +598,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         public static string GetInputArgumentName(FieldDefinition fieldDefinition)
         {
             var name = fieldDefinition.Name.FirstToLower();
-            if (keyWords.Contains(name))
+            if (keyWords.Contains(name!))
             {
                 name = name + "__";
             }
@@ -613,7 +613,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         public static string GetInputArgumentName(PropertyDefinition propertyDefinition)
         {
             var name = propertyDefinition.Name.FirstToLower();
-            if (keyWords.Contains(name))
+            if (keyWords.Contains(name!))
             {
                 name = name + "__";
             }

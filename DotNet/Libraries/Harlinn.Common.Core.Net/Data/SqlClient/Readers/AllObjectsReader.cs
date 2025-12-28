@@ -201,4 +201,31 @@ public class AllObjectsReader : DataReaderWrapper
         return list;
     }
 
+    public Types.SchemaObject GetSchemaObject()
+    {
+        return new Types.SchemaObject(Name,
+            ObjectId,
+            PrincipalId,
+            SchemaId,
+            ParentObjectId,
+            Type,
+            TypeDesc,
+            CreateDate,
+            ModifyDate,
+            IsMsShipped,
+            IsPublished,
+            IsSchemaPublished);
+    }
+
+    public List<Types.SchemaObject> GetSchemaObjects()
+    {
+        var list = new List<Types.SchemaObject>();
+        while (Read())
+        {
+            list.Add(GetSchemaObject());
+        }
+        return list;
+    }
+
+
 }

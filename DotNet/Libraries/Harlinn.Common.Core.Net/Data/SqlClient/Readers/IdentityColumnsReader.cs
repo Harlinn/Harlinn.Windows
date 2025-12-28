@@ -141,9 +141,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetInt32(ColumnIdOrdinal);
         }
 
-        public sbyte GetSystemTypeId()
+        public byte GetSystemTypeId()
         {
-            return base.GetSByte(SystemTypeIdOrdinal);
+            return base.GetByte(SystemTypeIdOrdinal);
         }
 
         public int GetUserTypeId()
@@ -156,14 +156,14 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetInt16(MaxLengthOrdinal);
         }
 
-        public sbyte GetPrecision()
+        public byte GetPrecision()
         {
-            return base.GetSByte(PrecisionOrdinal);
+            return base.GetByte(PrecisionOrdinal);
         }
 
-        public sbyte GetScale()
+        public byte GetScale()
         {
-            return base.GetSByte(ScaleOrdinal);
+            return base.GetByte(ScaleOrdinal);
         }
 
         public string? GetCollationName()
@@ -251,9 +251,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetBoolean(IsColumnSetOrdinal);
         }
 
-        public sbyte GetGeneratedAlwaysType()
+        public byte GetGeneratedAlwaysType()
         {
-            return base.GetSByte(GeneratedAlwaysTypeOrdinal);
+            return base.GetByte(GeneratedAlwaysTypeOrdinal);
         }
 
         public string GetGeneratedAlwaysTypeDesc()

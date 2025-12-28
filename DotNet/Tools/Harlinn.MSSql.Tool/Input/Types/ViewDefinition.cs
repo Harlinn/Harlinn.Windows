@@ -43,7 +43,6 @@ namespace Harlinn.MSSql.Tool.Input.Types
             var columns = sqlConnection.GetSystemColumns(view);
             ImportColumns(sqlConnection, columns);
         }
-
     }
 
 

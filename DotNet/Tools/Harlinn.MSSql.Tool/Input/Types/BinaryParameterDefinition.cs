@@ -14,37 +14,33 @@
    limitations under the License.
 */
 
-using System.ComponentModel;
-using System.Xml.Serialization;
 using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+using System.ComponentModel;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
-    [Serializable]
-    public class BinaryFieldDefinition : FieldDefinition
+    public class BinaryParameterDefinition : ParameterDefinition
     {
         byte[]? _default = null;
         private int _size = 128;
-
-        public BinaryFieldDefinition() : base()
+        public BinaryParameterDefinition() : base()
         {
         }
-
-        public BinaryFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks) 
-            : base(systemColumnType, column, defaultConstraint, computed, checks)
+        public BinaryParameterDefinition(SystemColumnType systemColumnType, Parameter parameter)
+            : base(parameter)
         {
-            if (systemColumnType == SystemColumnType.Image)
+            if (systemColumnType == SystemColumnType.Binary || systemColumnType == SystemColumnType.VarBinary)
             {
-                _size = -1;
+                _size = parameter.MaxLength;
             }
             else
             {
-                _size = column.MaxLength;
+                _size = -1;
             }
         }
-
-        public override FieldType FieldType => FieldType.Binary;
-
+        public override ParameterType ParameterType => ParameterType.Binary;
         [XmlAttribute, DefaultValue(128)]
         public int Size { get => _size; set => _size = value; }
         [XmlIgnore]
@@ -81,10 +77,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
             return result;
         }
+
     }
-
-
-
 
 
 

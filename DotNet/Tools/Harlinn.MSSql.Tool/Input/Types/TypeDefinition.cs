@@ -113,7 +113,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     {
                         if (schema.Name.Equals(schemaName, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (Owner.TypeDefinitions.TryGetValue(objectName, out var typeDefinition))
+                            if (Owner!.TypeDefinitions.TryGetValue(objectName, out var typeDefinition))
                             {
                                 return typeDefinition;
                             }

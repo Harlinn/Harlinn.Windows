@@ -102,7 +102,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return GetInt32(ParentObjectIdOrdinal);
         }
 
-        public string GetType()
+        public string GetSchemaObjectType()
         {
             return GetString(TypeOrdinal);
         }
@@ -165,7 +165,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
                 GetPrincipalId(),
                 GetSchemaId(),
                 GetParentObjectId(),
-                GetType(),
+                GetSchemaObjectType(),
                 GetTypeDesc(),
                 GetCreateDate(),
                 GetModifyDate(),

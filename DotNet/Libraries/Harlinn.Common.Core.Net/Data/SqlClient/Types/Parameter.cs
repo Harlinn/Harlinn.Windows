@@ -45,6 +45,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         private readonly string? _encryptionAlgorithmName;
         private readonly int? _columnEncryptionKeyId;
         private readonly string? _columnEncryptionKeyDatabaseName;
+        private readonly string? _typeName;
 
         /// <summary>
         /// ID of the object that owns this parameter.
@@ -172,6 +173,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// </summary>
         public string? ColumnEncryptionKeyDatabaseName => _columnEncryptionKeyDatabaseName;
 
+        /// <summary>
+        /// Retrieves the type name of the parameter.
+        /// </summary>
+        public string? TypeName => _typeName;
+
         public Parameter(
             int objectId,
             string name,
@@ -193,7 +199,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             string? encryptionTypeDesc,
             string? encryptionAlgorithmName,
             int? columnEncryptionKeyId,
-            string? columnEncryptionKeyDatabaseName)
+            string? columnEncryptionKeyDatabaseName,
+            string? typeName)
         {
             _objectId = objectId;
             _name = name ?? throw new ArgumentNullException(nameof(name));
@@ -216,6 +223,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             _encryptionAlgorithmName = encryptionAlgorithmName;
             _columnEncryptionKeyId = columnEncryptionKeyId;
             _columnEncryptionKeyDatabaseName = columnEncryptionKeyDatabaseName;
+            _typeName = typeName;
         }
     }
 }

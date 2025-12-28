@@ -28,6 +28,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
     {
         private Dictionary<string, SchemaObject> _objectsByName = new Dictionary<string, SchemaObject>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, RowSourceDefinition> _rowSourcesByName = new Dictionary<string, RowSourceDefinition>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, StoredProcedureDefinition> _storedProceduresByName = new Dictionary<string, StoredProcedureDefinition>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, TypeDefinition> _typeDefinitions = new Dictionary<string, TypeDefinition>();
         private Database? _owner = null;
         private string _name = string.Empty;
@@ -39,6 +40,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, SchemaObject> ObjectsByName { get => _objectsByName; set => _objectsByName = value; }
         [XmlIgnore]
         public Dictionary<string, RowSourceDefinition> RowSourcesByName { get => _rowSourcesByName; set => _rowSourcesByName = value; }
+
+        [XmlIgnore]
+        public Dictionary<string, StoredProcedureDefinition> StoredProceduresByName { get => _storedProceduresByName; set => _storedProceduresByName = value; }
+
         [XmlIgnore]
         public Dictionary<string, TypeDefinition> TypeDefinitions { get => _typeDefinitions; set => _typeDefinitions = value; }
         [XmlIgnore]
@@ -148,6 +153,25 @@ namespace Harlinn.MSSql.Tool.Input.Types
             RowSourcesByName[viewName] = viewDefinition;
             viewDefinition.AddToProject();
             return viewDefinition;
+        }
+
+        public StoredProcedureDefinition AddStoredProcedure(SchemaTypes.Procedure storedProcedure)
+        {
+            var procedureName = storedProcedure.Name;
+            if (StoredProceduresByName.TryGetValue(procedureName, out var existingProcedure))
+            {
+                return existingProcedure;
+            }
+            var procedureDefinition = new StoredProcedureDefinition()
+            {
+                Name = procedureName,
+                Owner = this
+            };
+            Objects.Add(procedureDefinition);
+            ObjectsByName[procedureDefinition.Name] = procedureDefinition;
+            StoredProceduresByName[procedureName] = procedureDefinition;
+            procedureDefinition.AddToProject();
+            return procedureDefinition;
         }
 
         internal void Initialize2()

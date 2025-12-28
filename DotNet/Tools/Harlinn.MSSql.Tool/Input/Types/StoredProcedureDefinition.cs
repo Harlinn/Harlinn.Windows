@@ -14,13 +14,46 @@
    limitations under the License.
 */
 
+using System.Xml.Serialization;
+
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class StoredProcedureDefinition : SchemaObject
     {
         public override SchemaObjectType Type => SchemaObjectType.StoredProcedure;
+
+
+        [XmlArray("Parameters")]
+        [XmlArrayItem(typeof(BooleanParameterDefinition), ElementName = "Boolean")]
+        [XmlArrayItem(typeof(ByteParameterDefinition), ElementName = "Byte")]
+        [XmlArrayItem(typeof(SByteParameterDefinition), ElementName = "SByte")]
+        [XmlArrayItem(typeof(CharParameterDefinition), ElementName = "Char")]
+        [XmlArrayItem(typeof(Int16ParameterDefinition), ElementName = "Int16")]
+        [XmlArrayItem(typeof(UInt16ParameterDefinition), ElementName = "UInt16")]
+        [XmlArrayItem(typeof(Int32ParameterDefinition), ElementName = "Int32")]
+        [XmlArrayItem(typeof(UInt32ParameterDefinition), ElementName = "UInt32")]
+        [XmlArrayItem(typeof(Int64ParameterDefinition), ElementName = "Int64")]
+        [XmlArrayItem(typeof(UInt64ParameterDefinition), ElementName = "UInt64")]
+        [XmlArrayItem(typeof(SingleParameterDefinition), ElementName = "Single")]
+        [XmlArrayItem(typeof(DoubleParameterDefinition), ElementName = "Double")]
+        [XmlArrayItem(typeof(DecimalParameterDefinition), ElementName = "Decimal")]
+        [XmlArrayItem(typeof(DateTimeParameterDefinition), ElementName = "DateTime")]
+        [XmlArrayItem(typeof(TimeSpanParameterDefinition), ElementName = "TimeSpan")]
+        [XmlArrayItem(typeof(GuidParameterDefinition), ElementName = "Guid")]
+        [XmlArrayItem(typeof(StringParameterDefinition), ElementName = "String")]
+        [XmlArrayItem(typeof(BinaryParameterDefinition), ElementName = "Binary")]
+        [XmlArrayItem(typeof(SqlVariantParameterDefinition), ElementName = "SqlVariant")]
+        [XmlArrayItem(typeof(HierarchyIdParameterDefinition), ElementName = "HierarchyId")]
+        [XmlArrayItem(typeof(GeometryParameterDefinition), ElementName = "Geometry")]
+        [XmlArrayItem(typeof(GeographyParameterDefinition), ElementName = "Geography")]
+        [XmlArrayItem(typeof(XmlParameterDefinition), ElementName = "Xml")]
+        [XmlArrayItem(typeof(ObjectParameterDefinition), ElementName = "Object")]
+        [XmlArrayItem(typeof(EnumParameterDefinition), ElementName = "Enum")]
+        public List<ParameterDefinition> Parameters { get; set; } = new List<ParameterDefinition>();
+
     }
+
 
 
 }

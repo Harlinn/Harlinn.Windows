@@ -47,7 +47,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
                   ,par.[encryption_algorithm_name]
                   ,par.[column_encryption_key_id]
                   ,par.[column_encryption_key_database_name]
+                  ,t.[name] AS [type_name]
               FROM [sys].[parameters] par
+              LEFT JOIN sys.types t ON par.user_type_id = t.user_type_id
             """;
 
         public const int ObjectIdOrdinal = 0;
@@ -71,6 +73,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
         public const int EncryptionAlgorithmNameOrdinal = 18;
         public const int ColumnEncryptionKeyIdOrdinal = 19;
         public const int ColumnEncryptionKeyDatabaseNameOrdinal = 20;
+        public const int TypeNameOrdinal = 21;
 
         public ParametersReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
             : base(loggerFactory, sqlDataReader, ownsReader)
@@ -192,6 +195,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
             return base.GetNullableString(ColumnEncryptionKeyDatabaseNameOrdinal);
         }
 
+        public string? GetTypeName()
+        {
+            return base.GetNullableString(TypeNameOrdinal);
+        }
+
         public Types.Parameter GetParameter()
         {
             return new Types.Parameter(
@@ -215,7 +223,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Readers
                 GetEncryptionTypeDesc(),
                 GetEncryptionAlgorithmName(),
                 GetColumnEncryptionKeyId(),
-                GetColumnEncryptionKeyDatabaseName()
+                GetColumnEncryptionKeyDatabaseName(),
+                GetTypeName()
             );
         }
 

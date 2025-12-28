@@ -21,11 +21,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly int _objectId;
         readonly string _name;
         readonly int _columnId;
-        readonly sbyte _systemTypeId;
+        readonly byte _systemTypeId;
         readonly int _userTypeId;
         readonly short _maxLength;
-        readonly sbyte _precision;
-        readonly sbyte _scale;
+        readonly byte _precision;
+        readonly byte _scale;
         readonly string? _collationName;
         readonly bool _isNullable;
         readonly bool _isAnsiPadded;
@@ -43,7 +43,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly int _ruleObjectId;
         readonly bool _isSparse;
         readonly bool _isColumnSet;
-        readonly sbyte _generatedAlwaysType;
+        readonly byte _generatedAlwaysType;
         readonly string _generatedAlwaysTypeDesc;
         readonly int? _encryptionType;
         readonly string? _encryptionTypeDesc;
@@ -56,7 +56,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly string? _graphTypeDesc;
         readonly string _typeName;
 
-        public Column(int objectId, string name, int columnId, sbyte systemTypeId, int userTypeId, short maxLength, sbyte precision, sbyte scale, string? collationName, bool isNullable, bool isAnsiPadded, bool isRowguidcol, bool isIdentity, bool isComputed, bool isFilestream, bool isReplicated, bool isNonSqlSubscribed, bool isMergePublished, bool isDtsReplicated, bool isXmlDocument, int xmlCollectionId, int defaultObjectId, int ruleObjectId, bool isSparse, bool isColumnSet, sbyte generatedAlwaysType, string generatedAlwaysTypeDesc, int? encryptionType, string? encryptionTypeDesc, string? encryptionAlgorithmName, int? columnEncryptionKeyId, string? columnEncryptionKeyDatabaseName, bool isHidden, bool isMasked, int? graphType, string? graphTypeDesc, string typeName)
+        public Column(int objectId, string name, int columnId, byte systemTypeId, int userTypeId, short maxLength, byte precision, byte scale, string? collationName, bool isNullable, bool isAnsiPadded, bool isRowguidcol, bool isIdentity, bool isComputed, bool isFilestream, bool isReplicated, bool isNonSqlSubscribed, bool isMergePublished, bool isDtsReplicated, bool isXmlDocument, int xmlCollectionId, int defaultObjectId, int ruleObjectId, bool isSparse, bool isColumnSet, byte generatedAlwaysType, string generatedAlwaysTypeDesc, int? encryptionType, string? encryptionTypeDesc, string? encryptionAlgorithmName, int? columnEncryptionKeyId, string? columnEncryptionKeyDatabaseName, bool isHidden, bool isMasked, int? graphType, string? graphTypeDesc, string typeName)
         {
             _objectId = objectId;
             _name = name;
@@ -115,7 +115,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// <summary>
         /// ID of the system type of the column.
         /// </summary>
-        public sbyte SystemTypeId => _systemTypeId;
+        public byte SystemTypeId => _systemTypeId;
 
         /// <summary>
         /// ID of the system type of the column.
@@ -143,12 +143,12 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// <summary>
         /// Precision of the column if numeric-based; otherwise, 0.
         /// </summary>
-        public sbyte Precision => _precision;
+        public byte Precision => _precision;
 
         /// <summary>
         /// Scale of column if numeric-based; otherwise, 0.
         /// </summary>
-        public sbyte Scale => _scale;
+        public byte Scale => _scale;
 
         /// <summary>
         /// Name of the collation of the column if character-based; otherwise null.
@@ -199,7 +199,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public bool IsColumnSet => _isColumnSet;
 
-        public sbyte GeneratedAlwaysType => _generatedAlwaysType;
+        public byte GeneratedAlwaysType => _generatedAlwaysType;
 
         public string GeneratedAlwaysTypeDesc => _generatedAlwaysTypeDesc;
 

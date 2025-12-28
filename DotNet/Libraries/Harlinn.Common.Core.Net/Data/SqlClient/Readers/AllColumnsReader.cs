@@ -68,9 +68,11 @@ public class AllColumnsReader : DataReaderWrapper
           ac.[is_hidden],
           ac.[is_masked],
           ac.[graph_type],
-          ac.[graph_type_desc]
+          ac.[graph_type_desc],
+          t.[name] AS [type_name]
         FROM
           [sys].[all_columns] ac
+        INNER JOIN sys.types t ON ac.user_type_id = t.user_type_id
         """;
 
     public const int OBJECTID_FIELD_ID = 0;
@@ -109,7 +111,7 @@ public class AllColumnsReader : DataReaderWrapper
     public const int ISMASKED_FIELD_ID = 33;
     public const int GRAPHTYPE_FIELD_ID = 34;
     public const int GRAPHTYPEDESC_FIELD_ID = 35;
-
+    public const int TYPENAME_FIELD_ID = 36;
 
     public AllColumnsReader([DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlDataReader sqlDataReader, bool ownsReader = true)
         : base(loggerFactory, sqlDataReader, ownsReader)
@@ -414,6 +416,14 @@ public class AllColumnsReader : DataReaderWrapper
         }
     }
 
+    public string TypeName
+    {
+        get
+        {
+            return base.GetString(TYPENAME_FIELD_ID);
+        }
+    }
+
 
     public Types.AllColumnsDataType ToDataObject()
     {
@@ -452,7 +462,8 @@ public class AllColumnsReader : DataReaderWrapper
             IsHidden,
             IsMasked,
             GraphType,
-            GraphTypeDesc);
+            GraphTypeDesc,
+            TypeName);
     }
 
     public List<Types.AllColumnsDataType> ToList()

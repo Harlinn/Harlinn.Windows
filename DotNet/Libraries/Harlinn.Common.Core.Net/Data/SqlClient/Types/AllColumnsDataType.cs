@@ -18,7 +18,7 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class AllColumnsDataType
+public class AllColumnsDataType : IColumn
 {
     readonly int _objectId = 0;
     readonly string? _name;
@@ -29,33 +29,34 @@ public class AllColumnsDataType
     readonly byte _precision = 0;
     readonly byte _scale = 0;
     readonly string? _collationName;
-    readonly bool? _isNullable;
+    readonly bool _isNullable;
     readonly bool _isAnsiPadded = false;
     readonly bool _isRowguidcol = false;
     readonly bool _isIdentity = false;
     readonly bool _isComputed = false;
     readonly bool _isFilestream = false;
-    readonly bool? _isReplicated;
-    readonly bool? _isNonSqlSubscribed;
-    readonly bool? _isMergePublished;
-    readonly bool? _isDtsReplicated;
+    readonly bool _isReplicated;
+    readonly bool _isNonSqlSubscribed;
+    readonly bool _isMergePublished;
+    readonly bool _isDtsReplicated;
     readonly bool _isXmlDocument = false;
     readonly int _xmlCollectionId = 0;
     readonly int _defaultObjectId = 0;
     readonly int _ruleObjectId = 0;
-    readonly bool? _isSparse;
-    readonly bool? _isColumnSet;
-    readonly byte? _generatedAlwaysType;
+    readonly bool _isSparse;
+    readonly bool _isColumnSet;
+    readonly byte _generatedAlwaysType;
     readonly string? _generatedAlwaysTypeDesc;
     readonly int? _encryptionType;
     readonly string? _encryptionTypeDesc;
     readonly string? _encryptionAlgorithmName;
     readonly int? _columnEncryptionKeyId;
     readonly string? _columnEncryptionKeyDatabaseName;
-    readonly bool? _isHidden;
+    readonly bool _isHidden;
     readonly bool _isMasked = false;
     readonly int? _graphType;
     readonly string? _graphTypeDesc;
+    readonly string _typeName;
 
     public AllColumnsDataType( )
     {
@@ -96,7 +97,8 @@ public class AllColumnsDataType
         bool? isHidden,
         bool isMasked,
         int? graphType,
-        string? graphTypeDesc)
+        string? graphTypeDesc,
+        string typeName)
     {
         _objectId = objectId;
         _name = name;
@@ -107,69 +109,73 @@ public class AllColumnsDataType
         _precision = precision;
         _scale = scale;
         _collationName = collationName;
-        _isNullable = isNullable;
+        _isNullable = isNullable ?? false;
         _isAnsiPadded = isAnsiPadded;
         _isRowguidcol = isRowguidcol;
         _isIdentity = isIdentity;
         _isComputed = isComputed;
         _isFilestream = isFilestream;
-        _isReplicated = isReplicated;
-        _isNonSqlSubscribed = isNonSqlSubscribed;
-        _isMergePublished = isMergePublished;
-        _isDtsReplicated = isDtsReplicated;
+        _isReplicated = isReplicated ?? false;
+        _isNonSqlSubscribed = isNonSqlSubscribed ?? false;
+        _isMergePublished = isMergePublished ?? false;
+        _isDtsReplicated = isDtsReplicated ?? false;
         _isXmlDocument = isXmlDocument;
         _xmlCollectionId = xmlCollectionId;
         _defaultObjectId = defaultObjectId;
         _ruleObjectId = ruleObjectId;
-        _isSparse = isSparse;
-        _isColumnSet = isColumnSet;
-        _generatedAlwaysType = generatedAlwaysType;
+        _isSparse = isSparse ?? false;
+        _isColumnSet = isColumnSet ?? false;
+        _generatedAlwaysType = generatedAlwaysType ?? 0;
         _generatedAlwaysTypeDesc = generatedAlwaysTypeDesc;
         _encryptionType = encryptionType;
         _encryptionTypeDesc = encryptionTypeDesc;
         _encryptionAlgorithmName = encryptionAlgorithmName;
         _columnEncryptionKeyId = columnEncryptionKeyId;
         _columnEncryptionKeyDatabaseName = columnEncryptionKeyDatabaseName;
-        _isHidden = isHidden;
+        _isHidden = isHidden ?? false;
         _isMasked = isMasked;
         _graphType = graphType;
         _graphTypeDesc = graphTypeDesc;
+        _typeName = typeName;
     }
 
     public int ObjectId => _objectId;
     public string? Name => _name;
     public int ColumnId => _columnId;
     public byte SystemTypeId => _systemTypeId;
+
+    public SystemType SystemType => (SystemType)_systemTypeId;
     public int UserTypeId => _userTypeId;
     public short MaxLength => _maxLength;
     public byte Precision => _precision;
     public byte Scale => _scale;
     public string? CollationName => _collationName;
-    public bool? IsNullable => _isNullable;
+    public bool IsNullable => _isNullable;
     public bool IsAnsiPadded => _isAnsiPadded;
     public bool IsRowguidcol => _isRowguidcol;
     public bool IsIdentity => _isIdentity;
     public bool IsComputed => _isComputed;
     public bool IsFilestream => _isFilestream;
-    public bool? IsReplicated => _isReplicated;
-    public bool? IsNonSqlSubscribed => _isNonSqlSubscribed;
-    public bool? IsMergePublished => _isMergePublished;
-    public bool? IsDtsReplicated => _isDtsReplicated;
+    public bool IsReplicated => _isReplicated;
+    public bool IsNonSqlSubscribed => _isNonSqlSubscribed;
+    public bool IsMergePublished => _isMergePublished;
+    public bool IsDtsReplicated => _isDtsReplicated;
     public bool IsXmlDocument => _isXmlDocument;
     public int XmlCollectionId => _xmlCollectionId;
     public int DefaultObjectId => _defaultObjectId;
     public int RuleObjectId => _ruleObjectId;
-    public bool? IsSparse => _isSparse;
-    public bool? IsColumnSet => _isColumnSet;
-    public byte? GeneratedAlwaysType => _generatedAlwaysType;
+    public bool IsSparse => _isSparse;
+    public bool IsColumnSet => _isColumnSet;
+    public byte GeneratedAlwaysType => _generatedAlwaysType;
     public string? GeneratedAlwaysTypeDesc => _generatedAlwaysTypeDesc;
     public int? EncryptionType => _encryptionType;
     public string? EncryptionTypeDesc => _encryptionTypeDesc;
     public string? EncryptionAlgorithmName => _encryptionAlgorithmName;
     public int? ColumnEncryptionKeyId => _columnEncryptionKeyId;
     public string? ColumnEncryptionKeyDatabaseName => _columnEncryptionKeyDatabaseName;
-    public bool? IsHidden => _isHidden;
+    public bool IsHidden => _isHidden;
     public bool IsMasked => _isMasked;
     public int? GraphType => _graphType;
     public string? GraphTypeDesc => _graphTypeDesc;
+    public string TypeName => _typeName;
 }
