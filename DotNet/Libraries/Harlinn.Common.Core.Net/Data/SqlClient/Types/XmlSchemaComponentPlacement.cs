@@ -17,7 +17,15 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaComponentPlacementsDataType
+/// <summary>
+/// Represents the placement details of an XML schema component, including its identifiers, occurrence constraints, and
+/// default value information.
+/// </summary>
+/// <remarks>This class encapsulates metadata about how an XML schema component is positioned within a schema,
+/// such as its unique identifiers, whether its default value is fixed, and the allowed number of occurrences. It is
+/// typically used when processing or generating XML schemas that require explicit control over component placement and
+/// constraints.</remarks>
+public class XmlSchemaComponentPlacement
 {
     readonly int _xmlComponentId = 0;
     readonly int _placementId = 0;
@@ -27,11 +35,11 @@ public class XmlSchemaComponentPlacementsDataType
     readonly int _maxOccurences = 0;
     readonly string? _defaultValue;
 
-    public XmlSchemaComponentPlacementsDataType( )
+    public XmlSchemaComponentPlacement( )
     {
     }
 
-    public XmlSchemaComponentPlacementsDataType(int xmlComponentId,
+    public XmlSchemaComponentPlacement(int xmlComponentId,
         int placementId,
         int placedXmlComponentId,
         bool isDefaultFixed,

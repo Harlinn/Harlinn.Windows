@@ -115,9 +115,9 @@ public class XmlSchemaFacetsReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaFacetsDataType ToDataObject()
+    public Types.XmlSchemaFacet ToDataObject()
     {
-        return new Types.XmlSchemaFacetsDataType(XmlComponentId,
+        return new Types.XmlSchemaFacet(XmlComponentId,
             FacetId,
             Kind,
             KindDesc,
@@ -125,9 +125,9 @@ public class XmlSchemaFacetsReader : DataReaderWrapper
             Value);
     }
 
-    public List<Types.XmlSchemaFacetsDataType> ToList()
+    public List<Types.XmlSchemaFacet> ToList()
     {
-        var list = new List<Types.XmlSchemaFacetsDataType>();
+        var list = new List<Types.XmlSchemaFacet>();
         while (Read())
         {
             list.Add(ToDataObject());

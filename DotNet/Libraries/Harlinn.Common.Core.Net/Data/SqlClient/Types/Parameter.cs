@@ -36,7 +36,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         private readonly bool _isCursorRef;
         private readonly bool _hasDefaultValue;
         private readonly bool _isXmlDocument;
-        private readonly string? _defaultValue;
+        private readonly object? _defaultValue;
         private readonly int? _xmlCollectionId;
         private readonly bool _isReadOnly;
         private readonly bool _isNullable;
@@ -120,10 +120,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         /// <summary>
         /// Default value for the parameter (catalog shows this as sql_variant).
-        /// Returned as a textual representation when available.
         /// Corresponds to the sys.parameters.[default_value] column.
         /// </summary>
-        public string? DefaultValue => _defaultValue;
+        public object? DefaultValue => _defaultValue;
 
         /// <summary>
         /// ID of the xml collection (if parameter is xml typed).
@@ -186,7 +185,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             bool isCursorRef,
             bool hasDefaultValue,
             bool isXmlDocument,
-            string? defaultValue,
+            object? defaultValue,
             int? xmlCollectionId,
             bool isReadOnly,
             bool isNullable,

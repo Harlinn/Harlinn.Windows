@@ -185,9 +185,9 @@ public class TriggersReader : DataReaderWrapper
     }
 
 
-    public Types.TriggersDataType ToDataObject()
+    public Types.Trigger ToDataObject()
     {
-        return new Types.TriggersDataType(Name,
+        return new Types.Trigger(Name,
             ObjectId,
             ParentClass,
             ParentClassDesc,
@@ -202,9 +202,9 @@ public class TriggersReader : DataReaderWrapper
             IsInsteadOfTrigger);
     }
 
-    public List<Types.TriggersDataType> ToList()
+    public List<Types.Trigger> ToList()
     {
-        var list = new List<Types.TriggersDataType>();
+        var list = new List<Types.Trigger>();
         while (Read())
         {
             list.Add(ToDataObject());

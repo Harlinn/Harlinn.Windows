@@ -75,15 +75,15 @@ public class XmlSchemaWildcardNamespacesReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaWildcardNamespacesDataType ToDataObject()
+    public Types.XmlSchemaWildcardNamespace ToDataObject()
     {
-        return new Types.XmlSchemaWildcardNamespacesDataType(XmlComponentId,
+        return new Types.XmlSchemaWildcardNamespace(XmlComponentId,
             Namespace);
     }
 
-    public List<Types.XmlSchemaWildcardNamespacesDataType> ToList()
+    public List<Types.XmlSchemaWildcardNamespace> ToList()
     {
-        var list = new List<Types.XmlSchemaWildcardNamespacesDataType>();
+        var list = new List<Types.XmlSchemaWildcardNamespace>();
         while (Read())
         {
             list.Add(ToDataObject());

@@ -135,9 +135,9 @@ public class TriggerEventsReader : DataReaderWrapper
     }
 
 
-    public Types.TriggerEventsDataType ToDataObject()
+    public Types.TriggerEvent ToDataObject()
     {
-        return new Types.TriggerEventsDataType(ObjectId,
+        return new Types.TriggerEvent(ObjectId,
             Type,
             TypeDesc,
             IsFirst,
@@ -147,9 +147,9 @@ public class TriggerEventsReader : DataReaderWrapper
             IsTriggerEvent);
     }
 
-    public List<Types.TriggerEventsDataType> ToList()
+    public List<Types.TriggerEvent> ToList()
     {
-        var list = new List<Types.TriggerEventsDataType>();
+        var list = new List<Types.TriggerEvent>();
         while (Read())
         {
             list.Add(ToDataObject());

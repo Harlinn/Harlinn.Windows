@@ -17,7 +17,16 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TriggersDataType
+/// <summary>
+/// Represents metadata information about a database trigger, including its name, type, parent object, and status flags.
+/// </summary>
+/// <remarks>
+/// A trigger is a special type of stored procedure that automatically executes in response to certain
+/// events on a database table or view. This class provides read-only access to key properties describing the trigger's
+/// identity, type, parent object, creation and modification dates, and various status indicators. Instances of this
+/// class are typically used to inspect or display trigger metadata retrieved from a database system catalog.
+/// </remarks>
+public class Trigger
 {
     readonly string _name = string.Empty;
     readonly int _objectId = 0;
@@ -33,11 +42,11 @@ public class TriggersDataType
     readonly bool _isNotForReplication = false;
     readonly bool _isInsteadOfTrigger = false;
 
-    public TriggersDataType( )
+    public Trigger( )
     {
     }
 
-    public TriggersDataType(string name,
+    public Trigger(string name,
         int objectId,
         byte parentClass,
         string? parentClassDesc,
@@ -66,11 +75,54 @@ public class TriggersDataType
         _isInsteadOfTrigger = isInsteadOfTrigger;
     }
 
+    /// <summary>
+    /// Trigger name. DML trigger names are schema-scoped. DDL trigger 
+    /// names are scoped with respect to the parent entity.
+    /// </summary>
     public string Name => _name;
+    /// <summary>
+    /// Object identification number. Is unique within a database.
+    /// </summary>
     public int ObjectId => _objectId;
+    /// <summary>
+    /// Class of the parent of the trigger.
+    /// <para>
+    /// 0 = Database, for the DDL triggers.
+    /// </para>
+    /// <para>
+    /// 1 = Object or column for the DML triggers.
+    /// </para>
+    /// </summary>
     public byte ParentClass => _parentClass;
+    /// <summary>
+    /// Description of the parent class of the trigger.
+    /// <para>
+    /// DATABASE
+    /// </para>
+    /// <para>
+    /// OBJECT_OR_COLUMN
+    /// </para>
+    /// </summary>
     public string? ParentClassDesc => _parentClassDesc;
+    /// <summary>
+    /// ID of the parent of the trigger, as follows:
+    /// <para>
+    /// 0 = Triggers that are database-parented triggers.
+    /// </para>
+    /// <para>
+    /// For DML triggers, this is the object_id of the table or view on which the DML trigger is defined.
+    /// </para>
+    /// </summary>
     public int ParentId => _parentId;
+    /// <summary>
+    /// Object type:
+    /// <para>
+    /// TA = Assembly (CLR) trigger
+    /// </para>
+    /// <para>
+    /// TR = SQL trigger
+    /// </para>
+    /// </summary>
     public string Type => _type;
     public string? TypeDesc => _typeDesc;
     public DateTime CreateDate => _createDate;
@@ -78,5 +130,13 @@ public class TriggersDataType
     public bool IsMsShipped => _isMsShipped;
     public bool IsDisabled => _isDisabled;
     public bool IsNotForReplication => _isNotForReplication;
+    /// <summary>
+    /// Gets a value indicating whether the trigger is defined as an INSTEAD OF trigger.
+    /// </summary>
+    /// <remarks>
+    /// INSTEAD OF triggers override the default action for the triggering event, allowing custom
+    /// logic to be executed instead. This property distinguishes between INSTEAD OF and AFTER
+    /// triggers when handling database events.
+    /// </remarks>
     public bool IsInsteadOfTrigger => _isInsteadOfTrigger;
 }

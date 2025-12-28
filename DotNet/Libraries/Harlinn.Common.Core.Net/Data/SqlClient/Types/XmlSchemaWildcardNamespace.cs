@@ -17,16 +17,23 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaWildcardNamespacesDataType
+/// <summary>
+/// Represents a namespace specification used in XML schema wildcards, associating a component identifier with a
+/// namespace URI.
+/// </summary>
+/// <remarks>Use this class to encapsulate the namespace and component information for XML schema elements that
+/// support wildcard namespace matching. Instances are typically used when processing or validating XML schemas that
+/// include wildcard elements or attributes.</remarks>
+public class XmlSchemaWildcardNamespace
 {
     readonly int _xmlComponentId = 0;
     readonly string _namespace = string.Empty;
 
-    public XmlSchemaWildcardNamespacesDataType( )
+    public XmlSchemaWildcardNamespace( )
     {
     }
 
-    public XmlSchemaWildcardNamespacesDataType(int xmlComponentId,
+    public XmlSchemaWildcardNamespace(int xmlComponentId,
         string namespace__)
     {
         _xmlComponentId = xmlComponentId;

@@ -17,7 +17,15 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaWildcardsDataType
+/// <summary>
+/// Represents an XML Schema type, including its identity, derivation, and structural characteristics as defined in an
+/// XML schema collection.
+/// </summary>
+/// <remarks>Use this class to access metadata about an XML Schema type, such as its name, namespace, derivation
+/// method, and content model. The properties provide information about the type's abstract status, content allowance,
+/// and blocking or finalization constraints, which are relevant when validating or processing XML documents against
+/// schema definitions.</remarks>
+public class XmlSchemaType
 {
     readonly int _xmlComponentId = 0;
     readonly int _xmlCollectionId = 0;
@@ -32,15 +40,20 @@ public class XmlSchemaWildcardsDataType
     readonly string? _derivationDesc;
     readonly int? _baseXmlComponentId;
     readonly int? _scopingXmlComponentId;
-    readonly string _processContent = string.Empty;
-    readonly string? _processContentDesc;
-    readonly bool _disallowNamespaces = false;
+    readonly bool _isAbstract = false;
+    readonly bool _allowsMixedContent = false;
+    readonly bool _isExtensionBlocked = false;
+    readonly bool _isRestrictionBlocked = false;
+    readonly bool _isFinalExtension = false;
+    readonly bool _isFinalRestriction = false;
+    readonly bool _isFinalListMember = false;
+    readonly bool _isFinalUnionMember = false;
 
-    public XmlSchemaWildcardsDataType( )
+    public XmlSchemaType( )
     {
     }
 
-    public XmlSchemaWildcardsDataType(int xmlComponentId,
+    public XmlSchemaType(int xmlComponentId,
         int xmlCollectionId,
         int xmlNamespaceId,
         bool isQualified,
@@ -53,9 +66,14 @@ public class XmlSchemaWildcardsDataType
         string? derivationDesc,
         int? baseXmlComponentId,
         int? scopingXmlComponentId,
-        string processContent,
-        string? processContentDesc,
-        bool disallowNamespaces)
+        bool isAbstract,
+        bool allowsMixedContent,
+        bool isExtensionBlocked,
+        bool isRestrictionBlocked,
+        bool isFinalExtension,
+        bool isFinalRestriction,
+        bool isFinalListMember,
+        bool isFinalUnionMember)
     {
         _xmlComponentId = xmlComponentId;
         _xmlCollectionId = xmlCollectionId;
@@ -70,9 +88,14 @@ public class XmlSchemaWildcardsDataType
         _derivationDesc = derivationDesc;
         _baseXmlComponentId = baseXmlComponentId;
         _scopingXmlComponentId = scopingXmlComponentId;
-        _processContent = processContent;
-        _processContentDesc = processContentDesc;
-        _disallowNamespaces = disallowNamespaces;
+        _isAbstract = isAbstract;
+        _allowsMixedContent = allowsMixedContent;
+        _isExtensionBlocked = isExtensionBlocked;
+        _isRestrictionBlocked = isRestrictionBlocked;
+        _isFinalExtension = isFinalExtension;
+        _isFinalRestriction = isFinalRestriction;
+        _isFinalListMember = isFinalListMember;
+        _isFinalUnionMember = isFinalUnionMember;
     }
 
     public int XmlComponentId => _xmlComponentId;
@@ -88,7 +111,12 @@ public class XmlSchemaWildcardsDataType
     public string? DerivationDesc => _derivationDesc;
     public int? BaseXmlComponentId => _baseXmlComponentId;
     public int? ScopingXmlComponentId => _scopingXmlComponentId;
-    public string ProcessContent => _processContent;
-    public string? ProcessContentDesc => _processContentDesc;
-    public bool DisallowNamespaces => _disallowNamespaces;
+    public bool IsAbstract => _isAbstract;
+    public bool AllowsMixedContent => _allowsMixedContent;
+    public bool IsExtensionBlocked => _isExtensionBlocked;
+    public bool IsRestrictionBlocked => _isRestrictionBlocked;
+    public bool IsFinalExtension => _isFinalExtension;
+    public bool IsFinalRestriction => _isFinalRestriction;
+    public bool IsFinalListMember => _isFinalListMember;
+    public bool IsFinalUnionMember => _isFinalUnionMember;
 }

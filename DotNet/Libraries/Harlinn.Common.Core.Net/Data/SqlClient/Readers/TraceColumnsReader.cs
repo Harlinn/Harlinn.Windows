@@ -125,9 +125,9 @@ public class TraceColumnsReader : DataReaderWrapper
     }
 
 
-    public Types.TraceColumnsDataType ToDataObject()
+    public Types.TraceColumn ToDataObject()
     {
-        return new Types.TraceColumnsDataType(TraceColumnId,
+        return new Types.TraceColumn(TraceColumnId,
             Name,
             TypeName,
             MaxSize,
@@ -136,9 +136,9 @@ public class TraceColumnsReader : DataReaderWrapper
             IsRepeatedBase);
     }
 
-    public List<Types.TraceColumnsDataType> ToList()
+    public List<Types.TraceColumn> ToList()
     {
-        var list = new List<Types.TraceColumnsDataType>();
+        var list = new List<Types.TraceColumn>();
         while (Read())
         {
             list.Add(ToDataObject());

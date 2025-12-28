@@ -17,18 +17,21 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TraceSubclassValuesDataType
+/// <summary>
+/// Represents a trace subclass value, including identifiers and optional subclass information for a trace event.
+/// </summary>
+public class TraceSubclassValue
 {
     readonly short _traceEventId = 0;
     readonly short _traceColumnId = 0;
     readonly string? _subclassName;
     readonly short? _subclassValue;
 
-    public TraceSubclassValuesDataType( )
+    public TraceSubclassValue( )
     {
     }
 
-    public TraceSubclassValuesDataType(short traceEventId,
+    public TraceSubclassValue(short traceEventId,
         short traceColumnId,
         string? subclassName,
         short? subclassValue)

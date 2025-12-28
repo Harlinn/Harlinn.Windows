@@ -205,9 +205,9 @@ public class XmlSchemaModelGroupsReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaModelGroupsDataType ToDataObject()
+    public Types.XmlSchemaModelGroup ToDataObject()
     {
-        return new Types.XmlSchemaModelGroupsDataType(XmlComponentId,
+        return new Types.XmlSchemaModelGroup(XmlComponentId,
             XmlCollectionId,
             XmlNamespaceId,
             IsQualified,
@@ -224,9 +224,9 @@ public class XmlSchemaModelGroupsReader : DataReaderWrapper
             CompositorDesc);
     }
 
-    public List<Types.XmlSchemaModelGroupsDataType> ToList()
+    public List<Types.XmlSchemaModelGroup> ToList()
     {
-        var list = new List<Types.XmlSchemaModelGroupsDataType>();
+        var list = new List<Types.XmlSchemaModelGroup>();
         while (Read())
         {
             list.Add(ToDataObject());

@@ -17,7 +17,16 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaModelGroupsDataType
+/// <summary>
+/// Represents a component within an XML Schema, providing metadata such as its identifier, name, namespace, type, and
+/// derivation information.
+/// </summary>
+/// <remarks>Use this class to encapsulate details about individual schema components, such as elements, types, or
+/// attributes, when working with XML Schema metadata. Each instance contains identifiers and descriptive properties
+/// that can be used to reference and categorize schema components within a collection or namespace. This class is
+/// intended for scenarios where schema structure and relationships need to be analyzed or processed
+/// programmatically.</remarks>
+public class XmlSchemaComponent
 {
     readonly int _xmlComponentId = 0;
     readonly int _xmlCollectionId = 0;
@@ -32,14 +41,12 @@ public class XmlSchemaModelGroupsDataType
     readonly string? _derivationDesc;
     readonly int? _baseXmlComponentId;
     readonly int? _scopingXmlComponentId;
-    readonly string _compositor = string.Empty;
-    readonly string? _compositorDesc;
 
-    public XmlSchemaModelGroupsDataType( )
+    public XmlSchemaComponent( )
     {
     }
 
-    public XmlSchemaModelGroupsDataType(int xmlComponentId,
+    public XmlSchemaComponent(int xmlComponentId,
         int xmlCollectionId,
         int xmlNamespaceId,
         bool isQualified,
@@ -51,9 +58,7 @@ public class XmlSchemaModelGroupsDataType
         string derivation,
         string? derivationDesc,
         int? baseXmlComponentId,
-        int? scopingXmlComponentId,
-        string compositor,
-        string? compositorDesc)
+        int? scopingXmlComponentId)
     {
         _xmlComponentId = xmlComponentId;
         _xmlCollectionId = xmlCollectionId;
@@ -68,8 +73,6 @@ public class XmlSchemaModelGroupsDataType
         _derivationDesc = derivationDesc;
         _baseXmlComponentId = baseXmlComponentId;
         _scopingXmlComponentId = scopingXmlComponentId;
-        _compositor = compositor;
-        _compositorDesc = compositorDesc;
     }
 
     public int XmlComponentId => _xmlComponentId;
@@ -85,6 +88,4 @@ public class XmlSchemaModelGroupsDataType
     public string? DerivationDesc => _derivationDesc;
     public int? BaseXmlComponentId => _baseXmlComponentId;
     public int? ScopingXmlComponentId => _scopingXmlComponentId;
-    public string Compositor => _compositor;
-    public string? CompositorDesc => _compositorDesc;
 }

@@ -315,9 +315,9 @@ public class SystemInternalsPartitionsReader : DataReaderWrapper
     }
 
 
-    public Types.SystemInternalsPartitionsDataType ToDataObject()
+    public Types.SystemInternalsPartition ToDataObject()
     {
-        return new Types.SystemInternalsPartitionsDataType(PartitionId,
+        return new Types.SystemInternalsPartition(PartitionId,
             ObjectId,
             IndexId,
             PartitionNumber,
@@ -345,9 +345,9 @@ public class SystemInternalsPartitionsReader : DataReaderWrapper
             OptimizeForSequentialKey);
     }
 
-    public List<Types.SystemInternalsPartitionsDataType> ToList()
+    public List<Types.SystemInternalsPartition> ToList()
     {
-        var list = new List<Types.SystemInternalsPartitionsDataType>();
+        var list = new List<Types.SystemInternalsPartition>();
         while (Read())
         {
             list.Add(ToDataObject());

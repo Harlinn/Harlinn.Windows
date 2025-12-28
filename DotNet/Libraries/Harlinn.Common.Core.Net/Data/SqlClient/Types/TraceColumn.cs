@@ -17,7 +17,16 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TraceColumnsDataType
+/// <summary>
+/// Represents a column definition used in trace data, including metadata such as name, type, and filtering
+/// capabilities.
+/// </summary>
+/// <remarks>
+/// Use this class to describe the properties and characteristics of a trace column when working with
+/// trace data or event logging systems. Instances of this class are typically used to convey schema information for
+/// trace records.
+/// </remarks>
+public class TraceColumn
 {
     readonly short _traceColumnId = 0;
     readonly string? _name;
@@ -27,11 +36,11 @@ public class TraceColumnsDataType
     readonly bool _isRepeatable = false;
     readonly bool _isRepeatedBase = false;
 
-    public TraceColumnsDataType( )
+    public TraceColumn( )
     {
     }
 
-    public TraceColumnsDataType(short traceColumnId,
+    public TraceColumn(short traceColumnId,
         string? name,
         string? typeName,
         int? maxSize,

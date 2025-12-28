@@ -75,15 +75,15 @@ public class TraceEventBindingsReader : DataReaderWrapper
     }
 
 
-    public Types.TraceEventBindingsDataType ToDataObject()
+    public Types.TraceEventBinding ToDataObject()
     {
-        return new Types.TraceEventBindingsDataType(TraceEventId,
+        return new Types.TraceEventBinding(TraceEventId,
             TraceColumnId);
     }
 
-    public List<Types.TraceEventBindingsDataType> ToList()
+    public List<Types.TraceEventBinding> ToList()
     {
-        var list = new List<Types.TraceEventBindingsDataType>();
+        var list = new List<Types.TraceEventBinding>();
         while (Read())
         {
             list.Add(ToDataObject());

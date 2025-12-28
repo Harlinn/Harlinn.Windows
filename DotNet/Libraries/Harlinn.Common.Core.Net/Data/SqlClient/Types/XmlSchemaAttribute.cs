@@ -17,7 +17,16 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaComponentsDataType
+/// <summary>
+/// Represents an attribute definition within an XML Schema, providing metadata and identification details for schema
+/// attributes.
+/// </summary>
+/// <remarks>Use this class to access information about an XML Schema attribute, such as its name, qualification,
+/// type, derivation, and default value. Instances are typically used when analyzing or processing XML Schemas
+/// programmatically. All properties are read-only and reflect the attribute's schema configuration at
+/// construction.
+/// </remarks>
+public class XmlSchemaAttribute
 {
     readonly int _xmlComponentId = 0;
     readonly int _xmlCollectionId = 0;
@@ -32,12 +41,15 @@ public class XmlSchemaComponentsDataType
     readonly string? _derivationDesc;
     readonly int? _baseXmlComponentId;
     readonly int? _scopingXmlComponentId;
+    readonly bool _isDefaultFixed = false;
+    readonly bool _mustBeQualified = false;
+    readonly string? _defaultValue;
 
-    public XmlSchemaComponentsDataType( )
+    public XmlSchemaAttribute( )
     {
     }
 
-    public XmlSchemaComponentsDataType(int xmlComponentId,
+    public XmlSchemaAttribute(int xmlComponentId,
         int xmlCollectionId,
         int xmlNamespaceId,
         bool isQualified,
@@ -49,7 +61,10 @@ public class XmlSchemaComponentsDataType
         string derivation,
         string? derivationDesc,
         int? baseXmlComponentId,
-        int? scopingXmlComponentId)
+        int? scopingXmlComponentId,
+        bool isDefaultFixed,
+        bool mustBeQualified,
+        string? defaultValue)
     {
         _xmlComponentId = xmlComponentId;
         _xmlCollectionId = xmlCollectionId;
@@ -64,6 +79,9 @@ public class XmlSchemaComponentsDataType
         _derivationDesc = derivationDesc;
         _baseXmlComponentId = baseXmlComponentId;
         _scopingXmlComponentId = scopingXmlComponentId;
+        _isDefaultFixed = isDefaultFixed;
+        _mustBeQualified = mustBeQualified;
+        _defaultValue = defaultValue;
     }
 
     public int XmlComponentId => _xmlComponentId;
@@ -79,4 +97,7 @@ public class XmlSchemaComponentsDataType
     public string? DerivationDesc => _derivationDesc;
     public int? BaseXmlComponentId => _baseXmlComponentId;
     public int? ScopingXmlComponentId => _scopingXmlComponentId;
+    public bool IsDefaultFixed => _isDefaultFixed;
+    public bool MustBeQualified => _mustBeQualified;
+    public string? DefaultValue => _defaultValue;
 }

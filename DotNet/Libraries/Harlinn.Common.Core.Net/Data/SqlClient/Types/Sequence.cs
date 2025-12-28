@@ -18,20 +18,20 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
-    public sealed class Sequence
+    public sealed class Sequence : ISchemaObject
     {
         private readonly string _name;
         private readonly int _objectId;
         private readonly int? _principalId;
         private readonly int _schemaId;
-        private readonly int _parentObjectId;
+        private readonly int? _parentObjectId;
         private readonly SchemaObjectType _type;
         private readonly string _typeDesc;
         private readonly DateTime _createDate;
         private readonly DateTime _modifyDate;
-        private readonly bool _isMsShipped;
-        private readonly bool _isPublished;
-        private readonly bool _isSchemaPublished;
+        private readonly bool? _isMsShipped;
+        private readonly bool? _isPublished;
+        private readonly bool? _isSchemaPublished;
         private readonly decimal _startValue;
         private readonly decimal _increment;
         private readonly decimal _minimumValue;
@@ -52,14 +52,14 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             int objectId,
             int? principalId,
             int schemaId,
-            int parentObjectId,
+            int? parentObjectId,
             string type,
             string typeDesc,
             DateTime createDate,
             DateTime modifyDate,
-            bool isMsShipped,
-            bool isPublished,
-            bool isSchemaPublished,
+            bool? isMsShipped,
+            bool? isPublished,
+            bool? isSchemaPublished,
             decimal startValue,
             decimal increment,
             decimal minimumValue,
@@ -107,14 +107,14 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         public int ObjectId => _objectId;
         public int? PrincipalId => _principalId;
         public int SchemaId => _schemaId;
-        public int ParentObjectId => _parentObjectId;
+        public int? ParentObjectId => _parentObjectId;
         public SchemaObjectType Type => _type;
         public string TypeDesc => _typeDesc;
         public DateTime CreateDate => _createDate;
         public DateTime ModifyDate => _modifyDate;
-        public bool IsMsShipped => _isMsShipped;
-        public bool IsPublished => _isPublished;
-        public bool IsSchemaPublished => _isSchemaPublished;
+        public bool? IsMsShipped => _isMsShipped;
+        public bool? IsPublished => _isPublished;
+        public bool? IsSchemaPublished => _isSchemaPublished;
         public decimal StartValue => _startValue;
         public decimal Increment => _increment;
         public decimal MinimumValue => _minimumValue;

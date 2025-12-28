@@ -26,7 +26,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly bool _usesDatabaseCollation;
         readonly bool _isSystemNamed;
         readonly string? _columnName;
-        public CheckConstraint(string name, int objectId, int? principalId, int schemaId, int parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool isMsShipped, bool isPublished, bool isSchemaPublished, bool isDisabled,  bool isNotForReplication, bool isNotTrusted, int parentColumnId, string definition, bool usesDatabaseCollation, bool isSystemNamed, string? columnName)
+        public CheckConstraint(string name, int objectId, int? principalId, int schemaId, int? parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool? isMsShipped, bool? isPublished, bool? isSchemaPublished, bool isDisabled,  bool isNotForReplication, bool isNotTrusted, int parentColumnId, string definition, bool usesDatabaseCollation, bool isSystemNamed, string? columnName)
             : base(name, objectId, principalId, schemaId, parentObjectId, type, typeDesc, createDate, modifyDate, isMsShipped, isPublished, isSchemaPublished)
         {
             _isDisabled = isDisabled;

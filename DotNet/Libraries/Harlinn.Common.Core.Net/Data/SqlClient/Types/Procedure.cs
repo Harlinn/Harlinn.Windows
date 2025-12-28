@@ -21,20 +21,20 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
     /// <summary>
     /// Represents a row from the sys.procedures catalog view.
     /// </summary>
-    public sealed class Procedure
+    public sealed class Procedure : ISchemaObject
     {
         private readonly string _name;
         private readonly int _objectId;
         private readonly int? _principalId;
         private readonly int _schemaId;
-        private readonly int _parentObjectId;
+        private readonly int? _parentObjectId;
         private readonly SchemaObjectType _type;
         private readonly string _typeDesc;
         private readonly DateTime _createDate;
         private readonly DateTime _modifyDate;
-        private readonly bool _isMsShipped;
-        private readonly bool _isPublished;
-        private readonly bool _isSchemaPublished;
+        private readonly bool? _isMsShipped;
+        private readonly bool? _isPublished;
+        private readonly bool? _isSchemaPublished;
         private readonly bool _isAutoExecuted;
         private readonly bool _isExecutionReplicated;
         private readonly bool _isReplSerializableOnly;
@@ -45,14 +45,14 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             int objectId,
             int? principalId,
             int schemaId,
-            int parentObjectId,
+            int? parentObjectId,
             string type,
             string typeDesc,
             DateTime createDate,
             DateTime modifyDate,
-            bool isMsShipped,
-            bool isPublished,
-            bool isSchemaPublished,
+            bool? isMsShipped,
+            bool? isPublished,
+            bool? isSchemaPublished,
             bool isAutoExecuted,
             bool isExecutionReplicated,
             bool isReplSerializableOnly,
@@ -103,7 +103,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// Gets the object_id of the parent object, if any.
         /// For procedures this is generally the same as the object_id of the parent.
         /// </summary>
-        public int ParentObjectId => _parentObjectId;
+        public int? ParentObjectId => _parentObjectId;
 
         /// <summary>
         /// Gets the object type (one-character code).
@@ -133,19 +133,19 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// Gets a value that indicates whether the object was shipped with the product.
         /// Corresponds to the is_ms_shipped column.
         /// </summary>
-        public bool IsMsShipped => _isMsShipped;
+        public bool? IsMsShipped => _isMsShipped;
 
         /// <summary>
         /// Gets a value that indicates whether the object is published.
         /// Corresponds to the is_published column.
         /// </summary>
-        public bool IsPublished => _isPublished;
+        public bool? IsPublished => _isPublished;
 
         /// <summary>
         /// Gets a value that indicates whether the object's schema is published.
         /// Corresponds to the is_schema_published column.
         /// </summary>
-        public bool IsSchemaPublished => _isSchemaPublished;
+        public bool? IsSchemaPublished => _isSchemaPublished;
 
         /// <summary>
         /// Gets a value that indicates whether the procedure is auto-executed.

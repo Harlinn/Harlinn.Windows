@@ -17,7 +17,15 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TransmissionQueueDataType
+/// <summary>
+/// Represents a message queued for transmission in a service broker or messaging system, including metadata such as
+/// conversation handle, service names, message body, and status information.
+/// </summary>
+/// <remarks>
+/// Use this class to encapsulate all relevant details of a message pending transmission between
+/// services, including routing, sequencing, and status flags. Instances are typically created to track or inspect
+/// messages as they move through the transmission pipeline.</remarks>
+public class TransmissionQueue
 {
     readonly Guid _conversationHandle;
     readonly string? _toServiceName;
@@ -33,11 +41,11 @@ public class TransmissionQueueDataType
     readonly string? _transmissionStatus;
     readonly byte _priority = 0;
 
-    public TransmissionQueueDataType( )
+    public TransmissionQueue( )
     {
     }
 
-    public TransmissionQueueDataType(Guid conversationHandle,
+    public TransmissionQueue(Guid conversationHandle,
         string? toServiceName,
         string? toBrokerInstance,
         string? fromServiceName,

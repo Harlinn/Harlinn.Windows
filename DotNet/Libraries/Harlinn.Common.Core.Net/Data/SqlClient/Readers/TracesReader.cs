@@ -235,9 +235,9 @@ public class TracesReader : DataReaderWrapper
     }
 
 
-    public Types.TracesDataType ToDataObject()
+    public Types.Trace ToDataObject()
     {
-        return new Types.TracesDataType(Id,
+        return new Types.Trace(Id,
             Status,
             Path,
             MaxSize,
@@ -257,9 +257,9 @@ public class TracesReader : DataReaderWrapper
             DroppedEventCount);
     }
 
-    public List<Types.TracesDataType> ToList()
+    public List<Types.Trace> ToList()
     {
-        var list = new List<Types.TracesDataType>();
+        var list = new List<Types.Trace>();
         while (Read())
         {
             list.Add(ToDataObject());

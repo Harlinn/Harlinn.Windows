@@ -125,9 +125,9 @@ public class XmlSchemaComponentPlacementsReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaComponentPlacementsDataType ToDataObject()
+    public Types.XmlSchemaComponentPlacement ToDataObject()
     {
-        return new Types.XmlSchemaComponentPlacementsDataType(XmlComponentId,
+        return new Types.XmlSchemaComponentPlacement(XmlComponentId,
             PlacementId,
             PlacedXmlComponentId,
             IsDefaultFixed,
@@ -136,9 +136,9 @@ public class XmlSchemaComponentPlacementsReader : DataReaderWrapper
             DefaultValue);
     }
 
-    public List<Types.XmlSchemaComponentPlacementsDataType> ToList()
+    public List<Types.XmlSchemaComponentPlacement> ToList()
     {
-        var list = new List<Types.XmlSchemaComponentPlacementsDataType>();
+        var list = new List<Types.XmlSchemaComponentPlacement>();
         while (Read())
         {
             list.Add(ToDataObject());

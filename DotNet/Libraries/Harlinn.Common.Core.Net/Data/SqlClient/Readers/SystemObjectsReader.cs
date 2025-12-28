@@ -175,9 +175,9 @@ public class SystemObjectsReader : DataReaderWrapper
     }
 
 
-    public Types.SystemObjectsDataType ToDataObject()
+    public Types.SystemObject ToDataObject()
     {
-        return new Types.SystemObjectsDataType(Name,
+        return new Types.SystemObject(Name,
             ObjectId,
             PrincipalId,
             SchemaId,
@@ -191,9 +191,9 @@ public class SystemObjectsReader : DataReaderWrapper
             IsSchemaPublished);
     }
 
-    public List<Types.SystemObjectsDataType> ToList()
+    public List<Types.SystemObject> ToList()
     {
-        var list = new List<Types.SystemObjectsDataType>();
+        var list = new List<Types.SystemObject>();
         while (Read())
         {
             list.Add(ToDataObject());

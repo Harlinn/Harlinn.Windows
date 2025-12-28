@@ -85,16 +85,16 @@ public class TraceCategoriesReader : DataReaderWrapper
     }
 
 
-    public Types.TraceCategoriesDataType ToDataObject()
+    public Types.TraceCategory ToDataObject()
     {
-        return new Types.TraceCategoriesDataType(CategoryId,
+        return new Types.TraceCategory(CategoryId,
             Name,
             Type);
     }
 
-    public List<Types.TraceCategoriesDataType> ToList()
+    public List<Types.TraceCategory> ToList()
     {
-        var list = new List<Types.TraceCategoriesDataType>();
+        var list = new List<Types.TraceCategory>();
         while (Read())
         {
             list.Add(ToDataObject());

@@ -265,9 +265,9 @@ public class SystemParametersReader : DataReaderWrapper
     }
 
 
-    public Types.SystemParametersDataType ToDataObject()
+    public Types.SystemParameter ToDataObject()
     {
-        return new Types.SystemParametersDataType(ObjectId,
+        return new Types.SystemParameter(ObjectId,
             Name,
             ParameterId,
             SystemTypeId,
@@ -290,9 +290,9 @@ public class SystemParametersReader : DataReaderWrapper
             ColumnEncryptionKeyDatabaseName);
     }
 
-    public List<Types.SystemParametersDataType> ToList()
+    public List<Types.SystemParameter> ToList()
     {
-        var list = new List<Types.SystemParametersDataType>();
+        var list = new List<Types.SystemParameter>();
         while (Read())
         {
             list.Add(ToDataObject());

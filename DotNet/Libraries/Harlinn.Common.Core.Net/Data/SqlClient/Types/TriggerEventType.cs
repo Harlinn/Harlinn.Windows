@@ -17,17 +17,20 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TriggerEventTypesDataType
+/// <summary>
+/// Represents a row from the sys.trigger_event_types catalog view.
+/// </summary>
+public class TriggerEventType
 {
     readonly int _type = 0;
     readonly string? _typeName;
     readonly int? _parentType;
 
-    public TriggerEventTypesDataType( )
+    public TriggerEventType( )
     {
     }
 
-    public TriggerEventTypesDataType(int type,
+    public TriggerEventType(int type,
         string? typeName,
         int? parentType)
     {
@@ -36,7 +39,17 @@ public class TriggerEventTypesDataType
         _parentType = parentType;
     }
 
+    /// <summary>
+    /// Type of event or event group that causes a trigger to fire.
+    /// </summary>
     public int Type => _type;
+    /// <summary>
+    /// Name of an event or event group. This can be specified in the 
+    /// FOR clause of a CREATE TRIGGER statement.
+    /// </summary>
     public string? TypeName => _typeName;
+    /// <summary>
+    /// Type of event group that is the parent of the event or event group.
+    /// </summary>
     public int? ParentType => _parentType;
 }

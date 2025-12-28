@@ -335,9 +335,9 @@ public class SystemInternalsPartitionColumnsReader : DataReaderWrapper
     }
 
 
-    public Types.SystemInternalsPartitionColumnsDataType ToDataObject()
+    public Types.SystemInternalsPartitionColumn ToDataObject()
     {
-        return new Types.SystemInternalsPartitionColumnsDataType(PartitionId,
+        return new Types.SystemInternalsPartitionColumn(PartitionId,
             PartitionColumnId,
             ModifiedCount,
             MaxInrowLength,
@@ -367,9 +367,9 @@ public class SystemInternalsPartitionColumnsReader : DataReaderWrapper
             DefaultValue);
     }
 
-    public List<Types.SystemInternalsPartitionColumnsDataType> ToList()
+    public List<Types.SystemInternalsPartitionColumn> ToList()
     {
-        var list = new List<Types.SystemInternalsPartitionColumnsDataType>();
+        var list = new List<Types.SystemInternalsPartitionColumn>();
         while (Read())
         {
             list.Add(ToDataObject());

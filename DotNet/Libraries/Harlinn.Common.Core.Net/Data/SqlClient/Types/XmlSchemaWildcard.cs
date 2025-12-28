@@ -17,7 +17,16 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaAttributesDataType
+/// <summary>
+/// Represents an XML Schema wildcard component, providing metadata and configuration for schema elements that allow
+/// extensibility through namespace wildcards.
+/// </summary>
+/// <remarks>Use this class to access information about an XML Schema wildcard, such as its qualification,
+/// associated namespaces, derivation, and processing rules. Wildcards are commonly used in XML Schema to permit
+/// elements or attributes from namespaces not explicitly defined in the schema. This type exposes properties describing
+/// the wildcard's scope, kind, derivation, and content processing behavior, which can be useful for schema analysis,
+/// validation, or tooling scenarios.</remarks>
+public class XmlSchemaWildcard
 {
     readonly int _xmlComponentId = 0;
     readonly int _xmlCollectionId = 0;
@@ -32,15 +41,15 @@ public class XmlSchemaAttributesDataType
     readonly string? _derivationDesc;
     readonly int? _baseXmlComponentId;
     readonly int? _scopingXmlComponentId;
-    readonly bool _isDefaultFixed = false;
-    readonly bool _mustBeQualified = false;
-    readonly string? _defaultValue;
+    readonly string _processContent = string.Empty;
+    readonly string? _processContentDesc;
+    readonly bool _disallowNamespaces = false;
 
-    public XmlSchemaAttributesDataType( )
+    public XmlSchemaWildcard( )
     {
     }
 
-    public XmlSchemaAttributesDataType(int xmlComponentId,
+    public XmlSchemaWildcard(int xmlComponentId,
         int xmlCollectionId,
         int xmlNamespaceId,
         bool isQualified,
@@ -53,9 +62,9 @@ public class XmlSchemaAttributesDataType
         string? derivationDesc,
         int? baseXmlComponentId,
         int? scopingXmlComponentId,
-        bool isDefaultFixed,
-        bool mustBeQualified,
-        string? defaultValue)
+        string processContent,
+        string? processContentDesc,
+        bool disallowNamespaces)
     {
         _xmlComponentId = xmlComponentId;
         _xmlCollectionId = xmlCollectionId;
@@ -70,9 +79,9 @@ public class XmlSchemaAttributesDataType
         _derivationDesc = derivationDesc;
         _baseXmlComponentId = baseXmlComponentId;
         _scopingXmlComponentId = scopingXmlComponentId;
-        _isDefaultFixed = isDefaultFixed;
-        _mustBeQualified = mustBeQualified;
-        _defaultValue = defaultValue;
+        _processContent = processContent;
+        _processContentDesc = processContentDesc;
+        _disallowNamespaces = disallowNamespaces;
     }
 
     public int XmlComponentId => _xmlComponentId;
@@ -88,7 +97,7 @@ public class XmlSchemaAttributesDataType
     public string? DerivationDesc => _derivationDesc;
     public int? BaseXmlComponentId => _baseXmlComponentId;
     public int? ScopingXmlComponentId => _scopingXmlComponentId;
-    public bool IsDefaultFixed => _isDefaultFixed;
-    public bool MustBeQualified => _mustBeQualified;
-    public string? DefaultValue => _defaultValue;
+    public string ProcessContent => _processContent;
+    public string? ProcessContentDesc => _processContentDesc;
+    public bool DisallowNamespaces => _disallowNamespaces;
 }

@@ -265,9 +265,9 @@ public class XmlSchemaTypesReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaTypesDataType ToDataObject()
+    public Types.XmlSchemaType ToDataObject()
     {
-        return new Types.XmlSchemaTypesDataType(XmlComponentId,
+        return new Types.XmlSchemaType(XmlComponentId,
             XmlCollectionId,
             XmlNamespaceId,
             IsQualified,
@@ -290,9 +290,9 @@ public class XmlSchemaTypesReader : DataReaderWrapper
             IsFinalUnionMember);
     }
 
-    public List<Types.XmlSchemaTypesDataType> ToList()
+    public List<Types.XmlSchemaType> ToList()
     {
-        var list = new List<Types.XmlSchemaTypesDataType>();
+        var list = new List<Types.XmlSchemaType>();
         while (Read())
         {
             list.Add(ToDataObject());

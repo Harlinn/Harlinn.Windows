@@ -315,9 +315,9 @@ public class XmlIndexesReader : DataReaderWrapper
     }
 
 
-    public Types.XmlIndexesDataType ToDataObject()
+    public Types.XmlIndex ToDataObject()
     {
-        return new Types.XmlIndexesDataType(ObjectId,
+        return new Types.XmlIndex(ObjectId,
             Name,
             IndexId,
             Type,
@@ -345,9 +345,9 @@ public class XmlIndexesReader : DataReaderWrapper
             AutoCreated);
     }
 
-    public List<Types.XmlIndexesDataType> ToList()
+    public List<Types.XmlIndex> ToList()
     {
-        var list = new List<Types.XmlIndexesDataType>();
+        var list = new List<Types.XmlIndex>();
         while (Read())
         {
             list.Add(ToDataObject());

@@ -185,9 +185,9 @@ public class TransmissionQueueReader : DataReaderWrapper
     }
 
 
-    public Types.TransmissionQueueDataType ToDataObject()
+    public Types.TransmissionQueue ToDataObject()
     {
-        return new Types.TransmissionQueueDataType(ConversationHandle,
+        return new Types.TransmissionQueue(ConversationHandle,
             ToServiceName,
             ToBrokerInstance,
             FromServiceName,
@@ -202,9 +202,9 @@ public class TransmissionQueueReader : DataReaderWrapper
             Priority);
     }
 
-    public List<Types.TransmissionQueueDataType> ToList()
+    public List<Types.TransmissionQueue> ToList()
     {
-        var list = new List<Types.TransmissionQueueDataType>();
+        var list = new List<Types.TransmissionQueue>();
         while (Read())
         {
             list.Add(ToDataObject());

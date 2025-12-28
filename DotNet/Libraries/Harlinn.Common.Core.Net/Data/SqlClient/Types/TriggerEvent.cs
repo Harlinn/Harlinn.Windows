@@ -17,7 +17,10 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TriggerEventsDataType
+/// <summary>
+/// Represents a row from the sys.trigger_events catalog view.
+/// </summary>
+public class TriggerEvent
 {
     readonly int _objectId = 0;
     readonly int _type = 0;
@@ -28,11 +31,11 @@ public class TriggerEventsDataType
     readonly string? _eventGroupTypeDesc;
     readonly bool? _isTriggerEvent;
 
-    public TriggerEventsDataType( )
+    public TriggerEvent( )
     {
     }
 
-    public TriggerEventsDataType(int objectId,
+    public TriggerEvent(int objectId,
         int type,
         string typeDesc,
         bool? isFirst,

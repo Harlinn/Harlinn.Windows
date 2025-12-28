@@ -175,9 +175,9 @@ public class SystemSqlModulesReader : DataReaderWrapper
     }
 
 
-    public Types.SystemSqlModulesDataType ToDataObject()
+    public Types.SystemSqlModule ToDataObject()
     {
-        return new Types.SystemSqlModulesDataType(ObjectId,
+        return new Types.SystemSqlModule(ObjectId,
             Definition,
             UsesAnsiNulls,
             UsesQuotedIdentifier,
@@ -191,9 +191,9 @@ public class SystemSqlModulesReader : DataReaderWrapper
             IsInlineable);
     }
 
-    public List<Types.SystemSqlModulesDataType> ToList()
+    public List<Types.SystemSqlModule> ToList()
     {
-        var list = new List<Types.SystemSqlModulesDataType>();
+        var list = new List<Types.SystemSqlModule>();
         while (Read())
         {
             list.Add(ToDataObject());

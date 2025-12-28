@@ -85,16 +85,16 @@ public class TriggerEventTypesReader : DataReaderWrapper
     }
 
 
-    public Types.TriggerEventTypesDataType ToDataObject()
+    public Types.TriggerEventType ToDataObject()
     {
-        return new Types.TriggerEventTypesDataType(Type,
+        return new Types.TriggerEventType(Type,
             TypeName,
             ParentType);
     }
 
-    public List<Types.TriggerEventTypesDataType> ToList()
+    public List<Types.TriggerEventType> ToList()
     {
-        var list = new List<Types.TriggerEventTypesDataType>();
+        var list = new List<Types.TriggerEventType>();
         while (Read())
         {
             list.Add(ToDataObject());

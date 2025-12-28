@@ -17,7 +17,7 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class SystemInternalsPartitionsDataType
+public class SystemInternalsPartition
 {
     readonly long _partitionId = 0;
     readonly int _objectId = 0;
@@ -46,11 +46,11 @@ public class SystemInternalsPartitionsDataType
     readonly bool? _isColumnstore;
     readonly bool? _optimizeForSequentialKey;
 
-    public SystemInternalsPartitionsDataType( )
+    public SystemInternalsPartition( )
     {
     }
 
-    public SystemInternalsPartitionsDataType(long partitionId,
+    public SystemInternalsPartition(long partitionId,
         int objectId,
         int indexId,
         int partitionNumber,

@@ -95,17 +95,17 @@ public class TrustedAssembliesReader : DataReaderWrapper
     }
 
 
-    public Types.TrustedAssembliesDataType ToDataObject()
+    public Types.TrustedAssembly ToDataObject()
     {
-        return new Types.TrustedAssembliesDataType(Hash,
+        return new Types.TrustedAssembly(Hash,
             Description,
             CreateDate,
             CreatedBy);
     }
 
-    public List<Types.TrustedAssembliesDataType> ToList()
+    public List<Types.TrustedAssembly> ToList()
     {
-        var list = new List<Types.TrustedAssembliesDataType>();
+        var list = new List<Types.TrustedAssembly>();
         while (Read())
         {
             list.Add(ToDataObject());

@@ -17,7 +17,7 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class SystemSqlModulesDataType
+public class SystemSqlModule
 {
     readonly int _objectId = 0;
     readonly string? _definition;
@@ -32,11 +32,11 @@ public class SystemSqlModulesDataType
     readonly bool _inlineType = false;
     readonly bool _isInlineable = false;
 
-    public SystemSqlModulesDataType( )
+    public SystemSqlModule( )
     {
     }
 
-    public SystemSqlModulesDataType(int objectId,
+    public SystemSqlModule(int objectId,
         string? definition,
         bool usesAnsiNulls,
         bool usesQuotedIdentifier,

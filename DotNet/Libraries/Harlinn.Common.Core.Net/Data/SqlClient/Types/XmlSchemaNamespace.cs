@@ -17,38 +17,29 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaCollectionsDataType
+/// <summary>
+/// Represents a row from the sys.xml_namespaces catalog view.
+/// </summary>
+public class XmlSchemaNamespace
 {
     readonly int _xmlCollectionId = 0;
-    readonly int _schemaId = 0;
-    readonly int? _principalId;
-    readonly string _name = string.Empty;
-    readonly DateTime _createDate;
-    readonly DateTime _modifyDate;
+    readonly string? _name;
+    readonly int _xmlNamespaceId = 0;
 
-    public XmlSchemaCollectionsDataType( )
+    public XmlSchemaNamespace( )
     {
     }
 
-    public XmlSchemaCollectionsDataType(int xmlCollectionId,
-        int schemaId,
-        int? principalId,
-        string name,
-        DateTime createDate,
-        DateTime modifyDate)
+    public XmlSchemaNamespace(int xmlCollectionId,
+        string? name,
+        int xmlNamespaceId)
     {
         _xmlCollectionId = xmlCollectionId;
-        _schemaId = schemaId;
-        _principalId = principalId;
         _name = name;
-        _createDate = createDate;
-        _modifyDate = modifyDate;
+        _xmlNamespaceId = xmlNamespaceId;
     }
 
     public int XmlCollectionId => _xmlCollectionId;
-    public int SchemaId => _schemaId;
-    public int? PrincipalId => _principalId;
-    public string Name => _name;
-    public DateTime CreateDate => _createDate;
-    public DateTime ModifyDate => _modifyDate;
+    public string? Name => _name;
+    public int XmlNamespaceId => _xmlNamespaceId;
 }

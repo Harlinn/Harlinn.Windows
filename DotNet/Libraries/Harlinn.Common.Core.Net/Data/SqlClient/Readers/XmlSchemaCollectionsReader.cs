@@ -115,9 +115,9 @@ public class XmlSchemaCollectionsReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaCollectionsDataType ToDataObject()
+    public Types.XmlSchemaCollection ToDataObject()
     {
-        return new Types.XmlSchemaCollectionsDataType(XmlCollectionId,
+        return new Types.XmlSchemaCollection(XmlCollectionId,
             SchemaId,
             PrincipalId,
             Name,
@@ -125,9 +125,9 @@ public class XmlSchemaCollectionsReader : DataReaderWrapper
             ModifyDate);
     }
 
-    public List<Types.XmlSchemaCollectionsDataType> ToList()
+    public List<Types.XmlSchemaCollection> ToList()
     {
-        var list = new List<Types.XmlSchemaCollectionsDataType>();
+        var list = new List<Types.XmlSchemaCollection>();
         while (Read())
         {
             list.Add(ToDataObject());

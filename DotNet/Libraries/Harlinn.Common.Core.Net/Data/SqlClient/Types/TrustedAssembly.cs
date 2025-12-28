@@ -17,18 +17,21 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TrustedAssembliesDataType
+/// <summary>
+/// Represents a row from the sys.trusted_assemblies catalog view.
+/// </summary>
+public class TrustedAssembly
 {
     readonly byte[]? _hash;
     readonly string? _description;
     readonly DateTime _createDate;
     readonly string _createdBy = string.Empty;
 
-    public TrustedAssembliesDataType( )
+    public TrustedAssembly( )
     {
     }
 
-    public TrustedAssembliesDataType(byte[]? hash,
+    public TrustedAssembly(byte[]? hash,
         string? description,
         DateTime createDate,
         string createdBy)

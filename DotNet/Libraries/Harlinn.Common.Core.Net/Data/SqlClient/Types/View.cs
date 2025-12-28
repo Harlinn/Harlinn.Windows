@@ -17,20 +17,20 @@
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
 
-    public class View
+    public class View : ISchemaObject
     {
         readonly string _name;
         readonly int _objectId;
         readonly int? _principalId;
         readonly int _schemaId;
-        readonly int _parentObjectId;
+        readonly int? _parentObjectId;
         readonly SchemaObjectType _type;
         readonly string _typeDesc;
         readonly DateTime _createDate;
         readonly DateTime _modifyDate;
-        readonly bool _isMsShipped;
-        readonly bool _isPublished;
-        readonly bool _isSchemaPublished;
+        readonly bool? _isMsShipped;
+        readonly bool? _isPublished;
+        readonly bool? _isSchemaPublished;
         readonly bool _isReplicated;
         readonly bool _hasReplicationFilter;
         readonly bool _hasOpaqueMetadata;
@@ -40,7 +40,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly bool _isTrackedByCdc;
         readonly bool _hasSnapshot;
 
-        public View(string name, int objectId, int? principalId, int schemaId, int parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool isMsShipped, bool isPublished, bool isSchemaPublished, bool isReplicated, bool hasReplicationFilter, bool hasOpaqueMetadata, bool hasUncheckedAssemblyData, bool withCheckOption, bool isDateCorrelationView, bool isTrackedByCdc, bool hasSnapshot)
+        public View(string name, int objectId, int? principalId, int schemaId, int? parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool? isMsShipped, bool? isPublished, bool? isSchemaPublished, bool isReplicated, bool hasReplicationFilter, bool hasOpaqueMetadata, bool hasUncheckedAssemblyData, bool withCheckOption, bool isDateCorrelationView, bool isTrackedByCdc, bool hasSnapshot)
         {
             _name = name;
             _objectId = objectId;
@@ -72,7 +72,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public int SchemaId => _schemaId;
 
-        public int ParentObjectId => _parentObjectId;
+        public int? ParentObjectId => _parentObjectId;
 
         public SchemaObjectType Type => _type;
 
@@ -82,11 +82,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public DateTime ModifyDate => _modifyDate;
 
-        public bool IsMsShipped => _isMsShipped;
+        public bool? IsMsShipped => _isMsShipped;
 
-        public bool IsPublished => _isPublished;
+        public bool? IsPublished => _isPublished;
 
-        public bool IsSchemaPublished => _isSchemaPublished;
+        public bool? IsSchemaPublished => _isSchemaPublished;
 
         public bool IsReplicated => _isReplicated;
 

@@ -16,7 +16,7 @@
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
-    public class Column
+    public class Column : IColumn
     {
         readonly int _objectId;
         readonly string _name;

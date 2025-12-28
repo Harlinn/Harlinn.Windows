@@ -17,7 +17,15 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaElementsDataType
+/// <summary>
+/// Represents an element definition within an XML Schema, providing metadata and characteristics such as name, type,
+/// derivation, and constraints.
+/// </summary>
+/// <remarks>Use this class to access schema element information, including its qualified name, type derivation,
+/// default value, and blocking or finalization constraints. The properties expose details relevant for schema analysis,
+/// validation, or code generation scenarios. This class does not perform schema validation or parsing; it is intended
+/// for representing and querying schema element metadata.</remarks>
+public class XmlSchemaElement
 {
     readonly int _xmlComponentId = 0;
     readonly int _xmlCollectionId = 0;
@@ -43,11 +51,11 @@ public class XmlSchemaElementsDataType
     readonly bool _isFinalRestriction = false;
     readonly string? _defaultValue;
 
-    public XmlSchemaElementsDataType( )
+    public XmlSchemaElement( )
     {
     }
 
-    public XmlSchemaElementsDataType(int xmlComponentId,
+    public XmlSchemaElement(int xmlComponentId,
         int xmlCollectionId,
         int xmlNamespaceId,
         bool isQualified,

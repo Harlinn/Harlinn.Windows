@@ -17,7 +17,15 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaTypesDataType
+/// <summary>
+/// Represents a model group definition within an XML Schema, providing metadata about its identity, structure, and
+/// composition.
+/// </summary>
+/// <remarks>An XML Schema model group defines a set of elements that can appear together in a complex type, such
+/// as sequences, choices, or all-groups. This class encapsulates information about the model group's component
+/// identifiers, namespace, qualification, symbol space, kind, derivation, and compositor details. Use this type to
+/// access schema-level metadata for model groups when analyzing or processing XML Schemas.</remarks>
+public class XmlSchemaModelGroup
 {
     readonly int _xmlComponentId = 0;
     readonly int _xmlCollectionId = 0;
@@ -32,20 +40,14 @@ public class XmlSchemaTypesDataType
     readonly string? _derivationDesc;
     readonly int? _baseXmlComponentId;
     readonly int? _scopingXmlComponentId;
-    readonly bool _isAbstract = false;
-    readonly bool _allowsMixedContent = false;
-    readonly bool _isExtensionBlocked = false;
-    readonly bool _isRestrictionBlocked = false;
-    readonly bool _isFinalExtension = false;
-    readonly bool _isFinalRestriction = false;
-    readonly bool _isFinalListMember = false;
-    readonly bool _isFinalUnionMember = false;
+    readonly string _compositor = string.Empty;
+    readonly string? _compositorDesc;
 
-    public XmlSchemaTypesDataType( )
+    public XmlSchemaModelGroup( )
     {
     }
 
-    public XmlSchemaTypesDataType(int xmlComponentId,
+    public XmlSchemaModelGroup(int xmlComponentId,
         int xmlCollectionId,
         int xmlNamespaceId,
         bool isQualified,
@@ -58,14 +60,8 @@ public class XmlSchemaTypesDataType
         string? derivationDesc,
         int? baseXmlComponentId,
         int? scopingXmlComponentId,
-        bool isAbstract,
-        bool allowsMixedContent,
-        bool isExtensionBlocked,
-        bool isRestrictionBlocked,
-        bool isFinalExtension,
-        bool isFinalRestriction,
-        bool isFinalListMember,
-        bool isFinalUnionMember)
+        string compositor,
+        string? compositorDesc)
     {
         _xmlComponentId = xmlComponentId;
         _xmlCollectionId = xmlCollectionId;
@@ -80,14 +76,8 @@ public class XmlSchemaTypesDataType
         _derivationDesc = derivationDesc;
         _baseXmlComponentId = baseXmlComponentId;
         _scopingXmlComponentId = scopingXmlComponentId;
-        _isAbstract = isAbstract;
-        _allowsMixedContent = allowsMixedContent;
-        _isExtensionBlocked = isExtensionBlocked;
-        _isRestrictionBlocked = isRestrictionBlocked;
-        _isFinalExtension = isFinalExtension;
-        _isFinalRestriction = isFinalRestriction;
-        _isFinalListMember = isFinalListMember;
-        _isFinalUnionMember = isFinalUnionMember;
+        _compositor = compositor;
+        _compositorDesc = compositorDesc;
     }
 
     public int XmlComponentId => _xmlComponentId;
@@ -103,12 +93,6 @@ public class XmlSchemaTypesDataType
     public string? DerivationDesc => _derivationDesc;
     public int? BaseXmlComponentId => _baseXmlComponentId;
     public int? ScopingXmlComponentId => _scopingXmlComponentId;
-    public bool IsAbstract => _isAbstract;
-    public bool AllowsMixedContent => _allowsMixedContent;
-    public bool IsExtensionBlocked => _isExtensionBlocked;
-    public bool IsRestrictionBlocked => _isRestrictionBlocked;
-    public bool IsFinalExtension => _isFinalExtension;
-    public bool IsFinalRestriction => _isFinalRestriction;
-    public bool IsFinalListMember => _isFinalListMember;
-    public bool IsFinalUnionMember => _isFinalUnionMember;
+    public string Compositor => _compositor;
+    public string? CompositorDesc => _compositorDesc;
 }

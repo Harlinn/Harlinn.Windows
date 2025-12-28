@@ -17,7 +17,7 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class SystemInternalsPartitionColumnsDataType
+public class SystemInternalsPartitionColumn
 {
     readonly long _partitionId = 0;
     readonly int _partitionColumnId = 0;
@@ -48,11 +48,11 @@ public class SystemInternalsPartitionColumnsDataType
     readonly bool _hasDefault = false;
     readonly object? _defaultValue;
 
-    public SystemInternalsPartitionColumnsDataType( )
+    public SystemInternalsPartitionColumn( )
     {
     }
 
-    public SystemInternalsPartitionColumnsDataType(long partitionId,
+    public SystemInternalsPartitionColumn(long partitionId,
         int partitionColumnId,
         long modifiedCount,
         short? maxInrowLength,

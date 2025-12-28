@@ -17,7 +17,18 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlIndexesDataType
+/// <summary>
+/// Represents metadata and configuration details for an XML index in a database table, including identification, type
+/// information, uniqueness, and filtering options.
+/// </summary>
+/// <remarks>
+/// Use this class to access properties describing the structure and behavior of an XML index, such as
+/// its name, type, uniqueness constraints, and filter definitions. The properties correspond to common attributes found
+/// in database XML indexes and can be used to inspect or report on index characteristics. This class is typically used
+/// in scenarios involving database schema analysis, migration, or tooling that requires detailed index
+/// information.
+/// </remarks>
+public class XmlIndex
 {
     readonly int _objectId = 0;
     readonly string? _name;
@@ -46,11 +57,11 @@ public class XmlIndexesDataType
     readonly int? _pathId;
     readonly bool? _autoCreated;
 
-    public XmlIndexesDataType( )
+    public XmlIndex( )
     {
     }
 
-    public XmlIndexesDataType(int objectId,
+    public XmlIndex(int objectId,
         string? name,
         int indexId,
         byte type,

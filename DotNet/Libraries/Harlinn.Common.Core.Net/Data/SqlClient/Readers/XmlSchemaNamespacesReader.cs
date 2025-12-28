@@ -85,16 +85,16 @@ public class XmlSchemaNamespacesReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaNamespacesDataType ToDataObject()
+    public Types.XmlSchemaNamespace ToDataObject()
     {
-        return new Types.XmlSchemaNamespacesDataType(XmlCollectionId,
+        return new Types.XmlSchemaNamespace(XmlCollectionId,
             Name,
             XmlNamespaceId);
     }
 
-    public List<Types.XmlSchemaNamespacesDataType> ToList()
+    public List<Types.XmlSchemaNamespace> ToList()
     {
-        var list = new List<Types.XmlSchemaNamespacesDataType>();
+        var list = new List<Types.XmlSchemaNamespace>();
         while (Read())
         {
             list.Add(ToDataObject());

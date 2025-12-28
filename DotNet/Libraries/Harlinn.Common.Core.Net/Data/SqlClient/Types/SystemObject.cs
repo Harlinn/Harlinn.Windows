@@ -17,14 +17,14 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class SystemObjectsDataType
+public class SystemObject : ISchemaObject
 {
     readonly string _name = string.Empty;
     readonly int _objectId = 0;
     readonly int? _principalId;
     readonly int _schemaId = 0;
     readonly int? _parentObjectId;
-    readonly string _type = string.Empty;
+    readonly SchemaObjectType _type;
     readonly string? _typeDesc;
     readonly DateTime _createDate;
     readonly DateTime _modifyDate;
@@ -32,11 +32,11 @@ public class SystemObjectsDataType
     readonly bool? _isPublished;
     readonly bool? _isSchemaPublished;
 
-    public SystemObjectsDataType( )
+    public SystemObject( )
     {
     }
 
-    public SystemObjectsDataType(string name,
+    public SystemObject(string name,
         int objectId,
         int? principalId,
         int schemaId,
@@ -54,7 +54,7 @@ public class SystemObjectsDataType
         _principalId = principalId;
         _schemaId = schemaId;
         _parentObjectId = parentObjectId;
-        _type = type;
+        _type = type.ToSchemaObjectType();
         _typeDesc = typeDesc;
         _createDate = createDate;
         _modifyDate = modifyDate;
@@ -68,7 +68,7 @@ public class SystemObjectsDataType
     public int? PrincipalId => _principalId;
     public int SchemaId => _schemaId;
     public int? ParentObjectId => _parentObjectId;
-    public string Type => _type;
+    public SchemaObjectType Type => _type;
     public string? TypeDesc => _typeDesc;
     public DateTime CreateDate => _createDate;
     public DateTime ModifyDate => _modifyDate;

@@ -17,20 +17,20 @@
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
 
-    public class Table
+    public class Table : ISchemaObject
     {
         readonly string _name;
         readonly int _objectId;
         readonly int? _principalId;
         readonly int _schemaId;
-        readonly int _parentObjectId;
+        readonly int? _parentObjectId;
         readonly SchemaObjectType _type;
         readonly string _typeDesc;
         readonly DateTime _createDate;
         readonly DateTime _modifyDate;
-        readonly bool _isMsShipped;
-        readonly bool _isPublished;
-        readonly bool _isSchemaPublished;
+        readonly bool? _isMsShipped;
+        readonly bool? _isPublished;
+        readonly bool? _isSchemaPublished;
         readonly int _lobDataSpaceId;
         readonly int? _filestreamDataSpaceId;
         readonly int _maxColumnIdUsed;
@@ -61,7 +61,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         readonly bool _isNode;
         readonly bool _isEdge;
 
-        public Table(string name, int objectId, int? principalId, int schemaId, int parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool isMsShipped, bool isPublished, bool isSchemaPublished, int lobDataSpaceId, int? filestreamDataSpaceId, int maxColumnIdUsed, bool lockOnBulkLoad, bool usesAnsiNulls, bool isReplicated, bool hasReplicationFilter, bool isMergePublished, bool isSyncTranSubscribed, bool hasUncheckedAssemblyData, int textInRowLimit, bool largeValueTypesOutOfRow, bool isTrackedByCdc, sbyte lockEscalation, string lockEscalationDesc, bool isFiletable, bool isMemoryOptimized, sbyte durability, string durabilityDesc, sbyte temporalType, string temporalTypeDesc, int? historyTableId, bool isRemoteDataArchiveEnabled, bool isExternal, int? historyRetentionPeriod, int? historyRetentionPeriodUnit, string? historyRetentionPeriodUnitDesc, bool isNode, bool isEdge)
+        public Table(string name, int objectId, int? principalId, int schemaId, int? parentObjectId, string type, string typeDesc, DateTime createDate, DateTime modifyDate, bool? isMsShipped, bool? isPublished, bool? isSchemaPublished, int lobDataSpaceId, int? filestreamDataSpaceId, int maxColumnIdUsed, bool lockOnBulkLoad, bool usesAnsiNulls, bool isReplicated, bool hasReplicationFilter, bool isMergePublished, bool isSyncTranSubscribed, bool hasUncheckedAssemblyData, int textInRowLimit, bool largeValueTypesOutOfRow, bool isTrackedByCdc, sbyte lockEscalation, string lockEscalationDesc, bool isFiletable, bool isMemoryOptimized, sbyte durability, string durabilityDesc, sbyte temporalType, string temporalTypeDesc, int? historyTableId, bool isRemoteDataArchiveEnabled, bool isExternal, int? historyRetentionPeriod, int? historyRetentionPeriodUnit, string? historyRetentionPeriodUnitDesc, bool isNode, bool isEdge)
         {
             _name = name;
             _objectId = objectId;
@@ -114,7 +114,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public int SchemaId => _schemaId;
 
-        public int ParentObjectId => _parentObjectId;
+        public int? ParentObjectId => _parentObjectId;
 
         public SchemaObjectType Type => _type;
 
@@ -124,11 +124,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public DateTime ModifyDate => _modifyDate;
 
-        public bool IsMsShipped => _isMsShipped;
+        public bool? IsMsShipped => _isMsShipped;
 
-        public bool IsPublished => _isPublished;
+        public bool? IsPublished => _isPublished;
 
-        public bool IsSchemaPublished => _isSchemaPublished;
+        public bool? IsSchemaPublished => _isSchemaPublished;
 
         public int LobDataSpaceId => _lobDataSpaceId;
 

@@ -285,9 +285,9 @@ public class XmlSchemaElementsReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaElementsDataType ToDataObject()
+    public Types.XmlSchemaElement ToDataObject()
     {
-        return new Types.XmlSchemaElementsDataType(XmlComponentId,
+        return new Types.XmlSchemaElement(XmlComponentId,
             XmlCollectionId,
             XmlNamespaceId,
             IsQualified,
@@ -312,9 +312,9 @@ public class XmlSchemaElementsReader : DataReaderWrapper
             DefaultValue);
     }
 
-    public List<Types.XmlSchemaElementsDataType> ToList()
+    public List<Types.XmlSchemaElement> ToList()
     {
-        var list = new List<Types.XmlSchemaElementsDataType>();
+        var list = new List<Types.XmlSchemaElement>();
         while (Read())
         {
             list.Add(ToDataObject());

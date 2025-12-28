@@ -215,9 +215,9 @@ public class XmlSchemaWildcardsReader : DataReaderWrapper
     }
 
 
-    public Types.XmlSchemaWildcardsDataType ToDataObject()
+    public Types.XmlSchemaWildcard ToDataObject()
     {
-        return new Types.XmlSchemaWildcardsDataType(XmlComponentId,
+        return new Types.XmlSchemaWildcard(XmlComponentId,
             XmlCollectionId,
             XmlNamespaceId,
             IsQualified,
@@ -235,9 +235,9 @@ public class XmlSchemaWildcardsReader : DataReaderWrapper
             DisallowNamespaces);
     }
 
-    public List<Types.XmlSchemaWildcardsDataType> ToList()
+    public List<Types.XmlSchemaWildcard> ToList()
     {
-        var list = new List<Types.XmlSchemaWildcardsDataType>();
+        var list = new List<Types.XmlSchemaWildcard>();
         while (Read())
         {
             list.Add(ToDataObject());

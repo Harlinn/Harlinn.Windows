@@ -95,17 +95,17 @@ public class TraceSubclassValuesReader : DataReaderWrapper
     }
 
 
-    public Types.TraceSubclassValuesDataType ToDataObject()
+    public Types.TraceSubclassValue ToDataObject()
     {
-        return new Types.TraceSubclassValuesDataType(TraceEventId,
+        return new Types.TraceSubclassValue(TraceEventId,
             TraceColumnId,
             SubclassName,
             SubclassValue);
     }
 
-    public List<Types.TraceSubclassValuesDataType> ToList()
+    public List<Types.TraceSubclassValue> ToList()
     {
-        var list = new List<Types.TraceSubclassValuesDataType>();
+        var list = new List<Types.TraceSubclassValue>();
         while (Read())
         {
             list.Add(ToDataObject());

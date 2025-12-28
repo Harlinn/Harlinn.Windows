@@ -17,16 +17,19 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TraceEventBindingsDataType
+/// <summary>
+/// Represents a row from the sys.trace_event_bindings catalog view.
+/// </summary>
+public class TraceEventBinding
 {
     readonly short _traceEventId = 0;
     readonly short _traceColumnId = 0;
 
-    public TraceEventBindingsDataType( )
+    public TraceEventBinding( )
     {
     }
 
-    public TraceEventBindingsDataType(short traceEventId,
+    public TraceEventBinding(short traceEventId,
         short traceColumnId)
     {
         _traceEventId = traceEventId;

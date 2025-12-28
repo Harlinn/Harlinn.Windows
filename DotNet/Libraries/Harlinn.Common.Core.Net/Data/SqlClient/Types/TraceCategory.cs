@@ -17,17 +17,20 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TraceCategoriesDataType
+/// <summary>
+/// Represents a row from the sys.trace_categories catalog view.
+/// </summary>
+public class TraceCategory
 {
     readonly short _categoryId = 0;
     readonly string? _name;
     readonly byte _type = 0;
 
-    public TraceCategoriesDataType( )
+    public TraceCategory( )
     {
     }
 
-    public TraceCategoriesDataType(short categoryId,
+    public TraceCategory(short categoryId,
         string? name,
         byte type)
     {

@@ -17,7 +17,7 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class SystemParametersDataType
+public class SystemParameter
 {
     readonly int _objectId = 0;
     readonly string? _name;
@@ -41,11 +41,11 @@ public class SystemParametersDataType
     readonly int? _columnEncryptionKeyId;
     readonly string? _columnEncryptionKeyDatabaseName;
 
-    public SystemParametersDataType( )
+    public SystemParameter( )
     {
     }
 
-    public SystemParametersDataType(int objectId,
+    public SystemParameter(int objectId,
         string? name,
         int parameterId,
         byte systemTypeId,

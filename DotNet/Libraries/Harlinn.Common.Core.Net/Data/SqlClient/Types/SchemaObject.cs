@@ -17,7 +17,7 @@
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
 
-    public class SchemaObject
+    public class SchemaObject : ISchemaObject
     {
         readonly string _name;
         readonly int _objectId;

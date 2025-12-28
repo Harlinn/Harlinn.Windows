@@ -17,7 +17,10 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class TracesDataType
+/// <summary>
+/// Represents a row from the sys.traces catalog view.
+/// </summary>
+public class Trace
 {
     readonly int _id = 0;
     readonly int _status = 0;
@@ -38,11 +41,11 @@ public class TracesDataType
     readonly long? _eventCount;
     readonly int? _droppedEventCount;
 
-    public TracesDataType( )
+    public Trace( )
     {
     }
 
-    public TracesDataType(int id,
+    public Trace(int id,
         int status,
         string? path,
         long? maxSize,

@@ -17,7 +17,14 @@ using System;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-public class XmlSchemaFacetsDataType
+/// <summary>
+/// Represents a facet of an XML schema component, such as a restriction or constraint applied to a data type.
+/// </summary>
+/// <remarks>Facets are used in XML Schema to define additional rules or limitations for data types, such as
+/// minimum or maximum values, patterns, or fixed values. This class provides information about a specific facet,
+/// including its type, description, and value. Instances of this class are typically used when analyzing or processing
+/// XML schema definitions.</remarks>
+public class XmlSchemaFacet
 {
     readonly int _xmlComponentId = 0;
     readonly int _facetId = 0;
@@ -26,11 +33,11 @@ public class XmlSchemaFacetsDataType
     readonly bool _isFixed = false;
     readonly string? _value;
 
-    public XmlSchemaFacetsDataType( )
+    public XmlSchemaFacet( )
     {
     }
 
-    public XmlSchemaFacetsDataType(int xmlComponentId,
+    public XmlSchemaFacet(int xmlComponentId,
         int facetId,
         string kind,
         string? kindDesc,
