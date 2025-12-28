@@ -19,6 +19,7 @@ using System.Xml.Serialization;
 using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 using Harlinn.Common.Core.Net.Data.SqlClient;
 using Harlinn.MSSql.Tool.Import;
+using System.ComponentModel;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -26,6 +27,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class StoredProcedureDefinition : SchemaObject
     {
         private List<ParameterDefinition> _parameters = new List<ParameterDefinition>();
+        private List<ResultSet> _resultSets = new List<ResultSet>();
 
         public override SchemaObjectType Type => SchemaObjectType.StoredProcedure;
 
@@ -58,6 +60,35 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(EnumParameterDefinition), ElementName = "Enum")]
         public List<ParameterDefinition> Parameters { get => _parameters; set => _parameters = value; }
 
+
+        [XmlArray("ResultSets"), DefaultValue(null)]
+        [XmlArrayItem(typeof(ResultSet), ElementName = "ResultSet")]
+        public List<ResultSet>? ResultSetsOrNull
+        {
+            get
+            {
+                if (_resultSets.Count == 0)
+                {
+                    return null;
+                }
+                return _resultSets;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    _resultSets.Clear();
+                }
+                else
+                {
+                    _resultSets = value;
+                }
+            }
+        }
+
+
+        [XmlIgnore]
+        public List<ResultSet> ResultSets { get => _resultSets; set => _resultSets = value; }
 
         int IndexOfParameter(string name)
         {

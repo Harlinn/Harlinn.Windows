@@ -126,6 +126,29 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
         /// <summary>
+        /// Retrieves a read-only list of schema objects of the specified type from the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying schema objects. The connection must be valid.</param>
+        /// <param name="schemaObjectType">The type of schema objects to retrieve. Specifies which kind of database objects to include in the result.</param>
+        /// <returns>A read-only list of <see cref="SchemaObject"/> instances representing the schema objects of the specified
+        /// type. The list is empty if no matching objects are found.</returns>
+        public static IReadOnlyList<SchemaObject> GetSchemaObjects(this SqlConnection connection, SchemaObjectType schemaObjectType)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    return schemaObjectsReader.GetSchemaObjects();
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Retrieves a read-only list of schema objects associated with the specified schema ID from the connected SQL
         /// Server database.
         /// </summary>
@@ -148,11 +171,57 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves a read-only list of schema objects of the specified type and schema from the connected SQL Server
+        /// database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying schema objects. The connection must be valid.</param>
+        /// <param name="schemaObjectType">The type of schema objects to retrieve, such as tables, views, or procedures.</param>
+        /// <param name="schemaId">The identifier of the schema from which to retrieve objects. Must correspond to a valid schema in the
+        /// database.</param>
+        /// <returns>A read-only list of <see cref="SchemaObject"/> instances representing the schema objects of the specified
+        /// type within the given schema. The list is empty if no matching objects are found.</returns>
+        public static IReadOnlyList<SchemaObject> GetSchemaObjects(this SqlConnection connection, SchemaObjectType schemaObjectType, int schemaId)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [schema_id] = @SchemaId AND [type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    return schemaObjectsReader.GetSchemaObjects();
+                }
+            }
+        }
 
+        /// <summary>
+        /// Retrieves a read-only list of schema objects associated with the specified schema from the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying schema objects.</param>
+        /// <param name="schema">The schema whose objects are to be retrieved. Cannot be null.</param>
+        /// <returns>A read-only list of <see cref="Types.SchemaObject"/> instances representing the objects in the specified schema.</returns>
         public static IReadOnlyList<Types.SchemaObject> GetSchemaObjects(this SqlConnection connection, Schema schema)
         {
             return connection.GetSchemaObjects(schema.SchemaId);
         }
+
+        /// <summary>
+        /// Retrieves a read-only list of schema objects of the specified type from the given schema in the database
+        /// connection.
+        /// </summary>
+        /// <param name="connection">The open SQL connection to use for retrieving schema objects. Must not be null.</param>
+        /// <param name="schemaObjectType">The type of schema objects to retrieve, such as tables, views, or procedures.</param>
+        /// <param name="schema">The schema from which to retrieve the objects. Must not be null.</param>
+        /// <returns>A read-only list of schema objects matching the specified type within the given schema. The list is empty if
+        /// no matching objects are found.</returns>
+        public static IReadOnlyList<Types.SchemaObject> GetSchemaObjects(this SqlConnection connection, SchemaObjectType schemaObjectType, Schema schema)
+        {
+            return connection.GetSchemaObjects(schemaObjectType, schema.SchemaId);
+        }
+
 
         /// <summary>
         /// Retrieves a schema object by its schema ID and object ID.
@@ -181,6 +250,40 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
         /// <summary>
+        /// Retrieves a schema object from the database that matches the specified schema object type, schema ID, and
+        /// object ID.
+        /// </summary>
+        /// <remarks>The connection must be open before calling this method. The method returns null if no
+        /// matching schema object is found for the specified criteria.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database. Cannot be null.</param>
+        /// <param name="schemaObjectType">The type of schema object to retrieve. Specifies the kind of database object to search for.</param>
+        /// <param name="schemaId">The identifier of the schema containing the object. Must correspond to a valid schema in the database.</param>
+        /// <param name="objectId">The identifier of the object within the specified schema. Must correspond to a valid object in the database.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the matching schema object if found; otherwise, <see
+        /// langword="null"/>.</returns>
+        public static SchemaObject? GetSchemaObject(this SqlConnection connection, SchemaObjectType schemaObjectType, int schemaId, int objectId)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [schema_id] = @SchemaId AND [object_id] = @ObjectId AND [type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    if (schemaObjectsReader.Read())
+                    {
+                        return schemaObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Retrieves the schema information for a database object with the specified object ID from the connected SQL
         /// Server database.
         /// </summary>
@@ -206,6 +309,35 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 }
             }
         }
+
+        /// <summary>
+        /// Retrieves a schema object of the specified type and object ID from the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database. Must not be null.</param>
+        /// <param name="schemaObjectType">The type of schema object to retrieve, such as table, view, or procedure.</param>
+        /// <param name="objectId">The object ID of the schema object to retrieve. Must correspond to a valid object in the database.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the requested schema object if found; otherwise, <see
+        /// langword="null"/>.</returns>
+        public static SchemaObject? GetSchemaObject(this SqlConnection connection, SchemaObjectType schemaObjectType, int objectId)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [object_id] = @ObjectId  AND [type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    if (schemaObjectsReader.Read())
+                    {
+                        return schemaObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
+
 
 
         /// <summary>
@@ -237,7 +369,43 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves a schema object from the database by schema ID, object name, and object type.
+        /// </summary>
+        /// <remarks>The connection must be open before calling this method. The search is case-sensitive
+        /// and matches the exact object name and schema ID.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database. Must not be null.</param>
+        /// <param name="schemaObjectType">The type of schema object to retrieve, such as table, view, or procedure.</param>
+        /// <param name="schemaId">The identifier of the schema that contains the object. Must be a valid schema ID in the database.</param>
+        /// <param name="objectName">The name of the schema object to retrieve. Cannot be null or empty.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the requested schema object if found; otherwise, <see
+        /// langword="null"/>.</returns>
+        public static SchemaObject? GetSchemaObject(this SqlConnection connection, SchemaObjectType schemaObjectType, int schemaId, string objectName)
+        {
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [schema_id] = @SchemaId AND [name] = @ObjectName AND [type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectName", objectName);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectType.ToTypeString());
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    if (schemaObjectsReader.Read())
+                    {
+                        return schemaObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
 
+
+        /// <summary>
+        /// Retrieves all system objects in the database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying system objects.</param>
+        /// <returns>A read-only list of <see cref="SchemaObject"/> instances representing all system objects in the database.</returns>
         public static IReadOnlyList<SchemaObject> GetSystemObjects(this SqlConnection connection)
         {
             using (var command = connection.CreateCommand(SystemObjectsReader.Sql))
@@ -250,6 +418,38 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves a read-only list of system objects of the specified type from the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying system objects. The connection must be valid.</param>
+        /// <param name="schemaObjectType">The type of system objects to retrieve. Specifies which category of system objects to include in the result.</param>
+        /// <returns>A read-only list of <see cref="SchemaObject"/> instances representing the system objects of the specified
+        /// type. The list is empty if no matching objects are found.</returns>
+        public static IReadOnlyList<SchemaObject> GetSystemObjects(this SqlConnection connection, SchemaObjectType schemaObjectType)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var systemObjectsReader = new SystemObjectsReader(reader, false);
+                    return systemObjectsReader.GetSchemaObjects();
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Retrieves a read-only list of system objects from the specified schema in the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying system objects. The connection must not be null and
+        /// must be open.</param>
+        /// <param name="schemaId">The identifier of the schema whose system objects are to be retrieved.</param>
+        /// <returns>A read-only list of <see cref="SchemaObject"/> instances representing the system objects in the specified
+        /// schema. The list is empty if no system objects are found.</returns>
         public static IReadOnlyList<SchemaObject> GetSystemObjects(this SqlConnection connection, int schemaId)
         {
             var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId";
@@ -264,11 +464,75 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves a read-only list of system objects of the specified type within a given schema from the connected
+        /// SQL Server database.
+        /// </summary>
+        /// <remarks>The method executes a query against the system catalog to retrieve objects matching
+        /// the specified type and schema. The returned list reflects the state of the database at the time of the
+        /// query. The caller is responsible for ensuring that the connection is open before calling this
+        /// method.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to the SQL Server database from which to retrieve system objects. The
+        /// connection must not be null.</param>
+        /// <param name="schemaObjectType">The type of system objects to retrieve. Specifies the category of objects, such as tables, views, or
+        /// procedures.</param>
+        /// <param name="schemaId">The identifier of the schema containing the system objects. Must correspond to a valid schema in the
+        /// database.</param>
+        /// <returns>A read-only list of <see cref="SchemaObject"/> instances representing the system objects of the specified
+        /// type in the given schema. The list is empty if no matching objects are found.</returns>
+        public static IReadOnlyList<SchemaObject> GetSystemObjects(this SqlConnection connection, SchemaObjectType schemaObjectType, int schemaId)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId AND so.[type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var systemObjectsReader = new SystemObjectsReader(reader, false);
+                    return systemObjectsReader.GetSchemaObjects();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a read-only list of system objects associated with the specified schema from the database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> used to query the database for system objects.</param>
+        /// <param name="schema">The schema for which to retrieve system objects. Cannot be null.</param>
+        /// <returns>A read-only list of <see cref="Types.SchemaObject"/> instances representing the system objects in the
+        /// specified schema. The list is empty if no system objects are found.</returns>
         public static IReadOnlyList<Types.SchemaObject> GetSystemObjects(this SqlConnection connection, Schema schema)
         {
             return connection.GetSystemObjects(schema.SchemaId);
         }
 
+        /// <summary>
+        /// Retrieves a read-only list of system objects of the specified type within the given schema from the
+        /// connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open SQL connection used to query system objects. Cannot be null.</param>
+        /// <param name="schemaObjectType">The type of system objects to retrieve, such as tables, views, or procedures.</param>
+        /// <param name="schema">The schema that contains the system objects to retrieve. Cannot be null.</param>
+        /// <returns>A read-only list of system objects matching the specified type within the given schema. The list is empty if
+        /// no matching objects are found.</returns>
+        public static IReadOnlyList<Types.SchemaObject> GetSystemObjects(this SqlConnection connection, SchemaObjectType schemaObjectType, Schema schema)
+        {
+            return connection.GetSystemObjects(schemaObjectType, schema.SchemaId);
+        }
+
+
+        /// <summary>
+        /// Retrieves a system object from the database by schema and object identifiers.
+        /// </summary>
+        /// <remarks>The connection must be open before calling this method. The method returns <see
+        /// langword="null"/> if no matching system object exists for the specified identifiers.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database.</param>
+        /// <param name="schemaId">The identifier of the schema containing the system object.</param>
+        /// <param name="objectId">The identifier of the system object to retrieve.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the system object if found; otherwise, <see langword="null"/>.</returns>
         public static SchemaObject? GetSystemObject(this SqlConnection connection, int schemaId, int objectId)
         {
             var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId AND so.[object_id] = @ObjectId";
@@ -288,7 +552,46 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves a system-defined schema object from the connected SQL Server database based on the specified
+        /// schema object type, schema ID, and object ID.
+        /// </summary>
+        /// <remarks>This method queries system catalog views to locate the specified object. The
+        /// connection must remain open for the duration of the call. No exception is thrown if the object does not
+        /// exist; instead, <see langword="null"/> is returned.</remarks>
+        /// <param name="connection">The open SQL connection to use for querying the system object. Must not be null and must be open.</param>
+        /// <param name="schemaObjectType">The type of the schema object to retrieve, such as table, view, or procedure.</param>
+        /// <param name="schemaId">The identifier of the schema that contains the object. Must correspond to a valid schema in the database.</param>
+        /// <param name="objectId">The identifier of the object within the specified schema. Must correspond to a valid object in the database.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the requested system object if found; otherwise, <see
+        /// langword="null"/>.</returns>
+        public static SchemaObject? GetSystemObject(this SqlConnection connection, SchemaObjectType schemaObjectType, int schemaId, int objectId)
+        {
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId AND so.[object_id] = @ObjectId AND so.[type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectType.ToTypeString());
+                using (var reader = command.ExecuteReader())
+                {
+                    var systemObjectsReader = new SystemObjectsReader(reader, false);
+                    if (systemObjectsReader.Read())
+                    {
+                        return systemObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
 
+
+        /// <summary>
+        /// Retrieves a system object from the database by its object ID.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database.</param>
+        /// <param name="objectId">The identifier of the system object to retrieve.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the system object if found; otherwise, <see langword="null"/>.</returns>
         public static SchemaObject? GetSystemObject(this SqlConnection connection, int objectId)
         {
             var sql = $"{SystemObjectsReader.Sql} WHERE so.[object_id] = @ObjectId";
@@ -307,6 +610,44 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves a system object from the connected SQL Server database by its object ID and type.
+        /// </summary>
+        /// <remarks>The method searches for system objects matching the specified type and object ID. The
+        /// connection must remain open for the duration of the call.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database. Must not be null and must be open.</param>
+        /// <param name="schemaObjectType">The type of the schema object to retrieve. Determines the kind of system object to search for.</param>
+        /// <param name="objectId">The unique identifier of the system object to retrieve.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the requested system object if found; otherwise, <see
+        /// langword="null"/>.</returns>
+        public static SchemaObject? GetSystemObject(this SqlConnection connection, SchemaObjectType schemaObjectType, int objectId)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[object_id] = @ObjectId AND so.[type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var systemObjectsReader = new SystemObjectsReader(reader, false);
+                    if (systemObjectsReader.Read())
+                    {
+                        return systemObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a system object from the database by schema ID and object name.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database.</param>
+        /// <param name="schemaId">The identifier of the schema containing the system object.</param>
+        /// <param name="objectName">The name of the system object to retrieve.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the system object if found; otherwise, <see langword="null"/>.</returns>
         public static SchemaObject? GetSystemObject(this SqlConnection connection, int schemaId, string objectName)
         {
             var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId AND so.[name] = @ObjectName";
@@ -325,6 +666,41 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 }
             }
         }
+
+        /// <summary>
+        /// Retrieves a system object from the database that matches the specified schema object type, schema ID, and
+        /// object name.
+        /// </summary>
+        /// <remarks>The method returns only the first matching system object. The caller is responsible
+        /// for ensuring that the connection is open before calling this method.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database. The connection must not be null.</param>
+        /// <param name="schemaObjectType">The type of the schema object to retrieve. Specifies the kind of system object to search for.</param>
+        /// <param name="schemaId">The identifier of the schema containing the object. Must correspond to a valid schema in the database.</param>
+        /// <param name="objectName">The name of the system object to retrieve. The search is case-sensitive and must match the object's name
+        /// exactly.</param>
+        /// <returns>A <see cref="SchemaObject"/> representing the matching system object if found; otherwise, <see
+        /// langword="null"/>.</returns>
+        public static SchemaObject? GetSystemObject(this SqlConnection connection, SchemaObjectType schemaObjectType, int schemaId, string objectName)
+        {
+            var schemaObjectTypeString = schemaObjectType.ToTypeString();
+            var sql = $"{SystemObjectsReader.Sql} WHERE so.[schema_id] = @SchemaId AND so.[name] = @ObjectName AND so.[type] = @SchemaObjectType";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectName", objectName);
+                command.Parameters.AddWithValue("@SchemaObjectType", schemaObjectTypeString);
+                using (var reader = command.ExecuteReader())
+                {
+                    var systemObjectsReader = new SystemObjectsReader(reader, false);
+                    if (systemObjectsReader.Read())
+                    {
+                        return systemObjectsReader.GetSchemaObject();
+                    }
+                    return null;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Retrieves all tables in the database.
@@ -561,7 +937,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
-
+        /// <summary>
+        /// Retrieves all system views in the database.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <returns></returns>
         public static IReadOnlyList<Types.SystemView> GetSystemViews(this SqlConnection connection)
         {
             using (var command = connection.CreateCommand(SystemViewsReader.Sql))
@@ -574,6 +954,13 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves all system views defined within the specified schema from the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying system views. The connection must be valid.</param>
+        /// <param name="schemaId">The identifier of the schema whose system views are to be retrieved.</param>
+        /// <returns>A read-only list of <see cref="Types.SystemView"/> objects representing the system views in the specified
+        /// schema. The list is empty if no system views are found.</returns>
         public static IReadOnlyList<Types.SystemView> GetSystemViews(this SqlConnection connection, int schemaId)
         {
             var sql = $"{SystemViewsReader.Sql} WHERE ssv.[schema_id] = @SchemaId";
@@ -588,11 +975,29 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves a read-only list of system views defined in the specified schema from the connected SQL Server
+        /// database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to the SQL Server database from which to retrieve system views.</param>
+        /// <param name="schema">The schema for which to retrieve system views. Cannot be null.</param>
+        /// <returns>A read-only list of <see cref="Types.SystemView"/> objects representing the system views in the specified
+        /// schema. The list is empty if no system views are found.</returns>
         public static IReadOnlyList<Types.SystemView> GetSystemViews(this SqlConnection connection, Schema schema)
         {
             return connection.GetSystemViews(schema.SchemaId);
         }
 
+        /// <summary>
+        /// Retrieves a system view from the database based on the specified schema and view identifiers.
+        /// </summary>
+        /// <remarks>The connection must be open before calling this method. The method returns <see
+        /// langword="null"/> if no system view matches the specified schema and view identifiers.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the system view.</param>
+        /// <param name="schemaId">The identifier of the schema containing the system view.</param>
+        /// <param name="viewId">The identifier of the system view to retrieve.</param>
+        /// <returns>A <see cref="Types.SystemView"/> object representing the requested system view if found; otherwise, <see
+        /// langword="null"/>.</returns>
         public static Types.SystemView? GetSystemView(this SqlConnection connection, int schemaId, int viewId)
         {
             var sql = $"{SystemViewsReader.Sql} WHERE ssv.[schema_id] = @SchemaId AND ssv.[object_id] = @ViewId";
@@ -694,6 +1099,14 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves the list of parameters defined for the specified stored procedure from the database connection.
+        /// </summary>
+        /// <param name="connection">The SQL connection to use for retrieving parameter metadata. Must be an open connection.</param>
+        /// <param name="procedure">The stored procedure for which to retrieve parameter information. Cannot be null.</param>
+        /// <returns>A read-only list of <see cref="Parameter"/> objects representing the parameters of the specified stored
+        /// procedure. The list will be empty if the procedure has no parameters.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="procedure"/> is null.</exception>
         public static IReadOnlyList<Parameter> GetParameters(this SqlConnection connection, Procedure procedure)
         {
             if (procedure == null) throw new ArgumentNullException(nameof(procedure));
@@ -701,6 +1114,8 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return connection.GetParameters(procedure.ObjectId);
         }
 
+
+        
 
 
 
