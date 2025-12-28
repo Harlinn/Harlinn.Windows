@@ -80,6 +80,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
                             var systemViews = sqlConnection.GetSystemViews(schemaObject);
                             schema.ImportViews(sqlConnection, systemViews);
                         }
+
+                        var procedures = sqlConnection.GetProcedures(schemaObject);
+                        schema.ImportProcedures(sqlConnection, procedures);
+
                     }
                     else
                     {

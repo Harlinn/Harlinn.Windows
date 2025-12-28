@@ -17,12 +17,16 @@
 using Microsoft.Data.SqlClient;
 using System.Xml.Serialization;
 using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+using Harlinn.Common.Core.Net.Data.SqlClient;
+using Harlinn.MSSql.Tool.Import;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     [Serializable]
     public class StoredProcedureDefinition : SchemaObject
     {
+        private List<ParameterDefinition> _parameters = new List<ParameterDefinition>();
+
         public override SchemaObjectType Type => SchemaObjectType.StoredProcedure;
 
 
@@ -52,11 +56,53 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(XmlParameterDefinition), ElementName = "Xml")]
         [XmlArrayItem(typeof(ObjectParameterDefinition), ElementName = "Object")]
         [XmlArrayItem(typeof(EnumParameterDefinition), ElementName = "Enum")]
-        public List<ParameterDefinition> Parameters { get; set; } = new List<ParameterDefinition>();
+        public List<ParameterDefinition> Parameters { get => _parameters; set => _parameters = value; }
+
+
+        int IndexOfParameter(string name)
+        {
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                if (string.Equals(Parameters[i].Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        internal void ImportParameters(SqlConnection sqlConnection, Procedure procedure)
+        {
+            if (procedure == null)
+            {
+                throw new ArgumentNullException(nameof(procedure));
+            }
+
+            var parameters = sqlConnection.GetParameters(procedure);
+
+            foreach (var parameter in parameters)
+            {
+
+                var parameterDefinition = parameter.ToParameterDefinition(sqlConnection);
+                var index = IndexOfParameter(parameterDefinition.Name);
+                if (index >= 0)
+                {
+                    Parameters[index] = parameterDefinition;
+                }
+                else
+                {
+                    Parameters.Add(parameterDefinition);
+                }
+            }
+        }
 
         internal void ImportProcedure(SqlConnection sqlConnection, Procedure procedure)
         {
-            
+            if (procedure == null)
+            {
+                throw new ArgumentNullException(nameof(procedure));
+            }
+            ImportParameters(sqlConnection, procedure);
         }
     }
 

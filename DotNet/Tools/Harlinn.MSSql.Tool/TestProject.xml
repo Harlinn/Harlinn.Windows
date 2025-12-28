@@ -6,14 +6,14 @@
 				<Schema Name="dbo">
 					<Types />
 					<Objects>
-						<Entity Name="AWBuildVersion" Table="AWBuildVersion" ShortName="AWBV">
+						<Entity Name="Awbuildversion" ShortName="A" Table="AWBuildVersion">
 							<Fields>
-								<Byte Name="SystemInformationID" DatabaseType="tinyint">
+								<Byte Name="Systeminformationid" DatabaseType="tinyint">
 									<Identity Seed="1" Increment="1" />
 								</Byte>
-								<String Name="Database Version" DatabaseType="nvarchar" Size="25" />
-								<DateTime Name="VersionDate" DatabaseType="datetime" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="DatabaseVersion" Column="Database Version" DatabaseType="nvarchar" Size="25" />
+								<DateTime Name="Versiondate" DatabaseType="datetime" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_AWBuildVersion_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -28,34 +28,21 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="DatabaseLog" Table="DatabaseLog" ShortName="DL">
+						<Entity Name="Databaselog" ShortName="D" Table="DatabaseLog">
 							<Fields>
-								<Int32 Name="DatabaseLogID" DatabaseType="int">
+								<Int32 Name="Databaselogid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<DateTime Name="PostTime" DatabaseType="datetime" />
-								<String Name="DatabaseUser" DatabaseType="sysname" />
+								<DateTime Name="Posttime" DatabaseType="datetime" />
+								<String Name="Databaseuser" DatabaseType="sysname" />
 								<String Name="Event" DatabaseType="sysname" />
 								<String Name="Schema" IsNullable="true" DatabaseType="sysname" />
 								<String Name="Object" IsNullable="true" DatabaseType="sysname" />
-								<String Name="TSQL" DatabaseType="nvarchar" Size="0" />
-								<Xml Name="XmlEvent" DatabaseType="xml" />
+								<String Name="Tsql" DatabaseType="nvarchar" Size="-1" />
+								<Xml Name="Xmlevent" DatabaseType="xml" />
 							</Fields>
 							<ForeignKeys />
-							<Indexes>
-								<Index Name="">
-									<Fields />
-								</Index>
-								<Index Name="">
-									<Fields />
-								</Index>
-								<Index Name="">
-									<Fields />
-								</Index>
-								<Index>
-									<Fields />
-								</Index>
-							</Indexes>
+							<Indexes />
 							<PrimaryKey Name="PK_DatabaseLog_DatabaseLogID" IsUnique="true" IsPrimaryKey="true">
 								<Fields>
 									<Field Name="DatabaseLogID" />
@@ -63,23 +50,23 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ErrorLog" Table="ErrorLog" ShortName="EL">
+						<Entity Name="Errorlog" ShortName="E" Table="ErrorLog">
 							<Fields>
-								<Int32 Name="ErrorLogID" DatabaseType="int">
+								<Int32 Name="Errorlogid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<DateTime Name="ErrorTime" DatabaseType="datetime">
+								<DateTime Name="Errortime" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ErrorLog_ErrorTime">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<String Name="UserName" DatabaseType="sysname" />
-								<Int32 Name="ErrorNumber" DatabaseType="int" />
-								<Int32 Name="ErrorSeverity" IsNullable="true" DatabaseType="int" />
-								<Int32 Name="ErrorState" IsNullable="true" DatabaseType="int" />
-								<String Name="ErrorProcedure" IsNullable="true" DatabaseType="nvarchar" Size="126" />
-								<Int32 Name="ErrorLine" IsNullable="true" DatabaseType="int" />
-								<String Name="ErrorMessage" DatabaseType="nvarchar" Size="4000" />
+								<String Name="Username" DatabaseType="sysname" />
+								<Int32 Name="Errornumber" DatabaseType="int" />
+								<Int32 Name="Errorseverity" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Errorstate" IsNullable="true" DatabaseType="int" />
+								<String Name="Errorprocedure" IsNullable="true" DatabaseType="nvarchar" Size="126" />
+								<Int32 Name="Errorline" IsNullable="true" DatabaseType="int" />
+								<String Name="Errormessage" DatabaseType="nvarchar" Size="4000" />
 							</Fields>
 							<ForeignKeys />
 							<Indexes />
@@ -90,19 +77,133 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
+						<StoredProcedure Name="uspGetBillOfMaterials">
+							<Parameters>
+								<Int32 Name="@StartProductID" />
+								<DateTime Name="@CheckDate" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetEmployeeManagers">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetManagerEmployees">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetWhereUsedProductID">
+							<Parameters>
+								<Int32 Name="@StartProductID" />
+								<DateTime Name="@CheckDate" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspLogError">
+							<Parameters>
+								<Int32 Name="@ErrorLogID" IsOutput="true" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspPrintError">
+							<Parameters />
+						</StoredProcedure>
+						<StoredProcedure Name="uspSearchCandidateResumes">
+							<Parameters>
+								<String Name="@searchString" Size="1000" />
+								<Boolean Name="@useInflectional" />
+								<Boolean Name="@useThesaurus" />
+								<Int32 Name="@language" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetBillOfMaterials">
+							<Parameters>
+								<Int32 Name="@StartProductID" />
+								<DateTime Name="@CheckDate" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetEmployeeManagers">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetManagerEmployees">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetWhereUsedProductID">
+							<Parameters>
+								<Int32 Name="@StartProductID" />
+								<DateTime Name="@CheckDate" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspLogError">
+							<Parameters>
+								<Int32 Name="@ErrorLogID" IsOutput="true" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspPrintError">
+							<Parameters />
+						</StoredProcedure>
+						<StoredProcedure Name="uspSearchCandidateResumes">
+							<Parameters>
+								<String Name="@searchString" Size="1000" />
+								<Boolean Name="@useInflectional" />
+								<Boolean Name="@useThesaurus" />
+								<Int32 Name="@language" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetBillOfMaterials">
+							<Parameters>
+								<Int32 Name="@StartProductID" />
+								<DateTime Name="@CheckDate" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetEmployeeManagers">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetManagerEmployees">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspGetWhereUsedProductID">
+							<Parameters>
+								<Int32 Name="@StartProductID" />
+								<DateTime Name="@CheckDate" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspLogError">
+							<Parameters>
+								<Int32 Name="@ErrorLogID" IsOutput="true" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspPrintError">
+							<Parameters />
+						</StoredProcedure>
+						<StoredProcedure Name="uspSearchCandidateResumes">
+							<Parameters>
+								<String Name="@searchString" Size="1000" />
+								<Boolean Name="@useInflectional" />
+								<Boolean Name="@useThesaurus" />
+								<Int32 Name="@language" />
+							</Parameters>
+						</StoredProcedure>
 					</Objects>
 				</Schema>
 				<Schema Name="HumanResources">
 					<Types />
 					<Objects>
-						<Entity Name="Department" Table="Department" ShortName="D">
+						<Entity Name="Department" ShortName="D0" Table="Department">
 							<Fields>
-								<Int16 Name="DepartmentID" DatabaseType="smallint">
+								<Int16 Name="Departmentid" DatabaseType="smallint">
 									<Identity Seed="1" Increment="1" />
 								</Int16>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<String Name="GroupName" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Groupname" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Department_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -123,26 +224,26 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Employee" Table="Employee" ShortName="E">
+						<Entity Name="Employee" ShortName="E0" Table="Employee">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<String Name="NationalIDNumber" DatabaseType="nvarchar" Size="15" />
-								<String Name="LoginID" DatabaseType="nvarchar" Size="256" />
-								<HierarchyId Name="OrganizationNode" IsNullable="true" DatabaseType="hierarchyid" />
-								<Int16 Name="OrganizationLevel" IsNullable="true" DatabaseType="smallint">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Nationalidnumber" DatabaseType="nvarchar" Size="15" />
+								<String Name="Loginid" DatabaseType="nvarchar" Size="256" />
+								<HierarchyId Name="Organizationnode" IsNullable="true" DatabaseType="hierarchyid" />
+								<Int16 Name="Organizationlevel" IsNullable="true" DatabaseType="smallint">
 									<Computed>
 										<Definition>([OrganizationNode].[GetLevel]())</Definition>
 									</Computed>
 								</Int16>
-								<String Name="JobTitle" DatabaseType="nvarchar" Size="50" />
-								<DateTime Name="BirthDate" DatabaseType="date">
+								<String Name="Jobtitle" DatabaseType="nvarchar" Size="50" />
+								<DateTime Name="Birthdate" DatabaseType="date">
 									<Checks>
 										<Check Name="CK_Employee_BirthDate">
 											<Definition>([BirthDate]&gt;='1930-01-01' AND [BirthDate]&lt;=dateadd(year,(-18),getdate()))</Definition>
 										</Check>
 									</Checks>
 								</DateTime>
-								<String Name="MaritalStatus" DatabaseType="nchar" Size="1">
+								<String Name="Maritalstatus" DatabaseType="nchar" Size="1">
 									<Checks>
 										<Check Name="CK_Employee_MaritalStatus">
 											<Definition>(upper([MaritalStatus])='S' OR upper([MaritalStatus])='M')</Definition>
@@ -156,19 +257,19 @@
 										</Check>
 									</Checks>
 								</String>
-								<DateTime Name="HireDate" DatabaseType="date">
+								<DateTime Name="Hiredate" DatabaseType="date">
 									<Checks>
 										<Check Name="CK_Employee_HireDate">
 											<Definition>([HireDate]&gt;='1996-07-01' AND [HireDate]&lt;=dateadd(day,(1),getdate()))</Definition>
 										</Check>
 									</Checks>
 								</DateTime>
-								<Boolean Name="SalariedFlag" DatabaseType="flag">
+								<Boolean Name="Salariedflag" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_Employee_SalariedFlag">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<Int16 Name="VacationHours" DatabaseType="smallint">
+								<Int16 Name="Vacationhours" DatabaseType="smallint">
 									<DefaultConstraint Name="DF_Employee_VacationHours">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
@@ -178,7 +279,7 @@
 										</Check>
 									</Checks>
 								</Int16>
-								<Int16 Name="SickLeaveHours" DatabaseType="smallint">
+								<Int16 Name="Sickleavehours" DatabaseType="smallint">
 									<DefaultConstraint Name="DF_Employee_SickLeaveHours">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
@@ -188,17 +289,17 @@
 										</Check>
 									</Checks>
 								</Int16>
-								<Boolean Name="CurrentFlag" DatabaseType="flag">
+								<Boolean Name="Currentflag" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_Employee_CurrentFlag">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Employee_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Employee_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -246,14 +347,14 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="EmployeeDepartmentHistory" Table="EmployeeDepartmentHistory" ShortName="EDH">
+						<Entity Name="Employeedepartmenthistory" ShortName="E1" Table="EmployeeDepartmentHistory">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int16 Name="DepartmentID" DatabaseType="smallint" />
-								<Byte Name="ShiftID" DatabaseType="tinyint" />
-								<DateTime Name="StartDate" DatabaseType="date" />
-								<DateTime Name="EndDate" IsNullable="true" DatabaseType="date" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int16 Name="Departmentid" DatabaseType="smallint" />
+								<Byte Name="Shiftid" DatabaseType="tinyint" />
+								<DateTime Name="Startdate" DatabaseType="date" />
+								<DateTime Name="Enddate" IsNullable="true" DatabaseType="date" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_EmployeeDepartmentHistory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -298,25 +399,25 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="EmployeePayHistory" Table="EmployeePayHistory" ShortName="EPH">
+						<Entity Name="Employeepayhistory" ShortName="E2" Table="EmployeePayHistory">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<DateTime Name="RateChangeDate" DatabaseType="datetime" />
-								<Decimal Name="Rate" DatabaseType="money">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<DateTime Name="Ratechangedate" DatabaseType="datetime" />
+								<Decimal Name="Rate" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_EmployeePayHistory_Rate">
 											<Definition>([Rate]&gt;=(6.50) AND [Rate]&lt;=(200.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Byte Name="PayFrequency" DatabaseType="tinyint">
+								<Byte Name="Payfrequency" DatabaseType="tinyint">
 									<Checks>
 										<Check Name="CK_EmployeePayHistory_PayFrequency">
 											<Definition>([PayFrequency]=(2) OR [PayFrequency]=(1))</Definition>
 										</Check>
 									</Checks>
 								</Byte>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_EmployeePayHistory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -338,14 +439,14 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="JobCandidate" Table="JobCandidate" ShortName="JC">
+						<Entity Name="Jobcandidate" ShortName="J" Table="JobCandidate">
 							<Fields>
-								<Int32 Name="JobCandidateID" DatabaseType="int">
+								<Int32 Name="Jobcandidateid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Int32 Name="BusinessEntityID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Businessentityid" IsNullable="true" DatabaseType="int" />
 								<Xml Name="Resume" IsNullable="true" DatabaseType="xml" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_JobCandidate_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -372,15 +473,15 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Shift" Table="Shift" ShortName="S">
+						<Entity Name="Shift" ShortName="S" Table="Shift">
 							<Fields>
-								<Byte Name="ShiftID" DatabaseType="tinyint">
+								<Byte Name="Shiftid" DatabaseType="tinyint">
 									<Identity Seed="1" Increment="1" />
 								</Byte>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="StartTime" DatabaseType="time" />
-								<DateTime Name="EndTime" DatabaseType="time" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Starttime" DatabaseType="time" />
+								<DateTime Name="Endtime" DatabaseType="time" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Shift_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -407,35 +508,252 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
+						<View Name="Vemployee" ShortName="V" View="vEmployee">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<String Name="Jobtitle" DatabaseType="nvarchar" Size="50" />
+								<String Name="Phonenumber" IsNullable="true" DatabaseType="Phone" Size="25" />
+								<String Name="Phonenumbertype" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Emailaddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Emailpromotion" DatabaseType="int" />
+								<String Name="Addressline1" DatabaseType="nvarchar" Size="60" />
+								<String Name="Addressline2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
+								<String Name="City" DatabaseType="nvarchar" Size="30" />
+								<String Name="Stateprovincename" DatabaseType="Name" Size="50" />
+								<String Name="Postalcode" DatabaseType="nvarchar" Size="15" />
+								<String Name="Countryregionname" DatabaseType="Name" Size="50" />
+								<Xml Name="Additionalcontactinfo" IsNullable="true" DatabaseType="xml" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vemployeedepartment" ShortName="V0" View="vEmployeeDepartment">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<String Name="Jobtitle" DatabaseType="nvarchar" Size="50" />
+								<String Name="Department" DatabaseType="Name" Size="50" />
+								<String Name="Groupname" DatabaseType="Name" Size="50" />
+								<DateTime Name="Startdate" DatabaseType="date" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vemployeedepartmenthistory" ShortName="V1" View="vEmployeeDepartmentHistory">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<String Name="Shift" DatabaseType="Name" Size="50" />
+								<String Name="Department" DatabaseType="Name" Size="50" />
+								<String Name="Groupname" DatabaseType="Name" Size="50" />
+								<DateTime Name="Startdate" DatabaseType="date" />
+								<DateTime Name="Enddate" IsNullable="true" DatabaseType="date" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vjobcandidate" ShortName="V2" View="vJobCandidate">
+							<Fields>
+								<Int32 Name="Jobcandidateid" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<Int32 Name="Businessentityid" IsNullable="true" DatabaseType="int" />
+								<String Name="Name.prefix" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Name.first" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Name.middle" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Name.last" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Name.suffix" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Skills" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Addr.type" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Addr.loc.countryregion" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Addr.loc.state" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Addr.loc.city" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Addr.postalcode" IsNullable="true" DatabaseType="nvarchar" Size="20" />
+								<String Name="Email" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Website" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vjobcandidateeducation" ShortName="V3" View="vJobCandidateEducation">
+							<Fields>
+								<Int32 Name="Jobcandidateid" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Edu.level" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<DateTime Name="Edu.startdate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="Edu.enddate" IsNullable="true" DatabaseType="datetime" />
+								<String Name="Edu.degree" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Edu.major" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Edu.minor" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Edu.gpa" IsNullable="true" DatabaseType="nvarchar" Size="5" />
+								<String Name="Edu.gpascale" IsNullable="true" DatabaseType="nvarchar" Size="5" />
+								<String Name="Edu.school" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Edu.loc.countryregion" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Edu.loc.state" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Edu.loc.city" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vjobcandidateemployment" ShortName="V4" View="vJobCandidateEmployment">
+							<Fields>
+								<Int32 Name="Jobcandidateid" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<DateTime Name="Emp.startdate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="Emp.enddate" IsNullable="true" DatabaseType="datetime" />
+								<String Name="Emp.orgname" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Emp.jobtitle" IsNullable="true" DatabaseType="nvarchar" Size="100" />
+								<String Name="Emp.responsibility" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Emp.functioncategory" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Emp.industrycategory" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Emp.loc.countryregion" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Emp.loc.state" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Emp.loc.city" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<StoredProcedure Name="uspUpdateEmployeeHireInfo">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<String Name="@JobTitle" Size="50" />
+								<DateTime Name="@HireDate" />
+								<DateTime Name="@RateChangeDate" />
+								<Decimal Name="@Rate" Precision="19" Scale="4" />
+								<Byte Name="@PayFrequency" />
+								<Boolean Name="@CurrentFlag" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeeLogin">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<HierarchyId Name="@OrganizationNode" />
+								<String Name="@LoginID" Size="256" />
+								<String Name="@JobTitle" Size="50" />
+								<DateTime Name="@HireDate" />
+								<Boolean Name="@CurrentFlag" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeePersonalInfo">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<String Name="@NationalIDNumber" Size="15" />
+								<DateTime Name="@BirthDate" />
+								<String Name="@MaritalStatus" Size="1" />
+								<String Name="@Gender" Size="1" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeeHireInfo">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<String Name="@JobTitle" Size="50" />
+								<DateTime Name="@HireDate" />
+								<DateTime Name="@RateChangeDate" />
+								<Decimal Name="@Rate" Precision="19" Scale="4" />
+								<Byte Name="@PayFrequency" />
+								<Boolean Name="@CurrentFlag" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeeLogin">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<HierarchyId Name="@OrganizationNode" />
+								<String Name="@LoginID" Size="256" />
+								<String Name="@JobTitle" Size="50" />
+								<DateTime Name="@HireDate" />
+								<Boolean Name="@CurrentFlag" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeePersonalInfo">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<String Name="@NationalIDNumber" Size="15" />
+								<DateTime Name="@BirthDate" />
+								<String Name="@MaritalStatus" Size="1" />
+								<String Name="@Gender" Size="1" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeeHireInfo">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<String Name="@JobTitle" Size="50" />
+								<DateTime Name="@HireDate" />
+								<DateTime Name="@RateChangeDate" />
+								<Decimal Name="@Rate" Precision="19" Scale="4" />
+								<Byte Name="@PayFrequency" />
+								<Boolean Name="@CurrentFlag" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeeLogin">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<HierarchyId Name="@OrganizationNode" />
+								<String Name="@LoginID" Size="256" />
+								<String Name="@JobTitle" Size="50" />
+								<DateTime Name="@HireDate" />
+								<Boolean Name="@CurrentFlag" />
+							</Parameters>
+						</StoredProcedure>
+						<StoredProcedure Name="uspUpdateEmployeePersonalInfo">
+							<Parameters>
+								<Int32 Name="@BusinessEntityID" />
+								<String Name="@NationalIDNumber" Size="15" />
+								<DateTime Name="@BirthDate" />
+								<String Name="@MaritalStatus" Size="1" />
+								<String Name="@Gender" Size="1" />
+							</Parameters>
+						</StoredProcedure>
 					</Objects>
 				</Schema>
 				<Schema Name="Person">
 					<Types />
 					<Objects>
-						<Entity Name="Address" Table="Address" ShortName="A">
+						<Entity Name="Address" ShortName="A0" Table="Address">
 							<Fields>
-								<Int32 Name="AddressID" DatabaseType="int">
+								<Int32 Name="Addressid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="AddressLine1" DatabaseType="nvarchar" Size="60" />
-								<String Name="AddressLine2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
+								<String Name="Addressline1" DatabaseType="nvarchar" Size="60" />
+								<String Name="Addressline2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
 								<String Name="City" DatabaseType="nvarchar" Size="30" />
-								<Int32 Name="StateProvinceID" DatabaseType="int" />
-								<String Name="PostalCode" DatabaseType="nvarchar" Size="15" />
-								<Geography Name="SpatialLocation" IsNullable="true" DatabaseType="geography" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Stateprovinceid" DatabaseType="int" />
+								<String Name="Postalcode" DatabaseType="nvarchar" Size="15" />
+								<Geography Name="Spatiallocation" IsNullable="true" DatabaseType="geography" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Address_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Address_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_Address_StateProvince_StateProvinceID" Entity="Person.StateProvince" ReferencedTableName="StateProvince" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_Address_StateProvince_StateProvinceID" Entity="Person.Stateprovince" ReferencedTableName="StateProvince" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="StateProvinceID" References="StateProvinceID" />
 									</References>
@@ -469,18 +787,18 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="AddressType" Table="AddressType" ShortName="AT">
+						<Entity Name="Addresstype" ShortName="A1" Table="AddressType">
 							<Fields>
-								<Int32 Name="AddressTypeID" DatabaseType="int">
+								<Int32 Name="Addresstypeid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_AddressType_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_AddressType_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -506,17 +824,17 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="BusinessEntity" Table="BusinessEntity" ShortName="BE">
+						<Entity Name="Businessentity" ShortName="B" Table="BusinessEntity">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int">
+								<Int32 Name="Businessentityid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_BusinessEntity_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_BusinessEntity_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -537,17 +855,17 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="BusinessEntityAddress" Table="BusinessEntityAddress" ShortName="BEA">
+						<Entity Name="Businessentityaddress" ShortName="B0" Table="BusinessEntityAddress">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int32 Name="AddressID" DatabaseType="int" />
-								<Int32 Name="AddressTypeID" DatabaseType="int" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int32 Name="Addressid" DatabaseType="int" />
+								<Int32 Name="Addresstypeid" DatabaseType="int" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_BusinessEntityAddress_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_BusinessEntityAddress_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -559,12 +877,12 @@
 										<Reference Field="AddressID" References="AddressID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_BusinessEntityAddress_AddressType_AddressTypeID" Entity="Person.AddressType" ReferencedTableName="AddressType" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_BusinessEntityAddress_AddressType_AddressTypeID" Entity="Person.Addresstype" ReferencedTableName="AddressType" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="AddressTypeID" References="AddressTypeID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_BusinessEntityAddress_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_BusinessEntityAddress_BusinessEntity_BusinessEntityID" Entity="Person.Businessentity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
@@ -596,17 +914,17 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="BusinessEntityContact" Table="BusinessEntityContact" ShortName="BEC">
+						<Entity Name="Businessentitycontact" ShortName="B1" Table="BusinessEntityContact">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int32 Name="PersonID" DatabaseType="int" />
-								<Int32 Name="ContactTypeID" DatabaseType="int" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int32 Name="Personid" DatabaseType="int" />
+								<Int32 Name="Contacttypeid" DatabaseType="int" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_BusinessEntityContact_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_BusinessEntityContact_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -618,12 +936,12 @@
 										<Reference Field="PersonID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_BusinessEntityContact_ContactType_ContactTypeID" Entity="Person.ContactType" ReferencedTableName="ContactType" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_BusinessEntityContact_ContactType_ContactTypeID" Entity="Person.Contacttype" ReferencedTableName="ContactType" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="ContactTypeID" References="ContactTypeID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_BusinessEntityContact_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_BusinessEntityContact_BusinessEntity_BusinessEntityID" Entity="Person.Businessentity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
@@ -655,13 +973,13 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ContactType" Table="ContactType" ShortName="CT">
+						<Entity Name="Contacttype" ShortName="C" Table="ContactType">
 							<Fields>
-								<Int32 Name="ContactTypeID" DatabaseType="int">
+								<Int32 Name="Contacttypeid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ContactType_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -682,11 +1000,11 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="CountryRegion" Table="CountryRegion" ShortName="CR">
+						<Entity Name="Countryregion" ShortName="C0" Table="CountryRegion">
 							<Fields>
-								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Countryregioncode" DatabaseType="nvarchar" Size="3" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_CountryRegion_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -707,19 +1025,19 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="EmailAddress" Table="EmailAddress" ShortName="EA">
+						<Entity Name="Emailaddress" ShortName="E3" Table="EmailAddress">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int32 Name="EmailAddressID" DatabaseType="int">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int32 Name="Emailaddressid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="EmailAddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<String Name="Emailaddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_EmailAddress_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_EmailAddress_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -747,17 +1065,17 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Password" Table="Password" ShortName="P">
+						<Entity Name="Password" ShortName="P" Table="Password">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<String Name="PasswordHash" DatabaseType="varchar" />
-								<String Name="PasswordSalt" DatabaseType="varchar" Size="10" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Passwordhash" DatabaseType="varchar" />
+								<String Name="Passwordsalt" DatabaseType="varchar" Size="10" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Password_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Password_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -778,27 +1096,27 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Person" Table="Person" ShortName="P0">
+						<Entity Name="Person" ShortName="P0" Table="Person">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<String Name="PersonType" DatabaseType="nchar" Size="2">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Persontype" DatabaseType="nchar" Size="2">
 									<Checks>
 										<Check Name="CK_Person_PersonType">
 											<Definition>([PersonType] IS NULL OR (upper([PersonType])='GC' OR upper([PersonType])='SP' OR upper([PersonType])='EM' OR upper([PersonType])='IN' OR upper([PersonType])='VC' OR upper([PersonType])='SC'))</Definition>
 										</Check>
 									</Checks>
 								</String>
-								<Boolean Name="NameStyle" DatabaseType="namestyle">
+								<Boolean Name="Namestyle" DatabaseType="NameStyle">
 									<DefaultConstraint Name="DF_Person_NameStyle">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
 								</Boolean>
 								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
-								<String Name="FirstName" DatabaseType="name" Size="50" />
-								<String Name="MiddleName" IsNullable="true" DatabaseType="name" Size="50" />
-								<String Name="LastName" DatabaseType="name" Size="50" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
 								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
-								<Int32 Name="EmailPromotion" DatabaseType="int">
+								<Int32 Name="Emailpromotion" DatabaseType="int">
 									<DefaultConstraint Name="DF_Person_EmailPromotion">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
@@ -808,21 +1126,21 @@
 										</Check>
 									</Checks>
 								</Int32>
-								<Xml Name="AdditionalContactInfo" IsNullable="true" DatabaseType="xml" />
+								<Xml Name="Additionalcontactinfo" IsNullable="true" DatabaseType="xml" />
 								<Xml Name="Demographics" IsNullable="true" DatabaseType="xml" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Person_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Person_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_Person_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_Person_BusinessEntity_BusinessEntityID" Entity="Person.Businessentity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
@@ -874,12 +1192,12 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="PersonPhone" Table="PersonPhone" ShortName="PP">
+						<Entity Name="Personphone" ShortName="P1" Table="PersonPhone">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<String Name="PhoneNumber" DatabaseType="phone" Size="25" />
-								<Int32 Name="PhoneNumberTypeID" DatabaseType="int" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Phonenumber" DatabaseType="Phone" Size="25" />
+								<Int32 Name="Phonenumbertypeid" DatabaseType="int" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_PersonPhone_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -891,7 +1209,7 @@
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_PersonPhone_PhoneNumberType_PhoneNumberTypeID" Entity="Person.PhoneNumberType" ReferencedTableName="PhoneNumberType" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_PersonPhone_PhoneNumberType_PhoneNumberTypeID" Entity="Person.Phonenumbertype" ReferencedTableName="PhoneNumberType" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="PhoneNumberTypeID" References="PhoneNumberTypeID" />
 									</References>
@@ -913,13 +1231,13 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="PhoneNumberType" Table="PhoneNumberType" ShortName="PNT">
+						<Entity Name="Phonenumbertype" ShortName="P2" Table="PhoneNumberType">
 							<Fields>
-								<Int32 Name="PhoneNumberTypeID" DatabaseType="int">
+								<Int32 Name="Phonenumbertypeid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_PhoneNumberType_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -934,38 +1252,38 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="StateProvince" Table="StateProvince" ShortName="SP">
+						<Entity Name="Stateprovince" ShortName="S0" Table="StateProvince">
 							<Fields>
-								<Int32 Name="StateProvinceID" DatabaseType="int">
+								<Int32 Name="Stateprovinceid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="StateProvinceCode" DatabaseType="nchar" Size="3" />
-								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
-								<Boolean Name="IsOnlyStateProvinceFlag" DatabaseType="flag">
+								<String Name="Stateprovincecode" DatabaseType="nchar" Size="3" />
+								<String Name="Countryregioncode" DatabaseType="nvarchar" Size="3" />
+								<Boolean Name="Isonlystateprovinceflag" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_StateProvince_IsOnlyStateProvinceFlag">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Int32 Name="TerritoryID" DatabaseType="int" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Int32 Name="Territoryid" DatabaseType="int" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_StateProvince_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_StateProvince_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_StateProvince_CountryRegion_CountryRegionCode" Entity="Person.CountryRegion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_StateProvince_CountryRegion_CountryRegionCode" Entity="Person.Countryregion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="CountryRegionCode" References="CountryRegionCode" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_StateProvince_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_StateProvince_SalesTerritory_TerritoryID" Entity="Sales.Salesterritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="TerritoryID" References="TerritoryID" />
 									</References>
@@ -996,27 +1314,65 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
+						<View Name="Vadditionalcontactinfo" ShortName="V5" View="vAdditionalContactInfo">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Telephonenumber" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Telephonespecialinstructions" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Street" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="City" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Stateprovince" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Postalcode" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Countryregion" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Homeaddressspecialinstructions" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Emailaddress" IsNullable="true" DatabaseType="nvarchar" />
+								<String Name="Emailspecialinstructions" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Emailtelephonenumber" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vstateprovincecountryregion" ShortName="V6" View="vStateProvinceCountryRegion">
+							<Fields>
+								<Int32 Name="Stateprovinceid" DatabaseType="int" />
+								<String Name="Stateprovincecode" DatabaseType="nchar" Size="3" />
+								<Boolean Name="Isonlystateprovinceflag" DatabaseType="Flag" />
+								<String Name="Stateprovincename" DatabaseType="Name" Size="50" />
+								<Int32 Name="Territoryid" DatabaseType="int" />
+								<String Name="Countryregioncode" DatabaseType="nvarchar" Size="3" />
+								<String Name="Countryregionname" DatabaseType="Name" Size="50" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
 					</Objects>
 				</Schema>
 				<Schema Name="Production">
 					<Types />
 					<Objects>
-						<Entity Name="BillOfMaterials" Table="BillOfMaterials" ShortName="BOM">
+						<Entity Name="Billofmaterials" ShortName="B2" Table="BillOfMaterials">
 							<Fields>
-								<Int32 Name="BillOfMaterialsID" DatabaseType="int">
+								<Int32 Name="Billofmaterialsid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Int32 Name="ProductAssemblyID" IsNullable="true" DatabaseType="int" />
-								<Int32 Name="ComponentID" DatabaseType="int" />
-								<DateTime Name="StartDate" DatabaseType="datetime">
+								<Int32 Name="Productassemblyid" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Componentid" DatabaseType="int" />
+								<DateTime Name="Startdate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_BillOfMaterials_StartDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
-								<String Name="UnitMeasureCode" DatabaseType="nchar" Size="3" />
-								<Int16 Name="BOMLevel" DatabaseType="smallint" />
-								<Decimal Name="PerAssemblyQty" DatabaseType="decimal" Precision="8" Scale="2">
+								<DateTime Name="Enddate" IsNullable="true" DatabaseType="datetime" />
+								<String Name="Unitmeasurecode" DatabaseType="nchar" Size="3" />
+								<Int16 Name="Bomlevel" DatabaseType="smallint" />
+								<Decimal Name="Perassemblyqty" DatabaseType="decimal" Precision="8" Scale="2">
 									<DefaultConstraint Name="DF_BillOfMaterials_PerAssemblyQty">
 										<Definition>((1.00))</Definition>
 									</DefaultConstraint>
@@ -1026,7 +1382,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_BillOfMaterials_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1043,7 +1399,7 @@
 										<Reference Field="ComponentID" References="ProductID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_BillOfMaterials_UnitMeasure_UnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_BillOfMaterials_UnitMeasure_UnitMeasureCode" Entity="Production.Unitmeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="UnitMeasureCode" References="UnitMeasureCode" />
 									</References>
@@ -1070,11 +1426,11 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Culture" Table="Culture" ShortName="C">
+						<Entity Name="Culture" ShortName="C1" Table="Culture">
 							<Fields>
-								<String Name="CultureID" DatabaseType="nchar" Size="6" />
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Cultureid" DatabaseType="nchar" Size="6" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Culture_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1095,25 +1451,25 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Document" Table="Document" ShortName="D0">
+						<Entity Name="Document" ShortName="D1" Table="Document">
 							<Fields>
-								<HierarchyId Name="DocumentNode" DatabaseType="hierarchyid" />
-								<Int16 Name="DocumentLevel" IsNullable="true" DatabaseType="smallint">
+								<HierarchyId Name="Documentnode" DatabaseType="hierarchyid" />
+								<Int16 Name="Documentlevel" IsNullable="true" DatabaseType="smallint">
 									<Computed>
 										<Definition>([DocumentNode].[GetLevel]())</Definition>
 									</Computed>
 								</Int16>
 								<String Name="Title" DatabaseType="nvarchar" Size="50" />
 								<Int32 Name="Owner" DatabaseType="int" />
-								<Boolean Name="FolderFlag" DatabaseType="bit">
+								<Boolean Name="Folderflag" DatabaseType="bit">
 									<DefaultConstraint Name="DF_Document_FolderFlag">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<String Name="FileName" DatabaseType="nvarchar" Size="400" />
-								<String Name="FileExtension" DatabaseType="nvarchar" Size="8" />
+								<String Name="Filename" DatabaseType="nvarchar" Size="400" />
+								<String Name="Fileextension" DatabaseType="nvarchar" Size="8" />
 								<String Name="Revision" DatabaseType="nchar" Size="5" />
-								<Int32 Name="ChangeNumber" DatabaseType="int">
+								<Int32 Name="Changenumber" DatabaseType="int">
 									<DefaultConstraint Name="DF_Document_ChangeNumber">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
@@ -1125,14 +1481,14 @@
 										</Check>
 									</Checks>
 								</Byte>
-								<String Name="DocumentSummary" IsNullable="true" DatabaseType="nvarchar" Size="0" />
+								<String Name="Documentsummary" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
 								<Binary Name="Document" IsNullable="true" DatabaseType="varbinary" Size="-1" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Document_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Document_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1176,13 +1532,13 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Illustration" Table="Illustration" ShortName="I">
+						<Entity Name="Illustration" ShortName="I" Table="Illustration">
 							<Fields>
-								<Int32 Name="IllustrationID" DatabaseType="int">
+								<Int32 Name="Illustrationid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
 								<Xml Name="Diagram" IsNullable="true" DatabaseType="xml" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Illustration_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1197,13 +1553,13 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Location" Table="Location" ShortName="L">
+						<Entity Name="Location" ShortName="L" Table="Location">
 							<Fields>
-								<Int16 Name="LocationID" DatabaseType="smallint">
+								<Int16 Name="Locationid" DatabaseType="smallint">
 									<Identity Seed="1" Increment="1" />
 								</Int16>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Decimal Name="CostRate" DatabaseType="smallmoney">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Decimal Name="Costrate" DatabaseType="smallmoney" Precision="10" Scale="4">
 									<DefaultConstraint Name="DF_Location_CostRate">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -1223,7 +1579,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Location_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1244,46 +1600,46 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Product" Table="Product" ShortName="P1">
+						<Entity Name="Product" ShortName="P3" Table="Product">
 							<Fields>
-								<Int32 Name="ProductID" DatabaseType="int">
+								<Int32 Name="Productid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<String Name="ProductNumber" DatabaseType="nvarchar" Size="25" />
-								<Boolean Name="MakeFlag" DatabaseType="flag">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Productnumber" DatabaseType="nvarchar" Size="25" />
+								<Boolean Name="Makeflag" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_Product_MakeFlag">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<Boolean Name="FinishedGoodsFlag" DatabaseType="flag">
+								<Boolean Name="Finishedgoodsflag" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_Product_FinishedGoodsFlag">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
 								<String Name="Color" IsNullable="true" DatabaseType="nvarchar" Size="15" />
-								<Int16 Name="SafetyStockLevel" DatabaseType="smallint">
+								<Int16 Name="Safetystocklevel" DatabaseType="smallint">
 									<Checks>
 										<Check Name="CK_Product_SafetyStockLevel">
 											<Definition>([SafetyStockLevel]&gt;(0))</Definition>
 										</Check>
 									</Checks>
 								</Int16>
-								<Int16 Name="ReorderPoint" DatabaseType="smallint">
+								<Int16 Name="Reorderpoint" DatabaseType="smallint">
 									<Checks>
 										<Check Name="CK_Product_ReorderPoint">
 											<Definition>([ReorderPoint]&gt;(0))</Definition>
 										</Check>
 									</Checks>
 								</Int16>
-								<Decimal Name="StandardCost" DatabaseType="money">
+								<Decimal Name="Standardcost" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_Product_StandardCost">
 											<Definition>([StandardCost]&gt;=(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="ListPrice" DatabaseType="money">
+								<Decimal Name="Listprice" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_Product_ListPrice">
 											<Definition>([ListPrice]&gt;=(0.00))</Definition>
@@ -1291,8 +1647,8 @@
 									</Checks>
 								</Decimal>
 								<String Name="Size" IsNullable="true" DatabaseType="nvarchar" Size="5" />
-								<String Name="SizeUnitMeasureCode" IsNullable="true" DatabaseType="nchar" Size="3" />
-								<String Name="WeightUnitMeasureCode" IsNullable="true" DatabaseType="nchar" Size="3" />
+								<String Name="Sizeunitmeasurecode" IsNullable="true" DatabaseType="nchar" Size="3" />
+								<String Name="Weightunitmeasurecode" IsNullable="true" DatabaseType="nchar" Size="3" />
 								<Decimal Name="Weight" IsNullable="true" DatabaseType="decimal" Precision="8" Scale="2">
 									<Checks>
 										<Check Name="CK_Product_Weight">
@@ -1300,14 +1656,14 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Int32 Name="DaysToManufacture" DatabaseType="int">
+								<Int32 Name="Daystomanufacture" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_Product_DaysToManufacture">
 											<Definition>([DaysToManufacture]&gt;=(0))</Definition>
 										</Check>
 									</Checks>
 								</Int32>
-								<String Name="ProductLine" IsNullable="true" DatabaseType="nchar" Size="2">
+								<String Name="Productline" IsNullable="true" DatabaseType="nchar" Size="2">
 									<Checks>
 										<Check Name="CK_Product_ProductLine">
 											<Definition>(upper([ProductLine])='R' OR upper([ProductLine])='M' OR upper([ProductLine])='T' OR upper([ProductLine])='S' OR [ProductLine] IS NULL)</Definition>
@@ -1328,39 +1684,39 @@
 										</Check>
 									</Checks>
 								</String>
-								<Int32 Name="ProductSubcategoryID" IsNullable="true" DatabaseType="int" />
-								<Int32 Name="ProductModelID" IsNullable="true" DatabaseType="int" />
-								<DateTime Name="SellStartDate" DatabaseType="datetime" />
-								<DateTime Name="SellEndDate" IsNullable="true" DatabaseType="datetime" />
-								<DateTime Name="DiscontinuedDate" IsNullable="true" DatabaseType="datetime" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Productsubcategoryid" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Productmodelid" IsNullable="true" DatabaseType="int" />
+								<DateTime Name="Sellstartdate" DatabaseType="datetime" />
+								<DateTime Name="Sellenddate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="Discontinueddate" IsNullable="true" DatabaseType="datetime" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Product_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Product_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_Product_UnitMeasure_SizeUnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_Product_UnitMeasure_SizeUnitMeasureCode" Entity="Production.Unitmeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="SizeUnitMeasureCode" References="UnitMeasureCode" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_Product_UnitMeasure_WeightUnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_Product_UnitMeasure_WeightUnitMeasureCode" Entity="Production.Unitmeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="WeightUnitMeasureCode" References="UnitMeasureCode" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_Product_ProductModel_ProductModelID" Entity="Production.ProductModel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_Product_ProductModel_ProductModelID" Entity="Production.Productmodel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ProductModelID" References="ProductModelID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_Product_ProductSubcategory_ProductSubcategoryID" Entity="Production.ProductSubcategory" ReferencedTableName="ProductSubcategory" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_Product_ProductSubcategory_ProductSubcategoryID" Entity="Production.Productsubcategory" ReferencedTableName="ProductSubcategory" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ProductSubcategoryID" References="ProductSubcategoryID" />
 									</References>
@@ -1390,18 +1746,18 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductCategory" Table="ProductCategory" ShortName="PC">
+						<Entity Name="Productcategory" ShortName="P4" Table="ProductCategory">
 							<Fields>
-								<Int32 Name="ProductCategoryID" DatabaseType="int">
+								<Int32 Name="Productcategoryid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_ProductCategory_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductCategory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1427,19 +1783,19 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductCostHistory" Table="ProductCostHistory" ShortName="PCH">
+						<Entity Name="Productcosthistory" ShortName="P5" Table="ProductCostHistory">
 							<Fields>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<DateTime Name="StartDate" DatabaseType="datetime" />
-								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
-								<Decimal Name="StandardCost" DatabaseType="money">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<DateTime Name="Startdate" DatabaseType="datetime" />
+								<DateTime Name="Enddate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="Standardcost" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_ProductCostHistory_StandardCost">
 											<Definition>([StandardCost]&gt;=(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductCostHistory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1461,18 +1817,18 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductDescription" Table="ProductDescription" ShortName="PD">
+						<Entity Name="Productdescription" ShortName="P6" Table="ProductDescription">
 							<Fields>
-								<Int32 Name="ProductDescriptionID" DatabaseType="int">
+								<Int32 Name="Productdescriptionid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
 								<String Name="Description" DatabaseType="nvarchar" Size="400" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_ProductDescription_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductDescription_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1493,11 +1849,11 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductDocument" Table="ProductDocument" ShortName="PD0">
+						<Entity Name="Productdocument" ShortName="P7" Table="ProductDocument">
 							<Fields>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<HierarchyId Name="DocumentNode" DatabaseType="hierarchyid" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<HierarchyId Name="Documentnode" DatabaseType="hierarchyid" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductDocument_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1524,10 +1880,10 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductInventory" Table="ProductInventory" ShortName="PI">
+						<Entity Name="Productinventory" ShortName="P8" Table="ProductInventory">
 							<Fields>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int16 Name="LocationID" DatabaseType="smallint" />
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int16 Name="Locationid" DatabaseType="smallint" />
 								<String Name="Shelf" DatabaseType="nvarchar" Size="10">
 									<Checks>
 										<Check Name="CK_ProductInventory_Shelf">
@@ -1547,12 +1903,12 @@
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
 								</Int16>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_ProductInventory_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductInventory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1579,19 +1935,19 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductListPriceHistory" Table="ProductListPriceHistory" ShortName="PLPH">
+						<Entity Name="Productlistpricehistory" ShortName="P9" Table="ProductListPriceHistory">
 							<Fields>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<DateTime Name="StartDate" DatabaseType="datetime" />
-								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
-								<Decimal Name="ListPrice" DatabaseType="money">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<DateTime Name="Startdate" DatabaseType="datetime" />
+								<DateTime Name="Enddate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="Listprice" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_ProductListPriceHistory_ListPrice">
 											<Definition>([ListPrice]&gt;(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductListPriceHistory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1613,20 +1969,20 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductModel" Table="ProductModel" ShortName="PM">
+						<Entity Name="Productmodel" ShortName="P10" Table="ProductModel">
 							<Fields>
-								<Int32 Name="ProductModelID" DatabaseType="int">
+								<Int32 Name="Productmodelid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Xml Name="CatalogDescription" IsNullable="true" DatabaseType="xml" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Xml Name="Catalogdescription" IsNullable="true" DatabaseType="xml" />
 								<Xml Name="Instructions" IsNullable="true" DatabaseType="xml" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_ProductModel_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductModel_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1662,18 +2018,18 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductModelIllustration" Table="ProductModelIllustration" ShortName="PMI">
+						<Entity Name="Productmodelillustration" ShortName="P11" Table="ProductModelIllustration">
 							<Fields>
-								<Int32 Name="ProductModelID" DatabaseType="int" />
-								<Int32 Name="IllustrationID" DatabaseType="int" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Int32 Name="Productmodelid" DatabaseType="int" />
+								<Int32 Name="Illustrationid" DatabaseType="int" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductModelIllustration_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_ProductModelIllustration_ProductModel_ProductModelID" Entity="Production.ProductModel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_ProductModelIllustration_ProductModel_ProductModelID" Entity="Production.Productmodel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ProductModelID" References="ProductModelID" />
 									</References>
@@ -1693,19 +2049,19 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductModelProductDescriptionCulture" Table="ProductModelProductDescriptionCulture" ShortName="PMPDC">
+						<Entity Name="Productmodelproductdescriptionculture" ShortName="P12" Table="ProductModelProductDescriptionCulture">
 							<Fields>
-								<Int32 Name="ProductModelID" DatabaseType="int" />
-								<Int32 Name="ProductDescriptionID" DatabaseType="int" />
-								<String Name="CultureID" DatabaseType="nchar" Size="6" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Int32 Name="Productmodelid" DatabaseType="int" />
+								<Int32 Name="Productdescriptionid" DatabaseType="int" />
+								<String Name="Cultureid" DatabaseType="nchar" Size="6" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductModelProductDescriptionCulture_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_ProductModelProductDescriptionCulture_ProductDescription_ProductDescriptionID" Entity="Production.ProductDescription" ReferencedTableName="ProductDescription" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_ProductModelProductDescriptionCulture_ProductDescription_ProductDescriptionID" Entity="Production.Productdescription" ReferencedTableName="ProductDescription" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ProductDescriptionID" References="ProductDescriptionID" />
 									</References>
@@ -1715,7 +2071,7 @@
 										<Reference Field="CultureID" References="CultureID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_ProductModelProductDescriptionCulture_ProductModel_ProductModelID" Entity="Production.ProductModel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_ProductModelProductDescriptionCulture_ProductModel_ProductModelID" Entity="Production.Productmodel" ReferencedTableName="ProductModel" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ProductModelID" References="ProductModelID" />
 									</References>
@@ -1731,16 +2087,16 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductPhoto" Table="ProductPhoto" ShortName="PP0">
+						<Entity Name="Productphoto" ShortName="P13" Table="ProductPhoto">
 							<Fields>
-								<Int32 Name="ProductPhotoID" DatabaseType="int">
+								<Int32 Name="Productphotoid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Binary Name="ThumbNailPhoto" IsNullable="true" DatabaseType="varbinary" Size="-1" />
-								<String Name="ThumbnailPhotoFileName" IsNullable="true" DatabaseType="nvarchar" Size="50" />
-								<Binary Name="LargePhoto" IsNullable="true" DatabaseType="varbinary" Size="-1" />
-								<String Name="LargePhotoFileName" IsNullable="true" DatabaseType="nvarchar" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Binary Name="Thumbnailphoto" IsNullable="true" DatabaseType="varbinary" Size="-1" />
+								<String Name="Thumbnailphotofilename" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Binary Name="Largephoto" IsNullable="true" DatabaseType="varbinary" Size="-1" />
+								<String Name="Largephotofilename" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductPhoto_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1755,16 +2111,16 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductProductPhoto" Table="ProductProductPhoto" ShortName="PPP">
+						<Entity Name="Productproductphoto" ShortName="P14" Table="ProductProductPhoto">
 							<Fields>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int32 Name="ProductPhotoID" DatabaseType="int" />
-								<Boolean Name="Primary" DatabaseType="flag">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int32 Name="Productphotoid" DatabaseType="int" />
+								<Boolean Name="Primary" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_ProductProductPhoto_Primary">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductProductPhoto_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1776,26 +2132,13 @@
 										<Reference Field="ProductID" References="ProductID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_ProductProductPhoto_ProductPhoto_ProductPhotoID" Entity="Production.ProductPhoto" ReferencedTableName="ProductPhoto" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_ProductProductPhoto_ProductPhoto_ProductPhotoID" Entity="Production.Productphoto" ReferencedTableName="ProductPhoto" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ProductPhotoID" References="ProductPhotoID" />
 									</References>
 								</ForeignKey>
 							</ForeignKeys>
-							<Indexes>
-								<Index Name="">
-									<Fields />
-								</Index>
-								<Index Name="">
-									<Fields />
-								</Index>
-								<Index Name="">
-									<Fields />
-								</Index>
-								<Index>
-									<Fields />
-								</Index>
-							</Indexes>
+							<Indexes />
 							<PrimaryKey Name="PK_ProductProductPhoto_ProductID_ProductPhotoID" IsUnique="true" IsPrimaryKey="true">
 								<Fields>
 									<Field Name="ProductID" />
@@ -1804,19 +2147,19 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductReview" Table="ProductReview" ShortName="PR">
+						<Entity Name="Productreview" ShortName="P15" Table="ProductReview">
 							<Fields>
-								<Int32 Name="ProductReviewID" DatabaseType="int">
+								<Int32 Name="Productreviewid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<String Name="ReviewerName" DatabaseType="name" Size="50" />
-								<DateTime Name="ReviewDate" DatabaseType="datetime">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<String Name="Reviewername" DatabaseType="Name" Size="50" />
+								<DateTime Name="Reviewdate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductReview_ReviewDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<String Name="EmailAddress" DatabaseType="nvarchar" Size="50" />
+								<String Name="Emailaddress" DatabaseType="nvarchar" Size="50" />
 								<Int32 Name="Rating" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_ProductReview_Rating">
@@ -1825,7 +2168,7 @@
 									</Checks>
 								</Int32>
 								<String Name="Comments" IsNullable="true" DatabaseType="nvarchar" Size="3850" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductReview_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1854,26 +2197,26 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ProductSubcategory" Table="ProductSubcategory" ShortName="PS">
+						<Entity Name="Productsubcategory" ShortName="P16" Table="ProductSubcategory">
 							<Fields>
-								<Int32 Name="ProductSubcategoryID" DatabaseType="int">
+								<Int32 Name="Productsubcategoryid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Int32 Name="ProductCategoryID" DatabaseType="int" />
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Productcategoryid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_ProductSubcategory_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductSubcategory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_ProductSubcategory_ProductCategory_ProductCategoryID" Entity="Production.ProductCategory" ReferencedTableName="ProductCategory" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_ProductSubcategory_ProductCategory_ProductCategoryID" Entity="Production.Productcategory" ReferencedTableName="ProductCategory" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ProductCategoryID" References="ProductCategoryID" />
 									</References>
@@ -1898,13 +2241,13 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ScrapReason" Table="ScrapReason" ShortName="SR">
+						<Entity Name="Scrapreason" ShortName="S1" Table="ScrapReason">
 							<Fields>
-								<Int16 Name="ScrapReasonID" DatabaseType="smallint">
+								<Int16 Name="Scrapreasonid" DatabaseType="smallint">
 									<Identity Seed="1" Increment="1" />
 								</Int16>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ScrapReason_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1925,24 +2268,24 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="TransactionHistory" Table="TransactionHistory" ShortName="TH">
+						<Entity Name="Transactionhistory" ShortName="T" Table="TransactionHistory">
 							<Fields>
-								<Int32 Name="TransactionID" DatabaseType="int">
+								<Int32 Name="Transactionid" DatabaseType="int">
 									<Identity Seed="100000" Increment="1" />
 								</Int32>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int32 Name="ReferenceOrderID" DatabaseType="int" />
-								<Int32 Name="ReferenceOrderLineID" DatabaseType="int">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int32 Name="Referenceorderid" DatabaseType="int" />
+								<Int32 Name="Referenceorderlineid" DatabaseType="int">
 									<DefaultConstraint Name="DF_TransactionHistory_ReferenceOrderLineID">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
 								</Int32>
-								<DateTime Name="TransactionDate" DatabaseType="datetime">
+								<DateTime Name="Transactiondate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_TransactionHistory_TransactionDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<String Name="TransactionType" DatabaseType="nchar" Size="1">
+								<String Name="Transactiontype" DatabaseType="nchar" Size="1">
 									<Checks>
 										<Check Name="CK_TransactionHistory_TransactionType">
 											<Definition>(upper([TransactionType])='P' OR upper([TransactionType])='S' OR upper([TransactionType])='W')</Definition>
@@ -1950,8 +2293,8 @@
 									</Checks>
 								</String>
 								<Int32 Name="Quantity" DatabaseType="int" />
-								<Decimal Name="ActualCost" DatabaseType="money" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Decimal Name="Actualcost" DatabaseType="money" Precision="19" Scale="4" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_TransactionHistory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -1984,22 +2327,22 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="TransactionHistoryArchive" Table="TransactionHistoryArchive" ShortName="THA">
+						<Entity Name="Transactionhistoryarchive" ShortName="T0" Table="TransactionHistoryArchive">
 							<Fields>
-								<Int32 Name="TransactionID" DatabaseType="int" />
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int32 Name="ReferenceOrderID" DatabaseType="int" />
-								<Int32 Name="ReferenceOrderLineID" DatabaseType="int">
+								<Int32 Name="Transactionid" DatabaseType="int" />
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int32 Name="Referenceorderid" DatabaseType="int" />
+								<Int32 Name="Referenceorderlineid" DatabaseType="int">
 									<DefaultConstraint Name="DF_TransactionHistoryArchive_ReferenceOrderLineID">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
 								</Int32>
-								<DateTime Name="TransactionDate" DatabaseType="datetime">
+								<DateTime Name="Transactiondate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_TransactionHistoryArchive_TransactionDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<String Name="TransactionType" DatabaseType="nchar" Size="1">
+								<String Name="Transactiontype" DatabaseType="nchar" Size="1">
 									<Checks>
 										<Check Name="CK_TransactionHistoryArchive_TransactionType">
 											<Definition>(upper([TransactionType])='P' OR upper([TransactionType])='S' OR upper([TransactionType])='W')</Definition>
@@ -2007,8 +2350,8 @@
 									</Checks>
 								</String>
 								<Int32 Name="Quantity" DatabaseType="int" />
-								<Decimal Name="ActualCost" DatabaseType="money" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Decimal Name="Actualcost" DatabaseType="money" Precision="19" Scale="4" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_TransactionHistoryArchive_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2035,11 +2378,11 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="UnitMeasure" Table="UnitMeasure" ShortName="UM">
+						<Entity Name="Unitmeasure" ShortName="U" Table="UnitMeasure">
 							<Fields>
-								<String Name="UnitMeasureCode" DatabaseType="nchar" Size="3" />
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Unitmeasurecode" DatabaseType="nchar" Size="3" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_UnitMeasure_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2060,36 +2403,36 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="WorkOrder" Table="WorkOrder" ShortName="WO">
+						<Entity Name="Workorder" ShortName="W" Table="WorkOrder">
 							<Fields>
-								<Int32 Name="WorkOrderID" DatabaseType="int">
+								<Int32 Name="Workorderid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int32 Name="OrderQty" DatabaseType="int">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int32 Name="Orderqty" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_WorkOrder_OrderQty">
 											<Definition>([OrderQty]&gt;(0))</Definition>
 										</Check>
 									</Checks>
 								</Int32>
-								<Int32 Name="StockedQty" DatabaseType="int">
+								<Int32 Name="Stockedqty" DatabaseType="int">
 									<Computed>
 										<Definition>(isnull([OrderQty]-[ScrappedQty],(0)))</Definition>
 									</Computed>
 								</Int32>
-								<Int16 Name="ScrappedQty" DatabaseType="smallint">
+								<Int16 Name="Scrappedqty" DatabaseType="smallint">
 									<Checks>
 										<Check Name="CK_WorkOrder_ScrappedQty">
 											<Definition>([ScrappedQty]&gt;=(0))</Definition>
 										</Check>
 									</Checks>
 								</Int16>
-								<DateTime Name="StartDate" DatabaseType="datetime" />
-								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
-								<DateTime Name="DueDate" DatabaseType="datetime" />
-								<Int16 Name="ScrapReasonID" IsNullable="true" DatabaseType="smallint" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Startdate" DatabaseType="datetime" />
+								<DateTime Name="Enddate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="Duedate" DatabaseType="datetime" />
+								<Int16 Name="Scrapreasonid" IsNullable="true" DatabaseType="smallint" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_WorkOrder_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2101,7 +2444,7 @@
 										<Reference Field="ProductID" References="ProductID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_WorkOrder_ScrapReason_ScrapReasonID" Entity="Production.ScrapReason" ReferencedTableName="ScrapReason" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_WorkOrder_ScrapReason_ScrapReasonID" Entity="Production.Scrapreason" ReferencedTableName="ScrapReason" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="ScrapReasonID" References="ScrapReasonID" />
 									</References>
@@ -2126,38 +2469,38 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="WorkOrderRouting" Table="WorkOrderRouting" ShortName="WOR">
+						<Entity Name="Workorderrouting" ShortName="W0" Table="WorkOrderRouting">
 							<Fields>
-								<Int32 Name="WorkOrderID" DatabaseType="int" />
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int16 Name="OperationSequence" DatabaseType="smallint" />
-								<Int16 Name="LocationID" DatabaseType="smallint" />
-								<DateTime Name="ScheduledStartDate" DatabaseType="datetime" />
-								<DateTime Name="ScheduledEndDate" DatabaseType="datetime" />
-								<DateTime Name="ActualStartDate" IsNullable="true" DatabaseType="datetime" />
-								<DateTime Name="ActualEndDate" IsNullable="true" DatabaseType="datetime" />
-								<Decimal Name="ActualResourceHrs" IsNullable="true" DatabaseType="decimal" Precision="9" Scale="4">
+								<Int32 Name="Workorderid" DatabaseType="int" />
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int16 Name="Operationsequence" DatabaseType="smallint" />
+								<Int16 Name="Locationid" DatabaseType="smallint" />
+								<DateTime Name="Scheduledstartdate" DatabaseType="datetime" />
+								<DateTime Name="Scheduledenddate" DatabaseType="datetime" />
+								<DateTime Name="Actualstartdate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="Actualenddate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="Actualresourcehrs" IsNullable="true" DatabaseType="decimal" Precision="9" Scale="4">
 									<Checks>
 										<Check Name="CK_WorkOrderRouting_ActualResourceHrs">
 											<Definition>([ActualResourceHrs]&gt;=(0.0000))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="PlannedCost" DatabaseType="money">
+								<Decimal Name="Plannedcost" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_WorkOrderRouting_PlannedCost">
 											<Definition>([PlannedCost]&gt;(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="ActualCost" IsNullable="true" DatabaseType="money">
+								<Decimal Name="Actualcost" IsNullable="true" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_WorkOrderRouting_ActualCost">
 											<Definition>([ActualCost]&gt;(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_WorkOrderRouting_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2169,7 +2512,7 @@
 										<Reference Field="LocationID" References="LocationID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_WorkOrderRouting_WorkOrder_WorkOrderID" Entity="Production.WorkOrder" ReferencedTableName="WorkOrder" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_WorkOrderRouting_WorkOrder_WorkOrderID" Entity="Production.Workorder" ReferencedTableName="WorkOrder" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="WorkOrderID" References="WorkOrderID" />
 									</References>
@@ -2191,60 +2534,126 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
+						<View Name="Vproductanddescription" ShortName="V7" View="vProductAndDescription">
+							<Fields>
+								<Int32 Name="Productid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Productmodel" DatabaseType="Name" Size="50" />
+								<String Name="Cultureid" DatabaseType="nchar" Size="6" />
+								<String Name="Description" DatabaseType="nvarchar" Size="400" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vproductmodelcatalogdescription" ShortName="V8" View="vProductModelCatalogDescription">
+							<Fields>
+								<Int32 Name="Productmodelid" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Summary" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Manufacturer" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Copyright" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Producturl" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Warrantyperiod" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Warrantydescription" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Noofyears" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Maintenancedescription" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Wheel" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Saddle" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Pedal" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Bikeframe" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<String Name="Crankset" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Pictureangle" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Picturesize" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Productphotoid" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Material" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Color" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Productline" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Style" IsNullable="true" DatabaseType="nvarchar" Size="256" />
+								<String Name="Riderexperience" IsNullable="true" DatabaseType="nvarchar" Size="1024" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vproductmodelinstructions" ShortName="V9" View="vProductModelInstructions">
+							<Fields>
+								<Int32 Name="Productmodelid" DatabaseType="int">
+									<Identity Seed="1" Increment="1" />
+								</Int32>
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Instructions" IsNullable="true" DatabaseType="nvarchar" Size="-1" />
+								<Int32 Name="Locationid" IsNullable="true" DatabaseType="int" />
+								<Decimal Name="Setuphours" IsNullable="true" DatabaseType="decimal" Precision="9" Scale="4" />
+								<Decimal Name="Machinehours" IsNullable="true" DatabaseType="decimal" Precision="9" Scale="4" />
+								<Decimal Name="Laborhours" IsNullable="true" DatabaseType="decimal" Precision="9" Scale="4" />
+								<Int32 Name="Lotsize" IsNullable="true" DatabaseType="int" />
+								<String Name="Step" IsNullable="true" DatabaseType="nvarchar" Size="1024" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
 					</Objects>
 				</Schema>
 				<Schema Name="Purchasing">
 					<Types />
 					<Objects>
-						<Entity Name="ProductVendor" Table="ProductVendor" ShortName="PV">
+						<Entity Name="Productvendor" ShortName="P17" Table="ProductVendor">
 							<Fields>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int32 Name="AverageLeadTime" DatabaseType="int">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int32 Name="Averageleadtime" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_ProductVendor_AverageLeadTime">
 											<Definition>([AverageLeadTime]&gt;=(1))</Definition>
 										</Check>
 									</Checks>
 								</Int32>
-								<Decimal Name="StandardPrice" DatabaseType="money">
+								<Decimal Name="Standardprice" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_ProductVendor_StandardPrice">
 											<Definition>([StandardPrice]&gt;(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="LastReceiptCost" IsNullable="true" DatabaseType="money">
+								<Decimal Name="Lastreceiptcost" IsNullable="true" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_ProductVendor_LastReceiptCost">
 											<Definition>([LastReceiptCost]&gt;(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<DateTime Name="LastReceiptDate" IsNullable="true" DatabaseType="datetime" />
-								<Int32 Name="MinOrderQty" DatabaseType="int">
+								<DateTime Name="Lastreceiptdate" IsNullable="true" DatabaseType="datetime" />
+								<Int32 Name="Minorderqty" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_ProductVendor_MinOrderQty">
 											<Definition>([MinOrderQty]&gt;=(1))</Definition>
 										</Check>
 									</Checks>
 								</Int32>
-								<Int32 Name="MaxOrderQty" DatabaseType="int">
+								<Int32 Name="Maxorderqty" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_ProductVendor_MaxOrderQty">
 											<Definition>([MaxOrderQty]&gt;=(1))</Definition>
 										</Check>
 									</Checks>
 								</Int32>
-								<Int32 Name="OnOrderQty" IsNullable="true" DatabaseType="int">
+								<Int32 Name="Onorderqty" IsNullable="true" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_ProductVendor_OnOrderQty">
 											<Definition>([OnOrderQty]&gt;=(0))</Definition>
 										</Check>
 									</Checks>
 								</Int32>
-								<String Name="UnitMeasureCode" DatabaseType="nchar" Size="3" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Unitmeasurecode" DatabaseType="nchar" Size="3" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ProductVendor_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2256,7 +2665,7 @@
 										<Reference Field="ProductID" References="ProductID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_ProductVendor_UnitMeasure_UnitMeasureCode" Entity="Production.UnitMeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
+								<ForeignKey Name="FK_ProductVendor_UnitMeasure_UnitMeasureCode" Entity="Production.Unitmeasure" ReferencedTableName="UnitMeasure" ReferencedSchemaName="Production">
 									<References>
 										<Reference Field="UnitMeasureCode" References="UnitMeasureCode" />
 									</References>
@@ -2287,53 +2696,53 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="PurchaseOrderDetail" Table="PurchaseOrderDetail" ShortName="POD">
+						<Entity Name="Purchaseorderdetail" ShortName="P18" Table="PurchaseOrderDetail">
 							<Fields>
-								<Int32 Name="PurchaseOrderID" DatabaseType="int" />
-								<Int32 Name="PurchaseOrderDetailID" DatabaseType="int">
+								<Int32 Name="Purchaseorderid" DatabaseType="int" />
+								<Int32 Name="Purchaseorderdetailid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<DateTime Name="DueDate" DatabaseType="datetime" />
-								<Int16 Name="OrderQty" DatabaseType="smallint">
+								<DateTime Name="Duedate" DatabaseType="datetime" />
+								<Int16 Name="Orderqty" DatabaseType="smallint">
 									<Checks>
 										<Check Name="CK_PurchaseOrderDetail_OrderQty">
 											<Definition>([OrderQty]&gt;(0))</Definition>
 										</Check>
 									</Checks>
 								</Int16>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Decimal Name="UnitPrice" DatabaseType="money">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Decimal Name="Unitprice" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_PurchaseOrderDetail_UnitPrice">
 											<Definition>([UnitPrice]&gt;=(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="LineTotal" DatabaseType="money">
+								<Decimal Name="Linetotal" DatabaseType="money" Precision="19" Scale="4">
 									<Computed>
 										<Definition>(isnull([OrderQty]*[UnitPrice],(0.00)))</Definition>
 									</Computed>
 								</Decimal>
-								<Decimal Name="ReceivedQty" DatabaseType="decimal" Precision="8" Scale="2">
+								<Decimal Name="Receivedqty" DatabaseType="decimal" Precision="8" Scale="2">
 									<Checks>
 										<Check Name="CK_PurchaseOrderDetail_ReceivedQty">
 											<Definition>([ReceivedQty]&gt;=(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="RejectedQty" DatabaseType="decimal" Precision="8" Scale="2">
+								<Decimal Name="Rejectedqty" DatabaseType="decimal" Precision="8" Scale="2">
 									<Checks>
 										<Check Name="CK_PurchaseOrderDetail_RejectedQty">
 											<Definition>([RejectedQty]&gt;=(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="StockedQty" DatabaseType="decimal" Precision="9" Scale="2">
+								<Decimal Name="Stockedqty" DatabaseType="decimal" Precision="9" Scale="2">
 									<Computed>
 										<Definition>(isnull([ReceivedQty]-[RejectedQty],(0.00)))</Definition>
 									</Computed>
 								</Decimal>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_PurchaseOrderDetail_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2345,7 +2754,7 @@
 										<Reference Field="ProductID" References="ProductID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_PurchaseOrderDetail_PurchaseOrderHeader_PurchaseOrderID" Entity="Purchasing.PurchaseOrderHeader" ReferencedTableName="PurchaseOrderHeader" ReferencedSchemaName="Purchasing">
+								<ForeignKey Name="FK_PurchaseOrderDetail_PurchaseOrderHeader_PurchaseOrderID" Entity="Purchasing.Purchaseorderheader" ReferencedTableName="PurchaseOrderHeader" ReferencedSchemaName="Purchasing">
 									<References>
 										<Reference Field="PurchaseOrderID" References="PurchaseOrderID" />
 									</References>
@@ -2366,12 +2775,12 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="PurchaseOrderHeader" Table="PurchaseOrderHeader" ShortName="POH">
+						<Entity Name="Purchaseorderheader" ShortName="P19" Table="PurchaseOrderHeader">
 							<Fields>
-								<Int32 Name="PurchaseOrderID" DatabaseType="int">
+								<Int32 Name="Purchaseorderid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Byte Name="RevisionNumber" DatabaseType="tinyint">
+								<Byte Name="Revisionnumber" DatabaseType="tinyint">
 									<DefaultConstraint Name="DF_PurchaseOrderHeader_RevisionNumber">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
@@ -2386,16 +2795,16 @@
 										</Check>
 									</Checks>
 								</Byte>
-								<Int32 Name="EmployeeID" DatabaseType="int" />
-								<Int32 Name="VendorID" DatabaseType="int" />
-								<Int32 Name="ShipMethodID" DatabaseType="int" />
-								<DateTime Name="OrderDate" DatabaseType="datetime">
+								<Int32 Name="Employeeid" DatabaseType="int" />
+								<Int32 Name="Vendorid" DatabaseType="int" />
+								<Int32 Name="Shipmethodid" DatabaseType="int" />
+								<DateTime Name="Orderdate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_PurchaseOrderHeader_OrderDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<DateTime Name="ShipDate" IsNullable="true" DatabaseType="datetime" />
-								<Decimal Name="SubTotal" DatabaseType="money">
+								<DateTime Name="Shipdate" IsNullable="true" DatabaseType="datetime" />
+								<Decimal Name="Subtotal" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_PurchaseOrderHeader_SubTotal">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2405,7 +2814,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="TaxAmt" DatabaseType="money">
+								<Decimal Name="Taxamt" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_PurchaseOrderHeader_TaxAmt">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2415,7 +2824,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="Freight" DatabaseType="money">
+								<Decimal Name="Freight" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_PurchaseOrderHeader_Freight">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2425,12 +2834,12 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="TotalDue" DatabaseType="money">
+								<Decimal Name="Totaldue" DatabaseType="money" Precision="19" Scale="4">
 									<Computed IsPersisted="true">
 										<Definition>(isnull(([SubTotal]+[TaxAmt])+[Freight],(0)))</Definition>
 									</Computed>
 								</Decimal>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_PurchaseOrderHeader_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2447,7 +2856,7 @@
 										<Reference Field="VendorID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_PurchaseOrderHeader_ShipMethod_ShipMethodID" Entity="Purchasing.ShipMethod" ReferencedTableName="ShipMethod" ReferencedSchemaName="Purchasing">
+								<ForeignKey Name="FK_PurchaseOrderHeader_ShipMethod_ShipMethodID" Entity="Purchasing.Shipmethod" ReferencedTableName="ShipMethod" ReferencedSchemaName="Purchasing">
 									<References>
 										<Reference Field="ShipMethodID" References="ShipMethodID" />
 									</References>
@@ -2472,13 +2881,13 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ShipMethod" Table="ShipMethod" ShortName="SM">
+						<Entity Name="Shipmethod" ShortName="S2" Table="ShipMethod">
 							<Fields>
-								<Int32 Name="ShipMethodID" DatabaseType="int">
+								<Int32 Name="Shipmethodid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Decimal Name="ShipBase" DatabaseType="money">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Decimal Name="Shipbase" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_ShipMethod_ShipBase">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2488,7 +2897,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="ShipRate" DatabaseType="money">
+								<Decimal Name="Shiprate" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_ShipMethod_ShipRate">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2498,12 +2907,12 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_ShipMethod_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ShipMethod_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2529,37 +2938,37 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Vendor" Table="Vendor" ShortName="V">
+						<Entity Name="Vendor" ShortName="V10" Table="Vendor">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<String Name="AccountNumber" DatabaseType="accountnumber" Size="15" />
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Byte Name="CreditRating" DatabaseType="tinyint">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Accountnumber" DatabaseType="AccountNumber" Size="15" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Byte Name="Creditrating" DatabaseType="tinyint">
 									<Checks>
 										<Check Name="CK_Vendor_CreditRating">
 											<Definition>([CreditRating]&gt;=(1) AND [CreditRating]&lt;=(5))</Definition>
 										</Check>
 									</Checks>
 								</Byte>
-								<Boolean Name="PreferredVendorStatus" DatabaseType="flag">
+								<Boolean Name="Preferredvendorstatus" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_Vendor_PreferredVendorStatus">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<Boolean Name="ActiveFlag" DatabaseType="flag">
+								<Boolean Name="Activeflag" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_Vendor_ActiveFlag">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<String Name="PurchasingWebServiceURL" IsNullable="true" DatabaseType="nvarchar" Size="1024" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Purchasingwebserviceurl" IsNullable="true" DatabaseType="nvarchar" Size="1024" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Vendor_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_Vendor_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_Vendor_BusinessEntity_BusinessEntityID" Entity="Person.Businessentity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
@@ -2579,23 +2988,58 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
+						<View Name="Vvendorwithaddresses" ShortName="V11" View="vVendorWithAddresses">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Addresstype" DatabaseType="Name" Size="50" />
+								<String Name="Addressline1" DatabaseType="nvarchar" Size="60" />
+								<String Name="Addressline2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
+								<String Name="City" DatabaseType="nvarchar" Size="30" />
+								<String Name="Stateprovincename" DatabaseType="Name" Size="50" />
+								<String Name="Postalcode" DatabaseType="nvarchar" Size="15" />
+								<String Name="Countryregionname" DatabaseType="Name" Size="50" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vvendorwithcontacts" ShortName="V12" View="vVendorWithContacts">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Contacttype" DatabaseType="Name" Size="50" />
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<String Name="Phonenumber" IsNullable="true" DatabaseType="Phone" Size="25" />
+								<String Name="Phonenumbertype" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Emailaddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Emailpromotion" DatabaseType="int" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
 					</Objects>
 				</Schema>
 				<Schema Name="Sales">
 					<Types />
 					<Objects>
-						<Entity Name="CountryRegionCurrency" Table="CountryRegionCurrency" ShortName="CRC">
+						<Entity Name="Countryregioncurrency" ShortName="C2" Table="CountryRegionCurrency">
 							<Fields>
-								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
-								<String Name="CurrencyCode" DatabaseType="nchar" Size="3" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Countryregioncode" DatabaseType="nvarchar" Size="3" />
+								<String Name="Currencycode" DatabaseType="nchar" Size="3" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_CountryRegionCurrency_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_CountryRegionCurrency_CountryRegion_CountryRegionCode" Entity="Person.CountryRegion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_CountryRegionCurrency_CountryRegion_CountryRegionCode" Entity="Person.Countryregion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="CountryRegionCode" References="CountryRegionCode" />
 									</References>
@@ -2621,16 +3065,16 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="CreditCard" Table="CreditCard" ShortName="CC">
+						<Entity Name="Creditcard" ShortName="C3" Table="CreditCard">
 							<Fields>
-								<Int32 Name="CreditCardID" DatabaseType="int">
+								<Int32 Name="Creditcardid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="CardType" DatabaseType="nvarchar" Size="50" />
-								<String Name="CardNumber" DatabaseType="nvarchar" Size="25" />
-								<Byte Name="ExpMonth" DatabaseType="tinyint" />
-								<Int16 Name="ExpYear" DatabaseType="smallint" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Cardtype" DatabaseType="nvarchar" Size="50" />
+								<String Name="Cardnumber" DatabaseType="nvarchar" Size="25" />
+								<Byte Name="Expmonth" DatabaseType="tinyint" />
+								<Int16 Name="Expyear" DatabaseType="smallint" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_CreditCard_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2651,11 +3095,11 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Currency" Table="Currency" ShortName="C0">
+						<Entity Name="Currency" ShortName="C4" Table="Currency">
 							<Fields>
-								<String Name="CurrencyCode" DatabaseType="nchar" Size="3" />
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Currencycode" DatabaseType="nchar" Size="3" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Currency_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2676,17 +3120,17 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="CurrencyRate" Table="CurrencyRate" ShortName="CR0">
+						<Entity Name="Currencyrate" ShortName="C5" Table="CurrencyRate">
 							<Fields>
-								<Int32 Name="CurrencyRateID" DatabaseType="int">
+								<Int32 Name="Currencyrateid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<DateTime Name="CurrencyRateDate" DatabaseType="datetime" />
-								<String Name="FromCurrencyCode" DatabaseType="nchar" Size="3" />
-								<String Name="ToCurrencyCode" DatabaseType="nchar" Size="3" />
-								<Decimal Name="AverageRate" DatabaseType="money" />
-								<Decimal Name="EndOfDayRate" DatabaseType="money" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Currencyratedate" DatabaseType="datetime" />
+								<String Name="Fromcurrencycode" DatabaseType="nchar" Size="3" />
+								<String Name="Tocurrencycode" DatabaseType="nchar" Size="3" />
+								<Decimal Name="Averagerate" DatabaseType="money" Precision="19" Scale="4" />
+								<Decimal Name="Endofdayrate" DatabaseType="money" Precision="19" Scale="4" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_CurrencyRate_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2720,25 +3164,25 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Customer" Table="Customer" ShortName="C1">
+						<Entity Name="Customer" ShortName="C6" Table="Customer">
 							<Fields>
-								<Int32 Name="CustomerID" DatabaseType="int">
+								<Int32 Name="Customerid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Int32 Name="PersonID" IsNullable="true" DatabaseType="int" />
-								<Int32 Name="StoreID" IsNullable="true" DatabaseType="int" />
-								<Int32 Name="TerritoryID" IsNullable="true" DatabaseType="int" />
-								<String Name="AccountNumber" DatabaseType="varchar" Size="10">
+								<Int32 Name="Personid" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Storeid" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Territoryid" IsNullable="true" DatabaseType="int" />
+								<String Name="Accountnumber" DatabaseType="varchar" Size="10">
 									<Computed>
 										<Definition>(isnull('AW'+[dbo].[ufnLeadingZeros]([CustomerID]),''))</Definition>
 									</Computed>
 								</String>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Customer_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Customer_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2755,7 +3199,7 @@
 										<Reference Field="StoreID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_Customer_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_Customer_SalesTerritory_TerritoryID" Entity="Sales.Salesterritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="TerritoryID" References="TerritoryID" />
 									</References>
@@ -2785,11 +3229,11 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="PersonCreditCard" Table="PersonCreditCard" ShortName="PCC">
+						<Entity Name="Personcreditcard" ShortName="P20" Table="PersonCreditCard">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int32 Name="CreditCardID" DatabaseType="int" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int32 Name="Creditcardid" DatabaseType="int" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_PersonCreditCard_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -2801,7 +3245,7 @@
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_PersonCreditCard_CreditCard_CreditCardID" Entity="Sales.CreditCard" ReferencedTableName="CreditCard" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_PersonCreditCard_CreditCard_CreditCardID" Entity="Sales.Creditcard" ReferencedTableName="CreditCard" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="CreditCardID" References="CreditCardID" />
 									</References>
@@ -2816,30 +3260,30 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesOrderDetail" Table="SalesOrderDetail" ShortName="SOD">
+						<Entity Name="Salesorderdetail" ShortName="S3" Table="SalesOrderDetail">
 							<Fields>
-								<Int32 Name="SalesOrderID" DatabaseType="int" />
-								<Int32 Name="SalesOrderDetailID" DatabaseType="int">
+								<Int32 Name="Salesorderid" DatabaseType="int" />
+								<Int32 Name="Salesorderdetailid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="CarrierTrackingNumber" IsNullable="true" DatabaseType="nvarchar" Size="25" />
-								<Int16 Name="OrderQty" DatabaseType="smallint">
+								<String Name="Carriertrackingnumber" IsNullable="true" DatabaseType="nvarchar" Size="25" />
+								<Int16 Name="Orderqty" DatabaseType="smallint">
 									<Checks>
 										<Check Name="CK_SalesOrderDetail_OrderQty">
 											<Definition>([OrderQty]&gt;(0))</Definition>
 										</Check>
 									</Checks>
 								</Int16>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Int32 Name="SpecialOfferID" DatabaseType="int" />
-								<Decimal Name="UnitPrice" DatabaseType="money">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Int32 Name="Specialofferid" DatabaseType="int" />
+								<Decimal Name="Unitprice" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_SalesOrderDetail_UnitPrice">
 											<Definition>([UnitPrice]&gt;=(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="UnitPriceDiscount" DatabaseType="money">
+								<Decimal Name="Unitpricediscount" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesOrderDetail_UnitPriceDiscount">
 										<Definition>((0.0))</Definition>
 									</DefaultConstraint>
@@ -2849,29 +3293,29 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="LineTotal" DatabaseType="numeric" Precision="38" Scale="6">
+								<Decimal Name="Linetotal" DatabaseType="numeric" Precision="38" Scale="6">
 									<Computed>
 										<Definition>(isnull(([UnitPrice]*((1.0)-[UnitPriceDiscount]))*[OrderQty],(0.0)))</Definition>
 									</Computed>
 								</Decimal>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SalesOrderDetail_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesOrderDetail_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_SalesOrderDetail_SalesOrderHeader_SalesOrderID" Entity="Sales.SalesOrderHeader" ReferencedTableName="SalesOrderHeader" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderDetail_SalesOrderHeader_SalesOrderID" Entity="Sales.Salesorderheader" ReferencedTableName="SalesOrderHeader" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="SalesOrderID" References="SalesOrderID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesOrderDetail_SpecialOfferProduct_SpecialOfferIDProductID" Entity="Sales.SpecialOfferProduct" ReferencedTableName="SpecialOfferProduct" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderDetail_SpecialOfferProduct_SpecialOfferIDProductID" Entity="Sales.Specialofferproduct" ReferencedTableName="SpecialOfferProduct" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="SpecialOfferID" References="SpecialOfferID" />
 										<Reference Field="ProductID" References="ProductID" />
@@ -2898,23 +3342,23 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesOrderHeader" Table="SalesOrderHeader" ShortName="SOH">
+						<Entity Name="Salesorderheader" ShortName="S4" Table="SalesOrderHeader">
 							<Fields>
-								<Int32 Name="SalesOrderID" DatabaseType="int">
+								<Int32 Name="Salesorderid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Byte Name="RevisionNumber" DatabaseType="tinyint">
+								<Byte Name="Revisionnumber" DatabaseType="tinyint">
 									<DefaultConstraint Name="DF_SalesOrderHeader_RevisionNumber">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
 								</Byte>
-								<DateTime Name="OrderDate" DatabaseType="datetime">
+								<DateTime Name="Orderdate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesOrderHeader_OrderDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<DateTime Name="DueDate" DatabaseType="datetime" />
-								<DateTime Name="ShipDate" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="Duedate" DatabaseType="datetime" />
+								<DateTime Name="Shipdate" IsNullable="true" DatabaseType="datetime" />
 								<Byte Name="Status" DatabaseType="tinyint">
 									<DefaultConstraint Name="DF_SalesOrderHeader_Status">
 										<Definition>((1))</Definition>
@@ -2925,28 +3369,28 @@
 										</Check>
 									</Checks>
 								</Byte>
-								<Boolean Name="OnlineOrderFlag" DatabaseType="flag">
+								<Boolean Name="Onlineorderflag" DatabaseType="Flag">
 									<DefaultConstraint Name="DF_SalesOrderHeader_OnlineOrderFlag">
 										<Definition>((1))</Definition>
 									</DefaultConstraint>
 								</Boolean>
-								<String Name="SalesOrderNumber" DatabaseType="nvarchar" Size="25">
+								<String Name="Salesordernumber" DatabaseType="nvarchar" Size="25">
 									<Computed>
 										<Definition>(isnull(N'SO'+CONVERT([nvarchar](23),[SalesOrderID]),N'*** ERROR ***'))</Definition>
 									</Computed>
 								</String>
-								<String Name="PurchaseOrderNumber" IsNullable="true" DatabaseType="ordernumber" Size="25" />
-								<String Name="AccountNumber" IsNullable="true" DatabaseType="accountnumber" Size="15" />
-								<Int32 Name="CustomerID" DatabaseType="int" />
-								<Int32 Name="SalesPersonID" IsNullable="true" DatabaseType="int" />
-								<Int32 Name="TerritoryID" IsNullable="true" DatabaseType="int" />
-								<Int32 Name="BillToAddressID" DatabaseType="int" />
-								<Int32 Name="ShipToAddressID" DatabaseType="int" />
-								<Int32 Name="ShipMethodID" DatabaseType="int" />
-								<Int32 Name="CreditCardID" IsNullable="true" DatabaseType="int" />
-								<String Name="CreditCardApprovalCode" IsNullable="true" DatabaseType="varchar" Size="15" />
-								<Int32 Name="CurrencyRateID" IsNullable="true" DatabaseType="int" />
-								<Decimal Name="SubTotal" DatabaseType="money">
+								<String Name="Purchaseordernumber" IsNullable="true" DatabaseType="OrderNumber" Size="25" />
+								<String Name="Accountnumber" IsNullable="true" DatabaseType="AccountNumber" Size="15" />
+								<Int32 Name="Customerid" DatabaseType="int" />
+								<Int32 Name="Salespersonid" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Territoryid" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Billtoaddressid" DatabaseType="int" />
+								<Int32 Name="Shiptoaddressid" DatabaseType="int" />
+								<Int32 Name="Shipmethodid" DatabaseType="int" />
+								<Int32 Name="Creditcardid" IsNullable="true" DatabaseType="int" />
+								<String Name="Creditcardapprovalcode" IsNullable="true" DatabaseType="varchar" Size="15" />
+								<Int32 Name="Currencyrateid" IsNullable="true" DatabaseType="int" />
+								<Decimal Name="Subtotal" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesOrderHeader_SubTotal">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2956,7 +3400,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="TaxAmt" DatabaseType="money">
+								<Decimal Name="Taxamt" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesOrderHeader_TaxAmt">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2966,7 +3410,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="Freight" DatabaseType="money">
+								<Decimal Name="Freight" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesOrderHeader_Freight">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -2976,18 +3420,18 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="TotalDue" DatabaseType="money">
+								<Decimal Name="Totaldue" DatabaseType="money" Precision="19" Scale="4">
 									<Computed>
 										<Definition>(isnull(([SubTotal]+[TaxAmt])+[Freight],(0)))</Definition>
 									</Computed>
 								</Decimal>
 								<String Name="Comment" IsNullable="true" DatabaseType="nvarchar" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SalesOrderHeader_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesOrderHeader_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -3004,12 +3448,12 @@
 										<Reference Field="ShipToAddressID" References="AddressID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesOrderHeader_CreditCard_CreditCardID" Entity="Sales.CreditCard" ReferencedTableName="CreditCard" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderHeader_CreditCard_CreditCardID" Entity="Sales.Creditcard" ReferencedTableName="CreditCard" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="CreditCardID" References="CreditCardID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesOrderHeader_CurrencyRate_CurrencyRateID" Entity="Sales.CurrencyRate" ReferencedTableName="CurrencyRate" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderHeader_CurrencyRate_CurrencyRateID" Entity="Sales.Currencyrate" ReferencedTableName="CurrencyRate" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="CurrencyRateID" References="CurrencyRateID" />
 									</References>
@@ -3019,17 +3463,17 @@
 										<Reference Field="CustomerID" References="CustomerID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesOrderHeader_SalesPerson_SalesPersonID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderHeader_SalesPerson_SalesPersonID" Entity="Sales.Salesperson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="SalesPersonID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesOrderHeader_ShipMethod_ShipMethodID" Entity="Purchasing.ShipMethod" ReferencedTableName="ShipMethod" ReferencedSchemaName="Purchasing">
+								<ForeignKey Name="FK_SalesOrderHeader_ShipMethod_ShipMethodID" Entity="Purchasing.Shipmethod" ReferencedTableName="ShipMethod" ReferencedSchemaName="Purchasing">
 									<References>
 										<Reference Field="ShipMethodID" References="ShipMethodID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesOrderHeader_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderHeader_SalesTerritory_TerritoryID" Entity="Sales.Salesterritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="TerritoryID" References="TerritoryID" />
 									</References>
@@ -3064,23 +3508,23 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesOrderHeaderSalesReason" Table="SalesOrderHeaderSalesReason" ShortName="SOHSR">
+						<Entity Name="Salesorderheadersalesreason" ShortName="S5" Table="SalesOrderHeaderSalesReason">
 							<Fields>
-								<Int32 Name="SalesOrderID" DatabaseType="int" />
-								<Int32 Name="SalesReasonID" DatabaseType="int" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<Int32 Name="Salesorderid" DatabaseType="int" />
+								<Int32 Name="Salesreasonid" DatabaseType="int" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesOrderHeaderSalesReason_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_SalesOrderHeaderSalesReason_SalesReason_SalesReasonID" Entity="Sales.SalesReason" ReferencedTableName="SalesReason" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderHeaderSalesReason_SalesReason_SalesReasonID" Entity="Sales.Salesreason" ReferencedTableName="SalesReason" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="SalesReasonID" References="SalesReasonID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesOrderHeaderSalesReason_SalesOrderHeader_SalesOrderID" Entity="Sales.SalesOrderHeader" ReferencedTableName="SalesOrderHeader" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesOrderHeaderSalesReason_SalesOrderHeader_SalesOrderID" Entity="Sales.Salesorderheader" ReferencedTableName="SalesOrderHeader" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="SalesOrderID" References="SalesOrderID" />
 									</References>
@@ -3095,18 +3539,18 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesPerson" Table="SalesPerson" ShortName="SP0">
+						<Entity Name="Salesperson" ShortName="S6" Table="SalesPerson">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int32 Name="TerritoryID" IsNullable="true" DatabaseType="int" />
-								<Decimal Name="SalesQuota" IsNullable="true" DatabaseType="money">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int32 Name="Territoryid" IsNullable="true" DatabaseType="int" />
+								<Decimal Name="Salesquota" IsNullable="true" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_SalesPerson_SalesQuota">
 											<Definition>([SalesQuota]&gt;(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="Bonus" DatabaseType="money">
+								<Decimal Name="Bonus" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesPerson_Bonus">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3116,7 +3560,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="CommissionPct" DatabaseType="smallmoney">
+								<Decimal Name="Commissionpct" DatabaseType="smallmoney" Precision="10" Scale="4">
 									<DefaultConstraint Name="DF_SalesPerson_CommissionPct">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3126,7 +3570,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="SalesYTD" DatabaseType="money">
+								<Decimal Name="Salesytd" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesPerson_SalesYTD">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3136,7 +3580,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="SalesLastYear" DatabaseType="money">
+								<Decimal Name="Saleslastyear" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesPerson_SalesLastYear">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3146,12 +3590,12 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SalesPerson_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesPerson_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -3163,7 +3607,7 @@
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesPerson_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesPerson_SalesTerritory_TerritoryID" Entity="Sales.Salesterritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="TerritoryID" References="TerritoryID" />
 									</References>
@@ -3183,30 +3627,30 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesPersonQuotaHistory" Table="SalesPersonQuotaHistory" ShortName="SPQH">
+						<Entity Name="Salespersonquotahistory" ShortName="S7" Table="SalesPersonQuotaHistory">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<DateTime Name="QuotaDate" DatabaseType="datetime" />
-								<Decimal Name="SalesQuota" DatabaseType="money">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<DateTime Name="Quotadate" DatabaseType="datetime" />
+								<Decimal Name="Salesquota" DatabaseType="money" Precision="19" Scale="4">
 									<Checks>
 										<Check Name="CK_SalesPersonQuotaHistory_SalesQuota">
 											<Definition>([SalesQuota]&gt;(0.00))</Definition>
 										</Check>
 									</Checks>
 								</Decimal>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SalesPersonQuotaHistory_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesPersonQuotaHistory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_SalesPersonQuotaHistory_SalesPerson_BusinessEntityID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesPersonQuotaHistory_SalesPerson_BusinessEntityID" Entity="Sales.Salesperson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
@@ -3227,14 +3671,14 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesReason" Table="SalesReason" ShortName="SR0">
+						<Entity Name="Salesreason" ShortName="S8" Table="SalesReason">
 							<Fields>
-								<Int32 Name="SalesReasonID" DatabaseType="int">
+								<Int32 Name="Salesreasonid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<String Name="ReasonType" DatabaseType="name" Size="50" />
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Reasontype" DatabaseType="Name" Size="50" />
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesReason_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -3249,38 +3693,38 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesTaxRate" Table="SalesTaxRate" ShortName="STR">
+						<Entity Name="Salestaxrate" ShortName="S9" Table="SalesTaxRate">
 							<Fields>
-								<Int32 Name="SalesTaxRateID" DatabaseType="int">
+								<Int32 Name="Salestaxrateid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<Int32 Name="StateProvinceID" DatabaseType="int" />
-								<Byte Name="TaxType" DatabaseType="tinyint">
+								<Int32 Name="Stateprovinceid" DatabaseType="int" />
+								<Byte Name="Taxtype" DatabaseType="tinyint">
 									<Checks>
 										<Check Name="CK_SalesTaxRate_TaxType">
 											<Definition>([TaxType]&gt;=(1) AND [TaxType]&lt;=(3))</Definition>
 										</Check>
 									</Checks>
 								</Byte>
-								<Decimal Name="TaxRate" DatabaseType="smallmoney">
+								<Decimal Name="Taxrate" DatabaseType="smallmoney" Precision="10" Scale="4">
 									<DefaultConstraint Name="DF_SalesTaxRate_TaxRate">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
 								</Decimal>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SalesTaxRate_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesTaxRate_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_SalesTaxRate_StateProvince_StateProvinceID" Entity="Person.StateProvince" ReferencedTableName="StateProvince" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_SalesTaxRate_StateProvince_StateProvinceID" Entity="Person.Stateprovince" ReferencedTableName="StateProvince" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="StateProvinceID" References="StateProvinceID" />
 									</References>
@@ -3306,15 +3750,15 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesTerritory" Table="SalesTerritory" ShortName="ST">
+						<Entity Name="Salesterritory" ShortName="S10" Table="SalesTerritory">
 							<Fields>
-								<Int32 Name="TerritoryID" DatabaseType="int">
+								<Int32 Name="Territoryid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<String Name="CountryRegionCode" DatabaseType="nvarchar" Size="3" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Countryregioncode" DatabaseType="nvarchar" Size="3" />
 								<String Name="Group" DatabaseType="nvarchar" Size="50" />
-								<Decimal Name="SalesYTD" DatabaseType="money">
+								<Decimal Name="Salesytd" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesTerritory_SalesYTD">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3324,7 +3768,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="SalesLastYear" DatabaseType="money">
+								<Decimal Name="Saleslastyear" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesTerritory_SalesLastYear">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3334,7 +3778,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="CostYTD" DatabaseType="money">
+								<Decimal Name="Costytd" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesTerritory_CostYTD">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3344,7 +3788,7 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Decimal Name="CostLastYear" DatabaseType="money">
+								<Decimal Name="Costlastyear" DatabaseType="money" Precision="19" Scale="4">
 									<DefaultConstraint Name="DF_SalesTerritory_CostLastYear">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3354,19 +3798,19 @@
 										</Check>
 									</Checks>
 								</Decimal>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SalesTerritory_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesTerritory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_SalesTerritory_CountryRegion_CountryRegionCode" Entity="Person.CountryRegion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_SalesTerritory_CountryRegion_CountryRegionCode" Entity="Person.Countryregion" ReferencedTableName="CountryRegion" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="CountryRegionCode" References="CountryRegionCode" />
 									</References>
@@ -3391,30 +3835,30 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SalesTerritoryHistory" Table="SalesTerritoryHistory" ShortName="STH">
+						<Entity Name="Salesterritoryhistory" ShortName="S11" Table="SalesTerritoryHistory">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<Int32 Name="TerritoryID" DatabaseType="int" />
-								<DateTime Name="StartDate" DatabaseType="datetime" />
-								<DateTime Name="EndDate" IsNullable="true" DatabaseType="datetime" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Int32 Name="Territoryid" DatabaseType="int" />
+								<DateTime Name="Startdate" DatabaseType="datetime" />
+								<DateTime Name="Enddate" IsNullable="true" DatabaseType="datetime" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SalesTerritoryHistory_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SalesTerritoryHistory_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_SalesTerritoryHistory_SalesPerson_BusinessEntityID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesTerritoryHistory_SalesPerson_BusinessEntityID" Entity="Sales.Salesperson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SalesTerritoryHistory_SalesTerritory_TerritoryID" Entity="Sales.SalesTerritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SalesTerritoryHistory_SalesTerritory_TerritoryID" Entity="Sales.Salesterritory" ReferencedTableName="SalesTerritory" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="TerritoryID" References="TerritoryID" />
 									</References>
@@ -3436,12 +3880,12 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="ShoppingCartItem" Table="ShoppingCartItem" ShortName="SCI">
+						<Entity Name="Shoppingcartitem" ShortName="S12" Table="ShoppingCartItem">
 							<Fields>
-								<Int32 Name="ShoppingCartItemID" DatabaseType="int">
+								<Int32 Name="Shoppingcartitemid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
-								<String Name="ShoppingCartID" DatabaseType="nvarchar" Size="50" />
+								<String Name="Shoppingcartid" DatabaseType="nvarchar" Size="50" />
 								<Int32 Name="Quantity" DatabaseType="int">
 									<DefaultConstraint Name="DF_ShoppingCartItem_Quantity">
 										<Definition>((1))</Definition>
@@ -3452,13 +3896,13 @@
 										</Check>
 									</Checks>
 								</Int32>
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<DateTime Name="DateCreated" DatabaseType="datetime">
+								<Int32 Name="Productid" DatabaseType="int" />
+								<DateTime Name="Datecreated" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ShoppingCartItem_DateCreated">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_ShoppingCartItem_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -3486,13 +3930,13 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SpecialOffer" Table="SpecialOffer" ShortName="SO">
+						<Entity Name="Specialoffer" ShortName="S13" Table="SpecialOffer">
 							<Fields>
-								<Int32 Name="SpecialOfferID" DatabaseType="int">
+								<Int32 Name="Specialofferid" DatabaseType="int">
 									<Identity Seed="1" Increment="1" />
 								</Int32>
 								<String Name="Description" DatabaseType="nvarchar" Size="255" />
-								<Decimal Name="DiscountPct" DatabaseType="smallmoney">
+								<Decimal Name="Discountpct" DatabaseType="smallmoney" Precision="10" Scale="4">
 									<DefaultConstraint Name="DF_SpecialOffer_DiscountPct">
 										<Definition>((0.00))</Definition>
 									</DefaultConstraint>
@@ -3504,9 +3948,9 @@
 								</Decimal>
 								<String Name="Type" DatabaseType="nvarchar" Size="50" />
 								<String Name="Category" DatabaseType="nvarchar" Size="50" />
-								<DateTime Name="StartDate" DatabaseType="datetime" />
-								<DateTime Name="EndDate" DatabaseType="datetime" />
-								<Int32 Name="MinQty" DatabaseType="int">
+								<DateTime Name="Startdate" DatabaseType="datetime" />
+								<DateTime Name="Enddate" DatabaseType="datetime" />
+								<Int32 Name="Minqty" DatabaseType="int">
 									<DefaultConstraint Name="DF_SpecialOffer_MinQty">
 										<Definition>((0))</Definition>
 									</DefaultConstraint>
@@ -3516,19 +3960,19 @@
 										</Check>
 									</Checks>
 								</Int32>
-								<Int32 Name="MaxQty" IsNullable="true" DatabaseType="int">
+								<Int32 Name="Maxqty" IsNullable="true" DatabaseType="int">
 									<Checks>
 										<Check Name="CK_SpecialOffer_MaxQty">
 											<Definition>([MaxQty]&gt;=(0))</Definition>
 										</Check>
 									</Checks>
 								</Int32>
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SpecialOffer_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SpecialOffer_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -3549,16 +3993,16 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="SpecialOfferProduct" Table="SpecialOfferProduct" ShortName="SOP">
+						<Entity Name="Specialofferproduct" ShortName="S14" Table="SpecialOfferProduct">
 							<Fields>
-								<Int32 Name="SpecialOfferID" DatabaseType="int" />
-								<Int32 Name="ProductID" DatabaseType="int" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Int32 Name="Specialofferid" DatabaseType="int" />
+								<Int32 Name="Productid" DatabaseType="int" />
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_SpecialOfferProduct_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_SpecialOfferProduct_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
@@ -3570,7 +4014,7 @@
 										<Reference Field="ProductID" References="ProductID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_SpecialOfferProduct_SpecialOffer_SpecialOfferID" Entity="Sales.SpecialOffer" ReferencedTableName="SpecialOffer" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_SpecialOfferProduct_SpecialOffer_SpecialOfferID" Entity="Sales.Specialoffer" ReferencedTableName="SpecialOffer" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="SpecialOfferID" References="SpecialOfferID" />
 									</References>
@@ -3596,30 +4040,30 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
-						<Entity Name="Store" Table="Store" ShortName="S0">
+						<Entity Name="Store" ShortName="S15" Table="Store">
 							<Fields>
-								<Int32 Name="BusinessEntityID" DatabaseType="int" />
-								<String Name="Name" DatabaseType="name" Size="50" />
-								<Int32 Name="SalesPersonID" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Int32 Name="Salespersonid" IsNullable="true" DatabaseType="int" />
 								<Xml Name="Demographics" IsNullable="true" DatabaseType="xml" />
-								<Guid Name="rowguid" DatabaseType="uniqueidentifier">
+								<Guid Name="Rowguid" DatabaseType="uniqueidentifier">
 									<DefaultConstraint Name="DF_Store_rowguid">
 										<Definition>(newid())</Definition>
 									</DefaultConstraint>
 								</Guid>
-								<DateTime Name="ModifiedDate" DatabaseType="datetime">
+								<DateTime Name="Modifieddate" DatabaseType="datetime">
 									<DefaultConstraint Name="DF_Store_ModifiedDate">
 										<Definition>(getdate())</Definition>
 									</DefaultConstraint>
 								</DateTime>
 							</Fields>
 							<ForeignKeys>
-								<ForeignKey Name="FK_Store_BusinessEntity_BusinessEntityID" Entity="Person.BusinessEntity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
+								<ForeignKey Name="FK_Store_BusinessEntity_BusinessEntityID" Entity="Person.Businessentity" ReferencedTableName="BusinessEntity" ReferencedSchemaName="Person">
 									<References>
 										<Reference Field="BusinessEntityID" References="BusinessEntityID" />
 									</References>
 								</ForeignKey>
-								<ForeignKey Name="FK_Store_SalesPerson_SalesPersonID" Entity="Sales.SalesPerson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
+								<ForeignKey Name="FK_Store_SalesPerson_SalesPersonID" Entity="Sales.Salesperson" ReferencedTableName="SalesPerson" ReferencedSchemaName="Sales">
 									<References>
 										<Reference Field="SalesPersonID" References="BusinessEntityID" />
 									</References>
@@ -3649,6 +4093,148 @@
 							</PrimaryKey>
 							<Checks />
 						</Entity>
+						<View Name="Vindividualcustomer" ShortName="V13" View="vIndividualCustomer">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<String Name="Phonenumber" IsNullable="true" DatabaseType="Phone" Size="25" />
+								<String Name="Phonenumbertype" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Emailaddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Emailpromotion" DatabaseType="int" />
+								<String Name="Addresstype" DatabaseType="Name" Size="50" />
+								<String Name="Addressline1" DatabaseType="nvarchar" Size="60" />
+								<String Name="Addressline2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
+								<String Name="City" DatabaseType="nvarchar" Size="30" />
+								<String Name="Stateprovincename" DatabaseType="Name" Size="50" />
+								<String Name="Postalcode" DatabaseType="nvarchar" Size="15" />
+								<String Name="Countryregionname" DatabaseType="Name" Size="50" />
+								<Xml Name="Demographics" IsNullable="true" DatabaseType="xml" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vpersondemographics" ShortName="V14" View="vPersonDemographics">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<Decimal Name="Totalpurchaseytd" IsNullable="true" DatabaseType="money" Precision="19" Scale="4" />
+								<DateTime Name="Datefirstpurchase" IsNullable="true" DatabaseType="datetime" />
+								<DateTime Name="Birthdate" IsNullable="true" DatabaseType="datetime" />
+								<String Name="Maritalstatus" IsNullable="true" DatabaseType="nvarchar" Size="1" />
+								<String Name="Yearlyincome" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Gender" IsNullable="true" DatabaseType="nvarchar" Size="1" />
+								<Int32 Name="Totalchildren" IsNullable="true" DatabaseType="int" />
+								<Int32 Name="Numberchildrenathome" IsNullable="true" DatabaseType="int" />
+								<String Name="Education" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Occupation" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<Boolean Name="Homeownerflag" IsNullable="true" DatabaseType="bit" />
+								<Int32 Name="Numbercarsowned" IsNullable="true" DatabaseType="int" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vsalesperson" ShortName="V15" View="vSalesPerson">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<String Name="Jobtitle" DatabaseType="nvarchar" Size="50" />
+								<String Name="Phonenumber" IsNullable="true" DatabaseType="Phone" Size="25" />
+								<String Name="Phonenumbertype" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Emailaddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Emailpromotion" DatabaseType="int" />
+								<String Name="Addressline1" DatabaseType="nvarchar" Size="60" />
+								<String Name="Addressline2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
+								<String Name="City" DatabaseType="nvarchar" Size="30" />
+								<String Name="Stateprovincename" DatabaseType="Name" Size="50" />
+								<String Name="Postalcode" DatabaseType="nvarchar" Size="15" />
+								<String Name="Countryregionname" DatabaseType="Name" Size="50" />
+								<String Name="Territoryname" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Territorygroup" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Decimal Name="Salesquota" IsNullable="true" DatabaseType="money" Precision="19" Scale="4" />
+								<Decimal Name="Salesytd" DatabaseType="money" Precision="19" Scale="4" />
+								<Decimal Name="Saleslastyear" DatabaseType="money" Precision="19" Scale="4" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vsalespersonsalesbyfiscalyears" ShortName="V16" View="vSalesPersonSalesByFiscalYears">
+							<Fields>
+								<Int32 Name="Salespersonid" IsNullable="true" DatabaseType="int" />
+								<String Name="Fullname" IsNullable="true" DatabaseType="nvarchar" Size="152" />
+								<String Name="Jobtitle" DatabaseType="nvarchar" Size="50" />
+								<String Name="Salesterritory" DatabaseType="Name" Size="50" />
+								<Decimal Name="2002" IsNullable="true" DatabaseType="money" Precision="19" Scale="4" />
+								<Decimal Name="2003" IsNullable="true" DatabaseType="money" Precision="19" Scale="4" />
+								<Decimal Name="2004" IsNullable="true" DatabaseType="money" Precision="19" Scale="4" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vstorewithaddresses" ShortName="V17" View="vStoreWithAddresses">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Addresstype" DatabaseType="Name" Size="50" />
+								<String Name="Addressline1" DatabaseType="nvarchar" Size="60" />
+								<String Name="Addressline2" IsNullable="true" DatabaseType="nvarchar" Size="60" />
+								<String Name="City" DatabaseType="nvarchar" Size="30" />
+								<String Name="Stateprovincename" DatabaseType="Name" Size="50" />
+								<String Name="Postalcode" DatabaseType="nvarchar" Size="15" />
+								<String Name="Countryregionname" DatabaseType="Name" Size="50" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vstorewithcontacts" ShortName="V18" View="vStoreWithContacts">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<String Name="Contacttype" DatabaseType="Name" Size="50" />
+								<String Name="Title" IsNullable="true" DatabaseType="nvarchar" Size="8" />
+								<String Name="Firstname" DatabaseType="Name" Size="50" />
+								<String Name="Middlename" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Lastname" DatabaseType="Name" Size="50" />
+								<String Name="Suffix" IsNullable="true" DatabaseType="nvarchar" Size="10" />
+								<String Name="Phonenumber" IsNullable="true" DatabaseType="Phone" Size="25" />
+								<String Name="Phonenumbertype" IsNullable="true" DatabaseType="Name" Size="50" />
+								<String Name="Emailaddress" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Emailpromotion" DatabaseType="int" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
+						<View Name="Vstorewithdemographics" ShortName="V19" View="vStoreWithDemographics">
+							<Fields>
+								<Int32 Name="Businessentityid" DatabaseType="int" />
+								<String Name="Name" DatabaseType="Name" Size="50" />
+								<Decimal Name="Annualsales" IsNullable="true" DatabaseType="money" Precision="19" Scale="4" />
+								<Decimal Name="Annualrevenue" IsNullable="true" DatabaseType="money" Precision="19" Scale="4" />
+								<String Name="Bankname" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<String Name="Businesstype" IsNullable="true" DatabaseType="nvarchar" Size="5" />
+								<Int32 Name="Yearopened" IsNullable="true" DatabaseType="int" />
+								<String Name="Specialty" IsNullable="true" DatabaseType="nvarchar" Size="50" />
+								<Int32 Name="Squarefeet" IsNullable="true" DatabaseType="int" />
+								<String Name="Brands" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<String Name="Internet" IsNullable="true" DatabaseType="nvarchar" Size="30" />
+								<Int32 Name="Numberemployees" IsNullable="true" DatabaseType="int" />
+							</Fields>
+							<ForeignKeys />
+							<Indexes />
+							<Checks />
+						</View>
 					</Objects>
 				</Schema>
 			</Schemas>

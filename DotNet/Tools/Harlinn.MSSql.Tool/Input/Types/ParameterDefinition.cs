@@ -30,7 +30,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         bool _hasDefaultValue;
         bool _isXmlDocument;
         string? _defaultValue;
-        int? _xmlCollectionId;
+        int _xmlCollectionId = 0;
         bool _isReadOnly;
         bool _isNullable;
 
@@ -47,7 +47,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
             _hasDefaultValue = parameter.HasDefaultValue;
             _isXmlDocument = parameter.IsXmlDocument;
             _defaultValue = parameter.DefaultValue?.ToString();
-            _xmlCollectionId = parameter.XmlCollectionId;
+            _xmlCollectionId = parameter.XmlCollectionId ?? 0;
             _isReadOnly = parameter.IsReadOnly;
             _isNullable = parameter.IsNullable;
         }
@@ -76,13 +76,13 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute, DefaultValue(null)]
         public string? DefaultValue { get => _defaultValue; set => _defaultValue = value; }
 
-        [XmlAttribute, DefaultValue(null)]
-        public int? XmlCollectionId { get => _xmlCollectionId; set => _xmlCollectionId = value; }
+        [XmlAttribute, DefaultValue(0)]
+        public int XmlCollectionId { get => _xmlCollectionId; set => _xmlCollectionId = value; }
 
         [XmlAttribute, DefaultValue(false)]
         public bool IsReadOnly { get => _isReadOnly; set => _isReadOnly = value; }
 
-        [XmlAttribute, DefaultValue(false)]
+        [XmlAttribute, DefaultValue(true)]
         public bool IsNullable { get => _isNullable; set => _isNullable = value; }
         
 
