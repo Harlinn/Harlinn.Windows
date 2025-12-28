@@ -28,10 +28,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public BinaryParameterDefinition() : base()
         {
         }
-        public BinaryParameterDefinition(SystemColumnType systemColumnType, Parameter parameter)
+        public BinaryParameterDefinition(SystemDataType systemColumnType, Parameter parameter)
             : base(parameter)
         {
-            if (systemColumnType == SystemColumnType.Binary || systemColumnType == SystemColumnType.VarBinary)
+            if (systemColumnType == SystemDataType.Binary || systemColumnType == SystemDataType.VarBinary)
             {
                 _size = parameter.MaxLength;
             }

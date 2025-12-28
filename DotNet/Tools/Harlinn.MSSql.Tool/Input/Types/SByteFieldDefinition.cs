@@ -26,7 +26,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public SByteFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+        public SByteFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
             : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }

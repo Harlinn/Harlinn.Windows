@@ -34,7 +34,7 @@ namespace Harlinn.MSSql.Tool.Import
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            var systemColumnType = sqlConnection.GetSystemColumnType(column);
+            var systemColumnType = sqlConnection.GetSystemDataType(column);
 
             var identityColumn = sqlConnection.GetIdentityColumn(column);
             var defaultConstraint = sqlConnection.GetDefaultConstraint(column);
@@ -62,42 +62,42 @@ namespace Harlinn.MSSql.Tool.Import
             var typeName = column.TypeName.ToLowerInvariant();
             switch (systemColumnType)
             {
-                case SystemColumnType.Image:
+                case SystemDataType.Image:
                 {
                     var result = new BinaryFieldDefinition(systemColumnType,column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Text:
+                case SystemDataType.Text:
                 {
                     var result = new StringFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.UniqueIdentifier:
+                case SystemDataType.UniqueIdentifier:
                 {
                     var result = new GuidFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Date:
+                case SystemDataType.Date:
                 {
                     var result = new DateTimeFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Time:
+                case SystemDataType.Time:
                 {
                     var result = new DateTimeFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.DateTime2:
+                case SystemDataType.DateTime2:
                 {
                     var result = new DateTimeFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.DateTimeOffset:
+                case SystemDataType.DateTimeOffset:
                 {
                     var result = new DateTimeFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.TinyInt:
+                case SystemDataType.TinyInt:
                 {
                     var result = new ByteFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     if(identityColumn != null)
@@ -108,7 +108,7 @@ namespace Harlinn.MSSql.Tool.Import
                     }
                     return result;
                 }
-                case SystemColumnType.SmallInt:
+                case SystemDataType.SmallInt:
                 {
                     var result = new Int16FieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     if (identityColumn != null)
@@ -119,7 +119,7 @@ namespace Harlinn.MSSql.Tool.Import
                     }
                     return result;
                 }
-                case SystemColumnType.Int:
+                case SystemDataType.Int:
                 {
                     var result = new Int32FieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     if (identityColumn != null)
@@ -138,47 +138,47 @@ namespace Harlinn.MSSql.Tool.Import
                     }
                     return result;
                 }
-                case SystemColumnType.SmallDateTime:
+                case SystemDataType.SmallDateTime:
                 {
                     var result = new DateTimeFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Real:
+                case SystemDataType.Real:
                 {
                     var result = new SingleFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Money:
+                case SystemDataType.Money:
                 {
                     var result = new DecimalFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.DateTime:
+                case SystemDataType.DateTime:
                 {
                     var result = new DateTimeFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Float:
+                case SystemDataType.Float:
                 {
                     var result = new DoubleFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.SqlVariant:
+                case SystemDataType.SqlVariant:
                 {
                     var result = new SqlVariantFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.NText:
+                case SystemDataType.NText:
                 {
                     var result = new StringFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Bit:
+                case SystemDataType.Bit:
                 {
                     var result = new BooleanFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Decimal:
+                case SystemDataType.Decimal:
                 {
                     var result = new DecimalFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     if (identityColumn != null)
@@ -189,7 +189,7 @@ namespace Harlinn.MSSql.Tool.Import
                     }
                     return result;
                 }
-                case SystemColumnType.Numeric:
+                case SystemDataType.Numeric:
                 {
                     var result = new DecimalFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     if (identityColumn != null)
@@ -200,12 +200,12 @@ namespace Harlinn.MSSql.Tool.Import
                     }
                     return result;
                 }
-                case SystemColumnType.SmallMoney:
+                case SystemDataType.SmallMoney:
                 {
                     var result = new DecimalFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.BigInt:
+                case SystemDataType.BigInt:
                 {
                     var result = new Int64FieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     if (identityColumn != null)
@@ -216,62 +216,62 @@ namespace Harlinn.MSSql.Tool.Import
                     }
                     return result;
                 }
-                case SystemColumnType.HierarchyId:
+                case SystemDataType.HierarchyId:
                 {
                     var result = new HierarchyIdFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Geometry:
+                case SystemDataType.Geometry:
                 {
                     var result = new GeometryFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Geography:
+                case SystemDataType.Geography:
                 {
                     var result = new GeographyFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.VarBinary:
+                case SystemDataType.VarBinary:
                 {
                     var result = new BinaryFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.VarChar:
+                case SystemDataType.VarChar:
                 {
                     var result = new StringFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Binary:
+                case SystemDataType.Binary:
                 {
                     var result = new BinaryFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Char:
+                case SystemDataType.Char:
                 {
                     var result = new StringFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Timestamp:
+                case SystemDataType.Timestamp:
                 {
                     var result = new DateTimeFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.NVarChar:
+                case SystemDataType.NVarChar:
                 {
                     var result = new StringFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.NChar:
+                case SystemDataType.NChar:
                 {
                     var result = new StringFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.Xml:
+                case SystemDataType.Xml:
                 {
                     var result = new XmlFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;
                 }
-                case SystemColumnType.SysName:
+                case SystemDataType.SysName:
                 {
                     var result = new StringFieldDefinition(systemColumnType, column, fieldDefaultConstraint, fieldComputed, fieldCheckConstraints);
                     return result;

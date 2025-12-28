@@ -20,7 +20,7 @@ using System.Security.Principal;
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
-    public interface IColumn
+    public interface ITyped
     {
         /// <summary>
         /// ID of the object to which this column belongs
@@ -31,11 +31,6 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// Name of the column. Is unique within the object.
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        /// ID of the column. Is unique within the object. Column IDs might not be sequential.
-        /// </summary>
-        public int ColumnId { get; }
 
         /// <summary>
         /// ID of the system type of the column.
@@ -76,14 +71,30 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         public byte Scale { get; }
 
         /// <summary>
+        /// true if the column allows nulls; otherwise, false.
+        /// </summary>
+        public bool IsNullable { get; }
+
+        public string TypeName { get; }
+
+    }
+
+    public interface IColumn : ITyped
+    {
+        
+
+        /// <summary>
+        /// ID of the column. Is unique within the object. Column IDs might not be sequential.
+        /// </summary>
+        public int ColumnId { get; }
+        
+
+        /// <summary>
         /// Name of the collation of the column if character-based; otherwise null.
         /// </summary>
         public string? CollationName { get; }
 
-        /// <summary>
-        /// true if the column allows nulls; otherwise, false.
-        /// </summary>
-        public bool IsNullable { get; }
+        
 
         /// <summary>
         /// Gets a value indicating whether the column value is padded with ANSI spaces to match its defined length.
@@ -146,6 +157,6 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 
         public string? GraphTypeDesc { get; }
 
-        public string TypeName { get; }
+        
     }
 }

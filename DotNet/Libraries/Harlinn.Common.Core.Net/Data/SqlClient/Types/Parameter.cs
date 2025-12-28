@@ -22,16 +22,16 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
     /// Represents a row from the sys.parameters catalog view.
     /// Immutable, uses private readonly backing fields prefixed with '_'.
     /// </summary>
-    public sealed class Parameter
+    public sealed class Parameter : ITyped
     {
         private readonly int _objectId;
         private readonly string _name;
         private readonly int _parameterId;
-        private readonly sbyte _systemTypeId;
+        private readonly byte _systemTypeId;
         private readonly int _userTypeId;
         private readonly short _maxLength;
-        private readonly sbyte _precision;
-        private readonly sbyte _scale;
+        private readonly byte _precision;
+        private readonly byte _scale;
         private readonly bool _isOutput;
         private readonly bool _isCursorRef;
         private readonly bool _hasDefaultValue;
@@ -69,7 +69,9 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// System type ID for the parameter (tinyint).
         /// Corresponds to the sys.parameters.[system_type_id] column.
         /// </summary>
-        public sbyte SystemTypeId => _systemTypeId;
+        public byte SystemTypeId => _systemTypeId;
+
+        public SystemType SystemType => (SystemType)_systemTypeId;
 
         /// <summary>
         /// User type ID for the parameter (user-defined type).
@@ -87,13 +89,13 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
         /// Precision of the parameter (for numeric types).
         /// Corresponds to the sys.parameters.[precision] column.
         /// </summary>
-        public sbyte Precision => _precision;
+        public byte Precision => _precision;
 
         /// <summary>
         /// Scale of the parameter (for numeric types).
         /// Corresponds to the sys.parameters.[scale] column.
         /// </summary>
-        public sbyte Scale => _scale;
+        public byte Scale => _scale;
 
         /// <summary>
         /// Indicates whether the parameter is an output parameter.
@@ -182,11 +184,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
             int objectId,
             string name,
             int parameterId,
-            sbyte systemTypeId,
+            byte systemTypeId,
             int userTypeId,
             short maxLength,
-            sbyte precision,
-            sbyte scale,
+            byte precision,
+            byte scale,
             bool isOutput,
             bool isCursorRef,
             bool hasDefaultValue,

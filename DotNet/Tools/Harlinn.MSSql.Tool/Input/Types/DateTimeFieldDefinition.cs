@@ -33,7 +33,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public DateTimeFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+        public DateTimeFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
             : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }

@@ -26,7 +26,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public ByteFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+        public ByteFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
             : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }

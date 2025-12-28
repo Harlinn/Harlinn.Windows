@@ -32,7 +32,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public HierarchyIdFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+        public HierarchyIdFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
             : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
         }

@@ -14,23 +14,18 @@
    limitations under the License.
 */
 
-using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-namespace Harlinn.MSSql.Tool.Input.Types
+using Harlinn.MSSql.Tool.Input.Types;
+using Microsoft.Data.SqlClient;
+using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
+
+namespace Harlinn.MSSql.Tool.Import
 {
-    [Serializable]
-    public class UInt16FieldDefinition : IntegerFieldDefinition<ushort>
+    public static class ParameterExtensions
     {
-
-        public UInt16FieldDefinition()
-            : base()
+        public static ParameterDefinition ToParameterDefinition(this SchemaTypes.Parameter parameter, SqlConnection sqlConnection)
         {
+            throw new NotImplementedException();
         }
-
-        public UInt16FieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
-            : base(systemColumnType, column, defaultConstraint, computed, checks)
-        {
-        }
-        public override FieldType FieldType => FieldType.UInt16;
     }
 }

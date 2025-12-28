@@ -30,10 +30,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public BinaryFieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks) 
+        public BinaryFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks) 
             : base(systemColumnType, column, defaultConstraint, computed, checks)
         {
-            if (systemColumnType == SystemColumnType.Image)
+            if (systemColumnType == SystemDataType.Image)
             {
                 _size = -1;
             }

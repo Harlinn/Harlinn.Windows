@@ -40,7 +40,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         protected FieldDefinition() 
         { }
 
-        protected FieldDefinition(SystemColumnType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+        protected FieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
         {
             _name = column.Name.ToPascalCase();
             _columnName = column.Name;

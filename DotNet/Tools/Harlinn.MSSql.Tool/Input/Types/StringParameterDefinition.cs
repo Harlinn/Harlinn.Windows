@@ -28,14 +28,14 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public StringParameterDefinition() : base()
         {
         }
-        public StringParameterDefinition(SystemColumnType systemColumnType, Parameter parameter)
+        public StringParameterDefinition(SystemDataType systemColumnType, Parameter parameter)
             : base(parameter)
         {
-            if (systemColumnType >= SystemColumnType.NChar && systemColumnType <= SystemColumnType.SysName)
+            if (systemColumnType >= SystemDataType.NChar && systemColumnType <= SystemDataType.SysName)
             {
                 _size = parameter.MaxLength != -1 ? parameter.MaxLength / 2 : -1;
             }
-            else if (systemColumnType == SystemColumnType.Char || systemColumnType == SystemColumnType.VarChar)
+            else if (systemColumnType == SystemDataType.Char || systemColumnType == SystemDataType.VarChar)
             {
                 _size = parameter.MaxLength;
             }

@@ -241,6 +241,25 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
         }
 
+        internal void ImportProcedures(SqlConnection sqlConnection, IReadOnlyList<SchemaTypes.Procedure> procedures)
+        {
+            foreach (var procedure in procedures)
+            {
+                ImportProcedure(sqlConnection, procedure);
+            }
+        }
+
+        internal void ImportProcedure(SqlConnection sqlConnection, SchemaTypes.Procedure procedure)
+        {
+            var schemaObject = AddStoredProcedure(procedure);
+
+            if (schemaObject is StoredProcedureDefinition procedureDefinition)
+            {
+                procedureDefinition.ImportProcedure(sqlConnection, procedure);
+            }
+        }
+
+
 
 
         public override string ToString()

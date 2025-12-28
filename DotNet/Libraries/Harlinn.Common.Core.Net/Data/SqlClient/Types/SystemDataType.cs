@@ -17,7 +17,7 @@
 
 namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
 {
-    public enum SystemColumnType
+    public enum SystemDataType
     {
         Unknown,
         Bit,

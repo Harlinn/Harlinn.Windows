@@ -612,6 +612,96 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        /// <summary>
+        /// Retrieves all stored procedures in the database.
+        /// </summary>
+        /// <param name="connection">
+        /// The open <see cref="SqlConnection"/> to use for querying the database. Must not be null.
+        /// </param>
+        /// <returns>
+        /// A read-only list of <see cref="Types.Procedure"/> instances representing the stored procedures in the database.
+        /// </returns>
+        public static IReadOnlyList<Types.Procedure> GetProcedures(this SqlConnection connection)
+        {
+            using (var command = connection.CreateCommand(ProceduresReader.Sql))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    var proceduresReader = new ProceduresReader(reader, false);
+                    return proceduresReader.GetProcedures();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retrieves all stored procedures defined in the specified schema of the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to the SQL Server database from which to retrieve procedures. Must not
+        /// be null.</param>
+        /// <param name="schemaId">The identifier of the schema whose stored procedures are to be retrieved.</param>
+        /// <returns>A read-only list of <see cref="Types.Procedure"/> objects representing the stored procedures in the
+        /// specified schema. The list is empty if no procedures are found.</returns>
+        public static IReadOnlyList<Types.Procedure> GetProcedures(this SqlConnection connection, int schemaId)
+        {
+            var sql = $"{ProceduresReader.Sql} WHERE sp.[schema_id] = @SchemaId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var proceduresReader = new ProceduresReader(reader, false);
+                    return proceduresReader.GetProcedures();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a read-only list of stored procedures defined in the specified schema from the connected SQL
+        /// Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to the SQL Server database from which to retrieve procedures. Must not
+        /// be null.</param>
+        /// <param name="schema">The schema for which to retrieve stored procedures. Must not be null.</param>
+        /// <returns>A read-only list of <see cref="Types.Procedure"/> objects representing the stored procedures in the
+        /// specified schema. The list is empty if no procedures are found.</returns>
+        public static IReadOnlyList<Types.Procedure> GetProcedures(this SqlConnection connection, Schema schema)
+        {
+            return connection.GetProcedures(schema.SchemaId);
+        }
+
+        /// <summary>
+        /// Retrieves the list of parameters for the specified database object from the connected SQL Server database.
+        /// </summary>
+        /// <remarks>The method queries the database for parameter metadata using the provided object ID.
+        /// The caller is responsible for ensuring that the connection is open before calling this method.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying parameter metadata. Must not be null and must be
+        /// open.</param>
+        /// <param name="objectId">The object ID of the database object (such as a stored procedure or function) whose parameters are to be
+        /// retrieved.</param>
+        /// <returns>A read-only list of <see cref="Parameter"/> objects representing the parameters of the specified database
+        /// object. The list will be empty if the object has no parameters.</returns>
+        public static IReadOnlyList<Parameter> GetParameters(this SqlConnection connection, int objectId)
+        {
+            var sql = $"{ParametersReader.Sql} WHERE par.[object_id] = @ObjectId ORDER BY par.[parameter_id]";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var parametersReader = new ParametersReader(reader, false);
+                    return parametersReader.GetParameters();
+                }
+            }
+        }
+
+        public static IReadOnlyList<Parameter> GetParameters(this SqlConnection connection, Procedure procedure)
+        {
+            if (procedure == null) throw new ArgumentNullException(nameof(procedure));
+
+            return connection.GetParameters(procedure.ObjectId);
+        }
+
+
 
 
         /// <summary>
@@ -1233,7 +1323,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
         private static int? sysSchemaId;
 
-        private static SystemColumnType ToComplexFieldSystemType(this SqlConnection sqlConnection, Column column)
+        private static SystemDataType ToComplexSystemDataType(this SqlConnection sqlConnection, ITyped column)
         {
             if (sysSchemaId.HasValue == false)
             {
@@ -1247,7 +1337,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 schemaObject = sqlConnection.GetSystemObject(column.ObjectId);
                 if (schemaObject == null)
                 {
-                    return SystemColumnType.Unknown;
+                    return SystemDataType.Unknown;
                 }
             }
             var databaseType = sqlConnection.GetDatabaseType(schemaObject.SchemaId, columnTypeName);
@@ -1257,97 +1347,97 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
             if (databaseType == null)
             {
-                return SystemColumnType.Unknown;
+                return SystemDataType.Unknown;
             }
 
             if (databaseType.SchemaId == sysSchemaId)
             {
                 if (databaseType.Name.ToLower() == "sysname")
                 {
-                    return SystemColumnType.SysName;
+                    return SystemDataType.SysName;
                 }
                 else if (databaseType.Name.ToLower() == "geometry")
                 {
-                    return SystemColumnType.Geometry;
+                    return SystemDataType.Geometry;
                 }
                 else if (databaseType.Name.ToLower() == "geography")
                 {
-                    return SystemColumnType.Geography;
+                    return SystemDataType.Geography;
                 }
                 else if (databaseType.Name.ToLower() == "hierarchyid")
                 {
-                    return SystemColumnType.HierarchyId;
+                    return SystemDataType.HierarchyId;
                 }
             }
             var systemType = databaseType.SystemType;
             switch (systemType)
             {
                 case SystemType.Image:
-                    return SystemColumnType.Image;
+                    return SystemDataType.Image;
                 case SystemType.Text:
-                    return SystemColumnType.Text;
+                    return SystemDataType.Text;
                 case SystemType.Uniqueidentifier:
-                    return SystemColumnType.UniqueIdentifier;
+                    return SystemDataType.UniqueIdentifier;
                 case SystemType.Date:
-                    return SystemColumnType.Date;
+                    return SystemDataType.Date;
                 case SystemType.Time:
-                    return SystemColumnType.Time;
+                    return SystemDataType.Time;
                 case SystemType.DateTime2:
-                    return SystemColumnType.DateTime2;
+                    return SystemDataType.DateTime2;
                 case SystemType.DateTimeOffset:
-                    return SystemColumnType.DateTimeOffset;
+                    return SystemDataType.DateTimeOffset;
                 case SystemType.TinyInt:
-                    return SystemColumnType.TinyInt;
+                    return SystemDataType.TinyInt;
                 case SystemType.SmallInt:
-                    return SystemColumnType.SmallInt;
+                    return SystemDataType.SmallInt;
                 case SystemType.Int:
-                    return SystemColumnType.Int;
+                    return SystemDataType.Int;
                 case SystemType.SmallDateTime:
-                    return SystemColumnType.SmallDateTime;
+                    return SystemDataType.SmallDateTime;
                 case SystemType.Real:
-                    return SystemColumnType.Real;
+                    return SystemDataType.Real;
                 case SystemType.Money:
-                    return SystemColumnType.Money;
+                    return SystemDataType.Money;
                 case SystemType.DateTime:
-                    return SystemColumnType.DateTime;
+                    return SystemDataType.DateTime;
                 case SystemType.Float:
-                    return SystemColumnType.Float;
+                    return SystemDataType.Float;
                 case SystemType.SqlVariant:
-                    return SystemColumnType.SqlVariant;
+                    return SystemDataType.SqlVariant;
                 case SystemType.NText:
-                    return SystemColumnType.NText;
+                    return SystemDataType.NText;
                 case SystemType.Bit:
-                    return SystemColumnType.Bit;
+                    return SystemDataType.Bit;
                 case SystemType.Decimal:
-                    return SystemColumnType.Decimal;
+                    return SystemDataType.Decimal;
                 case SystemType.Numeric:
-                    return SystemColumnType.Numeric;
+                    return SystemDataType.Numeric;
                 case SystemType.SmallMoney:
-                    return SystemColumnType.SmallMoney;
+                    return SystemDataType.SmallMoney;
                 case SystemType.BigInt:
-                    return SystemColumnType.BigInt;
+                    return SystemDataType.BigInt;
                 case SystemType.VarBinary:
-                    return SystemColumnType.VarBinary;
+                    return SystemDataType.VarBinary;
                 case SystemType.VarChar:
-                    return SystemColumnType.VarChar;
+                    return SystemDataType.VarChar;
                 case SystemType.Binary:
-                    return SystemColumnType.Binary;
+                    return SystemDataType.Binary;
                 case SystemType.Char:
-                    return SystemColumnType.Char;
+                    return SystemDataType.Char;
                 case SystemType.Timestamp:
-                    return SystemColumnType.Timestamp;
+                    return SystemDataType.Timestamp;
                 case SystemType.NVarChar:
-                    return SystemColumnType.NVarChar;
+                    return SystemDataType.NVarChar;
                 case SystemType.NChar:
-                    return SystemColumnType.NChar;
+                    return SystemDataType.NChar;
                 case SystemType.Xml:
-                    return SystemColumnType.Xml;
+                    return SystemDataType.Xml;
             }
-            return SystemColumnType.Unknown;
+            return SystemDataType.Unknown;
         }
 
 
-        public static SystemColumnType GetSystemColumnType(this SqlConnection connection, Column column)
+        public static SystemDataType GetSystemDataType(this SqlConnection connection, ITyped column)
         {
             if(connection == null)
             {
@@ -1361,75 +1451,77 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             switch (systemType)
             {
                 case SystemType.Image:
-                    return SystemColumnType.Image;
+                    return SystemDataType.Image;
                 case SystemType.Text:
-                    return SystemColumnType.Text;
+                    return SystemDataType.Text;
                 case SystemType.Uniqueidentifier:
-                    return SystemColumnType.UniqueIdentifier;
+                    return SystemDataType.UniqueIdentifier;
                 case SystemType.Date:
-                    return SystemColumnType.Date;
+                    return SystemDataType.Date;
                 case SystemType.Time:
-                    return SystemColumnType.Time;
+                    return SystemDataType.Time;
                 case SystemType.DateTime2:
-                    return SystemColumnType.DateTime2;
+                    return SystemDataType.DateTime2;
                 case SystemType.DateTimeOffset:
-                    return SystemColumnType.DateTimeOffset;
+                    return SystemDataType.DateTimeOffset;
                 case SystemType.TinyInt:
-                    return SystemColumnType.TinyInt;
+                    return SystemDataType.TinyInt;
                 case SystemType.SmallInt:
-                    return SystemColumnType.SmallInt;
+                    return SystemDataType.SmallInt;
                 case SystemType.Int:
-                    return SystemColumnType.Int;
+                    return SystemDataType.Int;
                 case SystemType.SmallDateTime:
-                    return SystemColumnType.SmallDateTime;
+                    return SystemDataType.SmallDateTime;
                 case SystemType.Real:
-                    return SystemColumnType.Real;
+                    return SystemDataType.Real;
                 case SystemType.Money:
-                    return SystemColumnType.Money;
+                    return SystemDataType.Money;
                 case SystemType.DateTime:
-                    return SystemColumnType.DateTime;
+                    return SystemDataType.DateTime;
                 case SystemType.Float:
-                    return SystemColumnType.Float;
+                    return SystemDataType.Float;
                 case SystemType.SqlVariant:
-                    return SystemColumnType.SqlVariant;
+                    return SystemDataType.SqlVariant;
                 case SystemType.NText:
-                    return SystemColumnType.NText;
+                    return SystemDataType.NText;
                 case SystemType.Bit:
-                    return SystemColumnType.Bit;
+                    return SystemDataType.Bit;
                 case SystemType.Decimal:
-                    return SystemColumnType.Decimal;
+                    return SystemDataType.Decimal;
                 case SystemType.Numeric:
-                    return SystemColumnType.Numeric;
+                    return SystemDataType.Numeric;
                 case SystemType.SmallMoney:
-                    return SystemColumnType.SmallMoney;
+                    return SystemDataType.SmallMoney;
                 case SystemType.BigInt:
-                    return SystemColumnType.BigInt;
+                    return SystemDataType.BigInt;
                 case SystemType.HierarchyId:
                 {
-                    return connection.ToComplexFieldSystemType(column);
+                    return connection.ToComplexSystemDataType(column);
                 }
                 case SystemType.VarBinary:
-                    return SystemColumnType.VarBinary;
+                    return SystemDataType.VarBinary;
                 case SystemType.VarChar:
-                    return SystemColumnType.VarChar;
+                    return SystemDataType.VarChar;
                 case SystemType.Binary:
-                    return SystemColumnType.Binary;
+                    return SystemDataType.Binary;
                 case SystemType.Char:
-                    return SystemColumnType.Char;
+                    return SystemDataType.Char;
                 case SystemType.Timestamp:
-                    return SystemColumnType.Timestamp;
+                    return SystemDataType.Timestamp;
                 case SystemType.NVarChar:
                 {
-                    return connection.ToComplexFieldSystemType(column);
+                    return connection.ToComplexSystemDataType(column);
                 }
                 case SystemType.NChar:
-                    return SystemColumnType.NChar;
+                    return SystemDataType.NChar;
                 case SystemType.Xml:
-                    return SystemColumnType.Xml;
+                    return SystemDataType.Xml;
                 default:
-                    return SystemColumnType.Unknown;
+                    return SystemDataType.Unknown;
             }
         }
+
+
 
 
 

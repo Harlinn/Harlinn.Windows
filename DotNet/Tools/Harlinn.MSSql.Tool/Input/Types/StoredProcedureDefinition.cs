@@ -14,7 +14,9 @@
    limitations under the License.
 */
 
+using Microsoft.Data.SqlClient;
 using System.Xml.Serialization;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -52,6 +54,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(EnumParameterDefinition), ElementName = "Enum")]
         public List<ParameterDefinition> Parameters { get; set; } = new List<ParameterDefinition>();
 
+        internal void ImportProcedure(SqlConnection sqlConnection, Procedure procedure)
+        {
+            
+        }
     }
 
 
