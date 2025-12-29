@@ -1319,6 +1319,29 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
 
 
         /// <summary>
+        /// Executes <c>sys.sp_describe_first_result_set</c> for the supplied T-SQL batch and returns the described columns.
+        /// </summary>
+        /// <param name="connection">Open SqlConnection.</param>
+        /// <param name="tsql">T-SQL batch to describe (e.g. a SELECT statement).</param>
+        /// <returns>Read-only list of column metadata describing the first result set produced by the batch.</returns>
+        public static IReadOnlyList<ResultSetColumn> DescribeFirstResultSet(this SqlConnection connection, string tsql, string? parameters, bool includeBrowseInformation = true)
+        {
+            if (connection == null) throw new ArgumentNullException(nameof(connection));
+            if (tsql == null) throw new ArgumentNullException(nameof(tsql));
+
+            using var command = connection.CreateCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "sys.sp_describe_first_result_set";
+            command.Parameters.AddWithValue("@tsql", tsql);
+            command.Parameters.AddWithValue("@params", parameters ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@include_browse_information", includeBrowseInformation ? 1 : 0);
+            using var reader = command.ExecuteReader();
+            var wrapper = new ResultSetColumnReader(reader, false);
+            return wrapper.GetColumns();
+        }
+
+
+        /// <summary>
         /// Retrieves all identity columns for a specified database object.
         /// </summary>
         /// <param name="connection">The open SQL connection to use for retrieving identity column metadata. Must not be null.</param>

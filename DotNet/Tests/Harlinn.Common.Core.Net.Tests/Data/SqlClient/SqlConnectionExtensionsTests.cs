@@ -134,7 +134,23 @@ public class SqlConnectionExtensionsTests
 
     }
 
+    [TestMethod]
+    public void DescribeFirstResultSetTest1()
+    {
+        using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
+        connection.Open();
+        var resultSet = connection.DescribeFirstResultSet("SELECT * FROM sys.types", null);
+        Assert.IsNotNull(resultSet);
+    }
 
+    [TestMethod]
+    public void DescribeFirstResultSetTest2()
+    {
+        using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
+        connection.Open();
+        var resultSet = connection.DescribeFirstResultSet("EXEC sys.sp_server_info", null);
+        Assert.IsNotNull(resultSet);
+    }
 
 
 
