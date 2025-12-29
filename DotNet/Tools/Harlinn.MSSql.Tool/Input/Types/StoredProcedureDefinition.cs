@@ -27,7 +27,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
     public class StoredProcedureDefinition : SchemaObject
     {
         private List<ParameterDefinition> _parameters = new List<ParameterDefinition>();
-        private List<ResultSet> _resultSets = new List<ResultSet>();
+        private List<StoredProcedureResultSet> _resultSets = new List<StoredProcedureResultSet>();
 
         public override SchemaObjectType Type => SchemaObjectType.StoredProcedure;
 
@@ -62,8 +62,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
 
         [XmlArray("ResultSets"), DefaultValue(null)]
-        [XmlArrayItem(typeof(ResultSet), ElementName = "ResultSet")]
-        public List<ResultSet>? ResultSetsOrNull
+        [XmlArrayItem(typeof(StoredProcedureResultSet), ElementName = "ResultSet")]
+        public List<StoredProcedureResultSet>? ResultSetsOrNull
         {
             get
             {
@@ -88,7 +88,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
 
         [XmlIgnore]
-        public List<ResultSet> ResultSets { get => _resultSets; set => _resultSets = value; }
+        public List<StoredProcedureResultSet> ResultSets { get => _resultSets; set => _resultSets = value; }
 
         int IndexOfParameter(string name)
         {

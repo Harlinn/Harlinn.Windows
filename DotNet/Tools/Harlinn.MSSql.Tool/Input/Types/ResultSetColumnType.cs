@@ -16,7 +16,7 @@
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
-    public enum FieldType
+    public enum ResultSetColumnType
     {
         Unknown,
         Boolean,
@@ -45,4 +45,6 @@ namespace Harlinn.MSSql.Tool.Input.Types
         Object,
         Enum
     }
+
+
 }

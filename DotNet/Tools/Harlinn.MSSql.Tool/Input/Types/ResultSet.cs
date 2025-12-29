@@ -21,36 +21,47 @@ namespace Harlinn.MSSql.Tool.Input.Types
     [Serializable]
     public class ResultSet
     {
-        private List<FieldDefinition> _fields = new List<FieldDefinition>();
+        private List<ResultSetColumn> _columns = new List<ResultSetColumn>();
 
-        [XmlArray("Fields")]
-        [XmlArrayItem(typeof(BooleanFieldDefinition), ElementName = "Boolean")]
-        [XmlArrayItem(typeof(ByteFieldDefinition), ElementName = "Byte")]
-        [XmlArrayItem(typeof(SByteFieldDefinition), ElementName = "SByte")]
-        [XmlArrayItem(typeof(CharFieldDefinition), ElementName = "Char")]
-        [XmlArrayItem(typeof(Int16FieldDefinition), ElementName = "Int16")]
-        [XmlArrayItem(typeof(UInt16FieldDefinition), ElementName = "UInt16")]
-        [XmlArrayItem(typeof(Int32FieldDefinition), ElementName = "Int32")]
-        [XmlArrayItem(typeof(UInt32FieldDefinition), ElementName = "UInt32")]
-        [XmlArrayItem(typeof(Int64FieldDefinition), ElementName = "Int64")]
-        [XmlArrayItem(typeof(UInt64FieldDefinition), ElementName = "UInt64")]
-        [XmlArrayItem(typeof(SingleFieldDefinition), ElementName = "Single")]
-        [XmlArrayItem(typeof(DoubleFieldDefinition), ElementName = "Double")]
-        [XmlArrayItem(typeof(DecimalFieldDefinition), ElementName = "Decimal")]
-        [XmlArrayItem(typeof(DateTimeFieldDefinition), ElementName = "DateTime")]
-        [XmlArrayItem(typeof(TimeSpanFieldDefinition), ElementName = "TimeSpan")]
-        [XmlArrayItem(typeof(GuidFieldDefinition), ElementName = "Guid")]
-        [XmlArrayItem(typeof(StringFieldDefinition), ElementName = "String")]
-        [XmlArrayItem(typeof(BinaryFieldDefinition), ElementName = "Binary")]
-        [XmlArrayItem(typeof(SqlVariantFieldDefinition), ElementName = "SqlVariant")]
-        [XmlArrayItem(typeof(HierarchyIdFieldDefinition), ElementName = "HierarchyId")]
-        [XmlArrayItem(typeof(GeometryFieldDefinition), ElementName = "Geometry")]
-        [XmlArrayItem(typeof(GeographyFieldDefinition), ElementName = "Geography")]
-        [XmlArrayItem(typeof(XmlFieldDefinition), ElementName = "Xml")]
-        [XmlArrayItem(typeof(ObjectFieldDefinition), ElementName = "Object")]
-        [XmlArrayItem(typeof(EnumFieldDefinition), ElementName = "Enum")]
-        public List<FieldDefinition> Fields { get => _fields; set => _fields = value; }
+        [XmlArray("Columns")]
+        [XmlArrayItem(typeof(BooleanResultSetColumn), ElementName = "Boolean")]
+        [XmlArrayItem(typeof(ByteResultSetColumn), ElementName = "Byte")]
+        [XmlArrayItem(typeof(SByteResultSetColumn), ElementName = "SByte")]
+        [XmlArrayItem(typeof(CharResultSetColumn), ElementName = "Char")]
+        [XmlArrayItem(typeof(Int16ResultSetColumn), ElementName = "Int16")]
+        [XmlArrayItem(typeof(UInt16ResultSetColumn), ElementName = "UInt16")]
+        [XmlArrayItem(typeof(Int32ResultSetColumn), ElementName = "Int32")]
+        [XmlArrayItem(typeof(UInt32ResultSetColumn), ElementName = "UInt32")]
+        [XmlArrayItem(typeof(Int64ResultSetColumn), ElementName = "Int64")]
+        [XmlArrayItem(typeof(UInt64ResultSetColumn), ElementName = "UInt64")]
+        [XmlArrayItem(typeof(SingleResultSetColumn), ElementName = "Single")]
+        [XmlArrayItem(typeof(DoubleResultSetColumn), ElementName = "Double")]
+        [XmlArrayItem(typeof(DecimalResultSetColumn), ElementName = "Decimal")]
+        [XmlArrayItem(typeof(DateTimeResultSetColumn), ElementName = "DateTime")]
+        [XmlArrayItem(typeof(TimeSpanResultSetColumn), ElementName = "TimeSpan")]
+        [XmlArrayItem(typeof(GuidResultSetColumn), ElementName = "Guid")]
+        [XmlArrayItem(typeof(StringResultSetColumn), ElementName = "String")]
+        [XmlArrayItem(typeof(BinaryResultSetColumn), ElementName = "Binary")]
+        [XmlArrayItem(typeof(SqlVariantResultSetColumn), ElementName = "SqlVariant")]
+        [XmlArrayItem(typeof(HierarchyIdResultSetColumn), ElementName = "HierarchyId")]
+        [XmlArrayItem(typeof(GeometryResultSetColumn), ElementName = "Geometry")]
+        [XmlArrayItem(typeof(GeographyResultSetColumn), ElementName = "Geography")]
+        [XmlArrayItem(typeof(XmlResultSetColumn), ElementName = "Xml")]
+        [XmlArrayItem(typeof(ObjectResultSetColumn), ElementName = "Object")]
+        [XmlArrayItem(typeof(EnumResultSetColumn), ElementName = "Enum")]
+        public List<ResultSetColumn> Columns { get => _columns; set => _columns = value; }
     }
+
+    public class StoredProcedureResultSet : ResultSet
+    {
+        StoredProcedureDefinition? _owner;
+    }
+
+    public class QueryResultSet : ResultSet
+    {
+        QueryDefinition? _owner;
+    }
+
 
 
 }

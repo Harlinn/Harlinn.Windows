@@ -22,7 +22,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
     /// Represents a single column description returned by <c>sp_describe_first_result_set</c>.
     /// See: https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-describe-first-result-set-transact-sql
     /// </summary>
-    public sealed class ResultSetColumn
+    public sealed class ResultSetColumn 
     {
         readonly bool _isHidden;
         readonly int _columnOrdinal;

@@ -139,7 +139,7 @@ public class SqlConnectionExtensionsTests
     {
         using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
         connection.Open();
-        var resultSet = connection.DescribeFirstResultSet("SELECT * FROM sys.types", null);
+        var resultSet = connection.DescribeFirstResultSet("SELECT * FROM sys.types", null, true);
         Assert.IsNotNull(resultSet);
     }
 
@@ -148,7 +148,7 @@ public class SqlConnectionExtensionsTests
     {
         using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
         connection.Open();
-        var resultSet = connection.DescribeFirstResultSet("EXEC sys.sp_server_info", null);
+        var resultSet = connection.DescribeFirstResultSet("EXEC sys.sp_server_info", null, true);
         Assert.IsNotNull(resultSet);
     }
 
