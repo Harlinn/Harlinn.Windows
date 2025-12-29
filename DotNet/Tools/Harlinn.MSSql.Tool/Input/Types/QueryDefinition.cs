@@ -21,14 +21,19 @@ namespace Harlinn.MSSql.Tool.Input.Types
     [Serializable]
     public class QueryDefinition 
     {
-        private string sql = string.Empty;
-        private QueryResultSet? resultSet;
+        private string _name = string.Empty;
+        private string _sql = string.Empty;
+        private QueryResultSet? _resultSet;
+
+        [XmlAttribute]
+        public string Name { get => _name; set => _name = value; }
 
         [XmlElement("Sql")]
-        public string Sql { get => sql; set => sql = value; }
+        public string Sql { get => _sql; set => _sql = value; }
 
         [XmlElement("ResultSet")]
-        public QueryResultSet? ResultSet { get => resultSet; set => resultSet = value; }
+        public QueryResultSet? ResultSet { get => _resultSet; set => _resultSet = value; }
+        
     }
 
 

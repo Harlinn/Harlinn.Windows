@@ -17,8 +17,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             using System;
             using System.Data;
             using System.Data.Common;
+            using System.Data.SqlTypes;
             using System.Collections.Generic;
             using Microsoft.Data.SqlClient;
+            using Microsoft.SqlServer.Types;
             """);
             WriteLine();
             WriteLine($"namespace {databaseReaderNamespace}");
@@ -215,13 +217,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                         return reader.GetSqlBytes(ordinal).Value;
                     }
 
-                    public SqlHierarchyId GetSqlHierarchyId(this SqlDataReader reader, int i)
+                    public static SqlHierarchyId GetSqlHierarchyId(this SqlDataReader reader, int i)
                     {
                         var result = (SqlHierarchyId)reader.GetSqlValue(i);
                         return result;
                     }
 
-                    public SqlHierarchyId? GetNullableSqlHierarchyId(this SqlDataReader reader, int i)
+                    public static SqlHierarchyId? GetNullableSqlHierarchyId(this SqlDataReader reader, int i)
                     {
                         if (reader.IsDBNull(i))
                         {
@@ -231,13 +233,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                         return result;
                     }
 
-                    public SqlGeography GetSqlGeography(this SqlDataReader reader, int i)
+                    public static SqlGeography GetSqlGeography(this SqlDataReader reader, int i)
                     {
                         var result = (SqlGeography)reader.GetSqlValue(i);
                         return result;
                     }
 
-                    public SqlGeography? GetNullableSqlGeography(this SqlDataReader reader, int i)
+                    public static SqlGeography? GetNullableSqlGeography(this SqlDataReader reader, int i)
                     {
                         if (reader.IsDBNull(i))
                         {
@@ -247,13 +249,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                         return result;
                     }
 
-                    public SqlGeometry GetSqlGeometry(this SqlDataReader reader, int i)
+                    public static SqlGeometry GetSqlGeometry(this SqlDataReader reader, int i)
                     {
                         var result = (SqlGeometry)reader.GetSqlValue(i);
                         return result;
                     }
 
-                    public SqlGeometry? GetNullableSqlGeometry(this SqlDataReader reader, int i)
+                    public static SqlGeometry? GetNullableSqlGeometry(this SqlDataReader reader, int i)
                     {
                         if (reader.IsDBNull(i))
                         {
@@ -263,13 +265,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                         return result;
                     }
 
-                    public SqlXml GetSqlXml(this SqlDataReader reader, int i)
+                    public static SqlXml GetSqlXml(this SqlDataReader reader, int i)
                     {
                         var result = reader.GetSqlXml(i);
                         return result;
                     }
 
-                    public SqlXml? GetNullableSqlXml(this SqlDataReader reader, int i)
+                    public static SqlXml? GetNullableSqlXml(this SqlDataReader reader, int i)
                     {
                         if (reader.IsDBNull(i))
                         {

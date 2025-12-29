@@ -389,6 +389,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                     result = "0.0";
                 }
                 break;
+                case FieldType.Decimal:
+                {
+                    result = "0m";
+                }
+                break;
                 case FieldType.DateTime:
                 {
                     result = "default";
@@ -431,8 +436,6 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                 case FieldType.Unknown:
                     break;
                 case FieldType.Char:
-                    break;
-                case FieldType.Decimal:
                     break;
                 case FieldType.SqlVariant:
                     break;
@@ -602,6 +605,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             {
                 name = name + "__";
             }
+            name = name!.Replace('.', '_');
+            if (char.IsDigit(name[0]))
+            {
+                name = "d_" + name;
+            }
             return name;
         }
 
@@ -616,6 +624,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             if (keyWords.Contains(name!))
             {
                 name = name + "__";
+            }
+            if (char.IsDigit(name[0]))
+            {
+                name = "d_" + name;
             }
             return name;
         }
@@ -638,6 +650,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         public static string GetMemberFieldName(FieldDefinition fieldDefinition)
         {
             var name = "_" + fieldDefinition.Name.FirstToLower();
+            name = name!.Replace('.', '_');
+            if (char.IsDigit(name[0]))
+            {
+                name = "_d_" + name;
+            }
             return name;
         }
 
@@ -656,6 +673,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         public static string GetMemberPropertyName(FieldDefinition fieldDefinition)
         {
             var name = fieldDefinition.Name.FirstToUpper();
+            name = name!.Replace('.', '_');
+            if ( char.IsDigit(name[0]))
+            {
+                name = "D_" + name;
+            }
             return name!;
         }
 

@@ -22,6 +22,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         {
             string readOnlyModifier = _readOnly ? "readonly " : string.Empty;
             WriteLine("using System;");
+            WriteLine("using System.Data.SqlTypes;");
+            WriteLine("using Microsoft.SqlServer.Types;");
             WriteLine();
             WriteLine($"namespace {CSharpHelper.GetDataTypeNamespace(RowSource)};");
             WriteLine();

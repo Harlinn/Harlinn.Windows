@@ -1,0 +1,61 @@
+using System;
+using System.Data.SqlTypes;
+using Microsoft.SqlServer.Types;
+
+namespace AdventureWorks.Types.Production;
+
+public class VproductmodelinstructionsDataType
+{
+    readonly int _productmodelid = 0;
+    readonly string _name = string.Empty;
+    readonly string? _instructions;
+    readonly int? _locationid;
+    readonly decimal? _setuphours;
+    readonly decimal? _machinehours;
+    readonly decimal? _laborhours;
+    readonly int? _lotsize;
+    readonly string? _step;
+    readonly Guid _rowguid;
+    readonly DateTime _modifieddate;
+
+    public VproductmodelinstructionsDataType( )
+    {
+    }
+
+    public VproductmodelinstructionsDataType(int productmodelid,
+        string name,
+        string? instructions,
+        int? locationid,
+        decimal? setuphours,
+        decimal? machinehours,
+        decimal? laborhours,
+        int? lotsize,
+        string? step,
+        Guid rowguid,
+        DateTime modifieddate)
+    {
+        _productmodelid = productmodelid;
+        _name = name;
+        _instructions = instructions;
+        _locationid = locationid;
+        _setuphours = setuphours;
+        _machinehours = machinehours;
+        _laborhours = laborhours;
+        _lotsize = lotsize;
+        _step = step;
+        _rowguid = rowguid;
+        _modifieddate = modifieddate;
+    }
+
+    public int Productmodelid => _productmodelid;
+    public string Name => _name;
+    public string? Instructions => _instructions;
+    public int? Locationid => _locationid;
+    public decimal? Setuphours => _setuphours;
+    public decimal? Machinehours => _machinehours;
+    public decimal? Laborhours => _laborhours;
+    public int? Lotsize => _lotsize;
+    public string? Step => _step;
+    public Guid Rowguid => _rowguid;
+    public DateTime Modifieddate => _modifieddate;
+}

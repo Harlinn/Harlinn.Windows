@@ -136,14 +136,13 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 var project = Project;
                 var rootNamespace = project?.Namespace;
                 var schemaNamespace = Owner?.Namespace;
-                if (!string.IsNullOrEmpty(schemaNamespace))
+                if (string.IsNullOrEmpty(schemaNamespace))
                 {
-                    return $"{rootNamespace}.Types.{schemaNamespace}";
+                    schemaNamespace = Owner?.Name.FirstToUpper();
                 }
-                else
-                {
-                    return rootNamespace! + ".Types";
-                }
+                
+                return $"{rootNamespace}.Types.{schemaNamespace}";
+
             }
         }
 

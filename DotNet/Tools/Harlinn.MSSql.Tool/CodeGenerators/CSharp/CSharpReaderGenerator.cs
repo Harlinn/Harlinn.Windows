@@ -45,6 +45,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             WriteLine("using System.Collections.Generic;");
             WriteLine("using Microsoft.Data.SqlClient;");
             WriteLine("using Microsoft.SqlServer.Types;");
+            WriteLine("using System.Data.SqlTypes;");
             if (UseWrappers)
             {
                 WriteLine("using Harlinn.Common.Core.Net.Data.SqlClient;");

@@ -36,6 +36,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
         private List<TypeDefinition> _types = new List<TypeDefinition>();
         private List<SchemaObject> _objects = new List<SchemaObject>();
 
+        private List<QueryDefinition> _queries = new List<QueryDefinition>();
+        private Dictionary<string, QueryDefinition> _queriesByName = new Dictionary<string, QueryDefinition>(StringComparer.OrdinalIgnoreCase);
+
         [XmlIgnore]
         public Dictionary<string, SchemaObject> ObjectsByName { get => _objectsByName; set => _objectsByName = value; }
         [XmlIgnore]
@@ -67,7 +70,35 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(FunctionDefinition), ElementName = "Function")]
         public List<SchemaObject> Objects { get => _objects; set => _objects = value; }
 
+        [XmlArray("Queries"), DefaultValue(null)]
+        public List<QueryDefinition>? QueriesOrNull
+        {
+            get
+            {
+                if (_queries.Count == 0)
+                {
+                    return null;
+                }
+                return _queries;
+            }
 
+            set
+            {
+                if (value == null)
+                {
+                    _queries.Clear();
+                }
+                else
+                {
+                    _queries = value;
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public List<QueryDefinition> Queries { get => _queries; set => _queries = value; }
+        [XmlIgnore]
+        public Dictionary<string, QueryDefinition> QueriesByName { get => _queriesByName; set => _queriesByName = value; }
 
         internal void Initialize()
         {

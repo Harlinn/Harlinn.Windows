@@ -48,10 +48,10 @@ namespace Harlinn.MSSql.Tool
         public string OutputDirectory { get; set; } = string.Empty;
 
         [Option('w', "use_wrappers", HelpText = "Use wrappers.")]
-        public bool UseWrappers { get; set; } = true;
+        public bool UseWrappers { get; set; } = false;
 
         [Option('e', "use_entity_framework", HelpText = "Use Entity Framework.")]
-        public bool UseEntityFramework { get; set; } = true;
+        public bool UseEntityFramework { get; set; } = false;
 
         public static string GetDefaultOutputDirectory(string projectFilePath)
         {

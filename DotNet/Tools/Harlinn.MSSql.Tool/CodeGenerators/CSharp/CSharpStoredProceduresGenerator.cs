@@ -1,4 +1,5 @@
-﻿using Harlinn.MSSql.Tool.Input.Types;
+﻿
+using Harlinn.MSSql.Tool.Input.Types;
 using Harlinn.MSSql.Tool.Output;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -32,6 +33,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             WriteLine("using System.Data.Common;");
             WriteLine("using System.Collections.Generic;");
             WriteLine("using Microsoft.Data.SqlClient;");
+            WriteLine("using System.Data.SqlTypes;");
+            WriteLine("using Microsoft.SqlServer.Types;");
             WriteLine();
             var dataTypeNamespaces = GetDataTypeNamespaces();
             foreach (var dataTypeNamespace in dataTypeNamespaces)

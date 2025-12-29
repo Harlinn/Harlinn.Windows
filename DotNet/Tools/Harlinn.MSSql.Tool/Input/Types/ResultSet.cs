@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
@@ -21,7 +22,28 @@ namespace Harlinn.MSSql.Tool.Input.Types
     [Serializable]
     public class ResultSet
     {
+        private string _name = string.Empty;
+        private string _namespace = string.Empty;
+        private string _readerTypeName = string.Empty;
+        private string _readerNamespace = string.Empty;
+        private string _dataTypeName = string.Empty;
+        private string _dataNamespace = string.Empty;
+
         private List<ResultSetColumn> _columns = new List<ResultSetColumn>();
+
+        [XmlAttribute]
+        public string Name { get => _name; set => _name = value; }
+        [XmlAttribute, DefaultValue("")]
+        public string Namespace { get => _namespace; set => _namespace = value; }
+        [XmlAttribute, DefaultValue("")]
+        public string ReaderTypeName { get => _readerTypeName; set => _readerTypeName = value; }
+        [XmlAttribute, DefaultValue("")]
+        public string ReaderNamespace { get => _readerNamespace; set => _readerNamespace = value; }
+        [XmlAttribute, DefaultValue("")]
+        public string DataTypeName { get => _dataTypeName; set => _dataTypeName = value; }
+        [XmlAttribute, DefaultValue("")]
+        public string DataNamespace { get => _dataNamespace; set => _dataNamespace = value; }
+
 
         [XmlArray("Columns")]
         [XmlArrayItem(typeof(BooleanResultSetColumn), ElementName = "Boolean")]
@@ -50,6 +72,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(ObjectResultSetColumn), ElementName = "Object")]
         [XmlArrayItem(typeof(EnumResultSetColumn), ElementName = "Enum")]
         public List<ResultSetColumn> Columns { get => _columns; set => _columns = value; }
+        
+        
     }
 
     public class StoredProcedureResultSet : ResultSet

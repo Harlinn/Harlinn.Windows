@@ -9,19 +9,29 @@ library.
 Using the [Microsoft.Data.SqlClient](https://learn.microsoft.com/en-us/sql/connect/ado-net/microsoft-ado-net-sql-server)
 library can be beneficial for performance and features, especially when working with large datasets or complex queries.
 
-It can also be time consuming, and error prone, to write and maintain the necessary 
-C# code for interacting with SQL Server databases.
-
-This tool automates the process of generating C# code for working with SQL Server databases,
-supporting a subset of the features provided by Microsoft SQL Server.
+This tool automates the process of generating most of the C# code required for working with SQL Server databases,
+supporting a reasonable subset of the available features.
 
 # Features
 
-- Import table definitions from an existing database
-- Generate SQL scripts for creating tables and stored procedures
-- Generate C# code for interacting with SQL Server databases
-- Support for basic CRUD operations
+- Import table, view and stored procedure definitions from an existing database.
+- Generate SQL scripts for creating tables and stored procedures for CRUD operations.
+- Generate strongly typed C# classes for reading data from tables, views, stored procedures and sql queries.
+- Generate C# code for inserting, updating and deleting data from tables using the generated stored procedures.
+- Generate C# code for executing the imported stored procedures.
 
+The generated code should be copied into your own projects and modified as needed.
+
+
+
+
+
+# Requirements
+
+- The [Microsoft.Data.SqlClient](https://learn.microsoft.com/en-us/sql/connect/ado-net/microsoft-ado-net-sql-server) library.
+- The [Microsoft.SqlServer.Types](https://learn.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.types) library.
+
+The generated code targets .NET 9.0 and C# 13.0, and does not require any additional libraries.
 
 
 ## Usage
