@@ -70,10 +70,13 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             for (int i = 0; i < fieldDefinitionsCount; i++)
             {
                 var fieldDefinition = fieldDefinitions[i];
-                var variableName = MsSqlHelper.GetParameterName(fieldDefinition);
-                var columnName = MsSqlHelper.GetColumnName(fieldDefinition);
-                columnNameList.Add($"{columnName}");
-                variableNameList.Add($"{variableName}");
+                if (fieldDefinition.IsIdentity == false)
+                {
+                    var variableName = MsSqlHelper.GetParameterName(fieldDefinition);
+                    var columnName = MsSqlHelper.GetColumnName(fieldDefinition);
+                    columnNameList.Add($"{columnName}");
+                    variableNameList.Add($"{variableName}");
+                }
             }
 
             var columnNames = string.Join($",{Environment.NewLine}            ", columnNameList);
@@ -84,6 +87,18 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
             statement.AppendLine(insertString);
             statement.AppendLine(valueString);
+
+            for (int i = 0; i < fieldDefinitionsCount; i++)
+            {
+                var fieldDefinition = fieldDefinitions[i];
+                if (fieldDefinition.IsIdentity)
+                {
+                    var variableName = MsSqlHelper.GetParameterName(fieldDefinition);
+                    statement.AppendLine($"      SET {variableName} = SCOPE_IDENTITY();");
+                }
+            }
+
+            
 
             return statement.ToString();
         }

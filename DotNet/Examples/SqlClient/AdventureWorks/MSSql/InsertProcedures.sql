@@ -12,14 +12,13 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [dbo].[AWBuildVersion]([Systeminformationid],
-            [Database Version],
+      INSERT INTO [dbo].[AWBuildVersion]([Database Version],
             [Versiondate],
             [Modifieddate])
-          VALUES(@systeminformationid,
-              @databaseVersion,
+          VALUES(@databaseVersion,
               @versiondate,
               @modifieddate)
+      SET @systeminformationid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -62,22 +61,21 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [dbo].[DatabaseLog]([Databaselogid],
-            [Posttime],
+      INSERT INTO [dbo].[DatabaseLog]([Posttime],
             [Databaseuser],
             [Event],
             [Schema],
             [Object],
             [Tsql],
             [Xmlevent])
-          VALUES(@databaselogid,
-              @posttime,
+          VALUES(@posttime,
               @databaseuser,
               @event,
               @schema,
               @object,
               @tsql,
               @xmlevent)
+      SET @databaselogid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -121,8 +119,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [dbo].[ErrorLog]([Errorlogid],
-            [Errortime],
+      INSERT INTO [dbo].[ErrorLog]([Errortime],
             [Username],
             [Errornumber],
             [Errorseverity],
@@ -130,8 +127,7 @@ AS
             [Errorprocedure],
             [Errorline],
             [Errormessage])
-          VALUES(@errorlogid,
-              @errortime,
+          VALUES(@errortime,
               @username,
               @errornumber,
               @errorseverity,
@@ -139,6 +135,7 @@ AS
               @errorprocedure,
               @errorline,
               @errormessage)
+      SET @errorlogid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -177,14 +174,13 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [HumanResources].[Department]([Departmentid],
-            [Name],
+      INSERT INTO [HumanResources].[Department]([Name],
             [Groupname],
             [Modifieddate])
-          VALUES(@departmentid,
-              @name,
+          VALUES(@name,
               @groupname,
               @modifieddate)
+      SET @departmentid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -403,14 +399,13 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [HumanResources].[JobCandidate]([Jobcandidateid],
-            [Businessentityid],
+      INSERT INTO [HumanResources].[JobCandidate]([Businessentityid],
             [Resume],
             [Modifieddate])
-          VALUES(@jobcandidateid,
-              @businessentityid,
+          VALUES(@businessentityid,
               @resume,
               @modifieddate)
+      SET @jobcandidateid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -448,12 +443,11 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [HumanResources].[JobCandidate]([Jobcandidateid],
-            [Resume],
+      INSERT INTO [HumanResources].[JobCandidate]([Resume],
             [Modifieddate])
-          VALUES(@jobcandidateid,
-              @resume,
+          VALUES(@resume,
               @modifieddate)
+      SET @jobcandidateid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -493,16 +487,15 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [HumanResources].[Shift]([Shiftid],
-            [Name],
+      INSERT INTO [HumanResources].[Shift]([Name],
             [Starttime],
             [Endtime],
             [Modifieddate])
-          VALUES(@shiftid,
-              @name,
+          VALUES(@name,
               @starttime,
               @endtime,
               @modifieddate)
+      SET @shiftid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -546,8 +539,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Person].[Address]([Addressid],
-            [Addressline1],
+      INSERT INTO [Person].[Address]([Addressline1],
             [Addressline2],
             [City],
             [Stateprovinceid],
@@ -555,8 +547,7 @@ AS
             [Spatiallocation],
             [Rowguid],
             [Modifieddate])
-          VALUES(@addressid,
-              @addressline1,
+          VALUES(@addressline1,
               @addressline2,
               @city,
               @stateprovinceid,
@@ -564,6 +555,7 @@ AS
               @spatiallocation,
               @rowguid,
               @modifieddate)
+      SET @addressid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -602,14 +594,13 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Person].[AddressType]([Addresstypeid],
-            [Name],
+      INSERT INTO [Person].[AddressType]([Name],
             [Rowguid],
             [Modifieddate])
-          VALUES(@addresstypeid,
-              @name,
+          VALUES(@name,
               @rowguid,
               @modifieddate)
+      SET @addresstypeid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -647,12 +638,11 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Person].[BusinessEntity]([Businessentityid],
-            [Rowguid],
+      INSERT INTO [Person].[BusinessEntity]([Rowguid],
             [Modifieddate])
-          VALUES(@businessentityid,
-              @rowguid,
+          VALUES(@rowguid,
               @modifieddate)
+      SET @businessentityid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -788,12 +778,11 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Person].[ContactType]([Contacttypeid],
-            [Name],
+      INSERT INTO [Person].[ContactType]([Name],
             [Modifieddate])
-          VALUES(@contacttypeid,
-              @name,
+          VALUES(@name,
               @modifieddate)
+      SET @contacttypeid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -877,15 +866,14 @@ AS
       BEGIN TRANSACTION;
     BEGIN TRY
       INSERT INTO [Person].[EmailAddress]([Businessentityid],
-            [Emailaddressid],
             [Emailaddress],
             [Rowguid],
             [Modifieddate])
           VALUES(@businessentityid,
-              @emailaddressid,
               @emailaddress,
               @rowguid,
               @modifieddate)
+      SET @emailaddressid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1091,12 +1079,11 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Person].[PhoneNumberType]([Phonenumbertypeid],
-            [Name],
+      INSERT INTO [Person].[PhoneNumberType]([Name],
             [Modifieddate])
-          VALUES(@phonenumbertypeid,
-              @name,
+          VALUES(@name,
               @modifieddate)
+      SET @phonenumbertypeid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1139,22 +1126,21 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Person].[StateProvince]([Stateprovinceid],
-            [Stateprovincecode],
+      INSERT INTO [Person].[StateProvince]([Stateprovincecode],
             [Countryregioncode],
             [Isonlystateprovinceflag],
             [Name],
             [Territoryid],
             [Rowguid],
             [Modifieddate])
-          VALUES(@stateprovinceid,
-              @stateprovincecode,
+          VALUES(@stateprovincecode,
               @countryregioncode,
               @isonlystateprovinceflag,
               @name,
               @territoryid,
               @rowguid,
               @modifieddate)
+      SET @stateprovinceid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1198,8 +1184,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[BillOfMaterials]([Billofmaterialsid],
-            [Productassemblyid],
+      INSERT INTO [Production].[BillOfMaterials]([Productassemblyid],
             [Componentid],
             [Startdate],
             [Enddate],
@@ -1207,8 +1192,7 @@ AS
             [Bomlevel],
             [Perassemblyqty],
             [Modifieddate])
-          VALUES(@billofmaterialsid,
-              @productassemblyid,
+          VALUES(@productassemblyid,
               @componentid,
               @startdate,
               @enddate,
@@ -1216,6 +1200,7 @@ AS
               @bomlevel,
               @perassemblyqty,
               @modifieddate)
+      SET @billofmaterialsid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1258,22 +1243,21 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[BillOfMaterials]([Billofmaterialsid],
-            [Componentid],
+      INSERT INTO [Production].[BillOfMaterials]([Componentid],
             [Startdate],
             [Enddate],
             [Unitmeasurecode],
             [Bomlevel],
             [Perassemblyqty],
             [Modifieddate])
-          VALUES(@billofmaterialsid,
-              @componentid,
+          VALUES(@componentid,
               @startdate,
               @enddate,
               @unitmeasurecode,
               @bomlevel,
               @perassemblyqty,
               @modifieddate)
+      SET @billofmaterialsid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1427,12 +1411,11 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[Illustration]([Illustrationid],
-            [Diagram],
+      INSERT INTO [Production].[Illustration]([Diagram],
             [Modifieddate])
-          VALUES(@illustrationid,
-              @diagram,
+          VALUES(@diagram,
               @modifieddate)
+      SET @illustrationid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1472,16 +1455,15 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[Location]([Locationid],
-            [Name],
+      INSERT INTO [Production].[Location]([Name],
             [Costrate],
             [Availability],
             [Modifieddate])
-          VALUES(@locationid,
-              @name,
+          VALUES(@name,
               @costrate,
               @availability,
               @modifieddate)
+      SET @locationid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1541,8 +1523,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[Product]([Productid],
-            [Name],
+      INSERT INTO [Production].[Product]([Name],
             [Productnumber],
             [Makeflag],
             [Finishedgoodsflag],
@@ -1566,8 +1547,7 @@ AS
             [Discontinueddate],
             [Rowguid],
             [Modifieddate])
-          VALUES(@productid,
-              @name,
+          VALUES(@name,
               @productnumber,
               @makeflag,
               @finishedgoodsflag,
@@ -1591,6 +1571,7 @@ AS
               @discontinueddate,
               @rowguid,
               @modifieddate)
+      SET @productid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1646,8 +1627,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[Product]([Productid],
-            [Name],
+      INSERT INTO [Production].[Product]([Name],
             [Productnumber],
             [Makeflag],
             [Finishedgoodsflag],
@@ -1667,8 +1647,7 @@ AS
             [Discontinueddate],
             [Rowguid],
             [Modifieddate])
-          VALUES(@productid,
-              @name,
+          VALUES(@name,
               @productnumber,
               @makeflag,
               @finishedgoodsflag,
@@ -1688,6 +1667,7 @@ AS
               @discontinueddate,
               @rowguid,
               @modifieddate)
+      SET @productid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1726,14 +1706,13 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[ProductCategory]([Productcategoryid],
-            [Name],
+      INSERT INTO [Production].[ProductCategory]([Name],
             [Rowguid],
             [Modifieddate])
-          VALUES(@productcategoryid,
-              @name,
+          VALUES(@name,
               @rowguid,
               @modifieddate)
+      SET @productcategoryid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1821,14 +1800,13 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[ProductDescription]([Productdescriptionid],
-            [Description],
+      INSERT INTO [Production].[ProductDescription]([Description],
             [Rowguid],
             [Modifieddate])
-          VALUES(@productdescriptionid,
-              @description,
+          VALUES(@description,
               @rowguid,
               @modifieddate)
+      SET @productdescriptionid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2016,18 +1994,17 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[ProductModel]([Productmodelid],
-            [Name],
+      INSERT INTO [Production].[ProductModel]([Name],
             [Catalogdescription],
             [Instructions],
             [Rowguid],
             [Modifieddate])
-          VALUES(@productmodelid,
-              @name,
+          VALUES(@name,
               @catalogdescription,
               @instructions,
               @rowguid,
               @modifieddate)
+      SET @productmodelid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2157,18 +2134,17 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[ProductPhoto]([Productphotoid],
-            [Thumbnailphoto],
+      INSERT INTO [Production].[ProductPhoto]([Thumbnailphoto],
             [Thumbnailphotofilename],
             [Largephoto],
             [Largephotofilename],
             [Modifieddate])
-          VALUES(@productphotoid,
-              @thumbnailphoto,
+          VALUES(@thumbnailphoto,
               @thumbnailphotofilename,
               @largephoto,
               @largephotofilename,
               @modifieddate)
+      SET @productphotoid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2257,22 +2233,21 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[ProductReview]([Productreviewid],
-            [Productid],
+      INSERT INTO [Production].[ProductReview]([Productid],
             [Reviewername],
             [Reviewdate],
             [Emailaddress],
             [Rating],
             [Comments],
             [Modifieddate])
-          VALUES(@productreviewid,
-              @productid,
+          VALUES(@productid,
               @reviewername,
               @reviewdate,
               @emailaddress,
               @rating,
               @comments,
               @modifieddate)
+      SET @productreviewid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2312,16 +2287,15 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[ProductSubcategory]([Productsubcategoryid],
-            [Productcategoryid],
+      INSERT INTO [Production].[ProductSubcategory]([Productcategoryid],
             [Name],
             [Rowguid],
             [Modifieddate])
-          VALUES(@productsubcategoryid,
-              @productcategoryid,
+          VALUES(@productcategoryid,
               @name,
               @rowguid,
               @modifieddate)
+      SET @productsubcategoryid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2359,12 +2333,11 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[ScrapReason]([Scrapreasonid],
-            [Name],
+      INSERT INTO [Production].[ScrapReason]([Name],
             [Modifieddate])
-          VALUES(@scrapreasonid,
-              @name,
+          VALUES(@name,
               @modifieddate)
+      SET @scrapreasonid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2408,8 +2381,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[TransactionHistory]([Transactionid],
-            [Productid],
+      INSERT INTO [Production].[TransactionHistory]([Productid],
             [Referenceorderid],
             [Referenceorderlineid],
             [Transactiondate],
@@ -2417,8 +2389,7 @@ AS
             [Quantity],
             [Actualcost],
             [Modifieddate])
-          VALUES(@transactionid,
-              @productid,
+          VALUES(@productid,
               @referenceorderid,
               @referenceorderlineid,
               @transactiondate,
@@ -2426,6 +2397,7 @@ AS
               @quantity,
               @actualcost,
               @modifieddate)
+      SET @transactionid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2573,8 +2545,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[WorkOrder]([Workorderid],
-            [Productid],
+      INSERT INTO [Production].[WorkOrder]([Productid],
             [Orderqty],
             [Scrappedqty],
             [Startdate],
@@ -2582,8 +2553,7 @@ AS
             [Duedate],
             [Scrapreasonid],
             [Modifieddate])
-          VALUES(@workorderid,
-              @productid,
+          VALUES(@productid,
               @orderqty,
               @scrappedqty,
               @startdate,
@@ -2591,6 +2561,7 @@ AS
               @duedate,
               @scrapreasonid,
               @modifieddate)
+      SET @workorderid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2633,22 +2604,21 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Production].[WorkOrder]([Workorderid],
-            [Productid],
+      INSERT INTO [Production].[WorkOrder]([Productid],
             [Orderqty],
             [Scrappedqty],
             [Startdate],
             [Enddate],
             [Duedate],
             [Modifieddate])
-          VALUES(@workorderid,
-              @productid,
+          VALUES(@productid,
               @orderqty,
               @scrappedqty,
               @startdate,
               @enddate,
               @duedate,
               @modifieddate)
+      SET @workorderid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2830,7 +2800,6 @@ AS
       BEGIN TRANSACTION;
     BEGIN TRY
       INSERT INTO [Purchasing].[PurchaseOrderDetail]([Purchaseorderid],
-            [Purchaseorderdetailid],
             [Duedate],
             [Orderqty],
             [Productid],
@@ -2839,7 +2808,6 @@ AS
             [Rejectedqty],
             [Modifieddate])
           VALUES(@purchaseorderid,
-              @purchaseorderdetailid,
               @duedate,
               @orderqty,
               @productid,
@@ -2847,6 +2815,7 @@ AS
               @receivedqty,
               @rejectedqty,
               @modifieddate)
+      SET @purchaseorderdetailid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2893,8 +2862,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Purchasing].[PurchaseOrderHeader]([Purchaseorderid],
-            [Revisionnumber],
+      INSERT INTO [Purchasing].[PurchaseOrderHeader]([Revisionnumber],
             [Status],
             [Employeeid],
             [Vendorid],
@@ -2905,8 +2873,7 @@ AS
             [Taxamt],
             [Freight],
             [Modifieddate])
-          VALUES(@purchaseorderid,
-              @revisionnumber,
+          VALUES(@revisionnumber,
               @status,
               @employeeid,
               @vendorid,
@@ -2917,6 +2884,7 @@ AS
               @taxamt,
               @freight,
               @modifieddate)
+      SET @purchaseorderid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2957,18 +2925,17 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Purchasing].[ShipMethod]([Shipmethodid],
-            [Name],
+      INSERT INTO [Purchasing].[ShipMethod]([Name],
             [Shipbase],
             [Shiprate],
             [Rowguid],
             [Modifieddate])
-          VALUES(@shipmethodid,
-              @name,
+          VALUES(@name,
               @shipbase,
               @shiprate,
               @rowguid,
               @modifieddate)
+      SET @shipmethodid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3110,18 +3077,17 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[CreditCard]([Creditcardid],
-            [Cardtype],
+      INSERT INTO [Sales].[CreditCard]([Cardtype],
             [Cardnumber],
             [Expmonth],
             [Expyear],
             [Modifieddate])
-          VALUES(@creditcardid,
-              @cardtype,
+          VALUES(@cardtype,
               @cardnumber,
               @expmonth,
               @expyear,
               @modifieddate)
+      SET @creditcardid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3206,20 +3172,19 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[CurrencyRate]([Currencyrateid],
-            [Currencyratedate],
+      INSERT INTO [Sales].[CurrencyRate]([Currencyratedate],
             [Fromcurrencycode],
             [Tocurrencycode],
             [Averagerate],
             [Endofdayrate],
             [Modifieddate])
-          VALUES(@currencyrateid,
-              @currencyratedate,
+          VALUES(@currencyratedate,
               @fromcurrencycode,
               @tocurrencycode,
               @averagerate,
               @endofdayrate,
               @modifieddate)
+      SET @currencyrateid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3260,18 +3225,17 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[Customer]([Customerid],
-            [Personid],
+      INSERT INTO [Sales].[Customer]([Personid],
             [Storeid],
             [Territoryid],
             [Rowguid],
             [Modifieddate])
-          VALUES(@customerid,
-              @personid,
+          VALUES(@personid,
               @storeid,
               @territoryid,
               @rowguid,
               @modifieddate)
+      SET @customerid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3309,12 +3273,11 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[Customer]([Customerid],
-            [Rowguid],
+      INSERT INTO [Sales].[Customer]([Rowguid],
             [Modifieddate])
-          VALUES(@customerid,
-              @rowguid,
+          VALUES(@rowguid,
               @modifieddate)
+      SET @customerid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3403,7 +3366,6 @@ AS
       BEGIN TRANSACTION;
     BEGIN TRY
       INSERT INTO [Sales].[SalesOrderDetail]([Salesorderid],
-            [Salesorderdetailid],
             [Carriertrackingnumber],
             [Orderqty],
             [Productid],
@@ -3413,7 +3375,6 @@ AS
             [Rowguid],
             [Modifieddate])
           VALUES(@salesorderid,
-              @salesorderdetailid,
               @carriertrackingnumber,
               @orderqty,
               @productid,
@@ -3422,6 +3383,7 @@ AS
               @unitpricediscount,
               @rowguid,
               @modifieddate)
+      SET @salesorderdetailid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3480,8 +3442,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[SalesOrderHeader]([Salesorderid],
-            [Revisionnumber],
+      INSERT INTO [Sales].[SalesOrderHeader]([Revisionnumber],
             [Orderdate],
             [Duedate],
             [Shipdate],
@@ -3504,8 +3465,7 @@ AS
             [Comment],
             [Rowguid],
             [Modifieddate])
-          VALUES(@salesorderid,
-              @revisionnumber,
+          VALUES(@revisionnumber,
               @orderdate,
               @duedate,
               @shipdate,
@@ -3528,6 +3488,7 @@ AS
               @comment,
               @rowguid,
               @modifieddate)
+      SET @salesorderid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3582,8 +3543,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[SalesOrderHeader]([Salesorderid],
-            [Revisionnumber],
+      INSERT INTO [Sales].[SalesOrderHeader]([Revisionnumber],
             [Orderdate],
             [Duedate],
             [Shipdate],
@@ -3602,8 +3562,7 @@ AS
             [Comment],
             [Rowguid],
             [Modifieddate])
-          VALUES(@salesorderid,
-              @revisionnumber,
+          VALUES(@revisionnumber,
               @orderdate,
               @duedate,
               @shipdate,
@@ -3622,6 +3581,7 @@ AS
               @comment,
               @rowguid,
               @modifieddate)
+      SET @salesorderid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3871,14 +3831,13 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[SalesReason]([Salesreasonid],
-            [Name],
+      INSERT INTO [Sales].[SalesReason]([Name],
             [Reasontype],
             [Modifieddate])
-          VALUES(@salesreasonid,
-              @name,
+          VALUES(@name,
               @reasontype,
               @modifieddate)
+      SET @salesreasonid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3920,20 +3879,19 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[SalesTaxRate]([Salestaxrateid],
-            [Stateprovinceid],
+      INSERT INTO [Sales].[SalesTaxRate]([Stateprovinceid],
             [Taxtype],
             [Taxrate],
             [Name],
             [Rowguid],
             [Modifieddate])
-          VALUES(@salestaxrateid,
-              @stateprovinceid,
+          VALUES(@stateprovinceid,
               @taxtype,
               @taxrate,
               @name,
               @rowguid,
               @modifieddate)
+      SET @salestaxrateid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3978,8 +3936,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[SalesTerritory]([Territoryid],
-            [Name],
+      INSERT INTO [Sales].[SalesTerritory]([Name],
             [Countryregioncode],
             [Group],
             [Salesytd],
@@ -3988,8 +3945,7 @@ AS
             [Costlastyear],
             [Rowguid],
             [Modifieddate])
-          VALUES(@territoryid,
-              @name,
+          VALUES(@name,
               @countryregioncode,
               @group,
               @salesytd,
@@ -3998,6 +3954,7 @@ AS
               @costlastyear,
               @rowguid,
               @modifieddate)
+      SET @territoryid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -4090,18 +4047,17 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[ShoppingCartItem]([Shoppingcartitemid],
-            [Shoppingcartid],
+      INSERT INTO [Sales].[ShoppingCartItem]([Shoppingcartid],
             [Quantity],
             [Productid],
             [Datecreated],
             [Modifieddate])
-          VALUES(@shoppingcartitemid,
-              @shoppingcartid,
+          VALUES(@shoppingcartid,
               @quantity,
               @productid,
               @datecreated,
               @modifieddate)
+      SET @shoppingcartitemid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -4147,8 +4103,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Sales].[SpecialOffer]([Specialofferid],
-            [Description],
+      INSERT INTO [Sales].[SpecialOffer]([Description],
             [Discountpct],
             [Type],
             [Category],
@@ -4158,8 +4113,7 @@ AS
             [Maxqty],
             [Rowguid],
             [Modifieddate])
-          VALUES(@specialofferid,
-              @description,
+          VALUES(@description,
               @discountpct,
               @type,
               @category,
@@ -4169,6 +4123,7 @@ AS
               @maxqty,
               @rowguid,
               @modifieddate)
+      SET @specialofferid = SCOPE_IDENTITY();
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY

@@ -552,7 +552,7 @@ public static class SqlParameterCollectionExtensions
     }
 
 
-    public static SqlParameter AddChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string? value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.Char, size);
         if (value != null)
@@ -576,7 +576,7 @@ public static class SqlParameterCollectionExtensions
     }
 
 
-    public static SqlParameter AddNChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddNChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string? value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.NChar, size);
         if (value != null)
@@ -599,7 +599,7 @@ public static class SqlParameterCollectionExtensions
         return self.Add(parameter);
     }
 
-    public static SqlParameter AddVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string? value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.VarChar, size <= 8000 ? size : -1);
         if (value != null)
@@ -623,7 +623,7 @@ public static class SqlParameterCollectionExtensions
     }
 
 
-    public static SqlParameter AddVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string? value, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.VarChar, -1);
         if (value != null)
@@ -638,7 +638,7 @@ public static class SqlParameterCollectionExtensions
         return self.Add(parameter);
     }
 
-    public static SqlParameter AddNVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddNVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string? value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.NVarChar, size <= 4000 ? size : -1);
         if (value != null)
@@ -661,7 +661,7 @@ public static class SqlParameterCollectionExtensions
         return self.Add(parameter);
     }
 
-    public static SqlParameter AddNVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddNVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string? value, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.NVarChar, -1);
         if (value != null)
@@ -676,7 +676,7 @@ public static class SqlParameterCollectionExtensions
         return self.Add(parameter);
     }
 
-    public static SqlParameter AddBinary([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, byte[] value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddBinary([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, byte[]? value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         var parameterType = size <= 8000 ? SqlDbType.Binary : SqlDbType.VarBinary;
 
@@ -702,7 +702,7 @@ public static class SqlParameterCollectionExtensions
         return self.Add(parameter);
     }
 
-    public static SqlParameter AddBinary([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, byte[] value, ParameterDirection parameterDirection = ParameterDirection.Input)
+    public static SqlParameter AddBinary([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, byte[]? value, ParameterDirection parameterDirection = ParameterDirection.Input)
     {
         var parameterType = SqlDbType.VarBinary;
 

@@ -84,6 +84,24 @@ namespace AdventureWorks.Tests
             };
         }
 
+        static void DeleteTestPersonIfExists(Microsoft.Data.SqlClient.SqlConnection connection)
+        {
+            var rowGuid = new Guid("{EC22ADCC-FBDC-43EC-ACB9-38CB0231292D}");
+            var command = connection.CreateCommand();
+            command.CommandText = $"DELETE FROM Person.Person WHERE Rowguid = @Rowguid";
+            command.Parameters.AddWithValue("@Rowguid", rowGuid);
+            command.ExecuteNonQuery();
+        }
+
+        static void DeleteTestBusinessentityIfExists(Microsoft.Data.SqlClient.SqlConnection connection)
+        {
+            var rowGuid = new Guid("{156A80DC-E340-4BCB-B734-AA1E0053ACE1}");
+            var command = connection.CreateCommand();
+            command.CommandText = $"DELETE FROM Person.Businessentity WHERE Rowguid = @Rowguid";
+            command.Parameters.AddWithValue("@Rowguid", rowGuid);
+            command.ExecuteNonQuery();
+        }
+
 
 
         [TestMethod]
@@ -96,13 +114,15 @@ namespace AdventureWorks.Tests
             using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
             connection.Open();
 
-            StoredProcedures.DeletePerson(connection, businessEntityId);
-            StoredProcedures.DeleteBusinessentity(connection, businessEntityId);
+
+            DeleteTestPersonIfExists(connection);
+            DeleteTestBusinessentityIfExists(connection);
 
             var insertedBusinessEntity = StoredProcedures.InsertBusinessentity(connection, testBusinessEntity);
-
+            testPerson.Businessentityid = testBusinessEntity.Businessentityid;
             var insertedPerson = StoredProcedures.InsertPerson(connection, testPerson);
             Assert.IsTrue(insertedPerson);
+
             testPerson.Middlename = "B";
             var updatedPerson = StoredProcedures.UpdatePerson(connection, testPerson);
             Assert.IsTrue(updatedPerson);
@@ -113,15 +133,15 @@ namespace AdventureWorks.Tests
             command.CommandText = sql;
 
             // Set the desired BusinessEntityId value:
-            command.Parameters.AddWithValue("@BusinessEntityId", businessEntityId);
+            command.Parameters.AddWithValue("@BusinessEntityId", testBusinessEntity.Businessentityid);
 
             using var reader = command.ExecuteReader();
             var personReader = new PersonReader(reader, ownsReader: false);
 
             var hasRow = personReader.Read();
-            Assert.IsTrue(hasRow, $"Expected at least one row for BusinessEntityId = {businessEntityId}");
+            Assert.IsTrue(hasRow, $"Expected at least one row for BusinessEntityId = {testBusinessEntity.Businessentityid}");
             var person = personReader.ToDataObject();
-            Assert.AreEqual(businessEntityId, person.Businessentityid, "Businessentityid does not match the requested value.");
+            Assert.AreEqual(testBusinessEntity.Businessentityid, person.Businessentityid, "Businessentityid does not match the requested value.");
         }
 
 
