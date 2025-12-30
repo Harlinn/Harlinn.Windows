@@ -1,0 +1,129 @@
+﻿using AdventureWorks.Database;
+using AdventureWorks.Database.Readers.Person;
+using AdventureWorks.Types.Person;
+using System.Data.SqlTypes;
+
+namespace AdventureWorks.Tests
+{
+    [TestClass]
+    public sealed class Test1
+    {
+        private const string InitialCatalog = "AdventureWorks2019";
+        private const string defaultConnectionString = $"Data Source=(local);Initial Catalog={InitialCatalog};Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+
+        [TestMethod]
+        public void PersonReaderTest1()
+        {
+            using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+
+            var sql = PersonReader.Sql;
+            command.CommandText = sql;
+
+            using var reader = command.ExecuteReader();
+            var personReader = new PersonReader(reader, ownsReader: false);
+
+            var persons = personReader.ToList();
+
+            Assert.IsNotEmpty(persons);
+        }
+
+        [TestMethod]
+        public void PersonReaderTest2()
+        {
+            using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+
+            var sql = $"{PersonReader.Sql} WHERE {PersonReader.ShortName}.[Businessentityid] = @BusinessEntityId";
+            command.CommandText = sql;
+
+            // Set the desired BusinessEntityId value:
+            command.Parameters.AddWithValue("@BusinessEntityId", 1);
+
+            using var reader = command.ExecuteReader();
+            var personReader = new PersonReader(reader, ownsReader: false);
+
+            var hasRow = personReader.Read();
+            Assert.IsTrue(hasRow, "Expected at least one row for BusinessEntityId = 1");
+            var person = personReader.ToDataObject();
+            Assert.AreEqual(1, person.Businessentityid, "Businessentityid does not match the requested value.");
+
+        }
+
+        static PersonDataType CreatePerson(int businessEntityId)
+        {
+            var rowGuid = new Guid("{EC22ADCC-FBDC-43EC-ACB9-38CB0231292D}");
+            return new PersonDataType
+            {
+                Businessentityid = businessEntityId,
+                Persontype = "EM",
+                Namestyle = false,
+                Title = "Mr.",
+                Firstname = "John",
+                Middlename = "A",
+                Lastname = "Doe",
+                Suffix = null,
+                Emailpromotion = 0,
+                Rowguid = rowGuid,
+                Additionalcontactinfo = SqlXml.Null,
+                Demographics = SqlXml.Null,
+                Modifieddate = DateTime.UtcNow,
+            };
+        }
+
+        static BusinessentityDataType CreateBusinessentity(int businessEntityId)
+        {
+            var rowGuid = new Guid("{156A80DC-E340-4BCB-B734-AA1E0053ACE1}");
+            return new BusinessentityDataType
+            {
+                Businessentityid = businessEntityId,
+                Rowguid = rowGuid,
+                Modifieddate = DateTime.UtcNow,
+            };
+        }
+
+
+
+        [TestMethod]
+        public void PersonReaderTest3()
+        {
+            int businessEntityId = 150000;
+            var testBusinessEntity = CreateBusinessentity(businessEntityId);
+            var testPerson = CreatePerson(businessEntityId);
+
+            using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
+            connection.Open();
+
+            StoredProcedures.DeletePerson(connection, businessEntityId);
+            StoredProcedures.DeleteBusinessentity(connection, businessEntityId);
+
+            var insertedBusinessEntity = StoredProcedures.InsertBusinessentity(connection, testBusinessEntity);
+
+            var insertedPerson = StoredProcedures.InsertPerson(connection, testPerson);
+            Assert.IsTrue(insertedPerson);
+            testPerson.Middlename = "B";
+            var updatedPerson = StoredProcedures.UpdatePerson(connection, testPerson);
+            Assert.IsTrue(updatedPerson);
+
+            var command = connection.CreateCommand();
+
+            var sql = $"{PersonReader.Sql} WHERE {PersonReader.ShortName}.[Businessentityid] = @BusinessEntityId";
+            command.CommandText = sql;
+
+            // Set the desired BusinessEntityId value:
+            command.Parameters.AddWithValue("@BusinessEntityId", businessEntityId);
+
+            using var reader = command.ExecuteReader();
+            var personReader = new PersonReader(reader, ownsReader: false);
+
+            var hasRow = personReader.Read();
+            Assert.IsTrue(hasRow, $"Expected at least one row for BusinessEntityId = {businessEntityId}");
+            var person = personReader.ToDataObject();
+            Assert.AreEqual(businessEntityId, person.Businessentityid, "Businessentityid does not match the requested value.");
+        }
+
+
+    }
+}

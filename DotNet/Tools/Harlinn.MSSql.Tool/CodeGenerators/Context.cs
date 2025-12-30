@@ -79,6 +79,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators
 
         public string ReadersDirectory => System.IO.Path.Combine(Directory, "Database\\Readers");
 
+        public string DatabaseDirectory => System.IO.Path.Combine(Directory, "Database");
+
 
     }
 

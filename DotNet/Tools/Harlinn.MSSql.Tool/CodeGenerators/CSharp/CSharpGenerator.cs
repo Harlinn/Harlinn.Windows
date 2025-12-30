@@ -38,6 +38,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             sqlDataReaderExtensionsGenerator.Run();
             sqlDataReaderExtensionsGenerator.SaveToFile(Path.Combine(Context.Output.CSharp.ReadersDirectory, "SqlDataReaderExtensions.cs"));
 
+            CSharpSqlParameterCollectionExtensions sqlParameterCollectionExtensions = new CSharpSqlParameterCollectionExtensions(Context);
+            sqlParameterCollectionExtensions.Run();
+            sqlParameterCollectionExtensions.SaveToFile(Path.Combine(Context.Output.CSharp.DatabaseDirectory, "SqlParameterCollectionExtensions.cs"));
+
             foreach (var rowSource in rowSources)
             {
                 CSharpReaderGenerator dataTypeGenerator = new CSharpReaderGenerator(Context, rowSource);

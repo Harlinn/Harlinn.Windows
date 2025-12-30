@@ -1,4 +1,5 @@
 ﻿
+using Harlinn.MSSql.Tool.CodeGenerators.Database;
 using Harlinn.MSSql.Tool.Input.Types;
 using Harlinn.MSSql.Tool.Output;
 using Microsoft.Data.SqlClient;
@@ -81,23 +82,45 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         }
 
 
-        private void CreateFunction(EntityDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions)
+        private void CreateFunction(EntityDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions, bool isInsert = false)
         {
+            var outParameters = new List<FieldDefinition>();
             var fieldDefinitionsCount = fieldDefinitions.Count;
             if (fieldDefinitionsCount > 1)
             {
-                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {CSharpHelper.GetInputArgumentType(fieldDefinitions[0])} {CSharpHelper.GetInputArgumentName(fieldDefinitions[0])},");
+                var fieldDefinition = fieldDefinitions[0];
+                var refModifier = "";
+                if(isInsert && MsSqlHelper.IsOutputParameter(fieldDefinition))
+                {
+                    refModifier = "ref ";
+                    outParameters.Add(fieldDefinition);
+                }
+                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(fieldDefinitions[0])} {CSharpHelper.GetInputArgumentName(fieldDefinitions[0])},");
                 for (int i = 1; i < fieldDefinitionsCount; i++)
                 {
+                    fieldDefinition = fieldDefinitions[i];
+                    refModifier = "";
+                    if (isInsert && MsSqlHelper.IsOutputParameter(fieldDefinition))
+                    {
+                        refModifier = "ref ";
+                        outParameters.Add(fieldDefinition);
+                    }
                     if (i < fieldDefinitionsCount - 1)
-                        WriteLine($"        {CSharpHelper.GetInputArgumentType(fieldDefinitions[i])} {CSharpHelper.GetInputArgumentName(fieldDefinitions[i])},");
+                        WriteLine($"        {refModifier}{CSharpHelper.GetInputArgumentType(fieldDefinition)} {CSharpHelper.GetInputArgumentName(fieldDefinition)},");
                     else
-                        WriteLine($"        {CSharpHelper.GetInputArgumentType(fieldDefinitions[i])} {CSharpHelper.GetInputArgumentName(fieldDefinitions[i])})");
+                        WriteLine($"        {refModifier}{CSharpHelper.GetInputArgumentType(fieldDefinition)} {CSharpHelper.GetInputArgumentName(fieldDefinition)})");
                 }
             }
             else if (fieldDefinitionsCount == 1)
             {
-                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {CSharpHelper.GetInputArgumentType(fieldDefinitions[0])} {CSharpHelper.GetInputArgumentName(fieldDefinitions[0])})");
+                var fieldDefinition = fieldDefinitions[0];
+                var refModifier = "";
+                if (isInsert && MsSqlHelper.IsOutputParameter(fieldDefinition))
+                {
+                    refModifier = "ref ";
+                    outParameters.Add(fieldDefinition);
+                }
+                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(fieldDefinitions[0])} {CSharpHelper.GetInputArgumentName(fieldDefinitions[0])})");
             }
             else
             {
@@ -116,48 +139,97 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                 var fieldDefinition = fieldDefinitions[i];
                 var fieldType = fieldDefinition.FieldType;
                 var parameterName = Database.MsSqlHelper.GetParameterName(fieldDefinition);
+                var isOutputParameter = MsSqlHelper.IsOutputParameter(fieldDefinition);
                 var argumentName = CSharpHelper.GetInputArgumentName(fieldDefinition);
-                if (fieldDefinition.IsNullable)
+                var addParameterFunction = CSharpHelper.GetAddParameterFunction(fieldDefinition);
+                var sqlParameterName = $"{argumentName}Parameter";
+                var size = "";
+                if(fieldType == FieldType.String)
                 {
-                    if (fieldType <= FieldType.Guid)
-                    {
-                        WriteLine($"        command.Parameters.AddWithValue(\"{parameterName}\", {argumentName}.HasValue ? (object){argumentName}.Value : (object)DBNull.Value);");
-                    }
-                    else
-                    {
-                        WriteLine($"        command.Parameters.AddWithValue(\"{parameterName}\", (object?){argumentName} ?? (object)DBNull.Value);");
-                    }
+                    var stringFieldDefinition = (StringFieldDefinition)fieldDefinition;
+                    size = $", {stringFieldDefinition.Size}";
+                }
+                else if (fieldType == FieldType.Binary)
+                {
+                    var binaryFieldDefinition = (BinaryFieldDefinition)fieldDefinition;
+                    size = $", {binaryFieldDefinition.Size}";
+                }
+                if (isInsert && isOutputParameter)
+                {
+                    WriteLine($"        var {sqlParameterName} = command.Parameters.{addParameterFunction}(\"{parameterName}\"{size});");
                 }
                 else
                 {
-                    WriteLine($"        command.Parameters.AddWithValue(\"{parameterName}\", {argumentName});");
+                    WriteLine($"        command.Parameters.{addParameterFunction}(\"{parameterName}\", {argumentName}{size});");
                 }
             }
 
             WriteLine();
-            WriteLine("        return command.ExecuteNonQuery() > 0;");
+            WriteLine("        var result = command.ExecuteNonQuery() > 0;");
+            if(outParameters.Count > 0)
+            {
+                WriteLine("        if(result)");
+                WriteLine("        {");
+                foreach (var outParameter in outParameters)
+                {
+                    var argumentName = CSharpHelper.GetInputArgumentName(outParameter);
+                    var sqlParameterName = $"{argumentName}Parameter";
+                    WriteLine($"            {argumentName} = ({CSharpHelper.GetInputArgumentType(outParameter)}){sqlParameterName}.Value;");
+                }
+                WriteLine("        }");
+            }
+            WriteLine("        return result;");
             WriteLine("    }");
             WriteLine();
         }
 
-        private void CreateObjectFunction(EntityDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions)
+        private void CreateObjectFunction(EntityDefinition entityDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<FieldDefinition> fieldDefinitions, bool isInsert = false)
         {
             var fieldDefinitionsCount = fieldDefinitions.Count;
             var dataType = CSharpHelper.GetDataType(entityDefinition);
             var qualifiedDataTypeNamespace = CSharpHelper.GetQualifiedDataTypeNamespace(entityDefinition);
             WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {qualifiedDataTypeNamespace}.{dataType} data )");
             WriteLine("    {");
-            WriteLine($"        return {functionName}( sqlConnection, ");
+            for (int i = 0; i < fieldDefinitionsCount; i++)
+            { 
+                var fieldDefinition = fieldDefinitions[i];
+                var proprtyName = CSharpHelper.GetMemberPropertyName(fieldDefinition);
+                WriteLine($"        var data{proprtyName} = data.{proprtyName};");
+
+            }
+            WriteLine($"        var result = {functionName}( sqlConnection, ");
             for (int i = 0; i < fieldDefinitionsCount; i++)
             {
                 var fieldDefinition = fieldDefinitions[i];
                 var proprtyName = CSharpHelper.GetMemberPropertyName(fieldDefinition);
+                var refModifier = "";
+                if (isInsert)
+                {
+                    refModifier = MsSqlHelper.IsOutputParameter(fieldDefinition) ? "ref " : "";
+                }
                 if (i < fieldDefinitionsCount - 1)
-                    WriteLine($"            data.{proprtyName},");
+                    WriteLine($"                        {refModifier}data{proprtyName},");
                 else
-                    WriteLine($"            data.{proprtyName} );");
+                    WriteLine($"                        {refModifier}data{proprtyName} );");
 
             }
+
+            if (isInsert)
+            {
+
+                for (int i = 0; i < fieldDefinitionsCount; i++)
+                {   
+                    var fieldDefinition = fieldDefinitions[i];
+                    var proprtyName = CSharpHelper.GetMemberPropertyName(fieldDefinition);
+                    if (MsSqlHelper.IsOutputParameter(fieldDefinition))
+                    {
+                        WriteLine($"        data.{proprtyName} = data{proprtyName};");
+                    }
+                }
+            }
+
+            WriteLine();
+            WriteLine($"        return result;");
             WriteLine("    }");
             WriteLine();
         }
@@ -168,7 +240,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsertProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsertFunctionName(entityDefinition);
             var fieldDefinitions = entityDefinition.Fields;
-            CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
+            CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions, true);
         }
 
         private void CreateInsertObject(EntityDefinition entityDefinition)
@@ -176,7 +248,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsertProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsertFunctionName(entityDefinition);
             var fieldDefinitions = entityDefinition.Fields;
-            CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
+            CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions, true);
         }
 
         private void CreateInsert1(EntityDefinition entityDefinition)
@@ -184,7 +256,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsert1ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsert1FunctionName(entityDefinition);
             var fieldDefinitions = entityDefinition.NotReferenceAndNotNullableReferenceFields;
-            CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
+            CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions, true);
         }
 
         private void CreateInsertObject1(EntityDefinition entityDefinition)
@@ -192,7 +264,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedInsert1ProcedureName(entityDefinition);
             var functionName = CSharpHelper.GetInsert1FunctionName(entityDefinition);
             var fieldDefinitions = entityDefinition.NotReferenceAndNotNullableReferenceFields;
-            CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions);
+            CreateObjectFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions, true);
         }
 
         private void CreateUpdate(EntityDefinition entityDefinition)

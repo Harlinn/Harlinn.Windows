@@ -332,7 +332,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 if (_nullableReferenceFields == null)
                 {
                     _nullableReferenceFields = new List<FieldDefinition>();
-                    foreach (var fieldDefinition in Fields)
+                    foreach (var fieldDefinition in PersistentFields)
                     {
                         if (fieldDefinition.IsReference && fieldDefinition.IsNullable)
                         {
@@ -353,7 +353,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 if (_notReferenceAndNotNullableReferenceFields == null)
                 {
                     _notReferenceAndNotNullableReferenceFields = new List<FieldDefinition>();
-                    foreach (var fieldDefinition in Fields)
+                    foreach (var fieldDefinition in PersistentFields)
                     {
                         if (fieldDefinition.IsReference == false || (fieldDefinition.IsReference && !fieldDefinition.IsNullable))
                         {
@@ -393,7 +393,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
                     {
                         primaryKeyFieldNames.Add(primaryKeyField.Name);
                     }
-                    foreach (var fieldDefinition in Fields)
+                    foreach (var fieldDefinition in PersistentFields)
                     {
                         if (!primaryKeyFieldNames.Contains(fieldDefinition.Name))
                         {

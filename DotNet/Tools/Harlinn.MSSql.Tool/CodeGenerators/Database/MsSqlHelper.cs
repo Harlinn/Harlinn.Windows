@@ -16,12 +16,21 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
                 switch (fieldType)
                 {
                     case FieldType.String:
+                    {
                         var stringFieldDefinition = fieldDefinition as StringFieldDefinition;
-                        if (stringFieldDefinition!.Size > 0 && stringFieldDefinition.Size <= 4000)
+
+                        var databaseType = fieldDefinition.DatabaseType!.ToLowerInvariant();
+
+                        if (databaseType == "nvarchar" || databaseType == "varchar" || databaseType == "char" || databaseType == "nchar")
                         {
-                            return $"[{fieldDefinition.DatabaseType}]({stringFieldDefinition.Size})";
+                            if (stringFieldDefinition!.Size > 0 && stringFieldDefinition.Size <= 4000)
+                            {
+                                return $"[{databaseType}]({stringFieldDefinition.Size})";
+                            }
+                            return $"[{databaseType}](max)";
                         }
-                        return $"[{fieldDefinition.DatabaseType}](max)";
+                        return $"[{databaseType}]";
+                    }
                     case FieldType.Binary:
                         var binaryFieldDefinition = fieldDefinition as BinaryFieldDefinition;
                         if (binaryFieldDefinition!.Size > 0 && binaryFieldDefinition.Size <= 8000)

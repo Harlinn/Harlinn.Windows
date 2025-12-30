@@ -45,7 +45,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         static string GetProcedureParameters(EntityDefinition rowSourceDefinition)
         {
-            var fields = rowSourceDefinition.Fields;
+            var fields = rowSourceDefinition.PersistentFields;
             return GetProcedureParameters(rowSourceDefinition, fields);
         }
 
@@ -90,7 +90,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         static string GetInsertStatement(EntityDefinition rowSourceDefinition)
         {
-            return GetInsertStatement(rowSourceDefinition, rowSourceDefinition.Fields);
+            return GetInsertStatement(rowSourceDefinition, rowSourceDefinition.PersistentFields);
         }
 
         static string GetInsert1Statement(EntityDefinition rowSourceDefinition)
@@ -129,21 +129,21 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             procedure.AppendLine("          COMMIT TRANSACTION;");
             procedure.AppendLine("    END TRY");
             procedure.AppendLine("    BEGIN CATCH");
-            procedure.AppendLine("        DECLARE @ErrorMessage NVARCHAR(4000);");
-            procedure.AppendLine("        DECLARE @ErrorSeverity INT;");
-            procedure.AppendLine("        DECLARE @ErrorState INT;");
-            procedure.AppendLine("        SELECT @ErrorMessage = ERROR_MESSAGE(),");
-            procedure.AppendLine("            @ErrorSeverity = ERROR_SEVERITY(),");
-            procedure.AppendLine("            @ErrorState = ERROR_STATE();");
+            procedure.AppendLine("        DECLARE @MyXErrorMessage NVARCHAR(4000);");
+            procedure.AppendLine("        DECLARE @MyXErrorSeverity INT;");
+            procedure.AppendLine("        DECLARE @MyXErrorState INT;");
+            procedure.AppendLine("        SELECT @MyXErrorMessage = ERROR_MESSAGE(),");
+            procedure.AppendLine("            @MyXErrorSeverity = ERROR_SEVERITY(),");
+            procedure.AppendLine("            @MyXErrorState = ERROR_STATE();");
             procedure.AppendLine("        IF @TranCounter = 0");
             procedure.AppendLine("          ROLLBACK TRANSACTION;");
             procedure.AppendLine("        ELSE");
             procedure.AppendLine("          IF XACT_STATE() <> -1");
             procedure.AppendLine($"            ROLLBACK TRANSACTION {savePointName};");
             procedure.AppendLine("        RAISERROR(");
-            procedure.AppendLine("            @ErrorMessage,");
-            procedure.AppendLine("            @ErrorSeverity,");
-            procedure.AppendLine("            @ErrorState);");
+            procedure.AppendLine("            @MyXErrorMessage,");
+            procedure.AppendLine("            @MyXErrorSeverity,");
+            procedure.AppendLine("            @MyXErrorState);");
             procedure.AppendLine("    END CATCH");
             procedure.AppendLine("  END");
 
@@ -180,21 +180,21 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             procedure.AppendLine("          COMMIT TRANSACTION;");
             procedure.AppendLine("    END TRY");
             procedure.AppendLine("    BEGIN CATCH");
-            procedure.AppendLine("        DECLARE @ErrorMessage NVARCHAR(4000);");
-            procedure.AppendLine("        DECLARE @ErrorSeverity INT;");
-            procedure.AppendLine("        DECLARE @ErrorState INT;");
-            procedure.AppendLine("        SELECT @ErrorMessage = ERROR_MESSAGE(),");
-            procedure.AppendLine("            @ErrorSeverity = ERROR_SEVERITY(),");
-            procedure.AppendLine("            @ErrorState = ERROR_STATE();");
+            procedure.AppendLine("        DECLARE @MyXErrorMessage NVARCHAR(4000);");
+            procedure.AppendLine("        DECLARE @MyXErrorSeverity INT;");
+            procedure.AppendLine("        DECLARE @MyXErrorState INT;");
+            procedure.AppendLine("        SELECT @MyXErrorMessage = ERROR_MESSAGE(),");
+            procedure.AppendLine("            @MyXErrorSeverity = ERROR_SEVERITY(),");
+            procedure.AppendLine("            @MyXErrorState = ERROR_STATE();");
             procedure.AppendLine("        IF @TranCounter = 0");
             procedure.AppendLine("          ROLLBACK TRANSACTION;");
             procedure.AppendLine("        ELSE");
             procedure.AppendLine("          IF XACT_STATE() <> -1");
             procedure.AppendLine($"            ROLLBACK TRANSACTION {savePointName};");
             procedure.AppendLine("        RAISERROR(");
-            procedure.AppendLine("            @ErrorMessage,");
-            procedure.AppendLine("            @ErrorSeverity,");
-            procedure.AppendLine("            @ErrorState);");
+            procedure.AppendLine("            @MyXErrorMessage,");
+            procedure.AppendLine("            @MyXErrorSeverity,");
+            procedure.AppendLine("            @MyXErrorState);");
             procedure.AppendLine("    END CATCH");
             procedure.AppendLine("  END");
 

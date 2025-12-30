@@ -22,7 +22,8 @@ supporting a reasonable subset of the available features.
 
 The generated code should be copied into your own projects and modified as needed.
 
-
+See [AdventureWorks](https://github.com/Harlinn/Harlinn.Windows/tree/master/DotNet/Examples/SqlClient/AdventureWorks) for
+an example of code generated using this tool. 
 
 
 
@@ -66,3 +67,38 @@ import -s dbo;HumanResources;Person;Production;Purchasing;Sales -i AdventureWork
 -p AdventureWorks.xml
 
 ```
+
+Example of using the generated `PersonReader` class to read data from the `AdventureWorks2019` `Person` table:
+
+```
+    using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
+    connection.Open();
+    var command = connection.CreateCommand();
+
+    var sql = $"{PersonReader.Sql} WHERE {PersonReader.ShortName}.[Businessentityid] = @BusinessEntityId";
+    command.CommandText = sql;
+
+    // Set the desired BusinessEntityId value:
+    command.Parameters.AddWithValue("@BusinessEntityId", 1);
+
+    using var reader = command.ExecuteReader();
+    var personReader = new PersonReader(reader, ownsReader: false);
+
+    var hasRow = personReader.Read();
+    Assert.IsTrue(hasRow, "Expected at least one row for BusinessEntityId = 1");
+    var person = personReader.ToDataObject();
+    Assert.AreEqual(1, person.Businessentityid, "Businessentityid does not match the requested value.");
+
+```
+
+Where `PersonReader` is a generated class that provides methods for reading data from the `Person` 
+table in the `AdventureWorks2019` database. It is designed to work with the `Microsoft.Data.SqlClient` 
+library and provides a strongly typed interface for accessing the data in the table.
+
+
+```
+
+
+```
+
+

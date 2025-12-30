@@ -613,6 +613,59 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return name;
         }
 
+        public static string GetAddParameterFunction(FieldDefinition fieldDefinition)
+        {
+            var fieldType = fieldDefinition.FieldType;
+            var databaseType = fieldDefinition.DatabaseType?.ToLowerInvariant();
+            var result = $"Add{fieldType}";
+            switch(fieldType)
+            {
+                case FieldType.String:
+                    if (databaseType != null)
+                    {
+                        if (databaseType == "nchar")
+                        {
+                            result = "AddNChar";
+                        }
+                        else if (databaseType == "char")
+                        {
+                            result = "AddChar";
+                        }
+                        else if (databaseType == "varchar")
+                        {
+                            result = "AddVarChar";
+                        }
+                        else
+                        {
+                            result = "AddNVarChar";
+                        }
+                    }
+                    else
+                    {
+                        result = "AddNVarChar";
+                    }
+                    break;
+
+                case FieldType.HierarchyId:
+                    result = "AddHierarchyId";
+                    break;
+                case FieldType.Geometry:
+                    result = "AddSqlGeometry";
+                    break;
+                case FieldType.Geography:
+                    result = "AddSqlGeography";
+                    break;
+                case FieldType.Xml:
+                    result = "AddSqlXml";
+                    break;
+                case FieldType.SqlVariant:
+                    result = "AddSqlVariant";
+                    break;
+            }
+            return result;
+        }
+
+
         public static string GetInputArgumentType(PropertyDefinition propertyDefinition)
         {
             return GetBaseType(propertyDefinition);
