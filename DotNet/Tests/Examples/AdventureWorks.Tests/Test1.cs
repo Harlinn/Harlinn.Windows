@@ -52,12 +52,11 @@ namespace AdventureWorks.Tests
 
         }
 
-        static PersonDataType CreatePerson(int businessEntityId)
+        static PersonDataType CreatePerson()
         {
             var rowGuid = new Guid("{EC22ADCC-FBDC-43EC-ACB9-38CB0231292D}");
             return new PersonDataType
             {
-                Businessentityid = businessEntityId,
                 Persontype = "EM",
                 Namestyle = false,
                 Title = "Mr.",
@@ -73,12 +72,11 @@ namespace AdventureWorks.Tests
             };
         }
 
-        static BusinessentityDataType CreateBusinessentity(int businessEntityId)
+        static BusinessentityDataType CreateBusinessentity()
         {
             var rowGuid = new Guid("{156A80DC-E340-4BCB-B734-AA1E0053ACE1}");
             return new BusinessentityDataType
             {
-                Businessentityid = businessEntityId,
                 Rowguid = rowGuid,
                 Modifieddate = DateTime.UtcNow,
             };
@@ -107,13 +105,11 @@ namespace AdventureWorks.Tests
         [TestMethod]
         public void PersonReaderTest3()
         {
-            int businessEntityId = 150000;
-            var testBusinessEntity = CreateBusinessentity(businessEntityId);
-            var testPerson = CreatePerson(businessEntityId);
+            var testBusinessEntity = CreateBusinessentity();
+            var testPerson = CreatePerson();
 
             using var connection = new Microsoft.Data.SqlClient.SqlConnection(defaultConnectionString);
             connection.Open();
-
 
             DeleteTestPersonIfExists(connection);
             DeleteTestBusinessentityIfExists(connection);
@@ -142,6 +138,12 @@ namespace AdventureWorks.Tests
             Assert.IsTrue(hasRow, $"Expected at least one row for BusinessEntityId = {testBusinessEntity.Businessentityid}");
             var person = personReader.ToDataObject();
             Assert.AreEqual(testBusinessEntity.Businessentityid, person.Businessentityid, "Businessentityid does not match the requested value.");
+
+            Assert.AreEqual(testPerson.Firstname, person.Firstname, "Firstname does not match the requested value.");
+            Assert.AreEqual(testPerson.Lastname, person.Lastname, "Lastname does not match the requested value.");
+            Assert.AreEqual(testPerson.Middlename, person.Middlename, "Middlename does not match the requested value.");
+            Assert.AreEqual(testPerson.Rowguid, person.Rowguid, "Rowguid does not match the requested value.");
+
         }
 
 
