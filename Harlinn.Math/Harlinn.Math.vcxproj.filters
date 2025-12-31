@@ -748,5 +748,7 @@
     <None Include="Documentation\Math\Math\Log2Int.md" />
     <None Include="Documentation\Math\Math\FastExp.md" />
     <None Include="Documentation\Math\Math\Gaussian.md" />
+    <None Include="Documentation\Math\Math\GaussianIntegral.md" />
+    <None Include="Documentation\Math\Math\Logistic.md" />
   </ItemGroup>
 </Project>

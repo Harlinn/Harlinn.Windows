@@ -215,6 +215,7 @@
     <None Include="Documentation\Math\Math\FRExp.md" />
     <None Include="Documentation\Math\Math\Gamma.md" />
     <None Include="Documentation\Math\Math\Gaussian.md" />
+    <None Include="Documentation\Math\Math\GaussianIntegral.md" />
     <None Include="Documentation\Math\Math\Hypot.md" />
     <None Include="Documentation\Math\Math\ILogB.md" />
     <None Include="Documentation\Math\Math\IsFinite.md" />
@@ -234,6 +235,7 @@
     <None Include="Documentation\Math\Math\Log2.md" />
     <None Include="Documentation\Math\Math\Log2Int.md" />
     <None Include="Documentation\Math\Math\LogB.md" />
+    <None Include="Documentation\Math\Math\Logistic.md" />
     <None Include="Documentation\Math\Math\Max.md" />
     <None Include="Documentation\Math\Math\Min.md" />
     <None Include="Documentation\Math\Math\Mod.md" />
