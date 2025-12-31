@@ -2434,6 +2434,18 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Calculates e raised to the given power minus one.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// <c>e</c> raised to the given power <c>x</c> minus one.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T ExpM1( T x ) noexcept
     {
@@ -2467,6 +2479,18 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Computes 2 raised to the given power <c>x</c>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// <c>2</c> raised to the given power <c>x</c>.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T Exp2( T x ) noexcept
     {
@@ -2510,6 +2534,18 @@ namespace Harlinn::Math
 
     }
 
+    /// <summary>
+	/// Computes 10 raised to the given power <c>x</c>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// <c>10</c> raised to the given power <c>x</c>.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T Exp10( T x ) noexcept
     {
@@ -4639,6 +4675,22 @@ namespace Harlinn::Math
         std::string ToString( ) const;
     };
 
+
+    /// <summary>
+	/// Returns the product of a and b along with the rounding error.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+    /// A numeric value.
+    /// </param>
+    /// <param name="b">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// A compensated float representing the product of a and b.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline CompensatedFloat<FloatT> TwoProd( FloatT a, FloatT b )
@@ -4647,6 +4699,21 @@ namespace Harlinn::Math
         return { ab, FMA( a, b, -ab ) };
     }
 
+    /// <summary>
+	/// Returns the sum of a and b along with the rounding error.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+    /// A numeric value.
+    /// </param>
+    /// <param name="b">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// A compensated float representing the sum of a and b.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline CompensatedFloat<FloatT> TwoSum( FloatT a, FloatT b )
@@ -4655,6 +4722,36 @@ namespace Harlinn::Math
         return { s, ( a - ( s - delta ) ) + ( b - delta ) };
     }
 
+    /// <summary>
+	/// Returns the difference of products a*b - c*d with reduced floating-point error.
+    /// </summary>
+    /// <typeparam name="Ta">
+	/// An arithmetic type.
+    /// </typeparam>
+    /// <typeparam name="Tb">
+	/// An arithmetic type.
+    /// </typeparam>
+    /// <typeparam name="Tc">
+	/// An arithmetic type.
+    /// </typeparam>
+    /// <typeparam name="Td">
+	/// An arithmetic type.
+    /// </typeparam>
+    /// <param name="a">
+    /// A numeric value.
+    /// </param>
+    /// <param name="b">
+    /// A numeric value.
+    /// </param>
+    /// <param name="c">
+    /// A numeric value.
+    /// </param>
+    /// <param name="d">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// A compensated float representing the difference of products a*b - c*d.
+    /// </returns>
     template <typename Ta, typename Tb, typename Tc, typename Td>
         requires IsFloatingPoint<Ta>&& IsFloatingPoint<Tb>&& IsFloatingPoint<Tc>&& IsFloatingPoint<Td>
     constexpr inline auto DifferenceOfProducts( Ta a, Tb b, Tc c, Td d )
@@ -4665,6 +4762,36 @@ namespace Harlinn::Math
         return differenceOfProducts + error;
     }
 
+    /// <summary>
+	/// Returns the sum of products a*b + c*d with reduced floating-point error.
+    /// </summary>
+    /// <typeparam name="Ta">
+    /// An arithmetic type.
+    /// </typeparam>
+    /// <typeparam name="Tb">
+    /// An arithmetic type.
+    /// </typeparam>
+    /// <typeparam name="Tc">
+    /// An arithmetic type.
+    /// </typeparam>
+    /// <typeparam name="Td">
+    /// An arithmetic type.
+    /// </typeparam>
+    /// <param name="a">
+    /// A numeric value.
+    /// </param>
+    /// <param name="b">
+    /// A numeric value.
+    /// </param>
+    /// <param name="c">
+    /// A numeric value.
+    /// </param>
+    /// <param name="d">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// A compensated float representing the sum of products a*b + c*d.
+    /// </returns>
     template <typename Ta, typename Tb, typename Tc, typename Td>
         requires IsFloatingPoint<Ta>&& IsFloatingPoint<Tb>&& IsFloatingPoint<Tc>&& IsFloatingPoint<Td>
     constexpr inline auto SumOfProducts( Ta a, Tb b, Tc c, Td d )
@@ -4702,6 +4829,24 @@ namespace Harlinn::Math
 
     }
 
+    /// <summary>
+	/// Returns the inner product of a sequence of terms with reduced floating-point error.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <typeparam name="...T">
+    /// A sequence of terms.
+    /// </typeparam>
+    /// <param name="term">
+    /// The first term.
+    /// </param>
+    /// <param name="...terms">
+    /// The remaining terms.
+    /// </param>
+    /// <returns>
+    /// The inner product of the terms.
+    /// </returns>
     template <typename FloatT, typename... T>
         requires std::conjunction_v<std::is_arithmetic<T>...>
     constexpr inline FloatT InnerProduct( FloatT term, T... terms )
@@ -4710,6 +4855,33 @@ namespace Harlinn::Math
         return static_cast< FloatT >( ip );
     }
 
+    /// <summary>
+	/// Calculates the roots of the quadratic equation ax^2 + bx + c = 0.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <typeparam name="...T">
+    /// A sequence of terms.
+    /// </typeparam>
+    /// <param name="a">
+    /// The coefficient of x^2.
+    /// </param>
+    /// <param name="b">
+    /// The coefficient of x.
+    /// </param>
+    /// <param name="c">
+    /// The constant term.
+    /// </param>
+    /// <param name="t0">
+    /// The first root.
+    /// </param>
+    /// <param name="t1">
+    /// The second root.
+    /// </param>
+    /// <returns>
+    /// True if the roots were found, false otherwise.
+    /// </returns>
     template <typename FloatT, typename... T>
         requires IsFloatingPoint<FloatT>
     constexpr inline bool Quadratic( FloatT a, FloatT b, FloatT c, FloatT* t0, FloatT* t1 )
@@ -4745,6 +4917,33 @@ namespace Harlinn::Math
     }
 
 
+    /// <summary>
+	/// Calculates the root of a function using a combination of Newton's method and bisection.
+    /// </summary>
+    /// <typeparam name="Func">
+    /// The type of the function.
+    /// </typeparam>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="x0">
+    /// The lower bound of the search interval.
+    /// </param>
+    /// <param name="x1">
+    /// The upper bound of the search interval.
+    /// </param>
+    /// <param name="f">
+    /// The function to find the root of.
+    /// </param>
+    /// <param name="xEps">
+    /// The tolerance for the x values.
+    /// </param>
+    /// <param name="fEps">
+    /// The tolerance for the function values.
+    /// </param>
+    /// <returns>
+    /// The root of the function, or NaN if not found.
+    /// </returns>
     template <typename Func, typename FloatT>
     constexpr inline FloatT NewtonBisection( FloatT x0, FloatT x1, Func f, FloatT xEps = static_cast< FloatT >( 1e-6 ), FloatT fEps = static_cast< FloatT >( 1e-6 ) )
     {
@@ -4797,6 +4996,12 @@ namespace Harlinn::Math
 
 
 
+    /// <summary>
+	/// Represents a closed interval [lowerBound, upperBound] of floating-point values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of the interval.
+    /// </typeparam>
     template<typename T>
         requires IsFloatingPoint<T>
     class Interval
@@ -4808,13 +5013,31 @@ namespace Harlinn::Math
         value_type lowerBound_ = static_cast< value_type >( 0 );
         value_type upperBound_ = static_cast< value_type >( 0 );
     public:
+        /// <summary>
+		/// The default constructor for Interval.
+        /// </summary>
         constexpr Interval( ) = default;
 
+        /// <summary>
+		/// Constructor for Interval that initializes both bounds to the same value.
+        /// </summary>
+        /// <param name="v">
+        /// The value to initialize the interval.
+        /// </param>
         constexpr explicit Interval( value_type v )
             : lowerBound_( v ), upperBound_( v )
         {
         }
 
+        /// <summary>
+		/// Constructor for Interval that initializes the bounds to the given values.
+        /// </summary>
+        /// <param name="low">
+        /// The lower bound of the interval.
+        /// </param>
+        /// <param name="high">
+        /// The upper bound of the interval.
+        /// </param>
         constexpr Interval( value_type low, value_type high )
             : lowerBound_( std::min( low, high ) ), upperBound_( std::max( low, high ) )
         {
@@ -4825,6 +5048,16 @@ namespace Harlinn::Math
         {
         }
     public:
+        /// <summary>
+		/// Returns an Interval from a value and an associated error.
+        /// </summary>
+        /// <param name="v">
+        /// The value to initialize the interval.
+        /// </param>
+        /// <param name="err">
+        /// The error.
+        /// </param>
+        /// <returns></returns>
         constexpr static Interval FromValueAndError( value_type v, value_type err )
         {
             if ( err == static_cast< value_type >( 0 ) )
@@ -4837,6 +5070,13 @@ namespace Harlinn::Math
             }
         }
 
+        /// <summary>
+        /// Assigns the argument to both the upper and lower bound.
+        /// </summary>
+        /// <param name="v">
+        /// The argument value.
+        /// </param>
+        /// <returns></returns>
         constexpr Interval& operator=( value_type v )
         {
             lowerBound_ = v;
@@ -4844,47 +5084,127 @@ namespace Harlinn::Math
             return *this;
         }
 
+        /// <summary>
+		/// Returns the upper bound of the interval.
+        /// </summary>
+        /// <returns>
+        /// The upper bound of the interval.
+        /// </returns>
         constexpr value_type UpperBound( ) const { return upperBound_; }
+        /// <summary>
+		/// Returns the lower bound of the interval.
+        /// </summary>
+        /// <returns>
+        /// The lower bound of the interval.
+        /// </returns>
         constexpr value_type LowerBound( ) const { return lowerBound_; }
+        /// <summary>
+		/// Returns the midpoint of the interval.
+        /// </summary>
+        /// <returns>
+        /// The midpoint of the interval.
+        /// </returns>
         constexpr value_type Midpoint( ) const { return ( lowerBound_ + upperBound_ ) / 2; }
+        /// <summary>
+		/// Returns the width of the interval.
+        /// </summary>
+        /// <returns>
+        /// The width of the interval.
+        /// </returns>
         constexpr value_type Width( ) const { return upperBound_ - lowerBound_; }
 
+        /// <summary>
+		/// Returns the i'th bound of the interval.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
         constexpr value_type operator[]( size_t i ) const
         {
             return i == 0 ? lowerBound_ : upperBound_;
         }
 
+        /// <summary>
+		/// Returns the midpoint of the interval as a value_type.
+        /// </summary>
         constexpr explicit operator value_type( ) const
         {
             return Midpoint( );
         }
 
-
+        /// <summary>
+		/// Returns true if the interval exactly represents the value v.
+        /// </summary>
+        /// <param name="v">
+        /// The value to check.
+        /// </param>
+        /// <returns>
+        /// True if the interval exactly represents the value v, false otherwise.
+        /// </returns>
         constexpr bool Exactly( value_type v ) const
         {
             return lowerBound_ == v && upperBound_ == v;
         }
 
+        /// <summary>
+		/// Returns true if the interval exactly represents the value v.
+        /// </summary>
+        /// <param name="v">
+        /// The value to check.
+        /// </param>
+        /// <returns>
+        /// True if the interval exactly represents the value v, false otherwise.
+        /// </returns>
         constexpr bool operator==( value_type v ) const
         {
             return Exactly( v );
         }
 
+        /// <summary>
+		/// Returns the negation of the interval.
+        /// </summary>
+        /// <returns></returns>
         constexpr Interval operator-( ) const
         {
             return { -upperBound_, -lowerBound_ };
         }
 
+        /// <summary>
+		/// Returns the sum of this interval and another interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to add.
+        /// </param>
+        /// <returns>
+        /// The sum of this interval and another interval.
+        /// </returns>
         constexpr Interval operator+( const Interval& i ) const
         {
             return { AddAdjustDown( lowerBound_, i.lowerBound_ ), AddAdjustUp( upperBound_, i.upperBound_ ) };
         }
 
+        /// <summary>
+		/// Returns the difference of this interval and another interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to subtract.
+        /// </param>
+        /// <returns>
+        /// The difference of this interval and another interval.
+        /// </returns>
         constexpr Interval operator-( const Interval& i ) const
         {
             return { SubAdjustDown( lowerBound_, i.upperBound_ ), SubAdjustUp( upperBound_, i.lowerBound_ ) };
         }
 
+        /// <summary>
+		/// Returns the product of this interval and another interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to multiply.
+        /// </param>
+        /// <returns>
+        /// The product of this interval and another interval.
+        /// </returns>
         constexpr Interval operator*( const Interval& i ) const
         {
             value_type lp[ 4 ] =
@@ -4911,42 +5231,140 @@ namespace Harlinn::Math
             */
         }
 
+        /// <summary>
+		/// Returns the quotient of this interval and another interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to divide.
+        /// </param>
+        /// <returns>
+        /// The quotient of this interval and another interval.
+        /// </returns>
         constexpr Interval operator/( const Interval& i ) const;
 
+        /// <summary>
+		/// Returns true if this interval is equal to another interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to compare.
+        /// </param>
+        /// <returns>
+        /// True if this interval is equal to another interval.
+        /// </returns>
         constexpr bool operator==( const Interval& i ) const
         {
             return lowerBound_ == i.lowerBound_ && upperBound_ == i.upperBound_;
         }
 
+        /// <summary>
+		/// Returns true if this interval does not contain the value f.
+        /// </summary>
+        /// <param name="f">
+        /// The value to check.
+        /// </param>
+        /// <returns>
+        /// True if this interval does not contain the value f.
+        /// </returns>
         constexpr bool operator!=( value_type f ) const
         {
             return f < lowerBound_ || f > upperBound_;
         }
 
+        /// <summary>
+		/// Returns a string representation of the interval.
+        /// </summary>
+        /// <returns>
+        /// A string representation of the interval.
+        /// </returns>
         std::string ToString( ) const;
 
+        /// <summary>
+		/// Adds another interval to this interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to add.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator+=( Interval i )
         {
             *this = Interval( *this + i );
             return *this;
         }
+
+        /// <summary>
+		/// Subtracts another interval from this interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to subtract.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator-=( Interval i )
         {
             *this = Interval( *this - i );
             return *this;
         }
+        /// <summary>
+		/// Multiplies this interval by another interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to multiply.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator*=( Interval i )
         {
             *this = Interval( *this * i );
             return *this;
         }
+
+        /// <summary>
+		/// Divides this interval by another interval.
+        /// </summary>
+        /// <param name="i">
+        /// The interval to divide.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator/=( Interval i )
         {
             *this = Interval( *this / i );
             return *this;
         }
+        /// <summary>
+		/// Adds a scalar value to this interval.
+        /// </summary>
+        /// <param name="f">
+        /// The scalar value to add.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator+=( value_type f ) { return *this += Interval( f ); }
+        /// <summary>
+		/// Subtracts a scalar value from this interval.
+        /// </summary>
+        /// <param name="f">
+        /// The scalar value to subtract.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator-=( value_type f ) { return *this -= Interval( f ); }
+        /// <summary>
+		/// Multiplies this interval by a scalar value.
+        /// </summary>
+        /// <param name="f">
+        /// The scalar value to multiply.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator*=( value_type f )
         {
             if ( f > static_cast< value_type >( 0 ) )
@@ -4959,6 +5377,15 @@ namespace Harlinn::Math
             }
             return *this;
         }
+        /// <summary>
+		/// Divides this interval by a scalar value.
+        /// </summary>
+        /// <param name="f">
+        /// The scalar value to divide by.
+        /// </param>
+        /// <returns>
+        /// A reference to this interval.
+        /// </returns>
         constexpr Interval& operator/=( value_type f )
         {
             if ( f > static_cast< value_type >( 0 ) )
@@ -4976,12 +5403,44 @@ namespace Harlinn::Math
     };
 
     // Interval Inline Functions
+    
+    /// <summary>
+	/// Tests whether a floating-point value is contained within an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// The floating-point type.
+    /// </typeparam>
+    /// <param name="value">
+    /// The floating-point value to test.
+    /// </param>
+    /// <param name="interval">
+    /// The interval to test against.
+    /// </param>
+    /// <returns>
+    /// True if the value is within the interval, false otherwise.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline bool InRange( FloatT value, const Interval<FloatT>& interval )
     {
         return value >= interval.LowerBound( ) && value <= interval.UpperBound( );
     }
+
+    /// <summary>
+	/// Tests whether two intervals overlap.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// The floating-point type.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first interval.
+    /// </param>
+    /// <param name="second">
+    /// The second interval.
+    /// </param>
+    /// <returns>
+    /// True if the intervals overlap, false otherwise.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline bool InRange( const Interval<FloatT>& first, const Interval<FloatT>& second )
@@ -5007,6 +5466,18 @@ namespace Harlinn::Math
                 Max( highQuot[ 0 ], highQuot[ 1 ], highQuot[ 2 ], highQuot[ 3 ] ) };
     }
 
+    /// <summary>
+	/// Calculates the square of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="interval">
+    /// The interval to square.
+    /// </param>
+    /// <returns>
+    /// The squared interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline Interval<FloatT> Sqr( const Interval<FloatT>& interval )
@@ -5031,6 +5502,21 @@ namespace Harlinn::Math
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s );
 
+    /// <summary>
+	/// Adds a floating-point value to an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// The floating-point type.
+    /// </typeparam>
+    /// <param name="f">
+    /// The floating-point value.
+    /// </param>
+    /// <param name="i">
+    /// The interval.
+    /// </param>
+    /// <returns>
+    /// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator+( FloatT f, const Interval<FloatT>& i )
@@ -5038,6 +5524,21 @@ namespace Harlinn::Math
         return Interval<FloatT>( f ) + i;
     }
 
+    /// <summary>
+	/// Subtracts an interval from a floating-point value.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="f">
+	/// The floating-point value.
+    /// </param>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator-( FloatT f, const Interval<FloatT>& i )
@@ -5045,6 +5546,21 @@ namespace Harlinn::Math
         return Interval<FloatT>( f ) - i;
     }
 
+    /// <summary>
+	/// Multiplies a floating-point value by an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="f">
+	/// The floating-point value.
+    /// </param>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator*( FloatT f, const Interval<FloatT>& i )
@@ -5059,6 +5575,21 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Divides a floating-point value by an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="f">
+	/// The floating-point value.
+    /// </param>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator/( FloatT f, const Interval<FloatT>& i )
@@ -5080,6 +5611,21 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Adds an interval and a floating-point value.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+    /// The interval.
+    /// </param>
+    /// <param name="f">
+    /// The floating-point value.
+    /// </param>
+    /// <returns>
+    /// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator+( const Interval<FloatT>& i, FloatT f )
@@ -5087,6 +5633,21 @@ namespace Harlinn::Math
         return i + Interval( f );
     }
 
+    /// <summary>
+	/// Subtracts a floating-point value from an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <param name="f">
+	/// The floating-point value.
+    /// </param>
+    /// <returns>
+	/// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator-( const Interval<FloatT>& i, FloatT f )
@@ -5094,6 +5655,21 @@ namespace Harlinn::Math
         return i - Interval( f );
     }
 
+    /// <summary>
+	/// Multiplies an interval by a floating-point value.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <param name="f">
+	/// The floating-point value.
+    /// </param>
+    /// <returns>
+	/// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator*( const Interval<FloatT>& i, FloatT f )
@@ -5104,6 +5680,21 @@ namespace Harlinn::Math
             return Interval( MulAdjustDown( f, i.UpperBound( ) ), MulAdjustUp( f, i.LowerBound( ) ) );
     }
 
+    /// <summary>
+	/// Divides an interval by a floating-point value.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <param name="f">
+	/// The floating-point value.
+    /// </param>
+    /// <returns>
+	/// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> operator/( const Interval<FloatT>& i, FloatT f )
@@ -5123,6 +5714,18 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Calculates the floor of the lower bound of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+    /// The interval.
+    /// </param>
+    /// <returns>
+    /// The floor of the lower bound of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT Floor( const Interval<FloatT>& i )
@@ -5130,6 +5733,18 @@ namespace Harlinn::Math
         return Floor( i.LowerBound( ) );
     }
 
+    /// <summary>
+	/// Calculates the ceiling of the upper bound of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The ceiling of the upper bound of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT Ceil( const Interval<FloatT>& i )
@@ -5137,6 +5752,18 @@ namespace Harlinn::Math
         return Ceil( i.UpperBound( ) );
     }
 
+    /// <summary>
+	/// Calculates the floor of the lower bound of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The floor of the lower bound of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT floor( const Interval<FloatT>& i )
@@ -5144,6 +5771,18 @@ namespace Harlinn::Math
         return Floor( i );
     }
 
+    /// <summary>
+	/// Calculates the ceiling of the upper bound of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The ceiling of the upper bound of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT ceil( const Interval<FloatT>& i )
@@ -5151,6 +5790,21 @@ namespace Harlinn::Math
         return Ceil( i );
     }
 
+    /// <summary>
+	/// Calculates the minimum of the lower bounds of two intervals.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first interval.
+    /// </param>
+    /// <param name="b">
+	/// The second interval.
+    /// </param>
+    /// <returns>
+	/// The minimum of the lower bounds of the two intervals.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT Min( const Interval<FloatT>& a, const Interval<FloatT>& b )
@@ -5158,6 +5812,21 @@ namespace Harlinn::Math
         return std::min( a.LowerBound( ), b.LowerBound( ) );
     }
 
+    /// <summary>
+	/// Calculates the maximum of the upper bounds of two intervals.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first interval.
+    /// </param>
+    /// <param name="b">
+	/// The second interval.
+    /// </param>
+    /// <returns>
+	/// The maximum of the upper bounds of the two intervals.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT Max( const Interval<FloatT>& a, const Interval<FloatT>& b )
@@ -5165,6 +5834,21 @@ namespace Harlinn::Math
         return std::max( a.UpperBound( ), b.UpperBound( ) );
     }
 
+    /// <summary>
+	/// Calculates the minimum of the lower bounds of two intervals.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first interval.
+    /// </param>
+    /// <param name="b">
+	/// The second interval.
+    /// </param>
+    /// <returns>
+	/// The minimum of the lower bounds of the two intervals.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT min( const Interval<FloatT>& a, const Interval<FloatT>& b )
@@ -5172,6 +5856,21 @@ namespace Harlinn::Math
         return Min( a, b );
     }
 
+    /// <summary>
+	/// Calculates the maximum of the upper bounds of two intervals.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first interval.
+    /// </param>
+    /// <param name="b">
+	/// The second interval.
+    /// </param>
+    /// <returns>
+	/// The maximum of the upper bounds of the two intervals.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline FloatT max( const Interval<FloatT>& a, const Interval<FloatT>& b )
@@ -5179,6 +5878,18 @@ namespace Harlinn::Math
         return Max( a, b );
     }
 
+    /// <summary>
+	/// Calculates the square root of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The square root of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> Sqrt( const Interval<FloatT>& i )
@@ -5186,6 +5897,18 @@ namespace Harlinn::Math
         return { SqrtAdjustDown( i.LowerBound( ) ), SqrtAdjustUp( i.UpperBound( ) ) };
     }
 
+    /// <summary>
+	/// Calculates the square root of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+    /// The interval.
+    /// </param>
+    /// <returns>
+    /// The square root of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> sqrt( const Interval<FloatT>& i )
@@ -5193,6 +5916,22 @@ namespace Harlinn::Math
         return Sqrt( i );
     }
 
+    /// <summary>
+	/// Calculates the fused multiply-add of three intervals.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first interval.
+    /// </param>
+    /// <param name="b">
+	/// The second interval.
+    /// </param>
+    /// <param name="c">
+	/// The third interval.
+    /// </param>
+    /// <returns></returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> FMA( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c )
@@ -5208,6 +5947,27 @@ namespace Harlinn::Math
         return Interval<FloatT>( low, high );
     }
 
+    /// <summary>
+    /// Calculates the difference of products of the arguments.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+    /// The first interval.
+    /// </param>
+    /// <param name="b">
+    /// The second interval.
+    /// </param>
+    /// <param name="c">
+    /// The third interval.
+    /// </param>
+    /// <param name="d">
+    /// The fourth interval.
+    /// </param>
+    /// <returns>
+    /// The difference of products of the arguments.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> DifferenceOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
@@ -5245,6 +6005,27 @@ namespace Harlinn::Math
         return { NextDown( NextDown( low ) ), NextUp( NextUp( high ) ) };
     }
 
+    /// <summary>
+	/// Calculates the sum of products of the arguments.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first interval.
+    /// </param>
+    /// <param name="b">
+	/// The second interval.
+    /// </param>
+    /// <param name="c">
+	/// The third interval.
+    /// </param>
+    /// <param name="d">
+	/// The fourth interval.
+    /// </param>
+    /// <returns>
+	/// The sum of products of the arguments.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> SumOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
@@ -5259,6 +6040,21 @@ namespace Harlinn::Math
         return MulPow2( i, s );
     }
 
+    /// <summary>
+	/// Calculates the multiplication of an interval by a power-of-two scalar.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <param name="s">
+	/// The power-of-two scalar.
+    /// </param>
+    /// <returns>
+	/// The resulting interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s )
@@ -5270,6 +6066,18 @@ namespace Harlinn::Math
             std::max( i.LowerBound( ) * s, i.UpperBound( ) * s ) );
     }
 
+    /// <summary>
+	/// Calculates the absolute value of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+    /// The interval.
+    /// </param>
+    /// <returns>
+    /// The absolute value of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> Abs( const Interval<FloatT>& i )
@@ -5291,6 +6099,18 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Calculates the absolute value of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The absolute value of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> abs( const Interval<FloatT>& i )
@@ -5298,6 +6118,18 @@ namespace Harlinn::Math
         return Abs( i );
     }
 
+    /// <summary>
+	/// Calculates the arc-cosine of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The arc-cosine of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> ACos( const Interval<FloatT>& i )
@@ -5308,6 +6140,18 @@ namespace Harlinn::Math
         return Interval<FloatT>( std::max<FloatT>( static_cast< FloatT >( 0 ), NextDown( low ) ), NextUp( high ) );
     }
 
+    /// <summary>
+	/// Calculates the sine of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The sine of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> Sin( const Interval<FloatT>& i )
@@ -5332,6 +6176,18 @@ namespace Harlinn::Math
         return Interval( low, high );
     }
 
+    /// <summary>
+	/// Calculates the cosine of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+	/// The interval.
+    /// </param>
+    /// <returns>
+	/// The cosine of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> Cos( const Interval<FloatT>& i )
@@ -5352,6 +6208,21 @@ namespace Harlinn::Math
         return Interval( low, high );
     }
 
+    /// <summary>
+	/// Calculates the sine and cosine of an interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+    /// The interval.
+    /// </param>
+    /// <param name="sine">
+    /// The sine of the interval.
+    /// </param>
+    /// <param name="cosine">
+    /// The cosine of the interval.
+    /// </param>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline void SinCos( const Interval<FloatT>& i, Interval<FloatT>* sine, Interval<FloatT>* cosine )
@@ -5394,7 +6265,30 @@ namespace Harlinn::Math
     }
 
 
-
+    /// <summary>
+	/// Calculates the quadratic roots for the equation ax^2 + bx + c = 0.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The coefficient of x^2.
+    /// </param>
+    /// <param name="b">
+	/// The coefficient of x.
+    /// </param>
+    /// <param name="c">
+	/// The constant term.
+    /// </param>
+    /// <param name="t0">
+	/// The first root.
+    /// </param>
+    /// <param name="t1">
+	/// The second root.
+    /// </param>
+    /// <returns>
+	/// True if the roots were found, false otherwise.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline bool Quadratic( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, Interval<FloatT>* t0, Interval<FloatT>* t1 )
@@ -5426,6 +6320,18 @@ namespace Harlinn::Math
         return true;
     }
 
+    /// <summary>
+	/// Calculates the sum of squares of a single interval.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating-point type.
+    /// </typeparam>
+    /// <param name="i">
+    /// The interval.
+    /// </param>
+    /// <returns>
+    /// The sum of squares of the interval.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> SumSquares( const Interval<FloatT>& i )
@@ -5433,6 +6339,24 @@ namespace Harlinn::Math
         return Sqr( i );
     }
 
+    /// <summary>
+	/// Calculates the sum of squares of multiple intervals.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating-point type.
+    /// </typeparam>
+    /// <typeparam name="...Args">
+    /// A variadic list of floating-point types.
+    /// </typeparam>
+    /// <param name="i">
+    /// The first interval.
+    /// </param>
+    /// <param name="...args">
+    /// The additional intervals.
+    /// </param>
+    /// <returns>
+    /// The sum of squares of the intervals.
+    /// </returns>
     template <typename FloatT, typename... Args>
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> SumSquares( const Interval<FloatT>& i, Args... args )
@@ -5443,6 +6367,15 @@ namespace Harlinn::Math
 
     namespace Internal
     {
+        /// <summary>
+		/// Converts a 16-bit half-precision floating-point number to a 32-bit single-precision floating-point number.
+        /// </summary>
+        /// <param name="value">
+        /// The 16-bit half-precision floating-point number.
+        /// </param>
+        /// <returns>
+        /// The 32-bit single-precision floating-point number.
+        /// </returns>
         constexpr float HalfToFloat( const UInt16 value )
         {
             constexpr UInt32 Magic = 113UL << 23UL;
@@ -5507,6 +6440,9 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Represents a 16-bit half-precision floating-point number.
+    /// </summary>
     class Half
     {
     public:

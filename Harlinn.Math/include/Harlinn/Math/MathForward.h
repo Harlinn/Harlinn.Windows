@@ -28,6 +28,8 @@
 #include <cfenv>
 #include <complex>
 
+#include <emmintrin.h>
+
 
 namespace Harlinn::Math
 {
