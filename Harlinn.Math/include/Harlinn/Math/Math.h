@@ -524,6 +524,18 @@ namespace Harlinn::Math
     }
     static_assert( Sqrt( 2.0 ) > 0.0 );
 
+    /// <summary>
+	/// Calculates the reciprocal square root of x.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+	/// The reciprocal square root of x.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T ReciprocalSqrt( T x ) noexcept
     {
@@ -564,6 +576,18 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Calculates the cube root of x.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The cube root of x.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T Cbrt( T x ) noexcept
     {
@@ -1173,19 +1197,55 @@ namespace Harlinn::Math
     static_assert( Abs( -1.0 ) == 1.0 );
 
 
+    /// <summary>
+	/// Returns value since the absolute value of an unsigned integer is the value itself.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Any unsigned integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// An unsigned integer value.
+    /// </param>
+    /// <returns>
+    /// The absolute value of val.
+    /// </returns>
     template<UnsignedIntegerType T>
     constexpr inline T FastAbs( T val ) noexcept
     {
         return val;
     }
 
+    /// <summary>
+	/// Returns the absolute value of a signed integer using a branchless algorithm.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Any signed integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A signed integer value.
+    /// </param>
+    /// <returns>
+    /// The absolute value of val.
+    /// </returns>
     template<SignedIntegerType T>
     constexpr inline T FastAbs( T val ) noexcept
     {
-        const T mask = val >> ( sizeof( T ) * CHAR_BIT - 1 );
+        constexpr T mask = val >> ( sizeof( T ) * CHAR_BIT - 1 );
         return ( ( val + mask ) ^ mask );
     }
 
+    /// <summary>
+	/// Returns the absolute value of a floating point number using a branchless algorithm.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The absolute value of val.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T FastAbs( T val ) noexcept
     {
@@ -1605,12 +1665,54 @@ namespace Harlinn::Math
         return std::min( first, second );
     }
 
+    /// <summary>
+	/// Returns the smaller of the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <typeparam name="...Args">
+    /// A variadic list of floating point types.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first floating point value.
+    /// </param>
+    /// <param name="second">
+    /// The second floating point value.
+    /// </param>
+    /// <param name="...remaining">
+    /// The remaining floating point values.
+    /// </param>
+    /// <returns>
+    /// Returns the smaller of the given values.
+    /// </returns>
     template<FloatingPointType T, FloatingPointType ...Args>
     constexpr inline T Min( T first, T second, Args... remaining ) noexcept
     {
         return Min( Min( first, second ), remaining... );
     }
 
+    /// <summary>
+	/// Returns the smaller of the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <typeparam name="...Args">
+    /// A variadic list of floating point types.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first floating point value.
+    /// </param>
+    /// <param name="second">
+    /// The second floating point value.
+    /// </param>
+    /// <param name="...remaining">
+    /// The remaining floating point values.
+    /// </param>
+    /// <returns>
+    /// Returns the smaller of the given values.
+    /// </returns>
     template<IntegerType T, IntegerType ...Args>
     constexpr inline T Min( T first, T second, Args... remaining ) noexcept
     {
@@ -1695,7 +1797,27 @@ namespace Harlinn::Math
     }
 
 
-
+    /// <summary>
+	/// Returns the larger of the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <typeparam name="...Args">
+    /// A variadic list of floating point types.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first floating point value.
+    /// </param>
+    /// <param name="second">
+    /// The second floating point value.
+    /// </param>
+    /// <param name="...remaining">
+    /// The remaining floating point values.
+    /// </param>
+    /// <returns>
+    /// Returns the larger of the given values.
+    /// </returns>
     template<FloatingPointType T, FloatingPointType ...Args>
     constexpr inline T Max( T first, T second, Args... remaining ) noexcept
     {
@@ -1709,6 +1831,18 @@ namespace Harlinn::Math
     }
 
 
+    /// <summary>
+	/// Returns the product of all the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A span-like type.
+    /// </typeparam>
+    /// <param name="values">
+    /// The values to multiply.
+    /// </param>
+    /// <returns>
+    /// Returns the product of all the given values.
+    /// </returns>
     template<SimpleSpanLike T>
         requires IsArithmetic<typename T::value_type>
     constexpr inline typename T::value_type Multiply( const T& values )
@@ -2440,7 +2574,24 @@ namespace Harlinn::Math
         }
     }
 
-
+    /// <summary>
+	/// Returns the square root of the sum of the squares of x, y and z.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <param name="y">
+    /// A floating point value.
+    /// </param>
+    /// <param name="z">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The square root of the sum of the squares of x, y and z.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T Hypot( T x, T y, T z ) noexcept
     {
@@ -2488,6 +2639,18 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Returns the natural logarithm of 1 plus x.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The natural logarithm of 1 plus x.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T Log1P( T x ) noexcept
     {
@@ -3321,7 +3484,12 @@ namespace Harlinn::Math
     }
 
 
-
+    /// <summary>
+	/// Returns the sine of x divided by x.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="x"></param>
+    /// <returns></returns>
     template<FloatingPointType T>
     constexpr inline T SinXOverX( T x )
     {
@@ -3332,13 +3500,30 @@ namespace Harlinn::Math
         return Math::Sin( x ) / x;
     }
 
-
+    /// <summary>
+	/// Returns the normalized sinc function of x.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="x"></param>
+    /// <returns></returns>
     template<FloatingPointType T>
     constexpr inline T Sinc( T x )
     {
         return SinXOverX( Constants<T>::Pi * x );
     }
 
+    /// <summary>
+	/// Returns the windowed sinc function of x.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">x</param>
+    /// <param name="radius">cutoff radius</param>
+    /// <param name="tau">windowing parameter</param>
+    /// <returns>
+    /// The windowed sinc function of x.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T WindowedSinc( T x, T radius, T tau )
     {
@@ -3359,23 +3544,77 @@ namespace Harlinn::Math
     }
     */
 
+    /// <summary>
+	/// Returns the floating-point remainder of a divided by b.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+    /// The dividend.
+    /// </param>
+    /// <param name="b">The divisor.</param>
+    /// <returns>The floating-point remainder of a divided by b.</returns>
     template<FloatingPointType T>
     constexpr inline T Mod( T a, T b )
     {
         return FMod( a, b );
     }
 
+    /// <summary>
+	/// Converts degrees to radians.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="deg">
+    /// The angle in degrees.
+    /// </param>
+    /// <returns>
+    /// The angle in radians.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T Radians( T deg )
     {
         return ( Constants<T>::Pi / static_cast < T >( 180 ) ) * deg;
     }
+
+    /// <summary>
+	/// Converts radians to degrees.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="rad">
+    /// The angle in radians.
+    /// </param>
+    /// <returns>The angle in degrees.</returns>
     template<FloatingPointType T>
     constexpr inline T Degrees( T rad )
     {
         return ( static_cast< T >( 180 ) / Constants<T>::Pi ) * rad;
     }
 
+    /// <summary>
+    /// The SmoothStep function creates a smooth, S-shaped curve (sigmoid) 
+    /// for transitions, commonly used in computer graphics to smoothly 
+    /// blend between two values (0 and 1) over a specified range, ensuring 
+    /// the curve starts and ends flat (zero slope) for a natural, gradual 
+    /// acceleration and deceleration.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="x">
+    /// The input value.
+    /// </param>
+    /// <param name="a">
+    /// The lower bound.
+    /// </param>
+    /// <param name="b">
+    /// The upper bound.
+    /// </param>
+    /// <returns>
+    /// The interpolated value.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SmoothStep( T x, T a, T b )
     {
@@ -3387,6 +3626,19 @@ namespace Harlinn::Math
         return t * t * ( Constants<T>::Three - Constants<T>::Two * t );
     }
 
+    /// <summary>
+	/// Calculates the square root of x, ensuring 
+    /// that the input is non-negative.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The value to calculate the square root of.
+    /// </param>
+    /// <returns>
+    /// The square root of the input value, or zero if the input is negative.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SafeSqrt( T x )
     {
@@ -3399,6 +3651,18 @@ namespace Harlinn::Math
         inline constexpr bool IsComplex = std::is_same_v<std::remove_cvref_t<T>, std::complex<float>> || std::is_same_v<std::remove_cvref_t<T>, std::complex<double>>;
     }
 
+    /// <summary>
+	/// Calculates the square of a value.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A numeric type.
+    /// </typeparam>
+    /// <param name="v">
+	/// The value to square.
+    /// </param>
+    /// <returns>
+	/// The square of the input value.
+    /// </returns>
     template<typename T>
         requires IsArithmetic<T> || Internal::IsComplex<T>
     constexpr inline T Sqr( T v )
@@ -3436,6 +3700,21 @@ namespace Harlinn::Math
         };
     }
 
+    /// <summary>
+	/// Calculates v raised to the power of n using exponentiation by squaring.
+    /// </summary>
+    /// <typeparam name="n">
+    /// The exponent.
+    /// </typeparam>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="v">
+    /// The value to raise to the power of n.
+    /// </param>
+    /// <returns>
+    /// The result of v raised to the power of n.
+    /// </returns>
     template<int n, FloatingPointType T>
     constexpr inline T FastPow( T v )
     {
@@ -3443,125 +3722,427 @@ namespace Harlinn::Math
     }
 
 
+    /// <summary>
+	/// Recursively evaluates a polynomial at a given point t using Horner's method.
+    /// </summary>
+    /// <typeparam name="T">
+	/// The type of the input value.
+    /// </typeparam>
+    /// <typeparam name="C">
+	/// The type of the constant term.
+    /// </typeparam>
+    /// <param name="t">
+	/// The value to evaluate the polynomial at.
+    /// </param>
+    /// <param name="c">
+	/// The constant term.
+    /// </param>
+    /// <returns>
+    /// The result of the polynomial evaluation.
+    /// </returns>
     template <ArithmeticType T, ArithmeticType C>
     constexpr inline T EvaluatePolynomial( T t, C c )
     {
         return c;
     }
 
+    /// <summary>
+	/// Recursively evaluates a polynomial at a given point t using Horner's method.
+    /// </summary>
+    /// <typeparam name="T">
+	/// The type of the input value.
+    /// </typeparam>
+    /// <typeparam name="C">
+	/// The type of the constant term.
+    /// </typeparam>
+    /// <typeparam name="...Args">
+	/// The types of the remaining coefficients.
+    /// </typeparam>
+    /// <param name="t">
+	/// The value to evaluate the polynomial at.
+    /// </param>
+    /// <param name="c">
+	/// The constant term.
+    /// </param>
+    /// <param name="...remaining">
+	/// The remaining coefficients.
+    /// </param>
+    /// <returns>
+	/// The result of the polynomial evaluation.
+    /// </returns>
     template <ArithmeticType T, ArithmeticType C, ArithmeticType ... Args>
     constexpr inline T EvaluatePolynomial( T t, C c, Args... remaining )
     {
         return FMA( t, EvaluatePolynomial( t, remaining... ), c );
     }
 
+    /// <summary>
+	/// Returns the arc sine of x, clamping the input to the valid range of -1 to 1.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The value to compute the arc sine of.
+    /// </param>
+    /// <returns>
+    /// The arc sine of the clamped input.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SafeASin( T x )
     {
         return ASin( Clamp( x, Constants< T >::MinusOne, Constants< T >::One ) );
     }
 
+    /// <summary>
+	/// Returns the arc cosine of x, clamping the input to the valid range of -1 to 1.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The value to compute the arc cosine of.
+    /// </param>
+    /// <returns>
+    /// The arc cosine of the clamped input.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SafeACos( T x )
     {
         return ACos( Clamp( x, Constants< T >::MinusOne, Constants< T >::One ) );
     }
 
+    /// <summary>
+	/// Returns the next representable floating-point value greater than v.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="v">
+    /// The value to compute the next representable floating-point value for.
+    /// </param>
+    /// <returns>
+    /// The next representable floating-point value greater than v.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T NextFloatUp( T v )
     {
         return NextUp( v );
     }
 
+    /// <summary>
+	/// Returns the next representable floating-point value less than v.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="v">
+    /// The value to compute the next representable floating-point value for.
+    /// </param>
+    /// <returns>
+    /// The next representable floating-point value less than v.
+    /// </returns>
     template<FloatingPointType T>
     constexpr T NextFloatDown( T v )
     {
         return NextDown( v );
     }
 
+    /// <summary>
+	/// Returns the gamma function value for n, which estimates the maximum relative error.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="n">
+    /// The integer value to compute the gamma function for.
+    /// </param>
+    /// <returns>
+    /// The gamma function value for n.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T Gamma( int n )
     {
         return ( static_cast< T >( n ) * Constants<T>::MachineEpsilon ) / ( Constants< T >::One - static_cast< T >( n ) * Constants<T>::MachineEpsilon );
     }
 
+    /// <summary>
+	/// Returns the result of addition, adjusted upwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+    /// The first value to add.
+    /// </param>
+    /// <param name="b">
+    /// The second value to add.
+    /// </param>
+    /// <returns>
+    /// The adjusted result of the addition.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T AddAdjustUp( T a, T b )
     {
         return NextUp( a + b );
     }
+
+    /// <summary>
+	/// Returns the result of addition, adjusted downwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first value to add.
+    /// </param>
+    /// <param name="b">
+	/// The second value to add.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the addition.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T AddAdjustDown( T a, T b )
     {
         return NextDown( a + b );
     }
 
+    /// <summary>
+	/// Returns the result of subtraction, adjusted upwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+    /// The first value to subtract.
+    /// </param>
+    /// <param name="b">
+    /// The second value to subtract.
+    /// </param>
+    /// <returns>
+    /// The adjusted result of the subtraction.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SubAdjustUp( T a, T b )
     {
         return AddAdjustUp( a, -b );
     }
+
+    /// <summary>
+	/// Returns the result of subtraction, adjusted downwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first value to subtract.
+    /// </param>
+    /// <param name="b">
+	/// The second value to subtract.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the subtraction.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SubAdjustDown( T a, T b )
     {
         return AddAdjustDown( a, -b );
     }
 
+    /// <summary>
+	/// Returns the result of multiplication, adjusted upwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first value to multiply.
+    /// </param>
+    /// <param name="b">
+	/// The second value to multiply.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the multiplication.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T MulAdjustUp( T a, T b )
     {
         return NextUp( a * b );
     }
 
+    /// <summary>
+	/// Returns the result of multiplication, adjusted downwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first value to multiply.
+    /// </param>
+    /// <param name="b">
+	/// The second value to multiply.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the multiplication.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T MulAdjustDown( T a, T b )
     {
         return NextDown( a * b );
     }
 
+    /// <summary>
+	/// Returns the result of division, adjusted upwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The numerator.
+    /// </param>
+    /// <param name="b">
+	/// The denominator.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the division.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T DivAdjustUp( T a, T b )
     {
         return NextUp( a / b );
     }
 
+    /// <summary>
+	/// Returns the result of division, adjusted downwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The numerator.
+    /// </param>
+    /// <param name="b">
+	/// The denominator.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the division.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T DivAdjustDown( T a, T b )
     {
         return NextDown( a / b );
     }
 
+    /// <summary>
+	/// Returns the square root of a, adjusted upwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The value to compute the square root of.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the square root.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SqrtAdjustUp( T a )
     {
         return NextUp( Sqrt( a ) );
     }
 
+    /// <summary>
+	/// Returns the square root of a, adjusted downwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The value to compute the square root of.
+    /// </param>
+    /// <returns>
+	/// The adjusted result of the square root.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T SqrtAdjustDown( T a )
     {
         return std::max<T>( 0, NextDown( Sqrt( a ) ) );
     }
 
+    /// <summary>
+	/// Returns the result of fused multiply-add, adjusted upwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first value to multiply.
+    /// </param>
+    /// <param name="b">
+	/// The second value to multiply.
+    /// </param>
+    /// <param name="c">
+	/// The value to add.
+    /// </param>
+    /// <returns></returns>
     template<FloatingPointType T>
     constexpr inline T FMAAdjustUp( T a, T b, T c )
     {
         return NextUp( FMA( a, b, c ) );
     }
 
+    /// <summary>
+	/// Returns the result of fused multiply-add, adjusted downwards to account for floating-point precision errors.
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="a">
+	/// The first value to multiply.
+    /// </param>
+    /// <param name="b">
+	/// The second value to multiply.
+    /// </param>
+    /// <param name="c">
+	/// The value to add.
+    /// </param>
+    /// <returns>
+    /// The adjusted result of the fused multiply-add.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T FMAAdjustDown( T a, T b, T c )
     {
         return NextDown( FMA( a, b, c ) );
     }
 
-
+    /// <summary>
+	/// Returns the base-2 logarithm of x.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The base-2 logarithm of x.
+    /// </returns>
     template<FloatingPointType T>
     constexpr inline T FastLog2( T x )
     {
         return Log2( x );
     }
 
+    /// <summary>
+	/// Returns the integer part of the base-2 logarithm of v.
+    /// </summary>
+    /// <param name="v">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The integer part of the base-2 logarithm of v.
+    /// </returns>
     constexpr inline int Log2Int( float v )
     {
         if ( v < 1.f )
@@ -3575,6 +4156,15 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Returns the integer part of the base-2 logarithm of v.
+    /// </summary>
+    /// <param name="v">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The integer part of the base-2 logarithm of v.
+    /// </returns>
     constexpr inline int Log2Int( double v )
     {
         if ( v < 1. )
@@ -3588,6 +4178,15 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+	/// Returns the integer part of the base-2 logarithm of v.
+    /// </summary>
+    /// <param name="v">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The integer part of the base-2 logarithm of v.
+    /// </returns>
     constexpr inline int Log2Int( UInt32 v )
     {
         unsigned long index = 0;
@@ -3597,11 +4196,30 @@ namespace Harlinn::Math
         }
         return 0;
     }
+
+    /// <summary>
+	/// Returns the integer part of the base-2 logarithm of v.
+    /// </summary>
+    /// <param name="v">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The integer part of the base-2 logarithm of v.
+    /// </returns>
     constexpr inline int Log2Int( Int32 v )
     {
         return Log2Int( std::bit_cast< UInt32 >( v ) );
     }
 
+    /// <summary>
+	/// Returns the integer part of the base-2 logarithm of v.
+    /// </summary>
+    /// <param name="v">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The integer part of the base-2 logarithm of v.
+    /// </returns>
     constexpr inline int Log2Int( UInt64 v )
     {
         unsigned long index = 0;
@@ -3609,11 +4227,32 @@ namespace Harlinn::Math
         return std::bit_cast< int >( index );
     }
 
+    /// <summary>
+	/// Returns the integer part of the base-2 logarithm of v.
+    /// </summary>
+    /// <param name="v">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The integer part of the base-2 logarithm of v.
+    /// </returns>
     constexpr inline int Log2Int( Int64 v )
     {
         return Log2Int( std::bit_cast< UInt64 >( v ) );
     }
 
+    /// <summary>
+	/// Returns the integer part of the base-4 logarithm of v.  
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of the value to compute the logarithm of.
+    /// </typeparam>
+    /// <param name="v">
+    /// The value to compute the logarithm of.
+    /// </param>
+    /// <returns>
+    /// The integer part of the base-4 logarithm of v.
+    /// </returns>
     template <typename T>
         requires std::is_arithmetic_v<T>
     constexpr inline int Log4Int( T v )
@@ -3622,6 +4261,16 @@ namespace Harlinn::Math
     }
 
     // https://stackoverflow.com/a/10792321
+    
+    /// <summary>
+	/// Returns an efficient approximation of the exponential function e^x.
+    /// </summary>
+    /// <param name="x">
+    /// The exponent to raise e to.
+    /// </param>
+    /// <returns>
+    /// An efficient approximation of the exponential function e^x.
+    /// </returns>
     constexpr inline float FastExp( float x )
     {
         // Compute $x'$ such that $\roman{e}^x = 2^{x'}$
@@ -3650,7 +4299,24 @@ namespace Harlinn::Math
         return std::bit_cast< float >( bits );
     }
 
-
+    /// <summary>
+	/// Returns the value of the Gaussian (normal) distribution's probability density function at point x.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The point at which to evaluate the PDF.
+    /// </param>
+    /// <param name="mu">
+    /// The mean of the distribution.
+    /// </param>
+    /// <param name="sigma">
+    /// The standard deviation of the distribution.
+    /// </param>
+    /// <returns>
+    /// The value of the PDF at point x.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT Gaussian( FloatT x, FloatT mu = 0, FloatT sigma = 1 )
@@ -3659,6 +4325,27 @@ namespace Harlinn::Math
             FastExp( -Sqr( x - mu ) / ( static_cast< FloatT >( 2 ) * sigma * sigma ) );
     }
 
+    /// <summary>
+	/// Returns the integral of the Gaussian (normal) distribution's probability density function between x0 and x1.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x0">
+    /// The lower bound of the integral.
+    /// </param>
+    /// <param name="x1">
+    /// The upper bound of the integral.
+    /// </param>
+    /// <param name="mu">
+    /// The mean of the distribution.
+    /// </param>
+    /// <param name="sigma">
+    /// The standard deviation of the distribution.
+    /// </param>
+    /// <returns>
+    /// The value of the integral of the PDF between x0 and x1.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT GaussianIntegral( FloatT x0, FloatT x1, FloatT mu = 0, FloatT sigma = 1 )
@@ -3667,6 +4354,21 @@ namespace Harlinn::Math
         return static_cast< FloatT >( 0.5 ) * ( std::erf( ( mu - x0 ) / sigmaRoot2 ) - std::erf( ( mu - x1 ) / sigmaRoot2 ) );
     }
 
+    /// <summary>
+	/// Returns the value of the Logistic distribution's probability density function at point x.
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The point at which to evaluate the PDF.
+    /// </param>
+    /// <param name="s">
+    /// The scale parameter of the distribution.
+    /// </param>
+    /// <returns>
+    /// The value of the PDF at point x.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT Logistic( FloatT x, FloatT s )
@@ -3675,6 +4377,21 @@ namespace Harlinn::Math
         return Exp( -x / s ) / ( s * Sqr( 1 + Exp( -x / s ) ) );
     }
 
+    /// <summary>
+	/// Returns the cumulative distribution function (CDF) of the Logistic distribution at point x.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The point at which to evaluate the CDF.
+    /// </param>
+    /// <param name="s">
+    /// The scale parameter of the distribution.
+    /// </param>
+    /// <returns>
+    /// The value of the CDF at point x.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT LogisticCDF( FloatT x, FloatT s )
@@ -3682,6 +4399,27 @@ namespace Harlinn::Math
         return static_cast< FloatT >( 1 ) / ( static_cast< FloatT >( 1 ) + Exp( -x / s ) );
     }
 
+    /// <summary>
+	/// Returns the value of the trimmed Logistic distribution's probability density function at point x.
+    /// </summary>
+    /// <typeparam name="FloatT">
+	/// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// The point at which to evaluate the PDF.
+    /// </param>
+    /// <param name="s">
+    /// The scale parameter of the distribution.
+    /// </param>
+    /// <param name="a">
+    /// The lower bound of the trimming interval.
+    /// </param>
+    /// <param name="b">
+    /// The upper bound of the trimming interval.
+    /// </param>
+    /// <returns>
+    /// The value of the trimmed PDF at point x.
+    /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT TrimmedLogistic( FloatT x, FloatT s, FloatT a, FloatT b )
@@ -3699,6 +4437,21 @@ namespace Harlinn::Math
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT LogI0( FloatT x );
 
+    /// <summary>
+	/// Returns the largest index i in the range [0, sz-2] such that pred(i) is true.
+    /// </summary>
+    /// <typeparam name="Predicate">
+    /// A callable type that takes an index and returns a boolean.
+    /// </typeparam>
+    /// <param name="sz">
+    /// The size of the range to search.
+    /// </param>
+    /// <param name="pred">
+    /// A callable type that takes an index and returns a boolean.
+    /// </param>
+    /// <returns>
+    /// The largest index i in the range [0, sz-2] such that pred(i) is true.
+    /// </returns>
     template<typename Predicate>
     constexpr inline size_t FindInterval( size_t sz, const Predicate& pred )
     {
@@ -3715,28 +4468,76 @@ namespace Harlinn::Math
         return ( size_t )Clamp( ( ssize_t )first - 1, ( ssize_t )0, ( ssize_t )sz - 2 );
     }
 
+    /// <summary>
+	/// Returns true if v is a power of 4.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A numeric type.
+    /// </typeparam>
+    /// <param name="v">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// Returns true if v is a power of 4.
+    /// </returns>
     template <typename T>
     constexpr inline bool IsPowerOf4( T v )
     {
         return v == 1 << ( 2 * Log4Int( v ) );
     }
 
+    /// <summary>
+	/// Returns v rounded up to the next power of 2.
+    /// </summary>
+    /// <param name="v">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// Returns v rounded up to the next power of 2.
+    /// </returns>
     constexpr inline Int32 RoundUpPow2( Int32 v )
     {
         return NextPowerOfTwo( v );
     }
 
+    /// <summary>
+	/// Returns v rounded up to the next power of 2.
+    /// </summary>
+    /// <param name="v">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// Returns v rounded up to the next power of 2.
+    /// </returns>
     constexpr inline Int64 RoundUpPow2( Int64 v )
     {
         return NextPowerOfTwo( v );
     }
 
+    /// <summary>
+	/// Returns v rounded up to the next power of 4.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A numeric type.
+    /// </typeparam>
+    /// <param name="v">
+    /// A numeric value.
+    /// </param>
+    /// <returns>
+    /// Returns v rounded up to the next power of 4.
+    /// </returns>
     template <typename T>
     constexpr inline T RoundUpPow4( T v )
     {
         return IsPowerOf4( v ) ? v : ( 1 << ( 2 * ( 1 + Log4Int( v ) ) ) );
     }
 
+    /// <summary>
+    /// Computes the compensated sum of a sequence of floating-point values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating-point type.
+    /// </typeparam>
     template<typename T>
         requires IsFloatingPoint<T>
     class CompensatedSum
@@ -3748,14 +4549,31 @@ namespace Harlinn::Math
         ValueType sum_ = 0;
         ValueType c_ = 0;
     public:
-        // CompensatedSum Public Methods
+        /// <summary>
+		/// Default constructor for CompensatedSum.
+        /// </summary>
         constexpr CompensatedSum( ) noexcept = default;
 
+        /// <summary>
+		/// Constructor for CompensatedSum that initializes the sum with a given value.
+        /// </summary>
+        /// <param name="v">
+        /// A numeric value.
+        /// </param>
         constexpr explicit CompensatedSum( ValueType v ) noexcept
             : sum_( v )
         {
         }
 
+        /// <summary>
+		/// Resets the compensated sum to a given value.
+        /// </summary>
+        /// <param name="v">
+        /// A numeric value.
+        /// </param>
+        /// <returns>
+        /// Returns a reference to this instance.
+        /// </returns>
         constexpr CompensatedSum& operator=( ValueType v ) noexcept
         {
             sum_ = v;
@@ -3763,6 +4581,15 @@ namespace Harlinn::Math
             return *this;
         }
 
+        /// <summary>
+		/// Adds a value to the compensated sum using Kahan summation algorithm.
+        /// </summary>
+        /// <param name="v">
+        /// A numeric value.
+        /// </param>
+        /// <returns>
+        /// Returns a reference to this instance.
+        /// </returns>
         constexpr CompensatedSum& operator+=( ValueType v ) noexcept
         {
             ValueType delta = v - c_;
