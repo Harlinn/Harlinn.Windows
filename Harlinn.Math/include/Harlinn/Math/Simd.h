@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef HARLINN_MATH_SIMD_H_
 #define HARLINN_MATH_SIMD_H_
 
@@ -261,7 +261,11 @@ namespace Harlinn::Math::SIMD
         using Type = std::remove_cvref_t<T>;
     };
 
-
+    /// <summary>
+    /// Traits structure for 8-bit types that provides SIMD-optimized operations and type information for fixed-size arrays.
+    /// </summary>
+    /// <typeparam name="T">The 8-bit element type to be stored and manipulated.</typeparam>
+    /// <typeparam name="N">The number of elements in the fixed-size array.</typeparam>
     template<typename T, size_t N>
     struct Traits8Bit : public Internal::TraitsBase
     {
@@ -1518,23 +1522,42 @@ namespace Harlinn::Math::SIMD
         }
     };
 
-
+    /// <summary>
+    /// Specialization of the Traits struct for character arrays of a specific size.
+    /// </summary>
+    /// <typeparam name="N">The size of the character array.</typeparam>
     template<size_t N>
     struct Traits<char, N> : public Traits8Bit<char, N>
     {
     };
 
+    /// <summary>
+    /// Specialization of the Traits template for signed byte types with a specific size.
+    /// </summary>
+    /// <typeparam name="N">The size or dimension parameter for the traits specialization.</typeparam>
     template<size_t N>
     struct Traits<SByte, N> : public Traits8Bit<SByte, N>
     {
     };
 
+    /// <summary>
+    /// Template specialization that defines traits for a Byte type with a specified size.
+    /// </summary>
+    /// <typeparam name="N">The size parameter, typically representing the number of bytes or elements.</typeparam>
     template<size_t N>
     struct Traits<Byte, N> : public Traits8Bit<Byte, N>
     {
     };
 
 
+    /// <summary>
+    /// A traits structure that provides SIMD operations and type 
+    /// information for 16-bit integer types, automatically selecting 
+    /// between 128-bit (SSE) and 256-bit (AVX2) SIMD instruction 
+    /// sets based on the number of elements.
+    /// </summary>
+    /// <typeparam name="T">The 16-bit integer type (e.g., int16_t, uint16_t, short).</typeparam>
+    /// <typeparam name="N">The number of elements in the vector.</typeparam>
     template<typename T, size_t N>
     struct Traits16Bit : public Internal::TraitsBase
     {
@@ -1682,17 +1705,32 @@ namespace Harlinn::Math::SIMD
         }
     };
 
+    /// <summary>
+    /// Specialization of the Traits template for Int16 types with a specified size, inheriting from Traits16Bit.
+    /// </summary>
+    /// <typeparam name="N">The size parameter for the traits specialization.</typeparam>
     template<size_t N>
     struct Traits<Int16, N> : public Traits16Bit<Int16, N>
     {
     };
 
+    /// <summary>
+    /// Specialization of the Traits template for 16-bit unsigned integer types.
+    /// </summary>
+    /// <typeparam name="N">The size parameter for the traits specialization.</typeparam>
     template<size_t N>
     struct Traits<UInt16, N> : public Traits16Bit<UInt16, N>
     {
     };
 
 
+    /// <summary>
+    /// A traits structure providing SIMD operations and type information for 
+    /// 32-bit integer types, automatically selecting between 128-bit and 
+    /// 256-bit SIMD implementations based on vector size.
+    /// </summary>
+    /// <typeparam name="T">The 32-bit element type (e.g., int32_t, uint32_t, float).</typeparam>
+    /// <typeparam name="N">The number of elements in the vector.</typeparam>
     template<typename T, size_t N>
     struct Traits32Bit : public Internal::TraitsBase
     {
@@ -1712,6 +1750,10 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast< Int64 >( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
+        /// <summary>
+        /// Creates a SIMD vector with all elements set to zero.
+        /// </summary>
+        /// <returns>A SIMD vector (either 128-bit or 256-bit depending on UseShortSIMDType) with all bits set to zero.</returns>
         static SIMDType Zero( ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -1723,7 +1765,15 @@ namespace Harlinn::Math::SIMD
                 return _mm256_setzero_si256( );
             }
         }
-
+        /// <summary>
+        /// Fills a SIMD vector with a single value replicated across all elements.
+        /// </summary>
+        /// <param name="value">The value to replicate across all elements of the SIMD vector.</param>
+        /// <returns>
+        /// A SIMD vector with all elements set to the specified value, using 
+        /// either 128-bit (SSE) or 256-bit (AVX) instructions depending on 
+        /// the UseShortSIMDType configuration.
+        /// </returns>
         static SIMDType Fill( Type value ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -1736,6 +1786,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Creates a SIMD vector filled with a divisor value for the first Num elements and 1 for the remaining elements.
+        /// </summary>
+        /// <typeparam name="Num">The number of elements to fill with the divisor value. Must be greater than 0 and less than or equal to SIMDTypeCapacity.</typeparam>
+        /// <param name="value">The divisor value to fill into the first Num elements of the SIMD vector.</param>
+        /// <returns>A SIMD vector (either 128-bit or 256-bit) with the divisor value in the first Num positions and 1 in the remaining positions.</returns>
         template<size_t Num>
         static SIMDType FillDivisor( Type value ) noexcept requires ( Num > 0 && Num <= SIMDTypeCapacity )
         {
@@ -1779,6 +1835,15 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Trims a SIMD vector to the specified size by masking out unused elements.
+        /// </summary>
+        /// <param name="v">The SIMD vector to trim.</param>
+        /// <returns>
+        /// The trimmed SIMD vector. If Size equals SIMDTypeCapacity, returns the 
+        /// input vector unchanged; otherwise, returns the vector masked to 
+        /// include only the first Size elements.
+        /// </returns>
         static SIMDType Trim( SIMDType v ) noexcept
         {
             if constexpr ( Size == SIMDTypeCapacity )
@@ -1791,7 +1856,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /// <summary>
+        /// Creates a SIMD mask vector by setting specific lanes to a given value based on the compile-time Size parameter.
+        /// </summary>
+        /// <param name="value">The unsigned integer value to use for populating the active lanes of the mask.</param>
+        /// <returns>A SIMD vector (either __m128i or __m256i) with the rightmost Size lanes set to value and remaining lanes set to 0x00000000.</returns>
         static SIMDType Mask( UIntType value ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -1845,7 +1914,15 @@ namespace Harlinn::Math::SIMD
             return Mask( 0xFFFFFFFF );
         }
 
-
+        /// <summary>
+        /// Creates a SIMD vector with a single value in the lowest position and zeros in all other positions.
+        /// </summary>
+        /// <param name="value1">The value to place in the lowest element of the SIMD vector.</param>
+        /// <returns>
+        /// A SIMD vector containing the specified value in the lowest position and zeros elsewhere. 
+        /// Returns either a 128-bit (_mm) or 256-bit (_mm256) vector depending on the 
+        /// UseShortSIMDType compile-time constant.
+        /// </returns>
         static SIMDType Set( Type value1 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -1858,6 +1935,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Creates a SIMD vector by setting two integer values in the lowest positions.
+        /// </summary>
+        /// <param name="value2">The integer value to place in the second position.</param>
+        /// <param name="value1">The integer value to place in the first (lowest) position.</param>
+        /// <returns>A SIMD vector containing the two specified values in the lowest positions, with remaining positions zeroed.</returns>
         static SIMDType Set( Type value2, Type value1 ) noexcept requires ( N > 1 )
         {
             if constexpr ( UseShortSIMDType )
@@ -1870,6 +1953,17 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Creates a SIMD vector by setting three values in the lower elements, with remaining elements zeroed.
+        /// </summary>
+        /// <param name="value3">The value to place in the third element (index 2).</param>
+        /// <param name="value2">The value to place in the second element (index 1).</param>
+        /// <param name="value1">The value to place in the first element (index 0).</param>
+        /// <returns>
+        /// A SIMD vector containing the three specified values in the lower elements, 
+        /// with upper elements set to zero. Returns a 128-bit SIMD type 
+        /// if UseShortSIMDType is true, otherwise a 256-bit SIMD type.
+        /// </returns>
         static SIMDType Set( Type value3, Type value2, Type value1 ) noexcept requires ( N > 2 )
         {
             if constexpr ( UseShortSIMDType )
@@ -1882,6 +1976,14 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Creates a SIMD vector by setting four integer values in reverse order.
+        /// </summary>
+        /// <param name="value4">The value to place in the fourth position (highest order element).</param>
+        /// <param name="value3">The value to place in the third position.</param>
+        /// <param name="value2">The value to place in the second position.</param>
+        /// <param name="value1">The value to place in the first position (lowest order element).</param>
+        /// <returns>A SIMD vector containing the four specified values, with the remaining elements (if any) set to zero.</returns>
         static SIMDType Set( Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 3 )
         {
             if constexpr ( UseShortSIMDType )
@@ -1894,26 +1996,74 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Creates a SIMD vector by setting individual values in reverse order, with the remaining elements zeroed.
+        /// </summary>
+        /// <param name="value5">The value to set in the 5th position (index 4).</param>
+        /// <param name="value4">The value to set in the 4th position (index 3).</param>
+        /// <param name="value3">The value to set in the 3rd position (index 2).</param>
+        /// <param name="value2">The value to set in the 2nd position (index 1).</param>
+        /// <param name="value1">The value to set in the 1st position (index 0).</param>
+        /// <returns>A SIMD vector containing the specified values in the lower 5 positions, with the upper 3 positions set to zero.</returns>
         static SIMDType Set( Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 4 )
         {
             return _mm256_set_epi32( 0, 0, 0, value5, value4, value3, value2, value1 );
         }
 
+        /// <summary>
+        /// Creates a SIMD vector by setting six values in reverse order, with the remaining elements set to zero.
+        /// </summary>
+        /// <param name="value6">The value to set in the sixth position.</param>
+        /// <param name="value5">The value to set in the fifth position.</param>
+        /// <param name="value4">The value to set in the fourth position.</param>
+        /// <param name="value3">The value to set in the third position.</param>
+        /// <param name="value2">The value to set in the second position.</param>
+        /// <param name="value1">The value to set in the first position.</param>
+        /// <returns>A SIMD vector containing the specified values in reverse order, with leading elements set to zero.</returns>
         static SIMDType Set( Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 5 )
         {
             return _mm256_set_epi32( 0, 0, value6, value5, value4, value3, value2, value1 );
         }
 
+        /// <summary>
+        /// Creates a SIMD vector by setting individual elements with the provided values.
+        /// </summary>
+        /// <param name="value7">The value for the seventh element of the vector.</param>
+        /// <param name="value6">The value for the sixth element of the vector.</param>
+        /// <param name="value5">The value for the fifth element of the vector.</param>
+        /// <param name="value4">The value for the fourth element of the vector.</param>
+        /// <param name="value3">The value for the third element of the vector.</param>
+        /// <param name="value2">The value for the second element of the vector.</param>
+        /// <param name="value1">The value for the first element of the vector.</param>
+        /// <returns>A SIMD vector with elements set to the specified values, with the eighth element initialized to zero.</returns>
         static SIMDType Set( Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 6 )
         {
             return _mm256_set_epi32( 0, value7, value6, value5, value4, value3, value2, value1 );
         }
 
+        /// <summary>
+        /// Creates a SIMD vector by setting eight 32-bit integer values in reverse order.
+        /// </summary>
+        /// <param name="value8">The value for the highest-order (8th) element.</param>
+        /// <param name="value7">The value for the 7th element.</param>
+        /// <param name="value6">The value for the 6th element.</param>
+        /// <param name="value5">The value for the 5th element.</param>
+        /// <param name="value4">The value for the 4th element.</param>
+        /// <param name="value3">The value for the 3rd element.</param>
+        /// <param name="value2">The value for the 2nd element.</param>
+        /// <param name="value1">The value for the lowest-order (1st) element.</param>
+        /// <returns>A SIMD vector containing the eight specified values.</returns>
         static SIMDType Set( Type value8, Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 7 )
         {
             return _mm256_set_epi32( value8, value7, value6, value5, value4, value3, value2, value1 );
         }
 
+        /// <summary>
+        /// Sets the X component (first element) of a SIMD vector to a specified value.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose X component will be replaced.</param>
+        /// <param name="value">The value to set in the X component.</param>
+        /// <returns>A new SIMD vector with the X component set to the specified value and all other components unchanged from the input vector.</returns>
         static SIMDType SetX( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -1926,6 +2076,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the Y component of a SIMD vector to a specified value.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose Y component will be modified.</param>
+        /// <param name="value">The value to set for the Y component.</param>
+        /// <returns>A new SIMD vector with the Y component set to the specified value and all other components unchanged from the input vector.</returns>
         static SIMDType SetY( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -1938,6 +2094,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the Z component of a SIMD vector to a specified value.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose Z component will be modified.</param>
+        /// <param name="value">The value to set in the Z component.</param>
+        /// <returns>A new SIMD vector with the Z component set to the specified value and other components copied from the input vector.</returns>
         static SIMDType SetZ( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -1950,6 +2112,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Sets the W component (fourth element) of a SIMD vector to a specified value.
+        /// </summary>
+        /// <param name="v">The source SIMD vector whose W component will be replaced.</param>
+        /// <param name="value">The value to set in the W component.</param>
+        /// <returns>A new SIMD vector with the W component set to the specified value and other components unchanged from the source vector.</returns>
         static SIMDType SetW( SIMDType v, Type value )
         {
             if constexpr ( UseShortSIMDType )
@@ -1962,7 +2130,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /// <summary>
+        /// Loads N elements from memory into a SIMD register with optimized paths for different element counts.
+        /// </summary>
+        /// <param name="src">Pointer to the source memory location containing the elements to load.</param>
+        /// <returns>A SIMD register (SIMDType) containing the loaded elements. Returns __m128i for N≤4 or __m256i for N>4, depending on UseShortSIMDType.</returns>
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2011,6 +2183,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Loads SIMD data from a std::array into a SIMD type.
+        /// </summary>
+        /// <typeparam name="NA">The size of the source array, which must be greater than or equal to N.</typeparam>
+        /// <param name="src">The source array containing the data to load.</param>
+        /// <returns>A SIMD type populated with data from the source array.</returns>
         template<size_t NA>
             requires ( NA >= N )
         static SIMDType Load( const std::array<Type, NA>& src ) noexcept
@@ -2019,7 +2197,11 @@ namespace Harlinn::Math::SIMD
         }
 
 
-
+        /// <summary>
+        /// Loads SIMD data from an unaligned memory location.
+        /// </summary>
+        /// <param name="src">Pointer to the source memory location from which to load data. The memory does not need to be aligned.</param>
+        /// <returns>A SIMD vector containing the loaded data. Returns a 128-bit vector (__m128i) if UseShortSIMDType is true, otherwise returns a 256-bit vector (__m256i).</returns>
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2032,6 +2214,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Stores a SIMD vector to an aligned memory location.
+        /// </summary>
+        /// <param name="dest">Pointer to the aligned destination memory address where the SIMD vector will be stored.</param>
+        /// <param name="src">The SIMD vector to store.</param>
         static void Store( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2044,6 +2231,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Stores a SIMD register value to an unaligned memory location.
+        /// </summary>
+        /// <param name="dest">Pointer to the destination memory location where the SIMD data will be stored. Does not need to be aligned.</param>
+        /// <param name="src">The SIMD register value to store to memory.</param>
         static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2304,6 +2496,14 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks whether a SIMD value contains any NaN (Not-a-Number) elements.
+        /// </summary>
+        /// <param name="v">The SIMD value to check for NaN elements.</param>
+        /// <returns>
+        /// Always returns false, indicating no NaN elements are present 
+        /// since integer types cannot represent NaN.
+        /// </returns>
         static constexpr bool HasNaN( SIMDType v ) noexcept
         {
             return false;
@@ -2422,6 +2622,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the horizontal sum of all elements in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose elements will be summed.</param>
+        /// <returns>A SIMD vector with all lanes containing the sum of all elements from the input vector.</returns>
         static SIMDType HSum( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2486,6 +2691,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Multiplies corresponding 32-bit integer elements from two SIMD vectors and returns 64-bit results.
+        /// </summary>
+        /// <param name="lhs">The left-hand side SIMD vector containing 32-bit integer elements.</param>
+        /// <param name="rhs">The right-hand side SIMD vector containing 32-bit integer elements.</param>
+        /// <returns>A SIMD vector containing the 64-bit products of the multiplied elements. Uses either 128-bit (_mm_mul_epi32) or 256-bit (_mm256_mul_epi32) SIMD instructions based on the UseShortSIMDType compile-time condition.</returns>
         static SIMDType Mul( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2498,16 +2709,34 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Multiplies a scalar value with a SIMD vector by broadcasting the scalar to all vector lanes.
+        /// </summary>
+        /// <param name="lhs">The scalar value to multiply.</param>
+        /// <param name="rhs">The SIMD vector to multiply with.</param>
+        /// <returns>A SIMD vector containing the element-wise product of the broadcasted scalar and the input vector.</returns>
         static SIMDType Mul( Type lhs, SIMDType rhs ) noexcept
         {
             return Mul( Fill( lhs ), rhs );
         }
 
+        /// <summary>
+        /// Multiplies a SIMD vector by a scalar value.
+        /// </summary>
+        /// <param name="lhs">The SIMD vector (left-hand side operand).</param>
+        /// <param name="rhs">The scalar value (right-hand side operand) to multiply with each element of the vector.</param>
+        /// <returns>A SIMD vector containing the result of multiplying each element of the input vector by the scalar value.</returns>
         static SIMDType Mul( SIMDType lhs, Type rhs ) noexcept
         {
             return Mul( lhs, Fill( rhs ) );
         }
 
+        /// <summary>
+        /// Computes the element-wise minimum of two SIMD vectors containing 32-bit signed integers.
+        /// </summary>
+        /// <param name="lhs">The first SIMD vector.</param>
+        /// <param name="rhs">The second SIMD vector.</param>
+        /// <returns>A SIMD vector where each element is the minimum of the corresponding elements from lhs and rhs.</returns>
         static SIMDType Min( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2520,6 +2749,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the element-wise maximum of two SIMD vectors containing 32-bit signed integers.
+        /// </summary>
+        /// <param name="lhs">The first SIMD vector to compare.</param>
+        /// <param name="rhs">The second SIMD vector to compare.</param>
+        /// <returns>A SIMD vector containing the maximum values from each corresponding element pair.</returns>
         static SIMDType Max( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2532,6 +2767,13 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Clamps a SIMD vector of integers to a specified range by restricting each element to be within the lower and upper bounds.
+        /// </summary>
+        /// <param name="v">The SIMD vector to clamp.</param>
+        /// <param name="lowerBounds">The SIMD vector containing the minimum allowed values for each element.</param>
+        /// <param name="upperBounds">The SIMD vector containing the maximum allowed values for each element.</param>
+        /// <returns>A SIMD vector where each element of v is clamped to be within the corresponding elements of lowerBounds and upperBounds.</returns>
         static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2547,17 +2789,30 @@ namespace Harlinn::Math::SIMD
 
     };
 
+    /// <summary>
+    /// Specialization of Traits for Int32 types with a compile-time size parameter.
+    /// </summary>
+    /// <typeparam name="N">The compile-time size parameter for the Int32 traits specialization.</typeparam>
     template<size_t N>
     struct Traits<Int32, N> : public Traits32Bit<Int32, N>
     {
     };
 
+    /// <summary>
+    /// Specialization of Traits for UInt32 types with a specified size, inheriting from Traits32Bit.
+    /// </summary>
+    /// <typeparam name="N">The size parameter for the traits specialization.</typeparam>
     template<size_t N>
     struct Traits<UInt32, N> : public Traits32Bit<UInt32, N>
     {
     };
 
 
+    /// <summary>
+    /// Provides SIMD traits and operations for 64-bit integer types, optimizing for either SSE (128-bit) or AVX2 (256-bit) instruction sets based on vector size.
+    /// </summary>
+    /// <typeparam name="T">The 64-bit element type (e.g., int64_t, uint64_t).</typeparam>
+    /// <typeparam name="N">The number of elements in the vector.</typeparam>
     template<typename T, size_t N>
     struct Traits64Bit : public Internal::TraitsBase
     {
@@ -2576,6 +2831,10 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast< Int64 >( -4 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
+        /// <summary>
+        /// Returns a SIMD vector with all elements set to zero.
+        /// </summary>
+        /// <returns>A SIMD vector of type SIMDType with all bits set to zero. Returns a 128-bit vector if UseShortSIMDType is true, otherwise returns a 256-bit vector.</returns>
         static SIMDType Zero( ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2588,6 +2847,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Fills a SIMD vector with a single value replicated across all elements.
+        /// </summary>
+        /// <param name="value">The value to replicate across all elements of the SIMD vector.</param>
+        /// <returns>A SIMD vector with the specified value replicated in all lanes. Returns either a 128-bit (__m128i) or 256-bit (__m256i) SIMD type depending on the UseShortSIMDType constant.</returns>
         static SIMDType Fill( Type value ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2600,6 +2864,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Loads SIMD data from an aligned memory address.
+        /// </summary>
+        /// <param name="src">Pointer to the aligned memory location from which to load data. Must be aligned to 16 bytes for SSE (_mm_load_si128) or 32 bytes for AVX (_mm256_load_si256).</param>
+        /// <returns>A SIMD vector containing the loaded data. Returns a 128-bit vector (__m128i) if UseShortSIMDType is true, otherwise returns a 256-bit vector (__m256i).</returns>
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2612,6 +2881,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Loads SIMD data from an unaligned memory address.
+        /// </summary>
+        /// <param name="src">Pointer to the source memory location from which to load data. The memory does not need to be aligned.</param>
+        /// <returns>A SIMD vector containing the loaded data. Returns a 128-bit vector (__m128i) if UseShortSIMDType is true, otherwise returns a 256-bit vector (__m256i).</returns>
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2624,6 +2898,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Stores a SIMD vector to an aligned memory location.
+        /// </summary>
+        /// <param name="dest">Pointer to the destination memory location where the SIMD data will be stored. Must be properly aligned (16-byte for SSE, 32-byte for AVX).</param>
+        /// <param name="src">The SIMD vector to store.</param>
         static void Store( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2636,6 +2915,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Stores a SIMD vector to an unaligned memory location.
+        /// </summary>
+        /// <param name="dest">Pointer to the destination memory location where the SIMD vector will be stored. Does not need to be aligned.</param>
+        /// <param name="src">The SIMD vector to store.</param>
         static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2704,6 +2988,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Multiplies two SIMD vectors containing 64-bit unsigned integers.
+        /// </summary>
+        /// <param name="a">The first SIMD vector containing 64-bit values to multiply.</param>
+        /// <param name="b">The second SIMD vector containing 64-bit values to multiply.</param>
+        /// <returns>A SIMD vector containing the product of the corresponding 64-bit elements from the input vectors.</returns>
         SIMDType Mul( SIMDType a, SIMDType b )
         {
             if constexpr ( UseShortSIMDType )
@@ -2738,12 +3028,19 @@ namespace Harlinn::Math::SIMD
 
     };
 
-
+    /// <summary>
+    /// Specialization of Traits for Int64 types with a specified size.
+    /// </summary>
+    /// <typeparam name="N">The size parameter for the traits specialization.</typeparam>
     template<size_t N>
     struct Traits<Int64, N> : public Traits64Bit<Int64, N>
     {
     };
 
+    /// <summary>
+    /// Specialization of the Traits template for UInt64 types with a specified size parameter.
+    /// </summary>
+    /// <typeparam name="N">The size parameter for the UInt64 traits specialization.</typeparam>
     template<size_t N>
     struct Traits<UInt64, N> : public Traits64Bit<UInt64, N>
     {
@@ -2919,7 +3216,10 @@ namespace Harlinn::Math::SIMD
         };
     }
 
-
+    /// <summary>
+	/// Specialization of the Traits template for float types with a specified size parameter.
+    /// </summary>
+    /// <typeparam name="N"></typeparam>
     template<size_t N>
     struct Traits<float, N> : public Internal::TraitsBase
     {
@@ -2942,6 +3242,9 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
     private:
+        /// <summary>
+        /// Provides constant indices for selecting components from 128-bit SIMD vectors.
+        /// </summary>
         struct m128Select
         {
             static constexpr UInt32 X = 0;
@@ -2955,6 +3258,9 @@ namespace Harlinn::Math::SIMD
             static constexpr UInt32 V3 = 3;
         };
 
+        /// <summary>
+        /// Provides constants for selecting components from 256-bit SIMD vectors.
+        /// </summary>
         struct m256Select
         {
             static constexpr UInt32 X0 = 0;
@@ -2976,6 +3282,9 @@ namespace Harlinn::Math::SIMD
             static constexpr UInt32 V7 = 7;
         };
 
+        /// <summary>
+        /// Defines constants for permuting elements in 128-bit SIMD vectors.
+        /// </summary>
         struct m128Permute
         {
             static constexpr UInt32 X1 = 0;
@@ -3047,19 +3356,13 @@ namespace Harlinn::Math::SIMD
                 return _mm256_broadcast_ss( &value );
             }
         }
-
-        /**
-         * @brief Fills a SIMD register with a specified value for a given number of elements.
-         *
-         * This function broadcasts the provided value to the first Num elements of the SIMD register.
-         * For short SIMD types (N &lt;= 4), it uses specialized Set functions for Num = 1, 2, or 3, and
-         * _mm_set_ps1 for other cases. For long SIMD types (N &gt; 4), it uses specialized Set functions
-         * for Num = 5, 6, or 7, and _mm256_broadcast_ss for other cases.
-         *
-         * @tparam Num Number of elements to fill (must be > 0 and <= Size).
-         * @param value The value to broadcast to the SIMD register.
-         * @return SIMDType with the first Num elements set to value.
-         */
+        
+        /// <summary>
+        /// Fills a SIMD vector with a specified number of elements, all set to the same value.
+        /// </summary>
+        /// <typeparam name="Num">The number of elements to fill in the SIMD vector. Must be greater than 0 and not exceed Size.</typeparam>
+        /// <param name="value">The value to replicate across the SIMD vector elements.</param>
+        /// <returns>A SIMD vector with the first Num elements set to the specified value.</returns>
         template<size_t Num>
         static SIMDType Fill( Type value ) noexcept requires ( Num > 0 && Num <= Size )
         {
@@ -3103,19 +3406,15 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-        /**
-         * @brief Fills a SIMD register with a specified value for a given number of elements, with remaining elements set to 1.0f.
-         *
-         * This function broadcasts the provided value to the lowest Num elements of the SIMD register.
-         * The remaining elements are set to 1.0f. For short SIMD types (N &lt;= 4), it uses specialized
-         * _mm_set_ps patterns for Num = 1, 2, or 3, and _mm_set_ps1 for other cases. For long SIMD types
-         * (N &gt; 4), it uses specialized _mm256_set_ps patterns for Num = 5, 6, or 7, and _mm256_broadcast_ss
-         * for other cases.
-         *
-         * @tparam Num Number of elements to fill (must be > 0 and <= SIMDTypeCapacity).
-         * @param value The value to broadcast to the SIMD register.
-         * @return SIMDType with the lowest Num elements set to value, remaining elements set to 1.0f.
-         */
+        /// <summary>
+        /// Creates a SIMD vector for division operations by filling the first Num elements with a divisor value and padding remaining elements with 1.0f.
+        /// </summary>
+        /// <typeparam name="Num">The number of elements to fill with the divisor value. Must be greater than 0 and not exceed SIMDTypeCapacity.</typeparam>
+        /// <param name="value">The divisor value to fill into the SIMD vector.</param>
+        /// <returns>
+        /// A SIMD vector (either __m128 or __m256) with the first Num elements set to 
+        /// the divisor value and remaining elements set to 1.0f (identity for division).
+        /// </returns>
         template<size_t Num>
         static SIMDType FillDivisor( Type value ) noexcept requires ( Num > 0 && Num <= SIMDTypeCapacity )
         {
@@ -3188,20 +3487,15 @@ namespace Harlinn::Math::SIMD
         }
 
 
-        /**
-         * @brief Creates a mask SIMD register for extracting the lowest <c>Size</c> elements.
-         *
-         * This function generates a mask suitable for extracting the <c>Size</c> lowest elements from a SIMD register.
-         * The mask is constructed such that only the lowest <c>Size</c> elements are set to the provided <c>value</c>,
-         * and the remaining elements are set to zero. The mask can be used with bitwise operations (e.g., And)
-         * to isolate or operate on only the valid elements of a SIMD register.
-         *
-         * For short SIMD types (N <= 4), the mask is created using _mm_set_epi32 and cast to __m128.
-         * For long SIMD types (N > 4), the mask is created using _mm256_set_epi32 and cast to __m256.
-         *
-         * @param value The value to set for the valid elements in the mask.
-         * @return SIMDType A mask SIMD register with the lowest <c>Size</c> elements set to <c>value</c>, others zero.
-         */
+        /// <summary>
+        /// Creates a SIMD mask by replicating an unsigned integer value across SIMD lanes.
+        /// </summary>
+        /// <param name="value">The unsigned integer value to replicate as a mask pattern across the SIMD vector lanes.</param>
+        /// <returns>
+        /// A SIMD vector (128-bit or 256-bit) with the mask value replicated in 
+        /// the appropriate number of lanes based on the Size template parameter, 
+        /// with remaining lanes set to zero.
+        /// </returns>
         static SIMDType Mask( UIntType value ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3601,6 +3895,15 @@ namespace Harlinn::Math::SIMD
          * @param src Pointer to the source array of floats to load.
          * @return SIMDType The loaded SIMD register containing the N float values.
          */
+
+        /// <summary>
+        /// Loads N floating-point values from memory into a SIMD register.
+        /// </summary>
+        /// <param name="src">Pointer to the source memory location containing the floating-point values to load.</param>
+        /// <returns>
+        /// A SIMD register containing the loaded values. For counts less 
+        /// than the register capacity, the remaining elements are undefined 
+        /// or zero-initialized depending on the intrinsic used.</returns>
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3804,26 +4107,11 @@ namespace Harlinn::Math::SIMD
         }
 
 
-        /**
-         * @brief Loads N float values from memory into a SIMD register, allowing for unaligned memory access.
-         *
-         * This function loads N elements of type float from the memory location pointed to by src
-         * into a SIMD register, without requiring the memory to be aligned to the SIMD register's alignment.
-         * The loading strategy depends on the value of N and whether a short SIMD type (128-bit) or a long SIMD type (256-bit) is used.
-         *
-         * - For N == 1: Loads a single float using _mm_load_ss.
-         * - For N == 2: Loads two floats as a double using _mm_load_sd and casts to __m128.
-         * - For N == 3: Loads three floats using the Set function, which fills the SIMD register
-         *   with the provided values.
-         * - For N >= 4 (short SIMD): Loads four floats using _mm_loadu_ps.
-         * - For N == 5, 6, 7 (long SIMD): Loads the first four floats using _mm_loadu_ps, then
-         *   inserts additional values using _mm256_insertf128_ps and appropriate intrinsics.
-         * - For N == 8 (long SIMD): Loads eight floats using _mm256_loadu_ps.
-         *
-         * @param src Pointer to the source array of floats to load. The memory does not need to be aligned.
-         * @return SIMDType The loaded SIMD register containing the N float values.
-         */
-
+        /// <summary>
+        /// Loads SIMD data from an unaligned memory location.
+        /// </summary>
+        /// <param name="src">Pointer to the source memory location containing the data to load. The memory does not need to be aligned to SIMD boundaries.</param>
+        /// <returns>A SIMD vector containing the loaded data. The specific SIMD type (128-bit or 256-bit) and loading strategy depend on the compile-time value of N and the UseShortSIMDType flag.</returns>
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3898,18 +4186,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-        /**
-         * @brief Stores the contents of a SIMD register to a memory location, allowing for unaligned memory access.
-         *
-         * This function writes the contents of the SIMD register <c>src</c> to the memory location pointed to by <c>dest</c>.
-         * Unlike the aligned store operation, this function does not require the destination memory to be aligned to the SIMD register's alignment.
-         * For short SIMD types (N <= 4), it uses <c>_mm_storeu_ps</c> to store 128-bit data.
-         * For long SIMD types (N > 4), it uses <c>_mm256_storeu_ps</c> to store 256-bit data.
-         *
-         * @param dest Pointer to the destination memory where the SIMD register contents will be stored. The memory does not need to be aligned.
-         * @param src The SIMD register whose contents will be stored to memory.
-         * @note The function does not perform bounds checks; the caller is responsible for ensuring the destination pointer is valid.
-         */
+        /// <summary>
+        /// Stores a SIMD register value to an unaligned memory location.
+        /// </summary>
+        /// <param name="dest">Pointer to the destination memory location where the SIMD data will be stored. Does not need to be aligned.</param>
+        /// <param name="src">The SIMD register value to store.</param>
         static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -4166,14 +4447,6 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
-
-
-
-
-
-
-
         /// <summary>
         /// Computes the bitwise AND of packed single-precision (32-bit) floating-point elements
         /// in <c>lhs</c> and <c>rhs</c>, returning the results.
@@ -4274,9 +4547,6 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
-
-
         /// <summary>
         /// Adds two float32 SIMD vectors element-wise.
         /// </summary>
@@ -4336,31 +4606,18 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-        /**
-         * @brief Computes the horizontal sum of the elements in a SIMD vector.
-         *
-         * This function returns a SIMD vector where all elements are set to the sum of the input vector's elements.
-         * For short SIMD types (N <= 4), the implementation uses permutations and additions to sum the elements.
-         * For long SIMD types (N > 4), the function splits the input into low and high 128-bit lanes, adds them,
-         * then further reduces to a single sum and broadcasts the result to all elements.
-         *
-         * @param v The SIMD vector whose elements will be summed horizontally.
-         * @return SIMDType A SIMD vector with all elements set to the horizontal sum of the input.
-         *
-         * @note
-         * - For N == 1, returns the input vector unchanged.
-         * - For N == 2, uses permutations to sum the two elements.
-         * - For N == 3, uses multiple permutations and additions to sum three elements.
-         * - For N == 4, uses a combination of permutations and additions to sum all four elements.
-         * - For N > 4, splits the vector into two 128-bit lanes, adds them, then reduces to a single sum and broadcasts.
-         */
+        /// <summary>
+        /// Computes the horizontal sum of the lower N SIMD vector elements and broadcasts the result across all lanes.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose elements will be summed.</param>
+        /// <returns>A SIMD vector with the sum of all input elements broadcast to every lane.</returns>
         static SIMDType HSum( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
                 if constexpr ( N == 1 )
                 {
-                    return v;
+                    return _mm_broadcastss_ps( v );
                 }
                 else if constexpr ( N == 2 )
                 {
@@ -4538,29 +4795,12 @@ namespace Harlinn::Math::SIMD
         }
 
 
-        /**
-         * @brief Multiplies two quaternions using SIMD operations.
-         *
-         * This function computes the product of two quaternions, q1 and q2, using SIMD intrinsics.
-         * It assumes both input vectors represent quaternions with four components (Size == 4).
-         *
-         * The multiplication is performed using a combination of swizzling, element-wise multiplication,
-         * and fused multiply-add operations, following the quaternion multiplication rules.
-         *
-         * @param q1 The first quaternion (SIMDType with 4 elements).
-         * @param q2 The second quaternion (SIMDType with 4 elements).
-         * @return SIMDType The resulting quaternion product.
-         *
-         * @note
-         * - The function requires that Size == 4.
-         * - The implementation uses control vectors to handle sign changes and component selection.
-         * - The result is computed as:
-         *   result = q1 * q2.w
-         *          + controlWZYX * (q1Swizzle * q2.x)
-         *          + controlZWXY * (q1Swizzle * q2.y)
-         *          + controlYXWZ * (q1Swizzle * q2.z)
-         *   where q1Swizzle is permuted as needed for each step.
-         */
+        /// <summary>
+        /// Multiplies two quaternions using SIMD operations.
+        /// </summary>
+        /// <param name="q1">The first quaternion to multiply.</param>
+        /// <param name="q2">The second quaternion to multiply.</param>
+        /// <returns>The resulting quaternion from the multiplication of q1 and q2.</returns>
         inline static SIMDType QuaternionMultiply( SIMDType q1, SIMDType q2 ) noexcept
             requires ( Size == 4 )
         {
@@ -4622,7 +4862,7 @@ namespace Harlinn::Math::SIMD
             {
                 if constexpr ( N == 1 )
                 {
-                    return v;
+                    return _mm_broadcastss_ps( v );
                 }
                 else if constexpr ( N == 2 )
                 {
@@ -4795,55 +5035,15 @@ namespace Harlinn::Math::SIMD
         }
 
         
-        /**
-         * <summary>
-         * Permute elements of a 128-bit float vector (<c>__m128</c>) using runtime selection indices.
-         * </summary>
-         *
-         * <remarks>
-         * This overload of <c>Swizzle</c> is only available for the "short" SIMD type (128-bit)
-         * and is constrained by <c>requires(UseShortSIMDType)</c>. It constructs a 128-bit integer
-         * control vector from the provided selection indices and uses the <c>_mm_permutevar_ps</c>
-         * intrinsic to permute the packed single-precision floating-point elements of <paramref name="v"/>.
-         *
-         * The selection indices are ordered as (selection4, selection3, selection2, selection1)
-         * corresponding to the resulting element slots from highest to lowest (element 3 .. element 0).
-         * Each selection value must be in the range [0,3] and selects which source element is placed
-         * in the corresponding destination slot. For example, passing (3,2,1,0) yields the identity
-         * permutation; passing (0,0,0,0) broadcasts the lowest element to all lanes.
-         *
-         * The control vector is created from a temporary std::array<UInt32,4> with the layout
-         * { selection1, selection2, selection3, selection4 } before being loaded into an
-         * <c>__m128i</c> and passed to <c>_mm_permutevar_ps</c>. The array is aligned to
-         * <c>AlignAs</c> to satisfy the aligned load intrinsic.
-         *
-         * <para>
-         * Notes:
-         * - The intrinsic <c>_mm_permutevar_ps</c> requires the control vector to be a 128-bit
-         *   integer lane; this implementation builds that control vector at runtime.
-         * - Validity of the selection indices (0..3) is the caller's responsibility; values
-         *   outside this range produce implementation-defined results.
-         * - This function is noexcept and expects the <c>UseShortSIMDType</c> specialization.
-         * - Ensure the target CPU and compiler support the used intrinsics.
-         * </para>
-         *
-         * <example>
-         * // Example: broadcast element 0 into all lanes
-         * auto r = Swizzle( v, 0, 0, 0, 0 );
-         *
-         * // Example: reverse elements (3,2,1,0)
-         * auto r2 = Swizzle( v, 3, 2, 1, 0 );
-         * </example>
-         *
-         * <param name="v">Input SIMD register containing four single-precision floats.</param>
-         * <param name="selection4">Index (0..3) selecting the source element for result lane 3 (highest).</param>
-         * <param name="selection3">Index (0..3) selecting the source element for result lane 2.</param>
-         * <param name="selection2">Index (0..3) selecting the source element for result lane 1.</param>
-         * <param name="selection1">Index (0..3) selecting the source element for result lane 0 (lowest).</param>
-         * <returns>
-         * A <c>SIMDType</c> (<c>__m128</c>) with elements permuted according to the provided indices.
-         * </returns>
-         */
+        /// <summary>
+        /// Rearranges the elements of a SIMD vector based on the specified selection indices.
+        /// </summary>
+        /// <param name="v">The SIMD vector to swizzle.</param>
+        /// <param name="selection4">The index selecting which element to place in the fourth position (0-3).</param>
+        /// <param name="selection3">The index selecting which element to place in the third position (0-3).</param>
+        /// <param name="selection2">The index selecting which element to place in the second position (0-3).</param>
+        /// <param name="selection1">The index selecting which element to place in the first position (0-3).</param>
+        /// <returns>A new SIMD vector with elements rearranged according to the selection indices.</returns>
         static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept
             requires( UseShortSIMDType )
         {
@@ -4900,17 +5100,15 @@ namespace Harlinn::Math::SIMD
         }
         
 
-        /**
-         * @brief Variadic template placeholder for SIMD shuffle operations.
-         *
-         * This function serves as a catch-all for unsupported or unimplemented shuffle overloads.
-         * Attempting to use this function will result in a static assertion failure.
-         *
-         * @tparam Args Variadic template arguments specifying shuffle parameters.
-         * @param args Shuffle arguments.
-         * @note This function is intentionally not implemented and will always trigger a static assertion.
-         */
-
+        /// <summary>
+        /// Variadic template placeholder for SIMD shuffle operations.
+        /// <para>
+        /// This function serves as a catch-all for unsupported or unimplemented shuffle overloads.
+        /// Attempting to use this function will result in a static assertion failure.
+        /// </para>
+        /// <typeparam name="...Args"></typeparam>
+        /// <param name="...args"></param>
+        /// <returns></returns>
         template<typename ... Args>
         static SIMDType Shuffle( Args&& ... args )
         {
@@ -5266,28 +5464,12 @@ namespace Harlinn::Math::SIMD
             return v1;
         }
 
-        /**
-         * <summary>
-         * Specialization of the compile-time Permute template that selects all elements from the
-         * second input SIMD vector.
-         * </summary>
-         *
-         * <remarks>
-         * When the compile-time permutation indices are &lt;4,5,6,7&gt; it means "select lanes 0..3
-         * from the second input operand" for a 4-lane view (or the corresponding upper lanes when
-         * working with a wider register). This specialization short-circuits the general permute
-         * implementation and returns the second input vector unchanged. The first input parameter
-         * is intentionally unused.
-         *
-         * This overload is constexpr and noexcept and is intended as a compile-time optimization:
-         * the identity permutation for the second operand can be returned directly without any
-         * shuffle or blend intrinsics.
-         * </remarks>
-         *
-         * <param name="v1">Unused first SIMD operand (ignored by this specialization).</param>
-         * <param name="v2">The second SIMD operand whose elements are returned unchanged.</param>
-         * <returns>Returns <paramref name="v2"/> unchanged.</returns>
-         */
+        /// <summary>
+        /// Permutes SIMD vector elements by selecting elements 4, 5, 6, 7, which returns the second vector unchanged.
+        /// </summary>
+        /// <param name="">The first SIMD vector (unused in this permutation).</param>
+        /// <param name="v2">The second SIMD vector to return.</param>
+        /// <returns>The second SIMD vector, as indices 4-7 correspond to all elements of v2.</returns>
         template<>
         static inline constexpr SIMDType Permute<4, 5, 6, 7>( SIMDType, SIMDType v2 ) noexcept
         {
@@ -5325,27 +5507,11 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Permutes the elements of two 128-bit SIMD registers according to the indices &lt;6,7,2,3&gt;.
-        ///
-        /// This specialization combines the high 64-bit lanes (upper halves) of the two input
-        /// 128-bit vectors using the SSE intrinsic <c>_mm_movehl_ps</c>. It produces a new
-        /// 128-bit vector composed from parts of both inputs by moving the high-order lanes
-        /// appropriately into the result.
-        ///
-        /// Parameters:
-        /// - v1: First input SIMD register.
-        /// - v2: Second input SIMD register.
-        ///
-        /// Returns:
-        /// A SIMDType value constructed by combining the high halves of the inputs using
-        /// a single intrinsic. The operation is constexpr-like in effect and is marked
-        /// noexcept because it uses a hardware intrinsic with no runtime failure modes.
-        ///
-        /// Remarks:
-        /// - This function maps directly to the SSE intrinsic <c>_mm_movehl_ps</c>, which
-        ///   moves the high-order 64 bits from the source registers to form the result.
-        /// - Do not change the implementation unless the corresponding permutation semantics
-        ///   are carefully validated on all target architectures.
+        /// Permutes elements from two SIMD vectors by selecting specific indexed elements to create a new vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector, source for elements at positions 0 and 1 of the result.</param>
+        /// <param name="v2">The second SIMD vector, source for elements at positions 2 and 3 of the result.</param>
+        /// <returns>A SIMD vector containing the high elements of v2 in the low positions and the high elements of v1 in the high positions.</returns>
         template<>
         static inline SIMDType Permute<6, 7, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
@@ -5353,24 +5519,11 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Permute specialization that builds a 4-element result by interleaving the lower two elements
-        /// from the first operand <c>v1</c> and the lower two elements from the second operand <c>v2</c>.
-        /// 
-        /// The resulting vector contains elements in the following order:
-        /// 
-        /// result[0] = v1[0] 
-        /// result[1] = v2[0] 
-        /// result[2] = v1[1] 
-        /// result[3] = v2[1]
-        /// 
-        /// This overload maps directly to the SSE intrinsic <c>_mm_unpacklo_ps</c>, which interleaves
-        /// the low-order 64 bits (two floats) of the sources to form the result.
+        /// Permutes elements from two SIMD vectors by interleaving the lower elements.
         /// </summary>
-        /// <param name="v1">The first input SIMD register (provides lanes 0 and 1).</param>
-        /// <param name="v2">The second input SIMD register (provides lanes 2 and 3).</param>
-        /// <returns>
-        /// A <c>SIMDType</c> containing the interleaved low halves of <c>v1</c> and <c>v2</c>.
-        /// </returns>
+        /// <param name="v1">The first SIMD vector providing elements at positions 0 and 1.</param>
+        /// <param name="v2">The second SIMD vector providing elements at positions 4 and 5.</param>
+        /// <returns>A SIMD vector containing the interleaved lower elements in the order [v1[0], v2[0], v1[1], v2[1]].</returns>
         template<>
         static inline SIMDType Permute<0, 4, 1, 5>( SIMDType v1, SIMDType v2 ) noexcept
         {
@@ -5475,58 +5628,56 @@ namespace Harlinn::Math::SIMD
             return _mm_blend_ps( v1, v2, 0x1 );
         }
 
-        /**
-         * Permute specialization: <0,5,2,3>
-         *
-         * Produces a 4-element float SIMD result constructed by selecting elements from
-         * the two input 4-element vectors `v1` and `v2` according to the compile-time
-         * indices <0,5,2,3>.
-         *
-         * Interpretation of indices:
-         * - An index in range [0..3] selects the corresponding lane from `v1`.
-         * - An index in range [4..7] selects lane (index - 4) from `v2`.
-         *
-         * For <0,5,2,3> the mapping (lowest..highest) is:
-         *   result[0] = v1[0]        // index 0 -> lane 0 of v1
-         *   result[1] = v2[1]        // index 5 -> lane (5-4)=1 of v2
-         *   result[2] = v1[2]        // index 2 -> lane 2 of v1
-         *   result[3] = v1[3]        // index 3 -> lane 3 of v1
-         *
-         * Implementation notes:
-         * - This specialization is implemented using the SSE intrinsic _mm_blend_ps
-         *   with immediate mask 0x2. The immediate mask's bit 1 selects the second
-         *   (Y) lane from the second operand `v2`, while other lanes are taken from `v1`.
-         * - The function is marked noexcept and is intended for the "short" SIMD
-         *   implementation that uses __m128 (i.e., the 128-bit path).
-         *
-         * Parameters:
-         * - v1: first source vector (provides lanes 0,2,3 in the result)
-         * - v2: second source vector (provides lane 1 in the result)
-         *
-         * Returns:
-         * - A SIMDType (__m128) where lanes are assembled as described above.
-         */
-
+        /// <summary>
+        /// Permutes elements from two SIMD vectors by selecting specific indices from each vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to permute from.</param>
+        /// <param name="v2">The second SIMD vector to permute from.</param>
+        /// <returns>A SIMD vector containing the permuted elements according to the specified indices.</returns>
         template<>
         static inline SIMDType Permute<0, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_blend_ps( v1, v2, 0x2 );
         }
+        /// <summary>
+        /// Permutes elements from two SIMD vectors by selecting specific indexed elements from each input vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector providing elements at indices 4 and 5.</param>
+        /// <param name="v2">The second SIMD vector providing elements at indices 2 and 3.</param>
+        /// <returns>A SIMD vector containing the permuted elements in the order specified by the template arguments <4, 5, 2, 3>.</returns>
         template<>
         static inline SIMDType Permute<4, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_blend_ps( v1, v2, 0x3 );
         }
+        /// <summary>
+        /// Permutes elements from two SIMD vectors by selecting specific indices from each vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to select elements from.</param>
+        /// <param name="v2">The second SIMD vector to select elements from.</param>
+        /// <returns>A SIMD vector containing the permuted elements: {v1[0], v1[1], v2[2], v1[3]}.</returns>
         template<>
         static inline SIMDType Permute<0, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_blend_ps( v1, v2, 0x4 );
         }
+        /// <summary>
+		/// Permutes elements from two SIMD vectors by selecting specific indices from each vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to select elements from.</param>
+        /// <param name="v2">The second SIMD vector to select elements from.</param>
+        /// <returns>A SIMD vector containing the permuted elements: {v1[0], v1[1], v2[2], v1[3]}.</returns>
         template<>
         static inline SIMDType Permute<4, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
             return _mm_blend_ps( v1, v2, 0x5 );
         }
+        /// <summary>
+        /// Permutes elements from two SIMD vectors by selecting elements at indices 0, 5, 6, and 3.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to permute from.</param>
+        /// <param name="v2">The second SIMD vector to permute from.</param>
+        /// <returns>A SIMD vector containing elements selected according to the permutation pattern: element 0 from v1, element 1 (5-4) from v2, element 2 (6-4) from v2, and element 3 from v1.</returns>
         template<>
         static inline SIMDType Permute<0, 5, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept
         {
@@ -5830,18 +5981,35 @@ namespace Harlinn::Math::SIMD
             return _mm_move_ss( v1, v2 );
         }
 
-
+        /// <summary>
+        /// Checks if each element in a SIMD vector is infinite (positive or negative infinity).
+        /// </summary>
+        /// <param name="v">The SIMD vector to check for infinity values.</param>
+        /// <returns>
+        /// A SIMD vector with elements set to indicate whether the corresponding element 
+        /// in the input is infinite. Uses all bits set (true) for infinite values 
+        /// and all bits clear (false) for finite values.</returns>
         static SIMDType IsInf( SIMDType v ) noexcept
         {
             auto tmp = And( v, Constants::AbsMask );
             return Equal( tmp, Constants::Infinity );
         }
 
+        /// <summary>
+        /// Checks if each element in a SIMD vector is negative infinity.
+        /// </summary>
+        /// <param name="v">The SIMD vector to test.</param>
+        /// <returns>A SIMD vector where each element is set to indicate whether the corresponding element in the input is negative infinity.</returns>
         static SIMDType IsNegativeInf( SIMDType v ) noexcept
         {
             return Equal( v, Fill( Constants::NegativeInfinityValue ) );
         }
 
+        /// <summary>
+        /// Checks if a SIMD value is negative infinity or NaN (Not a Number).
+        /// </summary>
+        /// <param name="v">The SIMD value to check.</param>
+        /// <returns>A SIMD value with elements set to indicate whether the corresponding element in the input is negative infinity or NaN.</returns>
         static SIMDType IsNegativeInfOrNaN( SIMDType v ) noexcept
         {
             auto isNegativeInf = IsNegativeInf( v );
@@ -5849,11 +6017,21 @@ namespace Harlinn::Math::SIMD
             return Or( isNegativeInf, isNaN );
         }
 
+        /// <summary>
+        /// Checks if each element in a SIMD vector is positive infinity.
+        /// </summary>
+        /// <param name="v">The SIMD vector to test for positive infinity values.</param>
+        /// <returns>A SIMD vector with each element set to indicate whether the corresponding element in the input is positive infinity.</returns>
         static SIMDType IsPositiveInf( SIMDType v ) noexcept
         {
             return Equal( v, Fill( Constants::InfinityValue ) );
         }
 
+        /// <summary>
+        /// Determines whether each element in a SIMD vector is positive infinity or NaN (Not a Number).
+        /// </summary>
+        /// <param name="v">The SIMD vector to test.</param>
+        /// <returns>A SIMD vector where each element is set to indicate whether the corresponding element in the input is positive infinity or NaN.</returns>
         static SIMDType IsPositiveInfOrNaN( SIMDType v ) noexcept
         {
             auto isPositiveInf = IsPositiveInf( v );
@@ -5861,12 +6039,21 @@ namespace Harlinn::Math::SIMD
             return Or( isPositiveInf, isNaN );
         }
 
+        /// <summary>
+        /// Checks if all components of a SIMD vector are zero.
+        /// </summary>
+        /// <param name="v">The SIMD vector to test.</param>
+        /// <returns>A SIMD vector containing the result of the zero comparison for each component.</returns>
         static SIMDType IsZero( SIMDType v ) noexcept
         {
             return Equal( v, _mm_setzero_ps( ) );
         }
 
-
+        /// <summary>
+        /// Checks if a SIMD vector contains NaN (Not-a-Number) values.
+        /// </summary>
+        /// <param name="v">The SIMD vector to check for NaN values.</param>
+        /// <returns>A SIMD vector where each element is the result of the NaN check for the corresponding element in the input vector. Elements that are NaN will have a truthy value, while non-NaN elements will have a falsy value.</returns>
         static SIMDType IsNaN( SIMDType v ) noexcept
         {
             return NotEqual( v, v );
@@ -5890,41 +6077,83 @@ namespace Harlinn::Math::SIMD
             return AnyTrue( tmp );
         }
 
+        /// <summary>
+        /// Computes the absolute value of a SIMD vector using a fast bitwise operation.
+        /// </summary>
+        /// <param name="v">The SIMD vector for which to compute the absolute value.</param>
+        /// <returns>A SIMD vector containing the absolute values of the input vector's elements.</returns>
         static SIMDType FastAbs( SIMDType v ) noexcept
         {
             return And( v, Fill( Constants::AbsMaskValue ) );
         }
 
-
+        /// <summary>
+        /// Computes the absolute value of a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector for which to compute the absolute value.</param>
+        /// <returns>A SIMD vector containing the absolute values of the elements in the input vector.</returns>
         static SIMDType Abs( SIMDType v ) noexcept
         {
             return Max( Sub( Zero( ), v ), v );
         }
 
+        /// <summary>
+        /// Computes the absolute value of the X component while preserving the Y, Z, and W components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose X component will have its absolute value computed.</param>
+        /// <returns>A SIMD vector with the absolute value of the X component and unchanged Y, Z, and W components.</returns>
         static SIMDType AbsX( SIMDType v ) noexcept
         {
             return Select( Abs( v ), v, Constants::Select1222 );
         }
+
+        /// <summary>
+        /// Computes the absolute value of the Y component while preserving other components of a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose Y component will have its absolute value computed.</param>
+        /// <returns>A SIMD vector with the absolute value applied to the Y component and other components unchanged.</returns>
         static SIMDType AbsY( SIMDType v ) noexcept
         {
             return Select( Abs( v ), v, Constants::Select2122 );
         }
+
+        /// <summary>
+        /// Computes the absolute value of the Z component while preserving other components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose Z component will have its absolute value computed.</param>
+        /// <returns>A SIMD vector with the absolute value applied to the Z component and other components unchanged.</returns>
         static SIMDType AbsZ( SIMDType v ) noexcept
         {
             return Select( Abs( v ), v, Constants::Select2212 );
         }
+
+        /// <summary>
+        /// Computes the absolute value of the W component while preserving other components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose W component will have its absolute value computed.</param>
+        /// <returns>A SIMD vector with the absolute value applied to the W component and other components unchanged.</returns>
         static SIMDType AbsW( SIMDType v ) noexcept
         {
             return Select( Abs( v ), v, Constants::Select2221 );
         }
 
+        /// <summary>
+        /// Computes the absolute value of the X and Y components of a SIMD vector, leaving Z and W unchanged.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose X and Y components will have their absolute values computed.</param>
+        /// <returns>A SIMD vector with the absolute values of the X and Y components from the input vector, and the original Z and W components.</returns>
         static SIMDType AbsXY( SIMDType v ) noexcept
         {
             return Select( Abs( v ), v, Constants::Select1122 );
         }
 
 
-
+        /// <summary>
+        /// Computes the element-wise minimum of two SIMD vectors.
+        /// </summary>
+        /// <param name="lhs">The first SIMD vector to compare.</param>
+        /// <param name="rhs">The second SIMD vector to compare.</param>
+        /// <returns>A SIMD vector containing the minimum values from each corresponding element pair.</returns>
         static SIMDType Min( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -5937,6 +6166,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the element-wise maximum of two SIMD vectors.
+        /// </summary>
+        /// <param name="lhs">The first SIMD vector to compare.</param>
+        /// <param name="rhs">The second SIMD vector to compare.</param>
+        /// <returns>A SIMD vector containing the maximum values from each corresponding element pair.</returns>
         static SIMDType Max( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -5949,6 +6184,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the minimum value across all elements in a SIMD vector (horizontal minimum reduction).
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the values to reduce.</param>
+        /// <returns>The minimum value found across all elements in the vector.</returns>
         static Type HorizontalMin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6001,6 +6241,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the maximum value across all elements in a SIMD vector by performing horizontal max operations.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the values to find the maximum from.</param>
+        /// <returns>The maximum value found across all elements in the SIMD vector.</returns>
         static Type HorizontalMax( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6054,7 +6299,11 @@ namespace Harlinn::Math::SIMD
         }
 
 
-
+        /// <summary>
+        /// Rounds each element of a SIMD vector to the nearest integer value.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing floating-point values to round.</param>
+        /// <returns>A SIMD vector with each element rounded to the nearest integer value.</returns>
         static SIMDType Round( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6067,6 +6316,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Truncates the floating-point values in a SIMD vector toward zero, removing the fractional part.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing floating-point values to truncate.</param>
+        /// <returns>A SIMD vector containing the truncated floating-point values.</returns>
         static SIMDType Truncate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6079,6 +6333,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the floor of each element in a SIMD vector, rounding toward negative infinity.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the values to floor.</param>
+        /// <returns>A SIMD vector with each element rounded down to the nearest integer value.</returns>
         static SIMDType Floor( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6091,6 +6350,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the ceiling of each element in a SIMD vector, rounding each value up to the nearest integer.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the values to round up.</param>
+        /// <returns>A SIMD vector with each element rounded up to the nearest integer.</returns>
         static SIMDType Ceil( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6103,6 +6367,13 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Clamps SIMD vector values to be within specified lower and upper bounds.
+        /// </summary>
+        /// <param name="v">The SIMD vector to clamp.</param>
+        /// <param name="lowerBounds">The SIMD vector containing the minimum allowed values.</param>
+        /// <param name="upperBounds">The SIMD vector containing the maximum allowed values.</param>
+        /// <returns>A SIMD vector with each element clamped between the corresponding elements in lowerBounds and upperBounds.</returns>
         static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6115,6 +6386,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if a value is within the symmetric bounds defined by another value.
+        /// </summary>
+        /// <param name="v">The value to check against the bounds.</param>
+        /// <param name="bounds">The positive bound value. The actual bounds are [-bounds, bounds].</param>
+        /// <returns>A SIMD vector where each element is set to indicate whether the corresponding element in 'v' is within the range [-bounds, bounds].</returns>
         static SIMDType InBounds( SIMDType v, SIMDType bounds ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6137,7 +6414,13 @@ namespace Harlinn::Math::SIMD
 
 
 
-
+        /// <summary>
+        /// Performs linear interpolation between two SIMD vectors.
+        /// </summary>
+        /// <param name="v1">The starting SIMD vector.</param>
+        /// <param name="v2">The ending SIMD vector.</param>
+        /// <param name="t">The interpolation factor, typically in the range [0, 1].</param>
+        /// <returns>A SIMD vector containing the result of the linear interpolation: v1 * (1 - t) + v2 * t.</returns>
         static SIMDType Lerp( SIMDType v1, SIMDType v2, Type t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6150,6 +6433,13 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Performs linear interpolation between two SIMD vectors.
+        /// </summary>
+        /// <param name="v1">The starting SIMD vector value.</param>
+        /// <param name="v2">The ending SIMD vector value.</param>
+        /// <param name="t">The interpolation factor SIMD vector, typically in the range [0, 1].</param>
+        /// <returns>A SIMD vector containing the interpolated values computed as v1 * (1 - t) + v2 * t.</returns>
         static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6161,7 +6451,13 @@ namespace Harlinn::Math::SIMD
                 return _mm256_fmadd_ps( t, v2, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
             }
         }
-
+        /// <summary>
+        /// Performs linear interpolation between two SIMD vectors using fused multiply-add operations.
+        /// </summary>
+        /// <param name="v1">The starting SIMD vector value.</param>
+        /// <param name="v2">The ending SIMD vector value.</param>
+        /// <param name="t">The interpolation factor, typically in the range [0, 1].</param>
+        /// <returns>A SIMD vector containing the interpolated values, computed as (1-t)*v1 + t*v2.</returns>
         static SIMDType Lerp2( SIMDType v1, SIMDType v2, Type t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6174,6 +6470,13 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Performs linear interpolation between two SIMD vectors using the formula: (1-t)*v1 + t*v2.
+        /// </summary>
+        /// <param name="v1">The start vector (result when t=0).</param>
+        /// <param name="v2">The end vector (result when t=1).</param>
+        /// <param name="t">The interpolation factor, typically in the range [0, 1].</param>
+        /// <returns>The interpolated SIMD vector.</returns>
         static SIMDType Lerp2( SIMDType v1, SIMDType v2, SIMDType t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6186,7 +6489,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /// <summary>
+        /// Clamps all components of a SIMD vector to the range [0.0, 1.0].
+        /// </summary>
+        /// <param name="v">The SIMD vector to saturate.</param>
+        /// <returns>A SIMD vector with all components clamped between 0.0 and 1.0.</returns>
         static SIMDType Saturate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6199,6 +6506,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Negates all elements of a SIMD vector by subtracting them from zero.
+        /// </summary>
+        /// <param name="v">The SIMD vector to negate.</param>
+        /// <returns>A SIMD vector containing the negated values of the input vector.</returns>
         static SIMDType Negate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6211,29 +6523,62 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Negates only the X component of a SIMD vector while preserving other components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose X component will be negated.</param>
+        /// <returns>A SIMD vector with the X component negated and all other components unchanged.</returns>
         static SIMDType NegateX( SIMDType v ) noexcept
         {
             return Select( Negate( v ), v, Constants::Select1222 );
         }
+
+        /// <summary>
+        /// Negates only the Y component of a SIMD vector while preserving other components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose Y component will be negated.</param>
+        /// <returns>A SIMD vector with the Y component negated and all other components unchanged.</returns>
         static SIMDType NegateY( SIMDType v ) noexcept
         {
             return Select( Negate( v ), v, Constants::Select2122 );
         }
+
+        /// <summary>
+        /// Negates the Z component of a SIMD vector while preserving other components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose Z component will be negated.</param>
+        /// <returns>A SIMD vector with the Z component negated and all other components unchanged.</returns>
         static SIMDType NegateZ( SIMDType v ) noexcept
         {
             return Select( Negate( v ), v, Constants::Select2212 );
         }
+
+        /// <summary>
+        /// Negates only the W component of a SIMD vector while preserving the X, Y, and Z components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose W component will be negated.</param>
+        /// <returns>A SIMD vector with the W component negated and X, Y, Z components unchanged.</returns>
         static SIMDType NegateW( SIMDType v ) noexcept
         {
             return Select( Negate( v ), v, Constants::Select2221 );
         }
 
+        /// <summary>
+        /// Negates the X and Y components of a SIMD vector while preserving the Z and W components.
+        /// </summary>
+        /// <param name="v">The SIMD vector whose X and Y components will be negated.</param>
+        /// <returns>A SIMD vector with negated X and Y components and unchanged Z and W components.</returns>
         static SIMDType NegateXY( SIMDType v ) noexcept
         {
             return Select( Negate( v ), v, Constants::Select1122 );
         }
 
 
+        /// <summary>
+        /// Reduces angles to the range [-π, π] by wrapping them modulo 2π.
+        /// </summary>
+        /// <param name="v">A SIMD vector containing angle values (in radians) to be normalized.</param>
+        /// <returns>A SIMD vector with the input angles reduced to the principal range by subtracting multiples of 2π.</returns>
         static SIMDType ModAngles( SIMDType v ) noexcept
         {
             constexpr Type Inv2PiValue = static_cast< Type >( 0.15915494309189533577 );
@@ -6245,7 +6590,12 @@ namespace Harlinn::Math::SIMD
             return FNMAdd( result, PiTimes2, v );
         }
 
-
+        /// <summary>
+        /// Computes the sine and cosine of a SIMD vector of angles simultaneously using polynomial approximation.
+        /// </summary>
+        /// <param name="v">A SIMD vector containing the input angles in radians.</param>
+        /// <param name="cosines">Pointer to a SIMD vector that will receive the computed cosine values.</param>
+        /// <returns>A SIMD vector containing the computed sine values corresponding to the input angles.</returns>
         static SIMDType FastSinCos( SIMDType v, SIMDType* cosines ) noexcept
         {
             auto x = ModAngles( v );
@@ -6303,6 +6653,11 @@ namespace Harlinn::Math::SIMD
 
         }
 
+        /// <summary>
+        /// Computes the sine of an angle using a fast SIMD approximation with polynomial evaluation.
+        /// </summary>
+        /// <param name="v">The input angle(s) in radians to compute the sine of.</param>
+        /// <returns>The sine of the input angle(s), computed using a polynomial approximation.</returns>
         static SIMDType FastSin( SIMDType v ) noexcept
         {
             auto x = ModAngles( v );
@@ -6328,6 +6683,11 @@ namespace Harlinn::Math::SIMD
 
         }
 
+        /// <summary>
+        /// Computes the cosine of each component in a SIMD vector using a fast polynomial approximation.
+        /// </summary>
+        /// <param name="v">The input SIMD vector containing angle values in radians.</param>
+        /// <returns>A SIMD vector containing the cosine of each input angle component.</returns>
         static SIMDType FastCos( SIMDType v ) noexcept
         {
             auto x = ModAngles( v );
@@ -6358,7 +6718,11 @@ namespace Harlinn::Math::SIMD
             return Mul( result, sign );
         }
 
-
+        /// <summary>
+        /// Computes an approximation of the tangent function for SIMD vector values using a polynomial approximation.
+        /// </summary>
+        /// <param name="v">The input SIMD vector containing angle values in radians for which to compute the tangent.</param>
+        /// <returns>A SIMD vector containing the approximated tangent values corresponding to the input angles.</returns>
         static SIMDType FastTan( SIMDType v ) noexcept
         {
             constexpr SIMDType Mask = { { 0x1, 0x1, 0x1, 0x1 } };
@@ -6401,6 +6765,11 @@ namespace Harlinn::Math::SIMD
             return Select( result, Constants::Zero, isZero );
         }
 
+        /// <summary>
+        /// Computes the arctangent (inverse tangent) of a SIMD vector using a fast polynomial approximation.
+        /// </summary>
+        /// <param name="v">The input SIMD vector containing values for which to compute the arctangent.</param>
+        /// <returns>A SIMD vector containing the arctangent of the input values in radians.</returns>
         static SIMDType FastATan( SIMDType v ) noexcept
         {
             auto absV = Abs( v );
@@ -6456,6 +6825,12 @@ namespace Harlinn::Math::SIMD
             return Or( select0, select1 );
         }
 
+        /// <summary>
+        /// Computes the fast approximate arctangent of x/y (atan2) using SIMD operations.
+        /// </summary>
+        /// <param name="x">The x-coordinate (numerator) SIMD vector.</param>
+        /// <param name="y">The y-coordinate (denominator) SIMD vector.</param>
+        /// <returns>A SIMD vector containing the angle in radians between the positive x-axis and the point (y, x), handling special cases for zero and infinity values.</returns>
         static SIMDType FastATan2( SIMDType x, SIMDType y ) noexcept
         {
             auto xEqualsZero = Equal( x, Constants::Zero );
@@ -6491,7 +6866,11 @@ namespace Harlinn::Math::SIMD
         }
 
 
-
+        /// <summary>
+        /// Computes the sine of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing input values in radians.</param>
+        /// <returns>A SIMD vector containing the sine of each corresponding element in the input vector.</returns>
         static SIMDType Sin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6504,6 +6883,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the cosine of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing input values in radians.</param>
+        /// <returns>A SIMD vector containing the cosine of each corresponding element in the input vector.</returns>
         static SIMDType Cos( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6516,6 +6900,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the sine and cosine of each element in a SIMD vector simultaneously.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input angles in radians.</param>
+        /// <param name="cosines">Pointer to a SIMD vector where the cosine values will be stored.</param>
+        /// <returns>A SIMD vector containing the sine values corresponding to the input angles.</returns>
         static SIMDType SinCos( SIMDType v, SIMDType* cosines ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6528,7 +6918,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /// <summary>
+        /// Computes the tangent of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing input values in radians.</param>
+        /// <returns>A SIMD vector containing the tangent of each corresponding element in the input vector.</returns>
         static SIMDType Tan( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6541,6 +6935,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the arcsine (inverse sine) of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values for which to compute the arcsine.</param>
+        /// <returns>A SIMD vector containing the arcsine of each element in the input vector.</returns>
         static SIMDType ASin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6553,6 +6952,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the arccosine (inverse cosine) of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing input values for which to compute the arccosine.</param>
+        /// <returns>A SIMD vector containing the arccosine of each element in the input vector, with results in radians.</returns>
         static SIMDType ACos( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6565,6 +6969,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the arctangent (inverse tangent) of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the values for which to compute the arctangent.</param>
+        /// <returns>A SIMD vector containing the arctangent of each corresponding element in the input vector.</returns>
         static SIMDType ATan( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6577,6 +6986,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the four-quadrant arctangent of y/x for SIMD vectors.
+        /// </summary>
+        /// <param name="x">A SIMD vector containing the x-coordinates.</param>
+        /// <param name="y">A SIMD vector containing the y-coordinates.</param>
+        /// <returns>A SIMD vector containing the arctangent of y/x in radians, with values in the range [-π, π].</returns>
         static SIMDType ATan2( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6589,6 +7004,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the hyperbolic sine of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the hyperbolic sine of each corresponding element in the input vector.</returns>
         static SIMDType SinH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6601,6 +7021,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the hyperbolic cosine of a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing values for which to compute the hyperbolic cosine.</param>
+        /// <returns>A SIMD vector containing the hyperbolic cosine of each element in the input vector.</returns>
         static SIMDType CosH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6613,6 +7038,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the hyperbolic tangent of a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the hyperbolic tangent of each element in the input vector.</returns>
         static SIMDType TanH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6625,6 +7055,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the inverse hyperbolic sine (asinh) of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the inverse hyperbolic sine of each corresponding element in the input vector.</returns>
         static SIMDType ASinH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6637,6 +7072,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the inverse hyperbolic cosine (arcosh) of SIMD vector elements.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the inverse hyperbolic cosine of each element in the input vector.</returns>
         static SIMDType ACosH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6649,6 +7089,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the hyperbolic arctangent of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the hyperbolic arctangent of each element from the input vector.</returns>
         static SIMDType ATanH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6661,6 +7106,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the natural logarithm of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the natural logarithm of each corresponding element in the input vector.</returns>
         static SIMDType Log( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6673,6 +7123,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the natural logarithm of 1 plus the input value (log(1 + v)) for each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the natural logarithm of 1 plus each input element.</returns>
         static SIMDType Log1P( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6685,6 +7140,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the base-10 logarithm of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the base-10 logarithm of each element from the input vector.</returns>
         static SIMDType Log10( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6697,6 +7157,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the base-2 logarithm of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the values for which to compute the logarithm.</param>
+        /// <returns>A SIMD vector containing the base-2 logarithm of each element in the input vector.</returns>
         static SIMDType Log2( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6709,6 +7174,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the exponential function (e raised to the power of each element) for a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the exponent values.</param>
+        /// <returns>A SIMD vector where each element is e raised to the power of the corresponding element in the input vector.</returns>
         static SIMDType Exp( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6721,6 +7191,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the base-10 exponential (10^x) of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the exponent values.</param>
+        /// <returns>A SIMD vector where each element is 10 raised to the power of the corresponding element in the input vector.</returns>
         static SIMDType Exp10( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6733,6 +7208,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the base-2 exponential (2^x) of each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the exponent values.</param>
+        /// <returns>A SIMD vector containing the base-2 exponential of each corresponding element in the input vector.</returns>
         static SIMDType Exp2( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6745,6 +7225,11 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the exponential minus one (e^x - 1) for each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing the input values.</param>
+        /// <returns>A SIMD vector containing the result of e^x - 1 for each corresponding element in the input vector.</returns>
         static SIMDType ExpM1( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6757,6 +7242,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the power of base raised to the exponent for SIMD vector elements.
+        /// </summary>
+        /// <param name="base">The base values as a SIMD vector.</param>
+        /// <param name="exponent">The exponent values as a SIMD vector.</param>
+        /// <returns>A SIMD vector containing the result of raising each base element to its corresponding exponent element.</returns>
         static SIMDType Pow( SIMDType base, SIMDType exponent ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6769,6 +7260,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the floating-point remainder of x divided by y for SIMD vectors.
+        /// </summary>
+        /// <param name="x">The dividend SIMD vector.</param>
+        /// <param name="y">The divisor SIMD vector.</param>
+        /// <returns>A SIMD vector containing the floating-point remainder of x/y for each element.</returns>
         static SIMDType FMod( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6781,6 +7278,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Computes the Euclidean distance (hypotenuse) from the origin for pairs of x and y coordinates using SIMD operations.
+        /// </summary>
+        /// <param name="x">A SIMD vector containing x-coordinates.</param>
+        /// <param name="y">A SIMD vector containing y-coordinates.</param>
+        /// <returns>A SIMD vector containing the hypotenuse values (sqrt(x² + y²)) for each pair of coordinates.</returns>
         static SIMDType Hypot( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -6927,12 +7430,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if all elements in the first SIMD vector are less than the corresponding elements in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if all elements in v1 are less than the corresponding elements in v2; otherwise, false.</returns>
         static bool AllLess( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Less( v1, v2 );
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Determines if any element in the first SIMD vector is less than the corresponding element in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if any element in v1 is less than the corresponding element in v2; otherwise, false.</returns>
         static bool AnyLess( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Less( v1, v2 );
@@ -6968,12 +7483,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Determines whether all corresponding elements in the first SIMD vector are less than or equal to those in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if all elements in v1 are less than or equal to the corresponding elements in v2; otherwise, false.</returns>
         static bool AllLessOrEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = LessOrEqual( v1, v2 );
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Determines whether any element in the first SIMD vector is less than or equal to the corresponding element in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if any element in v1 is less than or equal to the corresponding element in v2; otherwise, false.</returns>
         static bool AnyLessOrEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = LessOrEqual( v1, v2 );
@@ -7027,6 +7554,13 @@ namespace Harlinn::Math::SIMD
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Determines whether all corresponding elements of two SIMD vectors are equal within a specified tolerance.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <param name="epsilon">The maximum allowed absolute difference between corresponding elements for them to be considered equal.</param>
+        /// <returns>True if all corresponding elements differ by at most epsilon; otherwise, false.</returns>
         static bool AllEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
             auto v = Abs( Sub( v1, v2 ) );
@@ -7034,6 +7568,13 @@ namespace Harlinn::Math::SIMD
             return AllTrue( rmm1 );
         }
 
+        /// <summary>
+        /// Checks if any corresponding elements of two SIMD vectors are equal within a specified epsilon tolerance.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <param name="epsilon">The tolerance value for comparing floating-point equality.</param>
+        /// <returns>True if any pair of corresponding elements are equal within epsilon; false otherwise.</returns>
         static bool AnyEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
             auto v = Abs( Sub( v1, v2 ) );
@@ -7041,6 +7582,12 @@ namespace Harlinn::Math::SIMD
             return AnyTrue( rmm1 );
         }
 
+        /// <summary>
+        /// Determines whether any corresponding elements in two SIMD vectors are equal.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if any corresponding pair of elements are equal; otherwise, false.</returns>
         static bool AnyEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Equal( v1, v2 );
@@ -7074,12 +7621,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if all corresponding elements in two SIMD vectors are not equal.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if all corresponding elements are not equal, false otherwise.</returns>
         static bool AllNotEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = NotEqual( v1, v2 );
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Determines if any elements are not equal between two SIMD vectors.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if any corresponding elements in the two vectors are not equal; otherwise, false.</returns>
         static bool AnyNotEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = NotEqual( v1, v2 );
@@ -7111,12 +7670,26 @@ namespace Harlinn::Math::SIMD
             return LessOrEqual( temp, epsilon );
         }
 
+        /// <summary>
+        /// Determines whether all corresponding components of two SIMD vectors are approximately equal within a specified tolerance.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <param name="epsilon">The tolerance value used for the approximate equality comparison.</param>
+        /// <returns>True if all corresponding components of the two vectors are within epsilon of each other; otherwise, false.</returns>
         static bool AllNearEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
             auto result = NearEqual( v1, v2, epsilon );
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Determines whether any corresponding elements of two SIMD vectors are approximately equal within a specified tolerance.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <param name="epsilon">The SIMD vector containing tolerance values for the comparison.</param>
+        /// <returns>True if any pair of corresponding elements are approximately equal within the epsilon tolerance; otherwise, false.</returns>
         static bool AnyNearEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
             auto result = NearEqual( v1, v2, epsilon );
@@ -7151,12 +7724,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Determines whether all components of the first SIMD vector are greater than or equal to the corresponding components of the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if all components of v1 are greater than or equal to the corresponding components of v2; otherwise, false.</returns>
         static bool AllGreaterOrEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = GreaterOrEqual( v1, v2 );
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Determines if any element in the first SIMD vector is greater than or equal to the corresponding element in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if any element in v1 is greater than or equal to the corresponding element in v2; otherwise, false.</returns>
         static bool AnyGreaterOrEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = GreaterOrEqual( v1, v2 );
@@ -7191,12 +7776,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Determines whether all elements in the first SIMD vector are greater than the corresponding elements in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if all elements in v1 are greater than the corresponding elements in v2; otherwise, false.</returns>
         static bool AllGreater( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Greater( v1, v2 );
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Checks if any element in the first SIMD vector is greater than the corresponding element in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if at least one element in v1 is greater than the corresponding element in v2; otherwise, false.</returns>
         static bool AnyGreater( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Greater( v1, v2 );
@@ -7227,12 +7824,24 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if all corresponding elements in two SIMD vectors have the same value.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if all corresponding elements are equal, false otherwise.</returns>
         static bool AllSameValue( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
             return AllTrue( result );
         }
 
+        /// <summary>
+        /// Checks if any corresponding elements in two SIMD vectors have the same value.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if at least one pair of corresponding elements are equal; otherwise, false.</returns>
         static bool AnySameValue( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
@@ -7261,6 +7870,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if all elements in a SIMD vector have the same value when compared to a corresponding SIMD integer vector.
+        /// </summary>
+        /// <param name="v1">The SIMD vector containing values to compare.</param>
+        /// <param name="v2">The SIMD integer vector containing values to compare against.</param>
+        /// <returns>True if all element-wise comparisons indicate the same value; otherwise, false.</returns>
         static bool AllSameValue( SIMDType v1, SIMDIntegerType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
@@ -7274,6 +7889,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if any element in the first SIMD vector has the same value as the corresponding element in the second SIMD vector.
+        /// </summary>
+        /// <param name="v1">The first SIMD vector to compare.</param>
+        /// <param name="v2">The second SIMD integer vector to compare.</param>
+        /// <returns>True if at least one pair of corresponding elements have the same value; otherwise, false.</returns>
         static bool AnySameValue( SIMDType v1, SIMDIntegerType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
@@ -7310,6 +7931,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if all elements in two SIMD vectors have the same value at corresponding positions.
+        /// </summary>
+        /// <param name="v1">The first SIMD integer vector to compare.</param>
+        /// <param name="v2">The second SIMD vector to compare.</param>
+        /// <returns>True if all corresponding elements in both vectors have the same value; otherwise, false.</returns>
         static bool AllSameValue( SIMDIntegerType v1, SIMDType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
@@ -7323,6 +7950,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Determines if any element in an integer SIMD vector has the same value as any element in another SIMD vector.
+        /// </summary>
+        /// <param name="v1">The integer SIMD vector to compare.</param>
+        /// <param name="v2">The SIMD vector to compare against.</param>
+        /// <returns>True if any element comparison yields a match, false otherwise.</returns>
         static bool AnySameValue( SIMDIntegerType v1, SIMDType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
@@ -7358,6 +7991,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Checks if all corresponding elements in two SIMD integer vectors have the same value.
+        /// </summary>
+        /// <param name="v1">The first SIMD integer vector to compare.</param>
+        /// <param name="v2">The second SIMD integer vector to compare.</param>
+        /// <returns>True if all corresponding elements in the two vectors are equal, false otherwise.</returns>
         static bool AllSameValue( SIMDIntegerType v1, SIMDIntegerType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
@@ -7371,6 +8010,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Determines if any corresponding elements in two SIMD integer vectors have the same value.
+        /// </summary>
+        /// <param name="v1">The first SIMD integer vector to compare.</param>
+        /// <param name="v2">The second SIMD integer vector to compare.</param>
+        /// <returns>True if at least one pair of corresponding elements are equal, false otherwise.</returns>
         static bool AnySameValue( SIMDIntegerType v1, SIMDIntegerType v2 ) noexcept
         {
             auto result = SameValue( v1, v2 );
@@ -7386,9 +8031,10 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Square Root of Single-Precision Floating-Point Values
+        /// Computes the square root of each element in a SIMD vector.
         /// </summary>
-        /// <param name="v"></param>
+        /// <param name="v">The SIMD vector containing the values to compute square roots for.</param>
+        /// <returns>A SIMD vector containing the square root of each corresponding element in the input vector.</returns>
         static SIMDType Sqrt( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -7402,9 +8048,10 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Reciprocal square Root of Single-Precision Floating-Point Values
+        /// Computes the approximate reciprocal square root of each element in a SIMD vector.
         /// </summary>
-        /// <param name="v"></param>
+        /// <param name="v">The SIMD vector containing the values for which to compute the reciprocal square root.</param>
+        /// <returns>A SIMD vector containing the approximate reciprocal square root (1/√x) of each element in the input vector.</returns>
         static SIMDType ReciprocalSqrt( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -7419,9 +8066,10 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Cube Root of Single-Precision Floating-Point Values
+        /// Computes the cube root of each element in a SIMD vector.
         /// </summary>
-        /// <param name="v"></param>
+        /// <param name="v">The SIMD vector containing the values for which to compute cube roots.</param>
+        /// <returns>A SIMD vector containing the cube root of each element from the input vector.</returns>
         static SIMDType Cbrt( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -7436,9 +8084,10 @@ namespace Harlinn::Math::SIMD
 
 
         /// <summary>
-        /// Reciprocal of Single-Precision Floating-Point Values
+        /// Computes the approximate reciprocal of each element in a SIMD vector.
         /// </summary>
-        /// <param name="v"></param>
+        /// <param name="v">The SIMD vector whose elements will have their reciprocals computed.</param>
+        /// <returns>A SIMD vector containing the approximate reciprocal (1/x) of each element from the input vector.</returns>
         static SIMDType Reciprocal( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -7717,7 +8366,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-
+        /// <summary>
+        /// Computes the dot product of two SIMD vectors.
+        /// </summary>
+        /// <param name="a">The first SIMD vector.</param>
+        /// <param name="b">The second SIMD vector.</param>
+        /// <returns>A SIMD type containing the dot product result, with the value broadcast across elements.</returns>
         static SIMDType Dot( SIMDType a, SIMDType b ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -7742,6 +8396,14 @@ namespace Harlinn::Math::SIMD
                 return _mm256_add_ps( rmm1, rmm2 );
             }
         }
+
+        /// <summary>
+        /// Computes the dot product of two SIMD vectors using a mask to select components.
+        /// </summary>
+        /// <typeparam name="mask">A compile-time constant mask that controls which components are multiplied and where the result is stored. The upper 4 bits specify which elements to multiply, and the lower 4 bits specify which elements of the result to write to.</typeparam>
+        /// <param name="a">The first SIMD vector.</param>
+        /// <param name="b">The second SIMD vector.</param>
+        /// <returns>A SIMD vector containing the dot product result, with placement determined by the mask.</returns>
         template<int mask>
         static SIMDType Dot( SIMDType a, SIMDType b ) noexcept
         {
@@ -7757,7 +8419,12 @@ namespace Harlinn::Math::SIMD
             }
         }
 
-        
+        /// <summary>
+        /// Computes the outer product of two 2D vectors represented in SIMD registers.
+        /// </summary>
+        /// <param name="a">The first 2D vector in SIMD format.</param>
+        /// <param name="b">The second 2D vector in SIMD format.</param>
+        /// <returns>A SIMD vector containing the four components of the 2x2 outer product: [a1*b1, a1*b2, a2*b1, a2*b2].</returns>
         static SIMDType OuterProduct2x2( SIMDType a, SIMDType b ) noexcept
         {
             // a1*b1  a1*b2 a2*b1  a2*b2
@@ -7771,6 +8438,12 @@ namespace Harlinn::Math::SIMD
             return Mul( rmm1, rmm2 );
         }
 
+        /// <summary>
+        /// Computes the outer product of two 3D vectors represented as SIMD types, producing a 3x3 matrix.
+        /// </summary>
+        /// <param name="a">The first 3D vector in SIMD format (elements at indices 0, 1, 2).</param>
+        /// <param name="b">The second 3D vector in SIMD format (elements at indices 0, 1, 2).</param>
+        /// <returns>An array of three SIMD vectors representing the rows of the resulting 3x3 outer product matrix.</returns>
         static std::array<SIMDType, 3> OuterProduct3x3( SIMDType a, SIMDType b ) noexcept
         {
             // a1*b1 a1*b2 a1*b3
@@ -7787,6 +8460,12 @@ namespace Harlinn::Math::SIMD
             return std::array<SIMDType, 3>{ r1, r2, r3 };
         }
 
+        /// <summary>
+        /// Computes the 4x4 outer product of two SIMD vectors.
+        /// </summary>
+        /// <param name="a">The first SIMD vector containing 4 elements.</param>
+        /// <param name="b">The second SIMD vector containing 4 elements.</param>
+        /// <returns>An array of 4 SIMD vectors representing the 4x4 outer product matrix, where each row is the result of multiplying one element from 'a' by all elements of 'b'.</returns>
         static std::array<SIMDType, 4> OuterProduct4x4( SIMDType a, SIMDType b ) noexcept
         {
             // a1*b1 a1*b2 a1*b3 a1*b4
@@ -7807,7 +8486,17 @@ namespace Harlinn::Math::SIMD
         }
         
 
-
+        /// <summary>
+        /// Computes the cross product of two SIMD vectors.
+        /// </summary>
+        /// <param name="a">The first vector.</param>
+        /// <param name="b">The second vector.</param>
+        /// <returns>
+        /// A SIMD vector containing the cross product of vectors a and b. 
+        /// For 2D vectors, returns a scalar value replicated across all 
+        /// components. For 3D and 4D vectors, returns the standard cross 
+        /// product.
+        /// </returns>
         static SIMDType Cross( SIMDType a, SIMDType b ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -7845,13 +8534,14 @@ namespace Harlinn::Math::SIMD
         }
 
         /// <summary>
-        /// Computes a vector perpendicular to the argument vector.
+        /// Computes an orthogonal (perpendicular) vector to the input vector.
         /// </summary>
-        /// <param name="v">
-        /// The argument vector.
-        /// </param>
+        /// <param name="v">The input SIMD vector for which to compute an orthogonal vector.</param>
         /// <returns>
-        /// The vector orthogonal to <c>v</c>.
+        /// A SIMD vector that is orthogonal (perpendicular) to the input vector. 
+        /// For 2D vectors, returns the perpendicular vector rotated 90 degrees. 
+        /// For 3D vectors, computes an orthogonal vector using a robust algorithm. 
+        /// For 4D vectors, swaps and flips components to produce an orthogonal result.
         /// </returns>
         static inline SIMDType Orthogonal( const SIMDType v ) noexcept
         {
@@ -7893,6 +8583,13 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Performs spherical linear interpolation (slerp) between two quaternions.
+        /// </summary>
+        /// <param name="q1">The first quaternion.</param>
+        /// <param name="q2">The second quaternion.</param>
+        /// <param name="t">The interpolation parameter, typically in the range [0, 1].</param>
+        /// <returns>The interpolated quaternion between q1 and q2.</returns>
         static SIMDType Slerp( SIMDType q1, SIMDType q2, SIMDType t ) noexcept
         {
             using FloatT = Type;
@@ -7938,7 +8635,14 @@ namespace Harlinn::Math::SIMD
             return Add( result, s1 );
         }
 
-
+        /// <summary>
+        /// Transforms a 2D vector by a matrix represented as separate row vectors.
+        /// </summary>
+        /// <param name="v">The vector to transform.</param>
+        /// <param name="mr1">The first row of the transformation matrix.</param>
+        /// <param name="mr2">The second row of the transformation matrix.</param>
+        /// <param name="mr3">The third row of the transformation matrix (typically the translation component).</param>
+        /// <returns>The transformed vector.</returns>
         static SIMDType TransformVector( SIMDType v, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
         {
             if constexpr ( Size == 2 )
@@ -7950,6 +8654,15 @@ namespace Harlinn::Math::SIMD
             }
         }
 
+        /// <summary>
+        /// Transforms a vector by a matrix represented as four row vectors using SIMD operations.
+        /// </summary>
+        /// <param name="v">The input vector to transform.</param>
+        /// <param name="mr1">The first row of the transformation matrix.</param>
+        /// <param name="mr2">The second row of the transformation matrix.</param>
+        /// <param name="mr3">The third row of the transformation matrix.</param>
+        /// <param name="mr4">The fourth row of the transformation matrix.</param>
+        /// <returns>The transformed vector resulting from the matrix-vector multiplication.</returns>
         static SIMDType TransformVector( SIMDType v, SIMDType mr1, SIMDType mr2, SIMDType mr3, SIMDType mr4 )
         {
             if constexpr ( Size == 3 )
@@ -7983,6 +8696,15 @@ namespace Harlinn::Math::SIMD
         }
 
         // 2D
+        
+        /// <summary>
+        /// Transforms a 2D point by a 3x3 matrix and performs perspective division.
+        /// </summary>
+        /// <param name="p">The point to transform, with x-coordinate at index 0 and y-coordinate at index 1.</param>
+        /// <param name="mr1">The first row of the transformation matrix.</param>
+        /// <param name="mr2">The second row of the transformation matrix.</param>
+        /// <param name="mr3">The third row of the transformation matrix.</param>
+        /// <returns>The transformed point after perspective division by its w-coordinate (index 2).</returns>
         static SIMDType TransformPoint( SIMDType p, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
         {
             auto y = At<1>( p );
@@ -7995,6 +8717,15 @@ namespace Harlinn::Math::SIMD
             return Div( result, w );
         }
 
+        /// <summary>
+        /// Transforms a point by a 4x4 matrix (represented as four row vectors) and performs perspective division.
+        /// </summary>
+        /// <param name="p">The point to transform, represented as a SIMD vector.</param>
+        /// <param name="mr1">The first row of the transformation matrix.</param>
+        /// <param name="mr2">The second row of the transformation matrix.</param>
+        /// <param name="mr3">The third row of the transformation matrix.</param>
+        /// <param name="mr4">The fourth row of the transformation matrix.</param>
+        /// <returns>The transformed point after perspective division (division by the w component).</returns>
         static SIMDType TransformPoint( SIMDType p, SIMDType mr1, SIMDType mr2, SIMDType mr3, SIMDType mr4 )
         {
             auto z = At<2>( p );
@@ -8010,7 +8741,12 @@ namespace Harlinn::Math::SIMD
             return Div( result, w );
         }
 
-
+        /// <summary>
+        /// Transforms a 2D normal vector by a 2x2 transformation matrix stored in SIMD format.
+        /// </summary>
+        /// <param name="n">The normal vector to transform, with X component at index 0 and Y component at index 1.</param>
+        /// <param name="matrix">A 2x2 transformation matrix stored in SIMD format with elements arranged as [m00, m01, m10, m11].</param>
+        /// <returns>The transformed normal vector as a SIMD type, computed as (n.x * matrix[0,1], n.y * matrix[2,3]).</returns>
         static SIMDType TransformNormal( SIMDType n, SIMDType matrix )
         {
             // Y
@@ -8021,6 +8757,13 @@ namespace Harlinn::Math::SIMD
             return FMAdd( temp, Swizzle<1, 0, 1, 0>( matrix ), result );
         }
 
+        /// <summary>
+        /// Transforms a 2D normal vector using two matrix rows.
+        /// </summary>
+        /// <param name="n">The normal vector to transform.</param>
+        /// <param name="mr1">The first matrix row used for transformation.</param>
+        /// <param name="mr2">The second matrix row used for transformation.</param>
+        /// <returns>The transformed normal vector as a SIMD type.</returns>
         static SIMDType TransformNormal( SIMDType n, SIMDType mr1, SIMDType mr2 )
         {
             // Y
@@ -8031,6 +8774,14 @@ namespace Harlinn::Math::SIMD
             return FMAdd( temp, mr1, result );
         }
 
+        /// <summary>
+        /// Transforms a normal vector by a 3x3 matrix represented as three row vectors.
+        /// </summary>
+        /// <param name="n">The normal vector to transform.</param>
+        /// <param name="mr1">The first row of the transformation matrix.</param>
+        /// <param name="mr2">The second row of the transformation matrix.</param>
+        /// <param name="mr3">The third row of the transformation matrix.</param>
+        /// <returns>The transformed normal vector.</returns>
         static SIMDType TransformNormal( SIMDType n, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
         {
             auto z = At<2>( n );
@@ -8041,6 +8792,11 @@ namespace Harlinn::Math::SIMD
             return FMAdd( x, mr1, result );
         }
 
+        /// <summary>
+        /// Computes the next representable floating-point value greater than the input for each SIMD lane.
+        /// </summary>
+        /// <param name="v">The SIMD vector of floating-point values to increment to their next representable value.</param>
+        /// <returns>A SIMD vector where each lane contains the smallest floating-point value greater than the corresponding input value. Positive infinity and NaN values are returned unchanged, and negative zero is treated as positive zero.</returns>
         static SIMDType NextUp( SIMDType v )
         {
             /*
@@ -8074,6 +8830,11 @@ namespace Harlinn::Math::SIMD
 
         }
 
+        /// <summary>
+        /// Computes the next representable floating-point value in the downward direction for each element in a SIMD vector.
+        /// </summary>
+        /// <param name="v">The SIMD vector containing floating-point values to decrement to their next lower representable values.</param>
+        /// <returns>A SIMD vector where each element is the next representable floating-point value below the corresponding input element. Returns the input value unchanged for negative infinity and NaN.</returns>
         static SIMDType NextDown( SIMDType v )
         {
             /*
