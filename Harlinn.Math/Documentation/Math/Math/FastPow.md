@@ -1,5 +1,7 @@
 # FastPow
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`FastPow`
+
 ## Summary
 
 `FastPow` computes `v` raised to the integer power `n` using exponentiation by squaring. It is a `constexpr` template that generates efficient code for compile-time and runtime use when `n` is a compile-time constant.

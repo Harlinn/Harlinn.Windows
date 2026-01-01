@@ -1,5 +1,7 @@
 # FastAbs
 
+[Optimized basic math functions](Readme.md)/[Basic operations](BasicOperations.md)/`FastAbs`
+
 ## Summary
 
 `FastAbs` computes the absolute value of its argument using fast, branchless or bit-level techniques. It provides overloads for unsigned and signed integers and for floating-point types. `FastAbs` is `constexpr` and `noexcept` where applicable, and is intended for performance-sensitive code paths where minimal branching or simple bit operations are desirable.

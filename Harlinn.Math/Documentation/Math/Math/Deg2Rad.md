@@ -1,5 +1,7 @@
 # Deg2Rad
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`Deg2Rad`
+
 ## Summary
 
 `Deg2Rad` converts an angle in degrees to radians.

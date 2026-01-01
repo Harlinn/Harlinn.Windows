@@ -1,5 +1,7 @@
 # SignBit
 
+[Optimized basic math functions](Readme.md)/[Floating point manipulation functions](FloatingPointManipulationFunctions.md)/`SignBit`
+
 ## Summary
 
 `SignBit` tests whether a value has a negative sign bit. Overloads exist for signed and unsigned integer types and for floating-point types. The function is `constexpr` and `noexcept` where applicable and is usable in compile-time contexts.
@@ -78,8 +80,6 @@ static_assert( Harlinn::Math::SignBit( -0.0 ) );
 
 ## See also
 
-- `FastSignBit` (fast variant), `IsZero`, `IsNaN`, `CopySign` for related sign and classification utilities.
+- `IsZero`, `IsNaN`, `CopySign` for related sign and classification utilities.
 
----
 
-Created for the Harlinn.Math library documentation.

@@ -1,5 +1,7 @@
 # Log2
 
+[Optimized basic math functions](Readme.md)/[Exponential functions](ExponentialFunctions.md)/`Log2`
+
 ## Summary
 
 `Log2` computes the binary (base-2) logarithm of a floating-point value, returning the value y such that `2^y = x`. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for consistent behavior in both compile-time and runtime contexts.
@@ -74,8 +76,8 @@ static_assert( three == 3.0 );
 
 ## See also
 
-- `Log`, `Log10`, `Log1P` — other logarithm helpers.
-- `Log2Int` — integer base-2 logarithm helper.
+- `Log`, `Log10`, `Log1P` ï¿½ other logarithm helpers.
+- `Log2Int` ï¿½ integer base-2 logarithm helper.
 
 ---
 

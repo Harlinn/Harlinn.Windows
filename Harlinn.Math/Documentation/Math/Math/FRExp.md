@@ -1,13 +1,15 @@
 # FRExp
 
+[Optimized basic math functions](Readme.md)/[Floating point manipulation functions](FloatingPointManipulationFunctions.md)/`FRExp`
+
 ## Summary
 
 `FRExp` decomposes a floating-point value into a normalized fraction and an integral power of two. It mirrors the behavior of the C `frexp` family but is `constexpr`-friendly and available for both `float` and `double` in the `Harlinn::Math` namespace.
 
 There are three overloads:
-- `std::pair<T,int> FRExp(T val)` — returns fraction in `.first` and exponent in `.second`.
-- `T FRExp(T val, int* exp)` — stores exponent via pointer and returns fraction.
-- `T FRExp(T val, int& exp)` — stores exponent via reference and returns fraction.
+- `std::pair<T,int> FRExp(T val)`: returns fraction in `.first` and exponent in `.second`.
+- `T FRExp(T val, int* exp)`: stores exponent via pointer and returns fraction.
+- `T FRExp(T val, int& exp)`: stores exponent via reference and returns fraction.
 
 The returned fraction `f` and exponent `e` satisfy: value = f * 2^e, and `f` is in the interval (-1, -0.5] or [0.5, 1) for non-zero values. For zero both fraction and exponent are zero.
 
@@ -91,9 +93,6 @@ static_assert( e == 1 );
 
 ## See also
 
-- `LDExp` / `ScaleBN` — compose value from fraction and exponent.
+- `LDExp` / `ScaleBN`: compose value from fraction and exponent.
 - `FRExp` is complementary to `NextUp`/`NextDown` when examining representable ranges.
 
----
-
-Created for the Harlinn.Math library documentation.

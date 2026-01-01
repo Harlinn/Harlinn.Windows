@@ -1,5 +1,7 @@
 # IsSameValue
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`IsSameValue`
+
 ## Summary
 
 `IsSameValue` tests whether two values are exactly the same at the binary level.
@@ -95,8 +97,3 @@ static_assert(!Harlinn::Math::IsSameValue(0.0f, -0.0f));       // bitwise differ
 ## See also
 
 - `IsZero`, `IsNaN` in the same header for related floating-point utilities.
-
-
----
-
-Created for the Harlinn.Math library documentation.

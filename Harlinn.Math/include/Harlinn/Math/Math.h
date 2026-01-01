@@ -4569,7 +4569,21 @@ namespace Harlinn::Math
     }
 
     /// <summary>
-    /// Computes the compensated sum of a sequence of floating-point values.
+    /// <para>
+    /// Implements the Kahan summation algorithm, also known as compensated 
+    /// summation, significantly reducing the numerical error when adding a 
+    /// sequence of finite-precision floating-point numbers. The algorithm 
+    /// achieves this by tracking and compensating for the small rounding errors 
+    /// that occur during each addition, which would otherwise accumulate in 
+    /// the standard summation approach. 
+    /// </para>
+    /// <para>
+    /// The standard algorithm for summing numbers in sequence can lead to 
+    /// substantial errors when a large number is added to a small number, 
+    /// causing the smaller number's significant digits to be lost due to 
+    /// the limits of floating-point representation. 
+    /// The Kahan algorithm minimizes this loss of precision. 
+    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating-point type.
@@ -4647,6 +4661,18 @@ namespace Harlinn::Math
     };
 
     // CompensatedFloat Definition
+
+
+    /// <summary>
+    /// CompensatedFloat is designed to perform high-precision floating-point arithmetic 
+    /// using techniques that compensate for the inherent precision loss of standard float 
+    /// (single-precision) or double (double-precision) types. This is useful in scientific, 
+    /// financial, or graphics applications where accumulated rounding errors can 
+    /// significantly affect the final result. 
+    /// </summary>
+    /// <typeparam name="T">
+	/// A floating-point type.
+    /// </typeparam>
     template<typename T>
         requires IsFloatingPoint<T>
     class CompensatedFloat
@@ -4999,6 +5025,45 @@ namespace Harlinn::Math
     /// <summary>
 	/// Represents a closed interval [lowerBound, upperBound] of floating-point values.
     /// </summary>
+	/// <remarks>
+    /// Interval arithmetic represents each computed value as a conservative enclosure 
+    /// [lower, upper] so the true mathematical result is guaranteed to lie inside the 
+    /// interval. Use `Interval<T>` to make rounding and cancellation explicit and to 
+    /// make numerical decisions robust.
+    /// 
+    /// Mathematical summary:
+    /// - For a scalar computation replace a single floating result `x` by an interval \([x_{\min}, x_{\max}]\).
+    /// - For a product computed with a compensated pair \(p, \varepsilon\) (for example from `TwoProd(a,b)`) convert to an interval using:
+    ///   $$[\,\mathrm{SubAdjustDown}(p,\varepsilon),\ \mathrm{AddAdjustUp}(p,\varepsilon)\,].$$
+    /// 
+    /// Usage notes:
+    /// - Convert compensated results to intervals: call `Interval<T>::FromValueAndError(p.v, p.err)` to obtain a tight enclosure.
+    /// - Propagate bounds with interval operators `+`, `-`, `*`, `/`: these functions use directed rounding (`NextDown` / `NextUp`) so enclosures remain conservative.
+    /// - Detect cancellation or sign-uncertainty by inspecting interval endpoints, for example test the discriminant with `if (discrim.LowerBound() &gt;= 0)` to decide on real roots.
+    /// - Intervals are conservative and may widen; combine them with compensated helpers (`TwoProd`, `TwoSum`, `FMA`) to keep bounds tight.
+    /// 
+    /// Short example:
+    /// <code><![CDATA[
+    /// using namespace Harlinn::Math;
+    /// double a = 1e16 + 1.0;
+    /// double b = 1e-16;
+    /// 
+    /// // compute compensated product then convert to interval
+    /// auto p = TwoProd(a, b); // CompensatedFloat<double> { v, err }
+    /// auto abInterval = Interval<double>::FromValueAndError(p.v, p.err);
+    /// 
+    /// // accumulate as interval sum
+    /// Interval<double> sum(0.0);
+    /// sum += abInterval;
+    /// // inspect midpoint and width
+    /// double mid = static_cast<double>(sum); // midpoint
+    /// double width = sum.Width();
+    /// ]]></code>
+    /// 
+    /// When to use:
+    /// - Use `Interval<T>` for validation, branching decisions that must be correct despite rounding, and for algorithms where guaranteed bounds are required. Combine intervals with compensated arithmetic to minimize overestimation while preserving safety.
+    /// 
+	/// </remarks>
     /// <typeparam name="T">
     /// The type of the interval.
     /// </typeparam>

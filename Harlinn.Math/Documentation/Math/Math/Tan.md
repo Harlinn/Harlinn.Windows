@@ -1,5 +1,7 @@
 # Tan
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`Tan`
+
 ## Summary
 
 `Tan` computes the tangent of a floating-point value given in radians. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for consistent behavior in both compile-time and runtime contexts.
@@ -18,7 +20,7 @@ constexpr inline T Tan( T x ) noexcept;
 - Returns the tangent of `x` (x in radians), i.e. `sin(x)/cos(x)` computed with appropriate numerical care.
 - For `float` the function delegates to `Math::Internal::OpenLibM::tanf`.
 - For `double` the implementation uses `Math::Internal::OpenLibM::tan` in const-evaluation contexts and `std::tan` at runtime when available.
-- The implementation follows IEEE semantics for special values: `Tan(NaN)` is `NaN` and `Tan(±inf)` is `NaN` (or implementation-defined by the underlying math helpers).
+- The implementation follows IEEE semantics for special values: `Tan(NaN)` is `NaN` and `Tan(ï¿½inf)` is `NaN` (or implementation-defined by the underlying math helpers).
 - The function is `noexcept` and usable in `constexpr` contexts when the underlying helpers are constexpr-capable.
 
 ## Notes
@@ -69,9 +71,9 @@ static_assert( t0 == 0.0f );
 
 ## See also
 
-- `Sin`, `Cos` — related trigonometric helpers.
-- `TanH`, `ATan` — hyperbolic and inverse tangent helpers.
-- `Deg2Rad`, `Rad2Deg` — conversion helpers between degrees and radians.
+- `Sin`, `Cos` ï¿½ related trigonometric helpers.
+- `TanH`, `ATan` ï¿½ hyperbolic and inverse tangent helpers.
+- `Deg2Rad`, `Rad2Deg` ï¿½ conversion helpers between degrees and radians.
 
 ---
 

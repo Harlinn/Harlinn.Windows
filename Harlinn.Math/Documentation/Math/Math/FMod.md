@@ -1,5 +1,7 @@
 # FMod
 
+[Optimized basic math functions](Readme.md)/[Basic operations](BasicOperations.md)/`FMod`
+
 ## Summary
 
 `FMod` computes the floating-point remainder of the division `x / y`, matching the semantics of the C `fmod` family: the result has the sign of `x` and magnitude less than `|y|`. Overloads are provided as a template for floating-point types and the implementation is `constexpr`-friendly.
@@ -71,8 +73,8 @@ static_assert( r2 == -1.5 );
 
 ## See also
 
-- `Remainder` — computes the IEEE `remainder` (rounds quotient to nearest integer) and returns possibly different signed results for tie cases.
-- `Mod` — an alias for `FMod` in this library.
+- `Remainder` ï¿½ computes the IEEE `remainder` (rounds quotient to nearest integer) and returns possibly different signed results for tie cases.
+- `Mod` ï¿½ an alias for `FMod` in this library.
 
 ---
 

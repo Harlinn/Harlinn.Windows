@@ -1,5 +1,7 @@
 # TanH
 
+[Optimized basic math functions](Readme.md)/[Hyperbolic functions](HyperbolicFunctions.md)/`TanH`
+
 ## Summary
 
 `TanH` computes the hyperbolic tangent (`tanh`) of a floating-point value. The function is `constexpr`-friendly in constant-evaluation contexts and delegates to the library's `OpenLibM` helpers for consistent behavior across platforms.
@@ -23,7 +25,7 @@ constexpr inline T TanH( T x ) noexcept;
 
 ## Notes
 
-- `TanH` is dimensionless and quickly approaches ±1 for large |x|.
+- `TanH` is dimensionless and quickly approaches ï¿½1 for large |x|.
 - Use `TanH` when modeling sigmoid-like activations or when working with hyperbolic function identities.
 
 ## Examples
@@ -67,9 +69,6 @@ static_assert( t1 > 0.761594 && t1 < 0.761596 );
 
 ## See also
 
-- `SinH`, `CosH`, `ASinH`, `ACosH` — related hyperbolic functions.
-- `Exp`, `Log` — helpers used in hyperbolic computations.
+- `SinH`, `CosH`, `ASinH`, `ACosH` : related hyperbolic functions.
+- `Exp`, `Log` : helpers used in hyperbolic computations.
 
----
-
-Created for the Harlinn.Math library documentation.

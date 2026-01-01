@@ -1,5 +1,7 @@
 # Max
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`Max`
+
 ## Summary
 
 `Max` returns the largest of its arguments. Overloads are provided for floating-point and integer types, and variadic overloads accept multiple values. The floating-point overloads handle NaN and signed zeros according to the library's conventions (NaNs are propagated as in `Internal::MaxImpl`).
@@ -83,8 +85,5 @@ static_assert( m == 7.0 );
 
 ## See also
 
-- `Min`, `IsNaN`, `IsFinite` — related comparison and classification utilities.
+- `Min`, `IsNaN`, `IsFinite`: related comparison and classification utilities.
 
----
-
-Created for the Harlinn.Math library documentation.

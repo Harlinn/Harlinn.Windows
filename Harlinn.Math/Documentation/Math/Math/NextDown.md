@@ -1,5 +1,7 @@
 # NextDown
 
+[Optimized basic math functions](Readme.md)/[Floating point manipulation functions](FloatingPointManipulationFunctions.md)/`NextDown`
+
 ## Summary
 
 `NextDown` returns the largest representable floating-point value of the same type as the argument that is strictly less than the given value.
@@ -87,6 +89,4 @@ static_assert( Harlinn::Math::NextDown( -std::numeric_limits<double>::infinity()
 
 - `NextUp`, `NextFloatUp`, `NextAfter` for related functions that step floating-point values.
 
----
 
-Created for the Harlinn.Math library documentation.

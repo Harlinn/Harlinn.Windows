@@ -1,5 +1,7 @@
 # RemQuo
 
+[Optimized basic math functions](Readme.md)/[Basic operations](BasicOperations.md)/`RemQuo`
+
 ## Summary
 
 `RemQuo` computes the IEEE-style remainder of the division `x / y` and additionally returns an integer `quo` that contains information about the quotient. It delegates to the library's `OpenLibM` helpers and follows the semantics of the C standard `remquo` function.
@@ -57,8 +59,8 @@ int main()
 
 ## See also
 
-- `Remainder` — IEEE remainder without returning quotient bits.
-- `FMod`, `Mod` — floating-point remainder using truncation toward zero.
+- `Remainder` ï¿½ IEEE remainder without returning quotient bits.
+- `FMod`, `Mod` ï¿½ floating-point remainder using truncation toward zero.
 
 ---
 

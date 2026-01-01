@@ -1,5 +1,7 @@
 # CosH
 
+[Optimized basic math functions](Readme.md)/[Hyperbolic functions](HyperbolicFunctions.md)/`CosH`
+
 ## Summary
 
 `CosH` computes the hyperbolic cosine (`cosh`) of a floating-point value. The function is `constexpr`-friendly in constant-evaluation contexts and delegates to the library's `OpenLibM` helpers for consistent behavior across platforms.
@@ -18,7 +20,7 @@ constexpr inline T CosH( T x ) noexcept;
 - Returns the hyperbolic cosine of `x`, defined as `(e^x + e^-x)/2`.
 - For `float` the implementation delegates to `Math::Internal::OpenLibM::coshf`.
 - For `double` the implementation uses `Math::Internal::OpenLibM::cosh` in const-evaluation contexts and `std::cosh` at runtime when appropriate.
-- Special values follow the underlying helpers' semantics: `CosH(NaN) = NaN`, `CosH(±inf) = +?`.
+- Special values follow the underlying helpers' semantics: `CosH(NaN) = NaN`, `CosH(ï¿½inf) = +?`.
 - The function is `noexcept` and can be used in `constexpr` contexts when the underlying helpers are constexpr-capable.
 
 ## Notes
@@ -67,8 +69,8 @@ static_assert( c1 > 1.54308 - 1e-12 && c1 < 1.54308 + 1e-12 );
 
 ## See also
 
-- `SinH`, `TanH`, `ASinH` — related hyperbolic functions.
-- `Exp`, `Log` — helpers for exponential and logarithmic computations.
+- `SinH`, `TanH`, `ASinH` ï¿½ related hyperbolic functions.
+- `Exp`, `Log` ï¿½ helpers for exponential and logarithmic computations.
 
 ---
 

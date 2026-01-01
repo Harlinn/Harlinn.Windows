@@ -1,5 +1,7 @@
 # IsNaN
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`IsNaN`
+
 ## Summary
 
 `IsNaN` tests whether a value (or any of several values) is a not-a-number (NaN) value.
@@ -80,8 +82,4 @@ static_assert( Harlinn::Math::IsNaN( myNaN ) );
 
 ## See also
 
-- `IsInf`, `IsFinite` — checks for infinity and finiteness.
-
----
-
-Created for the Harlinn.Math library documentation.
+- `IsInf`, `IsFinite`: checks for infinity and finiteness.

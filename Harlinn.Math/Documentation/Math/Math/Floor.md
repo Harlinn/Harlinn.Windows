@@ -1,5 +1,7 @@
 # Floor
 
+[Optimized basic math functions](Readme.md)/[Nearest integer floating point operations](NearestIntegerFloatingPointOperations.md)/`Floor`
+
 ## Summary
 
 `Floor` returns the largest integer value not greater than its argument. Overloads exist for floating-point and integer types. For floating-point types the function is `constexpr`-friendly and preserves signed zero semantics where applicable.
@@ -69,8 +71,5 @@ static_assert( Harlinn::Math::Floor( 42 ) == 42 );
 
 ## See also
 
-- `Trunc`, `Ceil`, `Round` — related rounding utilities.
+- `Trunc`, `Ceil`, `Round`: related rounding utilities.
 
----
-
-Created for the Harlinn.Math library documentation.

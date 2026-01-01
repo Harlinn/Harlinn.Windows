@@ -1,5 +1,7 @@
 # NextUp
 
+[Optimized basic math functions](Readme.md)/[Floating point manipulation functions](FloatingPointManipulationFunctions.md)/`NextUp`
+
 ## Summary
 
 `NextUp` returns the smallest representable floating-point value of the same type as the argument that is strictly greater than the given value.
@@ -88,6 +90,4 @@ static_assert( Harlinn::Math::NextUp( std::numeric_limits<double>::infinity() ) 
 
 - `NextDown`, `NextAfter`, `NextFloatUp`, `NextFloatDown` for related stepping operations.
 
----
 
-Created for the Harlinn.Math library documentation.

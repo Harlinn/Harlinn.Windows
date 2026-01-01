@@ -1,5 +1,7 @@
 # ACosH
 
+[Optimized basic math functions](Readme.md)/[Hyperbolic functions](HyperbolicFunctions.md)/`ACosH`
+
 ## Summary
 
 `ACosH` computes the inverse hyperbolic cosine (`acosh`) of a floating-point value. The function is `constexpr`-friendly in constant-evaluation contexts and delegates to the library's `OpenLibM` helpers for consistent behavior across platforms.
@@ -69,9 +71,9 @@ static_assert( a2 > 1.316957897 - 1e-12 && a2 < 1.316957897 + 1e-12 );
 
 ## See also
 
-- `SinH`, `CosH`, `TanH` — related hyperbolic functions.
-- `ASinH`, `ATanH` — other inverse hyperbolic functions.
-- `Exp`, `Log` — helpers for exponential and logarithmic computations.
+- `SinH`, `CosH`, `TanH` ï¿½ related hyperbolic functions.
+- `ASinH`, `ATanH` ï¿½ other inverse hyperbolic functions.
+- `Exp`, `Log` ï¿½ helpers for exponential and logarithmic computations.
 
 ---
 

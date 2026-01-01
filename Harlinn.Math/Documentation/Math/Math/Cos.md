@@ -1,5 +1,7 @@
 # Cos
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`Cos`
+
 ## Summary
 
 `Cos` computes the cosine of a floating-point value given in radians. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for consistent behavior in both compile-time and runtime contexts.
@@ -18,7 +20,7 @@ constexpr inline T Cos( T x ) noexcept;
 - Returns the cosine of `x` (x in radians).
 - For `float` the function delegates to `Math::Internal::OpenLibM::cosf`.
 - For `double` the implementation uses `Math::Internal::OpenLibM::cos` in const-evaluation contexts and `std::cos` at runtime for performance when available.
-- The implementation follows IEEE semantics for special values: `Cos(NaN)` is `NaN` and `Cos(±inf)` is `NaN` (or implementation-defined by the underlying math helpers).
+- The implementation follows IEEE semantics for special values: `Cos(NaN)` is `NaN` and `Cos(ï¿½inf)` is `NaN` (or implementation-defined by the underlying math helpers).
 - The function is `noexcept` and usable in `constexpr` contexts when the underlying helpers are constexpr-capable.
 
 ## Notes
@@ -66,8 +68,8 @@ static_assert( c0 == 1.0f );
 
 ## See also
 
-- `Sin`, `Tan`, `CosH` — related trigonometric helpers.
-- `Deg2Rad`, `Rad2Deg` — degree/radian conversion helpers.
+- `Sin`, `Tan`, `CosH` ï¿½ related trigonometric helpers.
+- `Deg2Rad`, `Rad2Deg` ï¿½ degree/radian conversion helpers.
 
 ---
 

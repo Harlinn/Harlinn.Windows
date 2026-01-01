@@ -1,5 +1,7 @@
 # SinH
 
+[Optimized basic math functions](Readme.md)/[Hyperbolic functions](HyperbolicFunctions.md)/`SinH`
+
 ## Summary
 
 `SinH` computes the hyperbolic sine (sinh) of a floating-point value. The function is `constexpr`-friendly in constant-evaluation contexts and delegates to the library's `OpenLibM` helpers for consistent behavior.
@@ -63,8 +65,8 @@ static_assert( s1 > 1.175 && s1 < 1.177 ); // ~1.175201193
 
 ## See also
 
-- `CosH`, `TanH`, `ASinH` — related hyperbolic functions.
-- `Exp`, `ExpM1` — exponential helpers used for hyperbolic computations.
+- `CosH`, `TanH`, `ASinH` ï¿½ related hyperbolic functions.
+- `Exp`, `ExpM1` ï¿½ exponential helpers used for hyperbolic computations.
 
 ---
 

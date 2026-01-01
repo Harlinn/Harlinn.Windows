@@ -1,5 +1,7 @@
 # signum
 
+[Optimized basic math functions](Readme.md)/[Floating point manipulation functions](FloatingPointManipulationFunctions.md)/`signum`
+
 ## Summary
 
 `signum` returns the sign of a value.
@@ -104,6 +106,4 @@ static_assert(Harlinn::Math::signum<float>(-0.0f) == 0.0f);
 
 - `IsZero`, `IsSameValue` for related utilities.
 
----
 
-Created for the Harlinn.Math library documentation.

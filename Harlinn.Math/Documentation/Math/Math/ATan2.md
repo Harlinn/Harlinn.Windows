@@ -1,5 +1,7 @@
 # ATan2
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`ATan2`
+
 ## Summary
 
 `ATan2` computes the angle (in radians) whose tangent is `y/x`, using the signs of `y` and `x` to determine the correct quadrant. It is constexpr-friendly via the library's `OpenLibM` helpers and matches the semantics of `atan2`/`atan2f` from the C math library.
@@ -70,9 +72,9 @@ static_assert( zeroAngle == 0.0 );
 
 ## See also
 
-- `ATan`, `ATanH` — related inverse trigonometric functions.
-- `Tan`, `Sin`, `Cos` — trigonometric functions.
-- `Deg2Rad`, `Rad2Deg` — conversion helpers between degrees and radians.
+- `ATan`, `ATanH` ï¿½ related inverse trigonometric functions.
+- `Tan`, `Sin`, `Cos` ï¿½ trigonometric functions.
+- `Deg2Rad`, `Rad2Deg` ï¿½ conversion helpers between degrees and radians.
 
 ---
 

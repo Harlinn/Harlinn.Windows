@@ -1,5 +1,7 @@
 # Gamma
 
+[Optimized basic math functions](Readme.md)/[Error and gamma functions](ErrorAndGammaFunctions.md)/`Gamma`
+
 ## Summary
 
 `Gamma` in this library is a small helper that returns an estimate of the maximum relative error after `n` floating-point operations. It is not the Euler Gamma function. The estimate is calculated using the library machine epsilon for the given floating-point type.
@@ -25,7 +27,7 @@ constexpr inline T Gamma( int n );
 
 ## Notes
 
-- This `Gamma` is intended as an error bound helper to adjust tolerances or to create conservative intervals for numerical algorithms — for example when computing guaranteed bounds on sums or polynomial evaluations.
+- This `Gamma` is intended as an error bound helper to adjust tolerances or to create conservative intervals for numerical algorithms ï¿½ for example when computing guaranteed bounds on sums or polynomial evaluations.
 - Do not confuse this helper with the mathematical Euler Gamma function (?). If you need Euler's Gamma use a dedicated special-function implementation.
 - For large `n` such that `n * MachineEpsilon` approaches `1`, the expression can overflow or produce very large values; in such situations this estimate is no longer meaningful and `n` should be reduced or a different error model used.
 
@@ -66,7 +68,7 @@ static_assert( g0 == 0.0f );
 
 ## See also
 
-- `Constants<T>::MachineEpsilon` — machine epsilon used by the estimate.
+- `Constants<T>::MachineEpsilon` ï¿½ machine epsilon used by the estimate.
 - Interval helpers such as `Interval::FromValueAndError` and `AddAdjustUp/AddAdjustDown` that use conservative error adjustments.
 
 ---

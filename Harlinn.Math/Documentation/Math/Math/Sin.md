@@ -1,5 +1,7 @@
 # Sin
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`Sin`
+
 ## Summary
 
 `Sin` computes the sine of a floating-point value given in radians. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for consistent behavior in both compile-time and runtime contexts.
@@ -18,7 +20,7 @@ constexpr inline T Sin( T x ) noexcept;
 - Returns the sine of `x` (x in radians).
 - For `float` the function delegates to `Math::Internal::OpenLibM::sinf`.
 - For `double` the function uses `Math::Internal::OpenLibM::sin` in const-evaluation contexts and `std::sin` at runtime for performance when available.
-- The implementation follows IEEE semantics for special values: `Sin(NaN)` is `NaN` and `Sin(±inf)` is `NaN` (or implementation-defined by the underlying math helpers).
+- The implementation follows IEEE semantics for special values: `Sin(NaN)` is `NaN` and `Sin(-inf)` is `NaN` (or implementation-defined by the underlying math helpers).
 - The function is `noexcept` and usable in `constexpr` contexts when the underlying helpers are constexpr-capable.
 
 ## Notes
@@ -62,8 +64,8 @@ static_assert( s90 > 0.999999f && s90 < 1.000001f );
 
 ## See also
 
-- `Cos`, `Tan`, `SinCos` — related trigonometric helpers.
-- `Deg2Rad`, `Rad2Deg` — degree/radian conversion helpers.
+- `Cos`, `Tan`, `SinCos` ï¿½ related trigonometric helpers.
+- `Deg2Rad`, `Rad2Deg` ï¿½ degree/radian conversion helpers.
 
 ---
 

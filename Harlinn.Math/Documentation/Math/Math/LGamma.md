@@ -1,5 +1,7 @@
 # LGamma
 
+[Optimized basic math functions](Readme.md)/[Error and gamma functions](ErrorAndGammaFunctions.md)/`LGamma`
+
 ## Summary
 
 `LGamma` computes the natural logarithm of the absolute value of the Gamma function for a floating-point argument `x`. The implementation delegates to the library's `OpenLibM` helpers and is `constexpr`-friendly when those helpers are available in constant-evaluation contexts.
@@ -69,9 +71,7 @@ static_assert( lgHalf > 0.5723649429247000 && lgHalf < 0.5723649429247002 );
 
 ## See also
 
-- `TGamma` — Gamma function ?(x).
-- `Erf`, `ErfC` — related special functions used in probability and statistics.
+- `TGamma`: Gamma function ?(x).
+- `Erf`, `ErfC`: related special functions used in probability and statistics.
 
----
 
-Created for the Harlinn.Math library documentation.

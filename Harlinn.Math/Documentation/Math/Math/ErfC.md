@@ -1,5 +1,7 @@
 # ErfC
 
+[Optimized basic math functions](Readme.md)/[Error and gamma functions](ErrorAndGammaFunctions.md)/`ErfC`
+
 ## Summary
 
 `ErfC` computes the complementary error function (erfc) of a floating-point value. It delegates to the library's `OpenLibM` helpers and is `constexpr`-friendly when those helpers are available in constant-evaluation contexts.
@@ -67,9 +69,6 @@ static_assert( ec1 > 0.1572992070502850 && ec1 < 0.1572992070502852 );
 
 ## See also
 
-- `Erf` — error function.
-- `Gaussian`, `GaussianIntegral` — helpers that use the error function for normal distribution calculations.
+- `Erf` : error function.
+- `Gaussian`, `GaussianIntegral` : helpers that use the error function for normal distribution calculations.
 
----
-
-Created for the Harlinn.Math library documentation.

@@ -1,5 +1,7 @@
 # Rad2Deg
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`Rad2Deg`
+
 ## Summary
 
 `Rad2Deg` converts an angle in radians to degrees.

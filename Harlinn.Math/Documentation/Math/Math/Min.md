@@ -1,5 +1,7 @@
 # Min
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`Min`
+
 ## Summary
 
 `Min` returns the smallest of its arguments. Overloads are provided for floating-point and integer types, and variadic overloads accept multiple values. The floating-point overloads handle NaN and signed zeros according to the library's conventions (NaNs are propagated as in `Internal::MinImpl`).
@@ -82,7 +84,7 @@ static_assert( m == 2.5 );
 
 ## See also
 
-- `Max`, `IsNaN`, `IsFinite` — related comparison and classification utilities.
+- `Max`, `IsNaN`, `IsFinite` ï¿½ related comparison and classification utilities.
 
 ---
 

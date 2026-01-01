@@ -1,5 +1,7 @@
 # TGamma
 
+[Optimized basic math functions](Readme.md)/[Error and gamma functions](ErrorAndGammaFunctions.md)/`TGamma`
+
 ## Summary
 
 `TGamma` computes the Gamma function ?(x) for a floating-point argument `x`. The implementation delegates to the library's `OpenLibM` helpers and is `constexpr`-friendly when those helpers are available in constant-evaluation contexts.
@@ -18,7 +20,7 @@ constexpr inline T TGamma( T x ) noexcept;
 - Returns the value of the Gamma function ?(x) for real-valued `x` (extends factorial to non-integer values: ?(n) = (n-1)! for positive integers `n`).
 - For `float` the implementation delegates to `Math::Internal::OpenLibM::tgammaf`; for `double` it delegates to `Math::Internal::OpenLibM::tgamma` (the current header casts the result for the templated type).
 - The function is `noexcept` and can be used in constant-evaluation contexts when the underlying helpers are constexpr-capable.
-- Special values follow the underlying library semantics: poles at non-positive integers yield ±infinity or domain errors per the implementation; NaN inputs propagate NaN; sign and magnitude follow standard Gamma behaviour.
+- Special values follow the underlying library semantics: poles at non-positive integers yield ï¿½infinity or domain errors per the implementation; NaN inputs propagate NaN; sign and magnitude follow standard Gamma behaviour.
 
 ## Notes
 
@@ -67,8 +69,8 @@ static_assert( ghalf > 1.7724538509055159 && ghalf < 1.7724538509055161 );
 
 ## See also
 
-- `LGamma` — natural logarithm of the absolute value of the Gamma function.
-- `Erf`, `ErfC` — error functions used in probability and special function computations.
+- `LGamma` ï¿½ natural logarithm of the absolute value of the Gamma function.
+- `Erf`, `ErfC` ï¿½ error functions used in probability and special function computations.
 
 ---
 

@@ -1,5 +1,7 @@
 # FastExp
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`FastExp`
+
 ## Summary
 
 `FastExp` returns a fast, efficient approximation of the exponential function `e^x` for `float` inputs. It is optimized for performance and uses a decomposition to base-2 followed by a low-degree polynomial approximation for the fractional part, then reconstructs the result by scaling. This makes it much faster than `std::exp` at the cost of some accuracy.
@@ -65,6 +67,3 @@ static_assert( Harlinn::Math::FastExp( 0.0f ) == 1.0f );
 - `Exp` / `std::exp` — higher-accuracy exponential implementations.
 - `FastLog2`, `Log2` — related base-2 logarithm helpers used in complementary transforms.
 
----
-
-Created for the Harlinn.Math library documentation.

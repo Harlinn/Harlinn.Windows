@@ -1,5 +1,7 @@
 # Round
 
+[Optimized basic math functions](Readme.md)/[Nearest integer floating point operations](NearestIntegerFloatingPointOperations.md)/`Round`
+
 ## Summary
 
 `Round` returns the value of its argument rounded to the nearest integer, in the same floating-point type. Halfway cases are rounded away from zero. Overloads exist for floating-point and integer types; the integer overload simply returns the argument unchanged.
@@ -69,8 +71,6 @@ static_assert( Harlinn::Math::Round( -3.5 ) == -4.0 );
 
 ## See also
 
-- `Trunc`, `Floor`, `Ceil`, `FRExp`, `ModF` — related numeric utilities.
+- `Trunc`, `Floor`, `Ceil`, `FRExp`, `ModF`: related numeric utilities.
 
----
 
-Created for the Harlinn.Math library documentation.

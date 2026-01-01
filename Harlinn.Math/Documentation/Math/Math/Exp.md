@@ -1,5 +1,7 @@
 # Exp
 
+[Optimized basic math functions](Readme.md)/[Exponential functions](ExponentialFunctions.md)/`Exp`
+
 ## Summary
 
 `Exp` computes the exponential function e^x (where e is Euler's number, approximately 2.71828) for floating-point inputs. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for well-defined compile-time behavior.
@@ -63,8 +65,8 @@ static_assert( one == 1.0 );
 
 ## See also
 
-- `ExpM1` — computes `exp(x) - 1` with better accuracy for small `x`.
-- `Exp2`, `Exp10` — exponential functions with different bases (2 and 10 respectively).
+- `ExpM1` ï¿½ computes `exp(x) - 1` with better accuracy for small `x`.
+- `Exp2`, `Exp10` ï¿½ exponential functions with different bases (2 and 10 respectively).
 
 ---
 

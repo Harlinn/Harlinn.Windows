@@ -8,7 +8,7 @@ The function evaluates the definite integral
 
 $$
 \int_{x_0}^{x_1} \frac{1}{\sqrt{2\pi}\,\sigma} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)\,dx
-= \frac{1}{2}\left[\operatorname{erf}\left(\frac{\mu - x_0}{\sqrt{2}\,\sigma}\right) - \operatorname{erf}\left(\frac{\mu - x_1}{\sqrt{2}\,\sigma}\right)\right]
+= \frac{1}{2}\left[\text{erf}\left(\frac{\mu - x_0}{\sqrt{2}\,\sigma}\right) - \text{erf}\left(\frac{\mu - x_1}{\sqrt{2}\,\sigma}\right)\right]
 $$
 
 where `erf` denotes the error function.
@@ -71,8 +71,8 @@ static_assert( p > 0.68 && p < 0.69 );
 
 ## See also
 
-- `Gaussian` — evaluates the Gaussian PDF at a point.
-- `Erf` / `std::erf` — error function used to compute the integral.
+- `Gaussian` ï¿½ evaluates the Gaussian PDF at a point.
+- `Erf` / `std::erf` ï¿½ error function used to compute the integral.
 
 ---
 

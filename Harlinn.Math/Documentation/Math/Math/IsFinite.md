@@ -1,5 +1,7 @@
 # IsFinite
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`IsFinite`
+
 ## Summary
 
 `IsFinite` determines whether a value (or any of several values) is a finite numeric value (not infinite and not NaN).
@@ -81,8 +83,6 @@ static_assert( !Harlinn::Math::IsFinite( myInf ) );            // compile-time i
 
 ## See also
 
-- `IsNaN`, `IsInf` — related predicates for special floating-point values.
+- `IsNaN`, `IsInf`: related predicates for special floating-point values.
 
----
 
-Created for the Harlinn.Math library documentation.

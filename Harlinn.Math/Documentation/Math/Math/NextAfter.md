@@ -1,5 +1,7 @@
 # NextAfter
 
+[Optimized basic math functions](Readme.md)/[Floating point manipulation functions](FloatingPointManipulationFunctions.md)/`NextAfter`
+
 ## Summary
 
 `NextAfter` returns the next representable floating-point value of `x` in the direction of `y`.
@@ -82,9 +84,7 @@ static_assert( Harlinn::Math::NextAfter( 0.0, 1.0 ) != 0.0 );
 
 ## See also
 
-- `NextUp`, `NextDown`, `NextFloatUp`, `NextFloatDown` — helpers for stepping one ULP in a fixed direction.
-- `CopySign` — compose sign/magnitude when handling signed zeros and infinities.
+- `NextUp`, `NextDown`, `NextFloatUp`, `NextFloatDown`: helpers for stepping one ULP in a fixed direction.
+- `CopySign`: compose sign/magnitude when handling signed zeros and infinities.
 
----
 
-Created for the Harlinn.Math library documentation.

@@ -10,7 +10,7 @@ $$
 f(x; s)=\frac{e^{-x/s}}{s\left(1+e^{-x/s}\right)^2}
 $$
 
-(For a location parameter (mean) `\mu` a shifted form `f(x;\mu,s)=f(x-\mu;s)` is used.)
+(For a location parameter (mean) $\mu$ a shifted form $f(x;\mu,s)=f(x-\mu;s)$ is used.)
 
 (Defined in `Harlinn::Math`, header: `Harlinn.Math\\include\\Harlinn\\Math\\Math.h`.)
 
@@ -86,8 +86,8 @@ static_assert( p > 0 );
 
 ## See also
 
-- `LogisticCDF` — cumulative distribution function for the logistic distribution.
-- `Gaussian` / `GaussianIntegral` — normal distribution helpers.
+- `LogisticCDF` ï¿½ cumulative distribution function for the logistic distribution.
+- `Gaussian` / `GaussianIntegral` ï¿½ normal distribution helpers.
 
 ---
 

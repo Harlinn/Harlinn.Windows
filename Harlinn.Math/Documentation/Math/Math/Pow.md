@@ -1,5 +1,7 @@
 # Pow
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`Pow`
+
 ## Summary
 
 `Pow` computes `x` raised to the power `y` for floating-point inputs. It delegates to the library's `OpenLibM` helpers to provide consistent behavior in both constant-evaluation and runtime contexts.
@@ -69,9 +71,6 @@ static_assert( r2 == 3.f );
 
 ## See also
 
-- `FastPow` — exponentiation by squaring for compile-time known integer exponents.
-- `Exp`, `Log` — related exponential and logarithmic helpers.
+- `FastPow`: exponentiation by squaring for compile-time known integer exponents.
+- `Exp`, `Log`: related exponential and logarithmic helpers.
 
----
-
-Created for the Harlinn.Math library documentation.

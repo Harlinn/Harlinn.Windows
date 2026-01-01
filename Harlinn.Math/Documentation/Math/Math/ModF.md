@@ -1,13 +1,15 @@
 # ModF
 
+[Optimized basic math functions](Readme.md)/[Floating point manipulation functions](FloatingPointManipulationFunctions.md)/`ModF`
+
 ## Summary
 
 `ModF` decomposes a floating-point value into its integral and fractional parts. It mirrors the behavior of the C `modf` family while being `constexpr`-friendly via the library's `Internal::OpenLibM` helpers.
 
 There are three overloads:
-- `std::pair<T,T> ModF(T val)` — returns `{ integerPart, fractionalPart }`.
-- `T ModF(T val, T* integerPart)` — stores the integral part through pointer and returns fractional part.
-- `T ModF(T val, T& integerPart)` — stores the integral part through reference and returns fractional part.
+- `std::pair<T,T> ModF(T val)`: returns `{ integerPart, fractionalPart }`.
+- `T ModF(T val, T* integerPart)`: stores the integral part through pointer and returns fractional part.
+- `T ModF(T val, T& integerPart)`: stores the integral part through reference and returns fractional part.
 
 (Defined in `Harlinn::Math`, header: `Harlinn.Math\include\Harlinn\Math\Math.h`.)
 
@@ -84,9 +86,7 @@ static_assert( ip == -2.0 );
 
 ## See also
 
-- `FRExp` — decomposes into normalized fraction and binary exponent.
-- `Trunc`, `Floor`, `Ceil`, `Round` — other integer/fractional related utilities.
+- `FRExp`: decomposes into normalized fraction and binary exponent.
+- `Trunc`, `Floor`, `Ceil`, `Round`: other integer/fractional related utilities.
 
----
 
-Created for the Harlinn.Math library documentation.

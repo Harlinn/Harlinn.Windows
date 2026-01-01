@@ -1,5 +1,7 @@
 # Sqr
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`Sqr`
+
 ## Summary
 
 `Sqr` returns the square of its argument (`v * v`). The function is defined for arithmetic types and complex floating-point types and is `constexpr` so it can be used in compile-time expressions.
@@ -68,6 +70,4 @@ static_assert( ii == 25 );
 
 - `Sqr` complements helpers such as `Sqrt`, `SafeSqrt`, and `Sqr`-related interval operations.
 
----
 
-Created for the Harlinn.Math library documentation.

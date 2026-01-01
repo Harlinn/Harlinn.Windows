@@ -1,5 +1,7 @@
 # IsNormal
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`IsNormal`
+
 ## Summary
 
 `IsNormal` tests whether a value (or any of several values) is a normal floating-point number. A normal value is finite, non-zero, and not subnormal (denormal).
@@ -79,8 +81,5 @@ static_assert( !Harlinn::Math::IsNormal( 0.0 ) );
 
 ## See also
 
-- `IsFinite`, `IsNaN`, `IsInf`, `IsZero` — related predicates for floating-point classification.
+- `IsFinite`, `IsNaN`, `IsInf`, `IsZero`: related predicates for floating-point classification.
 
----
-
-Created for the Harlinn.Math library documentation.

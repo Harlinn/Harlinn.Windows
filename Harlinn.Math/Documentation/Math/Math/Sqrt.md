@@ -1,5 +1,7 @@
 # Sqrt
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`Sqrt`
+
 ## Summary
 
 `Sqrt` computes the square root of a floating-point value and is `constexpr` and `noexcept`.
@@ -69,6 +71,3 @@ static_assert( Harlinn::Math::Sqrt( 4.0 ) == 2.0 );
 
 - `ReciprocalSqrt`, `SafeSqrt` for related square-root helpers.
 
----
-
-Created for the Harlinn.Math library documentation.

@@ -1,5 +1,7 @@
 # IsZero
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`IsZero`
+
 ## Summary
 
 `IsZero` tests whether a value represents zero.
@@ -89,6 +91,3 @@ static_assert(!Harlinn::Math::IsZero(1.0f));            // non-zero float
 
 - `IsSameValue`, `IsNaN` for related floating-point utilities.
 
----
-
-Created for the Harlinn.Math library documentation.

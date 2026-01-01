@@ -1,5 +1,7 @@
 # EvaluatePolynomial
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`EvaluatePolynomial`
+
 ## Summary
 
 `EvaluatePolynomial` evaluates a polynomial at a given point using Horner's method. It is implemented as a `constexpr` template so it can be used at compile time when coefficients and the evaluation point are constant expressions.

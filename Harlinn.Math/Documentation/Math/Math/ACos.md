@@ -1,5 +1,7 @@
 # ACos
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`ACos`
+
 ## Summary
 
 `ACos` computes the principal value of the arc cosine (inverse cosine) of a floating-point value and is `constexpr`-friendly via the library's internal helpers. For inputs in the domain [-1, 1] it returns a value in radians in the range [0, pi].
@@ -68,9 +70,9 @@ static_assert( c60 > Harlinn::Math::Constants<double>::Pi / 3 - 1e-12 && c60 < H
 
 ## See also
 
-- `Sin`, `Cos`, `ASin` — related trigonometric helpers.
-- `SafeACos`, `SafeASin` — clamped inverse trig helpers.
-- `Deg2Rad`, `Rad2Deg` — conversion helpers between degrees and radians.
+- `Sin`, `Cos`, `ASin` ï¿½ related trigonometric helpers.
+- `SafeACos`, `SafeASin` ï¿½ clamped inverse trig helpers.
+- `Deg2Rad`, `Rad2Deg` ï¿½ conversion helpers between degrees and radians.
 
 ---
 

@@ -1,5 +1,7 @@
 # Abs
 
+[Optimized basic math functions](Readme.md)/[Basic operations](BasicOperations.md)/`Abs`
+
 ## Summary
 
 `Abs` computes the absolute value of its argument. The library provides overloads for signed and unsigned integers, floating-point types, and also `FastAbs` variants that use bit-level or branchless implementations for performance.

@@ -1,5 +1,7 @@
 # IsInf
 
+[Optimized basic math functions](Readme.md)/[Classification and comparison](ClassificationAndComparison.md)/`IsInf`
+
 ## Summary
 
 `IsInf` determines whether a value (or any of several values) is positive or negative infinity.
@@ -81,8 +83,6 @@ static_assert( Harlinn::Math::IsInf( myInf ) );
 
 ## See also
 
-- `IsNaN`, `IsFinite` — related predicates for special floating-point values.
+- `IsNaN`, `IsFinite`: related predicates for special floating-point values.
 
----
 
-Created for the Harlinn.Math library documentation.

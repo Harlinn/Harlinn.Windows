@@ -1,5 +1,7 @@
 # Log1P
 
+[Optimized basic math functions](Readme.md)/[Exponential functions](ExponentialFunctions.md)/`Log1P`
+
 ## Summary
 
 `Log1P` computes the natural logarithm of `1 + x` (i.e. `ln(1 + x)`) with improved accuracy for values of `x` near zero. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for consistent behavior in both compile-time and runtime contexts.
@@ -70,9 +72,9 @@ static_assert( v1 > 0.0 );
 
 ## See also
 
-- `Log` — natural logarithm of `x`.
-- `Log2`, `Log10` — logarithms with different bases.
-- `ExpM1` — computes `exp(x) - 1` with improved accuracy for small `x`.
+- `Log` ï¿½ natural logarithm of `x`.
+- `Log2`, `Log10` ï¿½ logarithms with different bases.
+- `ExpM1` ï¿½ computes `exp(x) - 1` with improved accuracy for small `x`.
 
 ---
 

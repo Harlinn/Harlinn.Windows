@@ -1,5 +1,7 @@
 # Remainder
 
+[Optimized basic math functions](Readme.md)/[Basic operations](BasicOperations.md)/`Remainder`
+
 ## Summary
 
 `Remainder` computes the IEEE-style remainder of the division operation `x / y` for floating-point arguments. It delegates to the library's `OpenLibM` helpers and is `constexpr`-friendly when those helpers are available in constant-evaluation contexts.
@@ -61,8 +63,8 @@ static_assert( r < 0 );
 
 ## See also
 
-- `FMod`, `Mod` — floating-point remainder using truncation toward zero.
-- `RemQuo` — remainder with additional quotient bits information.
+- `FMod`, `Mod` ï¿½ floating-point remainder using truncation toward zero.
+- `RemQuo` ï¿½ remainder with additional quotient bits information.
 
 ---
 

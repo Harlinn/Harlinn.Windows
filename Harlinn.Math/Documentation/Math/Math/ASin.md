@@ -1,5 +1,7 @@
 # ASin
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`ASin`
+
 ## Summary
 
 `ASin` computes the principal value of the arc sine (inverse sine) of a floating-point value and is `constexpr`-friendly via the library's internal helpers. For inputs in the domain [-1, 1] it returns a value in radians in the range [-pi/2, pi/2].
@@ -68,9 +70,9 @@ constexpr double guarded = Harlinn::Math::SafeASin( 2.0 ); // clamps and returns
 
 ## See also
 
-- `Sin`, `Cos`, `Tan` — trigonometric functions.
-- `SafeASin` — clamps input into [-1, 1] before calling `ASin`.
-- `Deg2Rad`, `Rad2Deg` — conversion helpers between degrees and radians.
+- `Sin`, `Cos`, `Tan` ï¿½ trigonometric functions.
+- `SafeASin` ï¿½ clamps input into [-1, 1] before calling `ASin`.
+- `Deg2Rad`, `Rad2Deg` ï¿½ conversion helpers between degrees and radians.
 
 ---
 

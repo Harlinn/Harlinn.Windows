@@ -1,5 +1,7 @@
 # Lerp
 
+[Optimized basic math functions](Readme.md)/[Other functions](OtherFunctions.md)/`Lerp`
+
 ## Summary
 
 `Lerp` computes the linear interpolation between two values `a` and `b` using parameter `t`. It returns `(1 - t) * a + t * b`. The function is generic and works for arithmetic types; it is `constexpr`-friendly.
@@ -75,9 +77,6 @@ static_assert( r2 == 3.5 );
 
 ## See also
 
-- `Lerp2` — alternate argument order for convenience.
-- `Clamp`, `SmoothStep`, easing functions — helpers commonly used together with `Lerp`.
+- `Lerp2`: alternate argument order for convenience.
+- `Clamp`, `SmoothStep`: functions often used together with `Lerp`.
 
----
-
-Created for the Harlinn.Math library documentation.

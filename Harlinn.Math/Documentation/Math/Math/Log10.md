@@ -1,5 +1,7 @@
 # Log10
 
+[Optimized basic math functions](Readme.md)/[Exponential functions](ExponentialFunctions.md)/`Log10`
+
 ## Summary
 
 `Log10` computes the common (base-10) logarithm of a floating-point value, returning the value y such that `10^y = x`. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for consistent compile-time and runtime semantics.
@@ -74,8 +76,8 @@ static_assert( three == 3.0 );
 
 ## See also
 
-- `Log`, `Log2`, `Log1P` — related logarithm helpers.
-- `Exp10` — computes 10^x.
+- `Log`, `Log2`, `Log1P` ï¿½ related logarithm helpers.
+- `Exp10` ï¿½ computes 10^x.
 
 ---
 

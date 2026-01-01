@@ -1,5 +1,7 @@
 # ReciprocalSqrt
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`ReciprocalSqrt`
+
 ## Summary
 
 `ReciprocalSqrt` computes the reciprocal of the square root (1 / sqrt(x)) of a floating-point value. The function is `constexpr` and `noexcept` and provides fast runtime implementations while remaining usable in constant-evaluation contexts.
@@ -19,7 +21,7 @@ constexpr inline T ReciprocalSqrt(T x) noexcept;
 
 ## Behavior
 
-- Returns `1 / sqrt(x)` with IEEE-754 semantics.
+- Returns `1 / Sqrt(x)` with IEEE-754 semantics.
 - If `x == 0` the function returns signed infinity (with the sign of `x`) when evaluated in consteval for `float`/`double`.
 - For runtime `float` the implementation uses an SSE reciprocal-square-root instruction which is fast but may be slightly less accurate than `1.0f / std::sqrtf(x)`; the library uses `_mm_rsqrt_ps` result directly for performance.
 - The function supports constexpr evaluation when available via `Internal::OpenLibM` helpers.
@@ -74,6 +76,3 @@ static_assert( Harlinn::Math::ReciprocalSqrt( 4.0 ) == 0.5 );
 
 - `Sqrt`, `NextUp`, `NextDown` for related numeric helpers.
 
----
-
-Created for the Harlinn.Math library documentation.

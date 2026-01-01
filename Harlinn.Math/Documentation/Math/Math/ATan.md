@@ -1,10 +1,12 @@
 # ATan
 
+[Optimized basic math functions](Readme.md)/[Trigonometric functions](TrigonometricFunctions.md)/`ATan`
+
 ## Summary
 
 `ATan` computes the principal value of the arc tangent (inverse tangent). There are two overloads:
-- `ATan(x)` — returns the principal value of the arc tangent of `x` in radians in the range (-pi/2, pi/2).
-- `ATan(y, x)` — returns the angle (in radians) whose tangent is `y/x`, using the signs of `y` and `x` to determine the correct quadrant (equivalent to `atan2`).
+- `ATan(x)` ï¿½ returns the principal value of the arc tangent of `x` in radians in the range (-pi/2, pi/2).
+- `ATan(y, x)` ï¿½ returns the angle (in radians) whose tangent is `y/x`, using the signs of `y` and `x` to determine the correct quadrant (equivalent to `atan2`).
 
 (Defined in `Harlinn::Math`, header: `Harlinn.Math\include\Harlinn\Math\Math.h`.)
 
@@ -76,9 +78,9 @@ static_assert( ang > Harlinn::Math::Constants<double>::Pi * 3.0 / 4.0 - 1e-12 );
 
 ## See also
 
-- `Tan`, `Sin`, `Cos` — trigonometric functions.
-- `ATan2` — alias-style name for the two-argument arc tangent.
-- `Deg2Rad`, `Rad2Deg` — conversion helpers between degrees and radians.
+- `Tan`, `Sin`, `Cos` ï¿½ trigonometric functions.
+- `ATan2` ï¿½ alias-style name for the two-argument arc tangent.
+- `Deg2Rad`, `Rad2Deg` ï¿½ conversion helpers between degrees and radians.
 
 ---
 

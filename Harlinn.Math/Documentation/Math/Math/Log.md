@@ -1,5 +1,7 @@
 # Log
 
+[Optimized basic math functions](Readme.md)/[Exponential functions](ExponentialFunctions.md)/`Log`
+
 ## Summary
 
 `Log` computes the natural (base-e) logarithm of a floating-point value. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for well-defined behavior in both compile-time and runtime contexts.
@@ -75,8 +77,8 @@ static_assert( two > 1.999999 && two < 2.000001 );
 
 ## See also
 
-- `Log2`, `Log10` — logarithms with bases 2 and 10.
-- `Exp`, `ExpM1` — exponential helpers related to logarithms.
+- `Log2`, `Log10` ï¿½ logarithms with bases 2 and 10.
+- `Exp`, `ExpM1` ï¿½ exponential helpers related to logarithms.
 
 ---
 

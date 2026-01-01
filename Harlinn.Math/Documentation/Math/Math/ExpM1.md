@@ -1,5 +1,7 @@
 # ExpM1
 
+[Optimized basic math functions](Readme.md)/[Exponential functions](ExponentialFunctions.md)/`ExpM1`
+
 ## Summary
 
 `ExpM1` computes `exp(x) - 1` with improved accuracy for small `x`. This avoids catastrophic cancellation when `x` is close to zero and the result is near zero. The function is `constexpr`-friendly and delegates to the library's `OpenLibM` helpers for well-defined compile-time behavior.
@@ -66,8 +68,8 @@ static_assert( v2 > 0.0 );
 
 ## See also
 
-- `Exp` — computes e^x.
-- `Exp2`, `Exp10` — exponentials with different bases.
+- `Exp` ï¿½ computes e^x.
+- `Exp2`, `Exp10` ï¿½ exponentials with different bases.
 
 ---
 

@@ -750,5 +750,24 @@
     <None Include="Documentation\Math\Math\Gaussian.md" />
     <None Include="Documentation\Math\Math\GaussianIntegral.md" />
     <None Include="Documentation\Math\Math\Logistic.md" />
+    <None Include="Documentation\Math\Math\LogisticCDF.md" />
+    <None Include="Documentation\Math\Math\TrimmedLogistic.md" />
+    <None Include="Documentation\Math\Math\FindInterval.md" />
+    <None Include="Documentation\Math\Math\IsPowerOf4.md" />
+    <None Include="Documentation\Math\Math\RoundUpPow2.md" />
+    <None Include="Documentation\Math\Math\RoundUpPow4.md" />
+    <None Include="Documentation\Math\Math\CompensatedSum.md" />
+    <None Include="Documentation\Math\Math\CompensatedFloat.md" />
+    <None Include="Documentation\Math\Math\TwoSum.md" />
+    <None Include="Documentation\Math\Math\TwoProd.md" />
+    <None Include="Documentation\Math\Math\DifferenceOfProducts.md" />
+    <None Include="Documentation\Math\Math\SumOfProducts.md" />
+    <None Include="Documentation\Math\Math\InnerProduct.md" />
+    <None Include="Documentation\Math\Math\Quadratic.md" />
+    <None Include="Documentation\Math\Math\NewtonBisection.md" />
+    <None Include="Documentation\Math\Math\Interval.md" />
+    <None Include="Documentation\Math\Math\Readme.md" />
+    <None Include="Documentation\Math\Math\CompensatedArithmetic.md" />
+    <None Include="Documentation\Math\Math\ProbabilityAndStatistics.md" />
   </ItemGroup>
 </Project>

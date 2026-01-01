@@ -1,8 +1,10 @@
 # FMA
 
+[Optimized basic math functions](Readme.md)/[Basic operations](BasicOperations.md)/`FMA`
+
 ## Summary
 
-`FMA` computes a fused multiply–add: it returns `a * b + c`. For floating-point types the library prefers the hardware/standard `std::fma` at runtime to perform the operation with a single rounding. In constant-evaluation contexts the implementation falls back to the simple expression `a * b + c` so the function can be used in `constexpr` code.
+`FMA` computes a fused multiplyï¿½add: it returns `a * b + c`. For floating-point types the library prefers the hardware/standard `std::fma` at runtime to perform the operation with a single rounding. In constant-evaluation contexts the implementation falls back to the simple expression `a * b + c` so the function can be used in `constexpr` code.
 
 (Defined in `Harlinn::Math`, header: `Harlinn.Math\include\Harlinn\Math\Math.h`.)
 
@@ -72,8 +74,8 @@ static_assert( gi == 10 );
 
 ## See also
 
-- `TwoProd`, `TwoSum` — helpers that return value plus rounding error for improved numerical accuracy.
-- `FMAAdjustUp`, `FMAAdjustDown` — variants used when interval arithmetic adjustments are needed.
+- `TwoProd`, `TwoSum` ï¿½ helpers that return value plus rounding error for improved numerical accuracy.
+- `FMAAdjustUp`, `FMAAdjustDown` ï¿½ variants used when interval arithmetic adjustments are needed.
 
 ---
 

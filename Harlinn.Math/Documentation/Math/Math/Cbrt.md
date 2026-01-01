@@ -1,5 +1,7 @@
 # Cbrt
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`Cbrt`
+
 ## Summary
 
 `Cbrt` computes the cube root of a floating-point value. The function is `constexpr` and `noexcept`, and supports evaluation in constant-evaluation contexts as well as efficient runtime execution.
@@ -66,6 +68,3 @@ static_assert( Harlinn::Math::Cbrt( -8.0f ) == -2.0f );
 
 - `Sqrt`, `ReciprocalSqrt` for related root operations.
 
----
-
-Created for the Harlinn.Math library documentation.

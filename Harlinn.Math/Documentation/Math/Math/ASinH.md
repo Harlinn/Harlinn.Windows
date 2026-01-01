@@ -1,5 +1,7 @@
 # ASinH
 
+[Optimized basic math functions](Readme.md)/[Hyperbolic functions](HyperbolicFunctions.md)/`ASinH`
+
 ## Summary
 
 `ASinH` computes the inverse hyperbolic sine (asinh) of a floating-point value. The function is `constexpr`-friendly in constant-evaluation contexts and delegates to the library's `OpenLibM` helpers for consistent results across platforms.
@@ -23,7 +25,7 @@ constexpr inline T ASinH( T x ) noexcept;
 
 ## Notes
 
-- `ASinH` returns values in the same unit (radians) implied by hyperbolic functions — hyperbolic functions are dimensionless; conversion to other units is not applicable.
+- `ASinH` returns values in the same unit (radians) implied by hyperbolic functions ï¿½ hyperbolic functions are dimensionless; conversion to other units is not applicable.
 - For small `x`, `asinh(x)` is approximately `x` (since `sinh(y) ~ y` for small `y`).
 
 ## Examples
@@ -69,8 +71,8 @@ static_assert( a1 > 0.881373587019 && a1 < 0.881373587020 );
 
 ## See also
 
-- `SinH`, `CosH`, `TanH` — hyperbolic functions.
-- `Exp`, `Log` — helpers that can be used to implement or reason about hyperbolic functions.
+- `SinH`, `CosH`, `TanH` ï¿½ hyperbolic functions.
+- `Exp`, `Log` ï¿½ helpers that can be used to implement or reason about hyperbolic functions.
 
 ---
 

@@ -1,5 +1,7 @@
 # Exp2
 
+[Optimized basic math functions](Readme.md)/[Exponential functions](ExponentialFunctions.md)/`Exp2`
+
 ## Summary
 
 `Exp2` computes 2 raised to the power `x`, i.e. 2^x, for floating-point inputs. The function is `constexpr`-friendly and uses the library's `OpenLibM` helpers for consistent compile-time and runtime semantics.
@@ -68,8 +70,8 @@ static_assert( r2 > 1.41421f && r2 < 1.41422f );
 
 ## See also
 
-- `Exp`, `Exp10`, `ExpM1` — related exponential helpers.
-- `ScaleBN` — scale by powers of the floating-point radix (typically 2) using integer exponents.
+- `Exp`, `Exp10`, `ExpM1` ï¿½ related exponential helpers.
+- `ScaleBN` ï¿½ scale by powers of the floating-point radix (typically 2) using integer exponents.
 
 ---
 

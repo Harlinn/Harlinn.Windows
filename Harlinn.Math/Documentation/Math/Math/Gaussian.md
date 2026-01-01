@@ -7,7 +7,7 @@
 The function implements the PDF
 
 $$
-f(x;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\,\sigma}\n\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+f(x;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\,\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
 $$
 
 and is defined in `Harlinn::Math` (header: `Harlinn.Math\include\Harlinn\Math\Math.h`). The implementation uses `FastExp` for the exponential term and `Sqrt`/`Sqr` helpers from the library.
@@ -31,7 +31,7 @@ constexpr inline FloatT Gaussian( FloatT x, FloatT mu = 0, FloatT sigma = 1 );
 
 - By convention `sigma` should be positive. Passing `sigma <= 0` produces undefined or non-meaningful results.
 - For performance-sensitive code paths where many evaluations are required, `Gaussian` is optimized via `FastExp` and other lightweight helpers.
-- The function returns the PDF value; it does not perform normalization across a sampled domain — the PDF already integrates to 1 over the real line when `sigma > 0`.
+- The function returns the PDF value; it does not perform normalization across a sampled domain ï¿½ the PDF already integrates to 1 over the real line when `sigma > 0`.
 
 ## Example
 
@@ -74,9 +74,9 @@ static_assert( val > 0.398 && val < 0.399 );
 
 ## See also
 
-- `FastExp` — fast exponential approximation used by `Gaussian`.
-- `Sqrt`, `Sqr` — helpers used in the implementation.
-- `GaussianIntegral` — helpers for integrating Gaussian PDF over intervals.
+- `FastExp` ï¿½ fast exponential approximation used by `Gaussian`.
+- `Sqrt`, `Sqr` ï¿½ helpers used in the implementation.
+- `GaussianIntegral` ï¿½ helpers for integrating Gaussian PDF over intervals.
 
 ---
 

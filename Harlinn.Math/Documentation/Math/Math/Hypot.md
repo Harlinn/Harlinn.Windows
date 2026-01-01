@@ -1,5 +1,7 @@
 # Hypot
 
+[Optimized basic math functions](Readme.md)/[Power and root finding functions](PowerFunctions.md)/`Hypot`
+
 ## Summary
 
 `Hypot` computes the length of the Euclidean vector (i.e. the square root of the sum of squares) for two or three components in a numerically robust way that avoids undue overflow or underflow. The implementation is `constexpr`-friendly and uses library internal helpers for consistent behavior in constant-evaluation contexts.
@@ -70,9 +72,6 @@ static_assert( r3 == 3.0 );
 
 ## See also
 
-- `Sqrt`, `Sqr`, `FastExp` — related numeric helpers.
+- `Sqrt`, `Sqr`, `FastExp`: related numeric helpers.
 - Use `Hypot` whenever computing Euclidean norms to improve numerical stability.
 
----
-
-Created for the Harlinn.Math library documentation.

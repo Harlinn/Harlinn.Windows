@@ -1,5 +1,7 @@
 # ATanH
 
+[Optimized basic math functions](Readme.md)/[Hyperbolic functions](HyperbolicFunctions.md)/`ATanH`
+
 ## Summary
 
 `ATanH` computes the inverse hyperbolic tangent (`atanh`) of a floating-point value. The function is `constexpr`-friendly in constant-evaluation contexts and delegates to the library's `OpenLibM` helpers for consistent behavior across platforms.
@@ -69,9 +71,9 @@ static_assert( t1 > 0.5493061443340547 && t1 < 0.5493061443340549 );
 
 ## See also
 
-- `SinH`, `CosH`, `TanH` — hyperbolic functions.
-- `ASinH`, `ACosH` — other inverse hyperbolic functions.
-- `Exp`, `Log` — helpers used in hyperbolic computations.
+- `SinH`, `CosH`, `TanH` ï¿½ hyperbolic functions.
+- `ASinH`, `ACosH` ï¿½ other inverse hyperbolic functions.
+- `Exp`, `Log` ï¿½ helpers used in hyperbolic computations.
 
 ---
 

@@ -1,5 +1,7 @@
 # Trunc
 
+[Optimized basic math functions](Readme.md)/[Nearest integer floating point operations](NearestIntegerFloatingPointOperations.md)/`Trunc`
+
 ## Summary
 
 `Trunc` computes the integer part of a value by discarding its fractional component. Overloads exist for floating-point and integer types. For floating-point types this function is `constexpr`-friendly and matches the semantics of `std::trunc` with compile-time evaluation provided by the library's internal helpers.
@@ -70,8 +72,6 @@ static_assert( Harlinn::Math::Trunc( 42 ) == 42 );
 
 ## See also
 
-- `Floor`, `Ceil`, `Round` — other rounding utilities.
+- `Floor`, `Ceil`, `Round`: other rounding utilities.
 
----
 
-Created for the Harlinn.Math library documentation.

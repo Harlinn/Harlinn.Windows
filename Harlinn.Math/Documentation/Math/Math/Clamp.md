@@ -1,5 +1,7 @@
 # Clamp
 
+[Optimized basic math functions](Readme.md)/[Other functions](OtherFunctions.md)/`Clamp`
+
 ## Summary
 
 `Clamp` constrains a value to lie within a specified inclusive range [minimumValue, maximumValue]. If the value is less than the minimum, the minimum is returned; if greater than the maximum, the maximum is returned; otherwise the original value is returned.
@@ -67,9 +69,5 @@ static_assert( clamped == 3.0 );
 
 ## See also
 
-- `Min`, `Max` — for single-sided comparisons.
-- `Clamp` is often used with `Lerp`, `Clamp` + `Normalize`, and range-checking utilities.
+- `Min`, `Max`: for single-sided comparisons.
 
----
-
-Created for the Harlinn.Math library documentation.

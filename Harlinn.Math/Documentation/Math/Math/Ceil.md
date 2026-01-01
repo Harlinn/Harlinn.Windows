@@ -1,5 +1,7 @@
 # Ceil
 
+[Optimized basic math functions](Readme.md)/[Nearest integer floating point operations](NearestIntegerFloatingPointOperations.md)/`Ceil`
+
 ## Summary
 
 `Ceil` returns the smallest integer value not less than its argument. Overloads exist for floating-point and integer types. For floating-point types the function is `constexpr`-friendly and preserves signed zero semantics where applicable.
@@ -71,8 +73,6 @@ static_assert( Harlinn::Math::Ceil( 42 ) == 42 );
 
 ## See also
 
-- `Floor`, `Trunc`, `Round` — related rounding utilities.
+- `Floor`, `Trunc`, `Round`: related rounding utilities.
 
----
 
-Created for the Harlinn.Math library documentation.
