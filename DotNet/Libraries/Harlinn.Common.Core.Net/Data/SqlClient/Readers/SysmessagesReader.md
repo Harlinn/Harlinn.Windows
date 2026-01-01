@@ -1,39 +1,46 @@
 # SysmessagesReader
 
-Reads rows from the `sys.sysmessages` compatibility view. This view contains error message definitions and localized descriptions.
+Overview
 
-Columns:
+`SysmessagesReader` wraps `sys.sysmessages` (legacy) and exposes server message catalog entries (error messages and their metadata) for the server.
 
-- `Error` (int)
-  - Description: Error number.
-  - Interpretation: The numeric error/severity code.
-- `Severity` (byte?, nullable)
-  - Description: Severity level for the message.
-  - Interpretation: Standard severity levels used by SQL Server.
-- `Dlevel` (short?, nullable)
-  - Description: Probably/guesswork: detail level or state for the message.
-  - Interpretation: Internal use for classification.
-- `Description` (string?, nullable)
-  - Description: Localized description text for the message.
-  - Interpretation: Human readable message text.
-- `Msglangid` (short)
-  - Description: Language id for the message.
-  - Interpretation: Indicates localization language for the message.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s12.[Error],
+  s12.[Severity],
+  s12.[Dlevel],
+  s12.[Description],
+  s12.[Msglangid]
+FROM
+  [sys].[sysmessages] s12
+```
+
+Columns and interpretation
+
+- `Error` (int): Error message number.
+- `Severity` (tinyint?): Severity level for the message.
+- `Dlevel` (smallint?): Probably/guesswork: detail level or diagnostic level.
+- `Description` (string?): Text description of the message.
+- `Msglangid` (smallint): Message language id indicating the language of the `Description` text.
+
+How to interpret
+
+- Use `Error` and `Msglangid` to find the correct message text for a given language.
+- `Severity` indicates seriousness of the message; higher numbers typically indicate more severe conditions.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysmessagesReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysmessagesReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysmessagesReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"{r.Error} (sev={r.Severity}) lang={r.Msglangid}: {r.Description}");
-}
+    Console.WriteLine($"Error:{r.Error} Severity:{r.Severity} Lang:{r.Msglangid} Desc:{r.Description}");
 ```
 
 See also:
-- [sys.sysmessages](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysmessages-transact-sql)
+
+- [sys.sysmessages](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysmessages)

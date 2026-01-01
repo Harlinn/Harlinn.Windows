@@ -1,39 +1,46 @@
 # SysperfinfoReader
 
-Reads rows from the `sys.sysperfinfo` compatibility view. This view surfaces Windows performance counter data exposed to SQL Server.
+Overview
 
-Columns:
+`SysperfinfoReader` wraps `sys.sysperfinfo` (legacy) and exposes performance counter data collected by SQL Server.
 
-- `ObjectName` (string)
-  - Description: Name of the performance object (e.g., "SQLServer:Buffer Manager").
-  - Interpretation: Top-level performance object category.
-- `CounterName` (string)
-  - Description: Name of the specific performance counter under the object.
-  - Interpretation: The counter being measured (e.g., "Page reads/sec").
-- `InstanceName` (string?, nullable)
-  - Description: Counter instance, if applicable (e.g., database name, filegroup name).
-  - Interpretation: Instance qualifier for counters that support instances.
-- `CntrValue` (long)
-  - Description: Numeric value of the counter.
-  - Interpretation: Value as reported by the performance subsystem.
-- `CntrType` (int)
-  - Description: Counter type code (how to interpret the `CntrValue`, e.g., rate, raw, fraction).
-  - Interpretation: Use with `CntrValue` to compute derived values per performance counter semantics.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s9.[object_name],
+  s9.[counter_name],
+  s9.[instance_name],
+  s9.[cntr_value],
+  s9.[cntr_type]
+FROM
+  [sys].[sysperfinfo] s9
+```
+
+Columns and interpretation
+
+- `object_name` (string): Performance object name (category) such as "SQLServer:Buffer Manager" or other perf object.
+- `counter_name` (string): Name of the performance counter.
+- `instance_name` (string?): Instance name associated with the counter, may be NULL for instanceless counters.
+- `cntr_value` (bigint): Counter value (counter-specific meaning, raw value depending on counter type).
+- `cntr_type` (int): Counter type code indicating how to interpret the counter (e.g., raw count, rate, fraction).
+
+How to interpret
+
+- Counter semantics depend on `counter_name` and `cntr_type`; refer to Windows performance counter documentation or SQL Server perf counter docs.
+- Use `instance_name` to disambiguate counters that are per-database or per-object.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysperfinfoReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysperfinfoReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysperfinfoReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"{r.ObjectName} - {r.CounterName} ({r.InstanceName}): {r.CntrValue} type={r.CntrType}");
-}
+    Console.WriteLine($"Obj:{r.ObjectName} Counter:{r.CounterName} Instance:{r.InstanceName} Value:{r.CntrValue} Type:{r.CntrType}");
 ```
 
 See also:
-- [sys.sysperfinfo](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysperfinfo-transact-sql)
+
+- [sys.sysperfinfo](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysperfinfo)

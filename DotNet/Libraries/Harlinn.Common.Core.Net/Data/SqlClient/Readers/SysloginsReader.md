@@ -1,81 +1,92 @@
 # SysloginsReader
 
-Reads rows from the `sys.syslogins` compatibility view. This view exposes server-level login accounts and metadata.
+Overview
 
-Columns:
+`SysloginsReader` wraps `sys.syslogins` (legacy) and exposes login-level information for server logins in older SQL Server versions.
 
-- `Sid` (binary?, nullable)
-  - Description: Security identifier for the login.
-  - Interpretation: Use to map to Windows or SQL principal.
-- `Status` (short?, nullable)
-  - Description: Login status flags.
-  - Interpretation: Encoded status bits (enabled/disabled, policy state, etc.).
-- `Createdate` (DateTime)
-  - Description: Date the login was created.
-  - Interpretation: Creation timestamp.
-- `Updatedate` (DateTime)
-  - Description: Date the login was last updated.
-  - Interpretation: Last modification timestamp.
-- `Accdate` (DateTime)
-  - Description: Probably/guesswork: last access date.
-  - Interpretation: When the login last authenticated or accessed.
-- `Totcpu` (int?, nullable)
-  - Description: Total CPU time consumed by this login.
-  - Interpretation: Aggregate CPU usage metric.
-- `Totio` (int?, nullable)
-  - Description: Total IO used by this login.
-  - Interpretation: Aggregate IO metric.
-- `Spacelimit` (int?, nullable)
-  - Description: Probably/guesswork: disk space limit for login-owned objects.
-  - Interpretation: Limits used in older SQL Server versions.
-- `Timelimit` (int?, nullable)
-  - Description: Probably/guesswork: CPU time limit or session time limit.
-  - Interpretation: Internal or policy-driven limit.
-- `Resultlimit` (int?, nullable)
-  - Description: Probably/guesswork: maximum result set rows or limits.
-  - Interpretation: Internal legacy value.
-- `Name` (string)
-  - Description: Login display name.
-  - Interpretation: Name of the login as defined in SQL Server.
-- `Dbname` (string?, nullable)
-  - Description: Default database name for the login.
-  - Interpretation: Database used on login by default.
-- `Password` (string?, nullable)
-  - Description: Probably/guesswork: hashed password or historic password field.
-  - Interpretation: Do not rely on this for current authentication methods; may be NULL/hashed.
-- `Language` (string?, nullable)
-  - Description: Default language for the login.
-  - Interpretation: Language alias or name.
-- `Denylogin` (int?, nullable)
-  - Description: Probably/guesswork: flag indicating if login is denied.
-  - Interpretation: Non-zero indicates DENY.
-- `Hasaccess` (int?, nullable)
-  - Description: Probably/guesswork: whether the login has access to the server/database.
-  - Interpretation: Non-zero indicates access present.
-- `Isntname`, `Isntgroup`, `Isntuser` (int?, nullable)
-  - Description: Probably/guesswork: flags indicating whether the login is a Windows NT name, group, or user.
-  - Interpretation: Non-zero indicates true.
-- Server role flags: `Sysadmin`, `Securityadmin`, `Serveradmin`, `Setupadmin`, `Processadmin`, `Diskadmin`, `Dbcreator`, `Bulkadmin` (int?, nullable)
-  - Description: Role membership flags for common server roles.
-  - Interpretation: Non-zero indicates membership.
-- `Loginname` (string)
-  - Description: Login name used to authenticate.
-  - Interpretation: User-friendly login name.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s13.[Sid],
+  s13.[Status],
+  s13.[Createdate],
+  s13.[Updatedate],
+  s13.[Accdate],
+  s13.[Totcpu],
+  s13.[Totio],
+  s13.[Spacelimit],
+  s13.[Timelimit],
+  s13.[Resultlimit],
+  s13.[Name],
+  s13.[Dbname],
+  s13.[Password],
+  s13.[Language],
+  s13.[Denylogin],
+  s13.[Hasaccess],
+  s13.[Isntname],
+  s13.[Isntgroup],
+  s13.[Isntuser],
+  s13.[Sysadmin],
+  s13.[Securityadmin],
+  s13.[Serveradmin],
+  s13.[Setupadmin],
+  s13.[Processadmin],
+  s13.[Diskadmin],
+  s13.[Dbcreator],
+  s13.[Bulkadmin],
+  s13.[Loginname]
+FROM
+  [sys].[syslogins] s13
+```
+
+Columns and interpretation
+
+- `Sid` (binary?): Security identifier for the login.
+- `Status` (smallint?): Status flags for the login account (internal bitmask).
+- `Createdate` (datetime): Login creation date.
+- `Updatedate` (datetime): Login last update date.
+- `Accdate` (datetime): Last access date for the login.
+- `Totcpu` (int?): Total CPU used by the login (legacy cumulative metric).
+- `Totio` (int?): Total IO used by the login (legacy cumulative metric).
+- `Spacelimit` (int?): Space limit for the login (legacy quota fields).
+- `Timelimit` (int?): Time limit for the login (legacy field).
+- `Resultlimit` (int?): Result limits for the login (legacy resource governor fields).
+- `Name` (string): Login name.
+- `Dbname` (string?): Default database name for the login.
+- `Password` (string?): Password hash or password field (legacy storage; may be null).
+- `Language` (string?): Default language for the login.
+- `Denylogin` (int?): Flag indicating login is denied.
+- `Hasaccess` (int?): Flag indicating login has access.
+- `Isntname` (int?): Probably/guesswork: internal flag about NT name mapping.
+- `Isntgroup` (int?): Probably/guesswork: internal flag indicating Windows group mapping.
+- `Isntuser` (int?): Probably/guesswork: internal flag indicating Windows user mapping.
+- `Sysadmin` (int?): Flag indicating membership in sysadmin role.
+- `Securityadmin` (int?): Flag indicating membership in securityadmin role.
+- `Serveradmin` (int?): Flag indicating membership in serveradmin role.
+- `Setupadmin` (int?): Flag indicating membership in setupadmin role.
+- `Processadmin` (int?): Flag indicating membership in processadmin role.
+- `Diskadmin` (int?): Flag indicating membership in diskadmin role.
+- `Dbcreator` (int?): Flag indicating membership in dbcreator role.
+- `Bulkadmin` (int?): Flag indicating membership in bulkadmin role.
+- `Loginname` (string): Windows or SQL login name (display name).
+
+How to interpret
+
+- Prefer modern views like `sys.server_principals` and `sys.sql_logins` for current SQL Server versions; `sys.syslogins` is legacy.
+- Role flags are represented as numeric flags; non-zero indicates membership/true.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysloginsReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysloginsReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysloginsReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"login={r.Loginname} name={r.Name} created={r.Createdate} disabled={(r.Status.HasValue && r.Status.Value==0)}");
-}
+    Console.WriteLine($"Login:{r.Name} SID:{BitConverter.ToString(r.Sid ?? Array.Empty<byte>())} Created:{r.Createdate} LastAccess:{r.Accdate}");
 ```
 
 See also:
-- [sys.syslogins](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-syslogins-transact-sql)
+
+- [sys.syslogins](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-syslogins)

@@ -1,43 +1,50 @@
 # SysdevicesReader
 
-Reads rows from the `sys.sysdevices` compatibility view. Columns:
+Overview
 
-- `Name` (string)
-  - Description: Device name.
-  - Interpretation: Logical device identifier used by SQL Server.
-- `Size` (int?, nullable)
-  - Description: Size of the device (units depend on SQL Server internal representation).
-  - Interpretation: Typically number of pages or blocks.
-- `Low` (int?, nullable)
-  - Description: Probably/guesswork: lowest allocation unit or low water mark.
-  - Interpretation: Internal allocation boundary.
-- `High` (int?, nullable)
-  - Description: Probably/guesswork: high allocation unit or high water mark.
-  - Interpretation: Internal allocation boundary.
-- `Status` (short?, nullable)
-  - Description: Probably/guesswork: status flags for the device.
-  - Interpretation: Indicates online/offline/disabled.
-- `Cntrltype` (short?, nullable)
-  - Description: Probably/guesswork: control type for the device (backup, tape, disk).
-  - Interpretation: Encoded device type.
-- `Phyname` (string?, nullable)
-  - Description: Physical name or path of the device.
-  - Interpretation: File system path or device identifier.
+`SysdevicesReader` wraps `sys.sysdevices` (legacy) and exposes information about physical devices defined in the server (used by older SQL Server features like tape devices and device-based files).
 
-Example usage
+Reader SQL
+
+```
+SELECT
+  s15.[Name],
+  s15.[Size],
+  s15.[Low],
+  s15.[High],
+  s15.[Status],
+  s15.[Cntrltype],
+  s15.[Phyname]
+FROM
+  [sys].[sysdevices] s15
+```
+
+Columns and interpretation
+
+- `Name` (string): Logical device name.
+- `Size` (int?): Device size in pages or another unit used by the server.
+- `Low` (int?): Probably/guesswork: low-water mark or starting extent for allocations on the device.
+- `High` (int?): Probably/guesswork: high-water mark or ending extent for allocations on the device.
+- `Status` (smallint?): Status flags describing the device state.
+- `Cntrltype` (smallint?): Control type code indicating device physical type (e.g., disk, tape).
+- `Phyname` (string?): Physical device path or name.
+
+How to interpret
+
+- These fields are primarily useful when working with legacy device-oriented storage or investigating older systems.
+- Prefer modern file and filegroup metadata (`sys.master_files`, `sys.database_files`, `sys.filegroups`) for current SQL Server versions.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysdevicesReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysdevicesReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysdevicesReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"{r.Name}: size={r.Size} status={r.Status} path={r.Phyname}");
-}
+    Console.WriteLine($"Device:{r.Name} Physical:{r.Phyname} Size:{r.Size} Status:{r.Status}");
 ```
 
 See also:
-- [sys.sysdevices](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysdevices-transact-sql)
+
+- [sys.sysdevices](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysdevices)

@@ -1,34 +1,44 @@
 # SysfulltextcatalogsReader
 
-Reads rows from the `sys.sysfulltextcatalogs` compatibility view. Columns:
+Overview
 
-- `Ftcatid` (short?, nullable)
-  - Description: Full-text catalog ID.
-  - Interpretation: Numeric identifier for the full-text catalog.
-- `Name` (string)
-  - Description: Full-text catalog name.
-  - Interpretation: Logical name of the catalog used by full-text features.
-- `Status` (short?, nullable)
-  - Description: Probably/guesswork: status flags for the catalog (populating, idle, etc.).
-  - Interpretation: See SQL Server docs for status values and meanings.
-- `Path` (string?, nullable)
-  - Description: Filesystem path where the full-text catalog files are stored.
-  - Interpretation: Directory path on disk for full-text catalog files.
+`SysfulltextcatalogsReader` wraps `sys.sysfulltextcatalogs` (legacy) and exposes information about full-text catalogs.
 
-Example usage
+Reader SQL
+
+```
+SELECT
+  s37.[Ftcatid],
+  s37.[Name],
+  s37.[Status],
+  s37.[Path]
+FROM
+  [sys].[sysfulltextcatalogs] s37
+```
+
+Columns and interpretation
+
+- `Ftcatid` (smallint?): Full-text catalog id.
+- `Name` (string): Full-text catalog name.
+- `Status` (smallint?): Status flag for the catalog (internal state information such as populated, crawling, etc.).
+- `Path` (string?): Physical path for the catalog files.
+
+How to interpret
+
+- Use `Ftcatid` to relate the catalog to full-text index usage or catalog-specific settings.
+- `Path` indicates the physical file system location where the catalog stores data.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysfulltextcatalogsReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysfulltextcatalogsReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysfulltextcatalogsReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"catalog {r.Ftcatid}: {r.Name} status={r.Status} path={r.Path}");
-}
+    Console.WriteLine($"Catalog:{r.Name} Id:{r.Ftcatid} Path:{r.Path} Status:{r.Status}");
 ```
 
 See also:
-- [sys.sysfulltextcatalogs](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysfulltextcatalogs-transact-sql)
+
+- [sys.sysfulltextcatalogs](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysfulltextcatalogs)

@@ -1,55 +1,58 @@
 # SyslanguagesReader
 
-Reads rows from the `sys.syslanguages` compatibility view. Columns:
+Overview
 
-- `Langid` (short)
-  - Description: Language identifier for the language entry.
-  - Interpretation: Numeric id used by SQL Server for language settings.
-- `Dateformat` (string)
-  - Description: Date format string used by the language (e.g., "mdy").
-  - Interpretation: Shows the default date format ordering for the language.
-- `Datefirst` (byte)
-  - Description: First day of week for the language (1 = Monday ... 7 = Sunday depending on SQL Server mapping).
-  - Interpretation: Use to determine week start for date functions.
-- `Upgrade` (int?, nullable)
-  - Description: Probably/guesswork: internal upgrade flag or version.
-  - Interpretation: Internal use.
-- `Name` (string)
-  - Description: Formal language name.
-  - Interpretation: Language display name.
-- `Alias` (string)
-  - Description: Alias for language (short name).
-  - Interpretation: Short label used in system messages.
-- `Months` (string?, nullable)
-  - Description: Probably/guesswork: comma separated full month names.
-  - Interpretation: Localized month names.
-- `Shortmonths` (string?, nullable)
-  - Description: Probably/guesswork: comma separated abbreviated month names.
-  - Interpretation: Localized abbreviated month names.
-- `Days` (string?, nullable)
-  - Description: Probably/guesswork: comma separated day names.
-  - Interpretation: Localized day names.
-- `Lcid` (int)
-  - Description: Windows locale identifier corresponding to the language.
-  - Interpretation: Use to map to .NET culture info.
-- `Msglangid` (short)
-  - Description: Message language id used for system messages.
-  - Interpretation: Used for system message localization.
+`SyslanguagesReader` wraps `sys.syslanguages` (legacy) and exposes language and locale settings supported by the server.
 
-Example usage
+Reader SQL
+
+```
+SELECT
+  s24.[Langid],
+  s24.[Dateformat],
+  s24.[Datefirst],
+  s24.[Upgrade],
+  s24.[Name],
+  s24.[Alias],
+  s24.[Months],
+  s24.[Shortmonths],
+  s24.[Days],
+  s24.[Lcid],
+  s24.[Msglangid]
+FROM
+  [sys].[syslanguages] s24
+```
+
+Columns and interpretation
+
+- `Langid` (smallint): Language id used in SQL Server.
+- `Dateformat` (string): Date format string used by the language (e.g., `mdy`, `dmy`).
+- `Datefirst` (byte): First day of the week for the language (1 = Monday, etc.).
+- `Upgrade` (int?): Probably/guesswork: internal upgrade or versioning flag for the language.
+- `Name` (string): Language name.
+- `Alias` (string): Language alias used historically.
+- `Months` (string?): Comma-separated month names for the locale.
+- `Shortmonths` (string?): Comma-separated abbreviated month names.
+- `Days` (string?): Comma-separated day names.
+- `Lcid` (int): Windows locale identifier (LCID) for the language.
+- `Msglangid` (smallint): Message language id used for system messages.
+
+How to interpret
+
+- Use `Langid` to set session language and to map message or format settings.
+- `Dateformat` and `Datefirst` affect parsing and formatting of dates for sessions that use the language.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SyslanguagesReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SyslanguagesReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SyslanguagesReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"{r.Langid}: {r.Name} alias={r.Alias} dateFormat={r.Dateformat} dateFirst={r.Datefirst} lcid={r.Lcid}");
-}
+    Console.WriteLine($"Lang:{r.Name} Id:{r.Langid} DateFormat:{r.Dateformat} DateFirst:{r.Datefirst}");
 ```
 
 See also:
-- [sys.syslanguages](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-syslanguages-transact-sql)
+
+- [sys.syslanguages](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-syslanguages)

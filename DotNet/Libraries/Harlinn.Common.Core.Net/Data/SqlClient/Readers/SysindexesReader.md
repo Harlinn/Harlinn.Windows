@@ -1,106 +1,95 @@
 # SysindexesReader
 
-Reads rows from the `sys.sysindexes` compatibility view. This view exposes a number of internal fields related to indexes.
+Overview
 
-Columns and interpretation:
+`SysindexesReader` wraps `sys.sysindexes` (legacy) and exposes index metadata for tables.
 
-- `Id` (int)
-  - Description: Object id of the table or object that the index belongs to.
-  - Interpretation: Use to correlate with `sysobjects` or catalog views to find the table.
-- `Status` (int?, nullable)
-  - Description: Probably/guesswork: index status flags.
-  - Interpretation: Bitmask describing index options and state.
-- `First` (binary?, nullable)
-  - Description: Probably/guesswork: pointer to first page or internal root pointer.
-  - Interpretation: Internal binary value used by SQL Server; not directly meaningful outside engine.
-- `Indid` (short?, nullable)
-  - Description: Index id within the object (0 = heap, 1 = clustered index, >1 = nonclustered indexes).
-  - Interpretation: Identifies which index within the table.
-- `Root` (binary?, nullable)
-  - Description: Probably/guesswork: pointer to root page of the index.
-  - Interpretation: Internal engine pointer.
-- `Minlen` (short?, nullable)
-  - Description: Probably/guesswork: minimum key length.
-  - Interpretation: Size in bytes of the smallest index key.
-- `Keycnt` (short?, nullable)
-  - Description: Number of key columns in the index.
-  - Interpretation: The count of columns that form the index key.
-- `Groupid` (short?, nullable)
-  - Description: Filegroup id where the index resides.
-  - Interpretation: References `sysfilegroups` groupid.
-- `Dpages` (int?, nullable)
-  - Description: Number of data pages used by the index.
-  - Interpretation: Page count used by the index structure.
-- `Reserved` (int?, nullable)
-  - Description: Probably/guesswork: reserved pages.
-  - Interpretation: Internal allocation numbers.
-- `Used` (int?, nullable)
-  - Description: Pages currently used.
-  - Interpretation: Internal usage metric.
-- `Rowcnt` (long?, nullable)
-  - Description: Number of rows covered by the index (approximate).
-  - Interpretation: Row count for the underlying table or index.
-- `Rowmodctr` (int?, nullable)
-  - Description: Row modification counter.
-  - Interpretation: Incremented on modifications; used for statistics.
-- `Reserved3` (byte?, nullable)
-  - Description: Probably/guesswork: internal flag.
-  - Interpretation: Internal engine use.
-- `Reserved4` (byte?, nullable)
-  - Description: Probably/guesswork: internal flag.
-  - Interpretation: Internal engine use.
-- `Xmaxlen` (short?, nullable)
-  - Description: Probably/guesswork: maximum key length.
-  - Interpretation: Maximum bytes for the key.
-- `Maxirow` (short?, nullable)
-  - Description: Probably/guesswork: maximum rows per page or per allocation.
-  - Interpretation: Internal.
-- `Origfillfactor` (byte?, nullable)
-  - Description: Original fill factor for the index.
-  - Interpretation: Fill factor when the index was originally created.
-- `Statversion` (byte?, nullable)
-  - Description: Probably/guesswork: statistics version.
-  - Interpretation: Internal versioning for stats.
-- `Reserved2` (int?, nullable)
-  - Description: Probably/guesswork: internal.
-- `Firstiam` (binary?, nullable)
-  - Description: Probably/guesswork: pointer to first IAM page.
-  - Interpretation: Internal allocation map pointer.
-- `Impid` (short?, nullable)
-  - Description: Probably/guesswork: partition/impersonation id.
-- `Lockflags` (short?, nullable)
-  - Description: Probably/guesswork: lock flags configured for the index.
-- `Pgmodctr` (int?, nullable)
-  - Description: Page modification counter.
-  - Interpretation: Internal change counter for pages.
-- `Keys` (binary?, nullable)
-  - Description: Binary representation of index keys or key metadata.
-  - Interpretation: Internal format describing keys.
-- `Name` (string?, nullable)
-  - Description: Index name.
-  - Interpretation: Name used for the index; NULL for heaps.
-- `Statblob` (binary?, nullable)
-  - Description: Serialized statistics blob.
-  - Interpretation: Packed statistics data.
-- `Maxlen` (int?, nullable)
-  - Description: Probably/guesswork: maximum length for rows in index.
-- `Rows` (int?, nullable)
-  - Description: Probably/guesswork: number of rows (int sized) - older stores.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s36.[Id],
+  s36.[Status],
+  s36.[First],
+  s36.[Indid],
+  s36.[Root],
+  s36.[Minlen],
+  s36.[Keycnt],
+  s36.[Groupid],
+  s36.[Dpages],
+  s36.[Reserved],
+  s36.[Used],
+  s36.[Rowcnt],
+  s36.[Rowmodctr],
+  s36.[Reserved3],
+  s36.[Reserved4],
+  s36.[Xmaxlen],
+  s36.[Maxirow],
+  s36.[Origfillfactor],
+  s36.[Statversion],
+  s36.[Reserved2],
+  s36.[Firstiam],
+  s36.[Impid],
+  s36.[Lockflags],
+  s36.[Pgmodctr],
+  s36.[Keys],
+  s36.[Name],
+  s36.[Statblob],
+  s36.[Maxlen],
+  s36.[Rows]
+FROM
+  [sys].[sysindexes] s36
+```
+
+Columns and interpretation
+
+- `Id` (int): Object id of the table or indexed view the index belongs to.
+- `Status` (int?): Status bitmask for index properties (internal flags for clustered, unique, padded, etc.).
+- `First` (binary?): Internal pointer to first page or first key (internal binary format).
+- `Indid` (smallint?): Index id within the object (0 = heap, 1 = clustered, >1 nonclustered index ids).
+- `Root` (binary?): Internal pointer to root page for the index (internal binary format).
+- `Minlen` (smallint?): Minimum key length for the index keys.
+- `Keycnt` (smallint?): Number of key columns in the index.
+- `Groupid` (smallint?): Filegroup id or partition group for the index.
+- `Dpages` (int?): Data pages count used by the index.
+- `Reserved` (int?): Reserved pages count.
+- `Used` (int?): Used pages count.
+- `Rowcnt` (bigint?): Row count estimate for the index/table.
+- `Rowmodctr` (int?): Row modification counter.
+- `Reserved3` (byte?): Internal reserved field.
+- `Reserved4` (byte?): Internal reserved field.
+- `Xmaxlen` (smallint?): Maximum key length.
+- `Maxirow` (smallint?): Maximum row size allowed for the index.
+- `Origfillfactor` (byte?): Original fill factor set when index was created.
+- `Statversion` (byte?): Statistics version for index.
+- `Reserved2` (int?): Internal reserved field.
+- `Firstiam` (binary?): Internal pointer to first IAM page.
+- `Impid` (smallint?): Implicit id for internal structures.
+- `Lockflags` (smallint?): Lock flags used by the index.
+- `Pgmodctr` (int?): Page modification counter.
+- `Keys` (binary?): Encoded key info (internal binary data describing keys).
+- `Name` (string?): Index name (may be NULL for heaps or internal indexes).
+- `Statblob` (binary?): Statistics blob for indexed column statistics.
+- `Maxlen` (int?): Maximum length of index keys in bytes.
+- `Rows` (int?): Deprecated/legacy row count field.
+
+How to interpret
+
+- `Id` joined to `sys.objects` (or `sys.sysobjects`) gives the table name.
+- `Indid` identifies the type of index: `0` = heap, `1` = clustered index, `>1` = nonclustered.
+- Many binary fields (`First`, `Root`, `Keys`, `Firstiam`) are internal pointers and not intended for direct interpretation; use modern catalog views (`sys.indexes`, `sys.index_columns`, `sys.dm_db_index_physical_stats`) for detailed index information.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysindexesReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysindexesReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysindexesReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"object={r.Id} ind={r.Indid} name={r.Name} keys={r.Keycnt} rows={r.Rowcnt}");
-}
+    Console.WriteLine($"Object:{r.Id} IndexId:{r.Indid} Name:{r.Name} KeyCols:{r.Keycnt} Rows:{r.Rowcnt}");
 ```
 
 See also:
-- [sys.sysindexes](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysindexes-transact-sql)
+
+- [sys.sysindexes](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysindexes)

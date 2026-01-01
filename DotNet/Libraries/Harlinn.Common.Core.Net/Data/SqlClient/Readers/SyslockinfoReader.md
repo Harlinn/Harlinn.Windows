@@ -1,78 +1,73 @@
 # SyslockinfoReader
 
-Reads rows from the `sys.syslockinfo` compatibility view. This view contains information about locks held or requested.
+Overview
 
-Columns and interpretation:
+`SyslockinfoReader` wraps `sys.syslockinfo` (legacy) and exposes lock state and requests currently tracked by the server. This view returns a row per lock request with details about the resource and requester.
 
-- `rsc_text` (string)
-  - Description: Textual representation of the resource being locked.
-  - Interpretation: Often a human-readable identifier of the resource.
-- `rsc_bin` (binary)
-  - Description: Binary representation of the resource.
-  - Interpretation: Internal key or resource descriptor.
-- `rsc_valblk` (binary)
-  - Description: Binary value block associated with the resource.
-  - Interpretation: Internal engine data.
-- `rsc_dbid` (short)
-  - Description: Database id the resource belongs to.
-  - Interpretation: Correlate with `sysdatabases`.
-- `rsc_indid` (short)
-  - Description: Index id if the resource is index-related.
-  - Interpretation: Identifies index within object.
-- `rsc_objid` (int)
-  - Description: Object id of the resource.
-  - Interpretation: Table or object id.
-- `rsc_type` (byte)
-  - Description: Resource type (e.g., page, key, object).
-  - Interpretation: Encoded resource type value.
-- `rsc_flag` (byte)
-  - Description: Resource flag providing extra information.
-  - Interpretation: Encoded flags for the resource.
-- `req_mode` (byte)
-  - Description: Requested lock mode (shared, update, exclusive, etc.).
-  - Interpretation: Encoded lock mode value.
-- `req_status` (byte)
-  - Description: Request status (granted, waiting, converting, etc.).
-  - Interpretation: Encoded request state.
-- `req_refcnt` (short)
-  - Description: Reference count for request.
-  - Interpretation: Number of references to the lock request.
-- `req_cryrefcnt` (short)
-  - Description: Probably/guesswork: cryptic reference count used internally.
-  - Interpretation: Internal count.
-- `req_lifetime` (int)
-  - Description: Lifetime of the lock request.
-  - Interpretation: Time or counter representing how long the request has existed.
-- `req_spid` (int)
-  - Description: Server process id (SPID) for the requesting process.
-  - Interpretation: Correlate with `sysprocesses` or activity views.
-- `req_ecid` (int)
-  - Description: Execution context id.
-  - Interpretation: For partitioned or parallel requests.
-- `req_ownertype` (short)
-  - Description: Owner type for the lock (transaction, request, session).
-  - Interpretation: Encoded owner type value.
-- `req_transactionID` (long?, nullable)
-  - Description: Transaction id if lock is transaction-scoped.
-  - Interpretation: Transaction sequence number.
-- `req_transactionUOW` (GUID?, nullable)
-  - Description: Transaction unit-of-work GUID.
-  - Interpretation: GUID identifying the transaction UOW.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s14.[rsc_text],
+  s14.[rsc_bin],
+  s14.[rsc_valblk],
+  s14.[rsc_dbid],
+  s14.[rsc_indid],
+  s14.[rsc_objid],
+  s14.[rsc_type],
+  s14.[rsc_flag],
+  s14.[req_mode],
+  s14.[req_status],
+  s14.[req_refcnt],
+  s14.[req_cryrefcnt],
+  s14.[req_lifetime],
+  s14.[req_spid],
+  s14.[req_ecid],
+  s14.[req_ownertype],
+  s14.[req_transactionID],
+  s14.[req_transactionUOW]
+FROM
+  [sys].[syslockinfo] s14
+```
+
+Columns and interpretation
+
+- `rsc_text` (string): Human-readable resource description (e.g., key text or page identifier).
+- `rsc_bin` (binary): Binary representation of the resource identifier.
+- `rsc_valblk` (binary): Resource value block (internal data about the resource value).
+- `rsc_dbid` (smallint): Database id where the resource exists.
+- `rsc_indid` (smallint): Index id related to the resource.
+- `rsc_objid` (int): Object id of the object locked.
+- `rsc_type` (byte): Resource type code (e.g., page, key, object).
+- `rsc_flag` (byte): Resource attribute flags (internal meaning).
+- `req_mode` (byte): Lock mode requested or held (encoded as numeric code, e.g., shared, exclusive).
+- `req_status` (byte): Request status code (granted, waiting, converted, etc.).
+- `req_refcnt` (smallint): Reference count for the request.
+- `req_cryrefcnt` (smallint): Probably/guesswork: cryptic reference count for internal tracking.
+- `req_lifetime` (int): Lifetime indicator for the request.
+- `req_spid` (int): Server process id (SPID) of the requesting session.
+- `req_ecid` (int): Execution context id within the session.
+- `req_ownertype` (smallint): Owner type code for the request (internal categorization).
+- `req_transactionID` (bigint?): Transaction id associated with the request.
+- `req_transactionUOW` (uniqueidentifier?): Transaction UOW (unit of work) GUID if available.
+
+How to interpret
+
+- Use `req_spid` and `req_ecid` to correlate locks with sessions and execution contexts from process lists.
+- Resource binary fields are internal but `rsc_text` is often useful to present a human-friendly description.
+- `req_mode` and `req_status` can be mapped to known lock modes and statuses via SQL Server documentation or experimentation.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SyslockinfoReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SyslockinfoReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SyslockinfoReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"spid={r.ReqSpid} type={r.RscType} mode={r.ReqMode} status={r.ReqStatus} resource={r.RscText}");
-}
+    Console.WriteLine($"SPID:{r.ReqSpid} Resource:{r.RscText} Mode:{r.ReqMode} Status:{r.ReqStatus} ObjId:{r.RscObjid}");
 ```
 
 See also:
-- [sys.syslockinfo](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-syslockinfo-transact-sql)
+
+- [sys.syslockinfo](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-syslockinfo)

@@ -1,85 +1,86 @@
 # SysobjectsReader
 
-Reads rows from the `sys.sysobjects` compatibility view. This view lists objects (tables, views, procedures, etc.) and metadata.
+Overview
 
-Columns and interpretation:
+`SysobjectsReader` wraps `sys.sysobjects` (legacy) and exposes information about objects in the database (tables, views, procedures, etc.).
 
-- `Name` (string)
-  - Description: Name of the object.
-  - Interpretation: Object name within the database.
-- `Id` (int)
-  - Description: Object id.
-  - Interpretation: Unique identifier for the object.
-- `Xtype` (string)
-  - Description: Object type code (e.g., 'U' = user table, 'V' = view, 'P' = stored procedure).
-  - Interpretation: Short code describing object type.
-- `Uid` (short?, nullable)
-  - Description: Owner user id.
-  - Interpretation: Maps to database principal id.
-- `Info` (short?, nullable)
-  - Description: Probably/guesswork: info flags about object.
-  - Interpretation: Internal metadata.
-- `Status` (int?, nullable)
-  - Description: Status flags for the object.
-  - Interpretation: Bitmask for object properties.
-- `base_schema_ver` (int?, nullable)
-  - Description: Probably/guesswork: schema base version.
-  - Interpretation: Internal schema tracking.
-- `Replinfo` (int?, nullable)
-  - Description: Replication related info.
-  - Interpretation: Flags or ids used by replication.
-- `parent_obj` (int)
-  - Description: Parent object id if applicable (e.g., constraint on table)
-  - Interpretation: The id of the container object.
-- `Crdate` (DateTime)
-  - Description: Creation date of the object.
-  - Interpretation: Timestamp when object was created.
-- `Ftcatid` (short?, nullable)
-  - Description: Full-text catalog id related to the object.
-  - Interpretation: If object participates in full-text indexing.
-- `schema_ver` (int?, nullable)
-  - Description: Schema version for the object.
-  - Interpretation: Internal versioning for schema changes.
-- `stats_schema_ver` (int?, nullable)
-  - Description: Statistics schema version.
-  - Interpretation: Internal stats version.
-- `Type` (string?, nullable)
-  - Description: Possibly human-readable object type.
-  - Interpretation: Longer type description.
-- `Userstat` (short?, nullable)
-  - Description: Probably/guesswork: user-level status flags.
-- `Sysstat` (short?, nullable)
-  - Description: Probably/guesswork: system-level status flags.
-- `Indexdel` (short?, nullable)
-  - Description: Probably/guesswork: index delete flag.
-- `Refdate` (DateTime)
-  - Description: Date reference updated or last referenced.
-  - Interpretation: Internal timestamp.
-- `Version` (int?, nullable)
-  - Description: Object version.
-  - Interpretation: Internal version number.
-- Trigger fields: `Deltrig`, `Instrig`, `Updtrig`, `Seltrig` (int?, nullable)
-  - Description: Counts or flags for triggers assigned to the object.
-  - Interpretation: Non-zero indicates triggers are present.
-- `Category` (int?, nullable)
-  - Description: Category id used to group objects.
-- `Cache` (short?, nullable)
-  - Description: Probably/guesswork: caching flags for object.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s43.[Name],
+  s43.[Id],
+  s43.[Xtype],
+  s43.[Uid],
+  s43.[Info],
+  s43.[Status],
+  s43.[base_schema_ver],
+  s43.[Replinfo],
+  s43.[parent_obj],
+  s43.[Crdate],
+  s43.[Ftcatid],
+  s43.[schema_ver],
+  s43.[stats_schema_ver],
+  s43.[Type],
+  s43.[Userstat],
+  s43.[Sysstat],
+  s43.[Indexdel],
+  s43.[Refdate],
+  s43.[Version],
+  s43.[Deltrig],
+  s43.[Instrig],
+  s43.[Updtrig],
+  s43.[Seltrig],
+  s43.[Category],
+  s43.[Cache]
+FROM
+  [sys].[sysobjects] s43
+```
+
+Columns and interpretation
+
+- `Name` (string): Object name.
+- `Id` (int): Object id.
+- `Xtype` (string): Extended type or object type code (single-character code in legacy systems indicating table, view, procedure, etc.).
+- `Uid` (smallint?): Owner user id.
+- `Info` (smallint?): Internal info bits about the object.
+- `Status` (int?): Status bitmask describing object properties.
+- `base_schema_ver` (int?): Base schema version for the object (internal versioning).
+- `Replinfo` (int?): Replication-related information.
+- `parent_obj` (int): Parent object id (used for objects like constraints referencing a parent object).
+- `Crdate` (datetime): Object creation date.
+- `Ftcatid` (smallint?): Full-text catalog id associated with object.
+- `schema_ver` (int?): Schema version for the object.
+- `stats_schema_ver` (int?): Statistics schema version.
+- `Type` (string?): Object type description or code.
+- `Userstat` (smallint?): User status bits.
+- `Sysstat` (smallint?): System status bits.
+- `Indexdel` (smallint?): Index delete flag or count.
+- `Refdate` (datetime): Reference date (internal use).
+- `Version` (int?): Object version number.
+- `Deltrig` (int?): Number of delete triggers or flag.
+- `Instrig` (int?): Number of insert triggers or flag.
+- `Updtrig` (int?): Number of update triggers or flag.
+- `Seltrig` (int?): Number of select triggers or flag.
+- `Category` (int?): Category code.
+- `Cache` (smallint?): Cache-related flag or small counter.
+
+How to interpret
+
+- Prefer modern catalog views like `sys.objects`, `sys.schemas`, `sys.triggers`, and `sys.indexes` for clearer semantics; `sys.sysobjects` is a legacy compatibility view.
+- `Xtype` and `Type` can be used to distinguish object kinds (e.g., 'U' = user table, 'V' = view, 'P' = stored procedure).
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysobjectsReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysobjectsReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysobjectsReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"{r.Name} (id={r.Id}) type={r.Xtype} owner={r.Uid} created={r.Crdate}");
-}
+    Console.WriteLine($"Object:{r.Name} Id:{r.Id} Type:{r.Xtype} Created:{r.Crdate}");
 ```
 
 See also:
-- [sys.sysobjects](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysobjects-transact-sql)
+
+- [sys.sysobjects](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysobjects)

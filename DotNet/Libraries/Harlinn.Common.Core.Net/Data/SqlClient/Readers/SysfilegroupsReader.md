@@ -1,34 +1,44 @@
 # SysfilegroupsReader
 
-Reads rows from the `sys.sysfilegroups` compatibility view. Columns:
+Overview
 
-- `Groupid` (short?, nullable)
-  - Description: Filegroup ID.
-  - Interpretation: Numeric identifier of the filegroup within the database.
-- `Allocpolicy` (short?, nullable)
-  - Description: Probably/guesswork: allocation policy for the filegroup.
-  - Interpretation: Encoded value describing allocation behavior (e.g., uniform, proportional).
-- `Status` (int?, nullable)
-  - Description: Probably/guesswork: status flags for the filegroup.
-  - Interpretation: Indicate read-only, offline or other states.
-- `Groupname` (string)
-  - Description: Name of the filegroup.
-  - Interpretation: Logical name used for filegroup creation and assignment.
+`SysfilegroupsReader` wraps `sys.sysfilegroups` (legacy) and exposes information about filegroups defined in the database.
 
-Example usage
+Reader SQL
+
+```
+SELECT
+  s28.[Groupid],
+  s28.[Allocpolicy],
+  s28.[Status],
+  s28.[Groupname]
+FROM
+  [sys].[sysfilegroups] s28
+```
+
+Columns and interpretation
+
+- `Groupid` (smallint?): Identifier of the filegroup.
+- `Allocpolicy` (smallint?): Allocation policy code for the filegroup (internal representation).
+- `Status` (int?): Status bitmask for the filegroup (internal flags such as read-only, offline etc.).
+- `Groupname` (string): Name of the filegroup.
+
+How to interpret
+
+- `Groupid` uniquely identifies the filegroup within the database and can be used to join to file-level metadata.
+- `Allocpolicy` explains how allocations are distributed across files in the group; use modern `sys.data_spaces` and `sys.filegroups` documentation for meaning.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysfilegroupsReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysfilegroupsReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysfilegroupsReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"filegroup {r.Groupid}: {r.Groupname} allocPolicy={r.Allocpolicy} status={r.Status}");
-}
+    Console.WriteLine($"Group:{r.Groupname} Id:{r.Groupid} Policy:{r.Allocpolicy} Status:{r.Status}");
 ```
 
 See also:
-- [sys.sysfilegroups](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysfilegroups-transact-sql)
+
+- [sys.sysfilegroups](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysfilegroups)

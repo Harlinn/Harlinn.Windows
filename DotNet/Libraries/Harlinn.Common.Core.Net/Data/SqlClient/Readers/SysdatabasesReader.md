@@ -1,58 +1,61 @@
 # SysdatabasesReader
 
-Reads rows from the `sys.sysdatabases` system view / compatibility view. This reader exposes the following columns:
+Overview
 
-- `Name` (string, nullable)
-  - Description: The database name.
-  - Interpretation: The logical name of the database.
-- `Dbid` (short, nullable)
-  - Description: Database ID.
-  - Interpretation: Numeric identifier for the database within the SQL Server instance.
-- `Sid` (binary, nullable)
-  - Description: Probably/guesswork: security identifier (SID) associated with the database owner or principal.
-  - Interpretation: Binary representation of a Windows or SQL Server principal SID; can be mapped to logins.
-- `Mode` (short, nullable)
-  - Description: Probably/guesswork: database mode flags (compatibility, single-user/multi-user, etc.).
-  - Interpretation: Bitmask or encoded value indicating database settings.
-- `Status` (int, nullable)
-  - Description: Probably/guesswork: status flags for the database (online, offline, read-only, etc.).
-  - Interpretation: Bitmask of status values; consult SQL Server documentation for exact meanings.
-- `Status2` (int, nullable)
-  - Description: Probably/guesswork: additional status flags introduced for backward compatibility.
-  - Interpretation: Extended status flags; use SQL Server docs for interpretation.
-- `Crdate` (DateTime)
-  - Description: Creation date of the database.
-  - Interpretation: UTC/local creation timestamp when the database was created.
-- `Reserved` (DateTime, nullable)
-  - Description: Probably/guesswork: date reserved or related timestamp for internal use.
-  - Interpretation: Might be used internally; treat as informational.
-- `Category` (int, nullable)
-  - Description: Probably/guesswork: category identifier for the database.
-  - Interpretation: Legacy classification value.
-- `Cmptlevel` (byte)
-  - Description: Compatibility level of the database.
-  - Interpretation: Indicates the T-SQL compatibility level (e.g., 80, 90, 100, 110, 120, 130, 140, 150, 160).
-- `Filename` (string, nullable)
-  - Description: Primary data file name for the database (path).
-  - Interpretation: File system path to the primary data file (.mdf) used by the database.
-- `Version` (short, nullable)
-  - Description: Probably/guesswork: database internal version number.
-  - Interpretation: Internal version used by SQL Server.
+`SysdatabasesReader` wraps `sys.sysdatabases` (legacy) and exposes basic catalog information about databases in the server instance.
 
-Example usage
+Reader SQL
+
+```
+SELECT
+  s16.[Name],
+  s16.[Dbid],
+  s16.[Sid],
+  s16.[Mode],
+  s16.[Status],
+  s16.[Status2],
+  s16.[Crdate],
+  s16.[Reserved],
+  s16.[Category],
+  s16.[Cmptlevel],
+  s16.[Filename],
+  s16.[Version]
+FROM
+  [sys].[sysdatabases] s16
+```
+
+Columns and interpretation
+
+- `Name` (string): Database name.
+- `Dbid` (smallint?): Database identifier (database id).
+- `Sid` (binary?): Database owner security identifier (owner SID).
+- `Mode` (smallint?): Database mode flags (internal). Probably/guesswork: encodes single-user/multi-user and compatibility-related flags.
+- `Status` (int?): Status bitmask describing database options and state (internal flags such as offline, read-only, etc.).
+- `Status2` (int?): Additional status bits (internal). Probably/guesswork: extended status information introduced later.
+- `Crdate` (datetime): Database creation date.
+- `Reserved` (datetime?): Probably/guesswork: reservation timestamp or reserved field used by older SQL Server versions.
+- `Category` (int?): Probably/guesswork: classification/category code for the database.
+- `Cmptlevel` (tinyint): Database compatibility level.
+- `Filename` (string?): Primary data file physical filename.
+- `Version` (smallint?): Database internal version number.
+
+How to interpret
+
+- Use `Dbid` to join with other legacy metadata views that reference database id.
+- `Sid` can be used to map the database owner to a server principal.
+- Inspect `Status`/`Status2` bits using SQL Server documentation for the legacy `sysdatabases` view or prefer modern catalog views like `sys.databases` for clearer meaning.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysdatabasesReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysdatabasesReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysdatabasesReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"{r.Name} (id={r.Dbid}) created={r.Crdate} compat={r.Cmptlevel} file={r.Filename}");
-}
+    Console.WriteLine($"Db: {r.Name} Id:{r.Dbid} Created:{r.Crdate} File:{r.Filename} Compat:{r.Cmptlevel}");
 ```
 
 See also:
-- [sys.sysdatabases](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysdatabases-transact-sql)
+
+- [sys.sysdatabases](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysdatabases)

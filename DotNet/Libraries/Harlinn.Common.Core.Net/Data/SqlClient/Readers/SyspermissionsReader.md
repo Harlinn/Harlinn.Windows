@@ -1,51 +1,58 @@
 # SyspermissionsReader
 
-Reads rows from the `sys.syspermissions` compatibility view. This view contains permission entries.
+Overview
 
-Columns:
+`SyspermissionsReader` wraps `sys.syspermissions` (legacy) and exposes permission bits for database objects and principals.
 
-- `Id` (int)
-  - Description: Object id or securable id the permission applies to.
-  - Interpretation: Map to the securable (object, table, etc.).
-- `Grantee` (short?, nullable)
-  - Description: UID of the grantee principal.
-  - Interpretation: Principal within the database who receives the permission.
-- `Grantor` (short?, nullable)
-  - Description: UID of the grantor principal.
-  - Interpretation: Principal who granted the permission.
-- `Actadd` (short?, nullable)
-  - Description: Probably/guesswork: action add flag for permissions.
-  - Interpretation: Encoded permission action bits.
-- `Actmod` (short?, nullable)
-  - Description: Probably/guesswork: action modify flag.
-- `Seladd` (binary?, nullable)
-  - Description: Probably/guesswork: selector add bitmask for SELECT permission.
-  - Interpretation: Binary representation of permission details.
-- `Selmod` (binary?, nullable)
-  - Description: Probably/guesswork: selector modify bitmask.
-- `Updadd` (binary?, nullable)
-  - Description: Probably/guesswork: update add bitmask.
-- `Updmod` (binary?, nullable)
-  - Description: Probably/guesswork: update modify bitmask.
-- `Refadd` (binary?, nullable)
-  - Description: Probably/guesswork: reference add bitmask.
-- `Refmod` (binary?, nullable)
-  - Description: Probably/guesswork: reference modify bitmask.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s34.[Id],
+  s34.[Grantee],
+  s34.[Grantor],
+  s34.[Actadd],
+  s34.[Actmod],
+  s34.[Seladd],
+  s34.[Selmod],
+  s34.[Updadd],
+  s34.[Updmod],
+  s34.[Refadd],
+  s34.[Refmod]
+FROM
+  [sys].[syspermissions] s34
+```
+
+Columns and interpretation
+
+- `Id` (int): Object id the permissions apply to (object-level permissions) or principal id for server-level entries.
+- `Grantee` (smallint?): User id (uid) of the grantee principal.
+- `Grantor` (smallint?): User id (uid) of the grantor principal.
+- `Actadd` (smallint?): Action add flag (internal; indicates execute/act permissions granted).
+- `Actmod` (smallint?): Action modify flag (internal modify permission representation).
+- `Seladd` (binary?): Selection permissions bitmask or encoded representation.
+- `Selmod` (binary?): Selection modification bitmask or encoded representation.
+- `Updadd` (binary?): Update add bitmask.
+- `Updmod` (binary?): Update modify bitmask.
+- `Refadd` (binary?): Reference add bitmask (REFERENCES permission details).
+- `Refmod` (binary?): Reference modify bitmask.
+
+How to interpret
+
+- These columns are a legacy compact representation of permissions; for modern systems use `sys.database_permissions`, `sys.database_principals`, and `sys.objects` for clearer semantics.
+- Join `Id` to `sys.objects` or appropriate principal tables to resolve names.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SyspermissionsReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SyspermissionsReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SyspermissionsReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"securable={r.Id} grantee={r.Grantee} grantor={r.Grantor}");
-}
+    Console.WriteLine($"ObjectId:{r.Id} Grantee:{r.Grantee} Grantor:{r.Grantor} SelMask:{(r.Seladd!=null?BitConverter.ToString(r.Seladd):"<null>")}");
 ```
 
 See also:
-- [sys.syspermissions](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-syspermissions-transact-sql)
+
+- [sys.syspermissions](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-syspermissions)

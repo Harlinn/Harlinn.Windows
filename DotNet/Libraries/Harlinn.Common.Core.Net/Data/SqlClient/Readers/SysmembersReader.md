@@ -1,30 +1,40 @@
 # SysmembersReader
 
-Reads rows from the `sys.sysmembers` compatibility view. This view shows membership relationships between principals.
+Overview
 
-Columns:
+`SysmembersReader` wraps `sys.sysmembers` (legacy) and exposes group membership relationships (often database role to member mappings) in older SQL Server systems.
 
-- `Memberuid` (short?, nullable)
-  - Description: UID of the member principal.
-  - Interpretation: Maps to a principal id within the database.
-- `Groupuid` (short?, nullable)
-  - Description: UID of the group principal.
-  - Interpretation: The group role or principal that contains the member.
+Reader SQL
 
-Example usage
+```
+SELECT
+  s29.[Memberuid],
+  s29.[Groupuid]
+FROM
+  [sys].[sysmembers] s29
+```
+
+Columns and interpretation
+
+- `Memberuid` (smallint?): Identifier (uid) of the member principal (user or role) within the database.
+- `Groupuid` (smallint?): Identifier (uid) of the group or role the member belongs to.
+
+How to interpret
+
+- Join `Memberuid` and `Groupuid` to `sysusers` (or `sys.database_principals`) to resolve human-readable principal names.
+- This view reflects legacy security metadata; prefer `sys.database_principals` and `sys.database_role_members` in modern versions.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysmembersReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysmembersReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysmembersReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"member {r.Memberuid} in group {r.Groupuid}");
-}
+    Console.WriteLine($"MemberUid:{r.Memberuid} GroupUid:{r.Groupuid}");
 ```
 
 See also:
-- [sys.sysmembers](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysmembers-transact-sql)
+
+- [sys.sysmembers](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysmembers)

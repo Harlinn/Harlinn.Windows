@@ -1,55 +1,59 @@
 # SysdependsReader
 
-Reads rows from the `sys.sysdepends` compatibility view. The reader exposes columns returned by the view:
+Overview
 
-- `Id` (int)
-  - Description: ID of the object that has a dependency.
-  - Interpretation: Object identifier (object id) referencing the dependent object.
-- `Depid` (int)
-  - Description: ID of the object being depended on.
-  - Interpretation: Object id of the referenced object.
-- `Number` (short, nullable)
-  - Description: Probably/guesswork: number identifying a sub-part (e.g., column number) of the `Id` object.
-  - Interpretation: Use when dependencies are on specific columns or subcomponents.
-- `Depnumber` (short, nullable)
-  - Description: Probably/guesswork: number identifying a sub-part of the `Depid` object.
-  - Interpretation: Use when referenced object is a column or similar.
-- `Status` (short, nullable)
-  - Description: Probably/guesswork: status flags about the dependency entry.
-  - Interpretation: May indicate validity, deferred resolution, or other internal state.
-- `Deptype` (byte)
-  - Description: Probably/guesswork: dependency type indicator.
-  - Interpretation: Encoded type of dependency (e.g., object, column, expression).
-- `Depdbid` (short, nullable)
-  - Description: Probably/guesswork: database ID where the dependent object resides.
-  - Interpretation: If cross-database, indicates database id.
-- `Depsiteid` (short, nullable)
-  - Description: Probably/guesswork: site ID or partition ID for databases with siting.
-  - Interpretation: Internal use; rarely needed.
-- `Selall` (bool)
-  - Description: Probably/guesswork: whether the dependency covers all columns (e.g., SELECT *).
-  - Interpretation: True if dependency includes all columns.
-- `Resultobj` (bool)
-  - Description: Probably/guesswork: whether the dependency refers to a result set object.
-  - Interpretation: True if referencing a derived result object.
-- `Readobj` (bool)
-  - Description: Probably/guesswork: whether the dependency is a read-only dependency.
-  - Interpretation: True for read access dependencies.
+`SysdependsReader` wraps `sys.sysdepends` (legacy) and exposes dependency relationships between database objects.
 
-Example usage
+Reader SQL
+
+```
+SELECT
+  s40.[Id],
+  s40.[Depid],
+  s40.[Number],
+  s40.[Depnumber],
+  s40.[Status],
+  s40.[Deptype],
+  s40.[Depdbid],
+  s40.[Depsiteid],
+  s40.[Selall],
+  s40.[Resultobj],
+  s40.[Readobj]
+FROM
+  [sys].[sysdepends] s40
+```
+
+Columns and interpretation
+
+- `Id` (int): Object id of the dependent object (the object that has the dependency).
+- `Depid` (int): Object id of the referenced object (the dependency target).
+- `Number` (smallint?): Probably/guesswork: column or ordinal number within the object for the dependent reference.
+- `Depnumber` (smallint?): Probably/guesswork: column or ordinal number within the referenced object.
+- `Status` (smallint?): Probably/guesswork: status flags describing the dependency relationship (internal use).
+- `Deptype` (tinyint): Dependency type code (internal categorization of dependency: object, column, etc.).
+- `Depdbid` (smallint?): Probably/guesswork: database id of the referenced object when cross-database dependencies exist.
+- `Depsiteid` (smallint?): Probably/guesswork: site id for distributed or remote dependencies.
+- `Selall` (bit): Indicates whether the dependency is on SELECT * (select all columns) affecting dependency resolution.
+- `Resultobj` (bit): Indicates this dependency is on the result of a computed object (internal meaning).
+- `Readobj` (bit): Indicates a read dependency (object is read by the dependent object).
+
+How to interpret
+
+- Use `Id` and `Depid` to discover which objects depend on which other objects.
+- Join to `sys.objects` (or `sys.sysobjects`) using object id to resolve human-readable object names.
+- The `Selall`, `Resultobj`, and `Readobj` flags describe the nature of the dependency; treat them as boolean indicators.
+
+Example
 
 ```csharp
-using var conn = new Microsoft.Data.SqlClient.SqlConnection("<connection-string>");
-conn.Open();
 using var cmd = conn.CreateCommand();
 cmd.CommandText = SysdependsReader.Sql;
-using var reader = cmd.ExecuteReader();
-var r = new SysdependsReader(reader);
+using var rdr = cmd.ExecuteReader();
+var r = new SysdependsReader(rdr, ownsReader: false);
 while (r.Read())
-{
-    Console.WriteLine($"object {r.Id}/{r.Number} depends on {r.Depid}/{r.Depnumber} type={r.Deptype} selAll={r.Selall}");
-}
+    Console.WriteLine($"Object:{r.Id} DependsOn:{r.Depid} Type:{r.Deptype} SelAll:{r.Selall}");
 ```
 
 See also:
-- [sys.sysdepends](https://learn.microsoft.com/en-us/sql/relational-databases/system-tables/sys-sysdepends-transact-sql)
+
+- [sys.sysdepends](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sysdepends)
