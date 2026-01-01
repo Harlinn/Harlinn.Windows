@@ -2,7 +2,7 @@
 
 Overview
 
-`AllocationUnitsReader` wraps a query on `sys.allocation_units` and exposes storage allocation metrics for allocation units (an internal allocation granularity in SQL Server representing parts of index/storage structures).
+`AllocationUnitsReader` wraps a query on [`sys.allocation_units`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-allocation-units-transact-sql) and exposes storage allocation metrics for allocation units (an internal allocation granularity in SQL Server representing parts of index/storage structures).
 
 Reader SQL
 
@@ -48,5 +48,3 @@ Helpers
 
 - `GetAllocationUnit()` converts the current row into a `Types.AllocationUnit` domain object.
 - `GetAllocationUnits()` iterates and collects allocation units.
-
----

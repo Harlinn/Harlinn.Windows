@@ -2,7 +2,7 @@
 
 Overview
 
-`AvailabilityGroupListenersReader` wraps `sys.availability_group_listeners` and exposes listener configuration details for availability groups.
+`AvailabilityGroupListenersReader` wraps [`sys.availability_group_listeners`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-availability-group-listeners-transact-sql) and exposes listener configuration details for availability groups.
 
 Reader SQL
 

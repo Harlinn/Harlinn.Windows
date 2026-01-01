@@ -2,7 +2,7 @@
 
 Overview
 
-`AllViewsReader` wraps `sys.all_views` and exposes metadata for views accessible to the current principal.
+`AllViewsReader` wraps [`sys.all_views`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-all-views-transact-sql) and exposes metadata for views accessible to the current principal.
 
 Reader SQL
 
@@ -77,4 +77,3 @@ Helpers
 
 - `ToDataObject()` / `ToList()` convert rows into `Types.AllViewsDataType` objects.
 
----

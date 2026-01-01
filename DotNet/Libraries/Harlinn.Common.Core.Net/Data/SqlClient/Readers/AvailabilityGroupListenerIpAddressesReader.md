@@ -2,7 +2,7 @@
 
 Overview
 
-`AvailabilityGroupListenerIpAddressesReader` wraps `sys.availability_group_listener_ip_addresses` and exposes IP address configuration for availability group listeners.
+`AvailabilityGroupListenerIpAddressesReader` wraps [`sys.availability_group_listener_ip_addresses`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-availability-group-listener-ip-addresses-transact-sql) and exposes IP address configuration for availability group listeners.
 
 Reader SQL
 

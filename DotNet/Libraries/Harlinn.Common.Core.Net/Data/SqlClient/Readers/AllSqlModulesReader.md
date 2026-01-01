@@ -2,7 +2,7 @@
 
 Overview
 
-`AllSqlModulesReader` wraps `sys.all_sql_modules` and exposes the definitions and metadata for SQL modules (views, stored procedures, functions, triggers) visible to the current principal.
+`AllSqlModulesReader` wraps [`sys.all_sql_modules`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-all-sql-modules-transact-sql) and exposes the definitions and metadata for SQL modules (views, stored procedures, functions, triggers) visible to the current principal.
 
 Reader SQL
 
@@ -65,5 +65,3 @@ Selected columns (property mapping and brief meaning)
 Helpers
 
 - `ToDataObject()` / `ToList()` convert rows into `Types.AllSqlModulesDataType` objects.
-
----

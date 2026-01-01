@@ -2,7 +2,7 @@
 
 Overview
 
-`AllColumnsReader` wraps a query on `sys.all_columns` (joined to `sys.types`) and exposes column metadata for every column in the database (tables, views, etc.). The reader provides typed properties for each selected column and convenience methods to convert rows to domain objects.
+`AllColumnsReader` wraps a query on [`sys.all_columns`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-all-columns-transact-sql) (joined to [`sys.types`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-types-transact-sql)) and exposes column metadata for every column in the database (tables, views, etc.). The reader provides typed properties for each selected column and convenience methods to convert rows to domain objects.
 
 Reader SQL
 
@@ -172,4 +172,3 @@ Usage
 
 Open the reader with a `SqlDataReader` and iterate; properties map to the columns above. Use `ToDataObject()` / `ToList()` to get typed domain objects defined in `Types` namespace.
 
----

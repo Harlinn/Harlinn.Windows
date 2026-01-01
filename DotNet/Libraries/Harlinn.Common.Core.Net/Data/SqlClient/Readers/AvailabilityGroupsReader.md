@@ -2,7 +2,7 @@
 
 Overview
 
-`AvailabilityGroupsReader` wraps `sys.availability_groups` and exposes availability group configuration and status information at the database instance level.
+`AvailabilityGroupsReader` wraps [`sys.availability_groups`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-availability-groups-transact-sql) and exposes availability group configuration and status information at the database instance level.
 
 Reader SQL
 

@@ -2,7 +2,7 @@
 
 Overview
 
-`AllObjectsReader` wraps a query on `sys.all_objects` and exposes metadata about database objects (tables, views, procedures, etc.) visible to the current principal.
+`AllObjectsReader` wraps a query on [`sys.all_objects`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-all-objects-transact-sql) and exposes metadata about database objects (tables, views, procedures, etc.) visible to the current principal.
 
 Reader SQL
 

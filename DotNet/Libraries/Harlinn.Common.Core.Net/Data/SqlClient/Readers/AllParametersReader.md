@@ -2,7 +2,7 @@
 
 Overview
 
-`AllParametersReader` wraps `sys.all_parameters` and exposes metadata about procedure/function parameters visible to the current principal.
+`AllParametersReader` wraps [`sys.all_parameters`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-all-parameters-transact-sql) and exposes metadata about procedure/function parameters visible to the current principal.
 
 Reader SQL
 

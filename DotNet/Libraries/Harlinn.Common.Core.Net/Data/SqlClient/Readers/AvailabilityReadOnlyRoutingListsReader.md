@@ -2,7 +2,7 @@
 
 Overview
 
-`AvailabilityReadOnlyRoutingListsReader` wraps `sys.availability_read_only_routing_lists` and exposes routing list mappings that define read-only routing priorities for replicas.
+`AvailabilityReadOnlyRoutingListsReader` wraps [`sys.availability_read_only_routing_lists`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-availability-read-only-routing-lists-transact-sql) and exposes routing list mappings that define read-only routing priorities for replicas.
 
 Reader SQL
 

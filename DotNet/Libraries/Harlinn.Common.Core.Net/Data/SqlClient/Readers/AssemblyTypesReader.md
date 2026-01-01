@@ -2,7 +2,7 @@
 
 Overview
 
-`AssemblyTypesReader` wraps `sys.assembly_types` and exposes type metadata for user-defined types supplied by CLR assemblies.
+`AssemblyTypesReader` wraps [`sys.assembly_types`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-assembly-types-transact-sql) and exposes type metadata for user-defined types supplied by CLR assemblies.
 
 Reader SQL
 

@@ -2,7 +2,7 @@
 
 Overview
 
-`AvailabilityReplicasReader` wraps `sys.availability_replicas` and exposes information about replicas that participate in availability groups.
+`AvailabilityReplicasReader` wraps [`sys.availability_replicas`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-availability-replicas-transact-sql) and exposes information about replicas that participate in availability groups.
 
 Reader SQL
 

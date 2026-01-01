@@ -2,7 +2,7 @@
 
 Overview
 
-`AvailabilityGroupsClusterReader` wraps `sys.availability_groups_cluster` and exposes cluster-level availability group metadata.
+`AvailabilityGroupsClusterReader` wraps [`sys.availability_groups_cluster`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-availability-groups-cluster-transact-sql) and exposes cluster-level availability group metadata.
 
 Reader SQL
 

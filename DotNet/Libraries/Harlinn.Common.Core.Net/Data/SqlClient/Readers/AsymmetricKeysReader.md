@@ -2,7 +2,7 @@
 
 Overview
 
-`AsymmetricKeysReader` wraps `sys.asymmetric_keys` and exposes metadata for asymmetric keys stored in the server (used for cryptographic operations).
+`AsymmetricKeysReader` wraps [`sys.asymmetric_keys`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-asymmetric-keys-transact-sql) and exposes metadata for asymmetric keys stored in the server (used for cryptographic operations).
 
 Reader SQL
 

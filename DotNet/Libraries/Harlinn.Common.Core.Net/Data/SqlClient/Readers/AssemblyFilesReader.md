@@ -2,7 +2,7 @@
 
 Overview
 
-`AssemblyFilesReader` wraps `sys.assembly_files` and exposes file-level metadata and binary content for assembly files associated with registered CLR assemblies.
+`AssemblyFilesReader` wraps [`sys.assembly_files`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-assembly-files-transact-sql) and exposes file-level metadata and binary content for assembly files associated with registered CLR assemblies.
 
 Reader SQL
 

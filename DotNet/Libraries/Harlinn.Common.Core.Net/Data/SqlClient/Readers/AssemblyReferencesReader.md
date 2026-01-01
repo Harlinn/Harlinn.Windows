@@ -2,7 +2,7 @@
 
 Overview
 
-`AssemblyReferencesReader` wraps `sys.assembly_references` and exposes relationships between assemblies (which assembly references another).
+`AssemblyReferencesReader` wraps [`sys.assembly_references`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-assembly-references-transact-sql) and exposes relationships between assemblies (which assembly references another).
 
 Reader SQL
 

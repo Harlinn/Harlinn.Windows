@@ -2,7 +2,7 @@
 
 Overview
 
-`AssemblyModulesReader` wraps `sys.assembly_modules` and exposes metadata for assembly-based modules (CLR stored procedures, functions) defined in assemblies.
+`AssemblyModulesReader` wraps [`sys.assembly_modules`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-assembly-modules-transact-sql) and exposes metadata for assembly-based modules (CLR stored procedures, functions) defined in assemblies.
 
 Reader SQL
 

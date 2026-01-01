@@ -2,7 +2,7 @@
 
 Overview
 
-`AssembliesReader` wraps `sys.assemblies` and exposes metadata about CLR assemblies registered in the database instance.
+`AssembliesReader` wraps [`sys.assemblies`](https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-assemblies-transact-sql) and exposes metadata about CLR assemblies registered in the database instance.
 
 Reader SQL
 
