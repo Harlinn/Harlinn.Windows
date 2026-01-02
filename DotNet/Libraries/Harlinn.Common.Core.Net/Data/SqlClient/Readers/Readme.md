@@ -1,6 +1,12 @@
-﻿# Harlinn.Common.Core.Net.Data.SqlClient.Readers — reference
+﻿# Harlinn.Common.Core.Net.Data.SqlClient.Readers classes
 
+The classes in the `Harlinn.Common.Core.Net.Data.SqlClient.Readers` namespace 
+provide functionality to read various SQL Server system catalog views and 
+dynamic management views (DMVs). These reader classes facilitate access 
+to metadata and configuration information about SQL Server databases, objects, 
+and their properties.
 
+Thus is the list of all the reader classes available in the `Harlinn.Common.Core.Net.Data.SqlClient.Readers` namespace:
 
 - [AllColumnsReader](AllColumnsReader.md)
 - [AllObjectsReader](AllObjectsReader.md)
