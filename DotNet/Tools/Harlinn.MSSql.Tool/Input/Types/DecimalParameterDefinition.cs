@@ -29,8 +29,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public DecimalParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public DecimalParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
             _precision = parameter.Precision;
             _scale = parameter.Scale;

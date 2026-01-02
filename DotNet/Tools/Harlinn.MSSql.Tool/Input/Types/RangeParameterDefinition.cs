@@ -31,8 +31,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public RangeParameterDefinition()
             : base()
         { }
-        public RangeParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public RangeParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         { }
 
         [XmlAttribute("Min"), DefaultValue(null)]

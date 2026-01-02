@@ -30,8 +30,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public SqlVariantFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
-            : base(systemColumnType, column, defaultConstraint, computed, checks)
+        public SqlVariantFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks, string? description)
+            : base(systemColumnType, column, defaultConstraint, computed, checks, description)
         {
         }
         public override FieldType FieldType => FieldType.SqlVariant;

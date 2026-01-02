@@ -32,8 +32,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public DateTimeParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public DateTimeParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.DateTime;

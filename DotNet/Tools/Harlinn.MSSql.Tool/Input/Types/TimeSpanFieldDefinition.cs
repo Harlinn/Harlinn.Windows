@@ -36,8 +36,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public TimeSpanFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
-            : base(systemColumnType, column, defaultConstraint, computed, checks)
+        public TimeSpanFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks, string? description)
+            : base(systemColumnType, column, defaultConstraint, computed, checks, description)
         {
         }
 

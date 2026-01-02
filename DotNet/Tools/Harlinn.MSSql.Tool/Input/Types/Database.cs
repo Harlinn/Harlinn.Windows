@@ -18,25 +18,30 @@ using System.Xml.Serialization;
 using Microsoft.Data.SqlClient;
 using Harlinn.Common.Core.Net.Data.SqlClient;
 using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
+using System.ComponentModel;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
     public class Database
     {
-        [XmlIgnore]
-        public Dictionary<string, Schema> SchemasByName { get; set; } = new Dictionary<string, Schema>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, Schema> _schemasByName = new Dictionary<string, Schema>(StringComparer.OrdinalIgnoreCase);
+        private Project? _project = null;
+        private string _name = string.Empty;
+        private string? _description;
+        private List<Schema> _schemas = new List<Schema>();
 
         [XmlIgnore]
-        public Project? Project { get; set; } = null;
-
+        public Dictionary<string, Schema> SchemasByName { get => _schemasByName; set => _schemasByName = value; }
+        [XmlIgnore]
+        public Project? Project { get => _project; set => _project = value; }
         [XmlAttribute]
-        public string Name { get; set; } = string.Empty;
-
+        public string Name { get => _name; set => _name = value; }
         [XmlArray("Schemas")]
         [XmlArrayItem(typeof(Schema), ElementName = "Schema")]
-        public List<Schema> Schemas { get; set; } = new List<Schema>();
-
-
+        public List<Schema> Schemas { get => _schemas; set => _schemas = value; }
+        
+        [XmlElement,DefaultValue(null)]
+        public string? Description { get => _description; set => _description = value; }
 
         public Schema AddSchema(string schemaName)
         {
@@ -52,6 +57,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         internal void Import(SqlConnection sqlConnection, ImportOptions options)
         {
+            if(string.IsNullOrEmpty(_description))
+            {
+                _description = sqlConnection.GetDatabaseDescription();
+            }
             string[] schemaNames = ["dbo"];
             if (!string.IsNullOrEmpty(options.Schema))
             {
@@ -62,6 +71,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 if (!SchemasByName.TryGetValue(schemaName, out var schema))
                 {
                     schema = AddSchema(schemaName);
+                    if (string.IsNullOrEmpty(schema.Description))
+                    {
+                        schema.Description = sqlConnection.GetSchemaDescription(schemaName);
+                    }
                 }
                 var schemaObject = sqlConnection.GetSchemaByName(schemaName);
                 if (schemaObject != null)

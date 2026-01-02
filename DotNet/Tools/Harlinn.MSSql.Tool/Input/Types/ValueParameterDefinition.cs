@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public ValueParameterDefinition()
             : base()
         { }
-        public ValueParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public ValueParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         { }
 
         [XmlAttribute("Default"), DefaultValue(null)]

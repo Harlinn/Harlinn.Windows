@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public StringParameterDefinition() : base()
         {
         }
-        public StringParameterDefinition(SystemDataType systemColumnType, Parameter parameter)
-            : base(parameter)
+        public StringParameterDefinition(SystemDataType systemColumnType, Parameter parameter, string? description)
+            : base(parameter, description)
         {
             if (systemColumnType >= SystemDataType.NChar && systemColumnType <= SystemDataType.SysName)
             {

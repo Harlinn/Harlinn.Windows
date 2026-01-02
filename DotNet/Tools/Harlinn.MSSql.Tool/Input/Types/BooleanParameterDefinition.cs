@@ -24,8 +24,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public BooleanParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public BooleanParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Boolean;

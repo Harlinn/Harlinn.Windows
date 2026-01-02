@@ -27,8 +27,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public XmlParameterDefinition() : base()
         {
         }
-        public XmlParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public XmlParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Xml;

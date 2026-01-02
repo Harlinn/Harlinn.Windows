@@ -29,8 +29,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public SingleParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public SingleParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Single;

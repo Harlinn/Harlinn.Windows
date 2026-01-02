@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public GeographyParameterDefinition() : base()
         {
         }
-        public GeographyParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public GeographyParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Geography;

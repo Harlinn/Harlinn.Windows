@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public HierarchyIdParameterDefinition() : base()
         {
         }
-        public HierarchyIdParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public HierarchyIdParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.HierarchyId;

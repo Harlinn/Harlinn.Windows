@@ -27,8 +27,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public SqlVariantParameterDefinition() : base()
         {
         }
-        public SqlVariantParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public SqlVariantParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.SqlVariant;

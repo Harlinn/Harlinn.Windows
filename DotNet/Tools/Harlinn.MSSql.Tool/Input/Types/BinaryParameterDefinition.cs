@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public BinaryParameterDefinition() : base()
         {
         }
-        public BinaryParameterDefinition(SystemDataType systemColumnType, Parameter parameter)
-            : base(parameter)
+        public BinaryParameterDefinition(SystemDataType systemColumnType, Parameter parameter, string? description)
+            : base(parameter, description)
         {
             if (systemColumnType == SystemDataType.Binary || systemColumnType == SystemDataType.VarBinary)
             {

@@ -24,8 +24,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public ObjectParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public ObjectParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Object;

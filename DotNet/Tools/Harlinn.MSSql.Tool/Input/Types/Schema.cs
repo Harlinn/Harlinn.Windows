@@ -32,9 +32,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
         private Dictionary<string, TypeDefinition> _typeDefinitions = new Dictionary<string, TypeDefinition>();
         private Database? _owner = null;
         private string _name = string.Empty;
+        private string? _description;
         private string _namespace = string.Empty;
         private List<TypeDefinition> _types = new List<TypeDefinition>();
         private List<SchemaObject> _objects = new List<SchemaObject>();
+        private string _storedProceduresWrapperClassName = "StoredProceduresWrapper";
+        private string _storedProceduresWrapperNamespace = "StoredProceduresWrapper";
 
         private List<QueryDefinition> _queries = new List<QueryDefinition>();
         private Dictionary<string, QueryDefinition> _queriesByName = new Dictionary<string, QueryDefinition>(StringComparer.OrdinalIgnoreCase);
@@ -99,6 +102,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public List<QueryDefinition> Queries { get => _queries; set => _queries = value; }
         [XmlIgnore]
         public Dictionary<string, QueryDefinition> QueriesByName { get => _queriesByName; set => _queriesByName = value; }
+        [XmlElement, DefaultValue(null)]
+        public string? Description { get => _description; set => _description = value; }
 
         internal void Initialize()
         {

@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
@@ -21,16 +22,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
     [Serializable]
     public abstract class SchemaObject
     {
+        private Schema? _owner = null;
+        private string _name = string.Empty;
+        private string? _description;
+
         public abstract SchemaObjectType Type { get; }
 
         [XmlIgnore]
-        public Schema? Owner { get; set; } = null;
-
+        public Schema? Owner { get => _owner; set => _owner = value; }
         [XmlIgnore]
         public Project? Project => Owner?.Project;
 
         [XmlAttribute]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get => _name; set => _name = value; }
+        [XmlElement, DefaultValue(null)]
+        public string? Description { get => _description; set => _description = value; }
 
         internal virtual void Initialize()
         {

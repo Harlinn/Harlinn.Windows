@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public GuidParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public GuidParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Guid;

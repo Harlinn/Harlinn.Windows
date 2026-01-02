@@ -244,6 +244,11 @@ namespace Harlinn.MSSql.Tool.Input.Types
             var tableCheckConstraints = sqlConnection.GetTableCheckConstraints(table);
             ImportTableCheckConstraints(sqlConnection, tableCheckConstraints);
 
+            if (string.IsNullOrEmpty(Description))
+            {
+                Description = sqlConnection.GetObjectDescription(table.ObjectId);
+            }
+
         }
 
         internal override void Initialize()

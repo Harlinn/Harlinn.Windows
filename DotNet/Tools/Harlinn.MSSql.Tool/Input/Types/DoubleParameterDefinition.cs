@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public DoubleParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public DoubleParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Double;

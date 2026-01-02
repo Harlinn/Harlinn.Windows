@@ -1703,6 +1703,198 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return connection.GetPrimaryKey(table.ObjectId);
         }
 
+        /// <summary>
+        /// Retrieves the extended property with the specified class, major ID, minor ID, and name from the SQL Server
+        /// database associated with the given connection.
+        /// </summary>
+        /// <remarks>The property class, major ID, and minor ID parameters must correspond to a valid
+        /// object in the database. This method does not create or modify any properties; it only retrieves existing
+        /// ones.</remarks>
+        /// <param name="connection">The open SQL connection to use for querying the extended property. Must not be null and must be open.</param>
+        /// <param name="extendedPropertyClass">The class of the extended property to retrieve. Corresponds to the type of object the property is
+        /// associated with (such as object, column, or parameter).</param>
+        /// <param name="majorId">The major ID of the object to which the extended property is attached. The meaning of this value depends on
+        /// the property class.</param>
+        /// <param name="minorId">The minor ID of the object to which the extended property is attached. The meaning of this value depends on
+        /// the property class.</param>
+        /// <param name="name">The name of the extended property to retrieve. Cannot be null.</param>
+        /// <returns>An object containing the extended property data if found; otherwise, null.</returns>
+        public static Types.ExtendedPropertiesDataType? GetExtendedProperty(this SqlConnection connection, ExtendedPropertyClass extendedPropertyClass, int majorId, int minorId, string name = "MS_Description")
+        {
+            var sql = $"{ExtendedPropertiesReader.Sql} WHERE {ExtendedPropertiesReader.ShortName}.[Class] = @ExtendedPropertyClass AND {ExtendedPropertiesReader.ShortName}.[major_id] = @MajorId AND {ExtendedPropertiesReader.ShortName}.[minor_id] = @MinorId AND {ExtendedPropertiesReader.ShortName}.[name] = @Name";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddByte("@ExtendedPropertyClass", (byte)extendedPropertyClass);
+                command.Parameters.AddInt32("@MajorId", majorId);
+                command.Parameters.AddInt32("@MinorId", minorId);
+                command.Parameters.AddNVarChar("@Name", name);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var readerWrapper = new ExtendedPropertiesReader(reader, false);
+                        return readerWrapper.ToDataObject();
+                    }
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the value of a specified SQL Server extended property as a string.
+        /// </summary>
+        /// <remarks>If the specified extended property does not exist or its value is null, this method
+        /// returns null. The returned string is obtained by calling ToString() on the property's value.</remarks>
+        /// <param name="connection">The SQL connection to use when retrieving the extended property. Cannot be null.</param>
+        /// <param name="extendedPropertyClass">The class of the extended property to retrieve, such as object, column, or schema.</param>
+        /// <param name="majorId">The major ID that identifies the parent object of the extended property. The meaning depends on the value of
+        /// extendedPropertyClass.</param>
+        /// <param name="minorId">The minor ID that identifies the child object of the extended property. The meaning depends on the value of
+        /// extendedPropertyClass.</param>
+        /// <param name="name">The name of the extended property to retrieve. Defaults to "MS_Description" if not specified.</param>
+        /// <returns>A string representation of the extended property's value if found; otherwise, null.</returns>
+        public static string? GetExtendedPropertyValueAsString(this SqlConnection connection, ExtendedPropertyClass extendedPropertyClass, int majorId, int minorId, string name = "MS_Description" )
+        {
+            var extendedProperty = connection.GetExtendedProperty( extendedPropertyClass, majorId, minorId, name );
+            if( extendedProperty != null )
+            {
+                if( extendedProperty.Value != null )
+                {
+                    return extendedProperty.Value.ToString();
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the database description from the extended properties of the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">
+        /// The SQL connection to use when retrieving the extended property. Cannot be null.
+        /// </param>
+        /// <returns>
+        /// The database description as a string if found; otherwise, null.
+        /// </returns>
+        public static string? GetDatabaseDescription(this SqlConnection connection )
+        {
+            var extendedProperty = connection.GetExtendedProperty( ExtendedPropertyClass.Database, 0, 0 );
+            if( extendedProperty != null )
+            {
+                if( extendedProperty.Value != null )
+                {
+                    return extendedProperty.Value.ToString();
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the schema description from the extended properties of the specified schema in the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The SQL connection to use when retrieving the extended property. Cannot be null.</param>
+        /// <param name="schemaId">The ID of the schema to retrieve the description for.</param>
+        /// <returns>The schema description as a string if found; otherwise, null.</returns>
+        public static string? GetSchemaDescription(this SqlConnection connection, int schemaId)
+        {
+            var extendedProperty = connection.GetExtendedProperty(ExtendedPropertyClass.Schema, schemaId, 0);
+            if (extendedProperty != null)
+            {
+                if (extendedProperty.Value != null)
+                {
+                    return extendedProperty.Value.ToString();
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the description of a database schema with the specified name from the connected SQL Server
+        /// instance.
+        /// </summary>
+        /// <param name="connection">The active <see cref="SqlConnection"/> used to query schema information. Must not be null and must be open.</param>
+        /// <param name="schemaName">The name of the schema whose description is to be retrieved. Cannot be null or empty.</param>
+        /// <returns>A string containing the description of the specified schema if found; otherwise, <see langword="null"/>.</returns>
+        public static string? GetSchemaDescription(this SqlConnection connection, string schemaName)
+        {
+            var schema = connection.GetSchemaByName(schemaName);
+            if (schema != null)
+            {
+                return connection.GetSchemaDescription(schema.SchemaId);
+            }
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Retrieves the object description from the extended properties of the specified database object in the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The SQL connection to use when retrieving the extended property. Cannot be null.</param>
+        /// <param name="objectId">The ID of the object to retrieve the description for.</param>
+        /// <returns>The object description as a string if found; otherwise, null.</returns>
+        public static string? GetObjectDescription(this SqlConnection connection, int objectId)
+        {
+            var extendedProperty = connection.GetExtendedProperty(ExtendedPropertyClass.ObjectOrColumn, objectId, 0);
+            if (extendedProperty != null)
+            {
+                if (extendedProperty.Value != null)
+                {
+                    return extendedProperty.Value.ToString();
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the description of a database column as defined by its extended property, if available.
+        /// </summary>
+        /// <remarks>This method queries the SQL Server extended property associated with the specified
+        /// column. If no description is defined, or if the property value is null, the method returns null. The
+        /// connection must be open prior to calling this method.</remarks>
+        /// <param name="connection">The active SQL connection used to query the extended property for the specified column. Cannot be null.</param>
+        /// <param name="objectId">The object ID of the table or view containing the column whose description is to be retrieved.</param>
+        /// <param name="columnId">The column ID within the specified object for which to obtain the description.</param>
+        /// <returns>A string containing the column's description if the extended property is set; otherwise, null.</returns>
+        public static string? GetColumnDescription(this SqlConnection connection, int objectId, int columnId)
+        {
+            var extendedProperty = connection.GetExtendedProperty(ExtendedPropertyClass.ObjectOrColumn, objectId, columnId);
+            if (extendedProperty != null)
+            {
+                if (extendedProperty.Value != null)
+                {
+                    return extendedProperty.Value.ToString();
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the description of a parameter from the extended properties of the specified SQL object.
+        /// </summary>
+        /// <remarks>This method queries the SQL Server extended properties for the specified parameter.
+        /// If no description is defined, the method returns <see langword="null"/>. Ensure that the connection is open
+        /// before calling this method.</remarks>
+        /// <param name="connection">The active <see cref="SqlConnection"/> used to query the extended property. Must not be null and must be
+        /// open.</param>
+        /// <param name="objectId">The identifier of the SQL object (such as a stored procedure or function) containing the parameter.</param>
+        /// <param name="parameterId">The identifier of the parameter whose description is to be retrieved.</param>
+        /// <returns>A string containing the parameter's description if it exists; otherwise, <see langword="null"/>.</returns>
+        public static string? GetParameterDescription(this SqlConnection connection, int objectId, int parameterId)
+        {
+            var extendedProperty = connection.GetExtendedProperty(ExtendedPropertyClass.Parameter, objectId, parameterId);
+            if (extendedProperty != null)
+            {
+                if (extendedProperty.Value != null)
+                {
+                    return extendedProperty.Value.ToString();
+                }
+            }
+            return null;
+        }
+
+
+
 
         public static Types.DatabaseType? GetDatabaseType(this SqlConnection connection, int schemaId, string typeName )
         { 
@@ -1758,6 +1950,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 }
             }
         }
+
+        
+
+
+
 
         private static int? sysSchemaId;
 

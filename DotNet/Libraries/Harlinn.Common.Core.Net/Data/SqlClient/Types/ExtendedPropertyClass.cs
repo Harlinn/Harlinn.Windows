@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2024-2025 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,24 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+namespace Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
-using Harlinn.Common.Core.Net.Data.SqlClient.Types;
-
-namespace Harlinn.MSSql.Tool.Input.Types
+/// <summary>
+/// Identifies the class of the extended property.
+/// </summary>
+public enum ExtendedPropertyClass : byte
 {
-    public class CharParameterDefinition : RangeParameterDefinition<char>
-    {
-        public CharParameterDefinition()
-            : base()
-        {
-        }
-        public CharParameterDefinition(Parameter parameter, string? description)
-            : base(parameter, description)
-        {
-        }
-        public override ParameterType ParameterType => ParameterType.Char;
-    }
-
-
-
+    Database = 0,
+    ObjectOrColumn = 1,
+    Parameter = 2,
+    Schema = 3,
+    Index = 7,
+    XmlSchemaCollection = 10,
+    Dataspace = 20,
 }

@@ -36,11 +36,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
         private bool _isNullable = false;
         private string? _databaseType = null;
         private RowSourceDefinition? _owner = null;
+        private string? _description = null;
 
         protected FieldDefinition() 
         { }
 
-        protected FieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
+        protected FieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks, string? description)
         {
             _name = column.Name.ToPascalCase();
             _columnName = column.Name;
@@ -49,6 +50,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
             _defaultConstraint = defaultConstraint;                                                                                           
             _computed = computed;
             _checks = checks;
+            _description = description;
         }
 
 
@@ -152,6 +154,9 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         [XmlIgnore]
         public bool IsComputed => _computed != null;
+
+        [XmlElement, DefaultValue(null)]
+        public string? Description { get => _description; set => _description = value; }
 
         public virtual bool Equals(FieldDefinition? other)
         {

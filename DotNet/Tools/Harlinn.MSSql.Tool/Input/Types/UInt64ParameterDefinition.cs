@@ -24,8 +24,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         {
         }
-        public UInt64ParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public UInt64ParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.UInt64;

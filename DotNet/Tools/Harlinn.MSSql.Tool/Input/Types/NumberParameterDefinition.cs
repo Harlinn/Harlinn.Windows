@@ -26,8 +26,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        protected NumberParameterDefinition(Parameter parameter) 
-            : base(parameter)
+        protected NumberParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
     }

@@ -31,8 +31,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        protected TypedParameterDefinition(Parameter parameter)
-            : base(parameter)
+        protected TypedParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
 

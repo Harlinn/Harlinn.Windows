@@ -28,8 +28,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public GeometryParameterDefinition() : base()
         {
         }
-        public GeometryParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public GeometryParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
         public override ParameterType ParameterType => ParameterType.Geometry;

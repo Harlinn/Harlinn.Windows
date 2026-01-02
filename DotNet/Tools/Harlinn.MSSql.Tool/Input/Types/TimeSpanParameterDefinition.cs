@@ -33,8 +33,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         {
         }
 
-        public TimeSpanParameterDefinition(Parameter parameter)
-            : base(parameter)
+        public TimeSpanParameterDefinition(Parameter parameter, string? description)
+            : base(parameter, description)
         {
         }
 

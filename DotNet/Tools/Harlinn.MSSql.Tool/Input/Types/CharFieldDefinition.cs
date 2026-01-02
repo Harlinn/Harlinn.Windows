@@ -25,8 +25,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
             : base()
         { }
 
-        public CharFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks)
-            : base(systemColumnType, column, defaultConstraint, computed, checks)
+        public CharFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks, string? description)
+            : base(systemColumnType, column, defaultConstraint, computed, checks, description)
         { }
 
         public override FieldType FieldType => FieldType.Char;

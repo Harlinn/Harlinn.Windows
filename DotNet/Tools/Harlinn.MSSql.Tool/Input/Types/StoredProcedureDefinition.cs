@@ -14,12 +14,13 @@
    limitations under the License.
 */
 
-using Microsoft.Data.SqlClient;
-using System.Xml.Serialization;
-using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 using Harlinn.Common.Core.Net.Data.SqlClient;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
 using Harlinn.MSSql.Tool.Import;
+using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Management.Smo;
 using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -134,6 +135,10 @@ namespace Harlinn.MSSql.Tool.Input.Types
                 throw new ArgumentNullException(nameof(procedure));
             }
             ImportParameters(sqlConnection, procedure);
+            if (string.IsNullOrEmpty(Description))
+            {
+                Description = sqlConnection.GetObjectDescription(procedure.ObjectId);
+            }
         }
     }
 
