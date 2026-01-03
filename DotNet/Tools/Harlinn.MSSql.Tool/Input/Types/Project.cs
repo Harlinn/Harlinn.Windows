@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using Harlinn.Common.Core.Net;
 using Microsoft.Data.SqlClient;
 using System.Xml.Serialization;
 
@@ -52,6 +53,16 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         [XmlAttribute]
         public string Namespace { get; set; } = string.Empty;
+
+        public string GetNamespace()
+        {
+            if (!string.IsNullOrEmpty(Namespace))
+            {
+                return Namespace;
+            }
+            return Name.FirstToUpper() ?? string.Empty;
+        }
+
 
         [XmlArray("Databases")]
         [XmlArrayItem(typeof(Database), ElementName = "Database")]

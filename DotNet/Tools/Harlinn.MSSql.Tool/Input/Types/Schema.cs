@@ -37,10 +37,13 @@ namespace Harlinn.MSSql.Tool.Input.Types
         private List<TypeDefinition> _types = new List<TypeDefinition>();
         private List<SchemaObject> _objects = new List<SchemaObject>();
         private string _storedProceduresWrapperClassName = "StoredProceduresWrapper";
-        private string _storedProceduresWrapperNamespace = "StoredProceduresWrapper";
+        private string _storedProceduresWrapperNamespace = string.Empty;
 
         private List<QueryDefinition> _queries = new List<QueryDefinition>();
         private Dictionary<string, QueryDefinition> _queriesByName = new Dictionary<string, QueryDefinition>(StringComparer.OrdinalIgnoreCase);
+        private string _dataTypesNamespace = "Types";
+        private string _readersNamespace = "Readers";
+        private string _databaseNamespace = "Database";
 
         [XmlIgnore]
         public Dictionary<string, SchemaObject> ObjectsByName { get => _objectsByName; set => _objectsByName = value; }
@@ -61,6 +64,62 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public string Name { get => _name; set => _name = value; }
         [XmlAttribute, DefaultValue("")]
         public string Namespace { get => _namespace; set => _namespace = value; }
+
+        [XmlAttribute, DefaultValue("Types")]
+        public string DataTypesNamespace { get => _dataTypesNamespace; set => _dataTypesNamespace = value; }
+        [XmlAttribute, DefaultValue("Readers")]
+        public string ReadersNamespace { get => _readersNamespace; set => _readersNamespace = value; }
+
+        [XmlAttribute, DefaultValue("Database")]
+        public string DatabaseNamespace { get => _databaseNamespace; set => _databaseNamespace = value; }
+        public string GetNamespace()
+        {
+            var ownerNamespace = Project?.GetNamespace() ?? string.Empty;
+            if(string.IsNullOrEmpty(_namespace) == false)
+            {
+                return $"{ownerNamespace}.{_namespace}";
+            }
+            return $"{ownerNamespace}.{_name!.FirstToUpper()}";
+        }
+
+
+        [XmlAttribute, DefaultValue("DataType")]
+        public string DataTypeSuffix { get; set; } = "DataType";
+
+        [XmlAttribute, DefaultValue("")]
+        public string DataTypePrefix { get; set; } = "";
+
+
+        [XmlAttribute, DefaultValue("Reader")]
+        public string ReaderSuffix { get; set; } = "Reader";
+
+        [XmlAttribute, DefaultValue("")]
+        public string ReaderPrefix { get; set; } = "";
+
+
+
+
+
+
+        public string GetDataTypesNamespace()
+        {
+            var schemaNamespace = GetNamespace();
+            return $"{schemaNamespace}.{DataTypesNamespace}";
+        }
+
+        public string GetDatabaseNamespace()
+        {
+            var schemaNamespace = GetNamespace();
+            return $"{schemaNamespace}.{DatabaseNamespace}";
+        }
+
+        public string GetReadersNamespace()
+        {
+            var databaseNamespace = GetDatabaseNamespace();
+            return $"{databaseNamespace}.{ReadersNamespace}";
+        }
+
+
         [XmlArray("Types")]
         [XmlArrayItem(typeof(EnumDefinition), ElementName = "Enum")]
         [XmlArrayItem(typeof(ClassDefinition), ElementName = "Class")]
@@ -72,6 +131,46 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlArrayItem(typeof(StoredProcedureDefinition), ElementName = "StoredProcedure")]
         [XmlArrayItem(typeof(FunctionDefinition), ElementName = "Function")]
         public List<SchemaObject> Objects { get => _objects; set => _objects = value; }
+
+        public IReadOnlyList<EntityDefinition> GetEntities()
+        {
+            var result = new List<EntityDefinition>();
+            foreach ( var obj in Objects)
+            {
+                if (obj is EntityDefinition entityDefinition)
+                {
+                    result.Add(entityDefinition);
+                }
+            }
+            return result;
+        }
+
+        public IReadOnlyList<ViewDefinition> GetViews()
+        {
+            var result = new List<ViewDefinition>();
+            foreach (var obj in Objects)
+            {
+                if (obj is ViewDefinition viewDefinition)
+                {
+                    result.Add(viewDefinition);
+                }
+            }
+            return result;
+        }
+
+        public IReadOnlyList<StoredProcedureDefinition> GetStoredProcedures()
+        {
+            var result = new List<StoredProcedureDefinition>();
+            foreach (var obj in Objects)
+            {
+                if (obj is StoredProcedureDefinition storedProcedureDefinition)
+                {
+                    result.Add(storedProcedureDefinition);
+                }
+            }
+            return result;
+        }
+
 
         [XmlArray("Queries"), DefaultValue(null)]
         public List<QueryDefinition>? QueriesOrNull
@@ -104,6 +203,21 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public Dictionary<string, QueryDefinition> QueriesByName { get => _queriesByName; set => _queriesByName = value; }
         [XmlElement, DefaultValue(null)]
         public string? Description { get => _description; set => _description = value; }
+
+        [XmlAttribute, DefaultValue("StoredProceduresWrapper")]
+        public string StoredProceduresWrapperClassName { get => _storedProceduresWrapperClassName; set => _storedProceduresWrapperClassName = value; }
+        [XmlAttribute, DefaultValue("")]
+        public string StoredProceduresWrapperNamespace { get => _storedProceduresWrapperNamespace; set => _storedProceduresWrapperNamespace = value; }
+
+        public string GetStoredProceduresWrapperNamespace()
+        {
+            var databaseNamespace = GetDatabaseNamespace();
+            if (string.IsNullOrEmpty(StoredProceduresWrapperNamespace) == false)
+            {
+                return $"{databaseNamespace}.{StoredProceduresWrapperNamespace}";
+            }
+            return databaseNamespace;
+        }
 
         internal void Initialize()
         {

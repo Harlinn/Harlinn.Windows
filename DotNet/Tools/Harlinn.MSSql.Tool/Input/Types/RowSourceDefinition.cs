@@ -43,6 +43,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         [XmlIgnore]
         string? _shortName;
+        private string _dataTypeNamespace = string.Empty;
+        private string _readerNamespace = string.Empty;
 
         [XmlIgnore]
         public RowSourceDefinition? Base { get; set; }
@@ -128,23 +130,92 @@ namespace Harlinn.MSSql.Tool.Input.Types
             }
         }
 
-        [XmlIgnore]
-        public string DataTypeNamespace
-        {
-            get
-            {
-                var project = Project;
-                var rootNamespace = project?.Namespace;
-                var schemaNamespace = Owner?.Namespace;
-                if (string.IsNullOrEmpty(schemaNamespace))
-                {
-                    schemaNamespace = Owner?.Name.FirstToUpper();
-                }
-                
-                return $"{rootNamespace}.Types.{schemaNamespace}";
+        [XmlAttribute, DefaultValue("")]
+        public string DataTypeNamespace { get => _dataTypeNamespace; set => _dataTypeNamespace = value; }
 
+
+        public string GetDataTypeNamespace()
+        {
+            var dataTypeNamespace = Owner!.GetDataTypesNamespace();
+
+            if (string.IsNullOrEmpty(DataTypeNamespace) == false)
+            {
+                var schemaNamespace = Owner!.GetNamespace();
+                dataTypeNamespace = $"{schemaNamespace}.{DataTypeNamespace}";
             }
+            return dataTypeNamespace;
         }
+
+        [XmlAttribute, DefaultValue("")]
+        public string ReaderNamespace { get => _readerNamespace; set => _readerNamespace = value; }
+        public string GetReaderNamespace()
+        {
+            var readerNamespace = Owner!.GetReadersNamespace();
+
+            if (string.IsNullOrEmpty(ReaderNamespace) == false)
+            {
+                var databaseNamespace = Owner!.GetDatabaseNamespace();
+                readerNamespace = $"{databaseNamespace}.{DataTypeNamespace}";
+            }
+            return readerNamespace;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string DataTypeSuffix { get; set; } = "";
+
+        public string GetDataTypeSuffix()
+        {
+            var dataTypeSuffix = Owner!.DataTypeSuffix;
+            if (string.IsNullOrEmpty(DataTypeSuffix) == false)
+            {
+                dataTypeSuffix = DataTypeSuffix;
+            }
+            return dataTypeSuffix;
+        }
+
+        [XmlAttribute, DefaultValue("")]
+        public string DataTypePrefix { get; set; } = "";
+
+        public string GetDataTypePrefix()
+        {
+            var dataTypePrefix = Owner!.DataTypePrefix;
+            if (string.IsNullOrEmpty(DataTypePrefix) == false)
+            {
+                dataTypePrefix = DataTypePrefix;
+            }
+            return dataTypePrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string ReaderSuffix { get; set; } = "";
+
+        public string GetReaderSuffix()
+        {
+            var readerSuffix = Owner!.ReaderSuffix;
+            if (string.IsNullOrEmpty(ReaderSuffix) == false)
+            {
+                readerSuffix = ReaderSuffix;
+            }
+            return readerSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string ReaderPrefix { get; set; } = "";
+
+        public string GetReaderPrefix()
+        {
+            var readerPrefix = Owner!.ReaderPrefix;
+            if (string.IsNullOrEmpty(ReaderPrefix) == false)
+            {
+                readerPrefix = ReaderPrefix;
+            }
+            return readerPrefix;
+        }
+
+
 
         [XmlArray("Fields")]
         [XmlArrayItem(typeof(BooleanFieldDefinition),ElementName ="Boolean")]

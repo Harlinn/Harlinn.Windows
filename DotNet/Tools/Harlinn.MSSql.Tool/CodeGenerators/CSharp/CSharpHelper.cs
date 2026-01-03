@@ -16,6 +16,7 @@
 
 using Harlinn.Common.Core.Net;
 using Harlinn.MSSql.Tool.Input.Types;
+using Microsoft.SqlServer.Management.HadrData;
 using System.Text;
 
 namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
@@ -687,12 +688,16 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
         public static string GetDataType(RowSourceDefinition entityDefinition)
         {
-            return entityDefinition.Name + "DataType";
+            var prefix = entityDefinition.GetDataTypePrefix();
+            var suffix = entityDefinition.GetDataTypeSuffix();
+            return $"{prefix}{entityDefinition.Name}{suffix}";
         }
 
         public static string GetReaderClassName(RowSourceDefinition entityDefinition)
         {
-            return entityDefinition.Name + "Reader";
+            var prefix = entityDefinition.GetReaderPrefix();
+            var suffix = entityDefinition.GetReaderSuffix();
+            return $"{prefix}{entityDefinition.Name}{suffix}";
         }
 
         public static string GetMemberFieldType(FieldDefinition fieldDefinition)
@@ -808,8 +813,12 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
         public static string GetDataTypeNamespace(RowSourceDefinition entityDefinition)
         {
-            return entityDefinition.DataTypeNamespace;
+            return entityDefinition.GetDataTypeNamespace();
         }
+
+
+
+
 
         public static string GetQualifiedDataTypeNamespace(RowSourceDefinition entityDefinition)
         {

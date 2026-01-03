@@ -11,8 +11,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
     public class CSharpStoredProceduresGenerator : CodeWriter
     {
-        public CSharpStoredProceduresGenerator(Context context) : base(context)
+        Schema _schema;
+        public CSharpStoredProceduresGenerator(Context context, Schema schema) : base(context)
         {
+            _schema = schema;
         }
 
         List<string> GetDataTypeNamespaces()
@@ -50,7 +52,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
             WriteLine("public class StoredProcedures");
             WriteLine("{");
-            var entities = Context.Project.Entities;
+            var entities = _schema.GetEntities();
             foreach (var entity in entities)
             {
                 CreateStoredProcedurs(entity);
