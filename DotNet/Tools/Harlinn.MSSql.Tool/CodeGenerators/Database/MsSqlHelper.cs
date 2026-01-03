@@ -329,6 +329,12 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"@{fieldDefinition.Name.FirstToLower()}";
         }
 
+        public static string GetParameterName(ParameterDefinition parameterDefinition)
+        {
+            return $"{parameterDefinition.Name.FirstToLower()}";
+        }
+
+
         public static string GetQualifiedTableOrViewName(RowSourceDefinition rowSourceDefinition)
         {
             var schemaName = rowSourceDefinition.Owner!.Name;

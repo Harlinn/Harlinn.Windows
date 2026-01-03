@@ -33,6 +33,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         int _xmlCollectionId = 0;
         bool _isReadOnly;
         bool _isNullable;
+        string? _databaseType = string.Empty;
         string? _description;
 
         protected ParameterDefinition()
@@ -51,6 +52,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
             _xmlCollectionId = parameter.XmlCollectionId ?? 0;
             _isReadOnly = parameter.IsReadOnly;
             _isNullable = parameter.IsNullable;
+            _databaseType = parameter.TypeName;
             _description = description;
         }
 
@@ -87,8 +89,12 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute, DefaultValue(true)]
         public bool IsNullable { get => _isNullable; set => _isNullable = value; }
 
+        [XmlAttribute, DefaultValue(null)]
+        public string? DatabaseType { get => _databaseType; set => _databaseType = value; }
+
         [XmlElement, DefaultValue(null)]
         public string? Description { get => _description; set => _description = value; }
+        
 
         public override string ToString()
         {

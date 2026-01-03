@@ -143,6 +143,124 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         }
 
 
+        public static string GetNotNullableBaseType(ParameterDefinition parameterDefinition)
+        {
+            string result = "<unknown>";
+            var parameterType = parameterDefinition.ParameterType;
+            switch (parameterType)
+            {
+                case ParameterType.Boolean:
+                {
+                    result = "bool";
+                }
+                break;
+                case ParameterType.SByte:
+                {
+                    result = "sbyte";
+                }
+                break;
+                case ParameterType.Byte:
+                {
+                    result = "byte";
+                }
+                break;
+                case ParameterType.Int16:
+                {
+                    result = "short";
+                }
+                break;
+                case ParameterType.UInt16:
+                {
+                    result = "ushort";
+                }
+                break;
+                case ParameterType.Int32:
+                {
+                    result = "int";
+                }
+                break;
+                case ParameterType.UInt32:
+                {
+                    result = "uint";
+                }
+                break;
+                case ParameterType.Int64:
+                {
+                    result = "long";
+                }
+                break;
+                case ParameterType.UInt64:
+                {
+                    result = "ulong";
+                }
+                break;
+                case ParameterType.Single:
+                {
+                    result = "float";
+                }
+                break;
+                case ParameterType.Double:
+                {
+                    result = "double";
+                }
+                break;
+                case ParameterType.DateTime:
+                {
+                    result = "DateTime";
+                }
+                break;
+                case ParameterType.TimeSpan:
+                {
+                    result = "TimeSpan";
+                }
+                break;
+                case ParameterType.Guid:
+                {
+                    result = "Guid";
+                }
+                break;
+                case ParameterType.String:
+                {
+                    result = "string";
+                }
+                break;
+                case ParameterType.Binary:
+                {
+                    result = "byte[]";
+                }
+                break;
+                case ParameterType.Unknown:
+                    break;
+                case ParameterType.Char:
+                    result = "string";
+                    break;
+                case ParameterType.Decimal:
+                    result = "decimal";
+                    break;
+                case ParameterType.SqlVariant:
+                    result = "object";
+                    break;
+                case ParameterType.HierarchyId:
+                    result = "SqlHierarchyId";
+                    break;
+                case ParameterType.Geometry:
+                    result = "SqlGeometry";
+                    break;
+                case ParameterType.Geography:
+                    result = "SqlGeography";
+                    break;
+                case ParameterType.Xml:
+                    result = "SqlXml";
+                    break;
+                case ParameterType.Object:
+                    result = "object";
+                    break;
+            }
+
+            return result;
+        }
+
+
         public static string GetNotNullableBaseType(PropertyDefinition propertyDefinition)
         {
             string result = "<unknown>";
@@ -278,6 +396,16 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         {
             string result = GetNotNullableBaseType(fieldDefinition);
             if (fieldDefinition.IsNullable)
+            {
+                result += "?";
+            }
+            return result;
+        }
+
+        public static string GetBaseType(ParameterDefinition parameterDefinition)
+        {
+            string result = GetNotNullableBaseType(parameterDefinition);
+            if (parameterDefinition.IsNullable)
             {
                 result += "?";
             }
@@ -599,9 +727,29 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return GetBaseType(fieldDefinition);
         }
 
+        public static string GetInputArgumentType(ParameterDefinition parameterDefinition)
+        {
+            return GetBaseType(parameterDefinition);
+        }
+
         public static string GetInputArgumentName(FieldDefinition fieldDefinition)
         {
             var name = fieldDefinition.Name.FirstToLower();
+            if (keyWords.Contains(name!))
+            {
+                name = name + "__";
+            }
+            name = name!.Replace('.', '_');
+            if (char.IsDigit(name[0]))
+            {
+                name = "d_" + name;
+            }
+            return name;
+        }
+
+        public static string GetInputArgumentName(ParameterDefinition parameterDefinition)
+        {
+            var name = parameterDefinition.Name.TrimStart('@').FirstToLower();
             if (keyWords.Contains(name!))
             {
                 name = name + "__";
@@ -660,6 +808,58 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                     result = "AddSqlXml";
                     break;
                 case FieldType.SqlVariant:
+                    result = "AddSqlVariant";
+                    break;
+            }
+            return result;
+        }
+
+        public static string GetAddParameterFunction(ParameterDefinition parameterDefinition)
+        {
+            var fieldType = parameterDefinition.ParameterType;
+            var databaseType = parameterDefinition.DatabaseType?.ToLowerInvariant();
+            var result = $"Add{fieldType}";
+            switch (fieldType)
+            {
+                case ParameterType.String:
+                    if (databaseType != null)
+                    {
+                        if (databaseType == "nchar")
+                        {
+                            result = "AddNChar";
+                        }
+                        else if (databaseType == "char")
+                        {
+                            result = "AddChar";
+                        }
+                        else if (databaseType == "varchar")
+                        {
+                            result = "AddVarChar";
+                        }
+                        else
+                        {
+                            result = "AddNVarChar";
+                        }
+                    }
+                    else
+                    {
+                        result = "AddNVarChar";
+                    }
+                    break;
+
+                case ParameterType.HierarchyId:
+                    result = "AddHierarchyId";
+                    break;
+                case ParameterType.Geometry:
+                    result = "AddSqlGeometry";
+                    break;
+                case ParameterType.Geography:
+                    result = "AddSqlGeography";
+                    break;
+                case ParameterType.Xml:
+                    result = "AddSqlXml";
+                    break;
+                case ParameterType.SqlVariant:
                     result = "AddSqlVariant";
                     break;
             }

@@ -1,4 +1,5 @@
 ﻿
+using Harlinn.Common.Core.Net;
 using Harlinn.MSSql.Tool.CodeGenerators.Database;
 using Harlinn.MSSql.Tool.Input.Types;
 using Harlinn.MSSql.Tool.Output;
@@ -57,7 +58,136 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             {
                 CreateStoredProcedurs(entity);
             }
+
+            var procedures = _schema.GetStoredProcedures();
+            foreach (var procedure in procedures)
+            {
+                CreateStoredProcedure(procedure);
+            }
+
             WriteLine("}");
+
+        }
+
+        private void CreateStoredProcedure(StoredProcedureDefinition procedure)
+        {
+            CreateRegularStoredProcedure(procedure);
+        }
+
+
+        private void CreateFunction(StoredProcedureDefinition storedProcedureDefinition, string qualifiedStoredProcedureName, string functionName, IReadOnlyList<ParameterDefinition> parameterDefinitions)
+        {
+            var outParameters = new List<ParameterDefinition>();
+            var parameterDefinitionsCount = parameterDefinitions.Count;
+            if (parameterDefinitionsCount > 1)
+            {
+                var parameterDefinition = parameterDefinitions[0];
+                var refModifier = "";
+                if (parameterDefinition.IsOutput)
+                {
+                    refModifier = "ref ";
+                    outParameters.Add(parameterDefinition);
+                }
+                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinitions[0])} {CSharpHelper.GetInputArgumentName(parameterDefinitions[0])},");
+                for (int i = 1; i < parameterDefinitionsCount; i++)
+                {
+                    parameterDefinition = parameterDefinitions[i];
+                    refModifier = "";
+                    if (parameterDefinition.IsOutput)
+                    {
+                        refModifier = "ref ";
+                        outParameters.Add(parameterDefinition);
+                    }
+                    if (i < parameterDefinitionsCount - 1)
+                        WriteLine($"        {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinition)} {CSharpHelper.GetInputArgumentName(parameterDefinition)},");
+                    else
+                        WriteLine($"        {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinition)} {CSharpHelper.GetInputArgumentName(parameterDefinition)})");
+                }
+            }
+            else if (parameterDefinitionsCount == 1)
+            {
+                var parameterDefinition = parameterDefinitions[0];
+                var refModifier = "";
+                if (parameterDefinition.IsOutput)
+                {
+                    refModifier = "ref ";
+                    outParameters.Add(parameterDefinition);
+                }
+                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinitions[0])} {CSharpHelper.GetInputArgumentName(parameterDefinitions[0])})");
+            }
+            else
+            {
+                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection)");
+            }
+
+            WriteLine("    {");
+
+            WriteLine("        using var command = sqlConnection.CreateCommand();");
+            WriteLine("        command.CommandType = CommandType.StoredProcedure;");
+
+            WriteLine($"        command.CommandText = \"{qualifiedStoredProcedureName}\";");
+            WriteLine();
+            for (int i = 0; i < parameterDefinitionsCount; i++)
+            {
+                var parameterDefinition = parameterDefinitions[i];
+                var fieldType = parameterDefinition.ParameterType;
+                var parameterName = Database.MsSqlHelper.GetParameterName(parameterDefinition);
+                var isOutputParameter = parameterDefinition.IsOutput;
+                var argumentName = CSharpHelper.GetInputArgumentName(parameterDefinition);
+                var addParameterFunction = CSharpHelper.GetAddParameterFunction(parameterDefinition);
+                var sqlParameterName = $"{argumentName}Parameter";
+                var size = "";
+                if (fieldType == ParameterType.String)
+                {
+                    var stringParameterDefinition = (StringParameterDefinition)parameterDefinition;
+                    size = $", {stringParameterDefinition.Size}";
+                }
+                else if (fieldType == ParameterType.Binary)
+                {
+                    var binaryParameterDefinition = (BinaryParameterDefinition)parameterDefinition;
+                    size = $", {binaryParameterDefinition.Size}";
+                }
+                if (isOutputParameter)
+                {
+                    WriteLine($"        var {sqlParameterName} = command.Parameters.{addParameterFunction}(\"{parameterName}\"{size});");
+                }
+                else
+                {
+                    WriteLine($"        command.Parameters.{addParameterFunction}(\"{parameterName}\", {argumentName}{size});");
+                }
+            }
+
+            WriteLine();
+            WriteLine("        var result = command.ExecuteNonQuery() > 0;");
+            if (outParameters.Count > 0)
+            {
+                WriteLine("        if(result)");
+                WriteLine("        {");
+                foreach (var outParameter in outParameters)
+                {
+                    var argumentName = CSharpHelper.GetInputArgumentName(outParameter);
+                    var sqlParameterName = $"{argumentName}Parameter";
+                    WriteLine($"            {argumentName} = ({CSharpHelper.GetInputArgumentType(outParameter)}){sqlParameterName}.Value;");
+                }
+                WriteLine("        }");
+            }
+            WriteLine("        return result;");
+            WriteLine("    }");
+            WriteLine();
+        }
+
+        private void CreateRegularStoredProcedure(StoredProcedureDefinition procedure)
+        {
+            var parameters = procedure.Parameters;
+            var schemaName = _schema.Name;
+            var procedureName = procedure.Name;
+            var qualifiedStoredProcedureName = $"[{schemaName}].[{procedureName}]";
+
+            var memberName = procedure.Name.FirstToUpper()!;
+
+
+            CreateFunction(procedure, qualifiedStoredProcedureName, memberName, parameters);
+
 
         }
 
