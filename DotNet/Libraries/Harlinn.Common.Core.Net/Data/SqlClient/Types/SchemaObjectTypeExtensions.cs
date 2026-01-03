@@ -20,7 +20,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient.Types
     {
         public static SchemaObjectType ToSchemaObjectType(this string type)
         {
-            return type switch
+            return type.Trim().ToUpper() switch
             {
                 "AF" => SchemaObjectType.AggregateFunction,
                 "C" => SchemaObjectType.CheckConstraint,

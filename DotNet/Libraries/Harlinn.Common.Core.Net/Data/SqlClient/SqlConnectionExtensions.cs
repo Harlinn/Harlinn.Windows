@@ -74,12 +74,12 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
         
-        public static int GetSchemaId(this SqlConnection connection, string schemaName)
+        public static int? GetSchemaId(this SqlConnection connection, string schemaName)
         {
             var schema = connection.GetSchemaByName(schemaName);
             if (schema == null)
             {
-                throw new InvalidOperationException($"Schema '{schemaName}' not found.");
+                return null;
             }
             return schema.SchemaId;
         }
@@ -170,6 +170,33 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 }
             }
         }
+
+        /// <summary>
+        /// Retrieves all schema objects defined within the specified schema in the connected SQL Server database.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying schema objects. Must not be null.</param>
+        /// <param name="schemaName">The name of the schema whose objects are to be retrieved. Cannot be null or empty.</param>
+        /// <returns>A read-only list of <see cref="SchemaObject"/> instances representing the objects in the specified schema.
+        /// Returns an empty list if the schema does not exist or contains no objects.</returns>
+        public static IReadOnlyList<SchemaObject> GetSchemaObjects(this SqlConnection connection, string schemaName)
+        {
+            var schemaId = connection.GetSchemaId(schemaName);
+            if(schemaId is null)
+            {
+                return Array.Empty<SchemaObject>();
+            }
+            var sql = $"{SchemaObjectsReader.Sql} WHERE [schema_id] = @SchemaId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddInt32("@SchemaId", schemaId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var schemaObjectsReader = new SchemaObjectsReader(reader, false);
+                    return schemaObjectsReader.GetSchemaObjects();
+                }
+            }
+        }
+
 
         /// <summary>
         /// Retrieves a read-only list of schema objects of the specified type and schema from the connected SQL Server
@@ -780,6 +807,18 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
         /// <summary>
+        /// Retrieves the table definition for the specified schema object from the database connection.
+        /// </summary>
+        /// <param name="connection">The open <see cref="SqlConnection"/> used to query the database for the table definition.</param>
+        /// <param name="schemaObject">The schema object identifying the table to retrieve. Must not be null.</param>
+        /// <returns>A <see cref="Types.Table"/> representing the table definition if found; otherwise, <see langword="null"/>.</returns>
+        public static Types.Table? GetTable(this SqlConnection connection, SchemaObject schemaObject)
+        {
+            return connection.GetTable(schemaObject.SchemaId, schemaObject.ObjectId);
+        }
+
+
+        /// <summary>
         /// Retrieves a table by its schema and object ID.
         /// </summary>
         /// <param name="connection">The <see cref="SqlConnection"/> to use for querying the database. Must not be null and must be open.</param>
@@ -909,6 +948,17 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                     return null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Retrieves a view from the database using the specified schema object.
+        /// </summary>
+        /// <param name="connection">The open SQL connection to use for retrieving the view.</param>
+        /// <param name="schemaObject">An object that specifies the schema and object identifier of the view to retrieve.</param>
+        /// <returns>A <see cref="Types.View"/> representing the requested view if found; otherwise, <see langword="null"/>.</returns>
+        public static Types.View? GetView(this SqlConnection connection, SchemaObject schemaObject)
+        {
+            return connection.GetView(schemaObject.SchemaId, schemaObject.ObjectId);
         }
 
         /// <summary>
@@ -1072,6 +1122,47 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         public static IReadOnlyList<Types.Procedure> GetProcedures(this SqlConnection connection, Schema schema)
         {
             return connection.GetProcedures(schema.SchemaId);
+        }
+
+        /// <summary>
+        /// Retrieves a stored procedure from the database by its schema and object identifiers.
+        /// </summary>
+        /// <remarks>The connection must be open before calling this method. The method does not modify
+        /// the state of the connection.</remarks>
+        /// <param name="connection">The open <see cref="SqlConnection"/> to use for querying the database.</param>
+        /// <param name="schemaId">The identifier of the schema that contains the procedure.</param>
+        /// <param name="objectId">The object identifier of the procedure to retrieve.</param>
+        /// <returns>A <see cref="Types.Procedure"/> representing the stored procedure if found; otherwise, <see
+        /// langword="null"/>.</returns>
+        public static Types.Procedure GetProcedure(this SqlConnection connection, int schemaId, int objectId)
+        {
+            var sql = $"{ProceduresReader.Sql} WHERE sp.[schema_id] = @SchemaId AND sp.[object_id] = @ObjectId";
+            using (var command = connection.CreateCommand(sql))
+            {
+                command.Parameters.AddWithValue("@SchemaId", schemaId);
+                command.Parameters.AddWithValue("@ObjectId", objectId);
+                using (var reader = command.ExecuteReader())
+                {
+                    var proceduresReader = new ProceduresReader(reader, false);
+                    if(proceduresReader.Read())
+                    {
+                        return proceduresReader.GetProcedure();
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves a stored procedure from the database using the specified schema object.
+        /// </summary>
+        /// <param name="connection">The open SQL connection to use for retrieving the procedure.</param>
+        /// <param name="schemaObject">An object that identifies the schema and object ID of the procedure to retrieve. Cannot be null.</param>
+        /// <returns>A <see cref="Types.Procedure"/> representing the requested stored procedure, or null if the procedure does
+        /// not exist.</returns>
+        public static Types.Procedure GetProcedure(this SqlConnection connection, SchemaObject schemaObject)
+        {
+            return connection.GetProcedure(schemaObject.SchemaId, schemaObject.ObjectId);
         }
 
         /// <summary>

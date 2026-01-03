@@ -76,16 +76,31 @@ namespace Harlinn.MSSql.Tool
         [Option('c', "connection_string", Required = false, HelpText = "SQL Server connection string.")]
         public string? ConnectionString { get; set; }
 
-        [Option('i', "initial_catalog", Required = false, HelpText = "SQL Server initial catalog.")]
+        [Option('i', "initial_catalog", Required = false, HelpText = "SQL Server initial catalog. Use this to connect to the default local SQL Server using integrated security.")]
         public string? InitialCatalog { get; set; }
 
         [Option('s', "schema", Required = false, HelpText = "Schema name.")]
-        public string Schema { get; set; } = string.Empty;
+        public IEnumerable<string>? Schemas { get; set; }
 
-        [Option('t', "table", Required = false, HelpText = "Table name.")]
-        public string Table { get; set; } = string.Empty;
+        [Option('o', "object", Required = false, HelpText = "Name of, or regex to match if used with -r for, the objects to import.")]
+        public IEnumerable<string>? Objects { get; set; }
 
-        
+        [Option('r', "regex", Default = false ,Required = false, HelpText = "Use regular expressions.")]
+        public bool Regex { get; set; } = false;
+
+        [Option('e', "exclude", Required = false, HelpText = "Name of, or regex to match if used with -r for, the objects to exclude from the import.")]
+        public IEnumerable<string>? ExcludedObjects { get; set; }
+
+        [Option('u', "procedures", Default = false, Required = false, HelpText = "Import all stored procedures from the specified schemas.")]
+        public bool Procedures { get; set; } = false;
+
+        [Option('t', "tables", Default = false, Required = false, HelpText = "Import all tables from the specified schemas.")]
+        public bool Tables { get; set; } = false;
+
+        [Option('v', "views", Default = false, Required = false, HelpText = "Import all views from the specified schemas.")]
+        public bool Views { get; set; } = false;
+
+
 
         public string GetConnectionString()
         {

@@ -14,11 +14,13 @@
    limitations under the License.
 */
 
-using System.Xml.Serialization;
-using Microsoft.Data.SqlClient;
 using Harlinn.Common.Core.Net.Data.SqlClient;
-using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
+using Harlinn.Common.Core.Net.Data.SqlClient.Types;
+using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
+using System.Xml.Serialization;
+using SchemaTypes = Harlinn.Common.Core.Net.Data.SqlClient.Types;
 
 namespace Harlinn.MSSql.Tool.Input.Types
 {
@@ -55,58 +57,162 @@ namespace Harlinn.MSSql.Tool.Input.Types
             return schema;
         }
 
+
+        static bool IsMatch(ImportOptions options, SchemaTypes.SchemaObject schemaObject)
+        {
+            var schemaObjectType = schemaObject.Type;
+            switch(schemaObjectType)
+            {
+                case SchemaTypes.SchemaObjectType.Table:
+                    if (options.Tables)
+                    {
+                        return true;
+                    }
+                    break;
+                case SchemaTypes.SchemaObjectType.View:
+                    if (options.Views)
+                    {
+                        return true;
+                    }
+                    break;
+                case SchemaTypes.SchemaObjectType.StoredProcedure:
+                    if (options.Procedures)
+                    {
+                        return true;
+                    }
+                    break;
+            }
+
+            var optionsObjects = options.Objects;
+            if (optionsObjects != null)
+            {
+                foreach (var objectNameOrPattern in optionsObjects)
+                {
+                    if (options.Regex)
+                    {
+                        if (System.Text.RegularExpressions.Regex.IsMatch(schemaObject.Name, objectNameOrPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (schemaObject.Name.Equals(objectNameOrPattern, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        static bool IsExluded(ImportOptions options, SchemaTypes.SchemaObject schemaObject)
+        {
+            var excludedObjects = options.ExcludedObjects;
+            if (excludedObjects != null)
+            {
+                foreach (var objectNameOrPattern in excludedObjects)
+                {
+                    if (options.Regex)
+                    {
+                        if (System.Text.RegularExpressions.Regex.IsMatch(schemaObject.Name, objectNameOrPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (schemaObject.Name.Equals(objectNameOrPattern, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+
+        internal void ImportSchemaObjectsByName(SqlConnection sqlConnection, ImportOptions options, Schema schema)
+        {
+            var schemaObjects = sqlConnection.GetSchemaObjects(schema.Name);
+            foreach (var schemaObject in schemaObjects)
+            {
+                var isMatch = IsMatch(options, schemaObject);
+                var isExcluded = IsExluded(options, schemaObject);
+                if (isMatch && !isExcluded)
+                {
+                    switch (schemaObject.Type)
+                    {
+                        case SchemaTypes.SchemaObjectType.Table:
+                            var table = sqlConnection.GetTable(schemaObject);
+                            if (table != null)
+                            {
+                                schema.ImportTable(sqlConnection, table);
+                            }
+                            break;
+                        case SchemaTypes.SchemaObjectType.View:
+                            var view = sqlConnection.GetView(schemaObject);
+                            if (view != null)
+                            {
+                                schema.ImportView(sqlConnection, view);
+                            }
+                            break;
+                        case SchemaTypes.SchemaObjectType.StoredProcedure:
+                            var procedure = sqlConnection.GetProcedure(schemaObject);
+                            if (procedure != null)
+                            {
+                                schema.ImportProcedure(sqlConnection, procedure);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        internal void ImportSchema(SqlConnection sqlConnection, ImportOptions options, string schemaName)
+        {
+            if(string.IsNullOrEmpty(schemaName) == false)
+            {
+                var schemaNames = schemaName.Split(';');
+                foreach(var name in schemaNames)
+                {
+                    var schemaData = sqlConnection.GetSchemaByName(name);
+                    if (schemaData != null)
+                    {
+                        Schema? schema = null;
+                        if (!SchemasByName.TryGetValue(name, out schema))
+                        {
+                            schema = AddSchema(name);
+                            if (string.IsNullOrEmpty(schema.Description))
+                            {
+                                schema.Description = sqlConnection.GetSchemaDescription(name);
+                            }
+                        }
+                        ImportSchemaObjectsByName(sqlConnection, options, schema);
+                    }
+                }
+            }
+            
+        }
+
         internal void Import(SqlConnection sqlConnection, ImportOptions options)
         {
             if(string.IsNullOrEmpty(_description))
             {
                 _description = sqlConnection.GetDatabaseDescription();
             }
-            string[] schemaNames = ["dbo"];
-            if (!string.IsNullOrEmpty(options.Schema))
+
+            var schemas = options.Schemas;
+            if(schemas == null || schemas.Count() == 0)
             {
-                schemaNames = options.Schema.Split(';');
+                schemas = new string[] { "dbo" };
             }
-            foreach (var schemaName in schemaNames)
+
+            foreach ( var schemaName in schemas )
             {
-                if (!SchemasByName.TryGetValue(schemaName, out var schema))
-                {
-                    schema = AddSchema(schemaName);
-                    if (string.IsNullOrEmpty(schema.Description))
-                    {
-                        schema.Description = sqlConnection.GetSchemaDescription(schemaName);
-                    }
-                }
-                var schemaObject = sqlConnection.GetSchemaByName(schemaName);
-                if (schemaObject != null)
-                {
-                    var tableName = options.Table;
-                    if (string.IsNullOrEmpty(tableName) || tableName == "*")
-                    {
-                        var tables = sqlConnection.GetTables(schemaObject);
-                        schema.ImportTables(sqlConnection, tables);
-
-                        var views = sqlConnection.GetViews(schemaObject);
-                        schema.ImportViews(sqlConnection, views);
-
-                        if ( schemaName.Equals("sys", StringComparison.OrdinalIgnoreCase))
-                        {
-                            var systemViews = sqlConnection.GetSystemViews(schemaObject);
-                            schema.ImportViews(sqlConnection, systemViews);
-                        }
-
-                        var procedures = sqlConnection.GetProcedures(schemaObject);
-                        schema.ImportProcedures(sqlConnection, procedures);
-
-                    }
-                    else
-                    {
-                        var table = sqlConnection.GetTable(schemaObject, tableName);
-                        if (table != null)
-                        {
-                            schema.ImportTable(sqlConnection, table);
-                        }
-                    }
-                }
+                ImportSchema(sqlConnection, options, schemaName);
             }
         }
 

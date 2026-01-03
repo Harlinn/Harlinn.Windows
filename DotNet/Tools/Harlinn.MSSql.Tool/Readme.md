@@ -14,17 +14,28 @@ supporting a reasonable subset of the available features.
 
 # Features
 
-- Import table, view and stored procedure definitions from an existing database.
-- Generate SQL scripts for creating tables and stored procedures for CRUD operations.
-- Generate strongly typed C# classes for reading data from tables, views, stored procedures and sql queries.
-- Generate C# code for inserting, updating and deleting data from tables using the generated stored procedures.
-- Generate C# code for executing the imported stored procedures.
+- Import table, view and stored procedure definitions from an existing database into an xml file.
+- Generate SQL scripts for creating the imported tables.
+  - This feature is useful for verification of the imported table definitions, and the generated
+    SQL script must be carefully reviewed before it's applied to a database.
+- Generate SQL scripts to create stored procedures for create, update and delete operations.
+- Generate thin C# wrapper classes for reading data from tables and views.
+- Generate thin C# code for inserting, updating and deleting data from tables using the generated stored procedures.
+
+# Planned Features
+
+- Generate C# wrapper classes for the imported stored procedures.
+- Generate C# wrapper classes for SQL queries.
+- Entity Framework support.
+ 
 
 The generated code should be copied into your own projects and modified as needed.
 
 See [AdventureWorks](https://github.com/Harlinn/Harlinn.Windows/tree/master/DotNet/Examples/SqlClient/AdventureWorks) for
 an example of code generated using this tool. 
 
+It's also quite interesting to observe how well copilot works with the generated code, as it seems to understand 
+the patterns used in the generated code quite well.
 
 
 # Requirements
@@ -37,10 +48,64 @@ The generated code targets .NET 9.0 and C# 13.0, and does not require any additi
 
 ## Usage
 
+Run the following command to see the available options for the `import` command:
+```
+Harlinn.MSSql.Tool.exe import --help
+```
+This will display the following help information:
+
+```
+  -c, --connection_string    SQL Server connection string.
+
+  -i, --initial_catalog      SQL Server initial catalog. Use this to connect to the default local SQL Server using
+                             integrated security.
+
+  -s, --schema               Schema name.
+
+  -o, --object               Name of, or regex to match if used with -r for, the objects to import.
+
+  -r, --regex                (Default: false) Use regular expressions.
+
+  -e, --exclude              Name of, or regex to match if used with -r for, the objects to exclude from the import.
+
+  -u, --procedures           (Default: false) Import all stored procedures from the specified schemas.
+
+  -t, --tables               (Default: false) Import all tables from the specified schemas.
+
+  -v, --views                (Default: false) Import all views from the specified schemas.
+
+  -p, --project              Required. Project file path.
+
+  --help                     Display this help screen.
+
+  --version                  Display version information.
+```
+Run the following command to see the available options for the `build` command:
+
+```
+Harlinn.MSSql.Tool.exe build --help
+```
+This will display the following help information:
+
+```
+  -o, --output                  Output directory.
+
+  -w, --use_wrappers            Use wrappers.
+
+  -e, --use_entity_framework    Use Entity Framework.
+
+  -p, --project                 Required. Project file path.
+
+  --help                        Display this help screen.
+
+  --version                     Display version information.
+```
+
+
 To import the table definitions from a database, run the following command:
 
 ```
-Harlinn.MSSql.Tool import -s dbo  -i MyDB -p TestProject.xml
+Harlinn.MSSql.Tool import -s dbo -t -i MyDB -p TestProject.xml
 ```
 
 This will import the tables within the `dbo` schema from the `MyDB` database
@@ -63,7 +128,7 @@ a C# wrapper for the stored procedures.
 To import the [AdventureWorks2019](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver17&tabs=ssms) database tables from multiple schemas, run the following command:
 
 ```
-Harlinn.MSSql.Tool import -s dbo;HumanResources;Person;Production;Purchasing;Sales -i AdventureWorks2019 -p AdventureWorks.xml
+Harlinn.MSSql.Tool import -s dbo;HumanResources;Person;Production;Purchasing;Sales -u -t -v -i AdventureWorks2019 -p AdventureWorks.xml
 ```
 
 Then edit the generated `AdventureWorks.xml` file, ensuring that `Name` and `Namespace` 
@@ -90,6 +155,12 @@ Apply the following generated SQL scripts to your `AdventureWorks2019` database:
 - `MSSql/InsertProcedures.sql`
 - `MSSql/UpdateProcedures.sql`
 - `MSSql/DeleteProcedures.sql`
+
+Reimporting the database with filtering to only include the original stored procedures can be done using the following command: 
+
+```
+Harlinn.MSSql.Tool import -s dbo;HumanResources;Person;Production;Purchasing;Sales -u -t -v -r -e "Insert.*" "Update.*" "Delete.*" -i AdventureWorks2019 -p AdventureWorks.xml
+```
 
 The generated code can also be found in the `Harlinn.Windows\DotNet\Examples\SqlClient\AdventureWorks\AdventureWorks.csproj` project, 
 which I use for testing.
