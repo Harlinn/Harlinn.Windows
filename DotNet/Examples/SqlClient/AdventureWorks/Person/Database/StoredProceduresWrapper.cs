@@ -49,6 +49,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeAddress(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.AddressDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeAddress]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertAddress(SqlConnection sqlConnection, AdventureWorks.Person.Types.AddressDataType data )
     {
         var dataAddressid = data.Addressid;
@@ -171,6 +183,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeAddresstype(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.AddresstypeDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeAddressType]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertAddresstype(SqlConnection sqlConnection, AdventureWorks.Person.Types.AddresstypeDataType data )
     {
         var dataAddresstypeid = data.Addresstypeid;
@@ -261,6 +285,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeBusinessentity(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.BusinessentityDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeBusinessEntity]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertBusinessentity(SqlConnection sqlConnection, AdventureWorks.Person.Types.BusinessentityDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -345,6 +381,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeBusinessentityaddress(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.BusinessentityaddressDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeBusinessEntityAddress]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertBusinessentityaddress(SqlConnection sqlConnection, AdventureWorks.Person.Types.BusinessentityaddressDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -448,6 +496,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeBusinessentitycontact(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.BusinessentitycontactDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeBusinessEntityContact]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertBusinessentitycontact(SqlConnection sqlConnection, AdventureWorks.Person.Types.BusinessentitycontactDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -551,6 +611,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeContacttype(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.ContacttypeDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeContactType]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertContacttype(SqlConnection sqlConnection, AdventureWorks.Person.Types.ContacttypeDataType data )
     {
         var dataContacttypeid = data.Contacttypeid;
@@ -631,6 +703,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeCountryregion(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.CountryregionDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeCountryRegion]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertCountryregion(SqlConnection sqlConnection, AdventureWorks.Person.Types.CountryregionDataType data )
     {
         var dataCountryregioncode = data.Countryregioncode;
@@ -718,6 +802,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeEmailaddress(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.EmailaddressDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeEmailAddress]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertEmailaddress(SqlConnection sqlConnection, AdventureWorks.Person.Types.EmailaddressDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -818,6 +914,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergePassword(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.PasswordDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergePassword]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertPassword(SqlConnection sqlConnection, AdventureWorks.Person.Types.PasswordDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -929,6 +1037,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergePerson(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.PersonDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergePerson]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertPerson(SqlConnection sqlConnection, AdventureWorks.Person.Types.PersonDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -1070,6 +1190,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergePersonphone(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.PersonphoneDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergePersonPhone]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertPersonphone(SqlConnection sqlConnection, AdventureWorks.Person.Types.PersonphoneDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -1167,6 +1299,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergePhonenumbertype(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.PhonenumbertypeDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergePhoneNumberType]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertPhonenumbertype(SqlConnection sqlConnection, AdventureWorks.Person.Types.PhonenumbertypeDataType data )
     {
         var dataPhonenumbertypeid = data.Phonenumbertypeid;
@@ -1261,6 +1405,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeStateprovince(SqlConnection sqlConnection, AdventureWorks.Person.Database.DataTables.StateprovinceDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Person].[MergeStateProvince]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertStateprovince(SqlConnection sqlConnection, AdventureWorks.Person.Types.StateprovinceDataType data )
     {
         var dataStateprovinceid = data.Stateprovinceid;

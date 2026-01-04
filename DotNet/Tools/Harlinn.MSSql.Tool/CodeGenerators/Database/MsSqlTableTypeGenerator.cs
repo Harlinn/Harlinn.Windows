@@ -56,7 +56,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
                     MsSqlHelper.GetRawColumnType(field).Equals("[IMAGE]", StringComparison.OrdinalIgnoreCase) ||
                     MsSqlHelper.GetRawColumnType(field).Equals("[XML]", StringComparison.OrdinalIgnoreCase) ||
                     MsSqlHelper.GetRawColumnType(field).Equals("[TIMESTAMP]", StringComparison.OrdinalIgnoreCase) ||
-                    (field is GuidFieldDefinition guidFieldDefinition && guidFieldDefinition.IsRowGuid) )
+                    (field is GuidFieldDefinition guidFieldDefinition && guidFieldDefinition.IsRowGuid) ||
+                    field is HierarchyIdFieldDefinition)
                 {
                     return false;
                 }

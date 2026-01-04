@@ -49,6 +49,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeBillofmaterials(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.BillofmaterialsDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeBillOfMaterials]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertBillofmaterials(SqlConnection sqlConnection, AdventureWorks.Production.Types.BillofmaterialsDataType data )
     {
         var dataBillofmaterialsid = data.Billofmaterialsid;
@@ -293,6 +305,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeCulture(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.CultureDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeCulture]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertCulture(SqlConnection sqlConnection, AdventureWorks.Production.Types.CultureDataType data )
     {
         var dataCultureid = data.Cultureid;
@@ -394,6 +418,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeDocument(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.DocumentDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeDocument]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertDocument(SqlConnection sqlConnection, AdventureWorks.Production.Types.DocumentDataType data )
     {
         var dataDocumentnode = data.Documentnode;
@@ -543,6 +579,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeIllustration(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.IllustrationDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeIllustration]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertIllustration(SqlConnection sqlConnection, AdventureWorks.Production.Types.IllustrationDataType data )
     {
         var dataIllustrationid = data.Illustrationid;
@@ -631,6 +679,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeLocation(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.LocationDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeLocation]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertLocation(SqlConnection sqlConnection, AdventureWorks.Production.Types.LocationDataType data )
     {
         var dataLocationid = data.Locationid;
@@ -771,6 +831,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProduct(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProduct]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProduct(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductDataType data )
     {
         var dataProductid = data.Productid;
@@ -1233,6 +1305,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductcategory(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductcategoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductCategory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductcategory(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductcategoryDataType data )
     {
         var dataProductcategoryid = data.Productcategoryid;
@@ -1323,6 +1407,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductcosthistory(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductcosthistoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductCostHistory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductcosthistory(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductcosthistoryDataType data )
     {
         var dataProductid = data.Productid;
@@ -1424,6 +1520,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductdescription(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductdescriptionDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductDescription]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductdescription(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductdescriptionDataType data )
     {
         var dataProductdescriptionid = data.Productdescriptionid;
@@ -1510,6 +1618,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductdocument(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductdocumentDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductDocument]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductdocument(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductdocumentDataType data )
     {
         var dataProductid = data.Productid;
@@ -1601,6 +1721,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductinventory(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductinventoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductInventory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductinventory(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductinventoryDataType data )
     {
         var dataProductid = data.Productid;
@@ -1712,6 +1844,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductlistpricehistory(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductlistpricehistoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductListPriceHistory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductlistpricehistory(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductlistpricehistoryDataType data )
     {
         var dataProductid = data.Productid;
@@ -1817,6 +1961,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductmodel(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductmodelDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductModel]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductmodel(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductmodelDataType data )
     {
         var dataProductmodelid = data.Productmodelid;
@@ -1915,6 +2071,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductmodelillustration(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductmodelillustrationDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductModelIllustration]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductmodelillustration(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductmodelillustrationDataType data )
     {
         var dataProductmodelid = data.Productmodelid;
@@ -2000,6 +2168,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductmodelproductdescriptionculture(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductmodelproductdescriptioncultureDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductModelProductDescriptionCulture]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductmodelproductdescriptionculture(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductmodelproductdescriptioncultureDataType data )
     {
         var dataProductmodelid = data.Productmodelid;
@@ -2103,6 +2283,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductphoto(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductphotoDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductPhoto]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductphoto(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductphotoDataType data )
     {
         var dataProductphotoid = data.Productphotoid;
@@ -2203,6 +2395,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductproductphoto(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductproductphotoDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductProductPhoto]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductproductphoto(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductproductphotoDataType data )
     {
         var dataProductid = data.Productid;
@@ -2306,6 +2510,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductreview(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductreviewDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductReview]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductreview(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductreviewDataType data )
     {
         var dataProductreviewid = data.Productreviewid;
@@ -2424,6 +2640,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductsubcategory(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ProductsubcategoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeProductSubcategory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductsubcategory(SqlConnection sqlConnection, AdventureWorks.Production.Types.ProductsubcategoryDataType data )
     {
         var dataProductsubcategoryid = data.Productsubcategoryid;
@@ -2520,6 +2748,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeScrapreason(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.ScrapreasonDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeScrapReason]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertScrapreason(SqlConnection sqlConnection, AdventureWorks.Production.Types.ScrapreasonDataType data )
     {
         var dataScrapreasonid = data.Scrapreasonid;
@@ -2616,6 +2856,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeTransactionhistory(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.TransactionhistoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeTransactionHistory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertTransactionhistory(SqlConnection sqlConnection, AdventureWorks.Production.Types.TransactionhistoryDataType data )
     {
         var dataTransactionid = data.Transactionid;
@@ -2744,6 +2996,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeTransactionhistoryarchive(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.TransactionhistoryarchiveDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeTransactionHistoryArchive]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertTransactionhistoryarchive(SqlConnection sqlConnection, AdventureWorks.Production.Types.TransactionhistoryarchiveDataType data )
     {
         var dataTransactionid = data.Transactionid;
@@ -2859,6 +3123,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeUnitmeasure(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.UnitmeasureDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeUnitMeasure]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertUnitmeasure(SqlConnection sqlConnection, AdventureWorks.Production.Types.UnitmeasureDataType data )
     {
         var dataUnitmeasurecode = data.Unitmeasurecode;
@@ -2956,6 +3232,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeWorkorder(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.WorkorderDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeWorkOrder]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertWorkorder(SqlConnection sqlConnection, AdventureWorks.Production.Types.WorkorderDataType data )
     {
         var dataWorkorderid = data.Workorderid;
@@ -3224,6 +3512,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeWorkorderrouting(SqlConnection sqlConnection, AdventureWorks.Production.Database.DataTables.WorkorderroutingDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Production].[MergeWorkOrderRouting]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertWorkorderrouting(SqlConnection sqlConnection, AdventureWorks.Production.Types.WorkorderroutingDataType data )
     {
         var dataWorkorderid = data.Workorderid;

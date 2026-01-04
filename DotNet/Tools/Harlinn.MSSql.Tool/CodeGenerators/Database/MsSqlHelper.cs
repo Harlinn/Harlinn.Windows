@@ -460,6 +460,22 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             return $"[{schemaName}].{procedureName}";
         }
 
+        public static string GetMergeProcedureName(EntityDefinition entityDefinition)
+        {
+            var tableName = GetTableOrViewName(entityDefinition);
+            return $"[Merge{tableName}]";
+        }
+
+        public static string GetQualifiedMergeProcedureName(EntityDefinition entityDefinition)
+        {
+
+            var schemaName = entityDefinition.Owner!.Name;
+            var procedureName = GetMergeProcedureName(entityDefinition);
+            return $"[{schemaName}].{procedureName}";
+        }
+
+
+
         internal static object GetPrimaryKeyCondition(EntityDefinition entityDefinition)
         {
             var primaryKeyFields = entityDefinition.PrimaryKeyFields;

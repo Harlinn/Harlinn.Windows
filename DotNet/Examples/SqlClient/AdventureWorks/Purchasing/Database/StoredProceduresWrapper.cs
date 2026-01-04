@@ -49,6 +49,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeProductvendor(SqlConnection sqlConnection, AdventureWorks.Purchasing.Database.DataTables.ProductvendorDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Purchasing].[MergeProductVendor]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertProductvendor(SqlConnection sqlConnection, AdventureWorks.Purchasing.Types.ProductvendorDataType data )
     {
         var dataProductid = data.Productid;
@@ -200,6 +212,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergePurchaseorderdetail(SqlConnection sqlConnection, AdventureWorks.Purchasing.Database.DataTables.PurchaseorderdetailDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Purchasing].[MergePurchaseOrderDetail]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertPurchaseorderdetail(SqlConnection sqlConnection, AdventureWorks.Purchasing.Types.PurchaseorderdetailDataType data )
     {
         var dataPurchaseorderid = data.Purchaseorderid;
@@ -356,6 +380,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergePurchaseorderheader(SqlConnection sqlConnection, AdventureWorks.Purchasing.Database.DataTables.PurchaseorderheaderDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Purchasing].[MergePurchaseOrderHeader]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertPurchaseorderheader(SqlConnection sqlConnection, AdventureWorks.Purchasing.Types.PurchaseorderheaderDataType data )
     {
         var dataPurchaseorderid = data.Purchaseorderid;
@@ -506,6 +542,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeShipmethod(SqlConnection sqlConnection, AdventureWorks.Purchasing.Database.DataTables.ShipmethodDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Purchasing].[MergeShipMethod]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertShipmethod(SqlConnection sqlConnection, AdventureWorks.Purchasing.Types.ShipmethodDataType data )
     {
         var dataShipmethodid = data.Shipmethodid;
@@ -614,6 +662,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeVendor(SqlConnection sqlConnection, AdventureWorks.Purchasing.Database.DataTables.VendorDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[Purchasing].[MergeVendor]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertVendor(SqlConnection sqlConnection, AdventureWorks.Purchasing.Types.VendorDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;

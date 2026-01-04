@@ -157,6 +157,26 @@ Apply the following generated SQL scripts to your `AdventureWorks2019` database:
 - `MSSql/UpdateProcedures.sql`
 - `MSSql/DeleteProcedures.sql`
 
+If the `AdventureWorks2019` database does not already contain a memory optimized filegroup,
+apply the following SQL script to add one:
+ 
+```
+ALTER DATABASE AdventureWorks2019
+ADD FILEGROUP AdventureWorks2019_mod CONTAINS MEMORY_OPTIMIZED_DATA;
+
+ALTER DATABASE AdventureWorks2019
+ADD FILE (name = N'AdventureWorks2019_mod_Data', filename = N'C:\MSSQL\MSSQL15.MSSQL\MSSQL\DATA\AdventureWorks2019_mod_Data.hdt')
+TO FILEGROUP AdventureWorks2019_mod;
+
+```
+Then the generated merge stored procedures can be applied to the database by applying:
+
+- `MSSql/CreateTableTypes.sql`
+- `MSSql/MergeProcedures.sql`
+
+
+
+ 
 Reimporting the database with filtering to only include the original stored procedures can be done using the following command: 
 
 ```

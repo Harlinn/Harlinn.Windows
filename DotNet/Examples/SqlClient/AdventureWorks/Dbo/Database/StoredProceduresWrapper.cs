@@ -39,6 +39,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeAwbuildversion(SqlConnection sqlConnection, AdventureWorks.Dbo.Database.DataTables.AwbuildversionDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[dbo].[MergeAWBuildVersion]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertAwbuildversion(SqlConnection sqlConnection, AdventureWorks.Dbo.Types.AwbuildversionDataType data )
     {
         var dataSysteminformationid = data.Systeminformationid;
@@ -139,6 +151,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeDatabaselog(SqlConnection sqlConnection, AdventureWorks.Dbo.Database.DataTables.DatabaselogDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[dbo].[MergeDatabaseLog]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertDatabaselog(SqlConnection sqlConnection, AdventureWorks.Dbo.Types.DatabaselogDataType data )
     {
         var dataDatabaselogid = data.Databaselogid;
@@ -265,6 +289,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeErrorlog(SqlConnection sqlConnection, AdventureWorks.Dbo.Database.DataTables.ErrorlogDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[dbo].[MergeErrorLog]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertErrorlog(SqlConnection sqlConnection, AdventureWorks.Dbo.Types.ErrorlogDataType data )
     {
         var dataErrorlogid = data.Errorlogid;

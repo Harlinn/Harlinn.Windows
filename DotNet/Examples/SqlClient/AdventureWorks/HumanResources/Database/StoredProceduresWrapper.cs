@@ -39,6 +39,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeDepartment(SqlConnection sqlConnection, AdventureWorks.HumanResources.Database.DataTables.DepartmentDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[HumanResources].[MergeDepartment]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertDepartment(SqlConnection sqlConnection, AdventureWorks.HumanResources.Types.DepartmentDataType data )
     {
         var dataDepartmentid = data.Departmentid;
@@ -151,6 +163,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeEmployee(SqlConnection sqlConnection, AdventureWorks.HumanResources.Database.DataTables.EmployeeDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[HumanResources].[MergeEmployee]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertEmployee(SqlConnection sqlConnection, AdventureWorks.HumanResources.Types.EmployeeDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -314,6 +338,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeEmployeedepartmenthistory(SqlConnection sqlConnection, AdventureWorks.HumanResources.Database.DataTables.EmployeedepartmenthistoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[HumanResources].[MergeEmployeeDepartmentHistory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertEmployeedepartmenthistory(SqlConnection sqlConnection, AdventureWorks.HumanResources.Types.EmployeedepartmenthistoryDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -427,6 +463,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeEmployeepayhistory(SqlConnection sqlConnection, AdventureWorks.HumanResources.Database.DataTables.EmployeepayhistoryDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[HumanResources].[MergeEmployeePayHistory]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertEmployeepayhistory(SqlConnection sqlConnection, AdventureWorks.HumanResources.Types.EmployeepayhistoryDataType data )
     {
         var dataBusinessentityid = data.Businessentityid;
@@ -528,6 +576,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeJobcandidate(SqlConnection sqlConnection, AdventureWorks.HumanResources.Database.DataTables.JobcandidateDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[HumanResources].[MergeJobCandidate]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertJobcandidate(SqlConnection sqlConnection, AdventureWorks.HumanResources.Types.JobcandidateDataType data )
     {
         var dataJobcandidateid = data.Jobcandidateid;
@@ -710,6 +770,18 @@ public class StoredProceduresWrapper
         return result;
     }
 
+    public static bool MergeShift(SqlConnection sqlConnection, AdventureWorks.HumanResources.Database.DataTables.ShiftDataTable data )
+    {
+        using (var command = new SqlCommand())
+        {
+            command.Connection = sqlConnection;
+           command.CommandText = "[HumanResources].[MergeShift]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter parameter = command.Parameters.AddWithValue("@Data", data.DataTable);
+            parameter.SqlDbType = SqlDbType.Structured;
+            return command.ExecuteNonQuery() > 0;
+        }
+    }
     public static bool InsertShift(SqlConnection sqlConnection, AdventureWorks.HumanResources.Types.ShiftDataType data )
     {
         var dataShiftid = data.Shiftid;

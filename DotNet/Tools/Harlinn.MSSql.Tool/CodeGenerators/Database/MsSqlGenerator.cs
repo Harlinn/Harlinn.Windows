@@ -35,6 +35,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             deleteProceduresGenerator.Run();
             deleteProceduresGenerator.SaveToFile(_context.Output.Mssql.DeleteProcedures);
 
+            MsSqlMergeProceduresGenerator mergeProceduresGenerator = new MsSqlMergeProceduresGenerator(_context);
+            mergeProceduresGenerator.Run();
+            mergeProceduresGenerator.SaveToFile(_context.Output.Mssql.MergeProcedures);
+
         }
 
     }

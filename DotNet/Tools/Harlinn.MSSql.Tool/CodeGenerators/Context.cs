@@ -87,6 +87,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators
         public string UpdateProcedures => System.IO.Path.Combine(Directory, "UpdateProcedures.sql");
         public string DeleteProcedures => System.IO.Path.Combine(Directory, "DeleteProcedures.sql");
 
+        public string MergeProcedures => System.IO.Path.Combine(Directory, "MergeProcedures.sql");
+
 
     }
 

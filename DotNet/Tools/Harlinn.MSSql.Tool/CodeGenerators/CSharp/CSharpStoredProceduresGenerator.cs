@@ -193,6 +193,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         {
             CreateInsert(entityDefinition);
 
+            CreateMerge(entityDefinition);
+
             CreateInsertObject(entityDefinition);
             CreateUpdate(entityDefinition);
             CreateUpdateObject(entityDefinition);
@@ -371,6 +373,29 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             var functionName = CSharpHelper.GetInsertFunctionName(entityDefinition);
             var fieldDefinitions = entityDefinition.Fields;
             CreateFunction(entityDefinition, qualifiedStoredProcedureName, functionName, fieldDefinitions, true);
+        }
+
+        private void CreateMerge(EntityDefinition entityDefinition)
+        {
+            var qualifiedStoredProcedureName = Database.MsSqlHelper.GetQualifiedMergeProcedureName(entityDefinition);
+            var functionName = CSharpHelper.GetMergeFunctionName(entityDefinition);
+
+            var dataTableName = entityDefinition.GetDataTableClassName();
+            var dataTableNamespace = entityDefinition.GetDataTableNamespace();
+            var qualifiedDataTableType = $"{dataTableNamespace}.{dataTableName}";
+
+            WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {qualifiedDataTableType} data )");
+            WriteLine("    {");
+            WriteLine("        using (var command = new SqlCommand())");
+            WriteLine("        {");
+            WriteLine("            command.Connection = sqlConnection;");
+            WriteLine($"           command.CommandText = \"{qualifiedStoredProcedureName}\";");
+            WriteLine("            command.CommandType = CommandType.StoredProcedure;");
+            WriteLine("            SqlParameter parameter = command.Parameters.AddWithValue(\"@Data\", data.DataTable);");
+            WriteLine("            parameter.SqlDbType = SqlDbType.Structured;");
+            WriteLine("            return command.ExecuteNonQuery() > 0;");
+            WriteLine("        }");
+            WriteLine("    }");
         }
 
         private void CreateInsertObject(EntityDefinition entityDefinition)

@@ -1056,6 +1056,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return "Insert1" + entityDefinition.Name;
         }
 
+        public static string GetMergeFunctionName(RowSourceDefinition entityDefinition)
+        {
+            return "Merge" + entityDefinition.Name;
+        }
+
         public static string GetUpdateFunctionName(RowSourceDefinition entityDefinition)
         {
             return "Update" + entityDefinition.Name;

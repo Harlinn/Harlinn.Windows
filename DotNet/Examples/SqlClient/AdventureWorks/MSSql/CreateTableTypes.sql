@@ -565,7 +565,6 @@ CREATE TYPE [Production].[ProductdocumentTableType] AS TABLE
     PRIMARY KEY NONCLUSTERED([Productid], [Documentnode]),
     INDEX idxPrimary NONCLUSTERED([Productid], [Documentnode])
 )
-WITH (MEMORY_OPTIMIZED = ON);
 go
 
 
@@ -677,7 +676,7 @@ CREATE TYPE [Production].[ProductproductphotoTableType] AS TABLE
 (
     [Productid] [int] NOT NULL,
     [Productphotoid] [int] NOT NULL,
-    [Primary] [Flag] NOT NULL,
+    [Primary] [bit] NOT NULL,
     [Modifieddate] [datetime] NOT NULL,
     PRIMARY KEY NONCLUSTERED([Productid], [Productphotoid]),
     INDEX idxPrimary NONCLUSTERED([Productid], [Productphotoid])
@@ -933,8 +932,8 @@ CREATE TYPE [Purchasing].[VendorTableType] AS TABLE
     [Accountnumber] [nvarchar](15) NOT NULL,
     [Name] [nvarchar](50) NOT NULL,
     [Creditrating] [tinyint] NOT NULL,
-    [Preferredvendorstatus] [Flag] NOT NULL,
-    [Activeflag] [Flag] NOT NULL,
+    [Preferredvendorstatus] [bit] NOT NULL,
+    [Activeflag] [bit] NOT NULL,
     [Purchasingwebserviceurl] [nvarchar](1024) NULL,
     [Modifieddate] [datetime] NOT NULL,
     PRIMARY KEY NONCLUSTERED([Businessentityid]),
