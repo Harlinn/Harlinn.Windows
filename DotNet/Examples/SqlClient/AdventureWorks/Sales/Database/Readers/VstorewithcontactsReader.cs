@@ -1,0 +1,194 @@
+using System;
+using System.Data;
+using System.Data.Common;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Types;
+using System.Data.SqlTypes;
+
+namespace AdventureWorks.Sales.Database.Readers;
+
+public class VstorewithcontactsReader : IDisposable
+{
+    public const string QualifiedTableName = "[Sales].[vStoreWithContacts]";
+    public const string TableName = "vStoreWithContacts";
+    public const string ShortName = "v18";
+    public const string Sql = """
+        SELECT
+          v18.[Businessentityid],
+          v18.[Name],
+          v18.[Contacttype],
+          v18.[Title],
+          v18.[Firstname],
+          v18.[Middlename],
+          v18.[Lastname],
+          v18.[Suffix],
+          v18.[Phonenumber],
+          v18.[Phonenumbertype],
+          v18.[Emailaddress],
+          v18.[Emailpromotion]
+        FROM
+          [Sales].[vStoreWithContacts] v18
+        """;
+
+    public const int BUSINESSENTITYID_FIELD_ID = 0;
+    public const int NAME_FIELD_ID = 1;
+    public const int CONTACTTYPE_FIELD_ID = 2;
+    public const int TITLE_FIELD_ID = 3;
+    public const int FIRSTNAME_FIELD_ID = 4;
+    public const int MIDDLENAME_FIELD_ID = 5;
+    public const int LASTNAME_FIELD_ID = 6;
+    public const int SUFFIX_FIELD_ID = 7;
+    public const int PHONENUMBER_FIELD_ID = 8;
+    public const int PHONENUMBERTYPE_FIELD_ID = 9;
+    public const int EMAILADDRESS_FIELD_ID = 10;
+    public const int EMAILPROMOTION_FIELD_ID = 11;
+
+    readonly SqlDataReader _reader;
+    readonly bool _ownsReader;
+
+    public VstorewithcontactsReader(SqlDataReader reader, bool ownsReader = false)
+    {
+        _reader = reader;
+        _ownsReader = ownsReader;
+    }
+
+    public SqlDataReader Reader => _reader;
+
+    public void Dispose()
+    {
+        if (_ownsReader)
+        {
+            ((IDisposable)_reader).Dispose();
+        }
+    }
+
+    public bool Read()
+    {
+        return _reader.Read();
+    }
+
+    public int Businessentityid
+    {
+        get
+        {
+            return Reader.GetInt32(BUSINESSENTITYID_FIELD_ID);
+        }
+    }
+
+    public string Name
+    {
+        get
+        {
+            return Reader.GetString(NAME_FIELD_ID);
+        }
+    }
+
+    public string Contacttype
+    {
+        get
+        {
+            return Reader.GetString(CONTACTTYPE_FIELD_ID);
+        }
+    }
+
+    public string? Title
+    {
+        get
+        {
+            return Reader.GetNullableString(TITLE_FIELD_ID);
+        }
+    }
+
+    public string Firstname
+    {
+        get
+        {
+            return Reader.GetString(FIRSTNAME_FIELD_ID);
+        }
+    }
+
+    public string? Middlename
+    {
+        get
+        {
+            return Reader.GetNullableString(MIDDLENAME_FIELD_ID);
+        }
+    }
+
+    public string Lastname
+    {
+        get
+        {
+            return Reader.GetString(LASTNAME_FIELD_ID);
+        }
+    }
+
+    public string? Suffix
+    {
+        get
+        {
+            return Reader.GetNullableString(SUFFIX_FIELD_ID);
+        }
+    }
+
+    public string? Phonenumber
+    {
+        get
+        {
+            return Reader.GetNullableString(PHONENUMBER_FIELD_ID);
+        }
+    }
+
+    public string? Phonenumbertype
+    {
+        get
+        {
+            return Reader.GetNullableString(PHONENUMBERTYPE_FIELD_ID);
+        }
+    }
+
+    public string? Emailaddress
+    {
+        get
+        {
+            return Reader.GetNullableString(EMAILADDRESS_FIELD_ID);
+        }
+    }
+
+    public int Emailpromotion
+    {
+        get
+        {
+            return Reader.GetInt32(EMAILPROMOTION_FIELD_ID);
+        }
+    }
+
+
+    public AdventureWorks.Sales.Types.VstorewithcontactsDataType ToDataObject()
+    {
+        return new AdventureWorks.Sales.Types.VstorewithcontactsDataType(Businessentityid,
+            Name,
+            Contacttype,
+            Title,
+            Firstname,
+            Middlename,
+            Lastname,
+            Suffix,
+            Phonenumber,
+            Phonenumbertype,
+            Emailaddress,
+            Emailpromotion);
+    }
+
+    public List<AdventureWorks.Sales.Types.VstorewithcontactsDataType> ToList()
+    {
+        var list = new List<AdventureWorks.Sales.Types.VstorewithcontactsDataType>();
+        while (Read())
+        {
+            list.Add(ToDataObject());
+        }
+        return list;
+    }
+
+}

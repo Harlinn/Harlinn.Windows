@@ -1,6 +1,8 @@
-﻿using AdventureWorks.Database;
-using AdventureWorks.Database.Readers.Person;
-using AdventureWorks.Types.Person;
+﻿using AdventureWorks;
+using AdventureWorks.Person;
+using AdventureWorks.Person.Database;
+using AdventureWorks.Person.Database.Readers;
+using AdventureWorks.Person.Types;
 using System.Data.SqlTypes;
 
 namespace AdventureWorks.Tests

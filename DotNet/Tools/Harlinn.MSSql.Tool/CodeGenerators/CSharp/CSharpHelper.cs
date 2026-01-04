@@ -1020,12 +1020,9 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
 
 
-        public static string GetQualifiedDataTypeNamespace(RowSourceDefinition entityDefinition)
+        public static string GetQualifiedDataTypeNamespace(RowSourceDefinition rowSourceDefinition)
         {
-            var schema = entityDefinition.Owner!;
-            var schemaNamespace = string.IsNullOrEmpty(schema.Namespace) ? schema.Name.FirstToUpper() : schema.Namespace;
-
-            return "Types."+ schemaNamespace;
+            return rowSourceDefinition.GetDataTypeNamespace();
         }
 
         public static string GetTypeNamespace(TypeDefinition typeDefinition)
@@ -1035,35 +1032,19 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
         public static string GetQualifiedTypeNamespace(TypeDefinition typeDefinition)
         {
-            var schema = typeDefinition.Owner!;
-            var schemaNamespace = string.IsNullOrEmpty(schema.Namespace) ? schema.Name.FirstToUpper() : schema.Namespace;
-
-            return "Types." + schemaNamespace;
+            return typeDefinition.TypeNamespace;
         }
 
-
-        public static string GetDatabaseNamespace(Context context)
+        public static string GetDatabaseReaderNamespace(RowSourceDefinition rowSourceDefinition)
         {
-            var project = context.Project;
-            var projectNamespace = string.IsNullOrEmpty(project.Namespace) ? project.Name.FirstToUpper() : project.Namespace;
-            return projectNamespace + ".Database";
+            return rowSourceDefinition.GetReaderNamespace();
         }
 
-        public static string GetDatabaseReaderNamespace(Context context)
+        public static string GetProjectNamespace(Context context)
         {
-            var project = context.Project;
-            var projectNamespace = string.IsNullOrEmpty(project.Namespace) ? project.Name.FirstToUpper() : project.Namespace;
-            return projectNamespace + ".Database.Readers";
+            return context.Project.GetNamespace();
         }
 
-        public static string GetDatabaseReaderNamespace(RowSourceDefinition entityDefinition)
-        {
-            var project = entityDefinition.Project!;
-            var projectNamespace = string.IsNullOrEmpty(project.Namespace) ? project.Name.FirstToUpper() : project.Namespace;
-            var readersNamespace = projectNamespace + ".Database.Readers";
-            var schemaNamespace = string.IsNullOrEmpty(entityDefinition.Owner!.Namespace) ? entityDefinition.Owner.Name.FirstToUpper() : entityDefinition.Owner.Namespace;
-            return readersNamespace + "." + schemaNamespace;
-        }
 
         public static string GetInsertFunctionName(RowSourceDefinition entityDefinition)
         {

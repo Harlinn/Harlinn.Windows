@@ -47,7 +47,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             }
 
             WriteLine();
-            var databaseNamespace = CSharpHelper.GetDatabaseNamespace(Context);
+            var databaseNamespace = _schema.GetStoredProceduresWrapperNamespace();
             WriteLine($"namespace {databaseNamespace};");
             WriteLine();
 

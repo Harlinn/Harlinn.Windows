@@ -11,7 +11,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
 
         public void Run()
         {
-            var databaseReaderNamespace = CSharpHelper.GetDatabaseReaderNamespace(Context);
+            var databaseReaderNamespace = CSharpHelper.GetProjectNamespace(Context);
 
             WriteLine("""
             using System;
