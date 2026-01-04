@@ -180,7 +180,7 @@ Then the generated merge stored procedures can be applied to the database by app
 Reimporting the database with filtering to only include the original stored procedures can be done using the following command: 
 
 ```
-Harlinn.MSSql.Tool import -s dbo;HumanResources;Person;Production;Purchasing;Sales -u -t -v -r -e "Insert.*" "Update.*" "Delete.*" -i AdventureWorks2019 -p AdventureWorks.xml
+Harlinn.MSSql.Tool import -s dbo;HumanResources;Person;Production;Purchasing;Sales -u -t -v -r -e "Insert.*" "Merge.*" "Update.*" "Delete.*" -i AdventureWorks2019 -p AdventureWorks.xml
 ```
 
 The generated code can also be found in the `Harlinn.Windows\DotNet\Examples\SqlClient\AdventureWorks\AdventureWorks.csproj` project, 
