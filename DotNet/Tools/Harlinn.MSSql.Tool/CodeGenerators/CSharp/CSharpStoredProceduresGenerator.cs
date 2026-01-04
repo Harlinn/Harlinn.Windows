@@ -47,11 +47,12 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             }
 
             WriteLine();
-            var databaseNamespace = _schema.GetStoredProceduresWrapperNamespace();
-            WriteLine($"namespace {databaseNamespace};");
+            var storedProceduresWrapperNamespace = _schema.GetStoredProceduresWrapperNamespace();
+            WriteLine($"namespace {storedProceduresWrapperNamespace};");
             WriteLine();
 
-            WriteLine("public class StoredProcedures");
+            var storedProceduresWrapperClassName = _schema.StoredProceduresWrapperClassName;
+            WriteLine($"public class {storedProceduresWrapperClassName}");
             WriteLine("{");
             var entities = _schema.GetEntities();
             foreach (var entity in entities)
@@ -88,7 +89,7 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                     refModifier = "ref ";
                     outParameters.Add(parameterDefinition);
                 }
-                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinitions[0])} {CSharpHelper.GetInputArgumentName(parameterDefinitions[0])},");
+                WriteLine($"    public static int {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinitions[0])} {CSharpHelper.GetInputArgumentName(parameterDefinitions[0])},");
                 for (int i = 1; i < parameterDefinitionsCount; i++)
                 {
                     parameterDefinition = parameterDefinitions[i];
@@ -113,11 +114,11 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                     refModifier = "ref ";
                     outParameters.Add(parameterDefinition);
                 }
-                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinitions[0])} {CSharpHelper.GetInputArgumentName(parameterDefinitions[0])})");
+                WriteLine($"    public static int {functionName}(SqlConnection sqlConnection, {refModifier}{CSharpHelper.GetInputArgumentType(parameterDefinitions[0])} {CSharpHelper.GetInputArgumentName(parameterDefinitions[0])})");
             }
             else
             {
-                WriteLine($"    public static bool {functionName}(SqlConnection sqlConnection)");
+                WriteLine($"    public static int {functionName}(SqlConnection sqlConnection)");
             }
 
             WriteLine("    {");
@@ -158,18 +159,15 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             }
 
             WriteLine();
-            WriteLine("        var result = command.ExecuteNonQuery() > 0;");
+            WriteLine("        var result = command.ExecuteNonQuery();");
             if (outParameters.Count > 0)
             {
-                WriteLine("        if(result)");
-                WriteLine("        {");
                 foreach (var outParameter in outParameters)
                 {
                     var argumentName = CSharpHelper.GetInputArgumentName(outParameter);
                     var sqlParameterName = $"{argumentName}Parameter";
-                    WriteLine($"            {argumentName} = ({CSharpHelper.GetInputArgumentType(outParameter)}){sqlParameterName}.Value;");
+                    WriteLine($"        {argumentName} = ({CSharpHelper.GetInputArgumentType(outParameter)}){sqlParameterName}.Value;");
                 }
-                WriteLine("        }");
             }
             WriteLine("        return result;");
             WriteLine("    }");

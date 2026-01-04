@@ -15,7 +15,7 @@ using AdventureWorks.Sales.Types;
 
 namespace AdventureWorks.Purchasing.Database;
 
-public class StoredProcedures
+public class StoredProceduresWrapper
 {
     public static bool InsertProductvendor(SqlConnection sqlConnection, int productid,
         int businessentityid,

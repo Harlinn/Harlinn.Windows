@@ -15,7 +15,7 @@ using AdventureWorks.Sales.Types;
 
 namespace AdventureWorks.Person.Database;
 
-public class StoredProcedures
+public class StoredProceduresWrapper
 {
     public static bool InsertAddress(SqlConnection sqlConnection, ref int addressid,
         string addressline1,

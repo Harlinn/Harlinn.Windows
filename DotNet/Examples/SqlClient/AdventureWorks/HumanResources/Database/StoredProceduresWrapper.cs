@@ -15,7 +15,7 @@ using AdventureWorks.Sales.Types;
 
 namespace AdventureWorks.HumanResources.Database;
 
-public class StoredProcedures
+public class StoredProceduresWrapper
 {
     public static bool InsertDepartment(SqlConnection sqlConnection, ref short departmentid,
         string name,

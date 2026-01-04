@@ -15,7 +15,7 @@ using AdventureWorks.Sales.Types;
 
 namespace AdventureWorks.Sales.Database;
 
-public class StoredProcedures
+public class StoredProceduresWrapper
 {
     public static bool InsertCountryregioncurrency(SqlConnection sqlConnection, string countryregioncode,
         string currencycode,

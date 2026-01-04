@@ -15,7 +15,7 @@ using AdventureWorks.Sales.Types;
 
 namespace AdventureWorks.Production.Database;
 
-public class StoredProcedures
+public class StoredProceduresWrapper
 {
     public static bool InsertBillofmaterials(SqlConnection sqlConnection, ref int billofmaterialsid,
         int? productassemblyid,

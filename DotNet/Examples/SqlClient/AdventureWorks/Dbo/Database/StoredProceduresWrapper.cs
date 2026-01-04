@@ -15,7 +15,7 @@ using AdventureWorks.Sales.Types;
 
 namespace AdventureWorks.Dbo.Database;
 
-public class StoredProcedures
+public class StoredProceduresWrapper
 {
     public static bool InsertAwbuildversion(SqlConnection sqlConnection, ref byte systeminformationid,
         string databaseVersion,
@@ -365,7 +365,7 @@ public class StoredProcedures
         return result;
     }
 
-    public static bool UspGetBillOfMaterials(SqlConnection sqlConnection, int startProductID,
+    public static int UspGetBillOfMaterials(SqlConnection sqlConnection, int startProductID,
         DateTime checkDate)
     {
         using var command = sqlConnection.CreateCommand();
@@ -375,11 +375,11 @@ public class StoredProcedures
         command.Parameters.AddInt32("@StartProductID", startProductID);
         command.Parameters.AddDateTime("@CheckDate", checkDate);
 
-        var result = command.ExecuteNonQuery() > 0;
+        var result = command.ExecuteNonQuery();
         return result;
     }
 
-    public static bool UspGetEmployeeManagers(SqlConnection sqlConnection, int businessEntityID)
+    public static int UspGetEmployeeManagers(SqlConnection sqlConnection, int businessEntityID)
     {
         using var command = sqlConnection.CreateCommand();
         command.CommandType = CommandType.StoredProcedure;
@@ -387,11 +387,11 @@ public class StoredProcedures
 
         command.Parameters.AddInt32("@BusinessEntityID", businessEntityID);
 
-        var result = command.ExecuteNonQuery() > 0;
+        var result = command.ExecuteNonQuery();
         return result;
     }
 
-    public static bool UspGetManagerEmployees(SqlConnection sqlConnection, int businessEntityID)
+    public static int UspGetManagerEmployees(SqlConnection sqlConnection, int businessEntityID)
     {
         using var command = sqlConnection.CreateCommand();
         command.CommandType = CommandType.StoredProcedure;
@@ -399,11 +399,11 @@ public class StoredProcedures
 
         command.Parameters.AddInt32("@BusinessEntityID", businessEntityID);
 
-        var result = command.ExecuteNonQuery() > 0;
+        var result = command.ExecuteNonQuery();
         return result;
     }
 
-    public static bool UspGetWhereUsedProductID(SqlConnection sqlConnection, int startProductID,
+    public static int UspGetWhereUsedProductID(SqlConnection sqlConnection, int startProductID,
         DateTime checkDate)
     {
         using var command = sqlConnection.CreateCommand();
@@ -413,11 +413,11 @@ public class StoredProcedures
         command.Parameters.AddInt32("@StartProductID", startProductID);
         command.Parameters.AddDateTime("@CheckDate", checkDate);
 
-        var result = command.ExecuteNonQuery() > 0;
+        var result = command.ExecuteNonQuery();
         return result;
     }
 
-    public static bool UspLogError(SqlConnection sqlConnection, ref int errorLogID)
+    public static int UspLogError(SqlConnection sqlConnection, ref int errorLogID)
     {
         using var command = sqlConnection.CreateCommand();
         command.CommandType = CommandType.StoredProcedure;
@@ -425,26 +425,23 @@ public class StoredProcedures
 
         var errorLogIDParameter = command.Parameters.AddInt32("@ErrorLogID");
 
-        var result = command.ExecuteNonQuery() > 0;
-        if(result)
-        {
-            errorLogID = (int)errorLogIDParameter.Value;
-        }
+        var result = command.ExecuteNonQuery();
+        errorLogID = (int)errorLogIDParameter.Value;
         return result;
     }
 
-    public static bool UspPrintError(SqlConnection sqlConnection)
+    public static int UspPrintError(SqlConnection sqlConnection)
     {
         using var command = sqlConnection.CreateCommand();
         command.CommandType = CommandType.StoredProcedure;
         command.CommandText = "[dbo].[uspPrintError]";
 
 
-        var result = command.ExecuteNonQuery() > 0;
+        var result = command.ExecuteNonQuery();
         return result;
     }
 
-    public static bool UspSearchCandidateResumes(SqlConnection sqlConnection, string searchString,
+    public static int UspSearchCandidateResumes(SqlConnection sqlConnection, string searchString,
         bool useInflectional,
         bool useThesaurus,
         int language)
@@ -458,7 +455,7 @@ public class StoredProcedures
         command.Parameters.AddBoolean("@useThesaurus", useThesaurus);
         command.Parameters.AddInt32("@language", language);
 
-        var result = command.ExecuteNonQuery() > 0;
+        var result = command.ExecuteNonQuery();
         return result;
     }
 
