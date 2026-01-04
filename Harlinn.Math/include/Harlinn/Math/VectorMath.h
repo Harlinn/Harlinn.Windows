@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef HARLINN_MATH_VECTORMATH_H_
 #define HARLINN_MATH_VECTORMATH_H_
 
@@ -31,6 +31,9 @@ namespace Harlinn::Math
 
     namespace Internal
     {
+        /// <summary>
+		/// Base class for vector types. This is used to identify vector types at compile time.
+        /// </summary>
         struct VectorBase
         {
         };
@@ -40,21 +43,39 @@ namespace Harlinn::Math
         };
     }
 
+    /// <summary>
+	/// This concept constrains a type to be a Vector type.
+    /// </summary>
     template<typename T>
     concept VectorType = std::is_base_of_v<Internal::VectorBase, T>;
 
+    /// <summary>
+	/// This concept constrains a type to be a Vector SIMD type.
+    /// </summary>
     template<typename T>
     concept VectorSimdType = std::is_base_of_v<Internal::VectorBase, typename T::TupleType>;
 
+    /// <summary>
+	/// This concept constrains a type to be either a Vector type or a Vector SIMD type.
+    /// </summary>
     template<typename T>
     concept VectorOrVectorSimdType = VectorType<T> || VectorSimdType<T>;
 
+    /// <summary>
+	/// This concept constrains a type to be a Scalar type.
+    /// </summary>
     template<typename T>
     concept ScalarType = std::is_base_of_v<Internal::ScalarBase, T>;
 
+    /// <summary>
+	/// This concept constrains a type to be a Scalar SIMD type.
+    /// </summary>
     template<typename T>
     concept ScalarSimdType = std::is_base_of_v<Internal::ScalarBase, typename T::TupleType>;
 
+    /// <summary>
+	/// This concept constrains a type to be either a Scalar type or a Scalar SIMD type.
+    /// </summary>
     template<typename T>
     concept ScalarOrScalarSimdType = ScalarType<T> || ScalarSimdType<T>;
 
@@ -697,39 +718,91 @@ namespace Harlinn::Math
         };
     }
 
+    /// <summary>
+	/// This concept constrains a type to be a Tuple2, Tuple3 or Tuple4 SIMD type.
+    /// </summary>
     template<typename T>
     concept SimdType = std::is_base_of_v<Internal::TupleSimdBase, T>;
 
+    /// <summary>
+	/// This concept constrains a type to be a Tuple2, Tuple3 or Tuple4 type.
+    /// </summary>
     template<typename T>
     concept TupleType = std::is_base_of_v<Internal::TupleBase, T>;
 
     template<typename T>
     concept SimdOrTupleType = SimdType<T> || TupleType<T>;
 
+    /// <summary>
+	/// This concept constrains a type to be either a SIMD type, a Tuple type, or an arithmetic type.
+    /// </summary>
     template<typename T>
     concept SimdTupleOrArithmeticType = SimdType<T> || TupleType<T> || ArithmeticType<T>;
 
+    /// <summary>
+	/// Determines if the provided Tuple2, Tuple3 or Tuple4 types are compatible,
+    /// </summary>
+    /// <typeparam name="T">
+    /// The first type to compare.
+    /// </typeparam>
+    /// <typeparam name="...Other">
+    /// The other types to compare.
+    /// </typeparam>
     template<typename T, typename ... Other>
     constexpr bool IsCompatible = ( std::is_same_v<typename T::Traits, typename Other::Traits> && ... );
 
     namespace Internal
     {
 
+        /// <summary>
+		/// Determines if any of the provided types is a Tuple2, Tuple3 or Tuple4 SIMD type.
+        /// </summary>
+        /// <typeparam name="...Args">
+        /// The types to compare.
+        /// </typeparam>
         template<typename ...Args>
         constexpr bool HasSimdType = ( SimdType<Args> || ... );
 
+        /// <summary>
+		/// Determines if all of the provided types are Tuple2, Tuple3 or Tuple4 SIMD types.
+        /// </summary>
+        /// <typeparam name="...Args">
+        /// The types to compare.
+        /// </typeparam>
         template<typename ...Args>
         constexpr bool AllAreSimdType = ( SimdType<Args> && ... );
 
+        /// <summary>
+		/// Determines if any of the provided types is a Tuple2, Tuple3 or Tuple4 type.
+        /// </summary>
+        /// <typeparam name="...Args">
+        /// The types to compare.
+        /// </typeparam>
         template<typename ...Args>
         constexpr bool HasTupleType = ( TupleType<Args> || ... );
 
+        /// <summary>
+		/// Determines if all of the provided types are Tuple2, Tuple3 or Tuple4 types.
+        /// </summary>
+        /// <typeparam name="...Args">
+        /// The types to compare.
+        /// </typeparam>
         template<typename ...Args>
         constexpr bool AllAreTupleType = ( TupleType<Args> && ... );
 
+        /// <summary>
+		/// Determines if any of the provided types is either a Tuple2, Tuple3 or Tuple4 SIMD type, or a Tuple2, Tuple3 or Tuple4 type.
+        /// </summary>
+        /// <typeparam name="...Args">
+        /// The types to compare.
+        /// </typeparam>
         template<typename ...Args>
         constexpr bool HasSimdOrTupleType = ( SimdOrTupleType<Args> || ... );
 
+        /// <summary>
+		/// Determines if all of the provided types are either Tuple2, Tuple3 or Tuple4 SIMD types, or Tuple2, Tuple3 or Tuple4 types.
+        /// </summary>
+        /// <typeparam name="...Args"></typeparam>
         template<typename ...Args>
         constexpr bool AllAreSimdOrTupleType = ( SimdOrTupleType<Args> && ... );
     }
@@ -737,7 +810,12 @@ namespace Harlinn::Math
     namespace Internal
     {
 
-
+        /// <summary>
+        /// Converts a SIMD wrapper type to its underlying SIMD register type.
+        /// </summary>
+        /// <typeparam name="T">A type satisfying the SimdType concept, which wraps a SIMD register.</typeparam>
+        /// <param name="v">The SIMD wrapper object to convert.</param>
+        /// <returns>The underlying SIMD register contained within the wrapper object.</returns>
         template<SimdType T>
         constexpr typename T::SIMDType ToSimd( const T& v ) noexcept
         {
@@ -753,6 +831,12 @@ namespace Harlinn::Math
         }
         */
 
+        /// <summary>
+        /// Converts a tuple-type object to its SIMD representation by loading its values.
+        /// </summary>
+        /// <typeparam name="T">A tuple-type that must provide a SIMDType member type and a Traits type with a Load function.</typeparam>
+        /// <param name="v">The tuple-type object to convert to SIMD format.</param>
+        /// <returns>A SIMD representation of the tuple's values.</returns>
         template<TupleType T>
         typename T::SIMDType ToSimd( const T& v ) noexcept
         {
@@ -760,12 +844,24 @@ namespace Harlinn::Math
             return Traits::Load( v.values );
         }
 
+        /// <summary>
+        /// Returns a reference to the given SIMD type value without modification.
+        /// </summary>
+        /// <typeparam name="T">A type that satisfies the SimdType concept.</typeparam>
+        /// <param name="v">The SIMD type value to return.</param>
+        /// <returns>A constant reference to the input value.</returns>
         template<SimdType T>
         constexpr const T& ToSimdType( const T& v ) noexcept
         {
             return v;
         }
 
+        /// <summary>
+        /// Converts a tuple type to its corresponding SIMD type.
+        /// </summary>
+        /// <typeparam name="T">The tuple type to convert. Must have nested Simd and Traits types, and a values member.</typeparam>
+        /// <param name="v">The tuple value to convert to SIMD type.</param>
+        /// <returns>A SIMD type instance constructed from the tuple's values.</returns>
         template<TupleType T>
         typename T::Simd ToSimdType( const T& v ) noexcept
         {
@@ -773,7 +869,10 @@ namespace Harlinn::Math
             return typename T::Simd( Traits::Load( v.values ) );
         }
 
-
+        /// <summary>
+        /// Defines a type alias that determines the appropriate result type for SIMD operations based on whether the input is a SIMD type or a tuple type.
+        /// </summary>
+        /// <typeparam name="T">A type that satisfies the SimdOrTupleType concept, which can be either a SIMD type or a tuple type.</typeparam>
         template<SimdOrTupleType T>
         using MakeResultType = std::conditional_t< SimdType<T>, T, typename T::Simd >;
 
@@ -781,23 +880,47 @@ namespace Harlinn::Math
 
 
     /// <summary>
-    /// <para>
-    /// Holds the SIMD value for a Tuple2, Tuple3 or Tuple4.
-    /// </para>
-    /// <para>
-    /// Most operations on a particular Tuple2, Tuple3 or Tuple4 
-    /// derived type are implemented using TupleSimd.
-    /// </para>
+    /// Holds the SIMD value for a `Tuple2`, `Tuple3`, or `Tuple4`-derived type and provides
+    /// high-performance, per-component math operations implemented on top of the underlying
+    /// SIMD register type.
     /// </summary>
     /// <typeparam name="TupleT">
-    /// A Tuple2, Tuple3 or Tuple4 derived type.
+    /// A tuple type derived from `Tuple2`, `Tuple3`, or `Tuple4`. The type must define:
+    /// - `Traits`: SIMD traits exposing `Type`, `SIMDType`, `AlignAs`, `SIMDTypeCapacity`, and math ops.
+    /// - `ArrayType`: contiguous storage compatible with `Traits::Load/Store`.
+    /// - `Size`: the component count (2, 3, 4, or extended up to 8 for specific value packs).
+    /// - `Simd`: the corresponding `TupleSimd<TupleT>` specialization.
     /// </typeparam>
     /// <remarks>
-    /// The implementation passes TupleSimd objects by reference,
-    /// since passing the TupleSimd objects by value degraded
-    /// the performance of pbrto by approximately 10 %.
+    /// Design notes:
+    /// - TupleSimd is a thin wrapper around the SIMD register (`simd`) and is intended
+    ///   to be passed by reference for best performance. Benchmarks showed that passing
+    ///   `TupleSimd` objects by value can degrade performance (≈10% in pbrto workloads).
+    /// - The class maintains no additional state beyond the single SIMD register and
+    ///   relies solely on `TupleT::Traits` for all math operations.
+    /// - Construction supports zero-initialization, loading from a tuple or array,
+    ///   and initializing from scalars with arity checks (Size == 2, 3, 4, 8).
+    ///
+    /// Interop and conversions:
+    /// - Use `Values()` to materialize a `TupleT` (the structural tuple) from this SIMD form.
+    /// - Use free functions `Internal::ToSimd`, `Internal::ToSimdType`, and `Internal::MakeResultType`
+    ///   when composing algorithms that operate across Tuple and SIMD forms.
+    ///
+    /// Performance & correctness:
+    /// - All arithmetic and comparison operations are implemented via `Traits` functions
+    ///   to guarantee consistent behavior and optimal instruction selection.
+    /// - For mixed-dimension operations, the type system restricts usage via `requires` clauses.
+    /// - Many accessor utilities (`X()`, `WithAbsXY()`, `SetW(..)`, etc.) rely on
+    ///   `Traits::Permute` / `Traits::Extract` and are branchless.
+    ///
+    /// Safety:
+    /// - `HasNaN()` provides a fast detection for invalid floating point inputs.
+    /// - Boolean conversion (`operator bool`) checks if any component is non-zero.
+    ///
+    /// Typical use:
+    /// - Compose `TupleSimd` in math kernels to avoid repeated load/store of `TupleT::values`.
+    /// - Convert back to `TupleT` only at API boundaries or for serialization/logging.
     /// </remarks>
-
     template<typename TupleT>
     class alignas( TupleT::Traits::AlignAs ) TupleSimd : public Internal::TupleSimdBase
     {
@@ -817,7 +940,7 @@ namespace Harlinn::Math
         SIMDType simd;
 
         /// <summary>
-        /// Sets the elements of <c>simd</c> to zero.
+        /// Default constructor that initializes the SIMD tuple to zero.
         /// </summary>
         TupleSimd( ) noexcept
             : simd( Traits::Zero( ) )
@@ -825,8 +948,9 @@ namespace Harlinn::Math
         }
 
         /// <summary>
-        /// Assigns the elements of <c>values</c> to <c>simd</c>.
+        /// Constructs a TupleSimd from SIMD values.
         /// </summary>
+        /// <param name="values">The SIMD values to initialize the tuple with.</param>
         TupleSimd( SIMDType values ) noexcept
             : simd( values )
         {
@@ -835,6 +959,18 @@ namespace Harlinn::Math
         /// <summary>
         /// Assigns the elements of <c>other.simd</c> to <c>simd</c>.
         /// </summary>
+        
+
+        /// <summary>
+        /// Constructs a TupleSimd from another SIMD type with compatible traits.
+        /// </summary>
+        /// <typeparam name="S">
+        /// The source SIMD type, which must have either identical Traits or 
+        /// the same underlying Type with a smaller or equal Size.
+        /// </typeparam>
+        /// <param name="other">
+        /// The source SIMD object to copy from.
+        /// </param>
         template<SimdType S>
             requires std::is_same_v<Traits, typename S::Traits> ||
         ( std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size > S::Size ) )
@@ -844,9 +980,17 @@ namespace Harlinn::Math
         }
 
         /// <summary>
-        /// Assigns the first <c>S::Size</c> elements of <c>other.simd</c> 
-        /// to <c>simd</c>, while initializing the remaining elements to zero.
+        /// Constructs a TupleSimd from a larger SIMD vector, truncating 
+        /// unused components and zeroing them out.
         /// </summary>
+        /// <typeparam name="S">
+        /// The type of the source SIMD vector. Must have the same underlying 
+        /// element type and a size greater than this TupleSimd's size.
+        /// </typeparam>
+        /// <param name="other">
+        /// The source SIMD vector to copy from, which must have a larger size 
+        /// than this TupleSimd.
+        /// </param>
         template<SimdType S>
             requires std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size < S::Size )
         TupleSimd( const S& other ) noexcept
@@ -864,16 +1008,23 @@ namespace Harlinn::Math
 
 
         /// <summary>
-        /// Loads <c>other.values</c> into <c>simd</c>.
+        /// Constructs a TupleSimd from a TupleType by loading its values 
+        /// into SIMD registers.
         /// </summary>
+        /// <param name="other">
+        /// The tuple containing values to load into the SIMD representation.
+        /// </param>
         TupleSimd( const TupleType& other ) noexcept
             : simd( Traits::Load( other.values ) )
         {
         }
 
         /// <summary>
-        /// Loads <c>values</c> into <c>simd</c>.
+        /// Constructs a TupleSimd by loading values from an array.
         /// </summary>
+        /// <param name="values">
+        /// The array containing values to load into the SIMD register.
+        /// </param>
         TupleSimd( const ArrayType& values ) noexcept
             : simd( Traits::Load( values ) )
         {
@@ -5680,7 +5831,7 @@ namespace Harlinn::Math
     }
 
     /// <summary>
-    /// Evaluates the provided polynomial using Horner�s method
+    /// Evaluates the provided polynomial using Horner’s method
     /// </summary>
 
     template <SimdType T, typename C>
