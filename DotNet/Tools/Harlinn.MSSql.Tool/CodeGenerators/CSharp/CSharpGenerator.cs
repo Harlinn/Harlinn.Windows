@@ -85,6 +85,26 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
                 var filename = Context.GetReaderFilename(rowSource);
                 dataTypeGenerator.SaveToFile(filename);
             }
+
+            foreach (var entity in entities)
+            {
+                var generator = new CSharpBulkCopyGenerator(Context, entity);
+                generator.Run();
+
+                var filename = Context.GetBulkCopyFilename(entity);
+                generator.SaveToFile(filename);
+            }
+
+            foreach (var entity in entities)
+            {
+                var generator = new CSharpDataTableGenerator(Context, entity);
+                generator.Run();
+
+                var filename = Context.GetDataTableFilename(entity);
+                generator.SaveToFile(filename);
+            }
+
+
             var typeDefinitions = Context.Project.TypeDefinitions;
             foreach (var entry in typeDefinitions)
             {

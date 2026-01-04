@@ -97,7 +97,31 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public string ReaderPrefix { get; set; } = "";
 
 
+        [XmlAttribute, DefaultValue("BulkCopy")]
+        public string BulkCopyNamespace { get; set; } = "BulkCopy";
 
+        [XmlAttribute, DefaultValue("BulkCopy")]
+        public string BulkCopySuffix { get; set; } = "BulkCopy";
+
+        [XmlAttribute, DefaultValue("")]
+        public string BulkCopyPrefix { get; set; } = "";
+
+
+        [XmlAttribute, DefaultValue("DataTables")]
+        public string DataTablesNamespace { get; set; } = "DataTables";
+
+        [XmlAttribute, DefaultValue("DataTable")]
+        public string DataTableSuffix { get; set; } = "DataTable";
+
+        [XmlAttribute, DefaultValue("")]
+        public string DataTablePrefix { get; set; } = "";
+
+
+        [XmlAttribute, DefaultValue("TableType")]
+        public string TableTypeSuffix { get; set; } = "TableType";
+
+        [XmlAttribute, DefaultValue("")]
+        public string TableTypePrefix { get; set; } = "";
 
 
 
@@ -118,6 +142,19 @@ namespace Harlinn.MSSql.Tool.Input.Types
             var databaseNamespace = GetDatabaseNamespace();
             return $"{databaseNamespace}.{ReadersNamespace}";
         }
+
+        public string GetBulkCopyNamespace()
+        {
+            var databaseNamespace = GetDatabaseNamespace();
+            return $"{databaseNamespace}.{BulkCopyNamespace}";
+        }
+
+        public string GetDataTablesNamespace()
+        {
+            var databaseNamespace = GetDatabaseNamespace();
+            return $"{databaseNamespace}.{DataTablesNamespace}";
+        }
+
 
 
         [XmlArray("Types")]

@@ -28,6 +28,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
 
         bool _newId;
         bool _newSequentialId;
+        bool _isRowGuid;
 
         public GuidFieldDefinition() : base()
         {
@@ -36,6 +37,7 @@ namespace Harlinn.MSSql.Tool.Input.Types
         public GuidFieldDefinition(SystemDataType systemColumnType, Column column, FieldDefaultConstraint? defaultConstraint, FieldComputed? computed, List<FieldCheckConstraint>? checks, string? description)
             : base(systemColumnType, column, defaultConstraint, computed, checks, description)
         {
+            _isRowGuid = column.IsRowguidcol;
         }
 
         [XmlIgnore]
@@ -87,6 +89,8 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlIgnore]
         public override bool IsNewId => _newId || _newSequentialId;
 
+        [XmlAttribute, DefaultValue(false)]
+        public bool IsRowGuid { get => _isRowGuid; set => _isRowGuid = value; }
 
         public override string ToString()
         {

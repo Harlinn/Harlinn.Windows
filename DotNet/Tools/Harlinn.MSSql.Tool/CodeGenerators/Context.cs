@@ -81,6 +81,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators
         public string Directory => System.IO.Path.Combine(_owner.Directory, "MSSql");
 
         public string CreateTables => System.IO.Path.Combine(Directory, "CreateTables.sql");
+
+        public string CreateTableTypes => System.IO.Path.Combine(Directory, "CreateTableTypes.sql");
         public string InsertProcedures => System.IO.Path.Combine(Directory, "InsertProcedures.sql");
         public string UpdateProcedures => System.IO.Path.Combine(Directory, "UpdateProcedures.sql");
         public string DeleteProcedures => System.IO.Path.Combine(Directory, "DeleteProcedures.sql");

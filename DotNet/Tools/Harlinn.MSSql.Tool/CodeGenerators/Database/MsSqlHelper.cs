@@ -324,6 +324,19 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             }
         }
 
+        public static string GetDataTableColumnName(FieldDefinition fieldDefinition)
+        {
+            if (string.IsNullOrEmpty(fieldDefinition.ColumnName))
+            {
+                return $"{fieldDefinition.Name}";
+            }
+            else
+            {
+                return $"{fieldDefinition.ColumnName}";
+            }
+        }
+
+
         public static string GetParameterName(FieldDefinition fieldDefinition)
         {
             return $"@{fieldDefinition.Name.FirstToLower()}";

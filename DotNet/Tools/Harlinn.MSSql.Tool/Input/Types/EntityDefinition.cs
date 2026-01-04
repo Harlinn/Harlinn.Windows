@@ -53,6 +53,154 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute]
         public string? Table { get; set; }
 
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? BulkCopyClassName { get; set; }
+
+        public string GetBulkCopyClassName()
+        {
+            if (string.IsNullOrEmpty(BulkCopyClassName))
+            {
+                var bulkCopyPrefix = GetBulkCopyPrefix();
+                var bulkCopySuffix = GetBulkCopySuffix();
+                return bulkCopyPrefix + Name + bulkCopySuffix;
+            }
+            return BulkCopyClassName;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? BulkCopyNamespace { get; set; }
+
+        public string GetBulkCopyNamespace()
+        {
+            if (string.IsNullOrEmpty(BulkCopyNamespace))
+            {
+                return Owner!.GetBulkCopyNamespace();
+            }
+            var databaseNamespace = Owner!.GetDatabaseNamespace();
+            return databaseNamespace + "." + BulkCopyNamespace;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? BulkCopySuffix { get; set; }
+
+        public string GetBulkCopySuffix()
+        {
+            if (string.IsNullOrEmpty(BulkCopySuffix))
+            {
+                return Owner!.BulkCopySuffix;
+            }
+            return BulkCopySuffix;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? BulkCopyPrefix { get; set; }
+
+        public string GetBulkCopyPrefix()
+        {
+            if (string.IsNullOrEmpty(BulkCopyPrefix))
+            {
+                return Owner!.BulkCopyPrefix;
+            }
+            return BulkCopyPrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DataTableClassName { get; set; }
+
+        public string GetDataTableClassName()
+        {
+            if (string.IsNullOrEmpty(DataTableClassName))
+            {
+                var dataTablePrefix = GetDataTablePrefix();
+                var dataTableSuffix = GetDataTableSuffix();
+                return dataTablePrefix + Name + dataTableSuffix;
+            }
+            return DataTableClassName;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DataTableNamespace { get; set; }
+
+        public string GetDataTableNamespace()
+        {
+            if (string.IsNullOrEmpty(DataTableNamespace))
+            {
+                return Owner!.GetDataTablesNamespace();
+            }
+            var databaseNamespace = Owner!.GetDatabaseNamespace();
+            return databaseNamespace + "." + DataTableNamespace;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DataTablePrefix { get; set; }
+
+        public string GetDataTablePrefix()
+        {
+            if (string.IsNullOrEmpty(DataTablePrefix))
+            {
+                return Owner!.DataTablePrefix;
+            }
+            return DataTablePrefix;
+        }
+
+        
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DataTableSuffix { get; set; }
+
+        public string GetDataTableSuffix()
+        {
+            if (string.IsNullOrEmpty(DataTableSuffix))
+            {
+                return Owner!.DataTableSuffix;
+            }
+            return DataTableSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? TableType{ get; set; }
+
+
+        public string GetTableType()
+        {
+            if (string.IsNullOrEmpty(TableType))
+            {
+                var tableTypePrefix = GetTableTypePrefix();
+                var tableTypeSuffix = GetTableTypeSuffix();
+                return tableTypePrefix + Name + tableTypeSuffix;
+            }
+            return TableType;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? TableTypeSuffix { get; set; }
+
+        public string GetTableTypeSuffix()
+        {
+            if (string.IsNullOrEmpty(TableTypeSuffix))
+            {
+                return Owner!.TableTypeSuffix;
+            }
+            return TableTypeSuffix;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? TableTypePrefix { get; set; }
+
+        public string GetTableTypePrefix()
+        {
+            if (string.IsNullOrEmpty(TableTypePrefix))
+            {
+                return Owner!.TableTypePrefix;
+            }
+            return TableTypePrefix;
+        }
+
         internal int GetIndexIndex(string indexName)
         {
             for (int i = 0; i < Indexes.Count; i++)

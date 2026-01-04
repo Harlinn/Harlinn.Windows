@@ -63,6 +63,31 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
             return filename;
         }
 
+        public static string GetBulkCopyFilename(this Context self, EntityDefinition entityDefinition)
+        {
+            var bulkCopyNamespace = entityDefinition.GetBulkCopyNamespace();
+            var relativeDirectory = self.NamespaceToPath(bulkCopyNamespace);
+            relativeDirectory = Path.Combine(self.Output.CSharp.Directory, relativeDirectory);
+
+            var className = entityDefinition.GetBulkCopyClassName();
+
+            var filename = System.IO.Path.Combine(relativeDirectory, $"{className}.cs");
+            return filename;
+        }
+
+
+        public static string GetDataTableFilename(this Context self, EntityDefinition entityDefinition)
+        {
+            var dataTableNamespace = entityDefinition.GetDataTableNamespace();
+            var relativeDirectory = self.NamespaceToPath(dataTableNamespace);
+            relativeDirectory = Path.Combine(self.Output.CSharp.Directory, relativeDirectory);
+
+            var className = entityDefinition.GetDataTableClassName();
+
+            var filename = System.IO.Path.Combine(relativeDirectory, $"{className}.cs");
+            return filename;
+        }
+
         public static string GetStoredProceduresFilename(this Context self, Schema schema)
         {
             var storedProceduresNamespace = schema.GetStoredProceduresWrapperNamespace();

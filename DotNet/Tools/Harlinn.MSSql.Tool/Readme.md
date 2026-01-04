@@ -21,6 +21,7 @@ supporting a reasonable subset of the available features.
 - Generate SQL scripts to create stored procedures for create, update and delete operations.
 - Generate thin C# wrapper classes for reading data from tables and views.
 - Generate thin C# code for inserting, updating and deleting data from tables using the generated stored procedures.
+- Generate C# `System.Data.DataTable` wrappers for the imported tables. 
 
 # Planned Features
 
@@ -37,7 +38,6 @@ an example of code generated using this tool.
 
 It's also quite interesting to observe how well copilot works with the generated code, as it seems to understand 
 the patterns used in the generated code quite well.
-
 
 # Requirements
 

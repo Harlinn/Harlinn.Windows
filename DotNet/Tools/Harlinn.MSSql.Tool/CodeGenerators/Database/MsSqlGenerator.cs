@@ -19,6 +19,10 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
             tablesGenerator.Run();
             tablesGenerator.SaveToFile(_context.Output.Mssql.CreateTables);
 
+            MsSqlTableTypeGenerator tableTypesGenerator = new MsSqlTableTypeGenerator(_context);
+            tableTypesGenerator.Run();
+            tableTypesGenerator.SaveToFile(_context.Output.Mssql.CreateTableTypes);
+
             MsSqlInsertProceduresGenerator insertProceduresGenerator = new MsSqlInsertProceduresGenerator(_context);
             insertProceduresGenerator.Run();
             insertProceduresGenerator.SaveToFile(_context.Output.Mssql.InsertProcedures);
