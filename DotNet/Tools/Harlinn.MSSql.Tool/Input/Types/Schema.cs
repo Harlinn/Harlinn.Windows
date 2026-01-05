@@ -246,6 +246,185 @@ namespace Harlinn.MSSql.Tool.Input.Types
         [XmlAttribute, DefaultValue("")]
         public string StoredProceduresWrapperNamespace { get => _storedProceduresWrapperNamespace; set => _storedProceduresWrapperNamespace = value; }
 
+
+        [XmlAttribute, DefaultValue("Insert")]
+        public string InsertStoredProcedurePrefix { get; set; } = "Insert";
+
+        public string GetInsertStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(InsertStoredProcedurePrefix))
+            {
+                return "Insert";
+            }
+            return InsertStoredProcedurePrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string InsertStoredProcedureSuffix { get; set; } = string.Empty;
+
+        public string GetInsertStoredProcedureSuffix()
+        {
+            return InsertStoredProcedureSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue("Merge")]
+        public string MergeStoredProcedurePrefix { get; set; } = "Merge";
+
+        public string GetMergeStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(MergeStoredProcedurePrefix))
+            {
+                return "Merge";
+            }
+            return MergeStoredProcedurePrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string MergeStoredProcedureSuffix { get; set; } = string.Empty;
+
+        public string GetMergeStoredProcedureSuffix()
+        {
+            return MergeStoredProcedureSuffix;
+        }
+
+
+
+        [XmlAttribute, DefaultValue("Update")]
+        public string UpdateStoredProcedurePrefix { get; set; } = "Update";
+
+        public string GetUpdateStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(UpdateStoredProcedurePrefix))
+            {
+                return "Update";
+            }
+            return UpdateStoredProcedurePrefix;
+        }
+
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string UpdateStoredProcedureSuffix { get; set; } = string.Empty;
+
+        public string GetUpdateStoredProcedureSuffix()
+        {
+            return UpdateStoredProcedureSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue("Delete")]
+        public string DeleteStoredProcedurePrefix { get; set; } = "Delete";
+
+        public string GetDeleteStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(DeleteStoredProcedurePrefix))
+            {
+                return "Delete";
+            }
+            return DeleteStoredProcedurePrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string DeleteStoredProcedureSuffix { get; set; } = string.Empty;
+
+        public string GetDeleteStoredProcedureSuffix()
+        {
+            return DeleteStoredProcedureSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue("Insert")]
+        public string InsertStoredProcedureWrapperPrefix { get; set; } = "Insert";
+
+        public string GetInsertStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(InsertStoredProcedureWrapperPrefix))
+            {
+                return "Insert";
+            }
+            return InsertStoredProcedureWrapperPrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string InsertStoredProcedureWrapperSuffix { get; set; } = string.Empty;
+
+        public string GetInsertStoredProcedureWrapperSuffix()
+        {
+            return InsertStoredProcedureWrapperSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue("Merge")]
+        public string MergeStoredProcedureWrapperPrefix { get; set; } = "Merge";
+
+        public string GetMergeStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(MergeStoredProcedureWrapperPrefix))
+            {
+                return "Merge";
+            }
+            return MergeStoredProcedureWrapperPrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string MergeStoredProcedureWrapperSuffix { get; set; } = string.Empty;
+
+        public string GetMergeStoredProcedureWrapperSuffix()
+        {
+            return MergeStoredProcedureWrapperSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue("Update")]
+        public string UpdateStoredProcedureWrapperPrefix { get; set; } = "Update";
+
+        public string GetUpdateStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(UpdateStoredProcedureWrapperPrefix))
+            {
+                return "Update";
+            }
+            return UpdateStoredProcedureWrapperPrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string UpdateStoredProcedureWrapperSuffix { get; set; } = string.Empty;
+
+        public string GetUpdateStoredProcedureWrapperSuffix()
+        {
+            return UpdateStoredProcedureWrapperSuffix;
+        }
+
+
+        [XmlAttribute, DefaultValue("Delete")]
+        public string DeleteStoredProcedureWrapperPrefix { get; set; } = "Delete";
+
+        public string GetDeleteStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(DeleteStoredProcedureWrapperPrefix))
+            {
+                return "Delete";
+            }
+            return DeleteStoredProcedureWrapperPrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue("")]
+        public string DeleteStoredProcedureWrapperSuffix { get; set; } = string.Empty;
+
+        public string GetDeleteStoredProcedureWrapperSuffix()
+        {
+            return DeleteStoredProcedureWrapperSuffix;
+        }
+
+
         public string GetStoredProceduresWrapperNamespace()
         {
             var databaseNamespace = GetDatabaseNamespace();

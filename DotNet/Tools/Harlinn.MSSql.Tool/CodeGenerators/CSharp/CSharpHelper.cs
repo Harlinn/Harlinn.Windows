@@ -1046,39 +1046,46 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.CSharp
         }
 
 
-        public static string GetInsertFunctionName(RowSourceDefinition entityDefinition)
+        public static string GetInsertFunctionName(EntityDefinition entityDefinition)
         {
-            return "Insert" + entityDefinition.Name;
+            var result = entityDefinition.GetInsertStoredProcedureWrapperName();
+            return result;
         }
 
-        public static string GetInsert1FunctionName(RowSourceDefinition entityDefinition)
+        public static string GetInsert1FunctionName(EntityDefinition entityDefinition)
         {
-            return "Insert1" + entityDefinition.Name;
+            var result = entityDefinition.GetInsert1StoredProcedureWrapperName();
+            return result;
         }
 
-        public static string GetMergeFunctionName(RowSourceDefinition entityDefinition)
+        public static string GetMergeFunctionName(EntityDefinition entityDefinition)
         {
-            return "Merge" + entityDefinition.Name;
+            var result = entityDefinition.GetMergeStoredProcedureWrapperName();
+            return result;
         }
 
-        public static string GetUpdateFunctionName(RowSourceDefinition entityDefinition)
+        public static string GetUpdateFunctionName(EntityDefinition entityDefinition)
         {
-            return "Update" + entityDefinition.Name;
+            var result = entityDefinition.GetUpdateStoredProcedureWrapperName();
+            return result;
         }
 
-        public static string GetUpdate1FunctionName(RowSourceDefinition entityDefinition)
+        public static string GetUpdate1FunctionName(EntityDefinition entityDefinition)
         {
-            return "Update1" + entityDefinition.Name;
+            var result = entityDefinition.GetUpdate1StoredProcedureWrapperName();
+            return result;
         }
 
-        public static string GetUpdate2FunctionName(RowSourceDefinition entityDefinition)
+        public static string GetUpdate2FunctionName(EntityDefinition entityDefinition)
         {
-            return "Update2" + entityDefinition.Name;
+            var result = entityDefinition.GetUpdate2StoredProcedureWrapperName();
+            return result;
         }
 
-        public static string GetDeleteFunctionName(RowSourceDefinition entityDefinition)
+        public static string GetDeleteFunctionName(EntityDefinition entityDefinition)
         {
-            return "Delete" + entityDefinition.Name;
+            var result = entityDefinition.GetDeleteStoredProcedureWrapperName();
+            return result;
         }
 
 

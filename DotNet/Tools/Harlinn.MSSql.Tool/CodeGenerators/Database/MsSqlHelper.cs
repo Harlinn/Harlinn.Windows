@@ -376,8 +376,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetInsertProcedureName(EntityDefinition entityDefinition)
         {
-            var tableName = GetTableOrViewName(entityDefinition);
-            return $"[Insert{tableName}]";
+            var result = $"[{entityDefinition.GetInsertStoredProcedureName()}]";
+            return result;
         }
 
         public static string GetQualifiedInsertProcedureName(EntityDefinition entityDefinition)
@@ -390,8 +390,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetInsert1ProcedureName(EntityDefinition entityDefinition)
         {
-            var tableName = GetTableOrViewName(entityDefinition);
-            return $"[Insert1{tableName}]";
+            var result = $"[{entityDefinition.GetInsert1StoredProcedureName()}]";
+            return result;
         }
 
         public static string GetQualifiedInsert1ProcedureName(EntityDefinition entityDefinition)
@@ -404,8 +404,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetUpdateProcedureName(EntityDefinition entityDefinition)
         {
-            var tableName = GetTableOrViewName(entityDefinition);
-            return $"[Update{tableName}]";
+            var result = $"[{entityDefinition.GetUpdateStoredProcedureName()}]";
+            return result;
         }
 
         public static string GetQualifiedUpdateProcedureName(EntityDefinition entityDefinition)
@@ -418,8 +418,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetUpdate1ProcedureName(EntityDefinition entityDefinition)
         {
-            var tableName = GetTableOrViewName(entityDefinition);
-            return $"[Update1{tableName}]";
+            var result = $"[{entityDefinition.GetUpdate1StoredProcedureName()}]";
+            return result;
         }
 
         public static string GetQualifiedUpdate1ProcedureName(EntityDefinition entityDefinition)
@@ -432,8 +432,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetUpdate2ProcedureName(EntityDefinition entityDefinition)
         {
-            var tableName = GetTableOrViewName(entityDefinition);
-            return $"[Update2{tableName}]";
+            var result = $"[{entityDefinition.GetUpdate2StoredProcedureName()}]";
+            return result;
         }
 
         public static string GetQualifiedUpdate2ProcedureName(EntityDefinition entityDefinition)
@@ -448,8 +448,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetDeleteProcedureName(EntityDefinition entityDefinition)
         {
-            var tableName = GetTableOrViewName(entityDefinition);
-            return $"[Delete{tableName}]";
+            var result = $"[{entityDefinition.GetDeleteStoredProcedureName()}]";
+            return result;
         }
 
         public static string GetQualifiedDeleteProcedureName(EntityDefinition entityDefinition)
@@ -462,8 +462,8 @@ namespace Harlinn.MSSql.Tool.CodeGenerators.Database
 
         public static string GetMergeProcedureName(EntityDefinition entityDefinition)
         {
-            var tableName = GetTableOrViewName(entityDefinition);
-            return $"[Merge{tableName}]";
+            var result = $"[{entityDefinition.GetMergeStoredProcedureName()}]";
+            return result;
         }
 
         public static string GetQualifiedMergeProcedureName(EntityDefinition entityDefinition)

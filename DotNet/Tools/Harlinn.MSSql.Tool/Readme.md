@@ -169,19 +169,20 @@ ADD FILE (name = N'AdventureWorks2019_mod_Data', filename = N'C:\MSSQL\MSSQL15.M
 TO FILEGROUP AdventureWorks2019_mod;
 
 ```
-Then the generated merge stored procedures can be applied to the database by applying:
+Then the generated merge stored procedures can be applied to the database by executing:
 
 - `MSSql/CreateTableTypes.sql`
 - `MSSql/MergeProcedures.sql`
 
-
-
  
-Reimporting the database with filtering to only include the original stored procedures can be done using the following command: 
+Reimporting the database with filtering to only include the original 
+stored procedures can be done using the following command: 
 
 ```
 Harlinn.MSSql.Tool import -s dbo;HumanResources;Person;Production;Purchasing;Sales -u -t -v -r -e "Insert.*" "Merge.*" "Update.*" "Delete.*" -i AdventureWorks2019 -p AdventureWorks.xml
 ```
+
+
 
 The generated code can also be found in the `Harlinn.Windows\DotNet\Examples\SqlClient\AdventureWorks\AdventureWorks.csproj` project, 
 which I use for testing.

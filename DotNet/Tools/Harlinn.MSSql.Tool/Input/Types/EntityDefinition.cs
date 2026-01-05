@@ -201,6 +201,385 @@ namespace Harlinn.MSSql.Tool.Input.Types
             return TableTypePrefix;
         }
 
+        string GetTableName()
+        {
+            if (string.IsNullOrEmpty(Table))
+            {
+                return Name;
+            }
+            return Table;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? InsertStoredProcedurePrefix { get; set; }
+
+        public string GetInsertStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(InsertStoredProcedurePrefix))
+            {
+                return Owner!.GetInsertStoredProcedurePrefix( );
+            }
+            return InsertStoredProcedurePrefix;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? InsertStoredProcedureSuffix { get; set; }
+
+        public string GetInsertStoredProcedureSuffix()
+        {
+            if (string.IsNullOrEmpty(InsertStoredProcedureSuffix))
+            {
+                return Owner!.GetInsertStoredProcedureSuffix();
+            }
+            return InsertStoredProcedureSuffix;
+        }
+
+
+        public string GetInsertStoredProcedureName()
+        {
+            var prefix = GetInsertStoredProcedurePrefix();
+            var suffix = GetInsertStoredProcedureSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Insert" + GetTableName().FirstToUpper();
+            }
+            return $"{prefix}{GetTableName().FirstToUpper()}{suffix}";
+        }
+
+        public string GetInsert1StoredProcedureName()
+        {
+            var prefix = GetInsertStoredProcedurePrefix();
+            var suffix = GetInsertStoredProcedureSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Insert1" + GetTableName().FirstToUpper();
+            }
+            return $"{prefix}1{GetTableName().FirstToUpper()}{suffix}";
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? MergeStoredProcedurePrefix { get; set; }
+
+        public string GetMergeStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(MergeStoredProcedurePrefix))
+            {
+                return Owner!.GetMergeStoredProcedurePrefix();
+            }
+            return MergeStoredProcedurePrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? MergeStoredProcedureSuffix { get; set; }
+
+        public string GetMergeStoredProcedureSuffix()
+        {
+            if (string.IsNullOrEmpty(MergeStoredProcedureSuffix))
+            {
+                return Owner!.GetMergeStoredProcedureSuffix();
+            }
+            return MergeStoredProcedureSuffix;
+        }
+
+
+        public string GetMergeStoredProcedureName()
+        {
+            var prefix = GetMergeStoredProcedurePrefix();
+            var suffix = GetMergeStoredProcedureSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Merge" + GetTableName().FirstToUpper();
+            }
+            return $"{prefix}{GetTableName().FirstToUpper()}{suffix}";
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? UpdateStoredProcedurePrefix { get; set; }
+
+        public string GetUpdateStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(UpdateStoredProcedurePrefix))
+            {
+                return Owner!.GetUpdateStoredProcedurePrefix();
+            }
+            return UpdateStoredProcedurePrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? UpdateStoredProcedureSuffix { get; set; }
+
+        public string GetUpdateStoredProcedureSuffix()
+        {
+            if (string.IsNullOrEmpty(UpdateStoredProcedureSuffix))
+            {
+                return Owner!.GetUpdateStoredProcedureSuffix();
+            }
+            return UpdateStoredProcedureSuffix;
+        }
+
+
+        public string GetUpdateStoredProcedureName()
+        {
+            var prefix = GetUpdateStoredProcedurePrefix();
+            var suffix = GetUpdateStoredProcedureSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Update" + GetTableName().FirstToUpper();
+            }
+            return $"{prefix}{GetTableName().FirstToUpper()}{suffix}";
+        }
+
+        public string GetUpdate1StoredProcedureName()
+        {
+            var prefix = GetUpdateStoredProcedurePrefix();
+            var suffix = GetUpdateStoredProcedureSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Update1" + GetTableName().FirstToUpper();
+            }
+            return $"{prefix}1{GetTableName().FirstToUpper()}{suffix}";
+        }
+
+        public string GetUpdate2StoredProcedureName()
+        {
+            var prefix = GetUpdateStoredProcedurePrefix();
+            var suffix = GetUpdateStoredProcedureSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Update2" + GetTableName().FirstToUpper();
+            }
+            return $"{prefix}2{GetTableName().FirstToUpper()}{suffix}";
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DeleteStoredProcedurePrefix { get; set; }
+
+        public string GetDeleteStoredProcedurePrefix()
+        {
+            if (string.IsNullOrEmpty(DeleteStoredProcedurePrefix))
+            {
+                return Owner!.GetDeleteStoredProcedurePrefix();
+            }
+            return DeleteStoredProcedurePrefix;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DeleteStoredProcedureSuffix { get; set; }
+
+        public string GetDeleteStoredProcedureSuffix()
+        {
+            if (string.IsNullOrEmpty(DeleteStoredProcedureSuffix))
+            {
+                return Owner!.GetDeleteStoredProcedureSuffix();
+            }
+            return DeleteStoredProcedureSuffix;
+        }
+
+
+        public string GetDeleteStoredProcedureName()
+        {
+            var prefix = GetDeleteStoredProcedurePrefix();
+            var suffix = GetDeleteStoredProcedureSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Delete" + GetTableName().FirstToUpper();
+            }
+            return $"{prefix}{GetTableName().FirstToUpper()}{suffix}";
+        }
+
+
+        //
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? InsertStoredProcedureWrapperPrefix { get; set; }
+
+        public string GetInsertStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(InsertStoredProcedureWrapperPrefix))
+            {
+                return Owner!.GetInsertStoredProcedureWrapperPrefix();
+            }
+            return InsertStoredProcedureWrapperPrefix;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? InsertStoredProcedureWrapperSuffix { get; set; }
+
+        public string GetInsertStoredProcedureWrapperSuffix()
+        {
+            if (string.IsNullOrEmpty(InsertStoredProcedureWrapperSuffix))
+            {
+                return Owner!.GetInsertStoredProcedureWrapperSuffix();
+            }
+            return InsertStoredProcedureWrapperSuffix;
+        }
+
+
+        public string GetInsertStoredProcedureWrapperName()
+        {
+            var prefix = GetInsertStoredProcedureWrapperPrefix();
+            var suffix = GetInsertStoredProcedureWrapperSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Insert" + Name.FirstToUpper();
+            }
+            return $"{prefix}{Name.FirstToUpper()}{suffix}";
+        }
+
+        public string GetInsert1StoredProcedureWrapperName()
+        {
+            var prefix = GetInsertStoredProcedureWrapperPrefix();
+            var suffix = GetInsertStoredProcedureWrapperSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Insert1" + Name.FirstToUpper();
+            }
+            return $"{prefix}1{Name.FirstToUpper()}{suffix}";
+        }
+
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? MergeStoredProcedureWrapperPrefix { get; set; }
+
+        public string GetMergeStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(MergeStoredProcedureWrapperPrefix))
+            {
+                return Owner!.GetMergeStoredProcedureWrapperPrefix();
+            }
+            return MergeStoredProcedureWrapperPrefix;
+        }
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? MergeStoredProcedureWrapperSuffix { get; set; }
+
+        public string GetMergeStoredProcedureWrapperSuffix()
+        {
+            if (string.IsNullOrEmpty(MergeStoredProcedureWrapperSuffix))
+            {
+                return Owner!.GetMergeStoredProcedureWrapperSuffix();
+            }
+            return MergeStoredProcedureWrapperSuffix;
+        }
+
+
+        public string GetMergeStoredProcedureWrapperName()
+        {
+            var prefix = GetMergeStoredProcedureWrapperPrefix();
+            var suffix = GetMergeStoredProcedureWrapperSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Merge" + Name.FirstToUpper();
+            }
+            return $"{prefix}{Name.FirstToUpper()}{suffix}";
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? UpdateStoredProcedureWrapperPrefix { get; set; }
+
+        public string GetUpdateStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(UpdateStoredProcedureWrapperPrefix))
+            {
+                return Owner!.GetUpdateStoredProcedureWrapperPrefix();
+            }
+            return UpdateStoredProcedureWrapperPrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? UpdateStoredProcedureWrapperSuffix { get; set; }
+
+        public string GetUpdateStoredProcedureWrapperSuffix()
+        {
+            if (string.IsNullOrEmpty(UpdateStoredProcedureWrapperSuffix))
+            {
+                return Owner!.GetUpdateStoredProcedureWrapperSuffix();
+            }
+            return UpdateStoredProcedureWrapperSuffix;
+        }
+
+
+        public string GetUpdateStoredProcedureWrapperName()
+        {
+            var prefix = GetUpdateStoredProcedureWrapperPrefix();
+            var suffix = GetUpdateStoredProcedureWrapperSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Update" + Name.FirstToUpper();
+            }
+            return $"{prefix}{Name.FirstToUpper()}{suffix}";
+        }
+
+        public string GetUpdate1StoredProcedureWrapperName()
+        {
+            var prefix = GetUpdateStoredProcedureWrapperPrefix();
+            var suffix = GetUpdateStoredProcedureWrapperSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Update1" + Name.FirstToUpper();
+            }
+            return $"{prefix}1{Name.FirstToUpper()}{suffix}";
+        }
+
+        public string GetUpdate2StoredProcedureWrapperName()
+        {
+            var prefix = GetUpdateStoredProcedureWrapperPrefix();
+            var suffix = GetUpdateStoredProcedureWrapperSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Update2" + Name.FirstToUpper();
+            }
+            return $"{prefix}2{Name.FirstToUpper()}{suffix}";
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DeleteStoredProcedureWrapperPrefix { get; set; }
+
+        public string GetDeleteStoredProcedureWrapperPrefix()
+        {
+            if (string.IsNullOrEmpty(DeleteStoredProcedureWrapperPrefix))
+            {
+                return Owner!.GetDeleteStoredProcedureWrapperPrefix();
+            }
+            return DeleteStoredProcedureWrapperPrefix;
+        }
+
+
+        [XmlAttribute, DefaultValue(null)]
+        public string? DeleteStoredProcedureWrapperSuffix { get; set; }
+
+        public string GetDeleteStoredProcedureWrapperSuffix()
+        {
+            if (string.IsNullOrEmpty(DeleteStoredProcedureWrapperSuffix))
+            {
+                return Owner!.GetDeleteStoredProcedureWrapperSuffix();
+            }
+            return DeleteStoredProcedureWrapperSuffix;
+        }
+
+
+        public string GetDeleteStoredProcedureWrapperName()
+        {
+            var prefix = GetDeleteStoredProcedureWrapperPrefix();
+            var suffix = GetDeleteStoredProcedureWrapperSuffix();
+            if (string.IsNullOrEmpty(prefix) && string.IsNullOrEmpty(suffix))
+            {
+                return "Delete" + Name.FirstToUpper();
+            }
+            return $"{prefix}{Name.FirstToUpper()}{suffix}";
+        }
+
+
         internal int GetIndexIndex(string indexName)
         {
             for (int i = 0; i < Indexes.Count; i++)
