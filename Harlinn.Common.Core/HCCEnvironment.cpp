@@ -19,6 +19,8 @@
 #include <HCCException.h>
 #include <HCCLogging.h>
 #include <HCCGuid.h>
+#include <HCCDateTime.h>
+#include <HCCSync.h>
 
 #pragma comment( lib, "Secur32.lib")
 
@@ -276,10 +278,19 @@ namespace Harlinn::Common::Core::Environment
         }
     }
 
+
     bool IsComputerDomainJoined( )
     {
+        static Spinlock spinlock;
         static std::optional<bool> result;
-        if ( result.has_value( ) == false ) [[unlikely]]
+        static DateTime lastChecked = DateTime::MinValue( );
+        static const TimeSpan refreshInterval = TimeSpan::FromMinutes( 5.0 );
+
+        // Protect access to shared state
+        std::lock_guard guard( spinlock );
+        auto now = DateTime::Now( );
+
+        if ( result.has_value( ) == false || ( now - lastChecked ) >= refreshInterval )
         {
             HANDLE handle = nullptr;
             auto rc = DsBindW( nullptr, nullptr, &handle );
@@ -292,8 +303,12 @@ namespace Harlinn::Common::Core::Environment
             {
                 result = false;
             }
+            lastChecked = now;
         }
-        return result.value( );
+
+        bool value = result.value( );
+
+        return value;
     }
 
 

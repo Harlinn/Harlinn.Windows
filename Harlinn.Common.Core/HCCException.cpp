@@ -1858,19 +1858,174 @@ namespace Harlinn::Common::Core
         }
     }
 
-
+    /*
     void CheckHRESULT( HRESULT hresult, IUnknown* itf )
     {
         CheckHRESULT( hresult );
     }
+    */
+
+    
+    void CheckHRESULT( HRESULT hresult, IUnknown* itf )
+    {
+        if ( !FAILED( hresult ) )
+        {
+            return;
+        }
+
+        // Try to obtain rich COM error information.
+        // First, if the object implements ISupportErrorInfo, prefer that route.
+        IErrorInfo* pErrorInfo = nullptr;
+        ISupportErrorInfo* pSupport = nullptr;
+        if ( itf && SUCCEEDED( itf->QueryInterface( IID_ISupportErrorInfo, reinterpret_cast<void**>( &pSupport ) ) ) && pSupport )
+        {
+            bool supported = false;
+            const IID candidates[ ] = { IID_IUnknown, IID_IDispatch };
+
+            for ( const IID& iid : candidates )
+            {
+                if ( pSupport->InterfaceSupportsErrorInfo( iid ) == S_OK )
+                {
+                    supported = true;
+                    break;
+                }
+            }
+
+            pSupport->Release( );
+            pSupport = nullptr;
+
+            if ( supported )
+            {
+                if ( SUCCEEDED( ::GetErrorInfo( 0, &pErrorInfo ) ) && pErrorInfo )
+                {
+                    BSTR bstrDesc = nullptr;
+                    if ( SUCCEEDED( pErrorInfo->GetDescription( &bstrDesc ) ) && bstrDesc )
+                    {
+                        WideString desc( bstrDesc );
+                        SysFreeString( bstrDesc );
+                        pErrorInfo->Release( );
+                        throw Runtime::InteropServices::COMException( hresult, 0, desc.c_str( ) );
+                    }
+                    // no description -> fall through to generic handling
+                    pErrorInfo->Release( );
+                    pErrorInfo = nullptr;
+                }
+            }
+        }
+
+        // Fallback: some components set thread IErrorInfo without ISupportErrorInfo.
+        if ( SUCCEEDED( ::GetErrorInfo( 0, &pErrorInfo ) ) && pErrorInfo )
+        {
+            BSTR bstrDesc = nullptr;
+            if ( SUCCEEDED( pErrorInfo->GetDescription( &bstrDesc ) ) && bstrDesc )
+            {
+                WideString desc( bstrDesc );
+                SysFreeString( bstrDesc );
+                pErrorInfo->Release( );
+                throw Runtime::InteropServices::COMException( hresult, 0, desc.c_str( ) );
+            }
+            pErrorInfo->Release( );
+            pErrorInfo = nullptr;
+        }
+
+        // Last resort: use system message for the HRESULT.
+        ThrowHRESULT( hresult );
+    }
+
 
     void CheckHRESULT( HRESULT hresult, const wchar_t* function, const wchar_t* filename, int lineNumber )
     {
-        CheckHRESULT( hresult );
+        if ( !FAILED( hresult ) )
+        {
+            return;
+        }
+        ExceptionLocation location( function, filename, lineNumber );
+        int length = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, hresult, 0, (wchar_t*)buffer, 512, nullptr );
+        if ( length )
+        {
+            wchar_t* ptr = (wchar_t*)buffer;
+            throw Runtime::InteropServices::COMException( location, hresult, 0, ptr );
+        }
+        else
+        {
+            throw Runtime::InteropServices::COMException( location, hresult, 0, L"Unknown error" );
+        }
     }
     void CheckHRESULT( HRESULT hresult, IUnknown* itf, const wchar_t* function, const wchar_t* filename, int lineNumber )
     {
-        CheckHRESULT( hresult );
+        if ( !FAILED( hresult ) )
+        {
+            return;
+        }
+
+        ExceptionLocation location( function, filename, lineNumber );
+
+        // Try to obtain rich COM error information.
+        // First, if the object implements ISupportErrorInfo, prefer that route.
+        IErrorInfo* pErrorInfo = nullptr;
+        ISupportErrorInfo* pSupport = nullptr;
+        if ( itf && SUCCEEDED( itf->QueryInterface( IID_ISupportErrorInfo, reinterpret_cast<void**>( &pSupport ) ) ) && pSupport )
+        {
+            bool supported = false;
+            const IID candidates[ ] = { IID_IUnknown, IID_IDispatch };
+
+            for ( const IID& iid : candidates )
+            {
+                if ( pSupport->InterfaceSupportsErrorInfo( iid ) == S_OK )
+                {
+                    supported = true;
+                    break;
+                }
+            }
+
+            pSupport->Release( );
+            pSupport = nullptr;
+
+            if ( supported )
+            {
+                if ( SUCCEEDED( ::GetErrorInfo( 0, &pErrorInfo ) ) && pErrorInfo )
+                {
+                    BSTR bstrDesc = nullptr;
+                    if ( SUCCEEDED( pErrorInfo->GetDescription( &bstrDesc ) ) && bstrDesc )
+                    {
+                        WideString desc( bstrDesc );
+                        SysFreeString( bstrDesc );
+                        pErrorInfo->Release( );
+                        throw Runtime::InteropServices::COMException( location, hresult, 0, desc );
+                    }
+                    // no description -> fall through to generic handling
+                    pErrorInfo->Release( );
+                    pErrorInfo = nullptr;
+                }
+            }
+        }
+
+        // Fallback: some components set thread IErrorInfo without ISupportErrorInfo.
+        if ( SUCCEEDED( ::GetErrorInfo( 0, &pErrorInfo ) ) && pErrorInfo )
+        {
+            BSTR bstrDesc = nullptr;
+            if ( SUCCEEDED( pErrorInfo->GetDescription( &bstrDesc ) ) && bstrDesc )
+            {
+                WideString desc( bstrDesc );
+                SysFreeString( bstrDesc );
+                pErrorInfo->Release( );
+                throw Runtime::InteropServices::COMException( location, hresult, 0, desc );
+            }
+            pErrorInfo->Release( );
+            pErrorInfo = nullptr;
+        }
+
+        // Last resort: use system message for the HRESULT.
+        int length = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, hresult, 0, (wchar_t*)buffer, 512, nullptr );
+        if ( length )
+        {
+            wchar_t* ptr = (wchar_t*)buffer;
+            throw Runtime::InteropServices::COMException( location, hresult, 0, ptr );
+        }
+        else
+        {
+            throw Runtime::InteropServices::COMException( location, hresult, 0, L"Unknown error" );
+        }
     }
 
 

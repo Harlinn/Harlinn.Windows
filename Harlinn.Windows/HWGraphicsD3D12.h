@@ -612,27 +612,115 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
 
         
+        /// <summary>
+        /// Maps a subresource and returns a CPU pointer to the resource data.
+        /// </summary>
+        /// <param name="Subresource">
+        /// The zero-based index of the subresource to map.
+        /// Use <c>D3D12CalcSubresource</c> when working with complex resources that have multiple subresources.
+        /// </param>
+        /// <param name="readRange">
+        /// A reference to a <c>D3D12_RANGE</c> structure that specifies the range of the subresource the CPU will read.
+        /// Passing a range where <c>End &lt;= Begin</c> indicates the CPU will not read any data.
+        /// Use an empty range to avoid unnecessary CPU cache invalidation when no CPU read is required.
+        /// </param>
+        /// <param name="dataPtr">
+        /// Receives a pointer to the mapped subresource memory. A null pointer is valid and can be used to cache
+        /// the mapping address for later writes (see <see cref="WriteToSubresource"/>).
+        /// </param>
+        /// <returns>
+        /// This method does not return a value. Errors from the underlying COM call are handled by the project's
+        /// COM-check macros invoked by the forwarded overload.
+        /// </returns>
+        /// <remarks>
+        /// - This overload forwards to the pointer-based Map overload.
+        /// - Mapping semantics:
+        ///   * Map/Unmap calls are thread-safe and ref-counted; the first Map allocates a CPU virtual address range,
+        ///     and the last Unmap deallocates it.
+        ///   * Pointers returned by Map may exhibit weaker memory-ordering semantics (for example WRITE_COMBINE)
+        ///     on some heap types; avoid CPU reads from UPLOAD heaps for performance reasons.
+        /// - For persistent mapping, call Map once and avoid Unmap until the resource is no longer used.
+        /// - See also: <see cref="Map(UINT, const D3D12_RANGE*, void**)"/>, <see cref="Unmap(UINT, const D3D12_RANGE*)"/>.
+        /// - When applicable, prefer helper types from the Harlinn.Windows library (for example <c>Range</c>) to describe ranges.
+        /// </remarks>
         void Map( UINT Subresource, _In_opt_ const D3D12_RANGE& readRange, _Outptr_opt_result_bytebuffer_( _Inexpressible_( "Dependent on resource" ) )  void** dataPtr ) const
         {
             Map( Subresource, &readRange, dataPtr );
         }
 
+        /// <summary>
+        /// Maps a subresource and returns the CPU pointer to the mapped memory.
+        /// </summary>
+        /// <param name="Subresource">
+        /// The zero-based index of the subresource to map.
+        /// </param>
+        /// <param name="readRange">
+        /// Optional pointer to a <c>D3D12_RANGE</c> describing the region the CPU might read. Null means the entire subresource may be read.
+        /// </param>
+        /// <returns>
+        /// Pointer to the mapped memory for the specified subresource. Returns <c>nullptr</c> on failure.
+        /// </returns>
+        /// <remarks>
+        /// This overload wraps the pointer-based Map call and returns the mapped address directly for convenience.
+        /// </remarks>
         void* Map( UINT Subresource, _In_opt_ const D3D12_RANGE* readRange = nullptr ) const
         {
             void* result = nullptr;
             Map( Subresource, readRange, &result );
             return result;
         }
+
+        /// <summary>
+        /// Maps a subresource and returns the CPU pointer to the mapped memory.
+        /// </summary>
+        /// <param name="Subresource">
+        /// The zero-based index of the subresource to map.
+        /// </param>
+        /// <param name="readRange">
+        /// A reference to a <c>D3D12_RANGE</c> structure that specifies the region the CPU might read.
+        /// </param>
+        /// <returns>
+        /// Pointer to the mapped memory for the specified subresource.
+        /// </returns>
         void* Map( UINT Subresource, _In_opt_ const D3D12_RANGE& readRange ) const
         {
             return Map( Subresource, &readRange );
         }
 
+        /// <summary>
+        /// Maps a subresource using the project's <c>Range</c> helper type and returns the mapped pointer.
+        /// </summary>
+        /// <param name="Subresource">
+        /// The zero-based index of the subresource to map.
+        /// </param>
+        /// <param name="readRange">
+        /// The project <c>Range</c> describing the region the CPU might read.
+        /// </param>
+        /// <returns>
+        /// Pointer to the mapped memory for the specified subresource.
+        /// </returns>
         void* Map( UINT Subresource, _In_opt_ const Range& readRange ) const
         {
             return Map( Subresource, reinterpret_cast< const D3D12_RANGE* >( &readRange ) );
         }
 
+        /// <summary>
+        /// Copies data into a mapped subresource.
+        /// </summary>
+        /// <typeparam name="T">
+        /// A span-like container whose elements represent the source data to copy.
+        /// </typeparam>
+        /// <param name="Subresource">
+        /// The zero-based index of the subresource to write into.
+        /// </param>
+        /// <param name="resourceData">
+        /// The source data to copy into the mapped subresource. The total bytes copied will be <c>resourceData.size() * sizeof(T::value_type)</c>.
+        /// </param>
+        /// <remarks>
+        /// - This helper will call <see cref="Map(UINT,const D3D12_RANGE*)"/> with an empty read range so it does not incur unnecessary cache invalidation.
+        /// - After the copy it calls <see cref="Unmap(UINT,const D3D12_RANGE*)"/> with <c>nullptr</c> to unmap the subresource.
+        /// - Template constrained to simple span-like containers to enable flexible usage with std::vector, std::span, etc.
+        /// </remarks>
         template<SimpleSpanLike T>
         void Assign( UINT Subresource, const T& resourceData )
         {
@@ -670,11 +758,29 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->Unmap( Subresource, writtenRange );
         }
 
+        /// <summary>
+        /// Invalidates the CPU pointer to the specified subresource using a reference to a D3D12_RANGE.
+        /// </summary>
+        /// <param name="Subresource">
+        /// The index of the subresource.
+        /// </param>
+        /// <param name="writtenRange">
+        /// The written range describing the modified region.
+        /// </param>
         void Unmap( UINT Subresource, const D3D12_RANGE& writtenRange ) const
         {
             Unmap( Subresource, &writtenRange );
         }
 
+        /// <summary>
+        /// Invalidates the CPU pointer to the specified subresource using the project's Range helper type.
+        /// </summary>
+        /// <param name="Subresource">
+        /// The index of the subresource.
+        /// </param>
+        /// <param name="writtenRange">
+        /// The written range described by the project's <c>Range</c> type.
+        /// </param>
         void Unmap( UINT Subresource, const D3D12::Range& writtenRange ) const
         {
             Unmap( Subresource, reinterpret_cast< const D3D12_RANGE* >( &writtenRange ) );
@@ -789,11 +895,63 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Uses the CPU to copy data into a subresource, enabling the CPU to modify
+        /// the contents of most textures with undefined layouts.
+        /// </summary>
+        /// <param name="destinationSubresource">
+        /// Specifies the index of the destination subresource.
+        /// </param>
+        /// <param name="sourceData">
+        /// A pointer to the source data in memory.
+        /// </param>
+        /// <param name="sourceRowPitch">
+        /// The distance in bytes from one row of source data to the next row.
+        /// </param>
+        /// <param name="sourceDepthPitch">
+        /// The distance in bytes from one depth slice of source data to the next.
+        /// </param>
+        /// <remarks>
+        /// This overload forwards the call to the more general overload that accepts
+        /// an optional destination box. Passing a null destination box writes the
+        /// source data to the destination subresource with no offset.
+        /// The destination subresource must be in a state that allows CPU writes.
+        /// For details and guidance on alignment and performance considerations, see
+        /// the remarks of the full overload that accepts a destination box.
+        /// </remarks>
         void WriteToSubresource( UINT destinationSubresource, _In_ const void* sourceData, UINT sourceRowPitch, UINT sourceDepthPitch ) const
         {
             WriteToSubresource( destinationSubresource, nullptr ,sourceData, sourceRowPitch, sourceDepthPitch );
         }
 
+        /// <summary>
+        /// Uses the CPU to copy data into a specified region of a subresource.
+        /// This overload accepts a reference to a <see cref="D3D12_BOX"/> and
+        /// forwards the call to the pointer-based overload that performs the actual work.
+        /// </summary>
+        /// <param name="destinationSubresource">
+        /// Specifies the index of the destination subresource.
+        /// </param>
+        /// <param name="destinationBox">
+        /// A reference to a <see cref="D3D12_BOX"/> that defines the portion of the destination
+        /// subresource to copy the resource data into. If the box is empty or invalid, behavior
+        /// is identical to passing a null destination box to the pointer-based overload.
+        /// </param>
+        /// <param name="sourceData">
+        /// A pointer to the source data in memory to be copied into the destination subresource.
+        /// </param>
+        /// <param name="sourceRowPitch">
+        /// The distance in bytes from one row of source data to the next row.
+        /// </param>
+        /// <param name="sourceDepthPitch">
+        /// The distance in bytes from one depth slice of source data to the next.
+        /// </param>
+        /// <remarks>
+        /// This method simply forwards to the pointer-based overload:
+        /// <c>WriteToSubresource(destinationSubresource, &destinationBox, sourceData, sourceRowPitch, sourceDepthPitch)</c>.
+        /// See the detailed remarks on the primary overload for guidance on memory alignment,
+        /// required resource states, and performance considerations.
+        /// </remarks>
         void WriteToSubresource( UINT destinationSubresource, const D3D12_BOX& destinationBox, _In_ const void* sourceData, UINT sourceRowPitch, UINT sourceDepthPitch ) const
         {
             WriteToSubresource( destinationSubresource, &destinationBox, sourceData, sourceRowPitch, sourceDepthPitch );
@@ -838,6 +996,34 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Copies data from a subresource into a destination memory buffer.
+        /// </summary>
+        /// <param name="destinationData">
+        /// A pointer to the memory that receives the copied subresource data.
+        /// </param>
+        /// <param name="destinationRowPitch">
+        /// The byte distance from one row of destination data to the next row.
+        /// </param>
+        /// <param name="destinationDepthPitch">
+        /// The byte distance from one depth slice of destination data to the next.
+        /// </param>
+        /// <param name="sourceSubresource">
+        /// The zero-based index of the source subresource to read from.
+        /// </param>
+        /// <param name="sourceBox">
+        /// A reference to a <c>D3D12_BOX</c> that defines the region of the source subresource to read.
+        /// If the box is empty, the operation is a no-op. Passing a full-box region copies the entire subresource.
+        /// </param>
+        /// <returns>
+        /// This method does not return a value. Any failure in the underlying COM call is handled by the project's
+        /// COM-check macros invoked by the pointer-based overload.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the pointer-based <c>ReadFromSubresource(..., const D3D12_BOX*)</c> implementation.
+        /// The destination buffer must be large enough to receive the region specified by <paramref name="sourceBox"/>.
+        /// Use appropriate synchronization to ensure the resource is in a state suitable for CPU reads.
+        /// </remarks>
         void ReadFromSubresource( _Out_ void* destinationData, UINT destinationRowPitch, UINT destinationDepthPitch, UINT sourceSubresource, const D3D12_BOX& sourceBox ) const
         {
             ReadFromSubresource( destinationData, destinationRowPitch, destinationDepthPitch, sourceSubresource, &sourceBox );
@@ -1016,6 +1202,22 @@ namespace Harlinn::Windows::Graphics::D3D12
 
         HCC_COM_STANDARD_METHODS_IMPL( PipelineState, Pageable, ID3D12PipelineState, ID3D12Pageable )
     public:
+        /// <summary>
+        /// Retrieves the cached compiled pipeline-state object (PSO) as a COM blob.
+        /// </summary>
+        /// <param name="ppBlob">
+        /// [out] Address of a pointer that, on successful return, receives an
+        /// <c>ID3DBlob*</c> that contains the cached pipeline object (PSO) data.
+        /// The caller receives a COM reference and is responsible for releasing it
+        /// according to COM ownership rules (for example by calling <c>Release()</c>,
+        /// or by wrapping with a smart pointer).
+        /// </param>
+        /// <remarks>
+        /// This method forwards the call to the underlying COM interface:
+        /// <c>ID3D12PipelineState::GetCachedBlob</c>. The HRESULT returned by the
+        /// COM call is validated by <c>HCC_COM_CHECK_HRESULT2</c> which will assert
+        /// or throw according to the project's error handling policy on failure.
+        /// </remarks>
         void GetCachedBlob( _COM_Outptr_  ID3DBlob** ppBlob ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1023,6 +1225,20 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Retrieves the cached compiled pipeline-state object (PSO) and returns
+        /// it wrapped in a RAII helper type <c>D3D10Blob</c>.
+        /// </summary>
+        /// <returns>
+        /// A <c>D3D10Blob</c> that owns the returned <c>ID3DBlob*</c> pointer.
+        /// If the underlying COM call fails, the error is handled by
+        /// <c>HCC_COM_CHECK_HRESULT2</c> and this function will not return a valid blob.
+        /// </returns>
+        /// <remarks>
+        /// This convenience overload calls the COM-style <c>GetCachedBlob(ID3DBlob**)</c>
+        /// and wraps the resulting raw pointer in a <c>D3D10Blob</c> to provide
+        /// automatic lifetime management.
+        /// </remarks>
         D3D10Blob GetCachedBlob( ) const
         {
             ID3D10Blob* ptr = nullptr;
