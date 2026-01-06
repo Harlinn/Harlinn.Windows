@@ -42,6 +42,21 @@ namespace Harlinn::Common
         { t1.end( ) };
     };
 
+    /// <summary>
+    /// Matches contiguous containers that expose `size()` and `data()` and provide
+    /// random-access element access (operator[]) such as std::array, std::vector,
+    /// std::span and std::basic_string.
+    /// </summary>
+    template<typename T>
+    concept ContiguousContainerLike = requires ( const T & t )
+    {
+        typename T::value_type;
+        typename T::size_type;
+        { t.size( ) } -> std::same_as<typename T::size_type>;
+        { t.data( ) } -> std::convertible_to<const typename T::value_type*>;
+        { t[ 0 ] } -> std::convertible_to<typename T::const_reference>;
+    };
+
 
     /// <summary>
     /// Matches most containers with sequential memory layout.

@@ -611,6 +611,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        
         void Map( UINT Subresource, _In_opt_ const D3D12_RANGE& readRange, _Outptr_opt_result_bytebuffer_( _Inexpressible_( "Dependent on resource" ) )  void** dataPtr ) const
         {
             Map( Subresource, &readRange, dataPtr );
@@ -2041,36 +2042,83 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
 
 
-
+        /// <summary>
+        /// Executes a bundle command list on the specified graphics command list.
+        /// </summary>
+        /// <param name="commandList">
+        /// A pointer to the ID3D12GraphicsCommandList interface on which to execute the bundle.
+        /// </param>
         void ExecuteBundle( _In_ ID3D12GraphicsCommandList* commandList ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->ExecuteBundle( commandList );
         }
 
+        /// <summary>
+        /// Executes a bundle of commands on the specified graphics command list.
+        /// </summary>
+        /// <param name="commandList">
+        /// The graphics command list on which to execute the bundle.
+        /// </param>
         void ExecuteBundle( const GraphicsCommandList& commandList ) const
         {
             ExecuteBundle( commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
         }
 
+        /// <summary>
+        /// Sets the descriptor heaps to be used by subsequent commands in the command list.
+        /// </summary>
+        /// <param name="numDescriptorHeaps">
+        /// The number of descriptor heaps to set.
+        /// </param>
+        /// <param name="descriptorHeapsPtr">
+        /// A pointer to an array of descriptor heap pointers to be set on the command list.
+        /// </param>
         void SetDescriptorHeaps( _In_  UINT numDescriptorHeaps, _In_reads_( numDescriptorHeaps )  ID3D12DescriptorHeap* const* descriptorHeapsPtr ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetDescriptorHeaps( numDescriptorHeaps, descriptorHeapsPtr );
         }
 
+        /// <summary>
+        /// Sets a single descriptor heap on the graphics command list.
+        /// </summary>
+        /// <param name="descriptorHeap">
+        /// A pointer to the descriptor heap to set for subsequent rendering commands.
+        /// </param>
         void SetDescriptorHeaps( ID3D12DescriptorHeap* descriptorHeap ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetDescriptorHeaps( 1, &descriptorHeap );
         }
 
+        /// <summary>
+        /// Sets an array of descriptor heaps to the graphics command list.
+        /// </summary>
+        /// <param name="numDescriptorHeaps">
+        /// The number of descriptor heaps in the array.
+        /// </param>
+        /// <param name="descriptorHeapsPtr">
+        /// Pointer to an array of descriptor heaps to be set.
+        /// </param>
         void SetDescriptorHeaps( _In_  UINT numDescriptorHeaps, _In_reads_( numDescriptorHeaps ) const DescriptorHeap* descriptorHeapsPtr ) const
         {
             SetDescriptorHeaps( numDescriptorHeaps, reinterpret_cast< ID3D12DescriptorHeap* const* >(descriptorHeapsPtr) );
         }
 
+        /// <summary>
+        /// Sets the descriptor heaps to be used by subsequent graphics commands.
+        /// </summary>
+        /// <typeparam name="SpanT">A span-like type whose value_type is convertible to const DescriptorHeap.</typeparam>
+        /// <param name="descriptorHeaps">A span-like container of descriptor heaps to bind to the command list.</param>
+        template<ContiguousContainerLike SpanT>
+			requires std::is_convertible_v<typename SpanT::value_type, const DescriptorHeap>
+        void SetDescriptorHeaps( const SpanT& descriptorHeaps ) const
+        {
+            SetDescriptorHeaps( static_cast<UINT>(descriptorHeaps.size()), reinterpret_cast<ID3D12DescriptorHeap* const*>(descriptorHeaps.data()) );
+        }
 
+        /*
         template<size_t N>
         void SetDescriptorHeaps( const std::array<DescriptorHeap,N>& descriptorHeaps ) const
         {
@@ -2081,116 +2129,354 @@ namespace Harlinn::Windows::Graphics::D3D12
             }
             SetDescriptorHeaps(static_cast<UINT>(N), heaps.data() );
         }
+        */
+
+        /// <summary>
+        /// Sets an array of descriptor heaps for use by the command list.
+        /// </summary>
+        /// <typeparam name="N">
+        /// The number of descriptor heaps in the array.
+        /// </typeparam>
+        /// <param name="descriptorHeaps">
+        /// A reference to an array of DescriptorHeap objects to be set.
+        /// </param>
         template<size_t N>
-        void SetDescriptorHeaps( DescriptorHeap( &descriptorHeaps )[N] ) const
+        void SetDescriptorHeaps( const DescriptorHeap( &descriptorHeaps )[N] ) const
         {
+            SetDescriptorHeaps( static_cast<UINT>( N ), descriptorHeaps );
+
+            /*
             std::array<ID3D12DescriptorHeap*, N> heaps;
             for ( size_t i = 0; i < N; i++ )
             {
                 heaps[i] = descriptorHeaps[i].GetInterfacePointer<ID3D12DescriptorHeap>( );
             }
             SetDescriptorHeaps( static_cast<UINT>( N ), heaps.data( ) );
+            */
         }
+
+        /// <summary>
+        /// Sets a single descriptor heap on the command list for use by subsequent draw or dispatch commands.
+        /// </summary>
+        /// <param name="descriptorHeap">
+        /// The descriptor heap to bind to the command list.
+        /// </param>
         void SetDescriptorHeaps( const DescriptorHeap& descriptorHeap ) const
         {
             ID3D12DescriptorHeap* ptr = descriptorHeap.GetInterfacePointer<ID3D12DescriptorHeap>( );
             SetDescriptorHeaps( 1, &ptr );
         }
 
+        /// <summary>
+        /// Sets the compute root signature for the command list.
+        /// </summary>
+        /// <param name="rootSignature">
+        /// A pointer to the ID3D12RootSignature to set for compute operations, or nullptr to clear the current root signature.
+        /// </param>
         void SetComputeRootSignature( _In_opt_ ID3D12RootSignature* rootSignature = nullptr ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetComputeRootSignature( rootSignature );
         }
 
+        /// <summary>
+        /// Sets the compute root signature for the command list.
+        /// </summary>
+        /// <param name="rootSignature">
+        /// The root signature object to bind to the compute pipeline.
+        /// </param>
         void SetComputeRootSignature( const RootSignature& rootSignature ) const
         {
             SetComputeRootSignature( rootSignature.GetInterfacePointer<ID3D12RootSignature>( ) );
         }
 
+        /// <summary>
+        /// Sets the graphics root signature for the command list.
+        /// </summary>
+        /// <param name="rootSignature">
+        /// A pointer to the ID3D12RootSignature object to set as the graphics root signature, or nullptr to clear it.
+        /// </param>
         void SetGraphicsRootSignature( _In_opt_ ID3D12RootSignature* rootSignature = nullptr ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetGraphicsRootSignature( rootSignature );
         }
 
+        /// <summary>
+        /// Sets the graphics root signature for the current graphics pipeline state.
+        /// </summary>
+        /// <param name="rootSignature">
+        /// The root signature object to bind to the graphics pipeline.
+        /// </param>
         void SetGraphicsRootSignature( const RootSignature& rootSignature ) const
         {
             SetGraphicsRootSignature( rootSignature.GetInterfacePointer<ID3D12RootSignature>( ) );
         }
 
+        /// <summary>
+        /// Sets a descriptor table into the compute root signature at the specified index.
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The slot number for binding, corresponding to a root parameter index in the root signature.
+        /// </param>
+        /// <param name="baseDescriptor">
+        /// A GPU descriptor handle that identifies the base descriptor in the descriptor 
+        /// heap from which to start the descriptor table.
+        /// </param>
         void SetComputeRootDescriptorTable( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_DESCRIPTOR_HANDLE baseDescriptor ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetComputeRootDescriptorTable( rootParameterIndex, baseDescriptor );
         }
 
+        /// <summary>
+        /// Sets a descriptor table into the graphics root signature.
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The slot number for binding the descriptor table in the root signature.
+        /// </param>
+        /// <param name="baseDescriptor">
+        /// A GPU descriptor handle that identifies the base descriptor in the descriptor heap from which the descriptor table starts.
+        /// </param>
         void SetGraphicsRootDescriptorTable( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_DESCRIPTOR_HANDLE baseDescriptor ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetGraphicsRootDescriptorTable( rootParameterIndex, baseDescriptor );
         }
 
+        /// <summary>
+        /// Sets a 32-bit constant value in the compute root signature at the specified parameter index and offset.
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the compute root signature.
+        /// </param>
+        /// <param name="srcData">
+        /// The 32-bit constant value to set.
+        /// </param>
+        /// <param name="destOffsetIn32BitValues">
+        /// The offset (in 32-bit value units) within the root parameter where the constant will be written.
+        /// </param>
         void SetComputeRoot32BitConstant( _In_ UINT rootParameterIndex, _In_ UINT srcData, _In_ UINT destOffsetIn32BitValues ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetComputeRoot32BitConstant( rootParameterIndex, srcData, destOffsetIn32BitValues );
         }
-
+        /// <summary>
+        /// Sets a constant in the graphics root signature using a 32-bit value.
+        /// </summary>
+        /// <param name="rootParameterIndex">The index of the root parameter to set in the graphics root signature.</param>
+        /// <param name="srcData">The 32-bit constant value to set.</param>
+        /// <param name="destOffsetIn32BitValues">The offset in 32-bit value units where the constant will be written in the destination root constant buffer.</param>
         void SetGraphicsRoot32BitConstant( _In_ UINT rootParameterIndex, _In_ UINT srcData, _In_ UINT destOffsetIn32BitValues ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetGraphicsRoot32BitConstant( rootParameterIndex, srcData, destOffsetIn32BitValues );
         }
 
+        /// <summary>
+        /// Sets a group of 32-bit constants in the compute root signature.
+        /// </summary>
+        /// <param name="rootParameterIndex">The index of the root parameter to set in the compute root signature.</param>
+        /// <param name="num32BitValuesToSet">The number of 32-bit constants to set.</param>
+        /// <param name="pSrcData">Pointer to the source data containing the 32-bit constant values to copy.</param>
+        /// <param name="destOffsetIn32BitValues">The offset, in 32-bit values, into the destination constant buffer where copying begins.</param>
         void SetComputeRoot32BitConstants( _In_ UINT rootParameterIndex, _In_ UINT num32BitValuesToSet, _In_reads_( num32BitValuesToSet * sizeof( UINT ) )  const void* pSrcData, _In_  UINT destOffsetIn32BitValues ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetComputeRoot32BitConstants( rootParameterIndex, num32BitValuesToSet, pSrcData, destOffsetIn32BitValues );
         }
 
+        /// <summary>
+        /// Sets a GPU virtual address for a constant buffer into the compute root signature.
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the compute root signature where the constant buffer GPU virtual address will be written.
+        /// This index corresponds to the root parameter layout defined in the root signature.
+        /// </param>
+        /// <param name="bufferLocation">
+        /// The GPU virtual address of the constant buffer to bind (type: <c>D3D12_GPU_VIRTUAL_ADDRESS</c>).
+        /// </param>
+        /// <remarks>
+        /// Use this method to bind a constant buffer by GPU virtual address to the compute pipeline's root signature.
+        /// The bound address must reference a valid resource created for GPU access (for example a buffer resource).
+        /// This function does not perform any state transitions; the application must ensure the resource is in a state
+        /// suitable for shader access. The call affects only the compute root signature binding on the current command list.
+        /// </remarks>
         void SetGraphicsRoot32BitConstants( _In_ UINT rootParameterIndex, _In_ UINT num32BitValuesToSet, _In_reads_( num32BitValuesToSet * sizeof( UINT ) )  const void* pSrcData, _In_  UINT destOffsetIn32BitValues ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetGraphicsRoot32BitConstants( rootParameterIndex, num32BitValuesToSet, pSrcData, destOffsetIn32BitValues );
         }
 
+        /// <summary>
+        /// Binds a GPU virtual address to the compute root signature as a constant buffer view (CBV).
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the compute root signature to set. This index corresponds
+        /// to the slot defined by the root signature layout.
+        /// </param>
+        /// <param name="bufferLocation">
+        /// The GPU virtual address (type <c>D3D12_GPU_VIRTUAL_ADDRESS</c>) of the constant buffer resource
+        /// to bind to the specified root parameter.
+        /// </param>
+        /// <remarks>
+        /// This method binds a constant buffer by GPU virtual address to the compute pipeline's root signature.
+        /// The caller is responsible for ensuring that the address is valid and references a resource that is
+        /// created for GPU access (for example, a buffer resource). This call does not perform any resource
+        /// state transitions — the application must ensure the resource is in a state suitable for shader access.
+        ///
+        /// The binding affects only the compute root signature state for the current command list. If the
+        /// same root parameter is used for graphics or other command lists, those bindings must be set separately.
+        ///
+        /// Use fences or other synchronization primitives to ensure the GPU is not reading or writing the
+        /// bound buffer concurrently in an unsafe manner.
+        /// </remarks>
         void SetComputeRootConstantBufferView( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_VIRTUAL_ADDRESS bufferLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetComputeRootConstantBufferView( rootParameterIndex, bufferLocation );
         }
 
+        /// <summary>
+        /// Binds a GPU virtual address to the graphics root signature as a constant buffer view (CBV).
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the graphics root signature to set.
+        /// This index corresponds to the slot defined by the root signature layout.
+        /// </param>
+        /// <param name="bufferLocation">
+        /// The GPU virtual address (type <c>D3D12_GPU_VIRTUAL_ADDRESS</c>) of the constant buffer resource
+        /// to bind to the specified root parameter.
+        /// </param>
+        /// <remarks>
+        /// This method binds a constant buffer by GPU virtual address to the graphics pipeline's root signature.
+        /// The caller is responsible for ensuring that the address is valid and references a resource that is
+        /// created for GPU access (for example, a buffer resource). This call does not perform any resource
+        /// state transitions — the application must ensure the resource is in a state suitable for shader access.
+        ///
+        /// The binding affects only the graphics root signature state for the current command list. If the
+        /// same root parameter is used for compute or other command lists, those bindings must be set separately.
+        ///
+        /// Use fences or other synchronization primitives to ensure the GPU is not reading or writing the
+        /// bound buffer concurrently in an unsafe manner.
+        /// </remarks>
         void SetGraphicsRootConstantBufferView( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_VIRTUAL_ADDRESS bufferLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetGraphicsRootConstantBufferView( rootParameterIndex, bufferLocation );
         }
 
+        /// <summary>
+        /// Binds a GPU virtual address to the compute root signature as a shader resource view (SRV).
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the compute root signature to set.
+        /// This index corresponds to the slot defined by the root signature layout.
+        /// </param>
+        /// <param name="bufferLocation">
+        /// The GPU virtual address (<c>D3D12_GPU_VIRTUAL_ADDRESS</c>) of the buffer resource
+        /// to bind to the specified root parameter as an SRV.
+        /// </param>
+        /// <remarks>
+        /// This method sets a GPU virtual address into the compute root signature for the
+        /// current command list. The caller is responsible for:
+        /// - Ensuring that the GPU virtual address references a valid buffer resource created for GPU access.
+        /// - Ensuring the resource is in an appropriate state for shader access (this call does not perform state transitions).
+        /// - Synchronizing CPU/GPU access (for example with fences) to avoid data hazards when the GPU may be reading/writing the buffer.
+        /// The binding affects only the compute root signature state on the current command list.
+        /// </remarks>
         void SetComputeRootShaderResourceView( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_VIRTUAL_ADDRESS bufferLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetComputeRootShaderResourceView( rootParameterIndex, bufferLocation );
         }
-
+        /// <summary>
+        /// Binds a GPU virtual address to the graphics root signature as a shader resource view (SRV).
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the graphics root signature to set.
+        /// This index corresponds to the slot defined by the root signature layout.
+        /// </param>
+        /// <param name="bufferLocation">
+        /// The GPU virtual address (<c>D3D12_GPU_VIRTUAL_ADDRESS</c>) of the buffer resource
+        /// to bind to the specified root parameter as an SRV.
+        /// </param>
+        /// <remarks>
+        /// This method sets a GPU virtual address into the graphics root signature for the
+        /// current command list. The caller is responsible for:
+        /// - Ensuring that the GPU virtual address references a valid buffer resource created for GPU access.
+        /// - Ensuring the resource is in an appropriate state for shader access (this call does not perform state transitions).
+        /// - Synchronizing CPU/GPU access (for example with fences) to avoid data hazards when the GPU may be reading/writing the buffer.
+        /// The binding affects only the graphics root signature state on the current command list.
+        /// </remarks>
         void SetGraphicsRootShaderResourceView( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_VIRTUAL_ADDRESS bufferLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetGraphicsRootShaderResourceView( rootParameterIndex, bufferLocation );
         }
 
+        /// <summary>
+        /// Binds a GPU virtual address into the compute root signature as an Unordered Access View (UAV).
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the compute root signature to set. This index corresponds
+        /// to the slot defined by the root signature layout.
+        /// </param>
+        /// <param name="bufferLocation">
+        /// The GPU virtual address (type <c>D3D12_GPU_VIRTUAL_ADDRESS</c>) of the buffer resource
+        /// to bind to the specified root parameter as a UAV.
+        /// </param>
+        /// <remarks>
+        /// This method writes the specified GPU virtual address into the compute root signature for the
+        /// current command list only. It does not perform any resource state transitions; the caller must
+        /// ensure the resource referenced by <paramref name="bufferLocation"/> is in an appropriate state
+        /// for unordered access and that any required CPU/GPU synchronization (for example using fences)
+        /// is handled by the application to avoid hazards.
+        /// </remarks>
         void SetComputeRootUnorderedAccessView( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_VIRTUAL_ADDRESS bufferLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetComputeRootUnorderedAccessView( rootParameterIndex, bufferLocation );
         }
 
+        /// <summary>
+        /// Binds a GPU virtual address into the graphics root signature as an Unordered Access View (UAV).
+        /// </summary>
+        /// <param name="rootParameterIndex">
+        /// The index of the root parameter in the graphics root signature to set.
+        /// This index corresponds to the slot defined by the root signature layout.
+        /// </param>
+        /// <param name="bufferLocation">
+        /// The GPU virtual address (type <c>D3D12_GPU_VIRTUAL_ADDRESS</c>) of the buffer resource
+        /// to bind to the specified root parameter as a UAV.
+        /// </param>
+        /// <remarks>
+        /// This method writes the specified GPU virtual address into the graphics root signature for the
+        /// current command list only. It does not perform any resource state transitions; the caller must
+        /// ensure the resource referenced by <paramref name="bufferLocation"/> is in an appropriate state
+        /// for unordered access and that any required CPU/GPU synchronization (for example using fences)
+        /// is handled by the application to avoid hazards.
+        /// </remarks>
         void SetGraphicsRootUnorderedAccessView( _In_ UINT rootParameterIndex, _In_ D3D12_GPU_VIRTUAL_ADDRESS bufferLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetGraphicsRootUnorderedAccessView( rootParameterIndex, bufferLocation );
         }
 
+        /// <summary>
+        /// Binds an index buffer to the input-assembler stage.
+        /// </summary>
+        /// <param name="pView">
+        /// Optional pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_index_buffer_view">D3D12_INDEX_BUFFER_VIEW</see> 
+        /// structure that describes the index buffer. If <c>NULL</c>, the current index buffer binding is cleared.
+        /// The view specifies the GPU virtual address, size in bytes, and index format (for example, <c>DXGI_FORMAT_R16_UINT</c> or <c>DXGI_FORMAT_R32_UINT</c>).
+        /// </param>
+        /// <remarks>
+        /// When an index buffer is set, subsequent indexed draw calls (for example, <see cref="DrawIndexedInstanced">DrawIndexedInstanced</see>)
+        /// will read indices from the bound buffer. The application must ensure the resource backing the index buffer view
+        /// is in an appropriate state for index fetching. This method simply forwards the call to the underlying
+        /// ID3D12GraphicsCommandList implementation.
+        /// </remarks>
         void IASetIndexBuffer( _In_opt_ const D3D12_INDEX_BUFFER_VIEW* pView ) const
         {
             InterfaceType* pInterface = GetInterface( );
