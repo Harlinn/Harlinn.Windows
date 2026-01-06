@@ -81,8 +81,14 @@ namespace Harlinn::Common::Core
     class ComPtr;
 
     /// <summary>
-    /// Base class for COM interface wrappers
+    /// Base wrapper for a COM interface pointer.
     /// </summary>
+    /// <remarks>
+    /// This class manages the lifetime of an underlying COM interface pointer
+    /// by calling AddRef/Release where appropriate. It is intended to be used
+    /// as a base class for strongly-typed COM interface wrappers in the library.
+    /// Derived types typically expose typed accessors and convenience methods.
+    /// </remarks>
     class Unknown 
     {
     protected:
@@ -344,11 +350,11 @@ namespace Harlinn::Common::Core
 
 
         /// <summary>
-        /// Returns the currently held interface pointer,
-        /// setting the interface pointer of the object to
-        /// <c>nullptr</c>.
+        /// Releases ownership of the wrapped interface pointer and returns it.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// The raw interface pointer previously held; caller takes ownership and must Release it.
+        /// </returns>
         IUnknown* Detach( )
         {
             auto tmp = unknown_;
@@ -630,6 +636,41 @@ namespace Harlinn::Common::Core
             return T( result );
         }
 
+        /// <summary>
+        /// Creates an instance of a COM object identified by a string CLSID and returns it
+        /// wrapped in a C++ wrapper type derived from <c>Unknown</c>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The wrapper class type to construct and return. This type must be derived from
+        /// <c>Unknown</c> and must define <c>InterfaceType</c> as the COM interface type
+        /// that the wrapper encapsulates.
+        /// </typeparam>
+        /// <param name="clsid">
+        /// A null-terminated wide-character string containing the CLSID in registry/string
+        /// format (for example: <c>"{000209FF-0000-0000-C000-000000000046}"</c>).
+        /// </param>
+        /// <param name="classContext">
+        /// The context in which the code that manages the newly created object will run.
+        /// Specify CLSCTX flags such as <c>CLSCTX_INPROC_SERVER</c> (the default),
+        /// <c>CLSCTX_LOCAL_SERVER</c>, etc.
+        /// </param>
+        /// <returns>
+        /// An instance of <typeparamref name="T"/> initialized to the interface returned by
+        /// <c>CoCreateInstance</c>. The returned wrapper takes ownership of the interface
+        /// pointer and follows the wrapper's ownership semantics.
+        /// </returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when conversion of the string to a CLSID fails or when <c>CoCreateInstance</c>
+        /// returns a failure HRESULT. CheckHRESULT is used to validate HRESULT values and
+        /// will raise the appropriate Harlinn exception on failure.
+        /// </exception>
+        /// <remarks>
+        /// The function first converts the provided string CLSID to a <c>CLSID</c> using
+        /// <c>CLSIDFromString</c>. It then calls <c>CoCreateInstance</c> to instantiate the
+        /// COM object and requests the interface identified by <c>T::InterfaceType</c>.
+        /// If successful, the raw interface pointer is wrapped in an instance of <c>T</c>
+        /// and returned. Any COM failure results in an exception thrown by <c>CheckHRESULT</c>.
+        /// </remarks>
         template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromClassId( const wchar_t* clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
@@ -642,6 +683,40 @@ namespace Harlinn::Common::Core
             CheckHRESULT( hr );
             return T( result );
         }
+
+        /// <summary>
+        /// Creates an instance of a COM object identified by a string CLSID and returns it
+        /// wrapped in a C++ wrapper type derived from <c>Unknown</c>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The wrapper class type to construct and return. This type must be derived from
+        /// <c>Unknown</c> and must define <c>InterfaceType</c> as the COM interface type
+        /// that the wrapper encapsulates.
+        /// </typeparam>
+        /// <param name="clsid">
+        /// A null-terminated wide-character string containing the CLSID in registry/string
+        /// format (for example: <c>"{000209FF-0000-0000-C000-000000000046}"</c>), provided as a <c>WideString</c>.
+        /// </param>
+        /// <param name="classContext">
+        /// Context in which the code that manages the newly created object will run.
+        /// Specify CLSCTX flags such as <c>CLSCTX_INPROC_SERVER</c> (the default),
+        /// <c>CLSCTX_LOCAL_SERVER</c>, etc.
+        /// </param>
+        /// <returns>
+        /// An instance of <typeparamref name="T"/> initialized to the interface returned by
+        /// <c>CoCreateInstance</c>. The returned wrapper takes ownership of the interface
+        /// pointer and follows the wrapper's ownership semantics.
+        /// </returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when conversion of the string to a CLSID fails or when <c>CoCreateInstance</c>
+        /// returns a failure HRESULT. CheckHRESULT is used to validate HRESULT values and
+        /// will raise the appropriate Harlinn exception on failure.
+        /// </exception>
+        /// <remarks>
+        /// This overload forwards to the <c>wchar_t*</c> overload by calling <c>clsid.c_str()</c>.
+        /// Use the <c>const wchar_t*</c> overload when you already have a null-terminated string.
+        /// </remarks>
+        /// <seealso cref="CoCreateInstanceFromClassId(const wchar_t*, DWORD)"/>
         template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromClassId( const WideString& clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
@@ -649,6 +724,40 @@ namespace Harlinn::Common::Core
             return CoCreateInstanceFromClassId( clsid.c_str( ), classContext );
         }
 
+        /// <summary>
+        /// Creates an instance of a COM object identified by a ProgID and returns it wrapped
+        /// in a C++ wrapper type derived from <c>Unknown</c>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The wrapper class type to construct and return. This type must be derived from
+        /// <c>Unknown</c> and must define <c>InterfaceType</c> as the COM interface type
+        /// that the wrapper encapsulates.
+        /// </typeparam>
+        /// <param name="progId">
+        /// A null-terminated wide-character string containing the ProgID of the COM class
+        /// (for example: <c>L&quot;Word.Application&quot;</c>).
+        /// </param>
+        /// <param name="classContext">
+        /// Context in which the code that manages the newly created object will run.
+        /// Specify CLSCTX flags such as <c>CLSCTX_INPROC_SERVER</c> (the default),
+        /// <c>CLSCTX_LOCAL_SERVER</c>, etc.
+        /// </param>
+        /// <returns>
+        /// An instance of <typeparamref name="T"/> initialized to the interface returned by
+        /// <c>CoCreateInstance</c>. The returned wrapper takes ownership of the interface
+        /// pointer and follows the wrapper's ownership semantics.
+        /// </returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when conversion of the ProgID to a <c>CLSID</c> fails or when
+        /// <c>CoCreateInstance</c> returns a failure HRESULT. <c>CheckHRESULT</c> is used to
+        /// validate HRESULT values and will raise the appropriate Harlinn exception on failure.
+        /// </exception>
+        /// <remarks>
+        /// The function resolves the ProgID to a CLSID using <c>CLSIDFromProgIDEx</c> and then
+        /// calls <c>CoCreateInstance</c> to instantiate the object and request the interface
+        /// identified by <c>T::InterfaceType</c>. On success a wrapper of type <c>T</c> is
+        /// returned; on failure an exception is thrown.
+        /// </remarks>
         template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromProgId( const wchar_t* progId, DWORD classContext = CLSCTX_INPROC_SERVER )
@@ -661,19 +770,137 @@ namespace Harlinn::Common::Core
             CheckHRESULT( hr );
             return T( result );
         }
+        /// <summary>
+        /// Creates an instance of a COM object identified by a ProgID and returns it wrapped
+        /// in a C++ wrapper type derived from <c>Unknown</c>. This overload accepts a
+        /// <c>WideString</c> and forwards the call to the overload that accepts a
+        /// <c>const wchar_t*</c>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The wrapper class type to construct and return. This type must be derived from
+        /// <c>Unknown</c> and must define <c>InterfaceType</c> as the COM interface type
+        /// that the wrapper encapsulates.
+        /// </typeparam>
+        /// <param name="progId">
+        /// A null-terminated wide-character string containing the ProgID of the COM class
+        /// (for example: <c>L"Word.Application"</c>).
+        /// </param>
+        /// <param name="classContext">
+        /// Context in which the code that manages the newly created object will run.
+        /// Specify CLSCTX flags such as <c>CLSCTX_INPROC_SERVER</c> (the default),
+        /// <c>CLSCTX_LOCAL_SERVER</c>, etc.
+        /// </param>
+        /// <returns>
+        /// An instance of <typeparamref name="T"/> initialized to the interface returned by
+        /// <c>CoCreateInstance</c>. The returned wrapper takes ownership of the interface
+        /// pointer and follows the wrapper's ownership semantics.
+        /// </returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when conversion of the ProgID to a <c>CLSID</c> fails or when
+        /// <c>CoCreateInstance</c> returns a failure HRESULT. <c>CheckHRESULT</c> is used
+        /// to validate HRESULT values and will raise the appropriate Harlinn exception on failure.
+        /// </exception>
+        /// <remarks>
+        /// This function simply forwards to the <c>const wchar_t*</c> overload by calling
+        /// <c>progId.c_str()</c>. Use the <c>const wchar_t*</c> overload when you already have
+        /// a null-terminated string to avoid an extra indirection.
+        /// </remarks>
         template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromProgId( const WideString& progId, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
-            return CoCreateInstanceFromProgId( progId, classContext );
+            return CoCreateInstanceFromProgId( progId.c_str(), classContext );
         }
 
+        
+        /// <summary>
+        /// Creates an instance of a COM object from a loaded module (DLL) by calling the module's
+        /// exported <c>DllGetClassObject</c> function to obtain an <c>IClassFactory</c> and then
+        /// calling the factory's <c>CreateInstance</c> to instantiate the requested class.
+        /// The resulting raw interface pointer is wrapped in an instance of the specified wrapper
+        /// type <c>T</c> and returned. The wrapper takes ownership of the interface pointer.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The wrapper class type to construct and return. This type must be derived from
+        /// <c>Unknown</c> and must define <c>InterfaceType</c> as the COM interface type that the
+        /// wrapper encapsulates.
+        /// </typeparam>
+        /// <param name="dll">
+        /// A reference to a loaded module (see <c>ModuleHandle</c>) that implements the COM class and
+        /// exports <c>DllGetClassObject</c>. Must be a valid module handle; passing an empty handle
+        /// results in an invalid-argument error.
+        /// </param>
+        /// <param name="clsid">
+        /// The class identifier (CLSID) of the COM class to create.
+        /// </param>
+        /// <returns>
+        /// An instance of <c>T</c> initialized to the interface returned by the class factory.
+        /// On success the returned wrapper owns the interface pointer. On failure an exception is raised.
+        /// </returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the <c>dll</c> argument is invalid, when the module does not export
+        /// <c>DllGetClassObject</c>, or when any COM call (such as obtaining the class factory or
+        /// creating the instance) returns a failing HRESULT. The implementation uses
+        /// <c>CheckHRESULT</c> to validate HRESULT values and will raise the appropriate Harlinn exception.
+        /// </exception>
+        /// <remarks>
+        /// This routine:
+        ///  - Queries the module for the exported function named "DllGetClassObject".
+        ///  - Calls that function to obtain an <c>IClassFactory</c>.
+        ///  - Uses the class factory to call <c>CreateInstance</c> requesting the interface type
+        ///    defined by <c>T::InterfaceType</c>.
+        /// If the module export is missing, <c>E_NOTIMPL</c> is signaled. The caller must ensure
+        /// the module remains loaded while the returned object is used.
+        /// </remarks>
         template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromDll( const ModuleHandle& dll, const CLSID& clsid );
 
 
     };
+
+    /// <summary>
+    /// Implements a set of standard methods, typedefs and operators for a COM wrapper class.
+    /// </summary>
+    /// <param name="classType">
+    /// The wrapper class type being defined. The macro generates constructors, assignment
+    /// operators and conversions for this class.
+    /// </param>
+    /// <param name="baseClassType">
+    /// The wrapper class' immediate base type. Many generated members forward to or reuse
+    /// functionality provided by this base type (for example reference counting and QueryInterface).
+    /// </param>
+    /// <param name="interfaceType">
+    /// The concrete COM interface type implemented by the wrapper (for example <c>IExample</c>).
+    /// The macro exposes this type as <c>InterfaceType</c> and emits casts and overloads using it.
+    /// </param>
+    /// <param name="baseInterfaceType">
+    /// The COM interface type corresponding to the base wrapper. This type is used when forwarding
+    /// raw pointers to the base class constructors or helper methods.
+    /// </param>
+    /// <remarks>
+    /// Use this macro inside a wrapper class declaration to automatically add a consistent set of:
+    /// - typedefs: <c>InterfaceType</c>, <c>BaseInterfaceType</c>
+    /// - a private helper <c>GetInterface()</c> that validates the internal pointer and returns
+    ///   an <c>InterfaceType *</c>
+    /// - constructors: default, explicit(raw pointer), copy, move, and QI-based constructors
+    /// - assignment operators: copy, move, assign-from-pointer, assign-nullptr
+    /// - pointer conversion operator to <c>interfaceType*</c>
+    /// - <c>ResetPtr</c>, <c>Detach</c> and comparison operators
+    ///
+    /// The generated members follow the project's ownership semantics:
+    /// - When constructed or assigned from a raw pointer using the provided constructors/operators,
+    ///   ownership semantics (AddRef/Release) are delegated to the base implementation when requested.
+    /// - When converting or detaching raw pointers the macro uses reinterpret_cast on the underlying
+    ///   <c>unknown_</c> member maintained by the base class.
+    /// </remarks>
+    /// <example>
+    /// class MyExample : public Unknown
+    /// {
+    ///     HCC_COM_STANDARD_METHODS_IMPL( MyExample, Unknown, IMyExample, IUnknown )
+    ///     // Now MyExample has standard ctor/assign/operators for IMyExample.
+    /// };
+    /// </example>
 
 #define HCC_COM_STANDARD_METHODS_IMPL( classType, baseClassType , interfaceType, baseInterfaceType ) \
 public: \
@@ -766,10 +993,70 @@ public: \
     }
 */
 
+
+/// <summary>
+/// Convenience macro that defines the standard set of wrapper methods and typedefs for a COM wrapper class,
+/// assuming the corresponding COM interface types follow the naming convention of prefixing the class
+/// name with 'I' (for example: class <c>MyExample</c> corresponds to interface <c>IMyExample</c>).
+/// </summary>
+/// <param name="classType">
+/// The C++ wrapper class type to generate standard methods for (e.g. <c>MyExample</c>).
+/// </param>
+/// <param name="baseClassType">
+/// The immediate base wrapper class type (e.g. <c>Unknown</c>).
+/// </param>
+/// <remarks>
+/// This macro expands to <c>HCC_COM_STANDARD_METHODS_IMPL(classType, baseClassType, I##classType, I##baseClassType)</c>.
+/// Use this when your COM interface types are named by prefixing 'I' to the class type and base class type.
+/// The expansion generates typedefs, constructors, assignment operators, conversion operators, and helper
+/// methods that follow the project's ownership and interface-wrapping semantics.
+/// </remarks>
+/// <example>
+/// // Declares standard methods for MyExample which wraps IMyExample and derives from Unknown:
+/// HCC_COM_STANDARD_METHODS_IMPL2( MyExample, Unknown )
+/// </example>
+/// <seealso cref="HCC_COM_STANDARD_METHODS_IMPL"/>
 #define HCC_COM_STANDARD_METHODS_IMPL2( classType, baseClassType ) HCC_COM_STANDARD_METHODS_IMPL(classType, baseClassType,I##classType, I##baseClassType)
 
+/// <summary>
+/// Helper macro that validates an HRESULT returned by a COM or Win32 API call.
+/// </summary>
+/// <param name="hr">The HRESULT value to check.</param>
+/// <remarks>
+/// If <paramref name="hr"/> indicates failure (macro <c>FAILED(hr)</c>), this macro invokes
+/// <c>CheckHRESULT</c> with the HRESULT and the current source location information
+/// (the project-specific macros <c>CURRENT_FUNCTION</c>, <c>CURRENT_FILE</c> and <c>__LINE__</c>).
+/// The call is wrapped in a <c>do { ... } while(false)</c> to provide single-statement semantics
+/// so the macro can be safely used in conditional statements and other contexts.
+/// 
+/// Use this macro after COM/Win32 calls to convert failing HRESULTs into the library's
+/// exception type via <c>CheckHRESULT</c>. Note that <c>CheckHRESULT</c> throws an exception if <c>FAILED(hr)</c> is true,
+/// so callers should use it where exceptions are acceptable or handle exceptions accordingly.
+/// </remarks>
+/// <example>
+/// HRESULT hr = CoCreateInstance(...);
+/// HCC_COM_CHECK_HRESULT(hr); // throws on failure with source information
+/// </example>
 #define HCC_COM_CHECK_HRESULT( hr ) if ( FAILED( hr ) ) do { CheckHRESULT( hr, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); } while(false)
 
+/// <summary>
+/// Checks an HRESULT returned from a COM or Win32 call and invokes <c>CheckHRESULT</c> if it indicates failure.
+/// </summary>
+/// <param name="hr">The HRESULT value to evaluate.</param>
+/// <param name="itf">
+/// Optional interface pointer passed to <c>CheckHRESULT</c> to provide contextual information about the
+/// COM object that produced the HRESULT. May be <c>nullptr</c> if no interface context is available.
+/// </param>
+/// <remarks>
+/// If <c>FAILED(hr)</c> evaluates to true, this macro calls <c>CheckHRESULT(hr, itf, CURRENT_FUNCTION, CURRENT_FILE, __LINE__)</c>.
+/// The call is wrapped in a <c>do { ... } while(false)</c> to provide single-statement semantics so the macro can
+/// be used safely in conditional blocks. <c>CheckHRESULT</c> performs error translation and will throw an
+/// exception when the HRESULT indicates failure; callers should be prepared to handle exceptions.
+/// </remarks>
+/// <example>
+/// HRESULT hr = pSomeItf->SomeMethod();
+/// HCC_COM_CHECK_HRESULT2(hr, pSomeItf); // throws on failure and includes pSomeItf in error context
+/// </example>
 #define HCC_COM_CHECK_HRESULT2( hr, itf ) if ( FAILED( hr ) ) do { CheckHRESULT( hr, itf, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); } while(false)
 
 
@@ -777,41 +1064,86 @@ public: \
     /// A generic smart pointer for managing COM interfaces.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of the COM interface
+    /// The COM interface type managed by this smart pointer. Must derive from <c>IUnknown</c>.
     /// </typeparam>
+    /// <remarks>
+    /// This class derives from <c>Unknown</c> and follows the ownership semantics
+    /// defined by the base class. Copying will call <c>AddRef</c> via the base copy
+    /// semantics; destruction will call <c>Release</c>. Use <c>operator&</c> to obtain
+    /// a pointer-to-pointer suitable for out parameters from COM APIs; the operator will
+    /// release any currently held interface before returning the address.
+    /// </remarks>
     template<typename T>
     class ComPtr : public Unknown
     {
     public:
         using Base = Unknown;
         using InterfaceType = T;
+
+        /// <summary>
+        /// Default constructs an empty smart pointer.
+        /// </summary>
+        /// <returns>
+        /// An instance holding no interface (nullptr).
+        /// </returns>
         constexpr ComPtr( ) noexcept
             : Base( nullptr )
         {
         }
 
+        
+         
+        /// <summary>
+        /// Constructs a smart pointer that wraps the provided raw interface pointer.
+        /// </summary>
+        /// <param name="unknown">
+        /// Raw interface pointer to wrap. Ownership semantics: the pointer is assigned 
+        /// as-is to the wrapper. No AddRef is performed by this constructor.
+        /// </param>
         explicit ComPtr( T* unknown ) noexcept
             : Base( unknown )
         {
         }
 
+        /// <summary>
+        /// Copy constructor. The copied object will hold the same interface pointer
+        /// and an AddRef is performed via the base class copy constructor.
+        /// </summary>
+        /// <param name="other">The source smart pointer to copy from.</param>
         ComPtr( const ComPtr& other ) noexcept
             : Base( other )
         {
         }
 
+        /// <summary>
+        /// Move constructor. Takes ownership of the interface pointer held by <paramref name="other"/>.
+        /// After the move, <paramref name="other"/> will not hold a reference.
+        /// </summary>
+        /// <param name="other">The source smart pointer to move from.</param>
         ComPtr( ComPtr&& other ) noexcept
             : Base( std::move(static_cast< Unknown&& >(other)) )
         {
         }
 
 
+        /// <summary>
+        /// Copy assignment operator. Releases the current interface (if any) and
+        /// acquires a reference to the interface held by <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">The source smart pointer to assign from.</param>
+        /// <returns>Reference to this object.</returns>
         ComPtr& operator = ( const ComPtr& other ) noexcept
         {
             Base::operator=( other );
             return *this;
         }
 
+        /// <summary>
+        /// Move assignment operator. Exchanges the internal pointer with <paramref name="other"/>,
+        /// transferring ownership without AddRef/Release overhead.
+        /// </summary>
+        /// <param name="other">The source smart pointer to move from.</param>
+        /// <returns>Reference to this object.</returns>
         ComPtr& operator = ( ComPtr&& other ) noexcept
         {
             Base::operator=( std::move( static_cast< Unknown&& >( other ) ) );
@@ -819,16 +1151,36 @@ public: \
         }
 
 
+        /// <summary>
+        /// Pointer access operator.
+        /// </summary>
+        /// <returns>The managed interface pointer (may be nullptr).</returns>
         T* operator -> ( ) const noexcept
         {
             return (T*)unknown_;
         }
+        
+        /// <summary>
+        /// Dereference operator.
+        /// </summary>
+        /// <returns>Reference to the underlying interface object. Behavior is undefined if the pointer is null.</returns>
         std::add_lvalue_reference_t<T> operator* ( ) const noexcept
         {
             return *unknown_;
         }
 
 
+        /// <summary>
+        /// Returns the address of the internal interface pointer for use with COM out-parameters.
+        /// </summary>
+        /// <remarks>
+        /// If this smart pointer currently holds an interface, it will Release() that interface
+        /// and reset to null before returning the address. Use this when passing the address
+        /// to functions that expect a T** for output (for example CoCreateInstance, QueryInterface).
+        /// </remarks>
+        /// <returns>
+        /// A pointer to the internal T* member suitable for receiving an out-parameter.
+        /// </returns>
         T** operator& ( ) noexcept
         {
             if ( unknown_ )
@@ -847,77 +1199,168 @@ public: \
     namespace Com
     {
         /// <summary>
-        /// Disables calls to AddRef and Release.
+        /// Template wrapper that attaches to an existing COM wrapper type without participating
+        /// in COM reference counting (does not call <c>AddRef</c> or <c>Release</c>).
         /// </summary>
         /// <typeparam name="T">
-        /// Any class derived from Unknown.
+        /// The COM wrapper type to attach to. This type is required to derive from
+        /// <c>Harlinn::Common::Core::Unknown</c> and to expose <c>InterfaceType</c>.
         /// </typeparam>
+        /// <remarks>
+        /// <para>
+        /// Instances of <c>Com::Attached&lt;T&gt;</c> provide a lightweight, non-owning view
+        /// of the underlying COM interface pointer managed by another wrapper. Because the
+        /// class does not adjust the reference count, the caller is responsible for ensuring
+        /// that the lifetime of the underlying object exceeds the lifetime of the
+        /// <c>Attached</c> instance.
+        /// </para>
+        /// <para>
+        /// Use this class when you need temporary, efficient access to a wrapped interface
+        /// without incurring AddRef/Release overhead. Do not use it as an ownership holder.
+        /// </para>
+        /// </remarks>
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
         class Attached : public T
         { 
         public:
+            /// <summary>
+            /// Alias for the base wrapper type.
+            /// </summary>
             using Base = T;
+            /// <summary>
+            /// Alias for the concrete COM interface type exposed by the base wrapper.
+            /// </summary>
             using InterfaceType = typename Base::InterfaceType;
         protected:
+            /// <summary>
+            /// Import base class' protected member pointer to the wrapped IUnknown.
+            /// </summary>
             using Base::unknown_;
         public:
+            /// <summary>
+            /// Default constructs an empty <c>Attached</c> instance that holds no interface.
+            /// </summary>
+            /// <remarks>
+            /// The constructed object does not own or reference any COM interface.
+            /// </remarks>
             Attached()
                 : Base()
             { }
 
+            /// <summary>
+            /// Constructs an <c>Attached</c> that references the provided raw interface pointer.
+            /// </summary>
+            /// <param name="itf">
+            /// Raw pointer to the COM interface of type <c>InterfaceType</c>. The pointer
+            /// is attached as-is; this constructor does NOT call <c>AddRef</c>.
+            /// </param>
             explicit Attached( InterfaceType* itf  )
                 : Base( itf, false )
             {
             }
 
+            /// <summary>
+            /// Copy constructor that attaches to the same underlying interface pointer as <paramref name="other"/>.
+            /// </summary>
+            /// <param name="other">The source <c>Attached</c> to copy from. No AddRef is performed.</param>
             Attached( const Attached& other )
             {
                 unknown_ = other.unknown_;
             }
 
+            /// <summary>
+            /// Move constructor. Transfers the attached pointer from <paramref name="other"/> to this instance.
+            /// </summary>
+            /// <param name="other">The source <c>Attached</c> to move from.</param>
+            /// <remarks>
+            /// The operation is <c>noexcept</c> and leaves <paramref name="other"/> in an empty state.
+            /// </remarks>
             Attached( Attached&& other ) noexcept
             {
                 std::swap(unknown_, other.unknown_);
             }
 
+            /// <summary>
+            /// Constructs an <c>Attached</c> by attaching to the pointer held by an existing base wrapper.
+            /// </summary>
+            /// <param name="other">A reference to a base wrapper instance. No AddRef is performed.</param>
             Attached( const Base& other )
             {
                 unknown_ = other.unknown_;
             }
 
+            /// <summary>
+            /// Destructor. Clears the internal pointer without calling <c>Release</c>.
+            /// </summary>
+            /// <remarks>
+            /// Because <c>Attached</c> does not own the reference, it must not call <c>Release</c>.
+            /// The underlying COM object must remain valid while this instance exists.
+            /// </remarks>
             ~Attached( )
             {
                 unknown_ = nullptr;
             }
 
 
+            /// <summary>
+            /// Copy-assignment operator. Attaches to the pointer held by <paramref name="other"/>
+            /// without changing COM reference counts.
+            /// </summary>
+            /// <param name="other">The source <c>Attached</c> to assign from.</param>
+            /// <returns>Reference to this instance.</returns>
             Attached& operator = ( const Attached& other )
             {
                 unknown_ = other.unknown_;
                 return *this;
             }
 
+            /// <summary>
+            /// Move-assignment operator. Exchanges the internal pointer with <paramref name="other"/>.
+            /// </summary>
+            /// <param name="other">The source <c>Attached</c> to move from.</param>
+            /// <returns>Reference to this instance.</returns>
             Attached& operator = ( Attached&& other ) noexcept
             {
                 std::swap( unknown_, other.unknown_ );
                 return *this;
             }
 
+            /// <summary>
+            /// Assignment from a base wrapper. Attaches to the base wrapper's pointer without AddRef.
+            /// </summary>
+            /// <param name="other">The base wrapper to attach to.</param>
+            /// <returns>Reference to this instance.</returns>
             Attached& operator = ( const Base& other )
             {
                 unknown_ = other.unknown_;
                 return *this;
             }
 
+            /// <summary>
+            /// Equality comparison between two <c>Attached</c> instances. Compares underlying pointers.
+            /// </summary>
+            /// <param name="other">The other <c>Attached</c> to compare to.</param>
+            /// <returns><c>true</c> if both reference the same underlying interface pointer; otherwise <c>false</c>.</returns>
             constexpr bool operator == ( const Attached& other ) const noexcept
             {
                 return unknown_ == other.unknown_;
             }
+
+            /// <summary>
+            /// Equality comparison between <c>Attached</c> and a base wrapper. Compares underlying pointers.
+            /// </summary>
+            /// <param name="other">The base wrapper to compare to.</param>
+            /// <returns><c>true</c> if both reference the same underlying interface pointer; otherwise <c>false</c>.</returns>
             constexpr bool operator == ( const Base& other ) const noexcept
             {
                 return unknown_ == other.unknown_;
             }
+            /// <summary>
+            /// Equality comparison between <c>Attached</c> and a raw interface pointer.
+            /// </summary>
+            /// <param name="other">Raw interface pointer to compare to.</param>
+            /// <returns><c>true</c> if the internal pointer equals <paramref name="other"/>; otherwise <c>false</c>.</returns>
             constexpr bool operator == ( const InterfaceType* other ) const noexcept
             {
                 return unknown_ == other;
@@ -926,12 +1369,39 @@ public: \
     }
 
     
-
+    /// <summary>
+    /// Wrapper for the asynchronous <c>IAsyncIUnknown</c> interface.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This class exposes the standard asynchronous IUnknown operations
+    /// using a synchronous C++ wrapper that forwards to the underlying
+    /// <c>IAsyncIUnknown</c> implementation. Each call uses the helper
+    /// <c>GetInterface()</c> to validate the wrapped pointer and
+    /// <c>HCC_COM_CHECK_HRESULT2</c> to translate failing HRESULTs into
+    /// the project's exception type.
+    /// </para>
+    /// <para>
+    /// Use this wrapper when interacting with COM objects that implement
+    /// asynchronous IUnknown operations to keep call sites concise and
+    /// to ensure consistent error handling and diagnostics.
+    /// </para>
+    /// </remarks>
     class AsyncUnknown : public Unknown
     {
     public:
+        /// <summary>
+        /// Generates the standard wrappers, typedefs and operators for this COM wrapper type.
+        /// </summary>
         HCC_COM_STANDARD_METHODS_IMPL( AsyncUnknown, Unknown, AsyncIUnknown, IUnknown )
 
+        /// <summary>
+        /// Begins an asynchronous QueryInterface operation for the specified interface identifier.
+        /// </summary>
+        /// <param name="riid">The interface identifier (IID) of the interface to query.</param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying <c>Begin_QueryInterface</c> call returns a failing HRESULT.
+        /// </exception>
         void Begin_QueryInterface( REFIID riid ) const
         {
             auto pInterface = GetInterface( );
@@ -939,6 +1409,17 @@ public: \
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Completes a previously started asynchronous QueryInterface operation.
+        /// </summary>
+        /// <param name="result">
+        /// Receives the pointer to the requested interface on success.
+        /// The caller takes ownership of the returned interface pointer and
+        /// is responsible for calling Release() when done.
+        /// </param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying <c>Finish_QueryInterface</c> call returns a failing HRESULT.
+        /// </exception>
         void Finish_QueryInterface( void** result ) const
         {
             auto pInterface = GetInterface( );
@@ -946,6 +1427,17 @@ public: \
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+
+        /// <summary>
+        /// Begins an asynchronous AddRef operation.
+        /// </summary>
+        /// <remarks>
+        /// After calling <c>Begin_AddRef</c> you must call <c>Finish_AddRef</c>
+        /// to obtain the resulting reference count (or to complete the operation).
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying <c>Begin_AddRef</c> call returns a failing HRESULT.
+        /// </exception>
         void Begin_AddRef( ) const
         {
             auto pInterface = GetInterface( );
@@ -953,12 +1445,30 @@ public: \
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Completes a previously started asynchronous AddRef operation and returns the new reference count.
+        /// </summary>
+        /// <returns>The reference count returned by the <c>Finish_AddRef</c> call.</returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Although <c>Finish_AddRef</c> returns a count, any internal errors will be converted
+        /// to exceptions by the project's error handling mechanisms if necessary.
+        /// </exception>
         ULONG Finish_AddRef( ) const
         {
             auto pInterface = GetInterface( );
             return pInterface->Finish_AddRef( );
         }
 
+        /// <summary>
+        /// Begins an asynchronous Release operation.
+        /// </summary>
+        /// <remarks>
+        /// After calling <c>Begin_Release</c> you must call <c>Finish_Release</c>
+        /// to obtain the resulting reference count (or to complete the operation).
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying <c>Begin_Release</c> call returns a failing HRESULT.
+        /// </exception>
         void Begin_Release( ) const
         {
             auto pInterface = GetInterface( );
@@ -966,6 +1476,14 @@ public: \
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Completes a previously started asynchronous Release operation and returns the new reference count.
+        /// </summary>
+        /// <returns>The reference count returned by the <c>Finish_Release</c> call.</returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Although <c>Finish_Release</c> returns a count, any internal errors will be converted
+        /// to exceptions by the project's error handling mechanisms if necessary.
+        /// </exception>
         ULONG Finish_Release( ) const
         {
             auto pInterface = GetInterface( );
@@ -976,39 +1494,120 @@ public: \
 
 
     /// <summary>
-    /// Enables a class of objects to be created.
+    /// Enables creation of COM objects through the standard COM class factory interface.
     /// </summary>
+    /// <remarks>
+    /// The ClassFactory wrapper provides a convenient C++ interface around the COM
+    /// <c>IClassFactory</c> interface. It uses the project's ownership semantics for
+    /// COM pointers and converts failing HRESULTs to the library's exception type
+    /// using <c>HCC_COM_CHECK_HRESULT2</c>.
+    /// </remarks>
     class ClassFactory : public Unknown
     {
     public:
         HCC_COM_STANDARD_METHODS_IMPL( ClassFactory,Unknown, IClassFactory, IUnknown )
 
+        /// <summary>
+        /// Creates an instance of the class implemented by the factory.
+        /// </summary>
+        /// <param name="outerUnknown">
+        /// Optional pointer to the controlling <c>IUnknown</c> for aggregation.
+        /// Pass <c>nullptr</c> when aggregation is not required.
+        /// </param>
+        /// <param name="riid">
+        /// The interface identifier that the caller requests for the new object.
+        /// </param>
+        /// <param name="result">
+        /// Out parameter that receives the requested interface pointer on success.
+        /// The caller receives ownership and is responsible for calling <c>Release</c>.
+        /// </param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call returns a failing HRESULT. The macro
+        /// <c>HCC_COM_CHECK_HRESULT2</c> is used to translate and throw.
+        /// </exception>
         void CreateInstance( IUnknown* outerUnknown, REFIID riid, void** result ) const
         {
             auto pInterface = GetInterface( );
             auto hr = pInterface->CreateInstance( outerUnknown, riid, result );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        
+        /// <summary>
+        /// Creates an instance of the class implemented by the factory using an Unknown wrapper.
+        /// </summary>
+        /// <param name="outerUnknown">
+        /// Wrapper that provides the controlling <c>IUnknown</c> for aggregation.
+        /// Use <c>Unknown::GetInterfacePointer()</c> to obtain the raw pointer.
+        /// </param>
+        /// <param name="riid">The requested interface identifier.</param>
+        /// <param name="result">Receives the requested interface pointer on success.</param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         void CreateInstance( const Unknown& outerUnknown, REFIID riid, void** result ) const
         {
             CreateInstance( outerUnknown.GetInterfacePointer(), riid, result );
         }
+        
+        /// <summary>
+        /// Creates an instance of the class implemented by the factory and returns the requested interface.
+        /// </summary>
+        /// <param name="riid">The requested interface identifier.</param>
+        /// <param name="result">Receives the requested interface pointer on success.</param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         void CreateInstance( REFIID riid, void** result ) const
         {
             CreateInstance( nullptr, riid, result );
         }
+
+
+        /// <summary>
+        /// Template overload that creates an instance and returns a typed interface pointer.
+        /// </summary>
+        /// <typeparam name="T">The COM interface type to request. Must derive from <c>IUnknown</c>.</typeparam>
+        /// <param name="outerUnknown">Optional outer unknown for aggregation.</param>
+        /// <param name="result">Receives a pointer to the requested interface on success.</param>
+        /// <remarks>
+        /// This overload forwards to the non-template <c>CreateInstance</c> by providing
+        /// the IID for <typeparamref name="T"/> and casting the out parameter.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         template<typename T>
             requires std::is_base_of_v<IUnknown,T>
         void CreateInstance( IUnknown* outerUnknown, T** result ) const
         {
             CreateInstance( outerUnknown, __uuidof( T ), reinterpret_cast<void**>( result ) );
         }
+
+        /// <summary>
+        /// Template overload that creates an instance and returns a typed interface pointer, using an Unknown wrapper.
+        /// </summary>
+        /// <typeparam name="T">The COM interface type to request. Must derive from <c>IUnknown</c>.</typeparam>
+        /// <param name="outerUnknown">An <c>Unknown</c> wrapper used for aggregation.</param>
+        /// <param name="result">Receives a pointer to the requested interface on success.</param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         template<typename T>
             requires std::is_base_of_v<IUnknown, T>
         void CreateInstance( const Unknown& outerUnknown, T** result ) const
         {
             CreateInstance( outerUnknown.GetInterfacePointer( ), result );
         }
+
+
+        /// <summary>
+        /// Template overload that creates an instance and returns a typed interface pointer with no aggregation.
+        /// </summary>
+        /// <typeparam name="T">The COM interface type to request. Must derive from <c>IUnknown</c>.</typeparam>
+        /// <param name="result">Receives a pointer to the requested interface on success.</param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         template<typename T>
             requires std::is_base_of_v<IUnknown, T>
         void CreateInstance( T** result ) const
@@ -1016,6 +1615,23 @@ public: \
             CreateInstance( nullptr, __uuidof( T ), reinterpret_cast<void**>( result ) );
         }
 
+        /// <summary>
+        /// Template convenience that creates an instance of a wrapper type derived from <c>Unknown</c>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The wrapper class type to construct. Must derive from <c>Unknown</c> and expose <c>InterfaceType</c>.
+        /// </typeparam>
+        /// <param name="outerUnknown">Optional outer unknown raw pointer for aggregation.</param>
+        /// <returns>
+        /// An instance of the wrapper type <typeparamref name="T"/> initialized with the created interface.
+        /// </returns>
+        /// <remarks>
+        /// The returned wrapper takes ownership of the created interface pointer. Exceptions are
+        /// thrown via the project's HRESULT-to-exception conversion on failure.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when creation or QueryInterface fails.
+        /// </exception>
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
         T CreateInstance( IUnknown* outerUnknown ) const
@@ -1026,6 +1642,14 @@ public: \
             return T( ptr );
         }
 
+        /// <summary>
+        /// Template convenience that creates an instance of a wrapper type derived from <c>Unknown</c> with no aggregation.
+        /// </summary>
+        /// <typeparam name="T">The wrapper class type to construct. Must derive from <c>Unknown</c>.</typeparam>
+        /// <returns>An initialized instance of <typeparamref name="T"/>.</returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when creation fails.
+        /// </exception>
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
         T CreateInstance( ) const
@@ -1033,6 +1657,15 @@ public: \
             return CreateInstance( nullptr );
         }
 
+        /// <summary>
+        /// Locks or unlocks the class factory's server.
+        /// </summary>
+        /// <param name="lock">
+        /// Pass <c>true</c> to increment the server lock count; <c>false</c> to decrement it.
+        /// </param>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         void LockServer( bool lock ) const
         {
             auto pInterface = GetInterface( );
@@ -1073,35 +1706,199 @@ public: \
 #pragma warning( pop ) 
 
     /// <summary>
+    /// <para>
     /// Enumerate strings. LPOLESTR is the type that indicates a pointer to a zero-terminated string of wide, or Unicode, characters.
+    /// </para>
+    /// <para>
+    /// Wrapper for the COM <c>IEnumString</c> enumeration interface.
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The <c>EnumString</c> class wraps an <c>IEnumString</c> pointer and provides
+    /// convenient C++ style methods for iterating over enumerated strings returned
+    /// by COM components. The wrapper follows the project's ownership semantics
+    /// (derived from <c>Unknown</c>) and converts COM HRESULT failures into the
+    /// project's exception type using the standard helper macros.
+    /// </para>
+    /// <para>
+    /// Use the <c>Next</c> overloads to retrieve the next one or more strings,
+    /// <c>All</c> to collect all remaining strings, <c>Skip</c> to advance the
+    /// enumeration without retrieving values, <c>Reset</c> to restart the enumeration,
+    /// and <c>Clone</c> to create an independent enumerator positioned at the same place.
+    /// </para>
+    /// </remarks>
     class EnumString : public Unknown
     {
     public:
         HCC_COM_STANDARD_METHODS_IMPL( EnumString, Unknown, IEnumString, IUnknown )
 
+        /// <summary>
+        /// Retrieves the next string from the enumeration.
+        /// </summary>
+        /// <param name="result">
+        /// Receives the next wide string from the enumeration on success.
+        /// The returned <c>WideString</c> will be assigned to <c>result</c>.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if a string was retrieved; <c>false</c> if the enumeration
+        /// has been exhausted (S_FALSE).
+        /// </returns>
+        /// <remarks>
+        /// This is a convenience overload that returns a single string. It wraps
+        /// the underlying <c>IEnumString::Next</c> invocation and performs error
+        /// handling via the project's HRESULT check helpers.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown if the underlying COM call returns a failing HRESULT.
+        /// </exception>
         HCC_EXPORT bool Next( WideString& result ) const;
+
+        /// <summary>
+        /// Retrieves up to <c>celt</c> strings from the enumeration.
+        /// </summary>
+        /// <param name="celt">The maximum number of elements to retrieve.</param>
+        /// <param name="rgelt">
+        /// Array of <c>LPOLESTR</c> pointers that receives the returned strings.
+        /// The caller is responsible for freeing any returned BSTR/allocated strings
+        /// according to the COM contract used by the provider.
+        /// </param>
+        /// <param name="pceltFetched">
+        /// Receives the actual number of strings fetched. May be <c>nullptr</c>
+        /// when <c>celt</c> is 1, following the COM convention.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the requested number of strings (<c>celt</c>) were
+        /// retrieved; <c>false</c> if fewer elements were available (S_FALSE).
+        /// </returns>
+        /// <remarks>
+        /// Use this overload when you need multiple strings in a single call.
+        /// The method forwards to <c>IEnumString::Next</c> and translates errors.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown if the underlying COM call returns a failing HRESULT.
+        /// </exception>
         HCC_EXPORT bool Next( ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched ) const;
+        
+        /// <summary>
+        /// Retrieves up to <c>celt</c> strings and appends them to a <c>std::vector</c>.
+        /// </summary>
+        /// <param name="celt">The maximum number of elements to retrieve.</param>
+        /// <param name="result">
+        /// A vector that will receive the retrieved <c>WideString</c> elements.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if <c>celt</c> elements were retrieved; <c>false</c> if fewer
+        /// elements were available (S_FALSE).
+        /// </returns>
+        /// <remarks>
+        /// This overload allocates and converts received OLE strings into the project's
+        /// <c>WideString</c> instances and appends them to <c>result</c>. It ensures
+        /// correct cleanup on failure and propagates COM errors as exceptions.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown if a COM call fails or if string conversion/allocation fails.
+        /// </exception>
         HCC_EXPORT bool Next( ULONG celt, std::vector<WideString>& result ) const;
+        
+        /// <summary>
+        /// Retrieves all remaining strings from the enumeration and appends them to <c>result</c>.
+        /// </summary>
+        /// <param name="result">
+        /// A vector that will receive all remaining <c>WideString</c> values.
+        /// </param>
+        /// <remarks>
+        /// Continues calling <c>Next</c> until the enumeration is exhausted.
+        /// Useful when the caller needs the complete set of values.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown if any underlying COM call returns a failing HRESULT.
+        /// </exception>
         HCC_EXPORT void All( std::vector<WideString>& result ) const;
+        
+        /// <summary>
+        /// Advances the enumeration by <c>celt</c> elements without retrieving them.
+        /// </summary>
+        /// <param name="celt">The number of elements to skip.</param>
+        /// <remarks>
+        /// Equivalent to calling <c>IEnumString::Skip</c>. After skipping, enumeration
+        /// state is advanced by the specified count or to the end.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown if the underlying COM call returns a failing HRESULT.
+        /// </exception>
         HCC_EXPORT void Skip( ULONG celt ) const;
+        
+        /// <summary>
+        /// Resets the enumeration sequence to the beginning.
+        /// </summary>
+        /// <remarks>
+        /// Invokes <c>IEnumString::Reset</c> on the wrapped enumerator. After this
+        /// call, subsequent <c>Next</c> calls will return elements from the start.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown if the underlying COM call returns a failing HRESULT.
+        /// </exception>
         HCC_EXPORT void Reset( ) const;
+        
+        /// <summary>
+        /// Creates a new enumerator that contains the same enumeration state as this one.
+        /// </summary>
+        /// <returns>
+        /// A new <c>EnumString</c> instance positioned at the same point in the sequence.
+        /// The returned object owns its own COM enumerator and follows the wrapper's ownership semantics.
+        /// </returns>
+        /// <remarks>
+        /// The clone operation calls <c>IEnumString::Clone</c> and wraps the returned
+        /// interface in a new <c>EnumString</c> instance. Use this to snapshot enumeration state
+        /// for parallel iteration or to save/restore position.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown if the underlying COM call returns a failing HRESULT.
+        /// </exception>
         HCC_EXPORT EnumString Clone( ) const;
 
     };
 
     /// <summary>
-    /// A movable buffer class the handles
-    /// memory management using CoTaskMemAlloc,
-    /// CoTaskMemFree and CoTaskMemRealloc   
+    /// A movable buffer that manages memory using COM task allocator functions.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The buffer uses <c>CoTaskMemAlloc</c>, <c>CoTaskMemRealloc</c> and <c>CoTaskMemFree</c>
+    /// for allocation, reallocation and release respectively. This class is movable but not copyable.
+    /// Use this class when you need a binary buffer whose lifetime and allocation are compatible with
+    /// COM APIs that require memory allocated with the task allocator (for example when returning
+    /// memory to callers expecting memory allocated by the COM allocator).
+    /// </para>
+    /// <para>
+    /// Ownership semantics:
+    /// - Constructing from a raw pointer (see <c>ComBuffer(Byte*, size_t)</c>) takes ownership of the provided pointer.
+    /// - Move operations transfer ownership without additional allocation or release.
+    /// - Destruction frees the owned memory (if any) with <c>CoTaskMemFree</c>.
+    /// </para>
+    /// </remarks>
     class ComBuffer
     {
         size_t size_ = 0;
         Byte* data_ = nullptr;
     public:
+        /// <summary>
+        /// Default constructs an empty buffer (no allocation).
+        /// </summary>
         constexpr ComBuffer( ) noexcept = default;
 
+        /// <summary>
+        /// Allocates a buffer of the specified size using <c>CoTaskMemAlloc</c>.
+        /// </summary>
+        /// <param name="size">Number of bytes to allocate. If zero no allocation is performed.</param>
+        /// <remarks>
+        /// On success the buffer owns the allocated memory and <see cref="size()"/> returns the requested size.
+        /// The caller must ensure COM task allocator is available on the current thread.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown indirectly by <c>ThrowOSError</c> if subsequent operations fail (e.g. out of memory).
+        /// </exception>
         explicit ComBuffer( size_t size )
         {
             if ( size )
@@ -1111,12 +1908,28 @@ public: \
             }
         }
 
+        /// <summary>
+        /// Constructs the buffer by taking ownership of an existing COM task-allocated pointer.
+        /// </summary>
+        /// <param name="data">Pointer previously allocated with the COM task allocator.</param>
+        /// <param name="size">Size in bytes of the provided buffer.</param>
+        /// <remarks>
+        /// The constructed object will free the pointer using <c>CoTaskMemFree</c> on destruction.
+        /// </remarks>
         explicit ComBuffer( Byte* data, size_t size )
             : size_( size ), data_( data )
         {
         }
 
+        /// <summary>
+        /// Copy construction is deleted to avoid accidental duplicate ownership.
+        /// </summary>
         ComBuffer( const ComBuffer& other ) = delete;
+
+        /// <summary>
+        /// Move constructor transfers ownership from <paramref name="other"/> to this instance.
+        /// </summary>
+        /// <param name="other">Source buffer to move from.</param>
         ComBuffer( ComBuffer&& other ) noexcept
             : size_( other.size_ ), data_( other.data_ )
         { 
@@ -1124,7 +1937,17 @@ public: \
             other.data_ = nullptr;
         }
 
+        /// <summary>
+        /// Copy assignment is deleted to avoid accidental duplicate ownership.
+        /// </summary>
         ComBuffer& operator = ( const ComBuffer& other ) = delete;
+
+
+        /// <summary>
+        /// Move assignment transfers ownership from <paramref name="other"/> to this instance.
+        /// </summary>
+        /// <param name="other">Source buffer to move from.</param>
+        /// <returns>Reference to this instance.</returns>
         ComBuffer& operator = ( ComBuffer&& other ) noexcept
         {
             std::swap( size_, other.size_ );
@@ -1132,6 +1955,9 @@ public: \
             return *this;
         }
 
+        /// <summary>
+        /// Releases owned memory (if any) using <c>CoTaskMemFree</c>.
+        /// </summary>
         ~ComBuffer( )
         {
             if ( data_ )
@@ -1140,10 +1966,28 @@ public: \
             }
         }
 
+        /// <summary>
+        /// Returns the size of the buffer in bytes.
+        /// </summary>
+        /// <returns>The number of bytes currently allocated or 0 if empty.</returns>
         constexpr size_t size( ) const
         {
             return size_;
         }
+
+
+        /// <summary>
+        /// Resize the buffer to <paramref name="newSize"/> bytes.
+        /// </summary>
+        /// <param name="newSize">Requested new size in bytes. If zero the buffer is freed.</param>
+        /// <remarks>
+        /// - If <paramref name="newSize"/> is non-zero and different from the current size, the buffer
+        ///   is reallocated using <c>CoTaskMemRealloc</c>. On failure, <c>ThrowOSError(ERROR_OUTOFMEMORY)</c> is called.
+        /// - If <paramref name="newSize"/> is zero the buffer is freed and the object becomes empty.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown via <c>ThrowOSError</c> when reallocation fails (out of memory).
+        /// </exception>
         void resize( size_t newSize )
         {
             if ( newSize )
@@ -1170,6 +2014,15 @@ public: \
             }
         }
 
+        /// <summary>
+        /// Provides mutable indexed access to the buffer.
+        /// </summary>
+        /// <param name="index">Zero-based index into the buffer.</param>
+        /// <returns>Reference to the byte at the requested index.</returns>
+        /// <remarks>
+        /// In debug builds this method checks bounds and will call <c>ThrowOSError(ERROR_INDEX_OUT_OF_BOUNDS)</c>
+        /// if the index is out of range. Behavior is undefined in release builds for out-of-range access.
+        /// </remarks>
         Byte& operator[]( size_t index )
         {
 #ifdef _DEBUG
@@ -1180,6 +2033,16 @@ public: \
 #endif
             return data_[index];
         }
+        
+        /// <summary>
+        /// Provides read-only indexed access to the buffer.
+        /// </summary>
+        /// <param name="index">Zero-based index into the buffer.</param>
+        /// <returns>Const reference to the byte at the requested index.</returns>
+        /// <remarks>
+        /// In debug builds this method checks bounds and will call <c>ThrowOSError(ERROR_INDEX_OUT_OF_BOUNDS)</c>
+        /// if the index is out of range. Behavior is undefined in release builds for out-of-range access.
+        /// </remarks>
         const Byte& operator[]( size_t index ) const
         {
 #ifdef _DEBUG
@@ -1191,10 +2054,19 @@ public: \
             return data_[index];
         }
 
+        /// <summary>
+        /// Returns a mutable pointer to the underlying buffer memory.
+        /// </summary>
+        /// <returns>Pointer to allocated memory or <c>nullptr</c> when empty.</returns>
         Byte* data( )
         {
             return data_;
         }
+        
+        /// <summary>
+        /// Returns a const pointer to the underlying buffer memory.
+        /// </summary>
+        /// <returns>Const pointer to allocated memory or <c>nullptr</c> when empty.</returns>
         const Byte* data( ) const
         {
             return data_;
@@ -1202,10 +2074,26 @@ public: \
     };
 
     /// <summary>
-    /// A C++ allocator that uses CoTaskMemAlloc and CoTaskMemFree
+    /// A C++ allocator that uses the COM task allocator functions (<c>CoTaskMemAlloc</c> and <c>CoTaskMemFree</c>)
+    /// to allocate memory that is compatible with COM APIs and the COM task allocator contract.
     /// </summary>
     /// <typeparam name="T">
+    /// The element type this allocator manages. Memory returned from <c>allocate</c> and
+    /// <c>allocate_at_least</c> is suitable for storing objects of type <c>T</c>.
     /// </typeparam>
+    /// <remarks>
+    /// This allocator is intended for use with standard library containers and other code that
+    /// accepts a C++ Allocator. It ensures that memory is allocated with the COM task allocator,
+    /// which is required when memory will be returned to COM callers or used by COM APIs that
+    /// expect memory allocated with <c>CoTaskMemAlloc</c>.
+    ///
+    /// Ownership and lifetime:
+    /// - <c>allocate</c> returns a pointer to memory that the caller owns and must not free directly;
+    ///   the container or caller should call <c>deallocate</c>, which delegates to <c>CoTaskMemFree</c>.
+    /// - The allocator is trivially copyable and supports move semantics via the propagate traits.
+    /// </remarks>
+    /// <seealso cref="CoTaskMemAlloc"/>
+    /// <seealso cref="CoTaskMemFree"/>
     template <class T>
     class ComAllocator
     {
@@ -1213,25 +2101,57 @@ public: \
         using size_type = size_t;
         using difference_type = ptrdiff_t;
 
+        /// <summary>
+        /// Indicates that the allocator should propagate on container move assignment.
+        /// </summary>
         using propagate_on_container_move_assignment = std::true_type;
 
+        /// <summary>
+        /// Default constructs the allocator. No allocation is performed.
+        /// </summary>
         constexpr ComAllocator( ) noexcept
         {
         }
 
+        /// <summary>
+        /// Copy constructible and noexcept.
+        /// </summary>
         constexpr ComAllocator( const ComAllocator& ) noexcept = default;
 
+        /// <summary>
+        /// Converting constructor from an allocator of a different type.
+        /// Provided for allocator compatibility with standard containers.
+        /// </summary>
+        /// <typeparam name="U">Other allocator value type.</typeparam>
         template <class U>
         constexpr ComAllocator( const ComAllocator<U>& ) noexcept
         { }
         constexpr ~ComAllocator( ) = default;
         constexpr ComAllocator& operator=( const ComAllocator& ) = default;
 
+        /// <summary>
+        /// Frees memory previously allocated by this allocator using <c>CoTaskMemFree</c>.
+        /// </summary>
+        /// <param name="ptr">Pointer to memory block to free (may be nullptr).</param>
+        /// <param name="count">Number of elements that were allocated (not used by COM allocator).</param>
+        /// <remarks>
+        /// The COM task allocator does not need the byte count to free memory, so <c>count</c> is unused.
+        /// </remarks>
         void deallocate( T* const ptr, const size_t count )
         {
             CoTaskMemFree( ptr );
         }
 
+        /// <summary>
+        /// Allocates memory for <paramref name="count"/> elements of type <c>T</c> using <c>CoTaskMemAlloc</c>.
+        /// </summary>
+        /// <param name="count">The number of elements to allocate.</param>
+        /// <returns>
+        /// Pointer to the allocated memory. The returned pointer is suitably aligned for objects of type <c>T</c>.
+        /// </returns>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown indirectly via <c>ThrowOSError(ERROR_OUTOFMEMORY)</c> if allocation fails.
+        /// </exception>
         [[nodiscard]] __declspec( allocator ) T* allocate( const size_t count )
         {
             auto ptr = CoTaskMemAlloc( count * sizeof( T ) );
@@ -1242,7 +2162,15 @@ public: \
             return reinterpret_cast<T*>( ptr );
         }
 
-
+        /// <summary>
+        /// Allocates at least <paramref name="count"/> elements and returns the
+        /// pointer together with the number of elements actually allocated.
+        /// </summary>
+        /// <param name="count">The requested minimum number of elements to allocate.</param>
+        /// <returns>
+        /// An <c>std::allocation_result&lt;T*&gt;</c> containing the pointer to allocated memory
+        /// and the number of elements allocated (equal to the requested <paramref name="count"/> on success).
+        /// </returns>
         [[nodiscard]] __declspec( allocator ) std::allocation_result<T*> allocate_at_least( const size_t count )
         {
             return { allocate( count ), count };
@@ -1253,6 +2181,9 @@ public: \
     /// <summary>
     /// A simple string class that uses CoTaskMemAlloc and CoTaskMemFree
     /// </summary>
+
+
+
     class ComString
     {
         wchar_t* data_ = nullptr;
