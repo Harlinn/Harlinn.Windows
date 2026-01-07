@@ -296,7 +296,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithSByteColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddSByte( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -327,7 +327,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableSByteColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddSByte( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -341,7 +341,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableSByteColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -387,7 +387,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithByteColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddByte( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableByteColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddByte( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -432,7 +432,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableByteColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -479,7 +479,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithInt16ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddInt16( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -510,7 +510,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt16ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddInt16( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -524,7 +524,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt16ColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -571,7 +571,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithUInt16ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddUInt16( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -602,7 +602,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt16ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddUInt16( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -616,7 +616,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt16ColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -662,7 +662,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithInt32ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddInt32( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -693,7 +693,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt32ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddInt32( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -707,7 +707,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt32ColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -754,7 +754,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithUInt32ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddUInt32( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -785,7 +785,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt32ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddUInt32( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -799,7 +799,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt32ColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -845,7 +845,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithInt64ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddInt64( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -876,7 +876,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt64ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddInt64( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -890,7 +890,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt64ColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -937,7 +937,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithUInt64ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddUInt64( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -968,7 +968,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt64ColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddUInt64( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -982,7 +982,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt64ColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -1028,7 +1028,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithSingleColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddSingle( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -1059,7 +1059,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableSingleColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddSingle( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -1073,7 +1073,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableSingleColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
@@ -1119,7 +1119,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithDoubleColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddDouble( "fieldName" );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, ValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
@@ -1150,7 +1150,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableDoubleColumnTest1 )
     auto table1 = database.CreateTable( "table1" );
     BOOST_TEST( table1.IsValid( ) );
     auto columnId = table1.AddDouble( "fieldName", Ese::ColumnFlags::Fixed );
-    auto DoInsert = [&table1, columnId]( )
+    auto DoInsert = [&table1, columnId, FirstValueToInsert ]( )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
@@ -1164,7 +1164,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableDoubleColumnTest1 )
         table1.Store( );
     };
 
-    auto DoReplace = [&table1, columnId]( )
+    auto DoReplace = [&table1, columnId, SecondValueToInsert ]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );

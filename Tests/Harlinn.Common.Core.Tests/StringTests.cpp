@@ -26,6 +26,19 @@ namespace
         LocalFixture( ) { }
         ~LocalFixture( ) { }
     };
+
+    // Helper to verify null termination at [size] for AnsiString / WideString
+    template<typename TString>
+    void VerifyNullTerminated( const TString& s )
+    {
+        // When size is zero, c_str must still be valid and point to an empty string.
+        // Verify terminator at size().
+        const auto* p = s.c_str( );
+        // Guard against null
+        BOOST_REQUIRE( p != nullptr );
+        // Verify terminator
+        BOOST_TEST( p[ s.size( ) ] == static_cast<typename TString::value_type>( 0 ) );
+    }
 }
 
 BOOST_FIXTURE_TEST_SUITE( StringTests, LocalFixture )
@@ -42,6 +55,464 @@ BOOST_AUTO_TEST_CASE( BufferHeaderSizeTest1 )
 
 }
 
+BOOST_AUTO_TEST_CASE( Ctor_FromStdString )
+{
+    const std::string src = "hello world"; 
+    BasicString<char> s( src ); 
+    BOOST_CHECK_EQUAL( s.size( ), src.size( ) ); 
+    BOOST_CHECK_EQUAL( std::string( s.c_str( ), s.size( ) ), src ); 
+    BOOST_CHECK( s.IsUnique( ) ); 
+    BOOST_CHECK( s.StartsWith( 'h' ) ); 
+    BOOST_CHECK( s.EndsWith( 'd' ) ); 
+    BOOST_CHECK( s == src ); 
+    BOOST_CHECK_EQUAL( BasicString<char>::Compare( s, src.c_str( ) ), 0 );
+}
+
+BOOST_AUTO_TEST_CASE( Ctor_FromStdVectorChar )
+{
+    std::vector<char> buf{ 'A','B','C','D' }; 
+    BasicString<char> s( buf ); 
+    BOOST_CHECK_EQUAL( s.size( ), buf.size( ) ); 
+    BOOST_CHECK_EQUAL( std::string( s.c_str( ), s.size( ) ), std::string( buf.data( ), buf.size( ) ) ); 
+    // Modify original buffer; BasicString should remain unchanged 
+    buf[0] = 'Z'; 
+    BOOST_CHECK_EQUAL(std::string(s.c_str(), s.size()), "ABCD"); 
+    BOOST_CHECK(s.EndsWith('D')); 
+    BOOST_CHECK(s.StartsWith('A')); 
+}
+BOOST_AUTO_TEST_CASE( Ctor_FromStdSpanConstChar )
+{
+    const char raw[ ] = "span-based"; 
+    std::span<const char> sp( raw, 10 ); // "span-based" length 10 excluding terminator 
+    BasicString<char> s(sp); 
+    BOOST_CHECK_EQUAL(s.size(), sp.size()); 
+    BOOST_CHECK_EQUAL(std::string(s.c_str(), s.size()), std::string(sp.data(), sp.size())); 
+    BOOST_CHECK_EQUAL(s.IndexOf('b'), 5); BOOST_CHECK(s.IStartsWith("SPAN")); // case-insensitive start 
+    BOOST_CHECK(s.IEndsWith("BASED"));  // case-insensitive end 
+}
+
+BOOST_AUTO_TEST_CASE( Ctor_FromStdSpanChar_EmbeddedNull )
+{ 
+    // Buffer with embedded null; span provides explicit length 
+    std::vector<char> buf{'a','\0','b','c'}; 
+    std::span<char> sp(buf.data(), buf.size()); 
+    BasicString<char> s(sp); 
+    BOOST_CHECK_EQUAL(s.size(), 4u); // Construct stdstring with explicit size to include embedded null 
+    std::string as(s.data(), s.size()); 
+    BOOST_CHECK_EQUAL(as.size(), 4u); 
+    BOOST_CHECK(as[0] == 'a' && as[1] == '\0' && as[2] == 'b' && as[3] == 'c'); // Verify comparisons with string_view of explicit length 
+    std::string_view sv(buf.data(), buf.size()); 
+    BOOST_CHECK(s == sv); 
+}
+BOOST_AUTO_TEST_CASE( Ctor_FromEmptyContainers )
+{
+    const std::string emptyStr; 
+    BasicString<char> s1( emptyStr ); 
+    BOOST_CHECK_EQUAL( s1.size( ), 0u ); 
+    BOOST_CHECK( s1.empty( ) ); 
+    BOOST_CHECK( s1.c_str( ) != nullptr );
+    std::vector<char> emptyVec;
+    BasicString<char> s2( emptyVec );
+    BOOST_CHECK_EQUAL( s2.size( ), 0u );
+    BOOST_CHECK( s2.empty( ) );
+}
+            
+BOOST_AUTO_TEST_CASE( Ctor_FromStdWString )
+{
+    const std::wstring src = L"wide hello"; 
+    BasicString<wchar_t> s( src ); 
+    BOOST_CHECK_EQUAL( s.size( ), src.size( ) ); 
+    BOOST_CHECK( std::wstring( s.c_str( ), s.size( ) ) == src ); 
+    BOOST_CHECK( s.IsUnique( ) ); 
+    BOOST_CHECK( s.StartsWith( L'w' ) ); 
+    BOOST_CHECK( s.EndsWith( L'o' ) ); 
+    BOOST_CHECK( s == src ); 
+    BOOST_CHECK_EQUAL( BasicString<wchar_t>::Compare( s, src.c_str( ) ), 0 );
+}
+
+BOOST_AUTO_TEST_CASE( Ctor_FromStdVectorWChar )
+{
+    std::vector<wchar_t> buf{ L'X',L'Y',L'Z' }; 
+    BasicString<wchar_t> s( buf ); 
+    BOOST_CHECK_EQUAL( s.size( ), buf.size( ) ); 
+    BOOST_CHECK( std::wstring( s.c_str( ), s.size( ) ) == std::wstring( buf.data( ), buf.size( ) ) ); // Modify original vector and ensure string content stable buf[1] = L'Q'; 
+    BOOST_CHECK(std::wstring(s.c_str(), s.size()) == L"XYZ"); 
+    BOOST_CHECK(s.EndsWith(L'Z')); 
+    BOOST_CHECK(s.StartsWith(L'X')); 
+}
+BOOST_AUTO_TEST_CASE( Ctor_FromStdSpanConstWChar )
+{
+    const wchar_t raw[ ] = L"SpanWide"; 
+    std::span<const wchar_t> sp( raw, 8 ); // explicit length without relying on terminator 
+    BasicString<wchar_t> s(sp); 
+    BOOST_CHECK_EQUAL(s.size(), sp.size()); 
+    BOOST_CHECK(std::wstring(s.c_str(), s.size()) == std::wstring(sp.data(), sp.size())); 
+    BOOST_CHECK_EQUAL(s.IndexOf(L'W'), 4u); 
+    BOOST_CHECK(s.IStartsWith(L"SPAN")); // case-insensitive start 
+    BOOST_CHECK(s.IEndsWith(L"WIDE"));   // case-insensitive end 
+}
+
+BOOST_AUTO_TEST_CASE( Ctor_FromEmptyWideContainers )
+{
+    const std::wstring emptyWStr; 
+    BasicString<wchar_t> s1( emptyWStr ); 
+    BOOST_CHECK_EQUAL( s1.size( ), 0u ); 
+    BOOST_CHECK( s1.empty( ) );
+    std::vector<wchar_t> emptyVec;
+    BasicString<wchar_t> s2( emptyVec );
+    BOOST_CHECK_EQUAL( s2.size( ), 0u );
+    BOOST_CHECK( s2.empty( ) );
+}
+
+
+// Verifies concatenation of two non-empty buffers for AnsiString.
+BOOST_AUTO_TEST_CASE( Concatenate_Two_Ansi_Buffers )
+{
+    // Arrange
+    const char* s1 = "Hello";
+    const char* s2 = "World";
+    const size_t n1 = 5;
+    const size_t n2 = 5;
+
+    // Act
+    AnsiString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n1 + n2 );
+    BOOST_TEST( result == "HelloWorld" );
+    VerifyNullTerminated( result );
+}
+
+// Verifies concatenation of two non-empty buffers for WideString.
+BOOST_AUTO_TEST_CASE( Concatenate_Two_Wide_Buffers )
+{
+    // Arrange
+    const wchar_t* s1 = L"Hello";
+    const wchar_t* s2 = L"Wide";
+    const size_t n1 = 5;
+    const size_t n2 = 4;
+
+    // Act
+    WideString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n1 + n2 );
+	auto equal = result == L"HelloWide";
+    BOOST_TEST( equal );
+    VerifyNullTerminated( result );
+}
+
+// Verifies concatenation when the first part is empty (n1 == 0) for AnsiString.
+BOOST_AUTO_TEST_CASE( Concatenate_FirstEmpty_Ansi )
+{
+    // Arrange
+    const char* s1 = nullptr;
+    const char* s2 = "Tail";
+    const size_t n1 = 0;
+    const size_t n2 = 4;
+
+    // Act
+    AnsiString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n2 );
+    BOOST_TEST( result == "Tail" );
+    VerifyNullTerminated( result );
+}
+
+// Verifies concatenation when the second part is empty (n2 == 0) for AnsiString.
+BOOST_AUTO_TEST_CASE( Concatenate_SecondEmpty_Ansi )
+{
+    // Arrange
+    const char* s1 = "Head";
+    const char* s2 = nullptr;
+    const size_t n1 = 4;
+    const size_t n2 = 0;
+
+    // Act
+    AnsiString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n1 );
+    BOOST_TEST( result == "Head" );
+    VerifyNullTerminated( result );
+}
+
+// Verifies concatenation when both parts are empty for AnsiString.
+BOOST_AUTO_TEST_CASE( Concatenate_BothEmpty_Ansi )
+{
+    // Arrange
+    const char* s1 = nullptr;
+    const char* s2 = nullptr;
+    const size_t n1 = 0;
+    const size_t n2 = 0;
+
+    // Act
+    AnsiString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == 0u );
+    BOOST_TEST( result.empty( ) );
+    VerifyNullTerminated( result );
+}
+
+// Verifies concatenation when the first part is empty (n1 == 0) for WideString.
+BOOST_AUTO_TEST_CASE( Concatenate_FirstEmpty_Wide )
+{
+    // Arrange
+    const wchar_t* s1 = nullptr;
+    const wchar_t* s2 = L"Tail";
+    const size_t n1 = 0;
+    const size_t n2 = 4;
+
+    // Act
+    WideString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n2 );
+	auto equal = result == L"Tail";
+    BOOST_TEST( equal );
+    VerifyNullTerminated( result );
+}
+
+// Verifies concatenation when the second part is empty (n2 == 0) for WideString.
+BOOST_AUTO_TEST_CASE( Concatenate_SecondEmpty_Wide )
+{
+    // Arrange
+    const wchar_t* s1 = L"Head";
+    const wchar_t* s2 = nullptr;
+    const size_t n1 = 4;
+    const size_t n2 = 0;
+
+    // Act
+    WideString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n1 );
+	auto equal = result == L"Head";
+    BOOST_TEST( equal );
+    VerifyNullTerminated( result );
+}
+
+// Verifies concatenation when both parts are empty for WideString.
+BOOST_AUTO_TEST_CASE( Concatenate_BothEmpty_Wide )
+{
+    // Arrange
+    const wchar_t* s1 = nullptr;
+    const wchar_t* s2 = nullptr;
+    const size_t n1 = 0;
+    const size_t n2 = 0;
+
+    // Act
+    WideString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == 0u );
+    BOOST_TEST( result.empty( ) );
+    VerifyNullTerminated( result );
+}
+
+// Verifies that partial buffer lengths are respected (substring concatenation) for AnsiString.
+BOOST_AUTO_TEST_CASE( Concatenate_PartialLengths_Ansi )
+{
+    // Arrange
+    const char* s1 = "Hello..";
+    const char* s2 = "World!!";
+    const size_t n1 = 5;  // "Hello"
+    const size_t n2 = 5;  // "World"
+
+    // Act
+    AnsiString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n1 + n2 );
+    BOOST_TEST( result == "HelloWorld" );
+    VerifyNullTerminated( result );
+}
+
+// Verifies that partial buffer lengths are respected (substring concatenation) for WideString.
+BOOST_AUTO_TEST_CASE( Concatenate_PartialLengths_Wide )
+{
+    // Arrange
+    const wchar_t* s1 = L"Data123";
+    const wchar_t* s2 = L"XYZ789";
+    const size_t n1 = 4;  // L"Data"
+    const size_t n2 = 3;  // L"XYZ"
+
+    // Act
+    WideString result( s1, n1, s2, n2 );
+
+    // Assert
+    BOOST_TEST( result.size( ) == n1 + n2 );
+	auto equal = result == L"DataXYZ";
+    BOOST_TEST( equal );
+    VerifyNullTerminated( result );
+}
+
+// Ansi: repeat + tail -> concatenation 
+BOOST_AUTO_TEST_CASE(Ansi_RepeatAndTail_Concatenates) 
+{ 
+    // Arrange 
+    BasicString<char> s('*', 5, "ABC", 3); 
+    const std::string expected = "*****ABC";
+    // Act
+    const size_t sz = s.size( );
+    const char* cstr = s.c_str( );
+
+    // Assert size
+    bool sizeOk = ( sz == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert content equality
+    bool contentOk = ( s == std::string_view( expected ) );
+    BOOST_TEST( contentOk );
+
+    // Assert null terminator
+    bool terminatorOk = ( cstr[ sz ] == '\0' );
+    BOOST_TEST( terminatorOk );
+}
+// Ansi: repeat only (tail empty) 
+BOOST_AUTO_TEST_CASE(Ansi_RepeatOnly_BuildsRepeatedString) 
+{ 
+    // Arrange 
+    BasicString<char> s('Q', 4, "", 0); 
+    const std::string expected = "QQQQ";
+    // Act
+    const size_t sz = s.size( );
+    const char* cstr = s.c_str( );
+
+    // Assert size
+    bool sizeOk = ( sz == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert content equality
+    bool contentOk = ( s == std::string_view( expected ) );
+    BOOST_TEST( contentOk );
+
+    // Assert null terminator
+    bool terminatorOk = ( cstr[ sz ] == '\0' );
+    BOOST_TEST( terminatorOk );
+}
+// Ansi: tail only (repeat count zero) 
+BOOST_AUTO_TEST_CASE(Ansi_TailOnly_BuildsTail) 
+{ 
+    // Arrange 
+    BasicString<char> s('Z', 0, "ABC", 3); 
+    const std::string expected = "ABC";
+    // Act
+    const size_t sz = s.size( );
+    const char* cstr = s.c_str( );
+
+    // Assert size
+    bool sizeOk = ( sz == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert content equality
+    bool contentOk = ( s == std::string_view( expected ) );
+    BOOST_TEST( contentOk );
+
+    // Assert null terminator
+    bool terminatorOk = ( cstr[ sz ] == '\0' );
+    BOOST_TEST( terminatorOk );
+}
+// Ansi: empty when both repeat count and tail length are zero 
+BOOST_AUTO_TEST_CASE(Ansi_Empty_WhenBothZero) 
+{ 
+    // Arrange 
+    BasicString<char> s('X', 0, "", 0);
+    // Act
+    const bool isEmpty = s.empty( );
+
+    // Assert empty
+    bool emptyOk = isEmpty;
+    BOOST_TEST( emptyOk );
+
+    // Assert size is zero
+    bool sizeOk = ( s.size( ) == 0 );
+    BOOST_TEST( sizeOk );
+}
+// Wide: repeat + tail -> concatenation 
+BOOST_AUTO_TEST_CASE(Wide_RepeatAndTail_Concatenates) 
+{ 
+    // Arrange 
+    BasicString<wchar_t> s(L'*', 3, L"XYZ", 3); 
+    const std::wstring expected = L"***XYZ";
+    // Act
+    const size_t sz = s.size( );
+    const wchar_t* cstr = s.c_str( );
+
+    // Assert size
+    bool sizeOk = ( sz == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert content equality
+    bool contentOk = ( s == std::wstring_view( expected ) );
+    BOOST_TEST( contentOk );
+
+    // Assert null terminator
+    bool terminatorOk = ( cstr[ sz ] == L'\0' );
+    BOOST_TEST( terminatorOk );
+}
+// Wide: repeat only (tail empty) 
+BOOST_AUTO_TEST_CASE(Wide_RepeatOnly_BuildsRepeatedString) 
+{ 
+    // Arrange 
+    BasicString<wchar_t> s(L'Q', 2, L"", 0); 
+    const std::wstring expected = L"QQ";
+    // Act
+    const size_t sz = s.size( );
+    const wchar_t* cstr = s.c_str( );
+
+    // Assert size
+    bool sizeOk = ( sz == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert content equality
+    bool contentOk = ( s == std::wstring_view( expected ) );
+    BOOST_TEST( contentOk );
+
+    // Assert null terminator
+    bool terminatorOk = ( cstr[ sz ] == L'\0' );
+    BOOST_TEST( terminatorOk );
+}
+// Wide: tail only (repeat count zero) 
+BOOST_AUTO_TEST_CASE(Wide_TailOnly_BuildsTail) 
+{ 
+    // Arrange 
+    BasicString<wchar_t> s(L'Z', 0, L"AB", 2); 
+    const std::wstring expected = L"AB";
+    // Act
+    const size_t sz = s.size( );
+    const wchar_t* cstr = s.c_str( );
+
+    // Assert size
+    bool sizeOk = ( sz == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert content equality
+    bool contentOk = ( s == std::wstring_view( expected ) );
+    BOOST_TEST( contentOk );
+
+    // Assert null terminator
+    bool terminatorOk = ( cstr[ sz ] == L'\0' );
+    BOOST_TEST( terminatorOk );
+}
+// Wide: empty when both repeat count and tail length are zero 
+BOOST_AUTO_TEST_CASE(Wide_Empty_WhenBothZero) 
+{ 
+    // Arrange 
+    BasicString<wchar_t> s(L'X', 0, L"", 0);
+    // Act
+    const bool isEmpty = s.empty( );
+
+    // Assert empty
+    bool emptyOk = isEmpty;
+    BOOST_TEST( emptyOk );
+
+    // Assert size is zero
+    bool sizeOk = ( s.size( ) == 0 );
+    BOOST_TEST( sizeOk );
+}
 
 
 // --run_test=StringTests/ConstructorTest1W
