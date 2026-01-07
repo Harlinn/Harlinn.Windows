@@ -33,11 +33,19 @@ namespace Harlinn::Common::Core
     {
         inline char* AllocateBytes( size_t count )
         {
-            return ( char* )malloc( count );
+            auto result = ( char* )malloc( count );
+            if ( !result )
+            {
+                ThrowOSError( E_OUTOFMEMORY );
+            }
+            return result;
         }
         inline void FreeBytes( char* bytes, size_t size )
         {
-            free( bytes );
+            if ( bytes )
+            {
+                free( bytes );
+            }
         }
         
         template<typename CharT>
@@ -479,30 +487,48 @@ namespace Harlinn::Common::Core
     /// This is a reference counted string class.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// Multiple BasicString instances may share the same internal buffer until a modifying operation requires
+    /// uniqueness. Call <see cref="EnsureUnique"/> before obtaining raw pointers/iterators if you intend
+    /// to mutate the contents while shared references may exist.
+    /// </para>
+    /// <para>
     /// There are potential pitfalls when this class is used in 
     /// a multi-threaded program, but they can easily be avoided:
-    /// 
-    ///     1. There should be no problems as long as the strings 
-    ///        are just passed around between threads. This is
-    ///        the normal/most common use case.
-    /// 
-    ///     2. Call EnsureUnique before changes are made using 
-    ///        character references, iterators and pointers to
-    ///        the contents of a string. This will invalidate
-    ///        existing references, iterators and pointers to
-    ///        the contents of that string object, but not references, 
-    ///        iterators and pointers to other string objects that
-    ///        originally shared the internal reference counted string
-    ///        representation. Ideally the editing functions should
-    ///        be used to change the contents of a string.
-    ///     
-    ///     3. Never call an editing function using a reference 
-    ///        to a string object that is shared between threads.
-    ///        Two string objects, each local to a separate thread,
-    ///        may share the same internal data object, and this is
-    ///        fine, but sharing a reference/pointer to a string object 
-    ///        between threads is not OK when editing functions will 
-    ///        be called. 
+    /// </para>
+	/// <list type="number">
+	///   <item>
+    ///     <description>
+    ///     There should be no problems as long as the strings 
+    ///     are just passed around between threads. This is
+    ///     the normal/most common use case.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///     Call EnsureUnique before changes are made using
+    ///     character references, iterators and pointers to
+    ///     the contents of a string. This will invalidate
+    ///     existing references, iterators and pointers to
+    ///     the contents of that string object, but not references,
+    ///     iterators and pointers to other string objects that
+    ///     originally shared the internal reference counted string
+    ///     representation. Ideally the editing functions should
+    ///     be used to change the contents of a string.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///     Never call an editing function using a reference
+    ///     to a string object that is shared between threads.
+    ///     Two string objects, each local to a separate thread,
+    ///     may share the same internal data object, and this is
+    ///     fine, but sharing a reference/pointer to a string object 
+    ///     between threads is not OK when editing functions will 
+    ///     be called. 
+    ///     </description>
+    ///   </item>
+	/// </list>
     /// </remarks>
     /// <typeparam name="T">The character type of the string</typeparam>
     template<typename T>
@@ -534,19 +560,87 @@ namespace Harlinn::Common::Core
     private:
         Data* data_;
 
-
+        /// <summary>
+        /// Computes the required allocation size in bytes for a buffer that can hold
+        /// the specified number of characters plus the non-text buffer header.
+        /// The returned byte count is rounded up to the nearest multiple of
+        /// <see cref="AllocationGranularity"/>.
+        /// </summary>
+        /// <param name="length">The number of characters to allocate space for.</param>
+        /// <returns>
+        /// The number of bytes required for the allocation (including header and
+        /// character storage), rounded up to the nearest allocation granularity.
+        /// Returns 0 when <paramref name="length"/> is 0.
+        /// </returns>
+        /// <remarks>
+        /// The calculation performed is:
+        /// (NonTextBufferByteCount + length * sizeof(CharType)) rounded up to
+        /// the next multiple of AllocationGranularity. Rounding is implemented by
+        /// adding (AllocationGranularity - 1) and masking the low bits.
+        /// Callers should ensure that the requested length does not exceed the
+        /// limits exposed by <see cref="max_size"/> to avoid integer overflow.
+        /// </remarks>
         static constexpr size_type AllocationByteCount( size_type length ) noexcept
         {
             return length ? ( ( NonTextBufferByteCount + length * sizeof( CharType ) ) + ( AllocationGranularity - 1 ) ) & ~( AllocationGranularity - 1 ) : 0;
         }
+
+
+        /// <summary>
+        /// Computes the number of bytes required to allocate an internal buffer that can hold
+        /// a non-zero number of characters plus the non-text buffer header.
+        /// </summary>
+        /// <param name="length">The number of characters (must be non-zero) to allocate space for.</param>
+        /// <returns>
+        /// The total number of bytes required for the allocation (including the header and
+        /// character storage), rounded up to the nearest multiple of <see cref="AllocationGranularity"/>.
+        /// </returns>
+        /// <remarks>
+        /// The calculation performed is:
+        /// (NonTextBufferByteCount + length * sizeof(CharType)) rounded up to the next multiple
+        /// of AllocationGranularity. Rounding is implemented by adding (AllocationGranularity - 1)
+        /// and clearing the lower bits via bitwise AND with the complement of (AllocationGranularity - 1).
+        /// This function assumes <paramref name="length"/> is non-zero; for zero-length buffers callers
+        /// should use AllocationByteCount which returns 0 for length == 0.
+        /// </remarks>
         static constexpr size_type AllocationByteCountForLengthNotZero( size_type length ) noexcept
         {
             return ( ( NonTextBufferByteCount + length * sizeof( CharType ) ) + ( AllocationGranularity - 1 ) ) & ~( AllocationGranularity - 1 );
         }
 
-
+        /// <summary>
+        /// Allocates an internal <c>Data</c> object capable of holding <paramref name="size"/> characters
+        /// plus the non-text buffer header. The allocation size in bytes is computed by
+        /// <see cref="AllocationByteCount(size_t)"/> which rounds up to the internal
+        /// allocation granularity.
+        /// </summary>
+        /// <param name="size">
+        /// Number of characters to allocate for the string content. Must be greater than zero.
+        /// </param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance. The returned object's <c>referenceCount_</c>
+        /// is initialized to 1, <c>size_</c> is set to <paramref name="size"/>, and a terminating null
+        /// character is written at <c>buffer_[size]</c>.
+        /// </returns>
+        /// <remarks>
+        /// The allocation is performed via <see cref="Internal::AllocateBytes"/>, which wraps a raw memory
+        /// allocation (malloc). Callers must release the returned <c>Data*</c> using the corresponding
+        /// release routine (for example <see cref="ReleaseData"/>). In debug builds a zero size is considered
+        /// a programming error and will trigger an <c>ArgumentOutOfRangeException</c> to surface the problem early.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown in debug builds when <paramref name="size"/> is zero.</exception>
+        /// <exception cref="...">
+        /// If the underlying allocation fails, <c>Internal::AllocateBytes</c> will call <c>ThrowOSError</c> which 
+        /// throws a platform-specific error exception.
+        /// </exception>
         static Data* Allocate( size_t size )
         {
+#ifdef _DEBUG
+            if ( size == 0 )
+            {
+                throw ArgumentOutOfRangeException( L"size must be greater than zero" );
+			}
+#endif
             size_t allocationByteCount = AllocationByteCount( size );
             Data* data = (Data*)Internal::AllocateBytes( allocationByteCount );
             data->referenceCount_ = 1;
@@ -555,8 +649,49 @@ namespace Harlinn::Common::Core
             return data;
         }
 
+        /// <summary>
+        /// Allocates and initializes a new internal <c>Data</c> object using a precomputed
+        /// allocation byte count.
+        /// </summary>
+        /// <param name="allocationByteCount">
+        /// The exact number of bytes to allocate for the new <c>Data</c> instance. This value
+        /// must include the non-text header size and the rounded character storage size
+        /// (see <see cref="AllocationByteCountForLengthNotZero"/> and <see cref="AllocationByteCount"/>).
+        /// The caller is responsible for computing this value.
+        /// </param>
+        /// <param name="size">
+        /// The number of characters to store in the returned <c>Data</c>::buffer_. This value
+        /// represents the logical character count (not bytes). In debug builds a zero value
+        /// triggers an <c>ArgumentOutOfRangeException</c>.
+        /// </param>
+        /// <returns>
+        /// Pointer to an initialized <c>Data</c> instance. The returned object's
+        /// <c>referenceCount_</c> is set to 1, <c>size_</c> is set to <paramref name="size"/>,
+        /// and a terminating null character is written at <c>buffer_[size]</c>.
+        /// </returns>
+        /// <remarks>
+        /// - The function performs a raw memory allocation via <c>Internal::AllocateBytes</c>.
+        /// - The caller must free the returned <c>Data*</c> by calling <see cref="ReleaseData"/>.
+        /// - The <paramref name="allocationByteCount"/> must be consistent with
+        ///   <paramref name="size"/>; mismatches may lead to buffer corruption.
+        /// - This overload is used when the precise allocation size (in bytes) has already been
+        ///   computed by the caller to avoid recalculation and to allow allocation granularity control.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown in debug builds when <paramref name="size"/> is zero.
+        /// </exception>
+        /// <exception cref="...">
+        /// If underlying allocation fails, <c>Internal::AllocateBytes</c> will call
+        /// <c>ThrowOSError</c>, which throws a platform-specific error exception.
+        /// </exception>
         static Data* Allocate( size_type allocationByteCount, size_t size )
         {
+#ifdef _DEBUG
+            if ( size == 0 )
+            {
+                throw ArgumentOutOfRangeException( L"size must be greater than zero" );
+            }
+#endif
             Data* data = ( Data* )Internal::AllocateBytes( allocationByteCount );
             data->referenceCount_ = 1;
             data->size_ = size;
@@ -564,6 +699,38 @@ namespace Harlinn::Common::Core
             return data;
         }
 
+        /// <summary>
+        /// Releases a reference-counted internal <c>Data</c> object and frees its memory when the
+        /// last reference is released.
+        /// </summary>
+        /// <param name="data">
+        /// Pointer to the <c>Data</c> instance to release. May be <c>nullptr</c>. If <c>nullptr</c>,
+        /// the function returns immediately and no action is taken.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This routine decrements the reference count on the provided <c>Data</c> instance by calling
+        /// <c>Data::DecRef()</c>. If the resulting reference count is zero the function computes the
+        /// exact number of bytes that were originally allocated for this instance using
+        /// <c>AllocationByteCountForLengthNotZero(data->size_)</c> and forwards the raw pointer and
+        /// allocation size to <c>Internal::FreeBytes</c> to release the memory.
+        /// </para>
+        /// <para>
+        /// The function is intended to be the single point that releases internally allocated
+        /// string buffers and performs the corresponding raw memory free. It is safe to call from
+        /// any thread, because <c>DecRef</c> uses interlocked operations. However, callers must
+        /// ensure they do not access the memory pointed to by <paramref name="data"/> after the
+        /// last reference has been released (i.e. when this function frees the memory).
+        /// </para>
+        /// </remarks>
+        /// <exception cref="...">
+        /// The routine itself does not throw. If underlying platform-specific routines used by
+        /// <c>Internal::FreeBytes</c> were to signal errors, those are handled by the implementation
+        /// of <c>Internal::FreeBytes</c>. Memory allocation failures are handled at allocation time
+        /// (see <c>Internal::AllocateBytes</c>), not here.
+        /// </exception>
+        /// <seealso cref="AllocationByteCountForLengthNotZero(size_t)"/>
+        /// <seealso cref="Internal::FreeBytes(char*, size_t)"/>
         static void ReleaseData( Data* data )
         {
             if ( data && data->DecRef( ) == 0 )
@@ -574,8 +741,77 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Allocate a fresh internal buffer and create an insertion gap at the specified position.
+        /// </summary>
+        /// <param name="offset">
+        /// Zero-based character index into the current buffer where the expansion (gap)
+        /// should be created. All characters at and after <paramref name="offset"/> are
+        /// moved so that the returned pointer points to the start of the new gap.
+        /// </param>
+        /// <param name="expandSize">
+        /// Number of characters to insert (the size of the expansion gap). May be zero.
+        /// </param>
+        /// <returns>
+        /// Pointer to the character position within the newly allocated buffer that
+        /// corresponds to the insertion point (i.e. the start of the expansion gap).
+        /// The returned pointer refers to memory owned by this BasicString instance and
+        /// must not be freed by the caller.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This routine always allocates a new <c>Data</c> instance that is large enough
+        /// to hold the existing characters plus <paramref name="expandSize"/> additional
+        /// characters. The contents before <paramref name="offset"/> are copied unchanged,
+        /// and the trailing content starting at <paramref name="offset"/> is copied to
+        /// begin at <c>offset + expandSize</c> in the new buffer, leaving a gap at
+        /// <c>offset</c> for insertion.
+        /// </para>
+        /// <para>
+        /// After successful allocation and copy the string takes ownership of the new
+        /// buffer and releases the previous <c>Data</c> object (decrementing its
+        /// reference count). The operation therefore produces a unique buffer for this
+        /// BasicString instance.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the method is not synchronized; callers must ensure appropriate
+        /// synchronization when multiple threads may access or modify the same
+        /// BasicString instance concurrently. Producing a new buffer from a shared
+        /// buffer is safe because it does not mutate other BasicString instances that
+        /// reference the old data object.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        /// In debug builds the method validates preconditions and may throw:
+        /// <list type="bullet">
+        ///   <item><description>When <c>data_ == nullptr</c>.</description></item>
+        ///   <item><description>When the buffer is unique and the allocation already fits the expanded size
+        ///   (caller should call <c>ExpandCurrentBuffer</c> instead).</description></item>
+        /// </list>
+        /// </exception>
+        /// <exception cref="...">
+        /// Allocation or low-level copy/move helpers may fail. Underlying helpers such as
+        /// <c>Internal::AllocateBytes</c> will raise platform-specific exceptions (for
+        /// example via <c>ThrowOSError</c>) when allocation fails.
+        /// </exception>
         CharType* ExpandIntoNewBuffer( size_t offset, size_t expandSize )
         {
+#ifdef _DEBUG
+            if ( data_ == nullptr )
+            {
+                throw InvalidOperationException( L"data cannot be null" );
+            }
+            if ( data_->referenceCount_ == 1 )
+            {
+                auto allocatedByteCount = AllocationByteCountForLengthNotZero( data_->size_ );
+                auto requiredByteCount = AllocationByteCountForLengthNotZero( data_->size_ + expandSize );
+                if ( allocatedByteCount == requiredByteCount )
+                {
+                    throw InvalidOperationException( L"Call ExpandCurrentBuffer, not ExpandIntoNewBuffer" );
+                }
+            }
+            
+#endif
             auto currentSize = data_->size_;
             auto newSize = currentSize + expandSize;
             auto newData = Allocate( newSize );
@@ -588,8 +824,77 @@ namespace Harlinn::Common::Core
             return &newData->buffer_[offset];
         }
 
+
+        
+        /// <summary>
+        /// Expands the current internal buffer in-place to create an insertion gap at a given position.
+        /// </summary>
+        /// <param name="offset">
+        /// Zero-based character index into the current buffer where the expansion (gap) should be created.
+        /// Characters at and after <paramref name="offset"/> are moved so that the returned pointer points
+        /// to the start of the new gap. If <paramref name="offset"/> equals the current length the gap
+        /// will be created at the end of the string.
+        /// </param>
+        /// <param name="expandSize">
+        /// Number of characters to insert (the size of the expansion gap). May be zero.
+        /// </param>
+        /// <returns>
+        /// Pointer to the character position within the internal buffer that corresponds to the insertion point.
+        /// The returned pointer refers to memory owned by this BasicString instance and must not be freed by the caller.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This routine modifies the existing buffer in-place and therefore requires that:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item><description>
+        ///    The string currently owns a buffer (<c>data_ != nullptr</c>).
+        ///   </description></item>
+        ///   <item><description>
+        ///     The buffer is unique (<c>data_->referenceCount_ == 1</c>) so no other BasicString 
+        ///     instances share the same backing storage.
+        ///   </description></item>
+        ///   <item><description>
+        ///     The existing allocation is large enough to accommodate the enlarged size; this 
+        ///     function will not allocate memory. In debug builds this requirement is asserted 
+        ///     and will throw if violated.
+        ///   </description></item>
+        /// </list>
+        /// <para>
+        /// The implementation shifts the trailing content starting at <paramref name="offset"/>
+        /// right by <paramref name="expandSize"/> characters using <c>MemMove</c>, updates
+        /// <c>data_->size_</c>, writes a terminating null character and returns a pointer
+        /// to the insertion point.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the method is not synchronized. Callers must ensure appropriate
+        /// synchronization when multiple threads may access or modify the same BasicString
+        /// instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown in debug builds when <c>data_ == nullptr</c>, when the buffer is not unique
+        /// (<c>data_->referenceCount_ != 1</c>), or when the current allocation is insufficient
+        /// to hold the expanded size (the function does not perform allocation).
+        /// </exception>
         CharType* ExpandCurrentBuffer( size_t offset, size_t expandSize )
         {
+#ifdef _DEBUG
+            if ( data_ == nullptr )
+            {
+				throw InvalidOperationException( L"data_ cannot be null" );
+            }
+            if ( data_->referenceCount_ != 1 )
+            {
+                throw InvalidOperationException( L"Cannot expand current buffer when reference count is greater than 1" );
+            }
+			auto allocatedByteCount = AllocationByteCountForLengthNotZero( data_->size_ );
+            auto requiredByteCount = AllocationByteCountForLengthNotZero( data_->size_ + expandSize );
+            if ( allocatedByteCount < requiredByteCount )
+            {
+                throw InvalidOperationException( L"Cannot expand current buffer when allocation is insufficient" );
+			}
+#endif
             auto currentSize = data_->size_;
             auto remaining = currentSize - offset;
             MemMove( &data_->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
@@ -598,7 +903,41 @@ namespace Harlinn::Common::Core
             return &data_->buffer_[offset];
         }
 
-
+        
+        /// <summary>
+        /// Ensures space for an insertion of <paramref name="expandSize"/> characters at the specified <paramref name="offset"/>.
+        /// </summary>
+        /// <param name="offset">Zero-based index in the current string where the expansion (gap) should be created. If greater than the current length the behaviour is to allocate space and pad as required by callers.</param>
+        /// <param name="expandSize">Number of characters to insert (the size of the expansion gap).</param>
+        /// <returns>
+        /// Pointer to the character position within the owned buffer that corresponds to the insertion point.
+        /// The returned pointer points into memory owned by this BasicString instance and must not be freed by the caller.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The method guarantees that after it returns the string owns a buffer large enough to accommodate the
+        /// requested expansion. The implementation chooses one of three strategies:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item><description>If the string has no internal data (<c>data_ == nullptr</c>) a new buffer is allocated sized to <paramref name="expandSize"/> and the pointer to the start of the buffer is returned.</description></item>
+        ///   <item><description>If the buffer is shared (<c>data_->referenceCount_ &gt; 1</c>) a fresh buffer large enough for the new size is allocated and the existing content is copied; the string then owns the new unique buffer.</description></item>
+        ///   <item><description>When the buffer is unique and the internal allocation already covers the enlarged size the function expands the buffer in-place; otherwise it allocates a new buffer and copies the data.</description></item>
+        /// </list>
+        /// <para>
+        /// Callers that hold raw pointers/iterators into the string must call <c>EnsureUnique()</c> or avoid reusing those references
+        /// since this operation may replace the internal buffer and invalidate pointers into the old buffer.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the function is not synchronized; callers must ensure appropriate synchronization when multiple threads
+        /// may modify the same BasicString instance concurrently. Producing a unique buffer from a shared buffer is safe because
+        /// it does not mutate other BasicString instances that reference the old data object.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="...">
+        /// Underlying allocation may fail; allocation helpers (for example <c>Internal::AllocateBytes</c>) will call platform-specific
+        /// error routines such as <c>ThrowOSError</c> which will throw. Copy operations use <c>MemCopy</c>/<c>MemMove</c> and will
+        /// propagate platform-specific errors if they occur.
+        /// </exception>
         CharType* Expand( size_t offset, size_t expandSize )
         {
             if ( data_ )
@@ -631,8 +970,51 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Allocate a new internal buffer and extend the current content by <paramref name="extendSize"/> characters.
+        /// </summary>
+        /// <param name="extendSize">Number of characters to append space for. May be zero.</param>
+        /// <returns>
+        /// Pointer to the first newly available character position (i.e. the old end of the string)
+        /// inside the newly allocated buffer. The returned pointer refers to memory owned by this
+        /// BasicString instance and must not be freed by the caller.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This routine always allocates a new <c>Data</c> instance capable of holding the existing
+        /// characters plus <paramref name="extendSize"/> additional characters. The existing content
+        /// is copied to the start of the new buffer. After the copy the string takes ownership of the
+        /// new buffer and releases the previous <c>Data</c> object (decrementing its reference count).
+        /// </para>
+        /// <para>
+        /// Thread-safety: the method is not synchronized. Callers must ensure appropriate synchronization
+        /// when multiple threads may access or modify the same BasicString instance concurrently.
+        /// Producing a new buffer from a shared buffer is safe because it does not mutate other
+        /// BasicString instances that reference the old data object.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        /// In debug builds the method validates preconditions and may throw when <c>data_ == nullptr</c>.
+        /// </exception>
         CharType* ExtendIntoNewBuffer( size_t extendSize )
         {
+#ifdef _DEBUG
+            if ( data_ == nullptr )
+            {
+                throw InvalidOperationException( L"data cannot be null" );
+            }
+            if ( data_->referenceCount_ == 1 )
+            {
+                auto allocatedByteCount = AllocationByteCountForLengthNotZero( data_->size_ );
+                auto requiredByteCount = AllocationByteCountForLengthNotZero( data_->size_ + extendSize );
+                if ( allocatedByteCount == requiredByteCount )
+                {
+                    throw InvalidOperationException( L"Call ExtendCurrentBuffer, not ExtendIntoNewBuffer" );
+                }
+            }
+
+#endif
+
             auto currentSize = data_->size_;
             auto newSize = currentSize + extendSize;
             auto newData = Allocate( newSize );
@@ -645,12 +1027,71 @@ namespace Harlinn::Common::Core
 
         CharType* ExtendCurrentBuffer( size_t extendSize )
         {
+#ifdef _DEBUG
+            if ( data_ == nullptr )
+            {
+                throw InvalidOperationException( L"data_ cannot be null" );
+            }
+            if ( data_->referenceCount_ != 1 )
+            {
+                throw InvalidOperationException( L"Cannot extend current buffer when reference count is greater than 1" );
+            }
+            auto allocatedByteCount = AllocationByteCountForLengthNotZero( data_->size_ );
+            auto requiredByteCount = AllocationByteCountForLengthNotZero( data_->size_ + extendSize );
+            if ( allocatedByteCount < requiredByteCount )
+            {
+                throw InvalidOperationException( L"Cannot extend current buffer when allocation is insufficient" );
+            }
+#endif
+
             auto currentSize = data_->size_;
             data_->size_ += extendSize;
             data_->buffer_[data_->size_] = 0;
             return &data_->buffer_[currentSize];
         }
 
+        /// <summary>
+        /// Extend the current internal buffer in-place by <paramref name="extendSize"/> characters
+        /// and return a pointer to the first newly available character position.
+        /// </summary>
+        /// <param name="extendSize">Number of characters to append (may be zero).</param>
+        /// <returns>
+        /// Pointer to the first character of the appended region (i.e. the previous end of string).
+        /// The returned pointer refers to memory owned by this BasicString instance and must not be freed by the caller.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This routine updates the existing buffer in-place and therefore does not allocate memory.
+        /// Callers must ensure the following preconditions are met before calling this method:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     <c>data_ != nullptr</c> (there is an existing buffer)
+        ///   </description></item>
+        ///   <item><description>
+        ///     The buffer is uniquely owned (<c>data_->referenceCount_ == 1</c>).
+        ///   </description></item>
+        ///   <item><description>
+        ///     The existing allocation already covers the enlarged size (no allocation required).
+        ///   </description></item>
+        /// </list>
+        /// <para>
+        /// The implementation increments <c>data_->size_</c>, writes a terminating null character and
+        /// returns a pointer to the first appended character.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is not synchronized. Callers must ensure appropriate synchronization
+        /// if multiple threads may access or modify the same BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        /// In debug builds thrown when any of the preconditions are violated:
+        /// <list type="bullet">
+        ///   <item><description><c>data_ == nullptr</c></description></item>
+        ///   <item><description><c>data_->referenceCount_ != 1</c> (buffer is shared)</description></item>
+        ///   <item><description>Current allocation is insufficient for the requested extension</description></item>
+        /// </list>
+        /// </exception>
         CharType* Extend( size_t extendSize )
         {
             if ( data_ )
@@ -683,6 +1124,31 @@ namespace Harlinn::Common::Core
             }
         }
 
+
+        /// <summary>
+        /// Validates that the provided iterator refers to a position inside this string's valid range.
+        /// </summary>
+        /// <param name="position">
+        /// A <c>const_iterator</c> pointing into this string. The function verifies that
+        /// <c>position</c> is not before <c>begin()</c> and is strictly less than <c>end()</c>.
+        /// For an empty string the iterator is expected to be <c>nullptr</c>.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The function performs pointer comparisons against the internal buffer and does not
+        /// dereference <c>position.ptr_</c>. It is intended as a debug-time range validator
+        /// for public APIs that accept iterators; callers should ensure the iterator originates
+        /// from this string instance.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this routine is not synchronized. Callers must provide external
+        /// synchronization if multiple threads may access or modify the same BasicString instance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="std::out_of_range">
+        /// Thrown when the string is empty and <c>position.ptr_ != nullptr</c>, when
+        /// <c>position.ptr_ &lt; begin()</c>, or when <c>position.ptr_ &gt;= end()</c>.
+        /// </exception>
         void RangeCheck( const_iterator position )
         {
             if ( data_ )
@@ -699,12 +1165,71 @@ namespace Harlinn::Common::Core
             }
             else
             {
-                throw std::out_of_range( "string is empty" );
+				// In this case position is considered to point to beginning of an empty string.
+                if ( position.ptr_ != nullptr )
+                {
+                    throw std::out_of_range( "string is empty" );
+                }
             }
         }
 
 
-
+        /// <summary>
+        /// Erases a region of characters from the string starting at <paramref name="offset"/>.
+        /// </summary>
+        /// <param name="offset">
+        /// Zero-based index of the first character to erase. If <paramref name="offset"/> is
+        /// greater than or equal to the current string length the call is a no-op and returns
+        /// a pointer to the end of the string.
+        /// </param>
+        /// <param name="numberOfCharactersToErase">
+        /// Number of characters to remove beginning at <paramref name="offset"/>. If the sum
+        /// of <paramref name="offset"/> and this value exceeds the current length the erase
+        /// length is clamped to the available characters.
+        /// </param>
+        /// <returns>
+        /// If characters remain after the erase, returns a pointer to the character in the
+        /// (possibly updated) internal buffer that now occupies the original <paramref name="offset"/>.
+        /// If the erase removes the entire contents the function releases internal storage and
+        /// returns <c>nullptr</c>. If <paramref name="offset"/> is past the end a pointer to the
+        /// current end of string is returned. If there is no data to operate on the function
+        /// returns <c>nullptr</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The function chooses between two strategies:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       In-place removal: when the buffer is uniquely owned (<c>data_->referenceCount_ == 1</c>)
+        ///       and the allocation size computed by <see cref="AllocationByteCountForLengthNotZero"/>
+        ///       does not change for the new logical length, the trailing content is shifted left
+        ///       using <c>MemMove</c> and <c>data_->size_</c> is updated.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       Reallocation: when the buffer is shared or the rounded allocation changes, a new
+        ///       <c>Data</c> buffer is allocated, the preserved prefix and suffix copied into it,
+        ///       the previous data object is released and the new buffer becomes owned by this string.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// When the erase results in an empty string the internal buffer is released and the
+        /// stored pointer is set to <c>nullptr</c>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is not synchronized. Callers must ensure exclusive access
+        /// when modifying the same BasicString instance from multiple threads.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="...">
+        /// Allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw platform-specific
+        /// exceptions (for example via <c>ThrowOSError</c>) on allocation failure. Copy/move helpers
+        /// may propagate errors from underlying implementations.
+        /// </exception>
         CharType* Erase( size_t offset, size_t numberOfCharactersToErase )
         {
             if ( data_ )
@@ -729,7 +1254,7 @@ namespace Harlinn::Common::Core
                             if ( remainingSize )
                             {
                                 auto* dest = &data_->buffer_[offset];
-                                MemCopy( dest, dest + numberOfCharactersToErase, remainingSize );
+                                MemMove( dest, dest + numberOfCharactersToErase, remainingSize );
                             }
                             data_->buffer_[newSize] = 0;
                             data_->size_ = newSize;
@@ -767,6 +1292,28 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by copying the provided characters.
+        /// </summary>
+        /// <param name="string">
+        /// Pointer to the source characters to copy. May be <c>nullptr</c> only when <paramref name="size"/> is zero.
+        /// </param>
+        /// <param name="size">
+        /// Number of characters to copy into the new buffer. When zero the function returns <c>nullptr</c>.
+        /// </param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance whose <c>referenceCount_</c> is initialized to 1
+        /// and whose <c>buffer_</c> contains a copy of the provided characters. Returns <c>nullptr</c> when
+        /// <paramref name="size"/> is zero.
+        /// </returns>
+        /// <remarks>
+        /// - Allocation is performed via <see cref="Allocate(size_t)"/> which rounds the allocation size
+        ///   to the internal granularity and writes a terminating null at <c>buffer_[size]</c>.
+        /// - The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.
+        /// - The function copies exactly <paramref name="size"/> characters; it does not require the source
+        ///   to be null-terminated.
+        /// </remarks>
+        /// <exception cref="...">Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw on failure.</exception>
         static Data* Initialize( const CharType* string, size_type size )
         {
             if ( size )
@@ -781,6 +1328,34 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by concatenating two character sequences.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the first source character sequence. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// </param>
+        /// <param name="size1">
+        /// Number of characters to copy from <paramref name="string1"/>.
+        /// </param>
+        /// <param name="string2">
+        /// Pointer to the second source character sequence. May be <c>nullptr</c> only when <paramref name="size2"/> is zero.
+        /// </param>
+        /// <param name="size2">
+        /// Number of characters to copy from <paramref name="string2"/>.
+        /// </param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance whose <c>referenceCount_</c> is initialized to 1
+        /// and whose <c>buffer_</c> contains the concatenation of the provided sequences. Returns <c>nullptr</c>
+        /// when the total length (<paramref name="size1"/> + <paramref name="size2"/>) is zero.
+        /// </returns>
+        /// <remarks>
+        /// - Allocation is performed via <see cref="Allocate(size_t)"/> which rounds the allocation size
+        ///   to the internal granularity and writes a terminating null at <c>buffer_[size]</c>.
+        /// - The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.
+        /// - The function copies exactly <paramref name="size1"/> and <paramref name="size2"/> characters; it does
+        ///   not require either source to be null-terminated.
+        /// </remarks>
+        /// <exception cref="...">Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw on failure.</exception>
         static Data* Initialize( const CharType* string1, size_type size1, const CharType* string2, size_type size2 )
         {
             auto size = size1 + size2;
@@ -797,6 +1372,28 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by repeating a character
+        /// prefix and appending a provided character sequence.
+        /// </summary>
+        /// <param name="value">Character to fill the prefix with.</param>
+        /// <param name="count">Number of times <paramref name="value"/> is written at the start of the buffer.</param>
+        /// <param name="string2">Pointer to the suffix characters to copy. May be <c>nullptr</c> only when <paramref name="size2"/> is zero.</param>
+        /// <param name="size2">Number of characters to copy from <paramref name="string2"/>.</param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance whose <c>referenceCount_</c> is initialized to 1
+        /// and whose <c>buffer_</c> contains <paramref name="count"/> repetitions of <paramref name="value"/>
+        /// followed by the <paramref name="size2"/> characters copied from <paramref name="string2"/>.
+        /// Returns <c>nullptr</c> when the total length (<paramref name="count"/> + <paramref name="size2"/>) is zero.
+        /// </returns>
+        /// <remarks>
+        /// - Allocation is performed via <see cref="Allocate(size_t)"/> which rounds the allocation size
+        ///   to the internal granularity and writes a terminating null at <c>buffer_[size]</c>.
+        /// - The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.
+        /// - The function copies exactly <paramref name="size2"/> characters; it does not require the source
+        ///   to be null-terminated.
+        /// </remarks>
+        /// <exception cref="...">Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw on failure.</exception>
         static Data* Initialize( CharType value, size_type count, const CharType* string2, size_type size2 )
         {
             auto size = count + size2;
@@ -813,6 +1410,28 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by copying a prefix and filling a suffix with a repeated character.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the prefix characters to copy. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// </param>
+        /// <param name="size1">Number of characters to copy from <paramref name="string1"/>.</param>
+        /// <param name="value">Character value that will be repeated to fill the suffix.</param>
+        /// <param name="count">Number of times <paramref name="value"/> is written after the copied prefix.</param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance whose <c>referenceCount_</c> is initialized to 1
+        /// and whose <c>buffer_</c> contains the concatenation of the copied prefix followed by <paramref name="count"/> repetitions
+        /// of <paramref name="value"/>. Returns <c>nullptr</c> when the total length (<paramref name="size1"/> + <paramref name="count"/>) is zero.
+        /// </returns>
+        /// <remarks>
+        /// - Allocation is performed via <see cref="Allocate(size_t)"/> which rounds the allocation size to the internal granularity
+        ///   and writes a terminating null at <c>buffer_[size]</c>.
+        /// - The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.
+        /// - The function copies exactly <paramref name="size1"/> characters from <paramref name="string1"/> and writes exactly
+        ///   <paramref name="count"/> repetitions of <paramref name="value"/>; neither source is required to be null-terminated.
+        /// </remarks>
+        /// <exception cref="...">Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw on failure.</exception>
         static Data* Initialize( const CharType* string1, size_type size1, CharType value, size_type count )
         {
             auto size = size1 + count;
@@ -831,6 +1450,35 @@ namespace Harlinn::Common::Core
 
 
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by concatenating three character sequences.
+        /// </summary>
+        /// <param name="string1">Pointer to the first source character sequence. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.</param>
+        /// <param name="size1">Number of characters to copy from <paramref name="string1"/>.</param>
+        /// <param name="string2">Pointer to the second source character sequence. May be <c>nullptr</c> only when <paramref name="size2"/> is zero.</param>
+        /// <param name="size2">Number of characters to copy from <paramref name="string2"/>.</param>
+        /// <param name="string3">Pointer to the third source character sequence. May be <c>nullptr</c> only when <paramref name="size3"/> is zero.</param>
+        /// <param name="size3">Number of characters to copy from <paramref name="string3"/>.</param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance whose <c>referenceCount_</c> is initialized to 1
+        /// and whose <c>buffer_</c> contains the concatenation of the provided sequences.
+        /// Returns <c>nullptr</c> when the total length (<paramref name="size1"/> + <paramref name="size2"/> + <paramref name="size3"/>) is zero.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Allocation is performed via <see cref="Allocate(size_t)"/> which rounds the allocation size
+        ///   to the internal granularity and writes a terminating null at <c>buffer_[size]</c>.
+        /// - The contents are copied in order: first <paramref name="string1"/> (length <paramref name="size1"/>),
+        ///   then <paramref name="string2"/> (length <paramref name="size2"/>), then <paramref name="string3"/> (length <paramref name="size3"/>).
+        /// - The function copies exactly the specified lengths; none of the sources are required to be null-terminated.
+        /// - The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the routine itself is not synchronized; callers must ensure appropriate synchronization
+        /// if multiple threads may access or modify the same BasicString instance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="...">Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw on failure.</exception>
         static Data* Initialize( const CharType* string1, size_type size1, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
         {
             auto size = size1 + size2 + size3;
@@ -848,6 +1496,55 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by filling a leading region
+        /// with a repeated character and then appending two provided character sequences.
+        /// </summary>
+        /// <param name="value">Character to repeat for the leading region.</param>
+        /// <param name="count">Number of times <paramref name="value"/> is written at the start of the buffer.</param>
+        /// <param name="string2">Pointer to the second source character sequence. May be <c>nullptr</c> only when <paramref name="size2"/> is zero.</param>
+        /// <param name="size2">Number of characters to copy from <paramref name="string2"/>.</param>
+        /// <param name="string3">Pointer to the third source character sequence. May be <c>nullptr</c> only when <paramref name="size3"/> is zero.</param>
+        /// <param name="size3">Number of characters to copy from <paramref name="string3"/>.</param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance whose <c>referenceCount_</c> is initialized to 1
+        /// and whose <c>buffer_</c> contains <paramref name="count"/> repetitions of <paramref name="value"/>
+        /// followed by the characters copied from <paramref name="string2"/> and <paramref name="string3"/>.
+        /// Returns <c>nullptr</c> when the total length (<paramref name="count"/> + <paramref name="size2"/> + <paramref name="size3"/>) is zero.
+        /// </returns>
+        /// <remarks>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       Allocation is performed via <see cref="Allocate(size_t)"/>, which rounds the allocation size
+        ///       to the internal granularity and writes a terminating null at <c>buffer_[size]</c>.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       The contents are written in order:
+        ///       first the repeated <paramref name="value"/> (count times),
+        ///       then <paramref name="string2"/> (<paramref name="size2"/> characters),
+        ///       then <paramref name="string3"/> (<paramref name="size3"/> characters).
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       The function copies exactly the specified lengths; none of the sources are required to be null-terminated.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// Thread-safety: the routine itself is not synchronized; callers must ensure appropriate synchronization
+        /// if multiple threads may access or modify the same BasicString instance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="...">Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw on failure.</exception>
         static Data* Initialize( CharType value, size_type count, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
         {
             auto size = count + size2 + size3;
@@ -866,6 +1563,53 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by copying a prefix,
+        /// filling a middle region with a repeated character value, and then copying a suffix.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the prefix characters to copy. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// The function copies exactly <paramref name="size1"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size1">
+        /// Number of characters to copy from <paramref name="string1"/>.
+        /// </param>
+        /// <param name="value">
+        /// Character value that will be repeated in the middle region.
+        /// </param>
+        /// <param name="count">
+        /// Number of times <paramref name="value"/> is written after the prefix.
+        /// </param>
+        /// <param name="string3">
+        /// Pointer to the suffix characters to copy. May be <c>nullptr</c> only when <paramref name="size3"/> is zero.
+        /// The function copies exactly <paramref name="size3"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size3">
+        /// Number of characters to copy from <paramref name="string3"/>.
+        /// </param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance whose <c>referenceCount_</c> is initialized to 1
+        /// and whose <c>buffer_</c> contains the concatenation: prefix (size1) + repeated value (count) + suffix (size3).
+        /// Returns <c>nullptr</c> when the total length (<paramref name="size1"/> + <paramref name="count"/> + <paramref name="size3"/>) is zero.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Allocation is performed via <see cref="Allocate(size_t)"/> which rounds the allocation size
+        ///   to the internal granularity and writes a terminating null at <c>buffer_[size]</c>.
+        /// - The contents are written in order: first the copied prefix, then exactly <paramref name="count"/>
+        ///   repetitions of <paramref name="value"/>, then the copied suffix. Exact lengths are used; no null-termination
+        ///   is assumed for the input pointers.
+        /// - The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the routine itself is not synchronized; callers must ensure appropriate synchronization
+        /// if multiple threads may access or modify the same BasicString instance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="...">
+        /// Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw platform-specific
+        /// exceptions (for example via <c>ThrowOSError</c>) on allocation failure.
+        /// </exception>
         static Data* Initialize( const CharType* string1, size_type size1, CharType value, size_type count, const CharType* string3, size_type size3 )
         {
             auto size = size1 + count + size3;
@@ -883,6 +1627,34 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Create and initialize a new internal <c>Data</c> buffer by copying a prefix,
+        /// copying a middle sequence and then filling a trailing region with a repeated character.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the prefix characters to copy. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// The function copies exactly <paramref name="size1"/> characters; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size1">Number of characters to copy from <paramref name="string1"/>.</param>
+        /// <param name="string2">
+        /// Pointer to the middle characters to copy. May be <c>nullptr</c> only when <paramref name="size2"/> is zero.
+        /// The function copies exactly <paramref name="size2"/> characters; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size2">Number of characters to copy from <paramref name="string2"/>.</param>
+        /// <param name="value">Character value that will be repeated to fill the suffix (trailing region).</param>
+        /// <param name="count">Number of times <paramref name="value"/> is written after the copied prefix and middle sequence.</param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance with <c>referenceCount_</c> == 1 and
+        /// <c>buffer_</c> containing: prefix (size1) + middle (size2) + repeated value (count).
+        /// Returns <c>nullptr</c> when total length (<paramref name="size1"/> + <paramref name="size2"/> + <paramref name="count"/>) is zero.
+        /// </returns>
+        /// <remarks>
+        /// <para>Allocation is performed via <see cref="Allocate(size_t)"/>, which rounds the allocation size to the internal granularity
+        /// and writes a terminating null at <c>buffer_[size]</c>.</para>
+        /// <para>The contents are written in order and exact lengths are used; no null-termination is assumed for the input pointers.</para>
+        /// <para>The caller is responsible for releasing the returned <c>Data*</c> using <see cref="ReleaseData"/>.</para>
+        /// </remarks>
+        /// <exception cref="...">Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may throw on allocation failure.</exception>
         static Data* Initialize( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value, size_type count )
         {
             auto size = size1 + size2 + count;
@@ -4525,93 +5297,6 @@ namespace Harlinn::Common::Core
             }
         }
 
-        bool FindAndReplace( CharType what, CharType with, size_type start = 0 )
-        {
-            if ( data_ )
-            {
-                auto index = IndexOf( what, start );
-                if ( index != npos )
-                {
-                    if ( data_->referenceCount_ > 1 )
-                    {
-                        auto currentSize = data_->size_;
-                        auto* newData = Allocate( currentSize );
-                        MemCopy( newData->buffer_, data_->buffer_, index );
-                        auto endIt = data_->buffer_ + currentSize;
-                        auto it = data_->buffer_ + index;
-                        auto destIt = newData->buffer_ + index;
-                        while ( it < endIt )
-                        {
-                            auto c = *it;
-                            if ( c != what )
-                            {
-                                *destIt = c;
-                            }
-                            else
-                            {
-                                *destIt = with;
-                            }
-                            destIt++;
-                            it++;
-                        }
-                        ReleaseData( data_ );
-                        data_ = newData;
-                    }
-                    else
-                    {
-                        std::replace( begin( ) + index, end( ), what, with );
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        bool FindAndReplace( const CharType* what, size_type whatLength, const CharType* with, size_type withLength, size_type start = 0 )
-        {
-            if ( data_ )
-            {
-                auto index = IndexOf( what, whatLength, start );
-                if ( index != npos )
-                {
-                    if ( data_->referenceCount_ > 1 )
-                    {
-                        auto currentSize = data_->size_;
-                        auto* newData = Allocate( currentSize );
-                        MemCopy( newData->buffer_, data_->buffer_, index );
-                        auto endIt = data_->buffer_ + currentSize;
-                        auto it = data_->buffer_ + index;
-                        auto destIt = newData->buffer_ + index;
-                        while ( it < endIt )
-                        {
-                            auto c = *it;
-                            if ( c != what )
-                            {
-                                *destIt = c;
-                            }
-                            else
-                            {
-                                *destIt = with;
-                            }
-                            destIt++;
-                            it++;
-                        }
-                        ReleaseData( data_ );
-                        data_ = newData;
-                    }
-                    else
-                    {
-                        std::replace( begin( ) + index, end( ), what, with );
-                    }
-                }
-            }
-            return false;
-        }
-
-
-
-
-
         void TrimRight( const CharType* charactersToRemove, size_type numberOfCharactersToRemove )
         {
             if ( data_ )
@@ -4764,6 +5449,62 @@ namespace Harlinn::Common::Core
             Replace( replaceAtPosition, replaceLength, with.data( ), with.size( ), padCharacter );
         }
 
+        bool FindAndReplace( CharType what, CharType with, size_type start = 0 )
+        {
+            if ( data_ )
+            {
+                auto index = IndexOf( what, start );
+                if ( index != npos )
+                {
+                    if ( data_->referenceCount_ > 1 )
+                    {
+                        auto currentSize = data_->size_;
+                        auto* newData = Allocate( currentSize );
+                        MemCopy( newData->buffer_, data_->buffer_, index );
+                        auto endIt = data_->buffer_ + currentSize;
+                        auto it = data_->buffer_ + index;
+                        auto destIt = newData->buffer_ + index;
+                        while ( it < endIt )
+                        {
+                            auto c = *it;
+                            if ( c != what )
+                            {
+                                *destIt = c;
+                            }
+                            else
+                            {
+                                *destIt = with;
+                            }
+                            destIt++;
+                            it++;
+                        }
+                        ReleaseData( data_ );
+                        data_ = newData;
+                    }
+                    else
+                    {
+                        std::replace( begin( ) + index, end( ), what, with );
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool FindAndReplace( const CharType* what, size_type whatLength, const CharType* with, size_type withLength, size_type start = 0 )
+        {
+            if ( data_ )
+            {
+                auto index = IndexOf( what, whatLength, start );
+                if ( index != npos )
+                {
+                    Replace( index, whatLength, with, withLength );
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
 
     };
@@ -4771,7 +5512,11 @@ namespace Harlinn::Common::Core
     template< class CharT, class Traits >
     inline std::basic_ostream<CharT, Traits>& operator<<( std::basic_ostream<CharT, Traits>& os, const BasicString<CharT>& str )
     {
-        return std::_Insert_string( os, str.data( ), str.size( ) );
+        if ( str.size( ) )
+        {
+            os.write( str.data( ), static_cast<std::streamsize>( str.size( ) ) );
+        }
+        return os;
     }
 
     template <class CharT, class CharTraitsT>

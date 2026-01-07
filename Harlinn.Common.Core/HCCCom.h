@@ -2696,12 +2696,19 @@ public: \
         };
 
         /// <summary>
-        /// Initializes the COM library for use by the calling thread, sets the thread's 
-        /// concurrency model, and creates a new apartment for the thread if one is required.
+        /// Initializes the COM library for use by the calling thread and sets the thread's concurrency model.
         /// </summary>
         /// <param name="apartmentModel">
-        /// The thread's concurrency model
+        /// The concurrency model for the calling thread. Defaults to <see cref="ApartmentModel::Default"/>.
         /// </param>
+        /// <remarks>
+        /// This function calls <c>CoInitializeEx</c> with the specified apartment model and converts any failing
+        /// HRESULT into the project's exception type via <c>HCC_COM_CHECK_HRESULT</c>.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when <c>CoInitializeEx</c> returns a failing HRESULT.
+        /// </exception>
+
         inline void Initialize( ApartmentModel apartmentModel = ApartmentModel::Default )
         {
             auto hr = CoInitializeEx( 0, static_cast<DWORD>( apartmentModel ) );
@@ -2713,29 +2720,51 @@ public: \
         /// thread, frees any other resources that the thread maintains, and forces all 
         /// RPC connections on the thread to close.
         /// </summary>
+        /// <remarks>
+        /// This function calls <c>CoUninitialize</c>. It complements a prior call to <see cref="Initialize"/>.
+        /// No exceptions are thrown from this function.
+        /// </remarks> 
         inline void Uninitialize( )
         {
             CoUninitialize( );
         }
 
-        /// <summary>
-        /// Registers security and sets the default security values for the process.
+		/// <summary>
+        /// Registers process-wide COM security and sets default security values for the process.
         /// </summary>
         /// <param name="securityDescriptor">
-        /// 
+        /// Optional pointer to a security descriptor that specifies the access control for COM objects.
+        /// May be <c>nullptr</c> to use default security.
         /// </param>
         /// <param name="authenticationServicesSize">
+        /// Number of authentication services provided in <paramref name="authenticationServices"/>.
         /// </param>
         /// <param name="authenticationServices">
+        /// Optional array of <c>SOLE_AUTHENTICATION_SERVICE</c> entries describing authentication services.
+        /// May be <c>nullptr</c> when no explicit authentication services are provided.
         /// </param>
         /// <param name="authenticationLevel">
+        /// The authentication level to use for COM calls. See <see cref="AuthenticationLevel"/>.
         /// </param>
         /// <param name="impersonationLevel">
+        /// The impersonation level to use for COM calls. See <see cref="ImpersonationLevel"/>.
         /// </param>
         /// <param name="authenticationList">
+        /// Optional pointer to a <c>SOLE_AUTHENTICATION_LIST</c> structure specifying additional authentication info.
+        /// May be <c>nullptr</c>.
         /// </param>
         /// <param name="authenticationCapabilities">
+        /// Additional flags that control COM authentication capabilities. See <see cref="AuthenticationCapabilities"/>.
         /// </param>
+        /// <remarks>
+        /// This wrapper forwards to <c>CoInitializeSecurity</c> and uses <c>HCC_COM_CHECK_HRESULT</c> to
+        /// translate failing HRESULTs into the project's exception type. Callers should ensure the security
+        /// parameters are valid for the process and understand that CoInitializeSecurity may only be called once
+        /// per process in many scenarios.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when <c>CoInitializeSecurity</c> returns a failing HRESULT.
+        /// </exception>
         inline void InitializeSecurity( _In_opt_ PSECURITY_DESCRIPTOR securityDescriptor,
             _In_ LONG authenticationServicesSize,
             _In_reads_opt_( authenticationServicesSize ) SOLE_AUTHENTICATION_SERVICE* authenticationServices,
@@ -2748,6 +2777,22 @@ public: \
             HCC_COM_CHECK_HRESULT( hr );
         }
 
+        /// <summary>
+        /// Convenience wrapper to initialize client-side COM security with common defaults.
+        /// </summary>
+        /// <param name="securityDescriptor">Optional security descriptor (default: <c>nullptr</c>).</param>
+        /// <param name="authenticationServicesSize">Size of <paramref name="authenticationServices"/> (default: -1).</param>
+        /// <param name="authenticationServices">Optional authentication services (default: <c>nullptr</c>).</param>
+        /// <param name="authenticationLevel">Requested authentication level (default: <see cref="AuthenticationLevel::Default"/>).</param>
+        /// <param name="impersonationLevel">Requested impersonation level (default: <see cref="ImpersonationLevel::Impersonate"/>).</param>
+        /// <param name="authenticationList">Optional authentication list (default: <c>nullptr</c>).</param>
+        /// <param name="authenticationCapabilities">Authentication capability flags (default: <see cref="AuthenticationCapabilities::None"/>).</param>
+        /// <remarks>
+        /// This helper forwards to <see cref="InitializeSecurity"/> using the configured defaults suitable for clients.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when underlying security initialization fails.
+        /// </exception>
         inline void InitializeClientSecurity( _In_opt_ PSECURITY_DESCRIPTOR securityDescriptor = nullptr,
             _In_ LONG authenticationServicesSize = -1,
             _In_reads_opt_( authenticationServicesSize ) SOLE_AUTHENTICATION_SERVICE* authenticationServices = nullptr,
@@ -2760,6 +2805,24 @@ public: \
         }
 
 
+        /// <summary>
+        /// Configures the authentication information for a proxy by calling <c>CoSetProxyBlanket</c>.
+        /// </summary>
+        /// <param name="proxy">The proxy <c>IUnknown</c> for which to set the blanket.</param>
+        /// <param name="authenticationService">Authentication service to use. See <see cref="AuthenticationService"/>.</param>
+        /// <param name="authorization">Authorization service to use. See <see cref="Authorization"/>.</param>
+        /// <param name="serverPrincipalName">Optional server principal name (SPN) for the target server, or <c>nullptr</c>.</param>
+        /// <param name="authenticationLevel">Authentication level to request. See <see cref="AuthenticationLevel"/>.</param>
+        /// <param name="impersonationLevel">Impersonation level to request. See <see cref="ImpersonationLevel"/>.</param>
+        /// <param name="authInfo">Optional pointer to credentials (RPC_AUTH_IDENTITY_HANDLE) for the call, or <c>nullptr</c>.</param>
+        /// <param name="authenticationCapabilities">Additional authentication capability flags. See <see cref="AuthenticationCapabilities"/>.</param>
+        /// <remarks>
+        /// The function forwards the call to <c>CoSetProxyBlanket</c> and throws on failure via <c>HCC_COM_CHECK_HRESULT</c>.
+        /// Use the <c>SetClientProxyBlanket</c> overloads to apply common client-side defaults.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when <c>CoSetProxyBlanket</c> returns a failing HRESULT.
+        /// </exception>
         inline void SetProxyBlanket( _In_ IUnknown* proxy,
             _In_ AuthenticationService authenticationService,
             _In_ Authorization authorization,
@@ -2773,6 +2836,24 @@ public: \
             HCC_COM_CHECK_HRESULT( hr );
         }
 
+
+        /// <summary>
+        /// Convenience overload that sets a client proxy blanket with typical defaults.
+        /// </summary>
+        /// <param name="proxy">The proxy <c>IUnknown</c> to configure.</param>
+        /// <param name="authenticationService">Authentication service (default: <see cref="AuthenticationService::WinNT"/>).</param>
+        /// <param name="authorization">Authorization service (default: <see cref="Authorization::None"/>).</param>
+        /// <param name="serverPrincipalName">Optional server principal name (default: <c>nullptr</c>).</param>
+        /// <param name="authenticationLevel">Authentication level (default: <see cref="AuthenticationLevel::Call"/>).</param>
+        /// <param name="impersonationLevel">Impersonation level (default: <see cref="ImpersonationLevel::Impersonate"/>).</param>
+        /// <param name="authInfo">Optional credentials (default: <c>nullptr</c>).</param>
+        /// <param name="authenticationCapabilities">Authentication capability flags (default: <see cref="AuthenticationCapabilities::None"/>).</param>
+        /// <remarks>
+        /// This overload forwards to <see cref="SetProxyBlanket"/> using commonly used client defaults.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         inline void SetClientProxyBlanket( _In_ IUnknown* proxy,
             _In_ AuthenticationService authenticationService = AuthenticationService::WinNT,
             _In_ Authorization authorization = Authorization::None,
@@ -2784,6 +2865,24 @@ public: \
         {
             SetProxyBlanket( proxy, authenticationService, authorization, serverPrincipalName, authenticationLevel, impersonationLevel, authInfo, authenticationCapabilities );
         }
+        
+        /// <summary>
+        /// Convenience overload that sets a client proxy blanket using an <see cref="Unknown"/> wrapper.
+        /// </summary>
+        /// <param name="proxy">The <see cref="Unknown"/> wrapper for the proxy to configure.</param>
+        /// <param name="authenticationService">Authentication service (default: <see cref="AuthenticationService::WinNT"/>).</param>
+        /// <param name="authorization">Authorization service (default: <see cref="Authorization::None"/>).</param>
+        /// <param name="serverPrincipalName">Optional server principal name (default: <c>nullptr</c>).</param>
+        /// <param name="authenticationLevel">Authentication level (default: <see cref="AuthenticationLevel::Call"/>).</param>
+        /// <param name="impersonationLevel">Impersonation level (default: <see cref="ImpersonationLevel::Impersonate"/>).</param>
+        /// <param name="authInfo">Optional credentials (default: <c>nullptr</c>).</param>
+        /// <param name="authenticationCapabilities">Authentication capability flags (default: <see cref="AuthenticationCapabilities::None"/>).</param>
+        /// <remarks>
+        /// Forwards to <see cref="SetClientProxyBlanket(IUnknown*, ...)"/> using the raw pointer obtained from the wrapper.
+        /// </remarks>
+        /// <exception cref="Harlinn::Common::Core::Exception">
+        /// Thrown when the underlying COM call fails.
+        /// </exception>
         inline void SetClientProxyBlanket( const Unknown& proxy,
             _In_ AuthenticationService authenticationService = AuthenticationService::WinNT,
             _In_ Authorization authorization = Authorization::None,
@@ -2797,16 +2896,43 @@ public: \
         }
 
         /// <summary>
-        /// Retrieves the names of supported known interfaces.
+        /// Returns the set of known COM interface names that the supplied COM object supports.
         /// </summary>
         /// <param name="unknown">
-        /// The pointer to the IUnknown interface that will be interrogated.
+        /// Pointer to a COM object implementing <c>IUnknown</c>. If <c>null</c>, the function returns an empty vector.
         /// </param>
         /// <returns>
-        /// The names of the interfaces the function was able to identify.
+        /// A <c>std::vector&lt;WideString&gt;</c> containing the friendly names of each known interface for which
+        /// <c>QueryInterface</c> succeeds. The returned list includes an entry for <c>"IUnknown"</c> when supported,
+        /// and one entry per interface defined by the <c>HCCComInterfaces.xm</c> include macro expansion.
         /// </returns>
+        /// <remarks>
+        /// The function performs a series of temporary <c>QueryInterface</c> calls — each successful call will acquire
+        /// a reference which is immediately released by this routine. The caller is responsible for COM initialization
+        /// on the calling thread (for example, by calling <c>CoInitializeEx</c> or equivalent) before invoking this function.
+        /// This routine does not throw on COM failure; it simply omits interfaces that fail the <c>QueryInterface</c> call.
+        /// </remarks>
+        /// <exception cref="std::bad_alloc">
+        /// Thrown if memory allocation for the returned vector or for any contained <c>WideString</c> fails.
+        /// </exception>
+        /// <example>
+        /// std::vector&lt;WideString&gt; supported = Com::GetSupportedKnownInterfaces(pUnknown);
+        /// for (const auto&amp; name : supported)
+        /// {
+        ///     wprintf(L"%ls\n", name.c_str());
+        /// }
+        /// </example>
         HCC_EXPORT std::vector<WideString> GetSupportedKnownInterfaces(IUnknown* unknown);
         
+        /// <summary>
+        /// Writes the names of supported known interfaces for the specified IUnknown to the standard output.
+        /// </summary>
+        /// <param name="unknown">Pointer to an <c>IUnknown</c> to be examined.</param>
+        /// <remarks>
+        /// This helper calls <see cref="GetSupportedKnownInterfaces(IUnknown*)"/>, iterates the returned list
+        /// of interface names and prints each on a separate line using <c>_putws</c>. It is intended as a
+        /// debugging aid and not for production-localization-sensitive logging.
+        /// </remarks>
         inline void PrintSupportedKnownInterfaces( IUnknown* unknown )
         {
             auto comInterfaces = GetSupportedKnownInterfaces( unknown );
@@ -2816,6 +2942,13 @@ public: \
             }
         }
 
+        /// <summary>
+        /// Writes the names of supported known interfaces for the specified Unknown wrapper to the standard output.
+        /// </summary>
+        /// <param name="unknown">Reference to an <see cref="Unknown"/> wrapper to be examined.</param>
+        /// <remarks>
+        /// Overload that forwards to <see cref="PrintSupportedKnownInterfaces(IUnknown*)"/>.
+        /// </remarks>
         inline void PrintSupportedKnownInterfaces( const Unknown& unknown )
         {
             PrintSupportedKnownInterfaces( unknown.GetInterfacePointer( ) );

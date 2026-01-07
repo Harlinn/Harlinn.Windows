@@ -134,6 +134,7 @@ namespace Harlinn::Common::Core
                 return false;
             }
         }
+
         std::vector<WideString> GetSupportedKnownInterfaces(IUnknown* unknown)
         {
             std::vector<WideString> result;

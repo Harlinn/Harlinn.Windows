@@ -164,20 +164,46 @@ namespace Harlinn::Common::Core
     /// <returns>An ANSI string containing the formatted error message.</returns>
     HCC_EXPORT AnsiString FormatErrorA( DWORD errorId );
     /// <summary>
-    /// Throws a SystemException constructed from the last error code returned by the system.
+    /// Throws a typed exception corresponding to the calling thread's last Win32 error.
     /// </summary>
     /// <remarks>
-    /// This convenience function calls GetLastError() and then throws using <see cref="ThrowOSError" />.
+    /// This convenience wrapper retrieves the last error code for the calling thread by calling
+    /// <c>GetLastError()</c> and forwards it to <see cref="ThrowOSError"/> which formats the
+    /// system message and throws a <see cref="Harlinn::Common::Core::SystemException"/> when
+    /// the error code is non-zero. Use this function immediately after a failing Win32 API
+    /// call to convert the thread-local error code into a descriptive exception.
     /// </remarks>
+    /// <exception cref="Harlinn::Common::Core::SystemException">
+    /// Thrown when the last Win32 error code is non-zero. The message will contain the system
+    /// description for the error code when available, otherwise "Unknown error".
+    /// </exception>
+    /// <seealso cref="ThrowOSError"/>
+    /// <example>
+    /// try
+    /// {
+    ///     // Win32 call that fails:
+    ///     // ::SomeWin32Api(...);
+    ///     ThrowLastOSError(); // throws if ::GetLastError() != 0
+    /// }
+    /// catch ( const Harlinn::Common::Core::SystemException& ex )
+    /// {
+    ///     // handle error
+    /// }
+    /// </example>
     HCC_EXPORT void ThrowLastOSError( );
     /// <summary>
-    /// Throws a SystemException for a given Windows error code.
+    /// Throws a Core::SystemException corresponding to a Win32 error code.
     /// </summary>
-    /// <param name="errorId">The Windows error code to convert into a SystemException.</param>
-    /// <remarks>
-    /// Attempts to format a human-readable message via <see cref="FormatMessageW" />. If formatting
-    /// succeeds the message is used in the thrown exception; otherwise a generic "Unknown error" message is used.
-    /// </remarks>
+    /// <param name="errorId">
+    /// The Win32 error code to translate and throw as an exception.
+    /// Typically obtained from ::GetLastError() or other Win32 APIs.
+    /// If <c>errorId</c> is zero this function does nothing.
+    /// </param>
+    /// <exception cref="Harlinn::Common::Core::SystemException">
+    /// Thrown when <paramref name="errorId"/> is non-zero. If a system
+    /// message can be obtained using <c>FormatMessageW</c> it will be used as the
+    /// exception message; otherwise the literal "Unknown error" is used.
+    /// </exception>
     HCC_EXPORT void ThrowOSError( DWORD errorId );
     /// <summary>
     /// Throws a COMException indicating that a queried interface is not available.
