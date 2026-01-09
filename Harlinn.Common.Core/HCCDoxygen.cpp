@@ -39,7 +39,8 @@ namespace Harlinn::Common::Core::Doxygen
         if ( xmlNode.NodeType( ) == XmlNodeType::node_element )
         {
             DoxCmdGroupType doxCmdGroupType{};
-            std::string nodeName = to_string( xmlNode.Name( ) );
+            auto tmp = xmlNode.Name( );
+            std::string nodeName( tmp.data(), tmp.size() );
             if ( TryParse( nodeName, doxCmdGroupType ) )
             {
                 result.Type = doxCmdGroupType;
@@ -1396,7 +1397,8 @@ namespace Harlinn::Common::Core::Doxygen
                 auto nodeName = childNode.Name( );
                 if ( childNode.NodeType( ) == XmlNodeType::node_data )
                 {
-                    auto value = to_string( childNode.Value( ) );
+                    auto tmp = childNode.Value( );
+                    std::string value( tmp.data( ), tmp.size( ) );
                     value = Trim( value );
                     if ( value.size( ) )
                     {

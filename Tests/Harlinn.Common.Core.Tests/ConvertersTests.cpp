@@ -525,7 +525,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest2 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+	bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest3
@@ -535,7 +536,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest3 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest4
@@ -545,7 +547,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest4 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest5
@@ -555,7 +558,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest5 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest6
@@ -565,7 +569,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest6 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest7
@@ -575,7 +580,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest7 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest8
@@ -585,7 +591,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest8 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest9
@@ -595,7 +602,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest9 )
     Type value = 1;
     WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest10
@@ -605,7 +613,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest10 )
     Type value = 1;
     WideString expectedResult{ L"1.000000" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest11
@@ -615,7 +624,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest11 )
     Type value = 1;
     WideString expectedResult{ L"1.000000" };
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest12
@@ -625,7 +635,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest12 )
     Type value(2020,1,1);
     WideString expectedResult = value.ToString();
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest13
@@ -635,7 +646,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest13 )
     Type value = Type::FromDays(1);
     WideString expectedResult = value.ToString( );
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 
@@ -646,7 +658,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest14 )
     Type value("{39978367-04DD-415F-8633-F079EA432700}");
     WideString expectedResult = value.ToWideString( );
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest15
@@ -656,7 +669,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest15 )
     Type value( 10000 );
     WideString expectedResult = value.ToWideString( );
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest16
@@ -666,7 +680,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest16 )
     Type value( 1 );
     WideString expectedResult = value.AsWideString();
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest17
@@ -675,7 +690,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest17 )
     using Type = WideString;
     Type value( L"Hi" );
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( value == result );
+    bool asExpected = value == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest18
@@ -685,7 +701,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest18 )
     Type value( "Hi" );
     WideString expectedResult = ToWideString( value );
     auto result = ConvertTo<WideString>( value );
-    BOOST_CHECK( expectedResult == result );
+    bool asExpected = expectedResult == result;
+    BOOST_CHECK( asExpected );
 }
 
 // --run_test=ConvertersTests/ToAnsiStringTest1

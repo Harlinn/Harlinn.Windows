@@ -132,7 +132,7 @@ namespace Harlinn::Common::Core
         {
             { ToWideString( a ) } -> std::same_as<WideString>;
             
-        } && IsWideString<ResultType> && 
+	    }&& IsWideString<ResultType>&& (std::is_same_v<ResultType, ArgumentType> == false) &&
             std::is_same_v<Variant, ArgumentType> == false && std::is_same_v<Currency, ArgumentType> == false )
     inline ResultType ConvertTo( ArgumentType arg )
     {

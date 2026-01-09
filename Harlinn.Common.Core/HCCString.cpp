@@ -114,49 +114,49 @@ namespace Harlinn::Common::Core
     {
         wchar_t buffer[33];
         _itow_s( value, buffer, base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
     WideString ToWideString( Byte value, int base )
     {
         wchar_t buffer[33];
         _ultow_s( value, buffer, base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
     WideString ToWideString( Int16 value, int base )
     {
         wchar_t buffer[33];
         _itow_s( value, buffer, base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
     WideString ToWideString( UInt16 value, int base )
     {
         wchar_t buffer[33];
         _ultow_s( value, buffer, base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
     WideString ToWideString( Int32 value, int base )
     {
         wchar_t buffer[33];
         _itow_s( value, buffer, base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
     WideString ToWideString( UInt32 value, int base )
     {
         wchar_t buffer[33];
         _ultow_s( value, buffer, base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
     WideString ToWideString( Int64 value, int base )
     {
         wchar_t buffer[66];
         _i64tow_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
     WideString ToWideString( UInt64 value, int base )
     {
         wchar_t buffer[66];
         _ui64tow_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return WideString( buffer );
+        return WideString( static_cast<const wchar_t*>( buffer ) );
     }
 
     WideString ToWideStringInvariant( Single value, int width, int precision )
@@ -237,49 +237,49 @@ namespace Harlinn::Common::Core
     {
         char buffer[33];
         _itoa_s( value, buffer, base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( Byte value, int base )
     {
         char buffer[33];
         _ultoa_s( value, buffer, base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( Int16 value, int base )
     {
         char buffer[33];
         _itoa_s( value, buffer, base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( UInt16 value, int base )
     {
         char buffer[33];
         _ultoa_s( value, buffer, base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( Int32 value, int base )
     {
         char buffer[33];
         _itoa_s( value, buffer, base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( UInt32 value, int base )
     {
         char buffer[33];
         _ultoa_s( value, buffer, base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( Int64 value, int base )
     {
         char buffer[66];
         _i64toa_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( UInt64 value, int base )
     {
         char buffer[66];
         _ui64toa_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return AnsiString( buffer );
+        return AnsiString( static_cast<const char*>( buffer ) );
     }
     AnsiString ToAnsiString( Single value )
     {

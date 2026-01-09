@@ -1,4 +1,4 @@
-/*
+﻿/*
    Copyright 2024-2025 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -514,6 +514,1055 @@ BOOST_AUTO_TEST_CASE(Wide_Empty_WhenBothZero)
     BOOST_TEST( sizeOk );
 }
 
+// Test: char - value repeated then appended C-string
+BOOST_AUTO_TEST_CASE( TestChar_ValueCountAndString2 )
+{
+    // Arrange
+    BasicString<char> s( '*', 3, "abc", 3 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 6 );
+    BOOST_TEST( lenOk );
+
+    // Assert content
+    std::string actual( s.c_str( ), s.size( ) );
+    bool contentOk = ( actual == std::string( "***abc" ) );
+    BOOST_TEST( contentOk );
+}
+
+// Test: char - only repeated value (string2 empty)
+BOOST_AUTO_TEST_CASE( TestChar_OnlyCount )
+{
+    // Arrange
+    BasicString<char> s( '$', 4, "", 0 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 4 );
+    BOOST_TEST( lenOk );
+
+    // Assert content
+    std::string actual( s.c_str( ), s.size( ) );
+    bool contentOk = ( actual == std::string( "$$$$" ) );
+    BOOST_TEST( contentOk );
+}
+
+// Test: char - only string2 (count zero)
+BOOST_AUTO_TEST_CASE( TestChar_OnlyString2 )
+{
+    // Arrange
+    BasicString<char> s( 'x', 0, "hello", 5 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 5 );
+    BOOST_TEST( lenOk );
+
+    // Assert content
+    std::string actual( s.c_str( ), s.size( ) );
+    bool contentOk = ( actual == std::string( "hello" ) );
+    BOOST_TEST( contentOk );
+}
+
+// Test: char - both zero -> empty
+BOOST_AUTO_TEST_CASE( TestChar_BothZeroEmpty )
+{
+    // Arrange
+    BasicString<char> s( 'a', 0, nullptr, 0 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 0 );
+    BOOST_TEST( lenOk );
+
+    // Assert content is empty
+    bool contentOk = ( s.empty( ) );
+    BOOST_TEST( contentOk );
+}
+
+// Wide character (wchar_t) counterparts
+
+// Test: wchar_t - value repeated then appended wide C-string
+BOOST_AUTO_TEST_CASE( TestWide_ValueCountAndString2 )
+{
+    // Arrange
+    BasicString<wchar_t> s( L'*', 3, L"abc", 3 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 6 );
+    BOOST_TEST( lenOk );
+
+    // Assert content
+    std::wstring actual( s.c_str( ), s.size( ) );
+    bool contentOk = ( actual == std::wstring( L"***abc" ) );
+    BOOST_TEST( contentOk );
+}
+
+// Test: wchar_t - only repeated value (string2 empty)
+BOOST_AUTO_TEST_CASE( TestWide_OnlyCount )
+{
+    // Arrange
+    BasicString<wchar_t> s( L'$', 4, L"", 0 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 4 );
+    BOOST_TEST( lenOk );
+
+    // Assert content
+    std::wstring actual( s.c_str( ), s.size( ) );
+    bool contentOk = ( actual == std::wstring( L"$$$$" ) );
+    BOOST_TEST( contentOk );
+}
+
+// Test: wchar_t - only string2 (count zero)
+BOOST_AUTO_TEST_CASE( TestWide_OnlyString2 )
+{
+    // Arrange
+    BasicString<wchar_t> s( L'x', 0, L"hello", 5 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 5 );
+    BOOST_TEST( lenOk );
+
+    // Assert content
+    std::wstring actual( s.c_str( ), s.size( ) );
+    bool contentOk = ( actual == std::wstring( L"hello" ) );
+    BOOST_TEST( contentOk );
+}
+
+// Test: wchar_t - both zero -> empty
+BOOST_AUTO_TEST_CASE( TestWide_BothZeroEmpty )
+{
+    // Arrange
+    BasicString<wchar_t> s( L'a', 0, nullptr, 0 );
+
+    // Assert length
+    bool lenOk = ( s.length( ) == 0 );
+    BOOST_TEST( lenOk );
+
+    // Assert content is empty
+    bool contentOk = ( s.empty( ) );
+    BOOST_TEST( contentOk );
+}
+
+/// Test constructing an ANSI BasicString from a prefix and repeated character suffix.
+BOOST_AUTO_TEST_CASE( TestPrefixAndRepeatedChar_Ansi )
+{
+    // Arrange: prefix, prefix length, repeat character and count
+    const char* prefix = "HelloWorld";
+    std::size_t size1 = 5;
+    char value = '*';
+    std::size_t count = 3;
+
+    // Act: construct the BasicString using the (string1, size1, value, count) constructor
+    BasicString<char> s( prefix, size1, value, count );
+
+    // Build expected std::string for verification
+    std::string expectedPrefix( prefix, size1 );
+    std::string expectedSuffix( count, value );
+    std::string expected = expectedPrefix + expectedSuffix;
+
+    // Build actual std::string from constructed BasicString
+    std::string actual( s.data( ), s.size( ) );
+
+    // Assert: use a bool variable as argument to BOOST_TEST
+    bool areEqual = ( actual == expected );
+    BOOST_TEST( areEqual );
+}
+
+/// Test constructing an ANSI BasicString when prefix length is zero (only repeated chars).
+BOOST_AUTO_TEST_CASE( TestPrefixAndRepeatedChar_EmptyPrefix )
+{
+    // Arrange: prefix present but size1 is zero, repeat character and count
+    const char* prefix = "ignored";
+    std::size_t size1 = 0;
+    char value = '#';
+    std::size_t count = 4;
+
+    // Act: construct the BasicString
+    BasicString<char> s( prefix, size1, value, count );
+
+    // Build expected std::string with only repeated characters
+    std::string expected( count, value );
+
+    // Build actual std::string from constructed BasicString
+    std::string actual( s.data( ), s.size( ) );
+
+    // Assert equality via a bool variable
+    bool areEqual = ( actual == expected );
+    BOOST_TEST( areEqual );
+}
+
+/// Test constructing a wide BasicString from a wide prefix and a repeated wide character.
+BOOST_AUTO_TEST_CASE( TestPrefixAndRepeatedChar_Wide )
+{
+    // Arrange: wide prefix, prefix length, repeat wide char and count
+    const wchar_t* prefix = L"WideHello";
+    std::size_t size1 = 4;
+    wchar_t value = L'?';
+    std::size_t count = 2;
+
+    // Act: construct the BasicString<wchar_t>
+    BasicString<wchar_t> ws( prefix, size1, value, count );
+
+    // Build expected std::wstring
+    std::wstring expectedPrefix( prefix, size1 );
+    std::wstring expectedSuffix( count, value );
+    std::wstring expected = expectedPrefix + expectedSuffix;
+
+    // Build actual std::wstring from constructed BasicString<wchar_t>
+    std::wstring actual( ws.data( ), ws.size( ) );
+
+    // Assert equality via a bool variable
+    bool areEqual = ( actual == expected );
+    BOOST_TEST( areEqual );
+}
+
+// Test constructing BasicString<char> from two std::string_view values.
+BOOST_AUTO_TEST_CASE( Concatenate_StringView_StringView )
+{
+    // Prepare input parts as string_view.
+    std::string_view part1 = "Hello ";
+    std::string_view part2 = "World";
+
+    // Construct BasicString<char> from two string_view spans.
+    BasicString<char> result( part1, part2 );
+
+    // Verify resulting length equals sum of part lengths.
+    bool lengthIsCorrect = ( result.size( ) == ( part1.size( ) + part2.size( ) ) );
+    BOOST_TEST( lengthIsCorrect );
+
+    // Verify content equals expected concatenation.
+    std::string expected = std::string( part1 ) + std::string( part2 );
+    bool contentMatches = ( std::string( result.data( ), result.size( ) ) == expected );
+    BOOST_TEST( contentMatches );
+}
+
+// Test constructing BasicString<char> from std::string and std::string_view.
+BOOST_AUTO_TEST_CASE( Concatenate_String_StringView )
+{
+    // Prepare input parts: std::string and std::string_view.
+    std::string s1 = "Foo";
+    std::string_view s2 = "Bar";
+
+    // Construct BasicString<char> from mixed contiguous containers.
+    BasicString<char> result( s1, s2 );
+
+    // Verify resulting length equals sum of part lengths.
+    bool lengthIsCorrect = ( result.length( ) == ( s1.size( ) + s2.size( ) ) );
+    BOOST_TEST( lengthIsCorrect );
+
+    // Verify content equals expected concatenation.
+    std::string expected = s1 + std::string( s2 );
+    bool contentMatches = ( std::string( result.data( ), result.size( ) ) == expected );
+    BOOST_TEST( contentMatches );
+}
+
+// Test constructing BasicString<wchar_t> from std::wstring and std::wstring_view.
+BOOST_AUTO_TEST_CASE( Concatenate_WideString_WideStringView )
+{
+    // Prepare wide input parts.
+    std::wstring ws1 = L"Wide";
+    std::wstring_view ws2 = L"Concat";
+
+    // Construct BasicString<wchar_t> from wide contiguous containers.
+    BasicString<wchar_t> result( ws1, ws2 );
+
+    // Verify resulting length equals sum of part lengths.
+    bool lengthIsCorrect = ( result.Length( ) == ( ws1.size( ) + ws2.size( ) ) );
+    BOOST_TEST( lengthIsCorrect );
+
+    // Verify content equals expected wide concatenation.
+    std::wstring expected = ws1 + std::wstring( ws2 );
+    bool contentMatches = ( std::wstring( result.data( ), result.size( ) ) == expected );
+    BOOST_TEST( contentMatches );
+}
+
+// Test constructing BasicString with empty spans in various combinations.
+BOOST_AUTO_TEST_CASE( Concatenate_EmptySpans )
+{
+    // Case 1: first empty, second non-empty.
+    std::string_view empty = "";
+    std::string_view nonEmpty = "NonEmpty";
+
+    // Construct BasicString from (empty, nonEmpty).
+    BasicString<char> result1( empty, nonEmpty );
+
+    // Verify length and content for case 1.
+    bool length1Correct = ( result1.size( ) == nonEmpty.size( ) );
+    BOOST_TEST( length1Correct );
+    bool content1Matches = ( std::string( result1.data( ), result1.size( ) ) == std::string( nonEmpty ) );
+    BOOST_TEST( content1Matches );
+
+    // Case 2: first non-empty, second empty.
+    BasicString<char> result2( nonEmpty, empty );
+
+    // Verify length and content for case 2.
+    bool length2Correct = ( result2.size( ) == nonEmpty.size( ) );
+    BOOST_TEST( length2Correct );
+    bool content2Matches = ( std::string( result2.data( ), result2.size( ) ) == std::string( nonEmpty ) );
+    BOOST_TEST( content2Matches );
+
+    // Case 3: both empty.
+    BasicString<char> result3( empty, empty );
+
+    // Verify length and content for case 3.
+    bool length3Correct = ( result3.size( ) == 0 );
+    BOOST_TEST( length3Correct );
+    bool content3Matches = ( result3.data( ) == nullptr || std::string( result3.data( ), result3.size( ) ).empty( ) );
+    BOOST_TEST( content3Matches );
+}
+
+BOOST_AUTO_TEST_CASE( Test_Concatenate_StringView_And_CString_Length )
+{
+    std::string_view prefix = "Hello";
+    const char* suffix = " World";
+    BasicString<char> result( prefix, suffix, static_cast<BasicString<char>::size_type>( 6 ) );
+
+    BasicString<char> expected( "Hello World" );
+    bool eq = ( result == expected );
+    BOOST_TEST( eq );
+}
+
+BOOST_AUTO_TEST_CASE( Test_EmptySpan_With_CString )
+{
+    std::string_view prefix = "";
+    const char* suffix = "OnlySuffix";
+    BasicString<char> result( prefix, suffix, static_cast<BasicString<char>::size_type>( std::strlen( suffix ) ) );
+
+    BasicString<char> expected( suffix );
+    bool eq = ( result == expected );
+    BOOST_TEST( eq );
+}
+
+BOOST_AUTO_TEST_CASE( Test_Span_With_EmptyCString )
+{
+    std::string_view prefix = "OnlyPrefix";
+    const char* suffix = "";
+    BasicString<char> result( prefix, suffix, static_cast<BasicString<char>::size_type>( 0 ) );
+
+    BasicString<char> expected( prefix.data( ), prefix.size( ) );
+    bool eq = ( result == expected );
+    BOOST_TEST( eq );
+}
+
+BOOST_AUTO_TEST_CASE( Test_Wide_Concatenate_WStringView_And_CWideString_Length )
+{
+    std::wstring_view prefix = L"WideHello";
+    const wchar_t* suffix = L" WideWorld";
+    BasicString<wchar_t> result( prefix, suffix, static_cast<BasicString<wchar_t>::size_type>( 10 ) );
+
+    BasicString<wchar_t> expected( L"WideHello WideWorld", static_cast<BasicString<wchar_t>::size_type>( 19 ) );
+    bool eq = ( result == expected );
+    BOOST_TEST( eq );
+}
+
+BOOST_AUTO_TEST_CASE( Test_Wide_EmptySpan_With_CWideString )
+{
+    std::wstring_view prefix = L"";
+    const wchar_t* suffix = L"WideOnlySuffix";
+    BasicString<wchar_t> result( prefix, suffix, static_cast<BasicString<wchar_t>::size_type>( std::wcslen( suffix ) ) );
+
+    BasicString<wchar_t> expected( suffix );
+    bool eq = ( result == expected );
+    BOOST_TEST( eq );
+}
+
+BOOST_AUTO_TEST_CASE( Test_Wide_Span_With_EmptyCWideString )
+{
+    std::wstring_view prefix = L"WideOnlyPrefix";
+    const wchar_t* suffix = L"";
+    BasicString<wchar_t> result( prefix, suffix, static_cast<BasicString<wchar_t>::size_type>( 0 ) );
+
+    BasicString<wchar_t> expected( prefix.data( ), prefix.size( ) );
+    bool eq = ( result == expected );
+    BOOST_TEST( eq );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructFromPointerAndStringView )
+{
+    const char* prefix = "Hello";
+    std::string_view suffix = "llo";
+    // prefix length 2 -> "He" + "llo" => "Hello"
+    BasicString<char> s( prefix, 2, suffix );
+    BasicString<char> expected( "Hello" );
+    bool equals = ( s == expected );
+    BOOST_TEST( equals );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructFromPointerAndStdString )
+{
+    const char* prefix = "Good";
+    std::string suffix = std::string( "bye" );
+    // "Good" (size 4) + "bye" => "Goodbye"
+    BasicString<char> s( prefix, 4, suffix );
+    BasicString<char> expected( "Goodbye" );
+    bool equals = ( s == expected );
+    BOOST_TEST( equals );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructFromPointerAndVectorChar )
+{
+    const char* prefix = "Start";
+    std::vector<char> suffix = { 'S', 't', 'o', 'p' }; // "Stop"
+    // prefix length 3 -> "Sta" + "Stop" => "StaStop"
+    BasicString<char> s( prefix, 3, suffix );
+    BasicString<char> expected( "StaStop" );
+    bool equals = ( s == expected );
+    BOOST_TEST( equals );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructWithNullPrefixAndSpan )
+{
+    // nullptr allowed when size is zero
+    const char* prefix = nullptr;
+    std::string_view suffix = "world";
+    BasicString<char> s( prefix, 0, suffix );
+    BasicString<char> expected( "world" );
+    bool equals = ( s == expected );
+    BOOST_TEST( equals );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructWideStringFromPointerAndWStringView )
+{
+    const wchar_t* prefix = L"Wide";
+    std::wstring_view suffix = L"Hello";
+    // prefix size 4 + suffix => "WideHello"
+    BasicString<wchar_t> s( prefix, 4, suffix );
+    BasicString<wchar_t> expected( L"WideHello", 9 );
+    bool equals = ( s == expected );
+    BOOST_TEST( equals );
+}
+
+/// Test constructing BasicString<char> from a std::string_view with a prepended character value.
+BOOST_AUTO_TEST_CASE( TestConstructFromStringView_Char )
+{
+    // Arrange
+    std::string_view sv( "hello" );
+    // Act
+    BasicString<char> s( '*', sv );
+    // Assert
+    bool sizeOk = ( s.size( ) == 6 );
+    BOOST_TEST( sizeOk );
+    bool firstCharOk = ( s[ 0 ] == '*' );
+    BOOST_TEST( firstCharOk );
+    std::string result( s.data( ), s.size( ) );
+    bool contentOk = ( result == std::string( "*hello" ) );
+    BOOST_TEST( contentOk );
+}
+
+/// Test constructing BasicString<wchar_t> from a std::wstring_view with a prepended wide character.
+BOOST_AUTO_TEST_CASE( TestConstructFromStringView_WideChar )
+{
+    // Arrange
+    std::wstring_view wsv( L"Wide" );
+    // Act
+    BasicString<wchar_t> ws( L'X', wsv );
+    // Assert
+    bool sizeOk = ( ws.size( ) == 5 );
+    BOOST_TEST( sizeOk );
+    bool firstCharOk = ( ws[ 0 ] == L'X' );
+    BOOST_TEST( firstCharOk );
+    std::wstring wresult( ws.data( ), ws.size( ) );
+    bool contentOk = ( wresult == std::wstring( L"XWide" ) );
+    BOOST_TEST( contentOk );
+}
+
+/// Test constructing BasicString<char> from a std::vector<char> and from an empty span.
+BOOST_AUTO_TEST_CASE( TestConstructFromVector_Char_AndEmptySpan )
+{
+    // Arrange
+    std::vector<char> vec = { 'a', 'b' };
+    std::vector<char> emptyVec;
+    // Act
+    BasicString<char> s1( '#', vec );
+    BasicString<char> s2( '#', emptyVec );
+    // Assert s1
+    bool sizeOk1 = ( s1.size( ) == 3 );
+    BOOST_TEST( sizeOk1 );
+    std::string result1( s1.data( ), s1.size( ) );
+    bool contentOk1 = ( result1 == std::string( "#ab" ) );
+    BOOST_TEST( contentOk1 );
+    // Assert s2
+    bool sizeOk2 = ( s2.size( ) == 1 );
+    BOOST_TEST( sizeOk2 );
+    std::string result2( s2.data( ), s2.size( ) );
+    bool contentOk2 = ( result2 == std::string( "#" ) );
+    BOOST_TEST( contentOk2 );
+}
+
+//
+// Construct BasicString<char> from std::string_view span with a leading repeated char value.
+// Expected result: repeated value characters followed by span content.
+//
+BOOST_AUTO_TEST_CASE( BasicString_ConstructFromSpanWithLeadingValue )
+{
+    // Arrange
+    std::string_view span = "world";
+    char value = '*';
+    BasicString<char>::size_type count = 3;
+
+    // Act
+    BasicString<char> s( value, count, span );
+
+    // Expected
+    std::string expected = std::string( static_cast<size_t>( count ), value ) + std::string( span );
+
+    // Assert - size
+    bool sizeOk = ( s.size( ) == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert - content
+    bool contentOk = std::string( s.c_str( ), s.size( ) ) == expected;
+    BOOST_TEST( contentOk );
+
+    // Assert - StartsWith
+    bool startsOk = s.StartsWith( value );
+    BOOST_TEST( startsOk );
+
+    // Assert - EndsWith (C-string)
+    bool endsOk = s.EndsWith( expected.c_str( ) );
+    BOOST_TEST( endsOk );
+
+    // Assert - operator== with C-string
+    bool eqOk = ( s == expected.c_str( ) );
+    BOOST_TEST( eqOk );
+}
+
+//
+// Construct BasicString<wchar_t> from std::wstring_view span with a leading repeated wchar_t value.
+// Expected result: repeated value characters followed by span content.
+//
+BOOST_AUTO_TEST_CASE( BasicStringW_ConstructFromSpanWithLeadingValue )
+{
+    // Arrange
+    std::wstring_view span = L"世界";
+    wchar_t value = L'#';
+    BasicString<wchar_t>::size_type count = 2;
+
+    // Act
+    BasicString<wchar_t> s( value, count, span );
+
+    // Expected
+    std::wstring expected( static_cast<size_t>( count ), value );
+    expected += std::wstring( span );
+
+    // Assert - size
+    bool sizeOk = ( s.size( ) == expected.size( ) );
+    BOOST_TEST( sizeOk );
+
+    // Assert - content
+    bool contentOk = std::wstring( s.c_str( ), s.size( ) ) == expected;
+    BOOST_TEST( contentOk );
+
+    // Assert - StartsWith
+    bool startsOk = s.StartsWith( value );
+    BOOST_TEST( startsOk );
+
+    // Assert - EndsWith (wide C-string)
+    bool endsOk = s.EndsWith( expected.c_str( ) );
+    BOOST_TEST( endsOk );
+
+    // Assert - operator== with wide C-string
+    bool eqOk = ( s == expected.c_str( ) );
+    BOOST_TEST( eqOk );
+}
+
+//
+// Empty span and non-zero count should produce string consisting only of repeated value characters.
+//
+BOOST_AUTO_TEST_CASE( BasicString_ConstructEmptySpanLeadingValueOnly )
+{
+    // Arrange
+    std::string_view span = "";
+    char value = 'X';
+    BasicString<char>::size_type count = 5;
+
+    // Act
+    BasicString<char> s( value, count, span );
+
+    // Expected
+    std::string expected( static_cast<size_t>( count ), value );
+
+    // Assert - content
+    bool contentOk = std::string( s.c_str( ), s.size( ) ) == expected;
+    BOOST_TEST( contentOk );
+
+    // Assert - size
+    bool sizeOk = ( s.size( ) == expected.size( ) );
+    BOOST_TEST( sizeOk );
+}
+
+//
+// Non-empty span and count == 0 should produce string equal to the span.
+//
+BOOST_AUTO_TEST_CASE( BasicString_ConstructSpanNoLeadingValue )
+{
+    // Arrange
+    std::string_view span = "hello";
+    char value = '*';
+    BasicString<char>::size_type count = 0;
+
+    // Act
+    BasicString<char> s( value, count, span );
+
+    // Expected
+    std::string expected( span );
+
+    // Assert - content equals span
+    bool contentOk = std::string( s.c_str( ), s.size( ) ) == expected;
+    BOOST_TEST( contentOk );
+
+    // Assert - equality with C-string
+    bool eqOk = ( s == expected.c_str( ) );
+    BOOST_TEST( eqOk );
+}
+
+/// Test constructing Ansi BasicString from a std::string_view span, then appending repeated char value
+BOOST_AUTO_TEST_CASE( ConstructFromSpanAndAppendValue_Ansi )
+{
+    // Arrange
+    std::string_view span = "Hello";
+    char value = '*';
+    std::size_t count = 3;
+
+    // Act
+    BasicString<char> s( span, value, count );
+    BasicString<char> expected( "Hello***" );
+
+    // Assert
+    bool equal = ( s == expected );
+    BOOST_TEST( equal );
+}
+
+/// Test constructing Wide BasicString from a std::wstring_view span, then appending repeated wchar_t value
+BOOST_AUTO_TEST_CASE( ConstructFromSpanAndAppendValue_Wide )
+{
+    // Arrange
+    std::wstring_view span = L"Hi";
+    wchar_t value = L'!';
+    std::size_t count = 2;
+
+    // Act
+    BasicString<wchar_t> s( span, value, count );
+    BasicString<wchar_t> expected( L"Hi!!" );
+
+    // Assert
+    bool equal = ( s == expected );
+    BOOST_TEST( equal );
+}
+
+/// Test that count == 0 results in the original span content (no appended characters)
+BOOST_AUTO_TEST_CASE( ConstructFromSpanAndAppendValue_CountZero )
+{
+    // Arrange
+    std::string_view span = "Base";
+    char value = '-';
+    std::size_t count = 0;
+
+    // Act
+    BasicString<char> s( span, value, count );
+    BasicString<char> expected( "Base" );
+
+    // Assert
+    bool equal = ( s == expected );
+    BOOST_TEST( equal );
+}
+
+/// Test empty span with positive count produces repeated value characters
+BOOST_AUTO_TEST_CASE( ConstructFromEmptySpanAndCountPositive )
+{
+    // Arrange
+    std::string_view span = "";
+    char value = 'X';
+    std::size_t count = 5;
+
+    // Act
+    BasicString<char> s( span, value, count );
+    BasicString<char> expected( "XXXXX" );
+
+    // Assert
+    bool equal = ( s == expected );
+    BOOST_TEST( equal );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructFromStringView_AppendsValueAtEnd_Ansi )
+{
+    std::string_view span = "world";
+    BasicString<char> s( span, '!' );
+
+    BasicString<char> expected( "world!", 6 );
+
+    bool result = ( s == expected );
+    BOOST_TEST( result );
+
+    bool resultLen = ( s.Length( ) == expected.Length( ) );
+    BOOST_TEST( resultLen );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructFromEmptyStringView_CreatesSingleChar_Ansi )
+{
+    std::string_view span = "";
+    BasicString<char> s( span, 'A' );
+
+    BasicString<char> expected( "A", 1 );
+
+    bool result = ( s == expected );
+    BOOST_TEST( result );
+
+    bool resultLen = ( s.Length( ) == 1 );
+    BOOST_TEST( resultLen );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructFromWStringView_AppendsValueAtEnd_Wide )
+{
+    std::wstring_view span = L"wide";
+    BasicString<wchar_t> s( span, L'X' );
+
+    BasicString<wchar_t> expected( L"wideX", 5 );
+
+    bool result = ( s == expected );
+    BOOST_TEST( result );
+
+    bool resultLen = ( s.Length( ) == expected.Length( ) );
+    BOOST_TEST( resultLen );
+}
+
+BOOST_AUTO_TEST_CASE( ConstructFromSingleCharSpan_AppendsValue_Ansi )
+{
+    std::string_view span = "a";
+    BasicString<char> s( span, 'z' );
+
+    BasicString<char> expected( "az", 2 );
+
+    bool result = ( s == expected );
+    BOOST_TEST( result );
+
+    bool resultLen = ( s.Length( ) == 2 );
+    BOOST_TEST( resultLen );
+}
+
+// Test that concatenating three non-empty ANSI parts produces the expected result.
+BOOST_AUTO_TEST_CASE( ThreePartConcat_Ansi_NonEmpty )
+{
+    // Arrange
+    const char* p1 = "Hello";
+    size_t s1 = 5;
+    const char* p2 = " ";
+    size_t s2 = 1;
+    const char* p3 = "World";
+    size_t s3 = 5;
+
+    // Act
+    BasicString<char> result( p1, s1, p2, s2, p3, s3 );
+    std::string actual( result.data( ), result.size( ) );
+    std::string expected = "Hello World";
+
+    // Assert
+    bool equal = ( actual == expected );
+    BOOST_TEST( equal );
+
+    bool equalSize = ( result.size( ) == expected.size( ) );
+    BOOST_TEST( equalSize );
+}
+
+// Test that constructor handles nullptr parts when size is zero and empty parts.
+BOOST_AUTO_TEST_CASE( ThreePartConcat_Ansi_EmptyPartsAndNullPtrs )
+{
+    // Arrange
+    const char* p1 = nullptr;
+    size_t s1 = 0;
+    const char* p2 = "Middle";
+    size_t s2 = 6; // "Middle" length
+    const char* p3 = nullptr;
+    size_t s3 = 0;
+
+    // Act
+    BasicString<char> result( p1, s1, p2, s2, p3, s3 );
+    std::string actual( result.data( ), result.size( ) );
+    std::string expected = "Middle";
+
+    // Assert
+    bool equal = ( actual == expected );
+    BOOST_TEST( equal );
+
+    bool equalSize = ( result.size( ) == expected.size( ) );
+    BOOST_TEST( equalSize );
+}
+
+// Test that constructor preserves embedded null characters when explicit sizes are provided.
+BOOST_AUTO_TEST_CASE( ThreePartConcat_Ansi_EmbeddedNulls )
+{
+    // Arrange
+    char part1[ ] = { 'a', 'b', '\0', 'c' }; // length 4
+    size_t s1 = 4;
+    char part2[ ] = { '-', '\0' }; // length 2 (includes embedded null)
+    size_t s2 = 2;
+    char part3[ ] = { 'X', 'Y' }; // length 2
+    size_t s3 = 2;
+
+    // Act
+    BasicString<char> result( part1, s1, part2, s2, part3, s3 );
+    std::string actual( result.data( ), result.size( ) );
+
+    // Build expected string with explicit sizes (to include embedded nulls)
+    std::string expected;
+    expected.append( part1, s1 );
+    expected.append( part2, s2 );
+    expected.append( part3, s3 );
+
+    // Assert
+    bool equal = ( actual == expected );
+    BOOST_TEST( equal );
+
+    bool equalSize = ( result.size( ) == expected.size( ) );
+    BOOST_TEST( equalSize );
+}
+
+// --- Wide-character (wchar_t) tests ---
+
+// Test that concatenating three non-empty wide parts produces the expected result.
+BOOST_AUTO_TEST_CASE( ThreePartConcat_Wide_NonEmpty )
+{
+    // Arrange
+    const wchar_t* p1 = L"Hello";
+    size_t s1 = 5;
+    const wchar_t* p2 = L" ";
+    size_t s2 = 1;
+    const wchar_t* p3 = L"World";
+    size_t s3 = 5;
+
+    // Act
+    BasicString<wchar_t> result( p1, s1, p2, s2, p3, s3 );
+    std::wstring actual( result.data( ), result.size( ) );
+    std::wstring expected = L"Hello World";
+
+    // Assert
+    bool equal = ( actual == expected );
+    BOOST_TEST( equal );
+
+    bool equalSize = ( result.size( ) == expected.size( ) );
+    BOOST_TEST( equalSize );
+}
+
+// Test that constructor handles nullptr parts when size is zero and empty wide parts.
+BOOST_AUTO_TEST_CASE( ThreePartConcat_Wide_EmptyPartsAndNullPtrs )
+{
+    // Arrange
+    const wchar_t* p1 = nullptr;
+    size_t s1 = 0;
+    const wchar_t* p2 = L"Middle";
+    size_t s2 = 6; // "Middle" length
+    const wchar_t* p3 = nullptr;
+    size_t s3 = 0;
+
+    // Act
+    BasicString<wchar_t> result( p1, s1, p2, s2, p3, s3 );
+    std::wstring actual( result.data( ), result.size( ) );
+    std::wstring expected = L"Middle";
+
+    // Assert
+    bool equal = ( actual == expected );
+    BOOST_TEST( equal );
+
+    bool equalSize = ( result.size( ) == expected.size( ) );
+    BOOST_TEST( equalSize );
+}
+
+// Test that constructor preserves embedded null wide characters when explicit sizes are provided.
+BOOST_AUTO_TEST_CASE( ThreePartConcat_Wide_EmbeddedNulls )
+{
+    // Arrange
+    wchar_t part1[ ] = { L'a', L'b', L'\0', L'c' }; // length 4
+    size_t s1 = 4;
+    wchar_t part2[ ] = { L'-', L'\0' }; // length 2 (includes embedded null)
+    size_t s2 = 2;
+    wchar_t part3[ ] = { L'X', L'Y' }; // length 2
+    size_t s3 = 2;
+
+    // Act
+    BasicString<wchar_t> result( part1, s1, part2, s2, part3, s3 );
+    std::wstring actual( result.data( ), result.size( ) );
+
+    // Build expected wstring with explicit sizes (to include embedded nulls)
+    std::wstring expected;
+    expected.append( part1, s1 );
+    expected.append( part2, s2 );
+    expected.append( part3, s3 );
+
+    // Assert
+    bool equal = ( actual == expected );
+    BOOST_TEST( equal );
+
+    bool equalSize = ( result.size( ) == expected.size( ) );
+    BOOST_TEST( equalSize );
+}
+
+/// <summary>
+/// Verify that the constructor BasicString(CharType value, size_type count, const CharType* string2, size_type size2, const CharType* string3, size_type size3)
+/// correctly produces the concatenation: repeated value (count times) + string2 (size2 chars) + string3 (size3 chars).
+/// </summary>
+BOOST_AUTO_TEST_CASE( Constructor_ValueCountAndTwoStrings )
+{
+    // Arrange
+    BasicString<char> s( '*', 5, "hello", 5, "world", 5 );
+    std::string expected = std::string( 5, '*' ) + "hello" + "world";
+    bool cond = ( s.size( ) == expected.size( ) ) && ( std::string( s.c_str( ), s.size( ) ) == expected );
+
+    // Assert
+    BOOST_TEST( cond );
+}
+
+/// <summary>
+/// Same test as above but for wide characters (wchar_t).
+/// Ensures wide-character overload produces expected wide string.
+/// </summary>
+BOOST_AUTO_TEST_CASE( Constructor_WideChar_ValueCountAndTwoStrings )
+{
+    // Arrange
+    BasicString<wchar_t> ws( L'A', 3, L"abc", 3, L"def", 3 );
+    std::wstring expected = std::wstring( 3, L'A' ) + L"abc" + L"def";
+    bool cond = ( ws.size( ) == expected.size( ) ) && ( std::wstring( ws.c_str( ), ws.size( ) ) == expected );
+
+    // Assert
+    BOOST_TEST( cond );
+}
+
+/// <summary>
+/// Construct with all zero lengths results in an empty BasicString.
+/// Verifies empty() and that c_str() yields an empty zero-terminated string.
+/// </summary>
+BOOST_AUTO_TEST_CASE( Constructor_ZeroCountsProducesEmpty )
+{
+    // Arrange
+    BasicString<char> empty( 'x', 0, nullptr, 0, nullptr, 0 );
+
+    // Act / Assert
+    bool condEmpty = empty.empty( );
+    BOOST_TEST( condEmpty );
+
+    bool condCStrEmpty = ( empty.c_str( ) != nullptr ) ? ( empty.c_str( )[ 0 ] == '\0' ) : true;
+    BOOST_TEST( condCStrEmpty );
+}
+
+/// <summary>
+/// Construct where the middle segment is empty but last segment is present.
+/// Verifies concatenation when one input segment has length zero.
+/// </summary>
+BOOST_AUTO_TEST_CASE( Constructor_PartialEmptyMiddle )
+{
+    // Arrange
+    BasicString<char> s( 'z', 2, "", 0, "end", 3 );
+    std::string expected = std::string( 2, 'z' ) + "end";
+    bool cond = ( s.size( ) == expected.size( ) ) && ( std::string( s.c_str( ), s.size( ) ) == expected );
+
+    // Assert
+    BOOST_TEST( cond );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_WithPrefixValueSuffix_Ansi )
+{
+    // Arrange / Act
+    BasicString<char> s( "pre", 3, '*', 5, "post", 4 );
+
+    // Assert
+    bool equalsExpected = ( s == "pre*****post" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeIsCorrect = ( s.size( ) == ( 3 + 5 + 4 ) );
+    BOOST_TEST( sizeIsCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_WithPrefixValueSuffix_Wide )
+{
+    // Arrange / Act
+    BasicString<wchar_t> s( L"pre", 3, L'*', 5, L"post", 4 );
+
+    // Assert
+    bool equalsExpected = ( s == L"pre*****post" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeIsCorrect = ( s.size( ) == ( 3 + 5 + 4 ) );
+    BOOST_TEST( sizeIsCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_OnlyRepeatedValue )
+{
+    // Arrange / Act
+    BasicString<char> s( nullptr, 0, '#', 7, nullptr, 0 );
+
+    // Assert
+    bool equalsExpected = ( s == "#######" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeIsCorrect = ( s.size( ) == 7 );
+    BOOST_TEST( sizeIsCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_AllZero_YieldsEmpty )
+{
+    // Arrange / Act
+    BasicString<char> s( nullptr, 0, 'x', 0, nullptr, 0 );
+
+    // Assert
+    bool isEmpty = ( s.size( ) == 0 );
+    BOOST_TEST( isEmpty );
+
+    bool equalsEmptyLiteral = ( s == "" );
+    BOOST_TEST( equalsEmptyLiteral );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_String1_String2_ValueAtEnd )
+{
+    // string1 + string2 + value repeated
+    BasicString<char> s( "Hello", 5, "World", 5, '*', 3 );
+    bool equalsExpected = ( s == "HelloWorld***" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeOk = ( s.size( ) == 13 );
+    BOOST_TEST( sizeOk );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_BothNull_OnlyValueRepeated )
+{
+    // both string1 and string2 null with count > 0 -> repeated value
+    BasicString<char> s( nullptr, 0, nullptr, 0, 'A', 4 );
+    bool equalsExpected = ( s == "AAAA" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeOk = ( s.size( ) == 4 );
+    BOOST_TEST( sizeOk );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_CountZero_ConcatOnly )
+{
+    // count == 0 -> only concatenation of string1 and string2
+    BasicString<char> s( "abc", 3, "def", 3, 'Z', 0 );
+    bool equalsExpected = ( s == "abcdef" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeOk = ( s.size( ) == 6 );
+    BOOST_TEST( sizeOk );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_EmptyFirstString_SecondPlusValues )
+{
+    // string1 empty (nullptr,size0) -> result is string2 + repeated value
+    BasicString<char> s( nullptr, 0, "xyz", 3, '-', 2 );
+    bool equalsExpected = ( s == "xyz--" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeOk = ( s.size( ) == 5 );
+    BOOST_TEST( sizeOk );
+}
+
+BOOST_AUTO_TEST_CASE( Construct_WideChar_Variant )
+{
+    // wide-char variant
+    BasicString<wchar_t> s( L"pre", 3, L"post", 4, L'X', 2 );
+    bool equalsExpected = ( s == L"prepostXX" );
+    BOOST_TEST( equalsExpected );
+
+    bool sizeOk = ( s.size( ) == 9 );
+    BOOST_TEST( sizeOk );
+}
 
 // --run_test=StringTests/ConstructorTest1W
 BOOST_AUTO_TEST_CASE( ConstructorTest1W )

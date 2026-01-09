@@ -526,7 +526,7 @@ namespace Harlinn::Common
                 {
                     if ( index )
                     {
-                        *index = i;
+                        *index = static_cast<unsigned long>(i);
                     }
                     return true;
                 }
@@ -916,65 +916,798 @@ namespace Harlinn::Common
         return std::bit_cast< UInt32 >( v ) & 0x80000000;
     }
 
+    /// <summary>
+    /// Determines whether two memory regions overlap in address space.
+    /// </summary>
+    /// <param name="first">
+    /// The starting address of the first memory region.
+    /// </param>
+    /// <param name="firstSize">
+    /// The size, in bytes, of the first memory region.
+    /// </param>
+    /// <param name="second">
+    /// The starting address of the second memory region.
+    /// </param>
+    /// <param name="secondSize">
+    /// The size, in bytes, of the second memory region.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// Returns <c>true</c> if the memory regions overlap; otherwise, <c>false</c>.
+    /// </para>
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// This function performs a strict overlap test using half-open intervals
+    /// defined as [begin, end), where <c>end = begin + size</c>. The regions
+    /// overlap if either region's start address falls strictly within the other
+    /// region's range.
+    /// </para>
+    /// <para>
+    /// Use this function to decide between copy strategies that require non-overlapping
+    /// buffers (e.g., <c>memcpy</c> or <see cref="MemCopy(char*, const char*, size_t)"/>)
+    /// and those that safely handle overlap (e.g., <c>memmove</c> or
+    /// <see cref="MemMove(char*, const char*, size_t)"/>).
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>
+    ///     The comparison is performed using byte-wise pointer arithmetic via
+    ///     <c>reinterpret_cast&lt;const char*&gt;</c> to avoid type aliasing issues.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///     Zero-length regions never overlap and will return <c>false</c>.
+    ///     </description>
+    ///   </item>
+    /// </list>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// char buffer[64]{};
+    /// char* a = buffer;
+    /// char* b = buffer + 16;
+    /// bool overlaps = Harlinn::Common::Overlaps(a, 32, b, 32); // returns true
+    /// </code>
+    /// </example>
+    /// <seealso cref="MemCopy(char*, const char*, size_t)"/>
+    /// <seealso cref="MemMove(char*, const char*, size_t)"/>
+    inline bool Overlaps( const void* first, size_t firstSize, const void* second, size_t secondSize ) noexcept
+    {
+        if( first < second )
+        {
+            return ( reinterpret_cast< const char* >( first ) + firstSize ) > reinterpret_cast< const char* >( second );
+        }
+        else
+        {
+            return ( reinterpret_cast<const char*>( second ) + secondSize ) > reinterpret_cast<const char*>( first );
+        }
+	}
 
-
+    /// <summary>
+    /// Copies a specified number of bytes from a source buffer to a destination buffer using a non-overlapping copy.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied bytes. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="length">
+    /// The number of bytes to copy. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// This function wraps <c>memcpy</c> and is intended for non-overlapping memory regions only.
+    /// In debug builds, it asserts if the memory regions overlap according to
+    /// <see cref="Overlaps(const void*, size_t, const void*, size_t)"/>. In release builds,
+    /// providing overlapping regions results in undefined behavior.
+    /// </para>
+    /// <para>
+    /// If there is any possibility that the regions overlap, use
+    /// <see cref="MemMove(char*, const char*, size_t)"/> instead.
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>Preconditions: <c>dest != nullptr</c> and <c>source != nullptr</c> when <paramref name="length"/> &gt; 0.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>Buffers must be distinct and non-overlapping for the specified <paramref name="length"/>.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>Zero-length copies are treated as no-ops.</description>
+    ///   </item>
+    /// </list>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// char src[16]{ 'H','a','r','l','i','n','n',0 };
+    /// char dst[16]{};
+    /// // Ensure non-overlapping regions or use MemMove
+    /// if ( !Harlinn::Common::Overlaps( dst, sizeof( dst ), src, sizeof( src ) ) )
+    /// {
+    ///     Harlinn::Common::MemCopy( dst, src, 8 );
+    /// }
+    /// </code>
+    /// </example>
+    /// <seealso cref="MemMove(char*, const char*, size_t)"/>
+    /// <seealso cref="MemCopyOrZero(char*, const char*, size_t)"/>
+    /// <seealso cref="Overlaps(const void*, size_t, const void*, size_t)"/>
     inline void MemCopy( char* dest, const char* source, size_t length ) noexcept
     {
-        memcpy( dest, source, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+            if ( !source )
+            {
+                assert( false && "source is null" );
+            }
+            if ( Overlaps( dest, length, source, length ) )
+            {
+                assert( false && "source and dest memory regions overlap" );
+			}
+#endif
+            memcpy( dest, source, length );
+        }
     }
+    
+    /// <summary>
+    /// Copies a specified number of bytes from a source buffer to a destination buffer 
+    /// if <paramref name="source"/> is non-null, otherwise fills the destination buffer 
+    /// with zeros. Uses a non-overlapping copy when a source is provided.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied bytes or zeroes. 
+    /// Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. If null, the function zero-fills the 
+    /// destination buffer.
+    /// </param>
+    /// <param name="length">
+    /// The number of bytes to copy or zero-fill. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// When <paramref name="source"/> is not null, this function wraps <c>memcpy</c> and is 
+    /// intended for non-overlapping memory regions only. In debug builds, it asserts if the 
+    /// memory regions overlap according to <see cref="Overlaps(const void*, size_t, const void*, size_t)"/>. 
+    /// In release builds, providing overlapping regions results in undefined behavior.
+    /// </para>
+    /// <para>
+    /// If there is any possibility that the regions overlap, use
+    /// <see cref="MemMoveOrZero(char*, const char*, size_t)"/> instead.
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>Preconditions: <c>dest != nullptr</c> when <paramref name="length"/> &gt; 0.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>If <paramref name="source"/> is null, the destination is filled with zeros.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>Zero-length operations are treated as no-ops.</description>
+    ///   </item>
+    /// </list>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// char buffer[32];
+    /// const char* maybeSrc = nullptr;
+    /// Harlinn::Common::MemCopyOrZero(buffer, maybeSrc, sizeof(buffer)); // zero-fills buffer
+    /// </code>
+    /// </example>
+    /// <seealso cref="Overlaps(const void*, size_t, const void*, size_t)"/>
+    /// <seealso cref="MemMoveOrZero(char*, const char*, size_t)"/>
+    inline void MemCopyOrZero( char* dest, const char* source, size_t length ) noexcept
+    {
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+#endif
+            if ( source )
+            {
+#ifdef _DEBUG
+                if ( Overlaps( dest, length, source, length ) )
+                {
+                    assert( false && "source and dest memory regions overlap" );
+                }
+#endif
+                memcpy( dest, source, length );
+            }
+            else
+            {
+                memset( dest, 0, length );
+            }
+        }
+    }
+
+    /// <summary>
+    /// Copies a specified number of wide characters from a source buffer to a destination 
+    /// buffer using a non-overlapping copy.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied wide characters. Must be 
+    /// non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="length">
+    /// The number of wide characters to copy. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// This function wraps <c>wmemcpy</c> and is intended for non-overlapping memory regions only.
+    /// In debug builds, it asserts if the memory regions overlap according to
+    /// <see cref="Overlaps(const void*, size_t, const void*, size_t)"/>. In release builds,
+    /// providing overlapping regions results in undefined behavior.
+    /// </para>
+    /// <para>
+    /// If there is any possibility that the regions overlap, use
+    /// <see cref="MemMove(wchar_t*, const wchar_t*, size_t)"/> instead.
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>Preconditions: <c>dest != nullptr</c> and <c>source != nullptr</c> when <paramref name="length"/> &gt; 0.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>Buffers must be distinct and non-overlapping for the specified <paramref name="length"/>.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>Zero-length copies are treated as no-ops.</description>
+    ///   </item>
+    /// </list>
+    /// </remarks>
+    /// <seealso cref="Overlaps(const void*, size_t, const void*, size_t)"/>
+    /// <seealso cref="MemMove(wchar_t*, const wchar_t*, size_t)"/>
     inline void MemCopy( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
     {
-        wmemcpy( dest, source, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+            if ( !source )
+            {
+                assert( false && "source is null" );
+            }
+            if ( Overlaps( dest, length * sizeof( wchar_t ), source, length * sizeof( wchar_t ) ) )
+            {
+                assert( false && "source and dest memory regions overlap" );
+			}
+#endif
+            wmemcpy( dest, source, length );
+        }
     }
 
+    /// <summary>
+    /// Copies a specified number of wide characters from a source buffer to a destination buffer 
+    /// if <paramref name="source"/> is non-null, otherwise fills the destination buffer with zeros. 
+    /// Uses a non-overlapping copy when a source is provided.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied wide characters or zeroes. 
+    /// Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. If null, the function zero-fills the destination buffer.
+    /// </param>
+    /// <param name="length">
+    /// The number of wide characters to copy or zero-fill. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// When <paramref name="source"/> is not null, this function wraps <c>wmemcpy</c> and is intended 
+    /// for non-overlapping memory regions only. In debug builds, it asserts if the memory regions 
+    /// overlap according to <see cref="Overlaps(const void*, size_t, const void*, size_t)"/>. 
+    /// In release builds, providing overlapping regions results in undefined behavior.
+    /// </para>
+    /// <para>
+    /// If there is any possibility that the regions overlap, use
+    /// <see cref="MemMoveOrZero(wchar_t*, const wchar_t*, size_t)"/> instead.
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>Preconditions: <c>dest != nullptr</c> when <paramref name="length"/> &gt; 0.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>If <paramref name="source"/> is null, the destination is filled with zeros.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>Zero-length operations are treated as no-ops.</description>
+    ///   </item>
+    /// </list>
+    /// </remarks>
+    /// <seealso cref="Overlaps(const void*, size_t, const void*, size_t)"/>
+    /// <seealso cref="MemMoveOrZero(wchar_t*, const wchar_t*, size_t)"/>
+    inline void MemCopyOrZero( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
+    {
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+#endif
+            if ( source )
+            {
+#ifdef _DEBUG
+                if ( Overlaps( dest, length * sizeof( wchar_t ), source, length * sizeof( wchar_t ) ) )
+                {
+                    assert( false && "source and dest memory regions overlap" );
+                }
+#endif
+                wmemcpy( dest, source, length );
+            }
+            else
+            {
+                wmemset( dest, 0, length );
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Copies a specified number of bytes from a source buffer to a destination buffer,
+    /// correctly handling overlapping memory regions.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied bytes. Must be non-null 
+    /// if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. Must be non-null if <paramref name="length"/> 
+    /// is greater than zero.
+    /// </param>
+    /// <param name="length">
+    /// The number of bytes to copy. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// This function wraps <c>memmove</c> and is safe for overlapping source and destination ranges.
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>Preconditions: <c>dest != nullptr</c> and <c>source != nullptr</c> when <paramref name="length"/> &gt; 0.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>Zero-length copies are treated as no-ops.</description>
+    ///   </item>
+    /// </list>
+    /// </remarks>
+    /// <seealso cref="MemCopy(char*, const char*, size_t)"/>
     inline void MemMove( char* dest, const char* source, size_t length ) noexcept
     {
-        memmove( dest, source, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+            if ( !source )
+            {
+                assert( false && "source is null" );
+            }
+#endif
+            memmove( dest, source, length );
+        }
     }
+
+    /// <summary>
+    /// Copies a specified number of bytes from a source buffer to a destination buffer if <paramref name="source"/> is non-null
+    /// using overlap-safe semantics, otherwise fills the destination buffer with zeros.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied bytes or zeroes. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. If null, the function zero-fills the destination buffer.
+    /// </param>
+    /// <param name="length">
+    /// The number of bytes to copy or zero-fill. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// This function wraps <c>memmove</c> when <paramref name="source"/> is non-null and is safe for overlapping memory regions.
+    /// If <paramref name="source"/> is null, the destination is filled with zeros.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="MemCopyOrZero(char*, const char*, size_t)"/>
+    inline void MemMoveOrZero( char* dest, const char* source, size_t length ) noexcept
+    {
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+#endif
+            if ( source )
+            {
+                memmove( dest, source, length );
+            }
+            else
+            {
+                memset( dest, 0, length );
+            }
+        }
+    }
+
+    /// <summary>
+    /// Copies a specified number of wide characters from a source buffer to a destination buffer,
+    /// correctly handling overlapping memory regions.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied wide characters. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="length">
+    /// The number of wide characters to copy. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// This function wraps <c>wmemmove</c> and is safe for overlapping source and destination ranges.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="MemCopy(wchar_t*, const wchar_t*, size_t)"/>
     inline void MemMove( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
     {
-        wmemmove( dest, source, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+            if ( !source )
+            {
+                assert( false && "source is null" );
+            }
+#endif
+            wmemmove( dest, source, length );
+        }
+    }
+    /// <summary>
+    /// Copies a specified number of wide characters from a source buffer to a destination buffer if <paramref name="source"/> is non-null
+    /// using overlap-safe semantics, otherwise fills the destination buffer with zeros.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer that receives the copied wide characters or zeroes. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="source">
+    /// Pointer to the source buffer to copy from. If null, the function zero-fills the destination buffer.
+    /// </param>
+    /// <param name="length">
+    /// The number of wide characters to copy or zero-fill. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// This function wraps <c>wmemmove</c> when <paramref name="source"/> is non-null and is safe for overlapping memory regions.
+    /// If <paramref name="source"/> is null, the destination is filled with zeros.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="MemCopyOrZero(wchar_t*, const wchar_t*, size_t)"/>
+    inline void MemMoveOrZero( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
+    {
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+#endif
+            if ( source )
+            {
+                wmemmove( dest, source, length );
+            }
+            else
+            {
+                wmemset( dest, 0, length );
+            }
+        }
     }
 
+    /// <summary>
+    /// Fills a buffer with a specified byte value.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer to fill. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="value">
+    /// The byte value to write.
+    /// </param>
+    /// <param name="length">
+    /// The number of bytes to write. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// This function wraps <c>memset</c>.
+    /// </remarks>
     inline void MemSet( char* dest, char value, size_t length ) noexcept
     {
-        memset( dest, value, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+#endif
+            memset( dest, value, length );
+        }
     }
+    /// <summary>
+    /// Fills a buffer with a specified wide character value.
+    /// </summary>
+    /// <param name="dest">
+    /// Pointer to the destination buffer to fill. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="value">
+    /// The wide character value to write.
+    /// </param>
+    /// <param name="length">
+    /// The number of wide characters to write. When zero, the function performs no work.
+    /// </param>
+    /// <remarks>
+    /// This function wraps <c>wmemset</c>.
+    /// </remarks>
     inline void MemSet( wchar_t* dest, wchar_t value, size_t length ) noexcept
     {
-        wmemset( dest, value, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !dest )
+            {
+                assert( false && "dest is null" );
+            }
+#endif
+            wmemset( dest, value, length );
+        }
     }
 
 
+    /// <summary>
+    /// Compares two byte sequences lexicographically.
+    /// </summary>
+    /// <param name="first">
+    /// Pointer to the first buffer to compare. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="second">
+    /// Pointer to the second buffer to compare. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="length">
+    /// The number of bytes to compare. When zero, the function returns 0.
+    /// </param>
+    /// <returns>
+    /// A negative value if <paramref name="first"/> is less than <paramref name="second"/>,
+    /// zero if they are equal, or a positive value if <paramref name="first"/> is greater than <paramref name="second"/>.
+    /// </returns>
+    /// <remarks>
+    /// This function wraps <c>memcmp</c>.
+    /// </remarks>
     [[nodiscard]] inline int MemCmp( const char* first, const char* second, size_t length )
     {
-        return memcmp( first, second, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !first )
+            {
+                assert( false && "first is null" );
+            }
+            if ( !second )
+            {
+                assert( false && "second is null" );
+            }
+#endif
+            return memcmp( first, second, length );
+        }
+		return 0;
     }
 
+    /// <summary>
+    /// Compares two wide character sequences lexicographically.
+    /// </summary>
+    /// <param name="first">
+    /// Pointer to the first buffer to compare. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="second">
+    /// Pointer to the second buffer to compare. Must be non-null if <paramref name="length"/> is greater than zero.
+    /// </param>
+    /// <param name="length">
+    /// The number of wide characters to compare. When zero, the function returns 0.
+    /// </param>
+    /// <returns>
+    /// A negative value if <paramref name="first"/> is less than <paramref name="second"/>,
+    /// zero if they are equal, or a positive value if <paramref name="first"/> is greater than <paramref name="second"/>.
+    /// </returns>
+    /// <remarks>
+    /// This function wraps <c>wmemcmp</c>.
+    /// </remarks>
     [[nodiscard]] inline int MemCmp( const wchar_t* first, const wchar_t* second, size_t length )
     {
-        return wmemcmp( first, second, length );
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !first )
+            {
+                assert( false && "first is null" );
+            }
+            if ( !second )
+            {
+                assert( false && "second is null" );
+            }
+#endif
+            return wmemcmp( first, second, length );
+        }
+		return 0;
     }
 
+    /// <summary>
+    /// Scans a byte buffer for the first occurrence of the specified byte value.
+    /// </summary>
+    /// <param name="buffer">
+    /// Pointer to the buffer to scan. Must be non-null if <paramref name="bufferSize"/> is greater than zero.
+    /// </param>
+    /// <param name="value">
+    /// The byte value to search for, converted to <c>unsigned char</c> for comparison.
+    /// </param>
+    /// <param name="bufferSize">
+    /// The number of bytes to examine. When zero, the function returns <c>nullptr</c>.
+    /// </param>
+    /// <returns>
+    /// A pointer to the first occurrence of <paramref name="value"/> within the specified range, or <c>nullptr</c> if not found.
+    /// </returns>
+    /// <remarks>
+    /// This function wraps <c>memchr</c>.
+    /// </remarks>
     [[nodiscard]] inline char* MemChr( char* buffer, int value, size_t bufferSize ) noexcept
     {
-        return ( char* )memchr( buffer, value, bufferSize );
+        if ( bufferSize )
+        {
+#ifdef _DEBUG
+            if ( !buffer )
+            {
+                assert( false && "buffer is null" );
+            }
+#endif
+            return (char*)memchr( buffer, value, bufferSize );
+        }
+		return nullptr;
     }
+
+    /// <summary>
+    /// Scans a byte buffer for the first occurrence of the specified byte value.
+    /// </summary>
+    /// <param name="buffer">
+    /// Pointer to the buffer to scan. Must be non-null if <paramref name="bufferSize"/> is greater than zero.
+    /// </param>
+    /// <param name="value">
+    /// The byte value to search for, converted to <c>unsigned char</c> for comparison.
+    /// </param>
+    /// <param name="bufferSize">
+    /// The number of bytes to examine. When zero, the function returns <c>nullptr</c>.
+    /// </param>
+    /// <returns>
+    /// A pointer to the first occurrence of <paramref name="value"/> within the specified range, or <c>nullptr</c> if not found.
+    /// </returns>
+    /// <remarks>
+    /// This function wraps <c>memchr</c>.
+    /// </remarks>
     [[nodiscard]] inline const char* MemChr( const char* buffer, int value, size_t bufferSize ) noexcept
     {
-        return ( const char* )memchr( buffer, value, bufferSize );
+        if ( bufferSize )
+        {
+#ifdef _DEBUG
+            if ( !buffer )
+            {
+                assert( false && "buffer is null" );
+            }
+#endif
+            return (const char*)memchr( buffer, value, bufferSize );
+        }
+		return nullptr;
     }
+
+    /// <summary>
+    /// Scans a wide character buffer for the first occurrence of the specified wide character value.
+    /// </summary>
+    /// <param name="buffer">
+    /// Pointer to the buffer to scan. Must be non-null if <paramref name="bufferSize"/> is greater than zero.
+    /// </param>
+    /// <param name="value">
+    /// The wide character value to search for.
+    /// </param>
+    /// <param name="bufferSize">
+    /// The number of wide characters to examine. When zero, the function returns <c>nullptr</c>.
+    /// </param>
+    /// <returns>
+    /// A pointer to the first occurrence of <paramref name="value"/> within the specified range, or <c>nullptr</c> if not found.
+    /// </returns>
+    /// <remarks>
+    /// This function wraps <c>wmemchr</c>.
+    /// </remarks>
     [[nodiscard]] inline wchar_t* MemChr( wchar_t* buffer, int value, size_t bufferSize ) noexcept
     {
-        return ( wchar_t* )wmemchr( buffer, value, bufferSize );
+        if ( bufferSize )
+        {
+#ifdef _DEBUG
+            if ( !buffer )
+            {
+                assert( false && "buffer is null" );
+            }
+#endif
+            return (wchar_t*)wmemchr( buffer, value, bufferSize );
+        }
+		return nullptr;
     }
+
+    /// <summary>
+    /// Scans a wide character buffer for the first occurrence of the specified wide character value.
+    /// </summary>
+    /// <param name="buffer">
+    /// Pointer to the buffer to scan. Must be non-null if <paramref name="bufferSize"/> is greater than zero.
+    /// </param>
+    /// <param name="value">
+    /// The wide character value to search for.
+    /// </param>
+    /// <param name="bufferSize">
+    /// The number of wide characters to examine. When zero, the function returns <c>nullptr</c>.
+    /// </param>
+    /// <returns>
+    /// A pointer to the first occurrence of <paramref name="value"/> within the specified range, or <c>nullptr</c> if not found.
+    /// </returns>
+    /// <remarks>
+    /// This function wraps <c>wmemchr</c>.
+    /// </remarks>
     [[nodiscard]] inline const wchar_t* MemChr( const wchar_t* buffer, int value, size_t bufferSize ) noexcept
     {
-        return ( const wchar_t* )wmemchr( buffer, value, bufferSize );
+        if ( bufferSize )
+        {
+#ifdef _DEBUG
+            if ( !buffer )
+            {
+                assert( false && "buffer is null" );
+            }
+#endif
+            return (const wchar_t*)wmemchr( buffer, value, bufferSize );
+		}
+		return nullptr;
     }
 
 
 
+    /// <summary>
+    /// Gets the number of elements in a fixed-size array.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The array element type. Must not be <c>char</c> or <c>wchar_t</c>.
+    /// </typeparam>
+    /// <typeparam name="N">
+    /// The compile-time known array length.
+    /// </typeparam>
+    /// <param name="array">
+    /// Reference to the array.
+    /// </param>
+    /// <returns>
+    /// The number of elements in <paramref name="array"/>.
+    /// </returns>
     template<typename T, size_t N>
         requires ( std::is_same_v<char, std::remove_cv_t<T>> == false && std::is_same_v<wchar_t, std::remove_cv_t<T>> == false )
     [[nodiscard]] inline constexpr size_t LengthOf( T( &array )[ N ] ) noexcept
@@ -982,6 +1715,18 @@ namespace Harlinn::Common
         return N;
     }
 
+    /// <summary>
+    /// Gets the number of elements in a container exposing a <c>size()</c> member function.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The container type providing a <c>size()</c> member returning a value convertible to <c>size_t</c>.
+    /// </typeparam>
+    /// <param name="container">
+    /// The container instance.
+    /// </param>
+    /// <returns>
+    /// The result of <c>container.size()</c>.
+    /// </returns>
     template<typename T>
         requires requires( T container )
     {
@@ -1018,6 +1763,24 @@ namespace Harlinn::Common
         }
     }
 
+    /// <summary>
+    /// Computes the length of a null-terminated string for character types supported by this overload.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The character type. Must be <c>char</c> or <c>wchar_t</c>.
+    /// </typeparam>
+    /// <param name="str">
+    /// Pointer to a null-terminated string. If null or the first character is the null terminator, zero is returned.
+    /// </param>
+    /// <returns>
+    /// The number of characters excluding the null terminator; returns 0 for null or empty strings.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// This calls into implementation-specific overloads that use <c>std::string_view</c>/<c>std::wstring_view</c> in constant-evaluated contexts,
+    /// and <c>strlen</c>/<c>wcslen</c> at runtime.
+    /// </para>
+    /// </remarks>
     template<typename T>
         requires std::is_same_v<T, char> || std::is_same_v<T, wchar_t>
     [[nodiscard]] inline constexpr size_t LengthOf( const T* str ) noexcept

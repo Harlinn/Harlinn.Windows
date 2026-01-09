@@ -1385,7 +1385,7 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                MemCopy( data->buffer_, string, size );
+                MemCopyOrZero( data->buffer_, string, size );
                 return data;
             }
             else
@@ -1418,8 +1418,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                MemCopy( data->buffer_, string1, size1 );
-                MemCopy( data->buffer_ + size1, string2, size2 );
+                MemCopyOrZero( data->buffer_, string1, size1 );
+                MemCopyOrZero( data->buffer_ + size1, string2, size2 );
                 return data;
             }
             else
@@ -1476,7 +1476,7 @@ namespace Harlinn::Common::Core
             {
                 Data* data = Allocate( size );
                 MemSet( data->buffer_, value, count );
-                MemCopy( data->buffer_ + count, string2, size2 );
+                MemCopyOrZero( data->buffer_ + count, string2, size2 );
                 return data;
             }
             else
@@ -1513,7 +1513,7 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                MemCopy( data->buffer_, string1, size1 );
+                MemCopyOrZero( data->buffer_, string1, size1 );
                 MemSet( data->buffer_ + size1, value, count );
                 return data;
             }
@@ -1560,9 +1560,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                MemCopy( data->buffer_, string1, size1 );
-                MemCopy( data->buffer_ + size1, string2, size2 );
-                MemCopy( data->buffer_ + size1 + size2, string3, size3 );
+                MemCopyOrZero( data->buffer_, string1, size1 );
+                MemCopyOrZero( data->buffer_ + size1, string2, size2 );
+                MemCopyOrZero( data->buffer_ + size1 + size2, string3, size3 );
                 return data;
             }
             else
@@ -1627,8 +1627,8 @@ namespace Harlinn::Common::Core
             {
                 Data* data = Allocate( size );
                 MemSet( data->buffer_, value, count );
-                MemCopy( data->buffer_ + count, string2, size2 );
-                MemCopy( data->buffer_ + count + size2, string3, size3 );
+                MemCopyOrZero( data->buffer_ + count, string2, size2 );
+                MemCopyOrZero( data->buffer_ + count + size2, string3, size3 );
                 return data;
             }
             else
@@ -1691,9 +1691,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                MemCopy( data->buffer_, string1, size1 );
+                MemCopyOrZero( data->buffer_, string1, size1 );
                 MemSet( data->buffer_ + size1, value, count );
-                MemCopy( data->buffer_ + size1 + count, string3, size3 );
+                MemCopyOrZero( data->buffer_ + size1 + count, string3, size3 );
                 return data;
             }
             else
@@ -1736,8 +1736,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                MemCopy( data->buffer_, string1, size1 );
-                MemCopy( data->buffer_ + size1, string2, size2 );
+                MemCopyOrZero( data->buffer_, string1, size1 );
+                MemCopyOrZero( data->buffer_ + size1, string2, size2 );
                 MemSet( data->buffer_ + size1 + size2, value, count );
                 return data;
             }
@@ -1780,6 +1780,8 @@ namespace Harlinn::Common::Core
         /// which throws a platform-specific error.
         /// </exception>
         template<typename InputIt>
+			requires std::is_convertible_v<typename std::iterator_traits<InputIt>::value_type, CharType> && 
+                std::forward_iterator<InputIt>
         static Data* Initialize( InputIt first, InputIt last )
         {
             auto size = std::distance( first, last );
@@ -1793,6 +1795,42 @@ namespace Harlinn::Common::Core
             {
                 return nullptr;
             }
+        }
+
+        /// <summary>
+        /// Initializes a new internal <c>Data</c> buffer by copying characters from a single-pass input iterator range.
+        /// </summary>
+        /// <typeparam name="InputIt">An input iterator type whose <c>value_type</c> is convertible to <c>CharType</c>.</typeparam>
+        /// <param name="first">Iterator to the first element in the source range.</param>
+        /// <param name="last">Iterator one past the last element in the source range.</param>
+        /// <returns>
+        /// Pointer to a newly allocated <c>Data</c> instance containing the copied characters.
+        /// Returns <c>nullptr</c> when the range is empty.
+        /// </returns>
+        /// <remarks>
+        /// This overload handles single-pass input iterators (non-forward). It accumulates elements into a temporary
+        /// contiguous buffer and then allocates the final internal <c>Data</c> object sized to the exact element count.
+        /// </remarks>
+        template<typename InputIt>
+            requires std::is_convertible_v<typename std::iterator_traits<InputIt>::value_type, CharType>&&
+                (std::forward_iterator<InputIt> == false) && std::input_iterator<InputIt>
+        static Data* Initialize( InputIt first, InputIt last )
+        {
+			boost::container::small_vector<CharType, 256> temp;
+            for ( ; first != last; ++first )
+            {
+                temp.push_back( static_cast<CharType>( *first ) );
+            }
+
+            if ( temp.empty( ) )
+            {
+                return nullptr;
+            }
+
+            size_type size = static_cast<size_type>( temp.size( ) );
+            Data* data = Allocate( size );
+            MemCopy( data->buffer_, temp.data( ), size );
+            return data;
         }
 
         /// <summary>
@@ -2013,38 +2051,6 @@ namespace Harlinn::Common::Core
         }
 
         /// <summary>
-        /// Initializes a new instance of <c>BasicString&lt;T&gt;</c> by copying the contents of a contiguous container.
-        /// </summary>
-        /// <param name="span">
-        /// A contiguous container whose <c>value_type</c> is <c>CharType</c>. Exactly <c>span.size()</c> elements are copied
-        /// from <c>span.data()</c>. The source is not required to be null-terminated.
-        /// </param>
-        /// <remarks>
-        /// <para>
-        /// The constructor allocates a uniquely owned internal buffer sized to the number of characters in <c>span</c>,
-        /// copies the characters and writes a trailing null terminator. Use <see cref="EnsureUnique"/> before mutating the
-        /// contents via raw pointers/iterators if other shared references may exist.
-        /// </para>
-        /// <list type="bullet">
-        ///   <item>
-        ///     <description>Suitable for containers and views that model <c>ContiguousContainerLike</c>, including Harlinn.Common.Core spans.</description>
-        ///   </item>
-        ///   <item>
-        ///     <description>Prefer Harlinn.Common.Core string facilities for conversions and formatting instead of raw C APIs.</description>
-        ///   </item>
-        /// </list>
-        /// </remarks>
-        /// <exception cref="SystemException">
-        /// If memory allocation fails, the underlying allocator raises a platform-specific error (e.g. via <c>ThrowOSError</c>).
-        /// </exception>
-        template<ContiguousContainerLike SpanT>
-            requires std::is_same_v<typename SpanT::value_type, CharType>
-        BasicString( const SpanT& span )
-            : data_( Initialize( span.data(), span.size() ) )
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of <c>BasicString&lt;T&gt;</c> by concatenating two character sequences.
         /// </summary>
         /// <param name="string1">
@@ -2092,17 +2098,105 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="BasicString{T}"/> by creating an internal buffer that
+        /// contains <paramref name="count"/> repetitions of <paramref name="value"/> followed by the characters
+        /// copied from <paramref name="string2"/> (exactly <paramref name="size2"/> characters).
+        /// </summary>
+        /// <param name="value">The character to repeat at the start of the new string.</param>
+        /// <param name="count">The number of times <paramref name="value"/> is written at the beginning of the buffer. May be zero.</param>
+        /// <param name="string2">
+        /// Pointer to the trailing character sequence to append. May be <c>nullptr</c> only when <paramref name="size2"/> is zero.
+        /// The function copies exactly <paramref name="size2"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size2">Number of characters to copy from <paramref name="string2"/>. May be zero.</param>
+        /// <remarks>
+        /// <para>
+        /// This constructor delegates to the internal <see cref="Initialize(CharType, size_type, const CharType*, size_type)"/> helper
+        /// which performs allocation according to the string class allocation granularity and writes a trailing null terminator.
+        /// </para>
+        /// <para>
+        /// When the total length (<paramref name="count"/> + <paramref name="size2"/>) is zero the constructed string is empty.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers will propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// // Create a string that begins with five asterisks followed by "hello"
+        /// BasicString<char> s( '*', 5, "hello", 5 ); // produces "*****hello"
+        /// </code>
+        /// </example>
         BasicString( CharType value, size_type count, const CharType* string2, size_type size2 )
             : data_( Initialize( value, count, string2, size2 ) )
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="BasicString{T}"/> by copying a prefix and then appending a repeated character value.
+        /// </summary>
+        /// <param name="string1">Pointer to the prefix characters to copy. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.</param>
+        /// <param name="size1">Number of characters to copy from <paramref name="string1"/>. May be zero.</param>
+        /// <param name="value">The character value to repeat after the copied prefix.</param>
+        /// <param name="count">Number of times <paramref name="value"/> is written after the copied prefix. May be zero.</param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <see cref="Initialize(const CharType*, size_type, CharType, size_type)"/> helper which
+        /// allocates a uniquely owned internal buffer sized according to the string's allocation granularity, copies the prefix and fills the suffix
+        /// with <paramref name="count"/> repetitions of <paramref name="value"/>, and ensures a trailing null terminator.
+        /// </para>
+        /// <para>
+        /// If the total length (<paramref name="size1"/> + <paramref name="count"/>) is zero the constructed string is empty and no internal buffer is allocated.
+        /// </para>
+        /// <para>
+        /// Callers should prefer the higher-level Harlinn.Common.Core facilities for conversions and editing where applicable.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if underlying memory allocation fails; allocation helpers will propagate platform-specific errors (for example via <c>ThrowOSError</c>).
+        /// </exception>
         BasicString( const CharType* string1, size_type size1, CharType value, size_type count )
             : data_( Initialize( string1, size1, value, count ) )
         {
         }
 
-
+        /// <summary>
+        /// Constructs a <see cref="BasicString{T}"/> by copying the contents of two contiguous containers.
+        /// </summary>
+        /// <param name="span1">
+        /// The first contiguous container whose <c>value_type</c> must be identical to the string's <c>CharType</c>.
+        /// The elements from <paramref name="span1"/> are copied into the newly allocated internal buffer as the leading segment.
+        /// </param>
+        /// <param name="span2">
+        /// The second contiguous container whose <c>value_type</c> must be identical to the string's <c>CharType</c>.
+        /// The elements from <paramref name="span2"/> are copied and appended after the contents of <paramref name="span1"/>.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor is constrained at compile time to accept only contiguous container-like types whose element
+        /// type matches <c>CharType</c> (enforced by the template <c>requires</c> clause).
+        /// The contents are copied using the internal <see cref="Initialize(const CharType*, size_type, const CharType*, size_type)"/>
+        /// helper which allocates a uniquely owned internal <c>Data</c> buffer. After construction the resulting
+        /// <see cref="BasicString{T}"/> owns its buffer and has a reference count of one.
+        /// </para>
+        /// <para>
+        /// Allocation follows the string class allocation granularity. Callers that hold raw pointers or iterators into
+        /// other string instances should call <see cref="EnsureUnique"/> before performing mutations to avoid invalidating
+        /// references that may originate from shared buffers.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when the underlying memory allocation fails during initialization (propagated from the internal allocator).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "Hello";
+        /// std::string_view b = " World";
+        /// BasicString<char> s( a, b ); // produces "Hello World"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(const CharType*, size_type, const CharType*, size_type)"/>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2>
             requires (std::is_same_v<typename SpanT1::value_type, CharType> && std::is_same_v<typename SpanT2::value_type, CharType> )
         BasicString( const SpanT1& span1, const SpanT2& span2 )
@@ -2110,6 +2204,43 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="BasicString{CharType}"/> by copying the contents of a contiguous container
+        /// followed by a specified number of characters from a raw character pointer.
+        /// </summary>
+        /// <param name="span1">
+        /// A contiguous container whose <c>value_type</c> is identical to this string's <c>CharType</c>.
+        /// The elements in <paramref name="span1"/> are copied into the newly allocated internal buffer as the leading segment.
+        /// </param>
+        /// <param name="string2">
+        /// Pointer to the second character sequence to append after <paramref name="span1"/>. May be <c>nullptr</c> only when
+        /// <paramref name="size2"/> is zero. The source is not required to be null-terminated; exactly <paramref name="size2"/>
+        /// characters are copied.
+        /// </param>
+        /// <param name="size2">
+        /// The number of characters to copy from <paramref name="string2"/>. May be zero.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <c>Initialize(const CharType*, size_type, const CharType*, size_type)</c>
+        /// helper which performs allocation according to the string's allocation granularity, copies the two sequences in order,
+        /// and ensures a trailing null terminator. When the total length (<c>span1.size() + size2</c>) is zero the constructed
+        /// string is empty and no internal buffer is allocated.
+        /// </para>
+        /// <para>
+        /// The template is constrained to contiguous container-like types (see <c>ContiguousContainerLike</c>) and requires
+        /// <c>std::is_same_v<typename SpanT::value_type, CharType></c>.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "Hello";
+        /// BasicString<char> s( a, " world", 6 ); // produces "Hello world"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString( const SpanT& span1, const CharType* string2, size_type size2 )
@@ -2117,6 +2248,39 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{T}"/> by copying exactly <paramref name="size1"/> characters from
+        /// the raw character pointer <paramref name="string1"/> and then appending the contents of
+        /// <paramref name="span2"/>. The resulting instance owns a uniquely allocated internal buffer sized to
+        /// hold the concatenation (rounded according to the class allocation granularity).
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the first input character sequence. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// The pointer is not required to be null-terminated; exactly <paramref name="size1"/> characters are copied.
+        /// </param>
+        /// <param name="size1">
+        /// The number of characters to copy from <paramref name="string1"/>. When zero, no characters are copied from the pointer.
+        /// </param>
+        /// <param name="span2">
+        /// A contiguous container-like object whose <c>value_type</c> is identical to this string's character type.
+        /// The elements in <paramref name="span2"/> are appended after the characters copied from <paramref name="string1"/>.
+        /// </param>
+        /// <remarks>
+        /// The constructor delegates initialization to the internal <see cref="Initialize(const CharType*, size_type, const CharType*, size_type)"/>
+        /// helper which performs allocation using the string's allocation granularity and writes a terminating null character.
+        /// If the total length ( <paramref name="size1"/> + <c>span2.size()</c> ) is zero the constructed string will be empty
+        /// and no internal buffer is allocated. Callers should prefer higher-level editing APIs when composing strings incrementally.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers will propagate platform-specific errors (for example via ThrowOSError).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view suffix = " world";
+        /// BasicString<char> s( "Hello", 5, suffix ); // produces "Hello world"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(const CharType*, size_type, const CharType*, size_type)"/>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString( const CharType* string1, size_type size1, const SpanT& span2 )
@@ -2124,6 +2288,44 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{CharType}"/> by creating an internal buffer that
+        /// contains <paramref name="count"/> repetitions of <paramref name="value"/> followed by the
+        /// elements from <paramref name="span"/>.
+        /// </summary>
+        /// <param name="value">The character to repeat at the start of the new string.</param>
+        /// <param name="count">
+        /// The number of times <paramref name="value"/> is written at the beginning of the buffer.
+        /// May be zero; when the total resulting length is zero the constructed string will be empty.
+        /// </param>
+        /// <param name="span">
+        /// A contiguous container-like object whose <c>value_type</c> is identical to this string's
+        /// character type. The elements in <paramref name="span"/> are appended after the repeated values.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <c>Initialize(CharType, size_type, const CharType*, size_type)</c>
+        /// helper which performs allocation according to the string's internal allocation granularity,
+        /// writes the repeated characters, copies the contents of <paramref name="span"/>, and ensures a
+        /// trailing null terminator in the internal buffer.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this constructor is not synchronized. If multiple threads access the same source
+        /// container concurrently, external synchronization is required. After construction the resulting
+        /// BasicString owns its buffer and has a reference count of one.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers will propagate platform-specific errors
+        /// (for example via <c>ThrowOSError</c>).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view suffix = "hello";
+        /// BasicString<char> s( '*', 5, suffix ); // produces "*****hello"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(CharType,size_type,const CharType*,size_type)"/>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString( CharType value, size_type count, const SpanT& span )
@@ -2131,6 +2333,34 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Initializes a new <see cref="BasicString{CharType}"/> by prepending a single character value
+        /// and then copying the contents of a contiguous container-like span.
+        /// </summary>
+        /// <param name="value">The character to write as the first character of the new string.</param>
+        /// <param name="span">A contiguous container-like object whose element type must match <c>CharType</c>.
+        /// The elements of <paramref name="span"/> are copied and appended after <paramref name="value"/>.</param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <c>Initialize(CharType, size_type, const CharType*, size_type)</c>
+        /// helper which allocates a uniquely owned internal buffer sized according to the class allocation granularity,
+        /// writes the leading character, copies the span content and ensures a trailing null terminator.
+        /// </para>
+        /// <para>
+        /// Allocation follows the string class allocation granularity. If memory allocation fails the underlying
+        /// allocation helper will signal a platform-specific error (for example by calling <c>ThrowOSError</c>).
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails during initialization.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view suffix = "world";
+        /// BasicString<char> s( '*', suffix ); // produces "*world"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(CharType,size_type,const CharType*,size_type)"/>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString( CharType value, const SpanT& span )
@@ -2138,6 +2368,41 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="BasicString"/> by copying the contents of a contiguous container
+        /// and then appending a repeated character value.
+        /// </summary>
+        /// <param name="span">
+        /// A contiguous container-like object whose <c>value_type</c> is identical to this string's character type.
+        /// The elements in <paramref name="span"/> are copied into the newly allocated internal buffer as the leading segment.
+        /// </param>
+        /// <param name="value">
+        /// The character value to append after the contents of <paramref name="span"/>.
+        /// </param>
+        /// <param name="count">
+        /// Number of times <paramref name="value"/> is written after the copied <paramref name="span"/>.
+        /// May be zero; when the total resulting length is zero the constructed string will be empty.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <see cref="Initialize(CharType,size_type,CharType,size_type)"/> helper
+        /// which performs allocation according to the string's allocation granularity, copies the span content and fills the suffix
+        /// with <paramref name="count"/> repetitions of <paramref name="value"/>, and ensures a trailing null terminator.
+        /// </para>
+        /// <para>
+        /// The template constraint enforces at compile time that the element type of <paramref name="span"/> matches the
+        /// string's character type (<c>CharType</c>).
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails during initialization. Allocation helpers will propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view suffix = "hello";
+        /// BasicString<char> s( suffix, '*', 5 ); // produces "hello*****"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString( const SpanT& span, CharType value, size_type count )
@@ -2145,6 +2410,35 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="BasicString{CharType}"/> by prepending a single character
+        /// and then copying the contents of a contiguous container-like span.
+        /// </summary>
+        /// <param name="span">
+        /// A contiguous container-like object whose element type must match <c>CharType</c>.
+        /// The elements of <paramref name="span"/> are copied and appended after <paramref name="value"/>.
+        /// </param>
+        /// <param name="value">
+        /// The character to write as the first character of the new string.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <c>Initialize(CharType, size_type, const CharType*, size_type)</c>
+        /// helper which allocates a uniquely owned internal buffer sized according to the class allocation granularity,
+        /// writes the leading character, copies the span content and ensures a trailing null terminator.
+        /// </para>
+        /// <para>
+        /// If the total resulting length is zero the constructed string will be empty and no internal buffer is allocated.
+        /// Use Harlinn.Common.Core conversion and editing helpers where possible to preserve ownership semantics.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// std::string_view suffix = "world";
+        /// BasicString<char> s( '*', suffix ); // produces "*world"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(CharType, size_type, const CharType*, size_type)"/>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString( const SpanT& span, CharType value )
@@ -2153,43 +2447,396 @@ namespace Harlinn::Common::Core
         }
 
 
-
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{T}"/> by concatenating three character sequences.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the first character sequence to copy. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// The function copies exactly <paramref name="size1"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size1">
+        /// The number of characters to copy from <paramref name="string1"/>. May be zero.
+        /// </param>
+        /// <param name="string2">
+        /// Pointer to the second character sequence to copy. May be <c>nullptr</c> only when <paramref name="size2"/> is zero.
+        /// The function copies exactly <paramref name="size2"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size2">
+        /// The number of characters to copy from <paramref name="string2"/>. May be zero.
+        /// </param>
+        /// <param name="string3">
+        /// Pointer to the third character sequence to copy. May be <c>nullptr</c> only when <paramref name="size3"/> is zero.
+        /// The function copies exactly <paramref name="size3"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size3">
+        /// The number of characters to copy from <paramref name="string3"/>. May be zero.
+        /// </param>
+        /// <remarks>
+        /// This constructor delegates to the internal <see cref="Initialize(const CharType*, size_type, const CharType*, size_type, const CharType*, size_type)"/>
+        /// helper which performs allocation according to the string class allocation granularity, copies the provided sequences in order,
+        /// and ensures a trailing null terminator. When the total resulting length ( <paramref name="size1"/> + <paramref name="size2"/> + <paramref name="size3"/> )
+        /// is zero the constructed string will be empty and no internal buffer is allocated.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Allocation helpers will propagate platform-specific errors (for example via <c>ThrowOSError</c>).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// // Construct a BasicString<char> containing "hello:world!"
+        /// BasicString<char> s( "hello", 5, ":", 1, "world!", 6 );
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(const CharType*, size_type, const CharType*, size_type, const CharType*, size_type)"/>
         BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
             : data_( Initialize( string1, size1, string2, size2, string3, size3 ) )
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{T}"/> by creating an internal buffer that
+        /// contains <paramref name="count"/> repetitions of <paramref name="value"/> followed by the
+        /// characters copied from <paramref name="string2"/> (exactly <paramref name="size2"/> characters)
+        /// and then the characters copied from <paramref name="string3"/> (exactly <paramref name="size3"/> characters).
+        /// </summary>
+        /// <param name="value">The character to repeat for the leading region of the new string.</param>
+        /// <param name="count">Number of times <paramref name="value"/> is written at the beginning of the buffer. May be zero.</param>
+        /// <param name="string2">
+        /// Pointer to the second source character sequence to append after the repeated values.
+        /// May be <c>nullptr</c> only when <paramref name="size2"/> is zero.
+        /// </param>
+        /// <param name="size2">Number of characters to copy from <paramref name="string2"/>. May be zero.</param>
+        /// <param name="string3">
+        /// Pointer to the third source character sequence to append after <paramref name="string2"/>.
+        /// May be <c>nullptr</c> only when <paramref name="size3"/> is zero.
+        /// </param>
+        /// <param name="size3">Number of characters to copy from <paramref name="string3"/>. May be zero.</param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <see cref="Initialize(CharType,size_type,const CharType*,size_type,const CharType*,size_type)"/>
+        /// helper which performs allocation according to the string class allocation granularity
+        /// and writes a trailing null terminator. The resulting instance uniquely owns its internal
+        /// buffer and has a reference count of one when allocation succeeds.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this constructor is not synchronized. Callers should provide external
+        /// synchronization if multiple threads access the same source buffers concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Underlying allocation helpers will
+        /// call platform-specific error routines (for example via <c>ThrowOSError</c>).
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// In debug builds thrown if an internal size check fails (for example when a zero-size
+        /// allocation is considered invalid by the allocator helpers).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// // Create a string that begins with five asterisks followed by "hello" and then " world"
+        /// BasicString<char> s( '*', 5, "hello", 5, " world", 6 ); // produces "*****hello world"
+        /// </code>
+        /// </example>
         BasicString( CharType value, size_type count, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
             : data_( Initialize( value, count, string2, size2, string3, size3 ) )
         {
         }
 
+        /// <summary>
+        /// Constructs a new instance of <c>BasicString&lt;CharType&gt;</c> by copying a leading prefix,
+        /// inserting a repeated character sequence, and appending a trailing suffix.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the prefix characters to copy. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// The function copies exactly <paramref name="size1"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size1">
+        /// The number of characters to copy from <paramref name="string1"/>. May be zero.
+        /// </param>
+        /// <param name="value">
+        /// The character value that will be repeated in the middle region.
+        /// </param>
+        /// <param name="count">
+        /// Number of times <paramref name="value"/> is written after the copied prefix. May be zero.
+        /// </param>
+        /// <param name="string3">
+        /// Pointer to the suffix characters to copy. May be <c>nullptr</c> only when <paramref name="size3"/> is zero.
+        /// The function copies exactly <paramref name="size3"/> characters from this pointer; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size3">
+        /// Number of characters to copy from <paramref name="string3"/>. May be zero.
+        /// </param>
+        /// <remarks>
+        /// This constructor delegates allocation and initialization to the internal
+        /// <see cref="Initialize(const CharType*, size_type, CharType, size_type, const CharType*, size_type)"/> helper.
+        /// The helper performs allocation according to the string class allocation granularity,
+        /// writes the prefix, fills the repeated character region and copies the suffix, and ensures
+        /// a trailing null terminator. The resulting instance uniquely owns its internal buffer
+        /// and has reference count one when allocation succeeds.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Allocation helpers will propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <para>Example usage:</para>
+        /// <code>
+        /// // Produces "pre*****post"
+        /// BasicString<char> s( "pre", 3, '*', 5, "post", 4 );
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(const CharType*, size_type, CharType, size_type, const CharType*, size_type)"/>
         BasicString( const CharType* string1, size_type size1, CharType value, size_type count, const CharType* string3, size_type size3 )
             : data_( Initialize( string1, size1, value, count, string3, size3 ) )
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{CharType}"/> by copying a leading character sequence,
+        /// appending a repeated character value, and then copying a trailing character sequence.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the first (prefix) character sequence to copy. May be <c>nullptr</c> only when
+        /// <paramref name="size1"/> is zero. Exactly <paramref name="size1"/> characters are copied; the
+        /// source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size1">
+        /// Number of characters to copy from <paramref name="string1"/>. May be zero.
+        /// </param>
+        /// <param name="string2">
+        /// Pointer to the trailing character sequence to copy. May be <c>nullptr</c> only when
+        /// <paramref name="size2"/> is zero. Exactly <paramref name="size2"/> characters are copied; the
+        /// source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size2">
+        /// Number of characters to copy from <paramref name="string2"/>. May be zero.
+        /// </param>
+        /// <param name="value">
+        /// The character value that will be repeated between the two copied sequences.
+        /// </param>
+        /// <param name="count">
+        /// Number of times <paramref name="value"/> is written after the prefix and before the suffix.
+        /// May be zero. The resulting string length is <c>size1 + count + size2</c>.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the internal <see cref="Initialize(const CharType*, size_type, const CharType*, size_type, CharType, size_type)"/>
+        /// helper which performs allocation according to the class allocation granularity and writes a terminating null
+        /// character at the end of the internal buffer. The resulting BasicString owns its buffer and has a reference
+        /// count of one when allocation succeeds.
+        /// </para>
+        /// <para>
+        /// If the total length (<c>size1 + count + size2</c>) is zero the constructed string will be empty
+        /// and no internal buffer is allocated.
+        /// </para>
+        /// <para>
+        /// This operation may throw platform-specific exceptions if underlying allocation fails; allocation helpers
+        /// propagate errors via <c>ThrowOSError</c> (for example resulting in a <c>SystemException</c>).
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// // Produces "1st2nd*****"
+        /// BasicString<char> s( "pre", 3, "2nd", 3, '*', 5 );
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(const CharType*, size_type, const CharType*, size_type, CharType, size_type)"/>
         BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value, size_type count )
             : data_( Initialize( string1, size1, string2, size2, value, count ) )
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{CharType}"/> by prepending a single character value
+        /// and then concatenating two character sequences into a newly allocated internal buffer.
+        /// </summary>
+        /// <param name="value">
+        /// The character value that will be written as the very first character of the new string.
+        /// </param>
+        /// <param name="string2">
+        /// Pointer to the first character sequence to append after <paramref name="value"/>.
+        /// May be <c>nullptr</c> only when <paramref name="size2"/> is zero. The pointer is not required to be null-terminated;
+        /// exactly <paramref name="size2"/> characters are copied.
+        /// </param>
+        /// <param name="size2">
+        /// Number of characters to copy from <paramref name="string2"/>. May be zero.
+        /// </param>
+        /// <param name="string3">
+        /// Pointer to the second character sequence to append after <paramref name="string2"/>.
+        /// May be <c>nullptr</c> only when <paramref name="size3"/> is zero. The pointer is not required to be null-terminated;
+        /// exactly <paramref name="size3"/> characters are copied.
+        /// </param>
+        /// <param name="size3">
+        /// Number of characters to copy from <paramref name="string3"/>. May be zero.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The constructor allocates a uniquely owned internal <c>Data</c> buffer using the internal
+        /// <c>Initialize</c> helper. The resulting string contains <c>1 + size2 + size3</c> characters:
+        /// the single <paramref name="value"/> followed by the characters copied from <paramref name="string2"/> and <paramref name="string3"/>.
+        /// </para>
+        /// <para>
+        /// Allocation follows the class allocation granularity. If memory allocation fails the underlying allocator
+        /// will call platform-specific error reporting (for example <c>ThrowOSError</c>) which will propagate an exception.
+        /// </para>
+        /// <para>
+        /// Use <see cref="EnsureUnique"/> before mutating the returned string via raw pointers/iterators if other shared references
+        /// to the same underlying buffer may exist.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// // Construct a BasicString<char> containing "*hello world"
+        /// BasicString<char> s( '*', "hello", 5, " world", 6 );
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(CharType, size_type, const CharType*, size_type, const CharType*, size_type)"/>
         BasicString( CharType value, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
             : data_( Initialize( value, 1, string2, size2, string3, size3 ) )
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="BasicString{T}"/> by copying a leading prefix,
+        /// inserting a single character in the middle, and then copying a trailing suffix.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the prefix characters to copy. May be <c>nullptr</c> only when <paramref name="size1"/> is zero.
+        /// The function copies exactly <paramref name="size1"/> characters; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size1">
+        /// Number of characters to copy from <paramref name="string1"/>. May be zero.
+        /// </param>
+        /// <param name="value">
+        /// The single character that will be inserted between the copied prefix and suffix.
+        /// </param>
+        /// <param name="string3">
+        /// Pointer to the suffix characters to copy. May be <c>nullptr</c> only when <paramref name="size3"/> is zero.
+        /// The function copies exactly <paramref name="size3"/> characters; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size3">
+        /// Number of characters to copy from <paramref name="string3"/>. May be zero.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This is a convenience overload that is semantically equivalent to the constructor taking a
+        /// repeated character count, with the count fixed to 1. It delegates to
+        /// <see cref="Initialize(const CharType*, size_type, CharType, size_type, const CharType*, size_type)"/>.
+        /// </para>
+        /// <para>
+        /// Allocation follows the string class allocation granularity and a trailing null terminator is written.
+        /// Prefer using Harlinn.Common.Core editing facilities (for example <c>Insert</c>, <c>Append</c>, and <c>Replace</c>)
+        /// when composing strings incrementally; these APIs preserve ownership and performance characteristics better than
+        /// raw C-style routines.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers may call platform-specific error routines
+        /// (for example <c>ThrowOSError</c>), which propagate an exception.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// using namespace Harlinn::Common::Core;
+        /// BasicString<char> s("pre", 3, '-', "post", 4); // Produces "pre-post"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(const CharType*, size_type, CharType, size_type, const CharType*, size_type)"/>
         BasicString( const CharType* string1, size_type size1, CharType value, const CharType* string3, size_type size3 )
             : data_( Initialize( string1, size1, value, 1, string3, size3 ) )
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="BasicString{T}"/> by copying two character sequences
+        /// and then appending a single trailing character.
+        /// </summary>
+        /// <param name="string1">
+        /// Pointer to the first (prefix) character sequence to copy. May be <c>nullptr</c> only when
+        /// <paramref name="size1"/> is zero. Exactly <paramref name="size1"/> characters are copied; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size1">Number of characters to copy from <paramref name="string1"/>. May be zero.</param>
+        /// <param name="string2">
+        /// Pointer to the second character sequence to copy after <paramref name="string1"/>. May be <c>nullptr</c> only when
+        /// <paramref name="size2"/> is zero. Exactly <paramref name="size2"/> characters are copied; the source is not required to be null-terminated.
+        /// </param>
+        /// <param name="size2">Number of characters to copy from <paramref name="string2"/>. May be zero.</param>
+        /// <param name="value">The single character to append after the copied sequences.</param>
+        /// <remarks>
+        /// <para>
+        /// This is a convenience overload equivalent to
+        /// <see cref="BasicString(const CharType*, size_type, const CharType*, size_type, CharType, size_type)"/>
+        /// with the repeat <c>count</c> fixed to 1.
+        /// </para>
+        /// <para>
+        /// Allocation and initialization are delegated to the internal <c>Initialize</c> helper which adheres to the class
+        /// allocation granularity and writes a trailing null terminator. The resulting instance uniquely owns its internal buffer.
+        /// </para>
+        /// <para>
+        /// Prefer Harlinn.Common.Core editing APIs (<c>Append</c>, <c>Insert</c>, <c>Replace</c>) when composing strings incrementally,
+        /// and use the provided conversion helpers in this header instead of raw C/Win32 routines.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails; allocation helpers propagate platform-specific errors (for example via <c>ThrowOSError</c>).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// using namespace Harlinn::Common::Core;
+        /// BasicString&lt;char&gt; s("left", 4, "right", 5, '!');
+        /// // Result: "leftright!"
+        /// </code>
+        /// </example>
+        /// <seealso cref="BasicString(const CharType*, size_type, const CharType*, size_type, CharType, size_type)"/>
         BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value )
             : data_( Initialize( string1, size1, string2, size2, value, 1 ) )
         {
         }
 
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="BasicString{T}"/> by prepending a repeated character value,
+        /// then copying the contents of two contiguous container-like spans.
+        /// </summary>
+        /// <typeparam name="SpanT1">
+        /// The type of the first contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// The type of the second contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="value">
+        /// The character value to repeat at the start of the new string.
+        /// </param>
+        /// <param name="count">
+        /// The number of times <paramref name="value"/> is written at the beginning of the buffer.
+        /// </param>
+        /// <param name="span1">
+        /// The first contiguous container whose elements are copied after the repeated value.
+        /// </param>
+        /// <param name="span2">
+        /// The second contiguous container whose elements are copied after <paramref name="span1"/>.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor allocates a uniquely owned internal buffer large enough to hold
+        /// <paramref name="count"/> repetitions of <paramref name="value"/>, followed by the contents of
+        /// <paramref name="span1"/> and <paramref name="span2"/>. The buffer is null-terminated.
+        /// </para>
+        /// <para>
+        /// Use this overload to efficiently construct a string from a repeated prefix and two containers,
+        /// such as when building formatted or composite strings in high-performance scenarios.
+        /// </para>
+        /// <para>
+        /// Prefer Harlinn.Common.Core string facilities for memory safety and performance over raw C APIs.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "foo";
+        /// std::string_view b = "bar";
+        /// BasicString<char> s('*', 3, a, b); // produces "***foobar"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
         BasicString( CharType value, size_type count, const SpanT1& span1, const SpanT2& span2 )
@@ -2197,6 +2844,52 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="BasicString{T}"/> by concatenating the contents of a contiguous container,
+        /// a repeated character value, and another contiguous container.
+        /// </summary>
+        /// <typeparam name="SpanT1">
+        /// The type of the first contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// The type of the second contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="span1">
+        /// The first contiguous container whose elements are copied as the leading segment of the new string.
+        /// </param>
+        /// <param name="value">
+        /// The character value to repeat after the contents of <paramref name="span1"/>.
+        /// </param>
+        /// <param name="count">
+        /// The number of times <paramref name="value"/> is written after <paramref name="span1"/>.
+        /// </param>
+        /// <param name="span2">
+        /// The second contiguous container whose elements are copied after the repeated value segment.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor allocates a uniquely owned internal buffer large enough to hold the concatenation of
+        /// <paramref name="span1"/>, <paramref name="count"/> repetitions of <paramref name="value"/>, and <paramref name="span2"/>.
+        /// The buffer is null-terminated.
+        /// </para>
+        /// <para>
+        /// Use this overload to efficiently construct a string from a container, a repeated character, and another container,
+        /// such as when building formatted or composite strings in high-performance scenarios.
+        /// </para>
+        /// <para>
+        /// Prefer Harlinn.Common.Core string facilities for memory safety and performance over raw C APIs.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "foo";
+        /// std::string_view b = "bar";
+        /// BasicString&lt;char&gt; s(a, '*', 3, b); // produces "foo***bar"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
         BasicString( const SpanT1& span1, CharType value, size_type count, const SpanT2& span2 )
@@ -2204,6 +2897,52 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{T}"/> by concatenating the contents of two contiguous containers
+        /// and then appending a repeated character value.
+        /// </summary>
+        /// <typeparam name="SpanT1">
+        /// The type of the first contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// The type of the second contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="span1">
+        /// The first contiguous container whose elements are copied as the leading segment of the new string.
+        /// </param>
+        /// <param name="span2">
+        /// The second contiguous container whose elements are copied after <paramref name="span1"/>.
+        /// </param>
+        /// <param name="value">
+        /// The character value to repeat after the contents of <paramref name="span2"/>.
+        /// </param>
+        /// <param name="count">
+        /// The number of times <paramref name="value"/> is written after the copied segments.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor allocates a uniquely owned internal buffer large enough to hold the concatenation of
+        /// <paramref name="span1"/>, <paramref name="span2"/>, and <paramref name="count"/> repetitions of <paramref name="value"/>.
+        /// The buffer is null-terminated.
+        /// </para>
+        /// <para>
+        /// Use this overload to efficiently construct a string from two containers and a repeated character,
+        /// such as when building formatted or composite strings in high-performance scenarios.
+        /// </para>
+        /// <para>
+        /// Prefer Harlinn.Common.Core string facilities for memory safety and performance over raw C APIs.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "foo";
+        /// std::string_view b = "bar";
+        /// BasicString&lt;char&gt; s(a, b, '*', 3); // produces "foobar***"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
         BasicString( const SpanT1& span1, const SpanT2& span2, CharType value, size_type count )
@@ -2212,6 +2951,49 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="BasicString{T}"/> by prepending a single character value
+        /// and then copying the contents of two contiguous container-like spans.
+        /// </summary>
+        /// <typeparam name="SpanT1">
+        /// The type of the first contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// The type of the second contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="value">
+        /// The character value to write as the very first character of the new string.
+        /// </param>
+        /// <param name="span1">
+        /// The first contiguous container whose elements are copied after the leading character.
+        /// </param>
+        /// <param name="span2">
+        /// The second contiguous container whose elements are copied after <paramref name="span1"/>.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor allocates a uniquely owned internal buffer large enough to hold
+        /// the single <paramref name="value"/>, followed by the contents of <paramref name="span1"/>
+        /// and <paramref name="span2"/>. The buffer is null-terminated.
+        /// </para>
+        /// <para>
+        /// Use this overload to efficiently construct a string from a prepended character and two containers,
+        /// such as when building formatted or composite strings in high-performance scenarios.
+        /// </para>
+        /// <para>
+        /// Prefer Harlinn.Common.Core string facilities for memory safety and performance over raw C APIs.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "foo";
+        /// std::string_view b = "bar";
+        /// BasicString&lt;char&gt; s('*', a, b); // produces "*foobar"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
         BasicString( CharType value, const SpanT1& span1, const SpanT2& span2 )
@@ -2219,6 +3001,49 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{T}"/> by concatenating the contents of a contiguous container,
+        /// a single character value, and another contiguous container.
+        /// </summary>
+        /// <typeparam name="SpanT1">
+        /// The type of the first contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// The type of the second contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="span1">
+        /// The first contiguous container whose elements are copied as the leading segment of the new string.
+        /// </param>
+        /// <param name="value">
+        /// The character value to insert between the two containers. Only a single instance of <paramref name="value"/> is inserted.
+        /// </param>
+        /// <param name="span2">
+        /// The second contiguous container whose elements are copied after the inserted character.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor allocates a uniquely owned internal buffer large enough to hold the concatenation of
+        /// <paramref name="span1"/>, the single <paramref name="value"/>, and <paramref name="span2"/>.
+        /// The buffer is null-terminated.
+        /// </para>
+        /// <para>
+        /// Use this overload to efficiently construct a string from a container, a character, and another container,
+        /// such as when building formatted or composite strings in high-performance scenarios.
+        /// </para>
+        /// <para>
+        /// Prefer Harlinn.Common.Core string facilities for memory safety and performance over raw C APIs.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "foo";
+        /// std::string_view b = "bar";
+        /// BasicString&lt;char&gt; s(a, '*', b); // produces "foo*bar"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
         BasicString( const SpanT1& span1, CharType value, const SpanT2& span2 )
@@ -2226,6 +3051,49 @@ namespace Harlinn::Common::Core
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="BasicString{T}"/> by concatenating the contents of two contiguous containers
+        /// and then appending a single character value.
+        /// </summary>
+        /// <typeparam name="SpanT1">
+        /// The type of the first contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// The type of the second contiguous container whose <c>value_type</c> must match <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="span1">
+        /// The first contiguous container whose elements are copied as the leading segment of the new string.
+        /// </param>
+        /// <param name="span2">
+        /// The second contiguous container whose elements are copied after <paramref name="span1"/>.
+        /// </param>
+        /// <param name="value">
+        /// The character value to append after the contents of <paramref name="span2"/>.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor allocates a uniquely owned internal buffer large enough to hold the concatenation of
+        /// <paramref name="span1"/>, <paramref name="span2"/>, and a single instance of <paramref name="value"/>.
+        /// The buffer is null-terminated.
+        /// </para>
+        /// <para>
+        /// Use this overload to efficiently construct a string from two containers and a trailing character,
+        /// such as when building formatted or composite strings in high-performance scenarios.
+        /// </para>
+        /// <para>
+        /// Prefer Harlinn.Common.Core string facilities for memory safety and performance over raw C APIs.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if the underlying memory allocation fails. Allocation helpers propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "foo";
+        /// std::string_view b = "bar";
+        /// BasicString&lt;char&gt; s(a, b, '*'); // produces "foobar*"
+        /// </code>
+        /// </example>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
         BasicString( const SpanT1& span1, const SpanT2& span2, CharType value )
@@ -2236,6 +3104,40 @@ namespace Harlinn::Common::Core
 
 
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString"/> by concatenating three contiguous containers.
+        /// </summary>
+        /// <typeparam name="SpanT1">Type of the first contiguous container. Its <c>value_type</c> must match <c>CharType</c>.</typeparam>
+        /// <typeparam name="SpanT2">Type of the second contiguous container. Its <c>value_type</c> must match <c>CharType</c>.</typeparam>
+        /// <typeparam name="SpanT3">Type of the third contiguous container. Its <c>value_type</c> must match <c>CharType</c>.</typeparam>
+        /// <param name="span1">The first span whose contents will be copied as the leading segment.</param>
+        /// <param name="span2">The second span whose contents will be copied after <paramref name="span1"/>.</param>
+        /// <param name="span3">The third span whose contents will be copied after <paramref name="span2"/>.</param>
+        /// <remarks>
+        /// <para>
+        /// The constructor allocates a uniquely owned internal <c>Data</c> buffer sized to hold the
+        /// concatenation of the three spans (rounded according to the class allocation granularity).
+        /// The contents are copied in order: <paramref name="span1"/>, then <paramref name="span2"/>, then <paramref name="span3"/>.
+        /// </para>
+        /// <para>
+        /// After construction the resulting <see cref="BasicString"/> owns its internal buffer and has
+        /// a reference count of one. Call <see cref="EnsureUnique"/> before performing in-place mutations
+        /// if the buffer may be shared.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Allocation helpers will propagate platform-specific errors
+        /// (for example via <c>ThrowOSError</c>).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view a = "foo";
+        /// std::string_view b = "bar";
+        /// std::string_view c = "baz";
+        /// BasicString<char> s( a, b, c ); // produces "foobarbaz"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Initialize(const CharType*, size_type, const CharType*, size_type, const CharType*, size_type)"/>
         template<ContiguousContainerLike SpanT1, ContiguousContainerLike SpanT2, ContiguousContainerLike SpanT3>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType> && std::is_same_v<typename SpanT2::value_type, CharType> && std::is_same_v<typename SpanT3::value_type, CharType> )
         BasicString( const SpanT1& span1, const SpanT2& span2, const SpanT3& span3 )
@@ -2244,31 +3146,198 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Constructs a <c>BasicString</c> by copying the character range identified by the iterator pair <paramref name="first"/> and <paramref name="last"/>.
+        /// </summary>
+        /// <param name="first">A const iterator pointing to the first character in the input range (inclusive).</param>
+        /// <param name="last">A const iterator pointing one past the last character in the input range (exclusive).</param>
+        /// <returns>
+        /// Constructs and stores an internal <c>Data</c> buffer containing the characters in the range [<paramref name="first"/>, <paramref name="last"/>).
+        /// When the range is empty the resulting string is empty (no internal buffer is allocated).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the static helper <see cref="Initialize(const CharType*, size_type)"/> which computes the character count
+        /// using the iterator difference and allocates a uniquely owned internal buffer sized according to the class allocation granularity.
+        /// </para>
+        /// <para>
+        /// If <paramref name="first"/> is greater than <paramref name="last"/>, zero characters are copied and an empty string is constructed.
+        /// </para>
+        /// <para>
+        /// Exceptions:
+        /// <list type="bullet">
+        ///   <item><description><c>SystemException</c> (or platform allocation error) may be thrown by the underlying allocator if memory allocation fails.</description></item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         BasicString( const_iterator first, const_iterator last)
             : data_( Initialize( first.ptr_, first <= last ? static_cast<size_type>( last - first ) : 0 ) )
         {
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{T}"/> by copying the character range [<paramref name="first"/>, <paramref name="last"/>).
+        /// </summary>
+        /// <param name="first">Pointer to the first character in the input range (inclusive). May be <c>nullptr</c> when the range is empty.</param>
+        /// <param name="last">Pointer one past the last character in the input range (exclusive). If <c>last &lt; first</c> the range is considered empty.</param>
+        /// <remarks>
+        /// <para>
+        /// The constructor computes the number of characters to copy as <c>first <= last ? static_cast<size_type>(last - first) : 0</c>
+        /// and delegates to <see cref="Initialize(const CharType*, size_type)"/> which allocates a uniquely owned internal buffer
+        /// sized according to the class allocation granularity and copies the characters (excluding any terminating null).
+        /// </para>
+        /// <para>
+        /// When the range is empty no internal buffer is allocated and the constructed string is empty.
+        /// </para>
+        /// <para>
+        /// Allocation failures propagate via the underlying allocator and result in platform-specific exceptions (for example the allocator
+        /// calls <c>ThrowOSError</c> which will throw an exception).
+        /// </para>
+        /// </remarks>
         BasicString( const_pointer first, const_pointer last )
             : data_( Initialize( first, first <= last ? static_cast< size_type >( last - first ) : 0 ) )
         {
         }
 
+        /// <summary>
+        /// Constructs a <see cref="BasicString{T}"/> by copying characters from the iterator range [first, last).
+        /// </summary>
+        /// <typeparam name="InputIt">
+        /// The input iterator type. The iterator's <c>value_type</c> must be convertible to <c>CharType</c>
+        /// and the iterator must satisfy the requirements of <c>std::input_iterator</c>.
+        /// </typeparam>
+        /// <param name="first">Iterator to the first element in the source range (inclusive).</param>
+        /// <param name="last">Iterator one past the last element in the source range (exclusive).</param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the static helper <c>Initialize(first, last)</c>, which:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>Computes the number of characters when possible (for forward iterators).</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>For single-pass input iterators accumulates elements into a temporary buffer before allocation.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Allocates an internal reference-counted Data buffer and copies the characters into it.</description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// The resulting BasicString owns a uniquely allocated internal buffer with a reference count of one.
+        /// Prefer passing contiguous container-like types (spans, string_views, etc.) when available for better performance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if underlying memory allocation fails (propagated from the internal allocator called by <c>Initialize</c>).
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::vector<CharType> v = ...;
+        /// BasicString<CharType> s( v.begin(), v.end() );
+        /// </code>
+        /// </example>
         template<std::input_iterator InputIt>
+            requires std::is_convertible_v<typename std::iterator_traits<InputIt>::value_type, CharType>
         BasicString( InputIt first, InputIt last )
             : data_( Initialize( first, last ) )
         {
         }
 
-        BasicString( const BasicStringView<T>& v );
+        /// <summary>
+        /// Constructs a <see cref="BasicString"/> by copying characters from the specified input range.
+        /// </summary>
+        /// <typeparam name="R">
+        /// A type satisfying <c>std::ranges::input_range</c>. The range's <c>value_type</c> must be convertible to
+        /// the string character type (<c>CharType</c>).
+        /// </typeparam>
+        /// <param name="range">Input range whose elements will be copied into the newly allocated internal buffer.</param>
+        /// <remarks>
+        /// <para>
+        /// The constructor delegates to the static helper <c>Initialize(first, last)</c> which copies the elements
+        /// from <c>std::ranges::begin(range)</c> to <c>std::ranges::end(range)</c> into a newly allocated internal
+        /// <c>Data</c> buffer. For forward ranges the element count can be determined and a single allocation is performed.
+        /// For single-pass input iterators the helper accumulates elements into a temporary buffer before allocating the
+        /// final internal storage sized to the exact element count.
+        /// </para>
+        /// <para>
+        /// Allocation follows the class allocation granularity and the resulting buffer is null-terminated. Callers
+        /// should be aware that existing raw pointers or iterators into other strings remain valid only if those buffers
+        /// are not modified; use <c>EnsureUnique()</c> before performing in-place mutations when sharing may occur.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>)
+        /// will report platform-specific errors which are forwarded as exceptions.
+        /// </exception>
+        template <std::ranges::input_range R>
+			requires std::is_convertible_v<std::ranges::range_value_t<R>, CharType>
+        BasicString( const R& range )
+            : data_( Initialize( std::ranges::begin( range ), std::ranges::end( range ) ) )
+        {
+		}
 
 
+        //BasicString( const BasicStringView<T>& v );
+
+        /// <summary>
+        /// Constructs a <see cref="BasicString{T}"/> containing <paramref name="count"/> repetitions 
+        /// of the specified <paramref name="value"/>.
+        /// </summary>
+        /// <param name="count">
+        /// The number of characters to write into the new string. When zero the constructed string is 
+        /// empty and no internal buffer is allocated.
+        /// </param>
+        /// <param name="value">
+        /// The character value that will be repeated <paramref name="count"/> times to initialize the string content.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This constructor delegates to the internal helper <c>Initialize(size_type, CharType)</c> which allocates an internal
+        /// reference-counted <c>Data</c> buffer sized according to the class allocation granularity and writes a terminating null
+        /// character at the end of the buffer. The resulting object owns the allocated buffer and its internal reference count is
+        /// initialized to one.
+        /// </para>
+        /// <para>
+        /// Call <see cref="EnsureUnique"/> before performing in-place mutations if other <see cref="BasicString{T}"/> instances might
+        /// share the same internal data. Prefer high-level editing APIs (for example <c>Append</c>, <c>Insert</c>, <c>Replace</c>)
+        /// for incremental composition to preserve ownership semantics and performance characteristics.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when the underlying memory allocation fails. Allocation helpers (for example <c>Internal::AllocateBytes</c>)
+        /// will call <c>ThrowOSError</c> which results in a platform-specific <c>SystemException</c>.
+        /// </exception>
         BasicString( size_type count, CharType value )
             : data_( Initialize( count, value ) )
         {
         }
 
 
+        /// <summary>
+        /// Constructs a new <see cref="BasicString{T}"/> as a shallow copy of <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">
+        /// The source <see cref="BasicString{T}"/> to copy. When <paramref name="other"/> contains internal
+        /// data the new instance will share the same internal <c>Data</c> buffer.
+        /// </param>
+        /// <remarks>
+        /// This constructor performs a shallow copy: it stores the same internal <c>Data*</c> pointer as
+        /// <paramref name="other"/> and increments the internal reference count via <c>Data::AddRef()</c>.
+        /// No memory allocation is performed by this operation and it is safe to call in noexcept contexts.
+        /// If you intend to mutate the contents after copying, call <see cref="EnsureUnique"/> first to
+        /// obtain a unique buffer and avoid modifying shared storage.
+        /// <para>
+        /// Thread-safety: the reference count increment is performed using interlocked operations. However,
+        /// callers must ensure external synchronization if multiple threads may modify the same
+        /// BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="std::bad_alloc">
+        /// This constructor does not allocate and therefore does not throw due to allocation. The operation is
+        /// declared <c>noexcept</c>.
+        /// </exception>
+        /// <seealso cref="EnsureUnique"/>
         BasicString( const BasicString& other ) noexcept
             : data_( other.data_ )
         {
@@ -2278,13 +3347,51 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Move constructor.
+        /// </summary>
+        /// <param name="other">
+        /// The source <see cref="BasicString{T}"/> to move from. Ownership of the internal buffer is transferred
+        /// to the newly constructed object.
+        /// </param>
+        /// <remarks>
+        /// This constructor performs a shallow transfer of the internal <c>Data*</c> pointer 
+        /// from <paramref name="other"/> to the newly created instance. The source object's 
+        /// <c>data_</c> pointer is set to <c>nullptr</c>, leaving it in a valid but empty state. 
+        /// The operation is marked <c>noexcept</c> to allow efficient relocation of <see cref="BasicString{T}"/> 
+        /// instances in standard containers and algorithms that depend on noexcept move
+        /// constructors for strong exception-safety guarantees.
+        /// <para>
+        /// Note: If caller code requires the source object to retain its buffer contents after the move, call
+        /// <see cref="EnsureUnique"/> prior to moving or use copy semantics instead.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="EnsureUnique"/>
         BasicString( BasicString&& other ) noexcept
             : data_( other.data_ )
         {
             other.data_ = nullptr;
         }
 
-
+        /// <summary>
+        /// Finalizes this <see cref="BasicString{T}"/> instance and releases its internal storage.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Decrements the reference count of the internal <c>Data</c> object and, when the last
+        /// reference is released, frees the underlying memory. This destructor is safe to call
+        /// in noexcept contexts and does not allocate memory. Any allocation failures would have
+        /// occurred earlier during construction or editing operations; this routine only releases
+        /// previously allocated resources.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the reference count decrement is performed using interlocked operations.
+        /// Callers must ensure they do not access the object's memory after destruction. Creating
+        /// a unique buffer for mutation is performed by higher-level helpers (for example
+        /// <see cref="EnsureUnique"/>) and is unrelated to this destructor's behavior.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="ReleaseData"/>
         ~BasicString( )
         {
             if ( data_ )
@@ -2293,11 +3400,69 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Determines whether this string instance uniquely owns its internal data buffer.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> when the instance has an internal <c>Data</c> object and its reference count equals 1;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This check is performed in constant time and does not perform any synchronization. It is intended
+        /// as a lightweight query to decide whether in-place mutation is safe for this instance.
+        /// </para>
+        /// <para>
+        /// In multi-threaded scenarios other threads may change the reference count concurrently, so callers
+        /// that will mutate the contents should call <see cref="EnsureUnique()"/> to obtain exclusive ownership
+        /// of the internal buffer prior to performing modifications.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] bool IsUnique( ) const noexcept
         {
             return data_ ? data_->referenceCount_ == 1 : false;
         }
 
+        /// <summary>
+        /// Creates a deep copy of this string and returns a newly allocated <see cref="BasicString"/> instance
+        /// that owns an independent buffer containing the same characters.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="BasicString"/> that contains the same character sequence as this instance.
+        /// If this instance is empty the returned <see cref="BasicString"/> will be empty.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned string is a unique (non-shared) copy: it is allocated via the internal
+        /// allocation helpers and initialized with the exact character count of this instance.
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       If this instance holds internal data the method allocates a new internal buffer and copies
+        ///       the characters; the returned object owns that buffer and has reference count == 1.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       If this instance is empty the method returns an empty <see cref="BasicString"/>.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// Thread-safety: this routine does not synchronize access to this object. Callers should ensure
+        /// appropriate external synchronization if other threads may mutate or release this instance
+        /// concurrently.
+        /// </para>
+        /// <seealso cref="EnsureUnique"/>
+        /// <example>
+        /// <code>
+        /// // Create a deep copy that can be modified without affecting the original
+        /// auto copy = original.Clone();
+        /// copy.Append( '!' );
+        /// </code>
+        /// </example>
+        /// </remarks>
         [[nodiscard]] BasicString Clone( ) const
         {
             if ( data_ )
@@ -2307,6 +3472,37 @@ namespace Harlinn::Common::Core
             return {};
         }
 
+
+        /// <summary>
+        /// Ensures this string instance uniquely owns its internal <c>Data</c> buffer.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// When multiple <c>BasicString</c> instances share the same internal buffer (the internal
+        /// reference count is greater than one) this method allocates a new internal buffer, copies
+        /// the current contents into it and replaces the shared buffer so that this instance becomes
+        /// the sole owner. If the buffer is already unique or the string is empty, the method returns
+        /// without performing any allocation or copy.
+        /// </para>
+        /// <para>
+        /// Callers that hold raw pointers, iterators or references into this string's buffer must be
+        /// prepared for those references to be invalidated after this call because the internal buffer
+        /// may be replaced.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is not synchronized. External synchronization is required if
+        /// multiple threads may modify the same <c>BasicString</c> instance concurrently. Converting
+        /// a shared buffer into a unique one is safe because other string instances that referenced the
+        /// old buffer are not mutated.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation of the new internal buffer fails. Underlying allocation helpers
+        /// (for example <c>Internal::AllocateBytes</c> used by <c>Initialize</c>) will raise a
+        /// platform-specific error which is propagated as an exception.
+        /// </exception>
+        /// <seealso cref="Initialize(const CharType*, size_type)"/>
+        /// <seealso cref="ReleaseData(Data*)"/>
         void EnsureUnique( )
         {
             if ( data_ && data_->referenceCount_ > 1 )
@@ -2317,102 +3513,154 @@ namespace Harlinn::Common::Core
             }
         }
 
-
-        [[nodiscard]] static BasicString From( const WideString& s )
-            requires std::is_same_v<CharType, char>
+        /// <summary>
+        /// Creates a new <see cref="BasicString"/> by copying the contents of a contiguous container.
+        /// </summary>
+        /// <typeparam name="ContainerT">
+        /// A contiguous container type whose <c>value_type</c> is identical to this string's character type.
+        /// Examples include <c>std::basic_string</c>, <c>std::basic_string_view</c>, <c>std::vector</c> (contiguous elements),
+        /// and other contiguous container-like types that expose <c>data()</c> and <c>size()</c>.
+        /// </typeparam>
+        /// <param name="s">
+        /// The source container whose elements will be copied into the new string. The container must provide
+        /// contiguous storage via <c>data()</c> and the number of elements via <c>size()</c>.
+        /// </param>
+        /// <returns>
+        /// A <see cref="BasicString"/> instance that owns a newly allocated internal buffer containing a copy
+        /// of the characters from <paramref name="s"/>. If <paramref name="s"/> is empty an empty
+        /// <see cref="BasicString"/> is returned.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The function performs a single allocation sized to hold the exact number of elements returned by
+        /// <c>s.size()</c> and copies the elements from <c>s.data()</c>. Use this overload when the container's
+        /// element type already matches the string character type for optimal performance.
+        /// </para>
+        /// <para>
+        /// For containers with a different element type (for example converting between ANSI and wide strings),
+        /// prefer the conversion helpers in <c>Internal::From</c> or the conversion free functions in this header
+        /// (for example <c>ToWideString</c> / <c>ToAnsiString</c>), which handle encoding and code page details.
+        /// </para>
+        /// </remarks>
+        template<ContiguousContainerLike ContainerT>
+            requires std::is_same_v<typename ContainerT::value_type, CharType>
+        [[nodiscard]] static BasicString From( const ContainerT& s )
         {
-            return Internal::From( s.data( ), s.Length( ) );
+            return BasicString( s.data( ), s.size( ) );
         }
-        [[nodiscard]] static BasicString From( const std::wstring& s )
-            requires std::is_same_v<CharType, char>
+
+        /// <summary>
+        /// Creates a new <c>BasicString</c> by converting the characters stored in a contiguous container
+        /// whose element type is different from the string's character type (<c>CharType</c>).
+        /// This overload delegates the conversion work to <see cref="Internal::From(const CharT*, size_t, unsigned, unsigned)"/>,
+        /// which performs any necessary encoding or character-type conversion and allocates a new internal buffer.
+        /// </summary>
+        /// <typeparam name="ContainerT">
+        /// The contiguous container type holding the source characters. The container's <c>value_type</c>
+        /// must not be the same as this string's <c>CharType</c> and the container must provide
+        /// contiguous access via <c>data()</c> and <c>size()</c>.
+        /// </typeparam>
+        /// <param name="s">
+        /// The source container instance to convert. When empty an empty <c>BasicString</c> is returned.
+        /// </param>
+        /// <returns>
+        /// A <c>BasicString</c> instance that owns a newly allocated internal buffer containing the converted characters.
+        /// </returns>
+        /// <remarks>
+        /// - The conversion may allocate memory; allocation failures are reported via platform-specific exceptions
+        ///   (for example the underlying allocator calls <c>ThrowOSError</c> which will propagate a <c>SystemException</c>).
+        /// - The caller must ensure <c>ContainerT</c> exposes contiguous storage and that its elements are convertible
+        ///   to the expected source character type for <c>Internal::From</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation or underlying conversion fails.</exception>
+        /// <seealso cref="Internal::From(const char*, size_t, unsigned, unsigned)"/>
+        template<ContiguousContainerLike ContainerT>
+            requires (std::is_same_v<typename ContainerT::value_type, CharType> == false)
+        [[nodiscard]] static BasicString From( const ContainerT& s )
         {
             return Internal::From( s.data( ), s.size( ) );
-        }
-        [[nodiscard]] static BasicString From( const wchar_t* s )
-            requires std::is_same_v<CharType, char>
-        {
-            return Internal::From( s, LengthOf( s ) );
-        }
-        [[nodiscard]] static BasicString From( const char* s )
-            requires std::is_same_v<CharType, char>
+		}
+
+        /// <summary>
+        /// Creates a new <c>BasicString</c> by copying the characters from a null-terminated character sequence.
+        /// </summary>
+        /// <param name="s">
+        /// Pointer to a null-terminated character sequence of the same character type as this string
+        /// (<c>CharType</c>). The pointer may be <c>nullptr</c>; in that case the computed length is zero
+        /// and an empty <c>BasicString</c> is returned. The character count is determined using <c>LengthOf</c>.
+        /// </param>
+        /// <returns>
+        /// A <c>BasicString</c> instance that owns a newly allocated internal buffer containing a copy of the
+        /// characters from <paramref name="s"/> (excluding the terminating null). If <paramref name="s"/> is
+        /// <c>nullptr</c> or empty an empty <c>BasicString</c> is returned.
+        /// </returns>
+        /// <remarks>
+        /// - This is a convenience factory that delegates to the <c>BasicString(const CharType*, size_type)</c>
+        ///   constructor which in turn calls the internal initializers and allocation helpers.
+        /// - Memory allocation may fail; underlying allocation helpers will report platform-specific errors
+        ///   (for example by calling <c>ThrowOSError</c>), which will propagate an exception to the caller.
+        /// </remarks>
+        /// <seealso cref="LengthOf">LengthOf (computes the length of a null-terminated string)</seealso>
+        /// <seealso cref="BasicString::Initialize">BasicString::Initialize (internal allocation helpers)</seealso>
+        template<typename CharT>
+            requires std::is_same_v<CharType, CharT>
+        [[nodiscard]] static BasicString From( const CharT* s )
         {
             return BasicString( s, LengthOf( s ) );
         }
 
-
-        [[nodiscard]] static BasicString From( const AnsiString& s )
-            requires std::is_same_v<CharType, char>
-        {
-            return s;
-        }
-        [[nodiscard]] static BasicString From( const std::string& s )
-            requires std::is_same_v<CharType, char>
-        {
-            return BasicString( s.data( ), s.size( ) );
-        }
-
-        [[nodiscard]] static BasicString From( const std::string_view& s )
-            requires std::is_same_v<CharType, char>
-        {
-            return BasicString( s.data( ), s.size( ) );
-        }
-
-
-        [[nodiscard]] static BasicString From( const AnsiString& s )
-            requires std::is_same_v<CharType, wchar_t>
-        {
-            return Internal::From( s.data( ), s.Length( ) );
-        }
-        [[nodiscard]] static BasicString From( const std::string& s )
-            requires std::is_same_v<CharType, wchar_t>
-        {
-            return Internal::From( s.data( ), s.size( ) );
-        }
-
-        [[nodiscard]] static BasicString From( const std::string_view& s )
-            requires std::is_same_v<CharType, wchar_t>
-        {
-            return Internal::From( s.data( ), s.size( ) );
-        }
-
-
-        [[nodiscard]] static BasicString From( const WideString& s )
-            requires std::is_same_v<CharType, wchar_t>
-        {
-            return s;
-        }
-        [[nodiscard]] static BasicString From( const std::wstring& s )
-            requires std::is_same_v<CharType, wchar_t>
-        {
-            return BasicString( s.data( ), s.size( ) );
-        }
-
-        [[nodiscard]] static BasicString From( const std::wstring_view& s )
-            requires std::is_same_v<CharType, wchar_t>
-        {
-            return BasicString( s.data( ), s.size( ) );
-        }
-        [[nodiscard]] static BasicString From( const std::wstring_view& s )
-            requires std::is_same_v<CharType, char>
-        {
-            return Internal::From( s.data( ), s.size( ) );
-        }
-
-
-
-        [[nodiscard]] static BasicString From( const wchar_t* s )
-            requires std::is_same_v<CharType, wchar_t>
-        {
-            return BasicString( s, LengthOf( s ) );
-        }
-        [[nodiscard]] static BasicString From( const char* s )
-            requires std::is_same_v<CharType, wchar_t>
+        /// <summary>
+        /// Creates a new <see cref="BasicString"/> by converting a null-terminated character sequence
+        /// whose element type differs from this string's <c>CharType</c>.
+        /// </summary>
+        /// <typeparam name="CharT">Source character type. Must not be identical to this string's <c>CharType</c>.</typeparam>
+        /// <param name="s">
+        /// Pointer to a null-terminated character sequence of type <c>CharT</c>.
+        /// May be <c>nullptr</c>; when <c>nullptr</c> or the sequence is empty an empty <see cref="BasicString"/> is returned.
+        /// </param>
+        /// <returns>
+        /// A <see cref="BasicString"/> containing the converted characters. The returned string owns a newly allocated
+        /// internal buffer (reference count == 1) when the input is non-empty.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The conversion and allocation are delegated to <see cref="Internal::From(const CharT*, size_t)"/>.
+        /// For ANSI/Wide conversions the internal implementation uses the platform facilities (for example
+        /// MultiByteToWideChar / WideCharToMultiByte) and respects code page and flag parameters when applicable.
+        /// </para>
+        /// <para>
+        /// Callers that require explicit control over encoding (code page or flags) should call the corresponding
+        /// Internal::From overload directly.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// // Convert narrow C-string to a WideString
+        /// WideString w = BasicString<wchar_t>::From( "hello" );
+        /// </code>
+        /// </example>
+        /// <seealso cref="Internal::From(const char*, size_t, unsigned, unsigned)"/>
+        template<typename CharT>
+            requires (std::is_same_v<CharType, CharT> == false)
+        [[nodiscard]] static BasicString From( const CharT* s )
         {
             return Internal::From( s, LengthOf( s ) );
         }
 
-
-
+        /// <summary>
+        /// Releases any internal storage held by this string and resets the instance to an empty state.
+        /// </summary>
+        /// <remarks>
+        /// If the string currently owns an internal <c>Data</c> object, this operation decrements its
+        /// reference count via <c>ReleaseData</c>. When the last reference is released the backing memory
+        /// is freed. After this call the string contains no data (<c>data_ == nullptr</c>).
+        /// <para>
+        /// This operation is safe to call when the string is already empty. The underlying reference-count
+        /// decrement is performed using interlocked operations; callers must ensure external synchronization
+        /// if multiple threads may concurrently mutate the same <c>BasicString</c> instance.
+        /// </para>
+        /// </remarks>
+        /// <returns>A reference to this <c>BasicString</c> instance, now empty.</returns>
         BasicString& operator = ( nullptr_t )
         {
             if ( data_ )
@@ -2423,7 +3671,33 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-
+        /// <summary>
+        /// Copy assignment operator.
+        /// </summary>
+        /// <param name="other">
+        /// The source <see cref="BasicString"/> to copy from. When <paramref name="other"/> contains internal data
+        /// the assignment performs a shallow copy: this instance will reference the same internal <c>Data</c> buffer
+        /// and the buffer's reference count is incremented.
+        /// </param>
+        /// <returns>
+        /// A reference to this <see cref="BasicString"/> instance after assignment.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The operator first checks for self-assignment and only performs work when the source and destination
+        /// differ. If this object currently owns an internal buffer it releases that buffer (decrementing the
+        /// reference count and freeing memory when the last reference is released). Then the internal pointer
+        /// is updated to point to the source buffer and the reference count is incremented when non-null.
+        /// </para>
+        /// <para>
+        /// This operation implements copy semantics with shared, reference-counted storage. Call <see cref="EnsureUnique"/>
+        /// before performing in-place mutations if other <see cref="BasicString"/> instances may share the same buffer.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the reference count operations use interlocked primitives, but external synchronization
+        /// is required if multiple threads may concurrently modify the same <see cref="BasicString"/> object.
+        /// </para>
+        /// </remarks>
         BasicString& operator = ( const BasicString& other )
         {
             if ( other.data_ != data_ )
@@ -2441,12 +3715,60 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        /// <summary>
+        /// Move assignment operator that exchanges the internal buffer pointer with <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">Source <see cref="BasicString"/> to move from. After the call the source remains valid.
+        /// The internal <c>Data*</c> pointers are exchanged; the source is left in a valid but unspecified state
+        /// unless the destination was empty prior to the call.</param>
+        /// <returns>Reference to this instance after move-assignment.</returns>
+        /// <remarks>
+        /// This operation is <c>noexcept</c>, non-allocating, and does not modify reference counts on existing
+        /// <c>Data</c> objects; it swaps the <c>data_</c> pointers. Call <see cref="EnsureUnique"/> if you require
+        /// a unique buffer for subsequent in-place mutation.
+        /// </remarks>
+        /// <seealso cref="EnsureUnique"/>
         BasicString& operator = ( BasicString&& other ) noexcept
         {
             std::swap( other.data_, data_ );
             return *this;
         }
 
+        /// <summary>
+        /// Assigns the contents of a null-terminated character sequence to this string.
+        /// </summary>
+        /// <param name="string">
+        /// Pointer to a null-terminated character sequence of type <c>CharType</c>.
+        /// May be <c>nullptr</c>. When <c>nullptr</c> or the sequence is empty the resulting
+        /// string becomes empty.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This method delegates the actual allocation and initialization to
+        /// <c>Initialize(const CharType*)</c>. If this instance already owns internal
+        /// data, the method creates a new internal buffer initialized from <paramref name="string"/>,
+        /// releases the currently held buffer via <c>ReleaseData</c> and replaces it with the new buffer.
+        /// When the instance does not own a buffer (<c>data_ == nullptr</c>), the method simply
+        /// initializes and takes ownership of the newly allocated buffer.
+        /// </para>
+        /// <para>
+        /// The operation preserves the copy-on-write/reference-counting semantics of
+        /// <c>BasicString</c>. Callers that need to mutate existing raw pointers/iterators should
+        /// call <c>EnsureUnique()</c> before performing in-place modifications.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Allocation helpers (for example
+        /// <c>Internal::AllocateBytes</c>) will propagate platform-specific errors (via
+        /// <c>ThrowOSError</c> or similar) which surface as exceptions.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// BasicString<char> s;
+        /// s.Assign("hello"); // s now contains "hello"
+        /// s.Assign(nullptr); // s becomes empty
+        /// </code>
+        /// </example>
         void Assign( const CharType* string )
         {
             if ( data_ )
@@ -2460,12 +3782,66 @@ namespace Harlinn::Common::Core
                 data_ = Initialize( string );
             }
         }
+
+        /// <summary>
+        /// Assigns the characters from a null-terminated character sequence to this string.
+        /// </summary>
+        /// <param name="string">
+        /// Pointer to a null-terminated character sequence of type <c>CharType</c>.
+        /// May be <c>nullptr</c>; when <c>nullptr</c> or the sequence is empty the resulting string
+        /// becomes empty.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This lowercase overload is a convenience wrapper that forwards to <see cref="Assign(const CharType*)"/>.
+        /// It preserves the reference-counted copy-on-write semantics of <c>BasicString</c>. If the
+        /// underlying call requires allocation (for example when creating a new unique buffer) the
+        /// allocation is performed by the internal helpers invoked by <c>Assign</c>.
+        /// </para>
+        /// <para>
+        /// Call <see cref="EnsureUnique()"/> before performing in-place mutations through raw pointers,
+        /// iterators or references if other <c>BasicString</c> instances may share the internal buffer.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Allocation helpers (for example
+        /// <c>Internal::AllocateBytes</c>) will propagate platform-specific errors (for example via
+        /// <c>ThrowOSError</c>) which surface as exceptions.
+        /// </exception>
+        /// <seealso cref="Assign(const CharType*)"/>
         void assign( const CharType* string )
         {
             Assign( string );
         }
 
-
+        /// <summary>
+        /// Assigns the characters from a null-terminated character sequence to this string.
+        /// </summary>
+        /// <param name="string">
+        /// Pointer to a null-terminated character sequence of type <c>CharType</c>.
+        /// May be <c>nullptr</c>. When <c>nullptr</c> or the sequence is empty the resulting string becomes empty.
+        /// </param>
+        /// <returns>
+        /// A reference to this <see cref="BasicString"/> instance after assignment.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This operator forwards to <see cref="Assign(const CharType*)"/> which performs the actual allocation
+        /// and initialization. The operation preserves the reference-counted copy-on-write semantics of
+        /// <see cref="BasicString"/>: when necessary a new internal buffer will be allocated and the previous
+        /// buffer released. Call <see cref="EnsureUnique"/> before performing in-place mutations through raw
+        /// pointers, iterators or references if other <see cref="BasicString"/> instances may share the internal buffer.
+        /// </para>
+        /// <para>
+        /// For Windows-specific or encoding conversions prefer the Harlinn.Common.Core conversion helpers
+        /// provided elsewhere in this header (for example <c>Internal::From</c>) when applicable.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails during the assignment performed by the helper.
+        /// Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) will raise a platform-specific error
+        /// which is propagated as an exception.
+        /// </exception>
         BasicString& operator = ( const CharType* string )
         {
             Assign( string );
@@ -5864,6 +7240,9 @@ namespace Harlinn::Common::Core
     }
 
 
+
+
+
     template <class CharT, class CharTraitsT>
     std::basic_istream<CharT, CharTraitsT>& operator >> ( std::basic_istream<CharT, CharTraitsT>& inputStream, BasicString<CharT>& str )
     {
@@ -6070,11 +7449,13 @@ namespace Harlinn::Common::Core
 
     };
 
+    /*
     template<typename T>
     inline BasicString<T>::BasicString( const BasicStringView<T>& v )
         : data_( Initialize( v.data( ), v.size( ) ) )
     {
     }
+    */
 
     template<WideStringLike StringT>
     inline void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, StringT& dest )
