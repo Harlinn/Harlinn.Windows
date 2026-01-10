@@ -8837,6 +8837,66 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Finds the last index (searching backwards) of any character in this string that is NOT present in the provided character array.
+        /// </summary>
+        /// <param name="searchChars">Pointer to the array of characters that form the exclusion set. May be <c>nullptr</c>.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the <paramref name="searchChars"/> array.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. If greater than or equal to the string length the search begins at the last character.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that is NOT equal to any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no such character is found or when input conditions prevent searching (for example: empty string).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Behavior and optimizations:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       If this string is empty or <paramref name="searchChars"/> is <c>nullptr</c> or <paramref name="numberOfSearchChars"/> is zero,
+        ///       the function treats every character as "not in" the empty set and returns the clamped <paramref name="start"/> (or <c>npos</c> when string empty).
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       Single-character fast-path: when <paramref name="numberOfSearchChars"/> == 1 the method performs a tight backward scan comparing the single target character.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       Narrow-character optimization: when <c>CharType</c> is <c>char</c> the routine builds a 256-entry lookup table on the stack and performs O(1) membership tests per character (no heap allocation).
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       General (wider) character types:
+        ///       - For small search sets (<= SmallSetThreshold) a nested linear scan (O(M) per character) is used to avoid extra allocations.
+        ///       - For larger sets the characters are copied into a <c>boost::container::small_vector</c>, sorted and uniqued, then membership is tested via binary search (reduces per-character cost to O(log M)).
+        ///       The copy/sort step may allocate heap memory for large search sets.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       Complexity: worst-case O(N * M) where N is the number of characters scanned and M is the size of the search set; narrow-character and large-set optimizations reduce this cost in common scenarios.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       Thread-safety: this method is const and safe to call concurrently with other const operations. External synchronization is required if other threads may mutate the same BasicString instance concurrently.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown when preparing an uppercase/sorted search set if heap allocation occurs (for example when copying into the small_vector grows beyond its inline capacity).</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find last character that is not 'a' or 'b', starting from end:
+        /// BasicString<char> s("aaxbaa");
+        /// size_t idx = s.LastIndexOfAnyBut( "ab", 2 );
+        /// // idx == 2 (character 'x')
+        /// </code>
+        /// </example>
         [[nodiscard]] size_type LastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( !data_ || data_->size_ == 0 )
@@ -8960,6 +9020,54 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Finds the last index (searching backwards) of any character contained in the provided character array,
+        /// comparing characters case-insensitively, and returns the index of the first character (from the end)
+        /// that is NOT present in the provided set when compared case-insensitively.
+        /// </summary>
+        /// <param name="searchChars">Pointer to the array of characters that form the case-insensitive exclusion set. May be <c>nullptr</c>.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the <paramref name="searchChars"/> array. When zero the set is treated as empty.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. If greater than or equal to the string length the search begins at the last character.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that is NOT equal (case-insensitively) to any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="npos"/> when no such character is found or when input conditions (for example: empty string) prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Behavior and optimizations:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       If this string is empty the function returns <c>npos</c>.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       If <paramref name="numberOfSearchChars"/> == 0 or <paramref name="searchChars"/> is <c>nullptr</c>, every character is considered "not in" the empty set;
+        ///       the function returns the clamped <paramref name="start"/> (or the last index when <paramref name="start"/> is out of range).
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       Single-character fast-path: when <paramref name="numberOfSearchChars"/> == 1 the routine scans backwards and compares using <c>Core::ToUpper</c>,
+        ///       avoiding allocations and extra buffers.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       For multiple characters the function precomputes the uppercase form of the search set into a <c>boost::container::small_vector</c>
+        ///       to avoid repeated conversions. For large sets a sort+unique step is optionally used and membership tests are performed via binary search
+        ///       to improve per-character test cost.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// Thread-safety: this method is const and safe to call concurrently with other const operations. External synchronization is required
+        /// if other threads may mutate the same BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown when preparing uppercase/sorted search set if heap allocation occurs (for example when small_vector grows beyond inline capacity).</exception>
         [[nodiscard]] size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( !data_ || data_->size_ == 0 )
@@ -9044,6 +9152,20 @@ namespace Harlinn::Common::Core
 
 
 
+        /// <summary>
+        /// Finds the last character (searching backward) in this string that is NOT contained in the provided search set.
+        /// </summary>
+        /// <param name="searchChars">A BasicString whose characters form the exclusion set. When empty the function returns the clamped <paramref name="start"/> value.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. When greater than the string length the search starts at the last character. Defaults to <c>npos</c> to indicate the end of the string.</param>
+        /// <returns>
+        /// The zero-based index of the last character that is not present in <paramref name="searchChars"/>. Returns <c>BasicString::npos</c>
+        /// when no such character is found or when this string is empty.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: worst-case O(N * M) where N is the number of characters scanned and M is the size of <paramref name="searchChars"/>.
+        /// If <paramref name="searchChars"/> is empty the method treats every character as "not in" the set and returns the clamped <paramref name="start"/>.
+        /// The method forwards to the pointer/length implementation for efficiency when the search set exposes an internal buffer.
+        /// </remarks>
         [[nodiscard]] size_type LastIndexOfAnyBut( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
@@ -9054,6 +9176,20 @@ namespace Harlinn::Common::Core
             return data_ ? data_->size_ - 1 : npos;
         }
 
+        /// <summary>
+        /// Finds the last character (searching backward) in this string that is NOT contained in the provided contiguous search set.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose element type must match <c>CharType</c>.</typeparam>
+        /// <param name="searchChars">A contiguous container whose elements form the exclusion set.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <c>npos</c> to indicate the end of the string.</param>
+        /// <returns>
+        /// The zero-based index of the last character that is not present in <paramref name="searchChars"/>. Returns <c>BasicString::npos</c>
+        /// when no such character is found or when this string is empty.
+        /// </returns>
+        /// <remarks>
+        /// The template is constrained to contiguous container-like types whose <c>value_type</c> equals this string's <c>CharType</c>.
+        /// This overload forwards to the pointer/length implementation to avoid temporary allocations.
+        /// </remarks>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type LastIndexOfAnyBut( const SpanT& searchChars, size_type start = npos ) const
@@ -9061,13 +9197,19 @@ namespace Harlinn::Common::Core
             return LastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
         }
 
-        [[nodiscard]] size_type LastIndexOfAnyBut( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
-        {
-            return LastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
-        }
 
-
-
+        /// <summary>
+        /// Finds the last character (searching backward) in this string that is NOT contained in the provided search set (case-insensitive).
+        /// </summary>
+        /// <param name="searchChars">A BasicString whose characters form the case-insensitive exclusion set. When empty the function returns the clamped <paramref name="start"/> value.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. When greater than the string length the search starts at the last character. Defaults to <c>npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the last character that is not present (case-insensitively) in <paramref name="searchChars"/>.
+        /// Returns <c>BasicString::npos</c> when no such character is found or when this string is empty.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: worst-case O(N * M). The method forwards to the pointer/length implementation that performs case-insensitive comparisons.
+        /// </remarks>
         [[nodiscard]] size_type ILastIndexOfAnyBut( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
@@ -9078,6 +9220,19 @@ namespace Harlinn::Common::Core
             return data_ ? data_->size_ - 1 : npos;
         }
 
+        /// <summary>
+        /// Finds the last character (searching backward) in this string that is NOT contained in the provided contiguous search set (case-insensitive).
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose element type must match <c>CharType</c>.</typeparam>
+        /// <param name="searchChars">A contiguous container whose elements form the case-insensitive exclusion set.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <c>npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the last character that is not present (case-insensitively) in <paramref name="searchChars"/>.
+        /// Returns <c>BasicString::npos</c> when no such character is found or when this string is empty.
+        /// </returns>
+        /// <remarks>
+        /// This templated overload forwards to the pointer/length based case-insensitive implementation to avoid allocations.
+        /// </remarks>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type ILastIndexOfAnyBut( const SpanT& searchChars, size_type start = npos ) const
@@ -9085,13 +9240,19 @@ namespace Harlinn::Common::Core
             return ILastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
         }
 
-        [[nodiscard]] size_type ILastIndexOfAnyBut( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
-        {
-            return ILastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
-        }
 
-
-
+        /// <summary>
+        /// Finds the last character (searching backward) in this string that is NOT contained in the provided null-terminated character sequence.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters that form the exclusion set. May be <c>nullptr</c>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <c>npos</c> to indicate the end of the string.</param>
+        /// <returns>
+        /// The zero-based index of the last character that is not present in <paramref name="searchChars"/>. Returns <c>BasicString::npos</c>
+        /// when no such character is found or when this string is empty.
+        /// </returns>
+        /// <remarks>
+        /// This overload computes the length of <paramref name="searchChars"/> using <c>LengthOf</c> and forwards to the length-aware implementation.
+        /// </remarks>
         [[nodiscard]] size_type LastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = LengthOf( searchChars );
@@ -9102,6 +9263,18 @@ namespace Harlinn::Common::Core
             return data_ ? data_->size_ - 1 : npos;
         }
 
+        /// <summary>
+        /// Finds the last character (searching backward) in this string that is NOT contained in the provided null-terminated character sequence (case-insensitive).
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters that form the case-insensitive exclusion set. May be <c>nullptr</c>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <c>npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the last character that is not present (case-insensitively) in <paramref name="searchChars"/>.
+        /// Returns <c>BasicString::npos</c> when no such character is found or when this string is empty.
+        /// </returns>
+        /// <remarks>
+        /// This overload computes the length of <paramref name="searchChars"/> and delegates to the length-aware case-insensitive implementation.
+        /// </remarks>
         [[nodiscard]] size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = LengthOf( searchChars );
@@ -9113,77 +9286,262 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character sequence in this string,
+        /// starting the search at the specified <paramref name="start"/> index.
+        /// </summary>
+        /// <param name="searchString">Pointer to the pattern to search for. May be <c>nullptr</c> only when <paramref name="searchStringLength"/> == 0.</param>
+        /// <param name="searchStringLength">Number of characters in the pattern. When zero the function follows std::string semantics and returns <paramref name="start"/> if it is valid (<= size()), otherwise <c>npos</c>.</param>
+        /// <param name="start">Zero-based index in this string where the search begins. If greater than the string length or if the pattern is longer than the remaining characters the function returns <c>npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching occurrence of <paramref name="searchString"/> or
+        /// <c>BasicString::npos</c> when no match is found or input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: Best/average-case O(n) where n is the number of characters examined. An optimized
+        ///   single-character fast-path is used for patterns of length 1.
+        /// - The search is implemented in a binary-safe manner using repository memory helpers
+        ///   (for example <c>MemChr</c> and <c>MemCmp</c>) to avoid locale and integer-cast issues.
+        /// - The method is const and does not allocate memory in the common paths; it is safe to call
+        ///   concurrently with other const operations. If the string is empty and <paramref name="searchStringLength"/> > 0,
+        ///   the function returns <c>npos</c>.
+        /// - Behavior for empty pattern follows <c>std::string</c> semantics: return <paramref name="start"/> when valid.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying memory helpers report an OS or allocation error.</exception>
         [[nodiscard]] size_type IndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
-            if ( data_ )
+            const size_type dataSize = data_ ? data_->size_ : 0;
+            if ( searchStringLength == 0 || searchString == nullptr )
             {
-                auto dataSize = data_->size_;
-                if ( ( start + searchStringLength ) <= dataSize )
-                {
-                    auto ptr = data_->buffer_ + start;
-                    auto endPtr = data_->buffer_ + dataSize - searchStringLength;
-
-                    while ( ptr <= endPtr )
-                    {
-                        auto* p = MemChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
-                        if ( p && p <= endPtr )
-                        {
-                            auto compareLength = searchStringLength - 1;
-                            if ( Internal::Compare( p + 1, compareLength, searchString + 1, compareLength ) == 0 )
-                            {
-                                return static_cast< size_type >( p - data_->buffer_ );
-                            }
-                            ptr = p + 1;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
+                return ( start <= dataSize ) ? start : npos;
             }
+
+            if ( !data_ || searchString == nullptr || start > dataSize || searchStringLength > ( dataSize - start ) )
+            {
+                return npos;
+            }
+
+            const CharType* buffer = data_->buffer_;
+            const size_type lastStartIndex = dataSize - searchStringLength;
+            const CharType* ptr = buffer + start;
+            const CharType* lastPtr = buffer + lastStartIndex;
+
+            // Fast path: single character pattern.
+            if ( searchStringLength == 1 )
+            {
+                auto remaining = static_cast<size_type>( dataSize - ( ptr - buffer ) );
+                auto* found = MemChr( ptr, *searchString, remaining );
+                return found ? static_cast<size_type>( found - buffer ) : npos;
+            }
+
+            // General case: find occurrences of first character, then compare full pattern.
+            const CharType firstChar = searchString[ 0 ];
+            while ( ptr <= lastPtr )
+            {
+                auto remaining = static_cast<size_type>( dataSize - ( ptr - buffer ) );
+                auto* p = MemChr( ptr, firstChar, remaining );
+                if ( !p || p > lastPtr )
+                {
+                    break;
+                }
+
+                // Use binary-safe memory compare for exact match (avoids locale and int-cast issues).
+                if ( MemCmp( p, searchString, searchStringLength ) == 0 )
+                {
+                    return static_cast<size_type>( p - buffer );
+                }
+
+                // continue searching after the candidate
+                ptr = p + 1;
+            }
+
             return npos;
         }
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character sequence in this string and
+        /// forwards to <see cref="IndexOf(const CharType*, size_type, size_type)"/>.
+        /// </summary>
+        /// <param name="searchString">Pointer to the pattern to search for.</param>
+        /// <param name="start">Zero-based index to start the search.</param>
+        /// <param name="searchStringLength">Number of characters in the pattern.</param>
+        /// <returns>
+        /// The zero-based index of the first match or <c>BasicString::npos</c> if not found.
+        /// </returns>
+        /// <remarks>
+        /// This overload exists for API convenience and simply forwards to the length-aware <c>IndexOf</c> implementation.
+        /// See <see cref="IndexOf(const CharType*, size_type, size_type)"/> for complexity and thread-safety details.
+        /// </remarks>
         [[nodiscard]] size_type find( const CharType* searchString, size_type start, size_type searchStringLength ) const
         {
             return IndexOf( searchString, searchStringLength, start );
         }
 
 
+        /// <summary>
+        /// Performs a case-insensitive search for the first occurrence of a substring within this string,
+        /// beginning the search at the specified zero-based <paramref name="start"/> position.
+        /// </summary>
+        /// <param name="searchString">
+        /// Pointer to the character sequence to search for. May be <c>nullptr</c> only when
+        /// <paramref name="searchStringLength"/> is zero. The pointer is not required to be null-terminated
+        /// when <paramref name="searchStringLength"/> is provided explicitly.
+        /// </param>
+        /// <param name="searchStringLength">
+        /// Number of characters in <paramref name="searchString"/> to search for. When zero the method
+        /// follows <c>std::string</c> semantics and returns <paramref name="start"/> if it is valid
+        /// (<= current length), otherwise <see cref="npos"/>.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index within this string at which to begin the search. If greater than the current
+        /// string length the call returns <see cref="npos"/>. If <paramref name="start"/> equals the string
+        /// length and <paramref name="searchStringLength"/> is non-zero the pattern cannot fit and the
+        /// function returns <see cref="npos"/>.
+        /// </param>
+        /// <returns>
+        /// The zero-based index of the first matching occurrence of the case-insensitive pattern,
+        /// or <see cref="npos"/> when the pattern is not found or input preconditions are not met.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Implementation notes and behavior:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>Empty-pattern behavior follows <c>std::string</c>: when <paramref name="searchStringLength"/> == 0
+        ///     the function returns <paramref name="start"/> if <paramref name="start"/> is valid (<= current length); otherwise <see cref="npos"/>.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Fast-path: when the pattern length is 1 the function uses the repository helper <c>MemIChr</c>
+        ///     to perform a case-insensitive scan in O(n) time without heap allocation.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>For very large patterns (length > INT_MAX) the implementation avoids helpers that cast lengths to <c>int</c>
+        ///     and performs a manual case-insensitive comparison using <c>Core::ToUpper</c>.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>General case: the routine locates candidate positions of the first pattern character using
+        ///     <c>MemIChr</c> and verifies the remainder using <c>Internal::ICompare</c> for correctness and performance.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Complexity: best/average O(n) with a possible additional cost for repeated candidate verification; worst-case
+        ///     behavior depends on distribution of the first character occurrences.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Thread-safety: this method is const and safe to call concurrently with other const operations.
+        ///     External synchronization is required if other threads may mutate the same BasicString instance concurrently.</description>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown when underlying memory or OS helpers used by the repository (for example inside <c>MemIChr</c> or <c>Internal::ICompare</c>) report errors.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Case-insensitive search for "hello" starting at position 0
+        /// size_t idx = s.IIndexOf( "hello", 5, 0 );
+        /// if ( idx != BasicString<char>::npos ) { /* found at idx */ }
+        /// </code>
+        /// </example>
         [[nodiscard]] size_type IIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
-            if ( data_ )
+            const size_type dataSize = data_ ? data_->size_ : 0;
+            if ( searchStringLength == 0 || searchString == nullptr )
             {
-                auto dataSize = data_->size_;
-                if ( ( start + searchStringLength ) <= dataSize )
-                {
-                    auto ptr = data_->buffer_ + start;
-                    auto endPtr = data_->buffer_ + dataSize - searchStringLength;
+                return ( start <= dataSize ) ? start : npos;
+            }
 
-                    while ( ptr <= endPtr )
+            if ( !data_ || searchString == nullptr || start > dataSize || searchStringLength > ( dataSize - start ) )
+            {
+                return npos;
+            }
+
+            const CharType* buffer = data_->buffer_;
+            const size_type lastStartIndex = dataSize - searchStringLength;
+            const CharType firstChar = searchString[ 0 ];
+
+            // Fast-path: single-character pattern (case-insensitive).
+            if ( searchStringLength == 1 )
+            {
+                const size_type remaining = dataSize - start;
+                const CharType* found = MemIChr( buffer + start, firstChar, remaining );
+                return found ? static_cast<size_type>( found - buffer ) : npos;
+            }
+
+            // If pattern length exceeds INT_MAX we avoid calling helpers that cast lengths to int.
+            // Fall back to a safe manual case-insensitive search.
+            constexpr size_type IntMaxSize = static_cast<size_type>( std::numeric_limits<int>::max( ) );
+            if ( searchStringLength > IntMaxSize )
+            {
+                const CharType upperFirst = Core::ToUpper( firstChar );
+                const size_type lastIdx = lastStartIndex;
+                for ( size_type i = start; i <= lastIdx; ++i )
+                {
+                    if ( Core::ToUpper( buffer[ i ] ) != upperFirst )
                     {
-                        auto* p = MemIChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
-                        if ( p && p <= endPtr )
+                        continue;
+                    }
+
+                    bool match = true;
+                    // compare remaining characters case-insensitively
+                    for ( size_type j = 1; j < searchStringLength; ++j )
+                    {
+                        if ( Core::ToUpper( buffer[ i + j ] ) != Core::ToUpper( searchString[ j ] ) )
                         {
-                            auto compareLength = searchStringLength - 1;
-                            if ( Internal::ICompare( p + 1, compareLength, searchString + 1, compareLength ) == 0 )
-                            {
-                                return static_cast< size_type >( p - data_->buffer_ );
-                            }
-                            ptr = p + 1;
-                        }
-                        else
-                        {
+                            match = false;
                             break;
                         }
                     }
+                    if ( match )
+                    {
+                        return i;
+                    }
                 }
+                return npos;
             }
+
+            // General case:
+            // - Find candidate positions of the first character using a case-insensitive memory scan (MemIChr).
+            // - For each candidate compare the remainder of the pattern using the internal case-insensitive compare helper.
+            const CharType* ptr = buffer + start;
+            const CharType* lastPtr = buffer + lastStartIndex;
+            const size_type compareLength = searchStringLength - 1; 
+            while ( ptr <= lastPtr )
+            {
+                const size_type remaining = static_cast<size_type>( dataSize - ( ptr - buffer ) );
+                const CharType* p = MemIChr( ptr, firstChar, remaining );
+                if ( !p || p > lastPtr )
+                {
+                    break;
+                }
+
+                // Compare the rest case-insensitively. 
+                if ( Internal::ICompare( p + 1, compareLength, searchString + 1, compareLength ) == 0 )
+                {
+                    return static_cast<size_type>( p - buffer );
+                }
+
+                // continue searching after the candidate
+                ptr = p + 1;
+            }
+
             return npos;
         }
 
 
+        /// <summary>
+        /// Finds the first occurrence of the specified <see cref="BasicString"/> in this string.
+        /// </summary>
+        /// <param name="searchString">The string to search for. May be empty; when empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first occurrence of <paramref name="searchString"/> within this string
+        /// starting at <paramref name="start"/>, or <see cref="npos"/> if not found.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the pointer/length based <see cref="IndexOf(const CharType*, size_type, size_type)"/> helper
+        /// for efficiency when the search string exposes an internal buffer. The method is const and does not allocate
+        /// in the common case. Calling code must ensure external synchronization if other threads may mutate this instance.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying memory or OS helpers invoked by the repository functions report an error.</exception>
         [[nodiscard]] size_type IndexOf( const BasicString& searchString, size_type start = 0 ) const
         {
             auto* searchData = searchString.data_;
@@ -9194,11 +9552,32 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Alias for <see cref="IndexOf(const BasicString&, size_type)"/>. Finds the first occurrence of the specified <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="searchString">The string to search for. May be empty.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The index of the first match or <see cref="npos"/> if not found.
+        /// </returns>
         [[nodiscard]] size_type find( const BasicString& searchString, size_type start = 0 ) const
         {
             return IndexOf( searchString, start );
         }
 
+        /// <summary>
+        /// Finds the first occurrence of the specified contiguous container-like search sequence in this string.
+        /// </summary>
+        /// <typeparam name="SpanT">Contiguous container-like type whose element type matches this string's character type.</typeparam>
+        /// <param name="searchString">The container holding the search sequence. When empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first occurrence of the sequence, or <see cref="npos"/> if not found.
+        /// </returns>
+        /// <remarks>
+        /// This template overload is constrained to contiguous container-like types and forwards to the pointer/length
+        /// based <see cref="IndexOf(const CharType*, size_type, size_type)"/> implementation to avoid temporaries.
+        /// </remarks>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>,CharType>
         [[nodiscard]] size_type IndexOf( const SpanT& searchString, size_type start = 0 ) const
@@ -9210,6 +9589,15 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Alias for <see cref="IndexOf(const SpanT&, size_type)"/>. Finds the first occurrence of the specified contiguous container-like sequence.
+        /// </summary>
+        /// <typeparam name="SpanT">Contiguous container-like type whose element type matches this string's character type.</typeparam>
+        /// <param name="searchString">The container holding the search sequence. When empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first occurrence of the sequence, or <see cref="npos"/> if not found.
+        /// </returns>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type find( const SpanT& searchString, size_type start = 0 ) const
@@ -9217,20 +9605,19 @@ namespace Harlinn::Common::Core
             return IndexOf( searchString, start );
         }
 
-        [[nodiscard]] size_type IndexOf( const std::basic_string_view<CharType>& searchString, size_type start = 0 ) const
-        {
-            if ( searchString.size( ) )
-            {
-                return IndexOf( searchString.data( ), searchString.size( ), start );
-            }
-            return npos;
-        }
-        [[nodiscard]] size_type find( const std::basic_string_view<CharType>& searchString, size_type start = 0 ) const
-        {
-            return IndexOf( searchString, start );
-        }
-
-
+        /// <summary>
+        /// Performs a case-insensitive search for the first occurrence of the specified <see cref="BasicString"/> in this string.
+        /// </summary>
+        /// <param name="searchString">The string to search for, compared case-insensitively. May be empty.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The index of the first case-insensitive match or <see cref="npos"/> if not found.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the pointer/length based case-insensitive helper to avoid allocations when the search string
+        /// exposes an internal buffer. Behavior follows the repository's case-insensitive comparison semantics.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying comparison helpers report an error.</exception>
         [[nodiscard]] size_type IIndexOf( const BasicString& searchString, size_type start = 0 ) const
         {
             auto* searchData = searchString.data_;
@@ -9241,6 +9628,18 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Performs a case-insensitive search for the first occurrence of the specified contiguous container-like sequence.
+        /// </summary>
+        /// <typeparam name="SpanT">Contiguous container-like type whose element type matches this string's character type.</typeparam>
+        /// <param name="searchString">The container holding the search sequence. Comparison is case-insensitive.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The index of the first case-insensitive match or <see cref="npos"/> if not found.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the pointer/length based case-insensitive helper and avoids creating temporaries.
+        /// </remarks>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type IIndexOf( const SpanT& searchString, size_type start = 0 ) const
@@ -9252,103 +9651,275 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        [[nodiscard]] size_type IIndexOf( const std::basic_string_view<CharType>& searchString, size_type start = 0 ) const
-        {
-            if ( searchString.size( ) )
-            {
-                return IIndexOf( searchString.data( ), searchString.size( ), start );
-            }
-            return npos;
-        }
-
-
+        /// <summary>
+        /// Finds the first occurrence of the specified character sequence in this string starting at the specified index.
+        /// </summary>
+        /// <param name="searchString">Pointer to the pattern to search for. May be <c>nullptr</c>; treated as an empty pattern.</param>
+        /// <param name="start">Zero-based index in this string where the search begins. When <paramref name="start"/> is greater than the string length the function returns <c>npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching occurrence of <paramref name="searchString"/> or <c>BasicString::npos</c>
+        /// when no match is found or input preconditions are not met.
+        /// </returns>
+        /// <remarks>
+        /// - Empty-pattern behavior follows <c>std::string</c> semantics: when the pattern length is zero the function returns <paramref name="start"/>
+        ///   if <paramref name="start"/> is valid (<= size()), otherwise <c>npos</c>.
+        /// - The implementation uses an optimized single-character fast-path (uses <c>MemChr</c>) and a general path that locates
+        ///   occurrences of the first character and verifies the full pattern using <c>MemCmp</c>.
+        /// - The function is binary-safe and operates on the internal buffer; it does not allocate in the common paths.
+        /// - Complexity: best/average O(n) where n is the number of characters examined; worst-case depends on distribution of candidates.
+        /// - Thread-safety: this const method is safe to call concurrently with other const operations. External synchronization is required
+        ///   if other threads may mutate the same BasicString instance concurrently.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown when underlying memory or OS helpers report an error.</exception>
         [[nodiscard]] size_type IndexOf( const CharType* searchString, size_type start = 0 ) const
         {
-            if ( searchString && searchString[0] && data_ && start < data_->size_ )
+            const size_type dataSize = data_ ? data_->size_ : 0;
+
+            // Treat nullptr as empty per length-aware overload behavior.
+            size_type searchLen = 0;
+            if ( searchString )
             {
-                const CharType* pStart = &data_->buffer_[start];
-                const CharType* pEnd = &data_->buffer_[data_->size_];
-                while ( pStart < pEnd )
-                {
-                    auto* p = MemChr( pStart, *searchString, pEnd - pStart );
-                    if ( p )
-                    {
-                        const CharType* pSearchChar = searchString + 1;
-                        const CharType* pContent = p + 1;
-                        while ( *pSearchChar )
-                        {
-                            if ( *pContent != *pSearchChar )
-                            {
-                                break;
-                            }
-                            pContent++;
-                            pSearchChar++;
-                        }
-                        if ( !( *pSearchChar ) )
-                        {
-                            return p - data_->buffer_;
-                        }
-                        pStart = p + 1;
-                    }
-                    else
-                    {
-                        return npos;
-                    }
-                }
+                searchLen = Common::Internal::LengthOf( searchString );
             }
+
+            // Empty-pattern semantics: return start when valid.
+            if ( searchLen == 0 )
+            {
+                return ( start <= dataSize ) ? start : npos;
+            }
+
+            // If no data, start out of range, or pattern won't fit in remaining data -> not found.
+            if ( !data_ || start > dataSize || searchLen > ( dataSize - start ) )
+            {
+                return npos;
+            }
+
+            const CharType* buffer = data_->buffer_;
+            const size_type lastStartIndex = dataSize - searchLen;
+            const CharType* ptr = buffer + start;
+            const CharType* lastPtr = buffer + lastStartIndex;
+
+            // Fast path for single-character pattern
+            if ( searchLen == 1 )
+            {
+                auto remaining = dataSize - start;
+                const CharType* found = MemChr( ptr, searchString[ 0 ], remaining );
+                return found ? static_cast<size_type>( found - buffer ) : npos;
+            }
+
+            // General case: find occurrences of first character and verify with length-aware compare.
+            const CharType firstChar = searchString[ 0 ];
+            while ( ptr <= lastPtr )
+            {
+                auto remaining = static_cast<size_type>( dataSize - ( ptr - buffer ) );
+                const CharType* p = MemChr( ptr, firstChar, remaining );
+                if ( !p || p > lastPtr )
+                {
+                    break;
+                }
+
+                if ( MemCmp( p, searchString, searchLen ) == 0 )
+                {
+                    return static_cast<size_type>( p - buffer );
+                }
+
+                // Continue search after the candidate
+                ptr = p + 1;
+            }
+
             return npos;
         }
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character sequence in this string starting at the specified zero-based index.
+        /// </summary>
+        /// <param name="searchString">Pointer to the null-terminated character sequence to search for. May be <c>nullptr</c>; treated as an empty pattern (see remarks).</param>
+        /// <param name="start">Zero-based index in this string at which to begin the search. If <paramref name="start"/> is greater than the string length the function returns <see cref="BasicString::npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching occurrence of <paramref name="searchString"/>,
+        /// or <see cref="BasicString::npos"/> if the sequence is not found or input preconditions are not met.
+        /// </returns>
+        /// <remarks>
+        /// <list type="bullet">
+        ///   <item><description>Empty-pattern semantics follow <c>std::string</c>: when <paramref name="searchString"/> is <c>nullptr</c> or empty the function returns <paramref name="start"/> when <paramref name="start"/> is valid (<= current length); otherwise <see cref="BasicString::npos"/>.</description></item>
+        ///   <item><description>Complexity: best/average-case O(n) where n is the number of characters examined. A single-character fast-path is used for improved performance.</description></item>
+        ///   <item><description>The implementation is binary-safe and uses repository memory helpers (for example <c>MemChr</c>/<c>MemCmp</c>); it does not allocate in the common paths.</description></item>
+        ///   <item><description>Thread-safety: this const method is safe to call concurrently with other const operations. External synchronization is required if other threads may mutate the same instance concurrently.</description></item>
+        /// </list>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown when underlying memory or OS helpers report an error.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("hello world");
+        /// auto idx = s.find("world"); // idx == 6
+        /// </code>
+        /// </example>
         [[nodiscard]] size_type find( const CharType* searchString, size_type start = 0 ) const
         {
             return IndexOf( searchString, start );
         }
 
 
+        /// <summary>
+        /// Performs a case-insensitive search for the first occurrence of the specified null-terminated character sequence.
+        /// </summary>
+        /// <param name="searchString">Pointer to the character sequence to search for. May be <c>nullptr</c>; <c>nullptr</c> is treated as an empty pattern.</param>
+        /// <param name="start">Zero-based index within this string at which to begin the search. If <paramref name="start"/> is greater than the string length the function returns <c>npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching occurrence of <paramref name="searchString"/> when compared case-insensitively,
+        /// or <c>BasicString::npos</c> when the pattern is not found or input preconditions are not met.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Behavior:
+        /// - Empty-pattern semantics follow <c>std::string</c>: when <paramref name="searchString"/> is <c>nullptr</c> or empty the function
+        ///   returns <paramref name="start"/> if <paramref name="start"/> is valid (<= current length); otherwise <c>npos</c>.
+        /// - Fast-path: when the pattern length is 1 the function uses a memory-based case-insensitive scan for O(n) performance without heap allocations.
+        /// - For very large patterns (exceeding <c>INT_MAX</c>) the implementation avoids helpers that cast lengths to <c>int</c> and performs a safe manual
+        ///   case-insensitive comparison using <c>Core::ToUpper</c>.
+        /// - General case: the routine locates candidate positions of the first pattern character using a case-insensitive memory scan and verifies
+        ///   the remainder using the internal case-insensitive compare helper (<c>Internal::ICompare</c>).
+        /// </para>
+        /// <para>
+        /// Complexity: best/average O(n) where n is the number of characters examined. Worst-case depends on distribution of candidate positions.
+        /// Thread-safety: this method is const and safe to call concurrently with other const operations on the same <c>BasicString</c> instance.
+        /// External synchronization is required if other threads may mutate the same instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">If underlying memory or OS helpers used by repository functions (for example <c>MemIChr</c> or <c>Internal::ICompare</c>) report an error.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Case-insensitive search for "hello" starting at position 0
+        /// size_t idx = str.IIndexOf( "hello", 0 );
+        /// if ( idx != BasicString<char>::npos ) { /* found at idx */ }
+        /// </code>
+        /// </example>
         [[nodiscard]] size_type IIndexOf( const CharType* searchString, size_type start = 0 ) const
         {
-            if ( searchString && searchString[0] && data_ && start < data_->size_ )
+            const size_type dataSize = data_ ? data_->size_ : 0;
+
+            // Treat nullptr as empty per length-aware overload behavior.
+            size_type searchLen = 0;
+            if ( searchString )
             {
-                const CharType* pStart = &data_->buffer_[start];
-                const CharType* pEnd = &data_->buffer_[data_->size_];
-                while ( pStart < pEnd )
+                searchLen = Common::Internal::LengthOf( searchString );
+            }
+
+            // Empty-pattern semantics: return start when valid.
+            if ( searchLen == 0 )
+            {
+                return ( start <= dataSize ) ? start : npos;
+            }
+
+            // If no data, start out of range, or pattern won't fit in remaining data -> not found.
+            if ( !data_ || start > dataSize || searchLen > ( dataSize - start ) )
+            {
+                return npos;
+            }
+
+            const CharType* buffer = data_->buffer_;
+            const size_type lastStartIndex = dataSize - searchLen;
+            const CharType* ptr = buffer + start;
+            const CharType* lastPtr = buffer + lastStartIndex;
+
+            // Precompute first character (used by fast-path and general case)
+            const CharType firstChar = searchString[ 0 ];
+
+            // Fast-path for single-character pattern (case-insensitive)
+            if ( searchLen == 1 )
+            {
+                const size_type remaining = dataSize - start;
+                const CharType* found = MemIChr( ptr, firstChar, remaining );
+                return found ? static_cast<size_type>( found - buffer ) : npos;
+            }
+
+            // General case (case-insensitive search)
+            // If pattern length exceeds INT_MAX we avoid calling helpers that cast lengths to int.
+            constexpr size_type IntMaxSize = static_cast<size_type>( std::numeric_limits<int>::max( ) );
+            if ( searchLen > IntMaxSize )
+            {
+                const CharType upperFirst = Core::ToUpper( firstChar );
+                const size_type lastIdx = lastStartIndex;
+                for ( size_type i = start; i <= lastIdx; ++i )
                 {
-                    auto* p = MemIChr( pStart, *searchString, pEnd - pStart );
-                    if ( p )
+                    if ( Core::ToUpper( buffer[ i ] ) != upperFirst )
                     {
-                        const CharType* pSearchChar = searchString + 1;
-                        const CharType* pContent = p + 1;
-                        while ( *pSearchChar )
-                        {
-                            if ( toupper( *pContent ) != toupper( *pSearchChar ) )
-                            {
-                                break;
-                            }
-                            pContent++;
-                            pSearchChar++;
-                        }
-                        if ( !( *pSearchChar ) )
-                        {
-                            return p - data_->buffer_;
-                        }
-                        pStart = p + 1;
+                        continue;
                     }
-                    else
+
+                    bool match = true;
+                    for ( size_type j = 1; j < searchLen; ++j )
                     {
-                        return npos;
+                        if ( Core::ToUpper( buffer[ i + j ] ) != Core::ToUpper( searchString[ j ] ) )
+                        {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if ( match )
+                    {
+                        return i;
                     }
                 }
+                return npos;
             }
+
+            // General case:
+            // - Find candidate positions of the first character using a case-insensitive memory scan (MemIChr).
+            // - For each candidate compare the remainder of the pattern using the internal case-insensitive compare helper.
+            {
+                const size_type compareLength = searchLen - 1;
+                const CharType* scanPtr = ptr;
+                while ( scanPtr <= lastPtr )
+                {
+                    const size_type remaining = static_cast<size_type>( dataSize - ( scanPtr - buffer ) );
+                    const CharType* p = MemIChr( scanPtr, firstChar, remaining );
+                    if ( !p || p > lastPtr )
+                    {
+                        break;
+                    }
+
+                    // Compare the rest case-insensitively.
+                    if ( Internal::ICompare( p + 1, compareLength, searchString + 1, compareLength ) == 0 )
+                    {
+                        return static_cast<size_type>( p - buffer );
+                    }
+
+                    // continue searching after the candidate
+                    scanPtr = p + 1;
+                }
+            }
+
             return npos;
         }
 
 
+        /// <summary>
+        /// Find the first occurrence of the specified character inside the string starting at a given index.
+        /// </summary>
+        /// <param name="c">The character to search for. Search is performed using binary-safe memory scanning.</param>
+        /// <param name="start">Zero-based index at which to start the search. If <paramref name="start"/> is greater than or equal to the string length the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character relative to the start of this string if found;
+        /// otherwise <see cref="BasicString::npos"/> when the character is not found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Complexity: O(n) in the number of characters examined (where n = size() - start). The implementation uses the repository
+        /// memory helper <c>MemChr</c> for an efficient binary-safe scan and does not allocate memory or throw exceptions.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this const method is safe to call concurrently with other const operations. External synchronization is required
+        /// if other threads may mutate the same <see cref="BasicString"/> instance concurrently.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] size_type IndexOf( CharType c, size_type start ) const
         {
             if ( data_ && start < data_->size_ )
             {
-                auto* foundAt = MemChr( data_->buffer_ + start, c, data_->size_ - start );
-                return foundAt ? foundAt - data_->buffer_ : npos;
+                auto remaining = static_cast<size_type>( data_->size_ - start );
+                auto* foundAt = MemChr( data_->buffer_ + start, c, remaining );
+                return foundAt ? static_cast<size_type>( foundAt - data_->buffer_ ) : npos;
             }
             else
             {
@@ -9356,18 +9927,46 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character in the string, starting the search at the specified index.
+        /// </summary>
+        /// <param name="c">The character to locate. The search is performed from the index specified by <paramref name="start"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. If <paramref name="start"/> is greater than the string length the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n) in the number of characters examined starting at <paramref name="start"/>.
+        /// - This method is a thin wrapper that forwards to <see cref="IndexOf(const CharType*, size_type, size_type)"/> for pointer-length searches.
+        /// - The operation does not allocate or modify the string and is safe to call from concurrent readers.
+        /// </remarks>
         [[nodiscard]] size_type find( CharType c, size_type start ) const
         {
             return IndexOf( c, start );
         }
 
 
+        /// <summary>
+        /// Performs a case-insensitive search for the first occurrence of the specified character starting at the given index.
+        /// </summary>
+        /// <param name="c">The character to locate (case-insensitive).</param>
+        /// <param name="start">Zero-based index at which to begin the search. If <paramref name="start"/> is out of range the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character (case-insensitive) if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n) where n is the number of characters scanned.
+        /// - Uses the repository helper <c>MemIChr</c> to perform a case-insensitive memory scan of the underlying buffer.
+        /// - The function returns <see cref="npos"/> when the string is empty or <paramref name="start"/> is not less than the current length.
+        /// - The method performs no heap allocations and does not modify the string; it is safe for concurrent read-only access.
+        /// </remarks>
         [[nodiscard]] size_type IIndexOf( CharType c, size_type start ) const
         {
             if ( data_ && start < data_->size_ )
             {
-                auto* foundAt = MemIChr( data_->buffer_ + start, c, data_->size_ - start );
-                return foundAt ? foundAt - data_->buffer_ : npos;
+                auto remaining = static_cast<size_type>( data_->size_ - start );
+                auto* foundAt = MemIChr( data_->buffer_ + start, c, remaining );
+                return foundAt ? static_cast<size_type>( foundAt - data_->buffer_ ) : npos;
             }
             else
             {
@@ -9376,34 +9975,102 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character in the string, starting the search at the specified index.
+        /// </summary>
+        /// <param name="c">The character to locate. The search is performed from the index specified by <paramref name="start"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. If <paramref name="start"/> is greater than the string length the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// - Alias for <see cref="IndexOf(CharType, size_type)"/> provided for API compatibility with standard container naming.
+        /// - Complexity and semantics mirror <see cref="IndexOf(CharType, size_type)"/>: O(n) scan, non-allocating, safe for concurrent readers.
+        /// </remarks>
         [[nodiscard]] size_type find_first_of( CharType c, size_type start ) const
         {
             return IndexOf( c, start );
         }
 
-
-        [[nodiscard]] size_type IndexOf( bool( *test )( CharType ), size_type start = 0 ) const
+        /// <summary>
+        /// Finds the first character position in the string for which the supplied predicate returns true.
+        /// </summary>
+        /// <param name="test">
+        /// A unary predicate invoked for each character. The predicate must be callable with a single 
+        /// argument of type <c>CharType</c> and must return a <c>bool</c>. The predicate may accept 
+        /// the character by value or by const reference. The predicate must be well-formed for all 
+        /// characters in the string and must not rely on mutating this string's storage.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index at which to begin the search. If <paramref name="start"/> is greater than 
+        /// or equal to the string length the function returns <see cref="BasicString::npos"/>.
+        /// </param>
+        /// <returns>
+        /// The zero-based index of the first character for which <paramref name="test"/> returns true. 
+        /// Returns <see cref="BasicString::npos"/> when no such character is found or when the 
+        /// input start index is out of range.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n - start) where n is the string length. The predicate is invoked once per examined character.
+        /// - This method does not allocate heap memory and is safe to call concurrently with other const operations.
+        /// - The predicate is executed in the caller's context; if the predicate throws, the exception propagates to the caller.
+        /// - The function performs no synchronization; callers must provide external synchronization if other threads may mutate the same BasicString instance.
+        /// </remarks>
+        /// <exception cref="std::exception">Any exception thrown by the predicate is propagated to the caller.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find first digit in an AnsiString s
+        /// auto idx = s.IndexOf( [](char c){ return Internal::IsDigit(c); } );
+        /// if ( idx != AnsiString::npos ) { /* found at idx */ }
+        /// </code>
+        /// </example>
+        template<typename Predicate>
+			requires std::is_invocable_r_v<bool, Predicate, CharType>
+        [[nodiscard]] size_type IndexOf( Predicate test, size_type start = 0 ) const
         {
-            if ( data_ )
+            const size_type len = size( );
+            if ( !data_ || start >= len )
             {
-                while ( start < data_->size_ )
+                return npos;
+            }
+
+            const CharType* buf = data_->buffer_;
+            for ( size_type i = start; i < len; ++i )
+            {
+                // works for predicates taking value or const-ref
+                if ( test( buf[ i ] ) )
                 {
-                    auto c = data_->buffer_[start];
-                    if ( test( c ) )
-                    {
-                        return start;
-                    }
-                    start++;
+                    return i;
                 }
             }
             return npos;
         }
 
-        [[nodiscard]] size_type IndexOf( bool( *test )( const CharType*, size_type length ), size_type start = 0 ) const
+        /// <summary>
+        /// Finds the first character position in the string for which the provided predicate returns <c>true</c>.
+        /// </summary>
+        /// <param name="test">A predicate that is invoked for each candidate position. It must be invocable as <c>bool(const CharType*, size_type)</c>.
+        /// The predicate receives a pointer to the current character position and the number of characters remaining from that position to the end.
+        /// The predicate should return <c>true</c> when the sequence starting at the provided pointer matches the desired condition.</param>
+        /// <param name="start">Zero-based index at which to begin the search. When <c>start</c> is greater than or equal to the string length the function returns <c>BasicString::npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the first position where <paramref name="test"/> returns <c>true</c>. If no position satisfies the predicate the method returns <c>BasicString::npos</c>.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n * cost(test)) where n is the number of characters examined and <c>cost(test)</c> is the cost of evaluating the predicate.
+        /// - The method performs no heap allocations and is safe for read-only access patterns. It does not force unique ownership of the internal buffer.
+        /// - The predicate is invoked with a pointer into the string's internal buffer; the pointer is valid only for the duration of the call.
+        /// - Thread-safety: this const method is safe to call concurrently with other const operations. External synchronization is required if other threads may mutate the same instance concurrently.
+        /// - The caller is responsible for ensuring the predicate behaves correctly when supplied with the pointer and remaining length; e.g. it must not dereference beyond the supplied length.
+        /// </remarks>
+        /// <exception cref="std::exception">If the provided predicate throws, the exception propagates to the caller.</exception>
+        template<typename Predicate>
+            requires std::is_invocable_r_v<bool, Predicate, const CharType*, size_type>
+        [[nodiscard]] size_type IndexOf( Predicate test, size_type start = 0 ) const
         {
             if ( data_ && start < data_->size_ )
             {
-                CharType* pStart = &data_->buffer_[start];
+                const CharType* pStart = &data_->buffer_[ start ];
                 size_type remainingLength = data_->size_ - start;
                 while ( remainingLength )
                 {
@@ -9411,102 +10078,238 @@ namespace Harlinn::Common::Core
                     {
                         return start;
                     }
-                    remainingLength--;
-                    pStart++;
+                    --remainingLength;
+                    ++pStart;
+                    ++start;
                 }
             }
             return npos;
         }
 
-        [[nodiscard]] size_type IndexOf( bool( *test )( const CharType*, const CharType* ), size_type start = 0 ) const
+        /// <summary>
+        /// Searches the string for the first position where the supplied predicate returns <c>true</c>.
+        /// </summary>
+        /// <param name="test">
+        /// A callable invoked for each candidate position. It must be invocable as 
+        /// <c>bool(const CharType* pos, const CharType* end)</c> where <c>pos</c> points to the candidate 
+        /// start within the string buffer and <c>end</c> points one past the last character.
+        /// The predicate must not read or dereference memory beyond <c>end</c>. The predicate returns 
+        /// <c>true</c> when the pattern matches at <c>pos</c>.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index within the string to begin the search. Valid range is <c>0..Length()</c>. A value equal to <c>Length()</c>
+        /// is allowed to permit predicates that match an empty sequence at the end of the string.
+        /// </param>
+        /// <returns>
+        /// The zero-based index of the first position where <paramref name="test"/> returns <c>true</c>.
+        /// If no matching position is found the function returns <see cref="npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// This overload performs a linear scan starting at <paramref name="start"/> and invokes <paramref name="test"/> for each candidate position.
+        /// The method itself performs no allocations and is const-qualified; it is safe to call concurrently with other const operations on the same
+        /// BasicString instance. If other threads mutate the same instance concurrently, external synchronization is required.
+        /// The predicate is responsible for validating its read accesses and must not dereference past the supplied <c>end</c> pointer.
+        /// Exceptions thrown by the predicate propagate to the caller.
+        /// Complexity: O(n) invocations of <paramref name="test"/> in the worst case where n is the number of candidate positions examined.
+        /// </remarks>
+        template<typename Predicate>
+            requires std::is_invocable_r_v<bool, Predicate, const CharType*, const CharType*>
+        [[nodiscard]] size_type IndexOf( Predicate test, size_type start = 0 ) const
         {
-            if ( data_ && start < data_->size_ )
+            // Allow checking at position == length to support predicates that match an empty
+            // sequence at the end. Predicate must not dereference beyond endPtr.
+
+			const size_type length = size( );
+            if ( data_ == nullptr || start > length )
             {
-                const CharType* pStart = &data_->buffer_[start];
-                const CharType* pEnd = end( );
-                while ( pStart < pEnd )
+                return npos;
+            }
+
+            const CharType* beginPtr = data_->buffer_;
+            const CharType* endPtr = beginPtr + length;
+            
+            for ( size_type i = start; i <= length; ++i )
+            {
+                const CharType* pos = beginPtr + i;
+                if ( test( pos, endPtr ) )
                 {
-                    if ( test( pStart, pEnd ) )
-                    {
-                        return start;
-                    }
-                    pStart++;
+                    return i;
                 }
             }
+
             return npos;
         }
 
 
 
 
+        /// <summary>
+        /// Finds the last (rightmost) occurrence of a specified character sequence in this string by searching backwards.
+        /// </summary>
+        /// <param name="searchString">Pointer to the character sequence to search for. The pointer may be <c>nullptr</c>, but when <c>nullptr</c> or when <paramref name="searchStringLength"/> is zero the function returns <see cref="npos"/>.</param>
+        /// <param name="searchStringLength">Number of characters in <paramref name="searchString"/>. The search is performed for exactly this many characters. If this value is zero the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index in this string to start the backwards search from. If greater than the highest possible match position the value is clamped to the highest valid start index so the pattern can still fit.</param>
+        /// <returns>
+        /// The zero-based index of the first character of the last occurrence of the specified sequence when scanning backwards from <paramref name="start"/>.
+        /// Returns <see cref="npos"/> if no match is found or when inputs prevent searching (for example: empty pattern, null pointer pattern, or this string is empty).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Behavior:
+        /// - If <paramref name="searchStringLength"/> == 0, or <paramref name="searchString"/> == <c>nullptr</c>, or this string has no data,
+        ///   the function returns <see cref="npos"/> (no match).
+        /// - When <paramref name="start"/> is larger than the highest valid index where the pattern can begin,
+        ///   it is clamped to the highest possible starting position so the pattern can still fit in the remaining characters.
+        /// - For a single-character pattern an optimized backward scan is used which compares characters directly.
+        /// - For multi-character patterns the implementation compares the candidate substring using the internal, length-aware compare helper.
+        /// </para>
+        /// <para>
+        /// Complexity:
+        /// - Worst-case O(N * M) where N is the number of characters examined and M is the pattern length.
+        /// - The single-character fast-path is O(N).
+        /// </para>
+        /// <para>
+        /// Thread-safety:
+        /// - This is a const operation and safe to call concurrently with other const operations on the same instance.
+        /// - External synchronization is required if other threads may mutate the same instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown when underlying comparison helpers (for example locale-aware routines used by the internal compare) report an OS error.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find last occurrence of "abc" starting from the end
+        /// size_t idx = str.LastIndexOf( "abc", 3, str.Length() );
+        /// if ( idx != BasicString<char>::npos ) { /* found at idx */ }
+        /// </code>
+        /// </example>
         [[nodiscard]] size_type LastIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
-            if ( data_ && ( searchStringLength <= data_->size_ ) )
+            if ( searchStringLength == 0 || searchString == nullptr || !data_ || searchStringLength > data_->size_ )
             {
-                if ( start > ( data_->size_ - searchStringLength ) )
-                {
-                    start = data_->size_ - searchStringLength;
-                }
+                return npos;
+            }
 
-                if ( searchStringLength == 1 )
+            // Clamp start to the highest possible match position
+            size_type maxStart = data_->size_ - searchStringLength;
+            if ( start > maxStart )
+            {
+                start = maxStart;
+            }
+
+            // Backwards scan from start down to 0 (inclusive)
+            if ( searchStringLength == 1 )
+            {
+                CharType target = *searchString;
+                for ( size_type i = start + 1; i-- > 0; )
                 {
-                    do
+                    if ( data_->buffer_[ i ] == target )
                     {
-                        if ( data_->buffer_[start] == *searchString )
-                        {
-                            return start;
-                        }
-                    } while ( start-- );
-                }
-                else if ( searchStringLength )
-                {
-                    do
-                    {
-                        if ( Internal::Compare( &data_->buffer_[start], searchStringLength, searchString, searchStringLength ) == 0 )
-                        {
-                            return start;
-                        }
-                    } while ( start-- );
+                        return i;
+                    }
                 }
             }
+            else
+            {
+                for ( size_type i = start + 1; i-- > 0; )
+                {
+                    // safe: i <= maxStart so i + searchStringLength <= data_->size_
+                    if ( Internal::Compare( &data_->buffer_[ i ], searchStringLength, searchString, searchStringLength ) == 0 )
+                    {
+                        return i;
+                    }
+                }
+            }
+
             return npos;
         }
 
 
+        /// <summary>
+        /// Performs a backward, case-insensitive search for the last occurrence of the specified substring.
+        /// </summary>
+        /// <param name="searchString">
+        /// Pointer to the substring to search for. May be <c>nullptr</c> only when <paramref name="searchStringLength"/> == 0.
+        /// </param>
+        /// <param name="searchStringLength">
+        /// Number of characters in <paramref name="searchString"/>. Must be greater than zero for a meaningful search.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index at which to start the backward search. If greater than the highest possible start position the search is clamped.
+        /// </param>
+        /// <returns>
+        /// The zero-based index of the last occurrence of the case-insensitive substring within this string,
+        /// or <see cref="BasicString::npos"/> when no match is found or input preconditions are not met.
+        /// </returns>
+        /// <remarks>
+        /// The function first validates inputs and clamps <paramref name="start"/> to the highest index where the pattern can fit.
+        /// For a single-character pattern a tight backward scan is performed using <c>Core::ToUpper</c> and direct character comparison.
+        /// For multi-character patterns the routine iterates backwards and calls <c>Internal::ICompare</c> at each candidate position
+        /// to perform a case-insensitive comparison of the full pattern. The search is binary-safe and uses repository helpers
+        /// for comparisons. Complexity is O(N * M) in the worst-case (N = characters scanned, M = pattern length), with the single-character
+        /// path being O(N). This method is const and safe for concurrent read-only access; external synchronization is required
+        /// if other threads may mutate the same string concurrently.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying memory or OS helper functions invoked by the comparison helpers report an error.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find last case-insensitive occurrence of "ab" starting from end
+        /// auto idx = str.ILastIndexOf( L"ab", 2, BasicString<wchar_t>::npos );
+        /// if ( idx != BasicString<wchar_t>::npos ) { /* found at idx */ }
+        /// </code>
+        /// </example>
         [[nodiscard]] size_type ILastIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
-            if ( data_ && ( searchStringLength <= data_->size_ ) )
+            if ( searchStringLength == 0 || searchString == nullptr || !data_ || searchStringLength > data_->size_ )
             {
-                if ( start > ( data_->size_ - searchStringLength ) )
-                {
-                    start = data_->size_ - searchStringLength;
-                }
+                return npos;
+            }
 
-                if ( searchStringLength == 1 )
+            // Clamp start to the highest possible match position
+            size_type maxStart = data_->size_ - searchStringLength;
+            if ( start > maxStart )
+            {
+                start = maxStart;
+            }
+
+            // Backwards scan from start down to 0 (inclusive)
+            if ( searchStringLength == 1 )
+            {
+                CharType target = Core::ToUpper( *searchString );
+                for ( size_type i = start + 1; i-- > 0; )
                 {
-                    auto c = Core::ToUpper( *searchString );
-                    do
+                    if ( Core::ToUpper( data_->buffer_[ i ] ) == target )
                     {
-                        if ( Core::ToUpper( data_->buffer_[start] ) == c )
-                        {
-                            return start;
-                        }
-                    } while ( start-- );
-                }
-                else if ( searchStringLength )
-                {
-                    do
-                    {
-                        if ( Internal::ICompare( &data_->buffer_[start], searchStringLength, searchString, static_cast<size_t>( searchStringLength ) ) == 0 )
-                        {
-                            return start;
-                        }
-                    } while ( start-- );
+                        return i;
+                    }
                 }
             }
+            else
+            {
+                for ( size_type i = start + 1; i-- > 0; )
+                {
+                    // safe: i <= maxStart so i + searchStringLength <= data_->size_
+                    if ( Internal::ICompare( &data_->buffer_[ i ], searchStringLength, searchString, searchStringLength ) == 0 )
+                    {
+                        return i;
+                    }
+                }
+            }
+
             return npos;
         }
 
+        /// <summary>
+        /// Finds the last occurrence of the specified <see cref="BasicString"/> in this string.
+        /// </summary>
+        /// <param name="searchString">The string to search for. May be empty; when empty the call will return <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="npos"/> to indicate the end of the string.</param>
+        /// <returns>The zero-based index of the last occurrence of <paramref name="searchString"/> or <see cref="npos"/> when not found.</returns>
+        /// <remarks>
+        /// This overload forwards to the pointer/length based overload when the search string exposes an internal buffer.
+        /// The search scans backward from <paramref name="start"/> (clamped to the last valid index). The method is const and
+        /// safe to call concurrently with other const operations; external synchronization is required when the object may be mutated concurrently.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying memory or OS helpers report an error.</exception>
         [[nodiscard]] size_type LastIndexOf( const BasicString& searchString, size_type start = npos ) const
         {
             auto* searchData = searchString.data_;
@@ -9517,6 +10320,17 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Finds the last occurrence of the specified contiguous container-like sequence in this string.
+        /// </summary>
+        /// <param name="searchString">A contiguous container-like object (for example a span or string_view) whose element type equals the string character type. When empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="npos"/> to indicate the end of the string.</param>
+        /// <returns>The zero-based index of the last occurrence of the sequence or <see cref="npos"/> when not found.</returns>
+        /// <remarks>
+        /// This templated overload forwards to the pointer/length based implementation to avoid temporaries.
+        /// The container element type must match the string's character type. Thread-safety and allocation notes mirror the pointer/length overload.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying memory or OS helpers report an error.</exception>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type> ,CharType>
         [[nodiscard]] size_type LastIndexOf( const SpanT& searchString, size_type start = npos ) const
@@ -9524,12 +10338,18 @@ namespace Harlinn::Common::Core
             return LastIndexOf( searchString.data(), searchString.size(), start );
         }
 
-        [[nodiscard]] size_type LastIndexOf( const std::basic_string_view<CharType>& searchString, size_type start = npos ) const
-        {
-            return LastIndexOf( searchString.data( ), searchString.size( ), start );
-        }
-
-
+        /// <summary>
+        /// Finds the last occurrence of the specified <see cref="BasicString"/> in this string using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="searchString">The string to search for (case-insensitive). May be empty; when empty the call will return <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="npos"/> to indicate the end of the string.</param>
+        /// <returns>The zero-based index of the last case-insensitive match or <see cref="npos"/> when not found.</returns>
+        /// <remarks>
+        /// This overload forwards to the pointer/length based case-insensitive implementation when the search string exposes an internal buffer.
+        /// Comparisons are performed case-insensitively according to the library's case conversion helpers. The method is const and
+        /// safe for concurrent read-only access; external synchronization is required for concurrent writers.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying memory or OS helpers report an error.</exception>
         [[nodiscard]] size_type ILastIndexOf( const BasicString& searchString, size_type start = npos ) const
         {
             auto* searchData = searchString.data_;
@@ -9540,6 +10360,17 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Finds the last occurrence of the specified contiguous container-like sequence in this string using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="searchString">A contiguous container-like object whose element type equals the string character type. Comparison is case-insensitive. When empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="npos"/> to indicate the end of the string.</param>
+        /// <returns>The zero-based index of the last case-insensitive match or <see cref="npos"/> when not found.</returns>
+        /// <remarks>
+        /// This templated overload forwards to the pointer/length based case-insensitive helper to avoid creating temporaries.
+        /// Use this overload to perform case-insensitive searches for container-like inputs (for example string_view).
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying memory or OS helpers report an error.</exception>
         template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type ILastIndexOf( const SpanT& searchString, size_type start = npos ) const
@@ -9547,12 +10378,17 @@ namespace Harlinn::Common::Core
             return ILastIndexOf( searchString.data( ), searchString.size( ), start );
         }
 
-        [[nodiscard]] size_type ILastIndexOf( const std::basic_string_view<CharType>& searchString, size_type start = npos ) const
-        {
-            return ILastIndexOf( searchString.data( ), searchString.size( ), start );
-        }
-
-
+        /// <summary>
+        /// Finds the last occurrence of the specified null-terminated or pointer-length character sequence in this string.
+        /// </summary>
+        /// <param name="searchString">Pointer to the pattern to search for. May be <c>nullptr</c>; treated as empty. When empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="npos"/> to indicate the end of the string.</param>
+        /// <returns>The zero-based index of the last occurrence or <see cref="npos"/> when not found.</returns>
+        /// <remarks>
+        /// The function computes the length of <paramref name="searchString"/> using <c>LengthOf</c> and forwards to the length-aware overload.
+        /// If the computed length is zero the function returns <see cref="npos"/>. Thread-safety: const and safe for concurrent read-only access.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying memory or OS helpers report an error.</exception>
         [[nodiscard]] size_type LastIndexOf( const CharType* searchString, size_type start = npos ) const
         {
             size_type length = LengthOf( searchString );
@@ -9564,6 +10400,17 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Finds the last occurrence of the specified null-terminated or pointer-length character sequence in this string using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="searchString">Pointer to the pattern to search for (case-insensitive). May be <c>nullptr</c>; treated as empty. When empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="npos"/> to indicate the end of the string.</param>
+        /// <returns>The zero-based index of the last case-insensitive match or <see cref="npos"/> when not found.</returns>
+        /// <remarks>
+        /// The function computes the length of <paramref name="searchString"/> using <c>LengthOf</c> and forwards to the length-aware case-insensitive overload.
+        /// Use this overload for null-terminated C-style inputs when a case-insensitive search is required.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying memory or OS helpers report an error.</exception>
         [[nodiscard]] size_type ILastIndexOf( const CharType* searchString, size_type start = npos ) const
         {
             size_type length = LengthOf( searchString );
@@ -9575,119 +10422,302 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        [[nodiscard]] size_type LastIndexOf( CharType c, size_type start = npos ) const
+        /// <summary>
+        /// Finds the last occurrence of the specified character in the string, searching 
+        /// backwards from the given start index.
+        /// </summary>
+        /// <param name="c">
+        /// The character to locate in the string.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index at which to start the backward search. When greater than the 
+        /// last index the search begins at the last character. Default is <c>npos</c> (search from end).
+        /// </param>
+        /// <returns>
+        /// Zero-based index of the last matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: O(n) in the worst case where n is the number of characters scanned from <paramref name="start"/> backwards.
+        /// The function performs no heap allocations and does not throw. The returned index is valid while the string is not modified.
+        /// Thread-safety: safe to call concurrently with other const operations. External synchronization is required if other threads may mutate the same string instance concurrently.
+        /// </remarks>
+        [[nodiscard]] size_type LastIndexOf( CharType c, size_type start = npos ) const noexcept
         {
-            if ( data_ )
+            if ( data_ == nullptr || data_->size_ == 0 )
             {
-                if ( start >= data_->size_ )
-                {
-                    start = data_->size_ - 1;
-                }
+                return npos;
+            }
 
-                do
+            const size_type backIndex = data_->size_ - 1;
+            const size_type actualStart = std::min( start, backIndex );
+
+            for ( size_type i = actualStart; ; --i )
+            {
+                if ( data_->buffer_[ i ] == c )
                 {
-                    if ( data_->buffer_[start] == c )
-                    {
-                        return start;
-                    }
-                } while ( start-- );
+                    return i;
+                }
+                if ( i == 0 )
+                {
+                    break;
+                }
             }
             return npos;
         }
 
+        /// <summary>
+        /// Finds the last occurrence of the specified character in the string using a case-insensitive comparison,
+        /// searching backwards from the given start index.
+        /// </summary>
+        /// <param name="c">
+        /// The character to locate in the string. Comparison is performed case-insensitively using <c>Core::ToUpper</c>.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index at which to start the backward search. When greater than the 
+        /// last index the search begins at the last character. Default is <c>npos</c> (search from end).
+        /// </param>
+        /// <returns>
+        /// Zero-based index of the last matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: O(n) in the worst case where n is the number of characters scanned from <paramref name="start"/> backwards.
+        /// This method converts characters via <c>Core::ToUpper</c> for comparison. The function performs no heap allocations and does not throw.
+        /// Thread-safety: safe to call concurrently with other const operations. External synchronization is required if other threads may mutate the same string instance concurrently.
+        /// </remarks>
         [[nodiscard]] size_type ILastIndexOf( CharType c, size_type start = npos ) const
         {
             c = Core::ToUpper( c );
-            if ( data_ )
+            if ( data_ == nullptr || data_->size_ == 0 )
             {
-                if ( start >= data_->size_ )
-                {
-                    start = data_->size_ - 1;
-                }
+                return npos;
+            }
 
-                do
+            const size_type backIndex = data_->size_ - 1;
+            const size_type actualStart = std::min( start, backIndex );
+
+            for ( size_type i = actualStart; ; --i )
+            {
+                if ( Core::ToUpper( data_->buffer_[ i ] ) == c )
                 {
-                    if ( Core::ToUpper( data_->buffer_[start] ) == c )
-                    {
-                        return start;
-                    }
-                } while ( start-- );
+                    return i;
+                }
+                if ( i == 0 )
+                {
+                    break;
+                }
             }
             return npos;
         }
 
-
-        [[nodiscard]] size_type LastIndexOf( bool( *test )( CharType ), size_type start = npos ) const
+        /// <summary>
+        /// Finds the last index (searching backward) of the first character in the string for which the supplied predicate returns <c>true</c>.
+        /// </summary>
+        /// <param name="test">
+        /// A callable that accepts a <c>CharType</c> and returns <c>bool</c>. The predicate is 
+        /// invoked for each character examined, starting at <paramref name="start"/> and moving 
+        /// backwards.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index where the backward search begins. If <paramref name="start"/> is 
+        /// greater than or equal to the string length the search starts at the last character. 
+        /// Defaults to <c>npos</c> to indicate the end of the string.
+        /// </param>
+        /// <returns>
+        /// The zero-based index of the last character that satisfies <paramref name="test"/>; 
+        /// returns <c>BasicString::npos</c> if no matching character is found or the string is empty.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n) in the number of characters scanned (scans from <paramref name="start"/> towards the beginning).
+        /// - Thread-safety: This is a const operation and is safe to call concurrently with other const methods. External synchronization is required if other threads may modify the same instance concurrently.
+        /// - The predicate should not mutate the string or rely on side-effects; prefer noexcept predicates for best performance.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find the last digit character in the string:
+        /// auto idx = s.LastIndexOf([](CharType c){ return Internal::IsDigit(c); });
+        /// if ( idx != BasicString<CharType>::npos ) { /* found at idx */ }
+        /// </code>
+        /// </example>
+		template<typename Predicate>
+			requires std::is_invocable_r_v<bool, Predicate, CharType>
+        [[nodiscard]] size_type LastIndexOf( Predicate test, size_type start = npos ) const
         {
-            if ( data_ )
+            if ( !data_ || data_->size_ == 0 )
             {
-                if ( start >= ( data_->size_ ) )
+                return npos;
+            }
+
+            if ( start >= data_->size_ )
+            {
+                start = data_->size_ - 1;
+            }
+
+            for ( size_type i = start + 1; i-- > 0; )
+            {
+                if ( test( data_->buffer_[ i ] ) )
                 {
-                    start = data_->size_ - 1;
+                    return i;
                 }
-
-                do
-                {
-                    CharType c = data_->buffer_[start];
-                    if ( test( c ) )
-                    {
-                        return start;
-                    }
-                } while ( start-- );
-
             }
             return npos;
         }
 
-
-        [[nodiscard]] size_type LastIndexOf( bool( *test )( const CharType*, size_type length ), size_type start = npos ) const
+        /// <summary>
+        /// Finds the last index in the string (searching backwards) for which the provided 
+        /// predicate returns <c>true</c>.
+        /// </summary>
+        /// <param name="test">
+        /// A predicate invoked for each candidate position. The predicate is called with two arguments:
+        /// the pointer to the character at the candidate position and the number of characters remaining 
+        /// from that position to the end of the string, <c>bool(const CharType*, size_type)</c>). 
+        /// The predicate must not modify the string and must be safe to call in a const context.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index at which to start the backward search. When <c>start == npos</c> or
+        /// <c>start >= Length()</c> the search starts from the last character (<c>Length() - 1</c>).
+        /// </param>
+        /// <returns>
+        /// The zero-based index of the last position where <paramref name="test"/> returned <c>true</c>.
+        /// Returns <see cref="BasicString::npos"/> when no matching position is found or when the string is empty.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(N) in the number of characters examined.
+        /// - The method performs a read-only scan of the internal buffer and does not allocate heap memory.
+        /// - The pointer passed to <paramref name="test"/> points into this string's internal buffer and is valid
+        ///   only for the duration of the predicate call. Callers must ensure the predicate does not retain or store
+        ///   the pointer for later use.
+        /// - Thread-safety: this const method is safe to call concurrently with other const operations. External
+        ///   synchronization is required if other threads may mutate the same BasicString instance concurrently.
+        /// - The predicate must accept the arguments <c>(const CharType*, size_type)</c> and return a <c>bool</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if the predicate invokes helpers that allocate or call OS APIs and those helpers fail.</exception>
+        template<typename Predicate>
+            requires std::is_invocable_r_v<bool, Predicate, const CharType*, size_type>
+        [[nodiscard]] size_type LastIndexOf( Predicate test, size_type start = npos ) const
         {
-            if ( ( data_ ) && ( start < data_->size_ ) )
+            if ( !data_ || data_->size_ == 0 )
             {
-                if ( start >= ( data_->size_ ) )
-                {
-                    start = data_->size_ - 1;
-                }
-
-                const CharType* pStart = &data_->buffer_[start];
-                size_type remainingLength = data_->size_ - start;
-
-                do
-                {
-                    if ( test( pStart, remainingLength ) )
-                    {
-                        return start;
-                    }
-                    remainingLength++;
-                } while ( data_ != pStart-- );
+                return npos;
             }
+
+            if ( start == npos || start >= data_->size_ )
+            {
+                start = data_->size_ - 1;
+            }
+
+            for ( size_type i = start; ; --i )
+            {
+                const CharType* ptr = &data_->buffer_[ i ];
+                size_type remainingLength = data_->size_ - i;
+                if ( test( ptr, remainingLength ) )
+                {
+                    return i;
+                }
+                if ( i == 0 )
+                {
+                    break;
+                }
+            }
+
             return npos;
         }
 
-
-        [[nodiscard]] size_type LastIndexOf( bool( *test )( const CharType*, const CharType* ), size_type start = npos ) const
+        /// <summary>
+        /// Finds the last index in the string (searching backward) for which the provided predicate returns <c>true</c>.
+        /// </summary>
+        /// <param name="test">
+        /// A callable object invoked for each candidate position during the backward scan. The callable
+        /// is invoked as <c>test(position, end)</c> where <c>position</c> is a pointer into this string's 
+        /// internal buffer at the current position and <c>end</c> is a pointer one past the last character. 
+        /// The callable must return <c>true</c> to indicate a match for the given position. The predicate 
+        /// should be inexpensive and must not dereference pointers past <c>end</c>. It may capture state 
+        /// by value or reference; any exceptions thrown by the predicate propagate to the caller.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index at which to begin the backward search. If <c>start</c> is greater than or 
+        /// equal to the string's length the search starts at the last valid character (clamped). The 
+        /// default value <c>npos</c> indicates the end of the string.
+        /// </param>
+        /// <returns>
+        /// Zero-based index of the last character position for which <paramref name="test"/> returned <c>true</c>,
+        /// or <c>BasicString::npos</c> when no matching position is found.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Complexity: O(n) in the worst case, where n is the number of characters examined when scanning backward.
+        /// </para>
+        /// <para>
+        /// Buffer ownership and lifetime: the predicate is called with raw pointers into this string's internal buffer.
+        /// Callers must not retain or use those pointers after the predicate returns unless they ensure the string's buffer
+        /// remains valid (for example by calling <c>EnsureUnique()</c> and avoiding concurrent mutation).</para>
+        /// <para>
+        /// Thread-safety: this method is a const operation and is safe to call concurrently with other const operations
+        /// on the same instance. If other threads may mutate the same string concurrently, external synchronization is required.
+        /// </para>
+        /// <para>
+        /// Side effects: the function does not perform heap allocations. It does not modify the string.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="std::exception">Propagates any exception thrown by the supplied predicate.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find last vowel in an AnsiString s:
+        /// auto idx = s.LastIndexOf( []( const char* pos, const char* end ) -> bool {
+        ///     (void)end; // not used in this simple example
+        ///     char c = *pos;
+        ///     return c=='a'||c=='e'||c=='i'||c=='o'||c=='u';
+        /// } );
+        /// </code>
+        /// </example>
+        template<typename Predicate>
+            requires std::is_invocable_r_v<bool, Predicate, const CharType*, const CharType*>
+        [[nodiscard]] size_type LastIndexOf( Predicate test, size_type start = npos ) const
         {
-            if ( ( data_ ) && ( start < data_->size_ ) )
+            if ( !data_ || data_->size_ == 0 )
             {
-                if ( start >= ( data_->size_ ) )
-                {
-                    start = data_->size_ - 1;
-                }
-
-                const CharType* pStart = &data_->buffer_[start];
-                const CharType* pEnd = end( );
-                do
-                {
-                    if ( test( pStart, pEnd ) )
-                    {
-                        return start;
-                    }
-                } while ( data_ != pStart-- );
+                return npos;
             }
+
+            // Clamp start to last valid index
+            if ( start >= data_->size_ )
+            {
+                start = data_->size_ - 1;
+            }
+
+            const CharType* beginPtr = data_->buffer_;
+            const CharType* endPtr = beginPtr + data_->size_;
+            const CharType* p = beginPtr + start;
+
+            for ( ;; )
+            {
+                if ( test( p, endPtr ) )
+                {
+                    return static_cast<size_type>( p - beginPtr );
+                }
+                if ( p == beginPtr )
+                {
+                    break;
+                }
+                --p;
+            }
+
             return npos;
         }
 
-        [[nodiscard]] bool IsSpace( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a space character.
+        /// </summary>
+        /// <param name="position">
+        /// Zero-based index into the string. The caller must ensure <c>position &lt; Length()</c> for meaningful results.
+        /// </param>
+        /// <returns><c>
+        /// true</c> when the character at <paramref name="position"/> is a space character; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This query is non-allocating and const-qualified. If the string is empty or <paramref name="position"/> is out of range the method returns <c>false</c>.
+        /// The check delegates to the repository helper <c>Internal::IsSpace</c> which wraps the underlying C locale functions safely.
+        /// </remarks>
+        [[nodiscard]] bool IsSpace( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9696,7 +10726,16 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        [[nodiscard]] bool IsControl( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a control character.
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. The caller should ensure <c>position &lt; Length()</c> to query a valid character.</param>
+        /// <returns><c>true</c> if the character at <paramref name="position"/> is a control character; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This method is const and does not allocate. When the string is empty or <paramref name="position"/> is invalid the result is <c>false</c>.
+        /// The implementation delegates to <c>Internal::IsControl</c>.
+        /// </remarks>
+        [[nodiscard]] bool IsControl( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9704,7 +10743,15 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool IsDigit( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a digit (0-9).
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. Ensure <c>position &lt; Length()</c> to test a valid character.</param>
+        /// <returns><c>true</c> when the character at <paramref name="position"/> is a digit; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// The check is performed via <c>Internal::IsDigit</c>. The function is const, non-allocating and returns <c>false</c> for invalid positions.
+        /// </remarks>
+        [[nodiscard]] bool IsDigit( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9712,7 +10759,15 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool IsLetter( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a letter (alphabetic).
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. The caller must ensure <c>position &lt; Length()</c> when querying.</param>
+        /// <returns><c>true</c> if the character at <paramref name="position"/> is a letter; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This method is const and delegates to <c>Internal::IsLetter</c>. For empty strings or out-of-range positions the method returns <c>false</c>.
+        /// </remarks>
+        [[nodiscard]] bool IsLetter( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9720,7 +10775,15 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool IsLetterOrDigit( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a letter or a digit.
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. Ensure <c>position &lt; Length()</c> for a valid test.</param>
+        /// <returns><c>true</c> when the character at <paramref name="position"/> is a letter or digit; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Delegates to <c>Internal::IsLetterOrDigit</c>. This routine is const and non-allocating; invalid positions produce <c>false</c>.
+        /// </remarks>
+        [[nodiscard]] bool IsLetterOrDigit( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9728,7 +10791,15 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool IsLower( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a lowercase character.
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. The caller must ensure <c>position &lt; Length()</c> to obtain meaningful results.</param>
+        /// <returns><c>true</c> if the character at <paramref name="position"/> is lowercase; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Uses <c>Internal::IsLower</c> for the classification. The method is const and returns <c>false</c> for out-of-range positions.
+        /// </remarks>
+        [[nodiscard]] bool IsLower( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9736,7 +10807,15 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool IsUpper( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is an uppercase character.
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. Ensure <c>position &lt; Length()</c> for a valid query.</param>
+        /// <returns><c>true</c> when the character at <paramref name="position"/> is uppercase; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// The classification is delegated to <c>Internal::IsUpper</c>. This method is const and non-allocating.
+        /// </remarks>
+        [[nodiscard]] bool IsUpper( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9744,7 +10823,15 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool IsPunctuation( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a punctuation character.
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. The caller should ensure <c>position &lt; Length()</c>.</param>
+        /// <returns><c>true</c> if the character at <paramref name="position"/> is punctuation; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Delegates to <c>Internal::IsPunctuation</c>. The method is const and returns <c>false</c> when the position is invalid or the string is empty.
+        /// </remarks>
+        [[nodiscard]] bool IsPunctuation( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9752,7 +10839,16 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool IsWhiteSpace( size_type position ) const
+        /// <summary>
+        /// Determines whether the character at the specified zero-based position is a white-space character.
+        /// </summary>
+        /// <param name="position">Zero-based index into the string. Ensure <c>position &lt; Length()</c> when calling.</param>
+        /// <returns><c>true</c> when the character at <paramref name="position"/> is white-space; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This is a convenience wrapper that uses <c>Internal::IsWhiteSpace</c>. It is const, non-allocating and returns <c>false</c>
+        /// if the string is empty or the index is out of range.
+        /// </remarks>
+        [[nodiscard]] bool IsWhiteSpace( size_type position ) const noexcept
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -9761,16 +10857,37 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        [[nodiscard]] bool IsEmptyOrWhiteSpace( ) const
+        /// <summary>
+        /// Determines whether the string is empty or consists only of white-space characters.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> when the string contains no characters or every character in the string
+        /// is considered white-space by the repository helper <c>Internal::IsWhiteSpace</c>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Complexity: O(n) where n is the number of characters in the string.
+        /// </para>
+        /// <para>
+        /// The function is declared <c>noexcept</c> and does not allocate memory. It inspects the internal
+        /// buffer if present. For empty strings this returns <c>true</c>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: safe to call concurrently with other const operations. External synchronization
+        /// is required when other threads may mutate this instance concurrently.
+        /// </para>
+        /// </remarks>
+        [[nodiscard]] bool IsEmptyOrWhiteSpace( ) const noexcept
         {
-            if ( data_ )
+            if ( !data_ || data_->size_ == 0 )
             {
-                for ( size_t i = 0; i < data_->size_; ++i )
+                return true;
+            }
+            for ( size_t i = 0; i < data_->size_; ++i )
+            {
+                if ( !Internal::IsWhiteSpace( data_->buffer_[ i ] ) )
                 {
-                    if ( Internal::IsWhiteSpace( data_->buffer_[ i ] ) == 0 )
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
             return true;
@@ -9778,7 +10895,26 @@ namespace Harlinn::Common::Core
 
 
 
-        [[nodiscard]] bool StartsWith( const CharType ch ) const
+        /// <summary>
+        /// Determines whether the string begins with the specified character.
+        /// </summary>
+        /// <param name="ch">
+        /// The character to compare with the first character of the string.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> when this string is non-empty and its first character equals <paramref name="ch"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The operation is a constant-time check that accesses the internal buffer when present.
+        /// It is declared <c>noexcept</c>. For an empty string this returns <c>false</c>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: safe to call concurrently with other const operations. External synchronization
+        /// is required when other threads may mutate this instance concurrently.
+        /// </para>
+        /// </remarks>
+        [[nodiscard]] bool StartsWith( const CharType ch ) const noexcept
         {
             if ( data_ )
             {
@@ -9790,30 +10926,110 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        [[nodiscard]] bool starts_with( const CharType ch ) const
+        /// <summary>
+        /// Alias for <see cref="StartsWith(CharType)"/>; checks whether the string begins with the specified character.
+        /// </summary>
+        /// <param name="ch">The character to compare with the first character of the string.</param>
+        /// <returns>
+        /// <c>true</c> when this string is non-empty and its first character equals <paramref name="ch"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This lowercase overload simply forwards to <see cref="StartsWith(CharType)"/> to preserve API compatibility.
+        /// It is provided for naming consistency with common container interfaces.
+        /// </remarks>
+        [[nodiscard]] bool starts_with( const CharType ch ) const noexcept
         {
             return StartsWith( ch );
         }
 
 
-        [[nodiscard]] bool StartsWith( const CharType* str ) const
+        /// <summary>
+        /// Determines whether this string instance begins with the specified character sequence.
+        /// </summary>
+        /// <param name="str">
+        /// Pointer to a null-terminated character sequence to test as a prefix. 
+        /// May be <c>nullptr</c>. An empty string ("") is considered a valid prefix 
+        /// and matches any string.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> when the characters at the start of this string match the characters in <paramref name="str"/>;
+        /// otherwise <c>false</c>. If <paramref name="str"/> is <c>nullptr</c> the function returns <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The comparison is performed as a binary, character-by-character match and stops when either the prefix is
+        /// exhausted (match) or a mismatching character is encountered (no match). If the prefix is empty (first character
+        /// is the terminating null) the function returns <c>true</c>. If this string has no internal data or its length is zero
+        /// the function returns <c>false</c> unless the prefix is empty.
+        /// </para>
+        /// <para>
+        /// This method is <c>noexcept</c> and does not allocate memory. It is a const operation and is safe to call
+        /// concurrently with other const methods. External synchronization is required if other threads may mutate the same
+        /// BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("hello");
+        /// bool r1 = s.StartsWith("he");    // true
+        /// bool r2 = s.StartsWith("hello"); // true
+        /// bool r3 = s.StartsWith("hello!");// false
+        /// bool r4 = s.StartsWith("");      // true (empty prefix matches)
+        /// bool r5 = s.StartsWith(nullptr); // false
+        /// </code>
+        /// </example>
+        [[nodiscard]] bool StartsWith( const CharType* str ) const noexcept
         {
-            if ( data_ && data_->buffer_[0] && str && str[0] )
+            // no match
+            if ( str == nullptr )
             {
-                const CharType* p = data_->buffer_;
-                while ( *p && *str )
-                {
-                    if ( *p != *str )
-                    {
-                        break;
-                    }
-                    p++;
-                    str++;
-                }
-                return *str == L'\x00';
+                return false;
             }
-            return false;
+
+            // Empty prefix is a match. 
+            if ( str[ 0 ] == CharType{ 0 } )
+            {
+                return true;
+            }
+
+            if ( !data_ || data_->size_ == 0 )
+            {
+                return false;
+            }
+
+            const CharType* p = data_->buffer_;
+            const CharType* s = str;
+
+            while ( *p != CharType{ 0 } && *s != CharType{ 0 } )
+            {
+                if ( *p != *s )
+                {
+                    return false;
+                }
+                ++p;
+                ++s;
+            }
+
+            // s must be exhausted
+            return *s == CharType{ 0 };
         }
+        
+        /// <summary>
+        /// Determines whether this string instance begins with the specified 
+        /// character sequence (alias for <see cref="StartsWith"/>).
+        /// </summary>
+        /// <param name="str">
+        /// Pointer to a null-terminated character sequence to test as a prefix. May be <c>nullptr</c>. 
+        /// An empty string ("") is considered a valid prefix and matches any string.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> when the characters at the start of this string match the 
+        /// characters in <paramref name="str"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This lowercase alias simply forwards to <see cref="StartsWith(const CharType*)"/> and preserves its semantics,
+        /// complexity and exception-safety guarantees.
+        /// </remarks>
         [[nodiscard]] bool starts_with( const CharType* str ) const
         {
             return StartsWith( str );
