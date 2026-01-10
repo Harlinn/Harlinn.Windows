@@ -1710,7 +1710,7 @@ BOOST_AUTO_TEST_CASE( ConstructorTest9W )
     WideString string2( string1 );
     bool equal = string2 == L"123";
     BOOST_TEST( equal );
-    equal = string2.data( ) == string1.data( );
+    equal = string2.cdata( ) == string1.cdata( );
     BOOST_TEST( equal );
 }
 
@@ -1721,7 +1721,7 @@ BOOST_AUTO_TEST_CASE( ConstructorTest9A )
     AnsiString string2( string1 );
     bool equal = string2 == "123";
     BOOST_TEST( equal );
-    equal = string2.data( ) == string1.data( );
+    equal = string2.cdata( ) == string1.cdata( );
     BOOST_TEST( equal );
 }
 

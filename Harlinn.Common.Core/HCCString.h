@@ -3848,7 +3848,70 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-
+        /// <summary>
+        /// Assigns exactly <paramref name="size"/> characters from the provided character buffer to this string,
+        /// replacing any previously stored contents.
+        /// </summary>
+        /// <param name="string">
+        /// Pointer to the source character sequence. The pointer is not required to be null-terminated.
+        /// When <paramref name="size"/> is zero this parameter may be <c>nullptr</c>.
+        /// </param>
+        /// <param name="size">
+        /// The number of characters to copy from <paramref name="string"/> into this instance.
+        /// When zero the resulting string becomes empty and any existing internal storage is released.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This routine delegates allocation and initialization to the static helper <see cref="Initialize(const CharType*, size_type)"/>,
+        /// which allocates a new internal <c>Data</c> buffer sized according to the string's allocation granularity
+        /// and copies exactly <paramref name="size"/> characters (no trailing terminator is copied from the source).
+        /// </para>
+        /// <para>
+        /// Behavior summary:
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       If this object currently holds internal data (i.e. <c>data_ != nullptr</c>), the method allocates a new buffer
+        ///       initialized from the provided input, releases the currently held buffer via <see cref="ReleaseData"/>,
+        ///       and replaces it with the newly allocated buffer. This ensures the instance obtains ownership of the new storage.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       If this object is empty (i.e. <c>data_ == nullptr</c>), the method initializes and takes ownership
+        ///       of a new buffer created by <see cref="Initialize(const CharType*, size_type)"/> when <paramref name="size"/> &gt; 0.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       When <paramref name="size"/> is zero the instance becomes empty; any previously held storage is released
+        ///       and <c>data_ == nullptr</c> after the call.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Threading and mutability:
+        /// - The method preserves the reference-counted copy-on-write semantics of <c>BasicString</c>.
+        /// - If other <c>BasicString</c> instances share the same internal buffer, those objects are not modified by this call.
+        /// - Callers that hold raw pointers, iterators or references into this string's buffer should be prepared for those
+        ///   references to be invalidated because the internal buffer may be replaced.
+        /// - If the caller intends to perform in-place mutations while the buffer may be shared, call <see cref="EnsureUnique()"/>
+        ///   before mutating to guarantee unique ownership.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when memory allocation for the new internal buffer fails. Underlying allocation helpers
+        /// (for example <c>Internal::AllocateBytes</c> used by <see cref="Initialize"/>) will signal platform-specific
+        /// errors (for example via <c>ThrowOSError</c>), which are propagated to the caller.
+        /// </exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("hello");
+        /// s.Assign("world", 5); // s now contains "world"
+        /// s.Assign(nullptr, 0); // s becomes empty
+        /// </code>
+        /// </example>
         void Assign( const CharType* string, size_type size )
         {
             if ( data_ )
@@ -3862,19 +3925,124 @@ namespace Harlinn::Common::Core
                 data_ = Initialize( string, size );
             }
         }
+
+        /// <summary>
+        /// Assigns exactly <paramref name="size"/> characters from the specified character buffer to this string,
+        /// replacing any previously stored contents.
+        /// </summary>
+        /// <param name="string">
+        /// Pointer to the source character sequence. The pointer is not required to be null-terminated.
+        /// May be <c>nullptr</c> when <paramref name="size"/> is zero.
+        /// </param>
+        /// <param name="size">
+        /// The number of characters to copy from <paramref name="string"/>. When zero the resulting string
+        /// becomes empty and any existing internal storage is released.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This overload forwards to the public <see cref="Assign(const CharType*, size_type)"/> implementation
+        /// which performs allocation and initialization using the internal helpers (for example
+        /// <c>Initialize</c> and <c>Allocate</c>). If this object currently holds internal data the method
+        /// will allocate a new buffer initialized from the provided input, release the previously held buffer
+        /// via <c>ReleaseData</c>, and replace it with the newly allocated buffer. When this object is empty
+        /// (i.e. <c>data_ == nullptr</c>), the method initializes and takes ownership of a new buffer when
+        /// <paramref name="size"/> &gt; 0.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the method is not synchronized. External synchronization is required if multiple
+        /// threads may concurrently mutate or access the same <c>BasicString</c> instance.
+        /// </para>
+        /// <para>
+        /// Exceptions: underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) may
+        /// signal platform-specific errors (for example via <c>ThrowOSError</c>) which are propagated as
+        /// exceptions. Callers should be prepared to handle allocation failures accordingly.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// BasicString<char> s;
+        /// s.assign( "hello", 5 ); // s now contains "hello"
+        /// s.assign( nullptr, 0 ); // s becomes empty
+        /// </code>
+        /// </example>
+        /// <seealso cref="Assign(const CharType*, size_type)"/>
         void assign( const CharType* string, size_type size )
         {
             Assign( string, size );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Assigns the characters from a contiguous container-like object to this string.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// The contiguous container type. The container's <c>value_type</c> must be identical to this string's
+        /// character type (<c>CharType</c>). Typical examples are <c>std::basic_string_view&lt;CharType&gt;</c>,
+        /// <c>std::basic_string&lt;CharType&gt;</c> and other contiguous span-like types exposing <c>data()</c> and <c>size()</c>.
+        /// </typeparam>
+        /// <param name="string">
+        /// The source contiguous container whose elements will be copied. The contents of <c>string.data()</c> up to
+        /// <c>string.size()</c> characters are copied into this BasicString. If <c>string.size()</c> is zero the resulting
+        /// string becomes empty.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This overload delegates to <see cref="Assign(const CharType*, size_type)"/> which performs the allocation and copy.
+        /// The operation has linear complexity O(n) where n is <c>string.size()</c>. If this instance currently holds
+        /// internal data the previous storage is released and replaced with newly allocated storage when required.
+        /// </para>
+        /// <para>
+        /// Memory allocation follows the class allocation granularity and may fail. Allocation failures are reported
+        /// via the underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) which propagate platform-specific
+        /// exceptions (for example <c>SystemException</c> or an OS error exception).
+        /// </para>
+        /// <para>
+        /// The method preserves the class's copy-on-write/reference-counting semantics: if the string is shared with other
+        /// instances the call results in a uniquely owned buffer containing the copied contents for this instance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when memory allocation for the new internal buffer fails.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// std::string_view sv = "hello";
+        /// BasicString<char> s;
+        /// s.Assign( sv ); // s now contains "hello"
+        /// </code>
+        /// </example>
+        /// <seealso cref="Assign(const CharType*, size_type)"/>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         void Assign( const SpanT& string )
         {
             Assign( string.data( ), string.size( ) );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Assigns the characters from a contiguous container-like object to this string.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// The contiguous container type. The container's <c>value_type</c> must be identical to this string's
+        /// character type (<c>CharType</c>). The container must provide contiguous storage via <c>data()</c> and
+        /// the number of elements via <c>size()</c>.
+        /// </typeparam>
+        /// <param name="string">The source contiguous container whose elements will be copied. When empty the resulting string becomes empty.</param>
+        /// <remarks>
+        /// <para>
+        /// This overload delegates to <see cref="Assign(const CharType*, size_type)"/>, which performs allocation and copy
+        /// using the internal allocation granularity of <c>BasicString</c>. The operation results in a newly allocated
+        /// internal buffer that owns the copied characters for this instance.
+        /// </para>
+        /// <para>
+        /// For conversions between different character types prefer the conversion helpers such as
+        /// <c>Internal::From</c> or the <c>BasicString::From</c> overloads which handle encoding and code-page details.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails. Allocation helpers (for example <c>Internal::AllocateBytes</c>)
+        /// will report platform-specific errors which are propagated as exceptions.
+        /// </exception>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         void assign( const SpanT& string )
         {
@@ -3882,7 +4050,38 @@ namespace Harlinn::Common::Core
         }
 
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Assign content from a contiguous container-like object to this BasicString.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// The contiguous container type. The container's <c>value_type</c> must be identical to this string's
+        /// <c>CharType</c> (enforced by the <c>requires</c> clause).
+        /// </typeparam>
+        /// <param name="string">
+        /// Source container whose elements will be copied into this BasicString. The container must provide
+        /// contiguous storage via <c>data()</c> and the number of elements via <c>size()</c>.
+        /// When <c>string.size() == 0</c> the resulting BasicString becomes empty.
+        /// </param>
+        /// <returns>
+        /// A reference to this BasicString instance after assignment.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The operation delegates to <see cref="Assign(const CharType*, size_type)"/> which performs the
+        /// allocation and copy according to the string class allocation granularity. Existing internal storage
+        /// (if any) is released and replaced with newly allocated storage when required.
+        /// </para>
+        /// <para>
+        /// This function preserves the reference-counted copy-on-write semantics of <c>BasicString</c>. If the
+        /// caller requires in-place mutation afterward and the buffer may be shared, call <c>EnsureUnique()</c>
+        /// before mutating to guarantee unique ownership.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when memory allocation for the new internal buffer fails. Underlying allocation helpers
+        /// will propagate platform-specific errors.
+        /// </exception>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString& operator = ( const SpanT& string )
         {
@@ -3891,6 +4090,55 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Returns a pointer to a null-terminated character array with data equivalent to those stored in the string.
+        /// </summary>
+        /// <returns>
+        /// A pointer to a null-terminated character buffer containing the characters of the string.
+        /// If the string contains data this pointer references the internal buffer owned by the string instance.
+        /// If the string is empty the returned pointer is a pointer to a static empty literal:
+        /// - For <c>char</c> specializations this is "" (an empty narrow literal).
+        /// - For <c>wchar_t</c> specializations this is L"" (an empty wide literal).
+        /// The pointer remains valid as long as the BasicString instance is not modified or destroyed.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This function provides a convenient, read-only view of the string contents suitable for APIs that
+        /// expect a null-terminated character sequence. It is marked <c>constexpr</c> and <c>noexcept</c>.
+        /// </para>
+        /// <para>
+        /// Lifetime and thread-safety:
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       The returned pointer is valid only while the BasicString instance remains alive and its internal
+        ///       buffer is not replaced or otherwise modified. Any non-const operation (for example Append, Replace,
+        ///       EnsureUnique when the buffer is shared, etc.) may invalidate the pointer.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       The class employs reference-counted copy-on-write semantics. If the buffer is shared among multiple
+        ///       BasicString instances call <see cref="EnsureUnique"/> on the mutating instance before obtaining a
+        ///       writable pointer to avoid modifying shared storage.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Use higher-level conversion helpers in Harlinn.Common.Core (for example <c>ToWideString</c> / <c>ToAnsiString</c>)
+        /// when interoperating with different encodings or Windows API routines that require explicit code-page handling.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="data()"/>
+        /// <seealso cref="EnsureUnique()"/>
+        /// <example>
+        /// <code>
+        /// // Read-only access for printing
+        /// const CharType* s = str.c_str();
+        /// puts( s ); // or _putws(s) for wide strings
+        /// </code>
+        /// </example>
         [[nodiscard]] constexpr const CharType* c_str( ) const noexcept
         {
             if constexpr ( std::is_same_v<CharType, char> )
@@ -3903,16 +4151,159 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Returns a pointer to the internal character buffer for read-only access.
+        /// </summary>
+        /// <returns>
+        /// A pointer to the internal null-terminated character buffer if this instance owns data;
+        /// otherwise <c>nullptr</c> when the string is empty.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned pointer references the internal storage owned by this <c>BasicString</c> instance.
+        /// The pointer is valid while the instance is alive and while no non-const operation that may
+        /// replace or mutate the internal buffer is performed on this instance (for example: <see cref="EnsureUnique"/>,
+        /// editing operations such as <c>Append</c>, <c>Insert</c>, <c>Replace</c>, or destruction).
+        /// </para>
+        /// <para>
+        /// Note the difference between <see cref="data()"/> and <see cref="c_str()"/>:
+        /// <c>c_str()</c> returns a pointer to an empty literal ("" or L"") for empty strings,
+        /// whereas <c>data()</c> returns <c>nullptr</c> when the string is empty. Callers that require
+        /// a non-null, always-terminated buffer for empty strings should use <see cref="c_str()"/>.
+        /// </para>
+        /// <para>
+        /// The method is <c>constexpr</c>, <c>noexcept</c> and marked <c>[[nodiscard]]</c> to encourage
+        /// callers to check the returned pointer. It does not perform allocation or synchronization;
+        /// external synchronization is required when the same <c>BasicString</c> instance may be
+        /// concurrently modified by multiple threads.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="c_str()"/>
         [[nodiscard]] constexpr const CharType* data( ) const noexcept
         {
             return data_ ? data_->buffer_ : nullptr;
         }
 
-        [[nodiscard]] constexpr CharType* data( ) noexcept
+        /// <summary>
+        /// Gets a pointer to the internal character buffer or <c>nullptr</c> when the string is empty.
+        /// </summary>
+        /// <returns>
+        /// A pointer to the internal null-terminated buffer owned by this <c>BasicString</c> instance,
+        /// or <c>nullptr</c> if the string contains no data.
+        /// </returns>
+        /// <remarks>
+        ///   <para>
+        ///     The returned pointer references the internal storage used by this string object and is valid
+        ///     only while the owning <c>BasicString</c> instance remains alive and its internal buffer is not
+        ///     replaced or otherwise modified by non-const operations (for example: <c>EnsureUnique()</c>,
+        ///     editing operations such as <c>Append</c>, <c>Insert</c>, <c>Replace</c>, or destruction).
+        ///   </para>
+        ///   <para>
+        ///     This accessor does not force unique ownership. If the caller requires a mutable pointer into the
+        ///     buffer to perform modifications it must call <c>EnsureUnique()</c> (or use the non-const
+        ///     <c>data()</c> overload) before mutating; failing to do so may modify a buffer that is shared
+        ///     with other <c>BasicString</c> instances.
+        ///   </para>
+        ///   <para>
+        ///     Behavioural difference vs. <see cref="c_str()"/>:
+        ///     <list type="bullet">
+        ///       <item>
+        ///         <description>
+        ///           <c>c_str()</c> returns a pointer to an empty literal ("" or L"") for empty strings.
+        ///         </description>
+        ///       </item>
+        ///       <item>
+        ///         <description>
+        ///           <c>cdata()</c> returns <c>nullptr</c> when the string is empty.
+        ///         </description>
+        ///       </item>
+        ///     </list>
+        ///   </para>
+        ///   <para>
+        ///     Thread-safety: this const accessor is safe to call concurrently with other const operations.
+        ///     If other threads mutate the same instance, callers must synchronize externally.
+        ///   </para>
+        /// </remarks>
+        /// <seealso cref="data()"/>
+        /// <seealso cref="c_str()"/>
+        [[nodiscard]] constexpr const CharType* cdata( ) const noexcept
         {
             return data_ ? data_->buffer_ : nullptr;
         }
 
+        /// <summary>
+        /// Returns a pointer to the internal character buffer for mutable access.
+        /// </summary>
+        /// <returns>
+        /// A pointer to the internal null-terminated character buffer if this instance owns data;
+        /// otherwise <c>nullptr</c> when the string is empty.
+        /// The pointer refers to memory owned by this BasicString instance and must not be freed by the caller.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This non-const accessor ensures unique ownership by calling <see cref="EnsureUnique()"/> when the
+        /// internal buffer is shared. As a result the call may allocate and replace the internal buffer,
+        /// which invalidates any existing pointers, references or iterators referring to the previous buffer.
+        /// </para>
+        /// <para>
+        /// Callers that hold raw pointers/iterators into the string should be prepared for those references
+        /// to become invalid after this call. Use this accessor only when mutation of the buffer is required.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Allocation performed by `EnsureUnique()` or underlying allocation helpers may fail and propagate
+        /// platform-specific exceptions (for example via <c>ThrowOSError</c>).
+        /// </exception>
+        /// <seealso cref="EnsureUnique"/>
+        /// <seealso cref="c_str()"/>
+        [[nodiscard]] constexpr CharType* data( )
+        {
+            if ( data_ )
+            {
+                EnsureUnique( );
+				return data_->buffer_;
+			}
+            return nullptr;
+        }
+
+        /// <summary>
+        /// Converts this string instance to an object of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The destination container type. Must satisfy the following compile-time requirements:
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     <c>T::value_type</c> must be identical to this string's <c>value_type</c>.
+        ///   </description></item>
+        ///   <item><description>
+        ///     <c>T</c> must be constructible from a pointer/length pair: <c>T(const value_type*, size_t)</c>.
+        ///   </description></item>
+        ///   <item><description>
+        ///     <c>T</c> must be default-constructible.
+        ///   </description></item>
+        /// </list>
+        /// </typeparam>
+        /// <returns>
+        /// An instance of <c>T</c> containing a copy of the characters stored in this string.
+        /// If this string is empty, a default-constructed <c>T</c> is returned.
+        /// </returns>
+        /// <remarks>
+        /// The conversion constructs <c>T</c> with the internal buffer pointer and the current size.
+        /// No encoding or character set conversion is performed by this helper; it performs a direct copy
+        /// of the stored characters into the target type using the constructor <c>T(const value_type*, size_t)</c>.
+        /// </remarks>
+        /// <exception cref="std::bad_alloc">
+        /// May be thrown by the constructor of <c>T</c> if memory allocation fails during construction.
+        /// </exception>
+        /// <example>
+        /// <para>Usage example:</para>
+        /// <code>
+        /// BasicString<char> s( "hello" );
+        /// std::string out = s.To<std::string>();
+        /// </code>
+        /// </example>
+        /// <seealso cref="data()"/>
+        /// <seealso cref="size()"/>
         template<typename T>
             requires std::is_same_v<typename T::value_type, value_type> && std::is_constructible_v<T,const value_type*,size_t> && std::is_constructible_v<T>
         T To( ) const
@@ -3927,7 +4318,37 @@ namespace Harlinn::Common::Core
             }
         }
 
-
+        /// <summary>
+        /// Computes a 64-bit hash of the string contents using the XXH3 algorithm.
+        /// </summary>
+        /// <returns>
+        /// A 64-bit hash value derived from the raw underlying character buffer.
+        /// When the string is empty (no internal data), this method returns <c>0</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This function uses the high-performance non-cryptographic hashing function
+        /// <c>XXH3_64bits</c> to produce a 64-bit fingerprint of the string contents.
+        /// The hash covers the active character data only: it hashes <c>data_->buffer_</c>
+        /// for <c>data_->size_ * sizeof(CharType)</c> bytes.
+        /// </para>
+        /// <para>
+        /// The method is declared <c>noexcept</c> and is safe to call in noexcept contexts.
+        /// It does not allocate memory. For empty strings (when <c>data_ == nullptr</c>),
+        /// a canonical value of <c>0</c> is returned which is useful for container defaults.
+        /// </para>
+        /// <para>
+        /// Note: <c>XXH3_64bits</c> is a non-cryptographic hash optimized for speed and low collision
+        /// rates for general-purpose hashing (for example, hash tables). It should not be used
+        /// for security-sensitive applications; use a cryptographic hash where appropriate.
+        /// </para>
+        /// <para>
+        /// Thread-safety: calling this method is thread-safe with respect to other const operations
+        /// on the same BasicString instance. If other threads mutate the string concurrently, callers
+        /// must provide synchronization.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="XXH3_64bits">XXH3 hashing function used to compute the hash</seealso>
         [[nodiscard]] size_t Hash( ) const noexcept
         {
             if ( data_ )
@@ -3940,116 +4361,553 @@ namespace Harlinn::Common::Core
             }
         }
 
-
+        /// <summary>
+        /// Returns an iterator referring to the first character of the string.
+        /// </summary>
+        /// <returns>
+        /// An iterator that points to the first character in the string's internal buffer.
+        /// If the string is empty the returned iterator will contain a <c>nullptr</c> pointer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned iterator references the internal storage owned by this <c>BasicString</c> instance.
+        /// The pointer and iterator remain valid as long as this instance is not modified or destroyed.
+        /// Any non-const operation (for example <c>Append</c>, <c>Insert</c>, <c>Replace</c>, <c>EnsureUnique</c>)
+        /// may reallocate or replace the internal buffer and thus invalidate existing iterators and raw pointers.
+        /// </para>
+        /// <para>
+        /// When the internal buffer is shared (reference count &gt; 1) and the caller intends to mutate characters
+        /// through the returned iterator, call <c>EnsureUnique()</c> before performing mutations to obtain unique ownership.
+        /// Failing to do so may modify a buffer shared by other <c>BasicString</c> instances.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="data()"/>
+        /// <seealso cref="c_str()"/>
+        /// <seealso cref="EnsureUnique()"/>
+        /// <seealso cref="end()"/>
         [[nodiscard]] constexpr iterator begin( ) noexcept
         {
             return iterator(data_ ? data_->buffer_ : nullptr);
         }
 
+        /// <summary>
+        /// Returns an iterator to one-past-the-last character in the string.
+        /// </summary>
+        /// <returns>
+        /// An <c>iterator</c> that points to the position immediately following the last character of the string.
+        /// If the string contains data the iterator points into the internal buffer at index <c>data_->size_</c>.
+        /// If the string is empty the returned iterator contains a <c>nullptr</c> pointer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned iterator references the internal storage owned by this <c>BasicString</c> instance.
+        /// It remains valid only while the instance is alive and no non-const operation that may replace or
+        /// mutate the internal buffer (for example <see cref="EnsureUnique"/>, editing operations such as
+        /// <c>Append</c>, <c>Insert</c>, <c>Replace</c>, or destruction) is performed on this instance.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is not synchronized. External synchronization is required if multiple
+        /// threads may concurrently access or modify the same <c>BasicString</c> instance. When the internal
+        /// buffer is shared (reference count &gt; 1) and the caller intends to mutate characters through the
+        /// returned iterator, call <c>EnsureUnique()</c> first to obtain unique ownership and avoid modifying
+        /// shared storage.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="begin"/>
         [[nodiscard]] constexpr iterator end( ) noexcept
         {
             return iterator(data_ ? &data_->buffer_[data_->size_] : nullptr);
         }
 
+        /// <summary>
+        /// Returns a const iterator referring to the first character of the string.
+        /// </summary>
+        /// <returns>
+        /// A const iterator that points to the first character in the string's internal buffer.
+        /// If the string is empty the returned const iterator will contain a <c>nullptr</c> pointer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned const iterator provides read-only access to the string contents and does not
+        /// cause the string to obtain unique ownership of its internal buffer. It is safe to hold and
+        /// use concurrently with other const operations. However, if another thread or caller performs
+        /// a modifying operation that replaces the internal buffer, the iterator will be invalidated.
+        /// </para>
+        /// <para>
+        /// For callers that need to obtain a mutable pointer/iterator for modification, use the non-const
+        /// <c>data()</c> accessor (which will call <c>EnsureUnique()</c> when necessary) or explicitly call
+        /// <c>EnsureUnique()</c> prior to obtaining a mutable iterator.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="cbegin()"/>
+        /// <seealso cref="data()"/>
+        /// <seealso cref="c_str()"/>
+        /// <seealso cref="EnsureUnique()"/>
         [[nodiscard]] constexpr const_iterator begin( ) const noexcept
         {
             return const_iterator(data_ ? data_->buffer_ : nullptr);
         }
 
+        /// <summary>
+        /// Returns a const iterator referring to one-past-the-last character of the string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="const_iterator"/> that points to the position immediately following the last character
+        /// of the string. If the string contains data the iterator points into the internal buffer at
+        /// <c>data_->size_</c>. If the string is empty the returned iterator contains a <c>nullptr</c> pointer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned iterator provides a read-only view into the internal storage owned by this
+        /// <see cref="BasicString{T}"/> instance. The pointer and iterator remain valid only while the
+        /// instance is alive and no non-const operation that may replace or mutate the internal buffer
+        /// (for example <see cref="EnsureUnique"/>, editing operations such as <c>Append</c>, <c>Insert</c>,
+        /// <c>Replace</c>, or destruction) is performed on this instance.
+        /// </para>
+        /// <para>
+        /// This method is declared <c>constexpr</c> and <c>noexcept</c>, performs no heap allocation and is
+        /// a constant-time operation. It is safe to call from const contexts. In multi-threaded programs,
+        /// external synchronization is required if other threads may mutate the same <see cref="BasicString{T}"/>
+        /// concurrently; mutations may invalidate the returned iterator.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] constexpr const_iterator end( ) const noexcept
         {
             return const_iterator(data_ ? &data_->buffer_[data_->size_] : nullptr);
         }
 
+        /// <summary>
+        /// Returns a const iterator referring to the first character of the string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="const_iterator"/> that points to the first character in the string's
+        /// internal buffer. If the string is empty the returned const iterator will contain
+        /// a <c>nullptr</c> pointer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned iterator provides read-only access to the string contents and does not
+        /// cause the string to obtain unique ownership of its internal buffer. It is safe to
+        /// hold and use concurrently with other const operations. However, if another thread
+        /// or caller performs a modifying operation that replaces the internal buffer, the
+        /// iterator will be invalidated.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] constexpr const_iterator cbegin( ) const noexcept
         {
             return begin();
         }
 
+        /// <summary>
+        /// Returns a const iterator referring to one-past-the-last character of the string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="const_iterator"/> that points to the position immediately following
+        /// the last character of the string. If the string is empty the returned const iterator
+        /// will contain a <c>nullptr</c> pointer.
+        /// </returns>
+        /// <remarks>
+        /// See <see cref="cbegin"/> for lifetime and invalidation considerations. The returned
+        /// iterator is suitable for use in range-based algorithms and comparisons against
+        /// <see cref="cbegin()"/>.
+        /// </remarks>
         [[nodiscard]] constexpr const_iterator cend( ) const noexcept
         {
             return end( );
         }
 
+        /// <summary>
+        /// Returns a reverse iterator referring to the last character of the string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="reverse_iterator"/> that points to the last character in the string's
+        /// internal buffer. If the string is empty the returned reverse iterator will be
+        /// equivalent to <c>rend()</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned reverse iterator references the internal storage owned by this instance.
+        /// Any non-const operation (for example <c>Append</c>, <c>Insert</c>, <c>Replace</c>,
+        /// <c>EnsureUnique</c>, or destruction) may reallocate or replace the internal buffer and
+        /// thus invalidate the iterator.
+        /// </para>
+        /// <para>
+        /// When the internal buffer is shared (reference count &gt; 1) and the caller intends to
+        /// mutate characters through the returned iterator, call <see cref="EnsureUnique()"/>
+        /// before performing mutations to obtain unique ownership.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] constexpr reverse_iterator rbegin( ) noexcept
         {
             return reverse_iterator( end( ) );
         }
 
+        /// <summary>
+        /// Returns a reverse iterator referring to one-past-the-first character in reverse order.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="reverse_iterator"/> that points to the element preceding the first
+        /// character of the string in reverse iteration. For an empty string the returned
+        /// iterator equals <c>rbegin()</c> and is equivalent to <c>reverse_iterator(nullptr)</c>.
+        /// </returns>
+        /// <remarks>
+        /// See <see cref="rbegin"/> for lifetime and invalidation details. Use this iterator to
+        /// iterate from the beginning of the string towards the end in reverse order.
+        /// </remarks>
         [[nodiscard]] constexpr reverse_iterator rend( ) noexcept
         {
             return reverse_iterator( begin( ) );
         }
 
+        /// <summary>
+        /// Returns a const reverse iterator referring to the last character of the string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="const_reverse_iterator"/> that points to the last character in the string's
+        /// internal buffer. If the string is empty the returned reverse iterator will be
+        /// equivalent to <c>crend()</c>.
+        /// </returns>
+        /// <remarks>
+        /// The const reverse iterator provides read-only reverse traversal and does not force
+        /// unique ownership. It remains valid only while the instance is not modified or destroyed.
+        /// </remarks>
         [[nodiscard]] constexpr const_reverse_iterator rbegin( ) const noexcept
         {
             return const_reverse_iterator( end( ) );
         }
 
+        /// <summary>
+        /// Returns a const reverse iterator referring to one-past-the-first character in reverse order.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="const_reverse_iterator"/> that points to the position one-past-the-last
+        /// in reverse traversal (i.e. before the first character). If the string is empty the returned
+        /// iterator will be equivalent to <c>rbegin()</c>.
+        /// </returns>
+        /// <remarks>
+        /// Use this iterator to terminate reverse-iteration loops. The same lifetime and invalidation
+        /// rules as for other const iterators apply.
+        /// </remarks>
         [[nodiscard]] constexpr const_reverse_iterator rend( ) const noexcept
         {
             return const_reverse_iterator( begin( ) );
         }
 
+        /// <summary>
+        /// Returns a const reverse iterator to the first element of the reversed sequence.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method returns a <see cref="const_reverse_iterator"/> that refers to the last element
+        /// of the string (i.e. the element that will be visited first when iterating in reverse).
+        /// For an empty string the returned iterator will compare equal to <see cref="crend()"/>.
+        /// </para>
+        /// <para>
+        /// The returned iterator is a read-only view into the internal buffer and does not force
+        /// unique ownership. Any non-const operation on the string that replaces or mutates the
+        /// underlying buffer (for example <c>EnsureUnique()</c>, editing operations, or destruction)
+        /// may invalidate the iterator.
+        /// </para>
+        /// </remarks>
+        /// <returns>
+        /// A <see cref="const_reverse_iterator"/> pointing to the beginning of the reversed sequence.
+        /// </returns>
+        /// <seealso cref="rbegin()"/>
         [[nodiscard]] constexpr const_reverse_iterator crbegin( ) const noexcept
         {
             return rbegin( );
         }
 
+        /// <summary>
+        /// Returns a const reverse iterator to one-past-the-last element of the reversed sequence.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method returns a <see cref="const_reverse_iterator"/> that denotes the end of reverse
+        /// iteration. When used together with <see cref="crbegin()"/> it enables read-only reverse traversal
+        /// of the string contents.
+        /// </para>
+        /// <para>
+        /// As with other const iterators, the returned iterator is valid only while the string object
+        /// remains unchanged. Non-const operations that reallocate or replace the internal buffer will
+        /// invalidate the iterator.
+        /// </para>
+        /// </remarks>
+        /// <returns>
+        /// A <see cref="const_reverse_iterator"/> pointing one-past-the-last element in reverse order.
+        /// </returns>
+        /// <seealso cref="rend()"/>
         [[nodiscard]] constexpr const_reverse_iterator crend( ) const noexcept
         {
             return rend( );
         }
 
 
-
-        [[nodiscard]] constexpr const CharType front( ) const
+        /// <summary>
+        /// Returns the first character of the string by value.
+        /// </summary>
+        /// <returns>
+        /// The first character stored in the string.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Precondition: the string must be non-empty. Calling this function on an empty string
+        /// results in undefined behavior (the implementation dereferences the begin iterator).
+        /// The returned value is a copy of the stored character and therefore remains valid
+        /// independent of subsequent mutations to this string.
+        /// </para>
+        /// <para>
+        /// This accessor is a const operation and does not force unique ownership of the internal buffer.
+        /// Use the non-const overload to obtain a mutable reference.
+        /// </para>
+        /// </remarks>
+        [[nodiscard]] const CharType front( ) const noexcept
         {
             return *begin( );
         }
-        [[nodiscard]] constexpr CharType front( )
+        
+        /// <summary>
+        /// Returns a reference to the first character of the string for modification.
+        /// </summary>
+        /// <returns>
+        /// A mutable reference to the first character in the internal buffer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Precondition: the string must be non-empty. Calling this function on an empty string
+        /// results in undefined behavior because it dereferences the begin iterator.
+        /// </para>
+        /// <para>
+        /// This non-const accessor enforces copy-on-write semantics: it calls <c>EnsureUnique()</c>
+        /// before returning a reference. If the internal buffer is currently shared with other
+        /// BasicString instances a new unique buffer will be allocated and the contents copied.
+        /// As a result, existing raw pointers, iterators or references into the previous buffer
+        /// may be invalidated after this call.
+        /// </para>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation of a new internal buffer fails during the call to <c>EnsureUnique()</c>.
+        /// Underlying allocation helpers invoke platform-specific error reporting which is forwarded
+        /// as an exception.
+        /// </exception>
+        /// </remarks>
+        [[nodiscard]] CharType& front( )
         {
+			EnsureUnique( );
             return *begin( );
         }
-        [[nodiscard]] constexpr CharType back( ) const
-        {
-            return *( end( ) - 1 );
-        }
-        [[nodiscard]] constexpr CharType back( )
+
+        /// <summary>
+        /// Returns the last character of the string by value.
+        /// </summary>
+        /// <returns>
+        /// The last character stored in the string.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Precondition: the string must be non-empty. Calling this function on an empty string
+        /// results in undefined behavior (the implementation dereferences <c>end() - 1</c>).
+        /// The returned value is a copy and remains valid regardless of subsequent modifications.
+        /// </para>
+        /// <para>
+        /// This accessor is const and does not force unique ownership of the internal buffer.
+        /// Use the non-const overload to obtain a mutable reference to the last character.
+        /// </para>
+        /// </remarks>
+        [[nodiscard]] CharType back( ) const noexcept
         {
             return *( end( ) - 1 );
         }
 
+        /// <summary>
+        /// Returns a reference to the last character of the string for modification.
+        /// </summary>
+        /// <returns>
+        /// A mutable reference to the last character in the internal buffer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Precondition: the string must be non-empty. Calling this function on an empty string
+        /// results in undefined behavior because it dereferences <c>end() - 1</c>.
+        /// </para>
+        /// <para>
+        /// This non-const accessor enforces copy-on-write semantics by calling <c>EnsureUnique()</c>
+        /// prior to returning a reference. If the buffer is shared a new buffer is allocated and
+        /// the contents are copied, which can invalidate existing pointers, iterators or references
+        /// into the previous buffer.
+        /// </para>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation of a new internal buffer fails during the call to <c>EnsureUnique()</c>.
+        /// Underlying allocation helpers will report platform-specific errors which are forwarded as exceptions.
+        /// </exception>
+        /// </remarks>
+        [[nodiscard]] CharType& back( )
+        {   
+            EnsureUnique( );
+            return *( end( ) - 1 );
+        }
 
+
+        /// <summary>
+        /// Gets the theoretical maximum number of characters that this string type can address.
+        /// </summary>
+        /// <returns>
+        /// The maximum number of characters that can be stored, computed as the integer
+        /// maximum addressable units divided by the size of the character type, minus the
+        /// number of bytes reserved for the non-text buffer header.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The returned value is a compile-time calculable upper bound expressed in characters.
+        /// The formula used is:
+        /// <code>
+        /// ( MaxInt64 / sizeof(CharType) ) - NonTextBufferByteCount
+        /// </code>
+        /// where <c>MaxInt64</c> is the platform maximum 64-bit signed integer and
+        /// <c>NonTextBufferByteCount</c> is the number of bytes reserved for internal header/metadata.
+        /// </para>
+        /// <para>
+        /// This value represents a theoretical limit. Practical limits will be lower due to
+        /// available memory, allocation granularity and other runtime constraints. Callers
+        /// should validate requested sizes against available resources and the string's
+        /// allocation policies before performing large allocations.
+        /// </para>
+        /// <para>
+        /// The method is declared <c>constexpr</c> and <c>noexcept</c>, and performs no runtime allocation.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] constexpr size_type max_size( ) const noexcept
         {
             return ( MaxInt64 / sizeof( CharType ) ) - NonTextBufferByteCount;
         }
 
 
-        [[nodiscard]] constexpr size_type size( ) const noexcept
+        /// <summary>
+        /// Gets the number of characters stored in the string.
+        /// </summary>
+        /// <returns>
+        /// The number of characters contained in the string. If the string has no internal data the result is zero.
+        /// </returns>
+        [[nodiscard]] size_type size( ) const noexcept
         {
             return data_ ? data_->size_ : 0;
         }
 
-        [[nodiscard]] constexpr size_type capacity( ) const noexcept
+        /// <summary>
+        /// Gets the current capacity of the internal storage expressed in bytes according to the internal allocation policy.
+        /// </summary>
+        /// <returns>
+        /// The number of bytes allocated for the internal buffer (including header/metadata) when the string owns data;
+        /// otherwise zero for an empty string. This value reflects the rounded allocation size used by the string's allocator
+        /// and is not the number of characters that can necessarily be stored without reallocation (see remarks).
+        /// </returns>
+        /// <remarks>
+        /// The returned value is computed by the internal helper <c>AllocationByteCount</c> using the active logical character count.
+        /// Use <see cref="max_size"/> to determine theoretical limits and use editing helpers to ensure sufficient capacity
+        /// before performing large in-place modifications.
+        /// </remarks>
+        [[nodiscard]] size_type capacity( ) const noexcept
         {
             return data_ ? AllocationByteCount( data_->size_ ) : 0;
         }
 
+        /// <summary>
+        /// Placeholder for reserving capacity.
+        /// </summary>
+        /// <param name="">Ignored parameter</param>
+        /// <remarks>
+        /// This method is intentionally implemented as a no-op in this class. Capacity management is handled
+        /// internally by the reference-counted buffer logic and allocation granularity. Callers should use
+        /// editing APIs that allocate as required (for example Append/Insert/Replace) or call editing helpers that
+        /// expressly allocate a buffer of a desired size. This stub preserves API compatibility with
+        /// contiguous container-like interfaces.
+        /// </remarks>
         constexpr void reserve( size_type ) const noexcept
         { }
 
 
-        [[nodiscard]] constexpr size_type length( ) const noexcept
+        /// <summary>
+        /// Gets the number of characters stored in the string.
+        /// </summary>
+        /// <returns>
+        /// Equivalent to <see cref="size"/>; the number of characters contained in the string.
+        /// </returns>
+        [[nodiscard]] size_type length( ) const noexcept
         {
             return size( );
         }
-        [[nodiscard]] constexpr size_type Length( ) const noexcept
+        /// <summary>
+        /// Gets the number of characters stored in the string.
+        /// </summary>
+        /// <returns>
+        /// Equivalent to <see cref="size"/>; provided as a Pascal-cased alternative for API compatibility.
+        /// </returns>
+        [[nodiscard]] size_type Length( ) const noexcept
         {
             return size( );
         }
 
+        /// <summary>
+		/// Sets the logical length of the string. Use this function to ensure that the non-const version of <see cref="data()"/>
+		/// returns a buffer of a specific logical length that can be mutated.
+        /// </summary>
+        /// <param name="newLength">The new number of characters the string should contain. When zero the string becomes empty and any internal storage is released.</param>
+        /// <remarks>
+        /// <para>
+        /// This method adjusts the internal storage and logical size of the string while preserving
+        /// existing content where possible. The operation follows these rules:
+        /// </para>
+        /// <list type="number">
+        ///   <item>
+        ///     <description>
+        ///     If the string currently has no internal data and <paramref name="newLength"/> &gt; 0 a new
+        ///     internal buffer is allocated sized to hold <paramref name="newLength"/> characters.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///     If the internal buffer is shared (reference count &gt; 1) a new uniquely owned buffer
+        ///     is allocated and the first min(newLength, oldSize) characters are copied into it. The
+        ///     previous shared buffer has its reference count decremented.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///     When the buffer is uniquely owned the method will attempt an in-place resize when the
+        ///     rounded allocation (computed via <see cref="AllocationByteCountForLengthNotZero"/>) does not change.
+        ///     Otherwise a new buffer is allocated and content copied as above.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///     If <paramref name="newLength"/> is zero any existing internal storage is released and the string
+        ///     becomes empty (<c>data_ == nullptr</c>).
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// The copy preserves at most the first min(newLength, oldSize) characters from the previous content.
+        /// The internal storage allocation is always rounded according to the class allocation granularity:
+        /// callers should consider <see cref="AllocationByteCountForLengthNotZero"/> and <see cref="AllocationByteCount"/> semantics
+        /// when reasoning about memory usage.
+        /// </para>
+        /// <para>
+        /// Threading: reference counting uses interlocked primitives so releasing a shared buffer is thread-safe.
+        /// However, the method itself is not synchronized for concurrent modification of the same BasicString instance;
+        /// external synchronization is required for concurrent writers.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when memory allocation fails. Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>)
+        /// will call platform-specific error routines (for example <c>ThrowOSError</c>) which will propagate as a SystemException.
+        /// </exception>
+        /// <example>
+        /// <para>Resize a string to 10 characters (truncates or extends with uninitialized characters):</para>
+        /// <code>
+        /// BasicString&lt;char&gt; s("hello");
+        /// s.SetLength(10); // s now has length 10; characters after original content are unspecified
+        /// s.SetLength(3);  // s now contains "hel"
+        /// </code>
+        /// </example>
         void SetLength( size_type newLength )
         {
             if ( data_ )
@@ -4096,39 +4954,151 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Sets the logical length of the string.
+        /// </summary>
+        /// <param name="newLength">The new number of characters the string should contain. When zero the string becomes empty and any internal storage is released.</param>
+        /// <remarks>
+        /// This method is a convenience wrapper that forwards to <see cref="SetLength"/> and preserves the
+        /// string's copy-on-write and allocation-granularity semantics. If the current buffer is shared this
+        /// call may allocate a new internal buffer and copy existing content. When increasing the length the
+        /// newly added characters are unspecified (uninitialized) and callers should initialize them as needed.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails while resizing. Allocation helpers (for example
+        /// <c>Internal::AllocateBytes</c>) may call <c>ThrowOSError</c> which will propagate a platform-specific exception.
+        /// </exception>
+        /// <seealso cref="SetLength(size_type)"/>
         void resize( size_type newLength )
         {
             SetLength( newLength );
         }
 
 
+        /// <summary>
+        /// Determines whether the string contains zero characters.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> when the string has no internal data or its internal size equals zero; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This function is a constexpr, noexcept check that returns <c>true</c> when the internal
+        /// data pointer is null (no buffer allocated) or when the stored character count equals zero.
+        /// Use <see cref="IsEmpty"/> or <see cref="Length"/>/ <see cref="size"/> for related queries.
+        /// </remarks>
         [[nodiscard]] constexpr bool empty( ) const noexcept
         {
             return data_ ? data_->size_ == 0 : true;
         }
 
+        /// <summary>
+        /// Gets a descriptive alias for <see cref="empty()"/>.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> when the string is empty; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method exists for API compatibility and readability. It forwards to <see cref="empty"/>.
+        /// </remarks>
         [[nodiscard]] constexpr bool IsEmpty( ) const noexcept
         {
             return empty( );
         }
 
 
+        /// <summary>
+        /// Explicit boolean conversion operator.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> when the string is not empty; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This explicit operator provides safe use in boolean contexts (for example conditionals)
+        /// without enabling unintended implicit conversions. It returns the logical negation of
+        /// <see cref="empty()"/>.
+        /// </remarks>
         [[nodiscard]] constexpr explicit operator bool( ) const noexcept
         {
             return empty( ) == false;
         }
 
-
-        [[nodiscard]] reference operator[]( size_type offset ) noexcept
+        /// <summary>
+        /// Returns a mutable reference to the character at the specified index.
+        /// </summary>
+        /// <param name="offset">Zero-based character index into the string. The caller must ensure <c>offset &lt; size()</c>.</param>
+        /// <returns>
+        /// A reference to the character stored at <paramref name="offset"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This non-const accessor enforces copy-on-write semantics. If the internal buffer is shared by multiple
+        /// <c>BasicString</c> instances (<c>data_-&gt;referenceCount_ &gt; 1</c>), a new unique buffer is allocated and
+        /// the contents are copied before returning the reference. As a result this call may allocate memory and
+        /// invalidate any existing raw pointers, iterators or references to the string contents.
+        /// </para>
+        /// <para>
+        /// The behavior is undefined when <c>offset</c> is out of range. Callers should validate the index prior
+        /// to calling this method (for example compare with <c>size()</c>).
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation of a new internal buffer fails during the call to <see cref="EnsureUnique()"/>.
+        /// Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) will propagate platform-specific
+        /// errors which will surface as exceptions.
+        /// </exception>
+        [[nodiscard]] reference operator[]( size_type offset )
         {
+			EnsureUnique( );
             return data_->buffer_[offset];
         }
+        
+        /// <summary>
+        /// Returns the character at the specified index for read-only access.
+        /// </summary>
+        /// <param name="offset">Zero-based character index into the string. The caller must ensure <c>offset &lt; size()</c>.</param>
+        /// <returns>
+        /// The character value stored at <paramref name="offset"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This const accessor does not require unique ownership and does not allocate. For empty strings the returned
+        /// pointer used by <c>c_str()</c> may reference a static empty literal. The behavior is undefined when
+        /// <c>offset</c> is out of range.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] const_reference operator[]( size_type offset ) const noexcept
         {
-            return data_->buffer_[offset];
+            return c_str()[offset];
         }
 
 
+        /// <summary>
+        /// Concatenates two <c>BasicString</c> instances and returns a new string containing the result.
+        /// </summary>
+        /// <param name="first">The left-hand operand. Its characters are copied to the beginning of the returned string.</param>
+        /// <param name="second">The right-hand operand. Its characters are appended after <paramref name="first"/> in the returned string.</param>
+        /// <returns>
+        /// A newly constructed <c>BasicString</c> containing the concatenation of <paramref name="first"/> followed by <paramref name="second"/>.
+        /// When both inputs are empty the returned string is empty.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The implementation delegates to the two-argument constructor
+        /// <c>BasicString(const CharType*, size_type, const CharType*, size_type)</c> which performs a single allocation
+        /// for the combined content sized according to the class allocation granularity.
+        /// </para>
+        /// <para>
+        /// Prefer using <c>Append</c> or <c>operator+=</c> when mutating an existing string to minimize allocations.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// BasicString<char> a("Hello");
+        /// BasicString<char> b(" World");
+        /// auto c = a + b; // c == "Hello World"
+        /// </code>
+        /// </example>
+        /// <seealso cref="BasicString::Append(const CharType*)"/>
         [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const BasicString<CharType>& second )
         {
             auto firstSize = first.size( );
@@ -4141,6 +5111,26 @@ namespace Harlinn::Common::Core
 
         }
 
+        /// <summary>
+        /// Concatenates a null-terminated character sequence and a <see cref="BasicString{CharType}"/>.
+        /// </summary>
+        /// <param name="first">
+        /// Pointer to a null-terminated character sequence of type <c>CharType</c>.
+        /// May be <c>nullptr</c>, in which case the result will be equivalent to a copy of <paramref name="second"/>.
+        /// The function computes the length with <c>LengthOf</c> and does not require the pointer to remain valid
+        /// after the call.
+        /// </param>
+        /// <param name="second">The right-hand operand that will be appended after <paramref name="first"/>.</param>
+        /// <returns>
+        /// A new <see cref="BasicString{CharType}"/> containing the characters from <paramref name="first"/>
+        /// followed by the characters from <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// The implementation calls the two-argument constructor <c>BasicString(const CharType*, size_type, const CharType*, size_type)</c>
+        /// to perform a single allocation for the combined content where possible. Allocation failures are surfaced
+        /// via the underlying allocation helpers (for example <c>Internal::AllocateBytes</c>) which will propagate
+        /// platform-specific exceptions. This operation performs a shallow read-only access to <paramref name="second"/>.
+        /// </remarks>
         [[nodiscard]] friend BasicString<CharType> operator +( const CharType* first, const BasicString<CharType>& second )
         {
             auto firstSize = LengthOf( first );
@@ -4151,6 +5141,23 @@ namespace Harlinn::Common::Core
             return BasicString( first, firstSize, secondData, secondSize );
         }
 
+        /// <summary>
+        /// Concatenates a <see cref="BasicString{CharType}"/> and a null-terminated character sequence.
+        /// </summary>
+        /// <param name="first">The left-hand operand whose characters will appear first in the result.</param>
+        /// <param name="second">
+        /// Pointer to a null-terminated character sequence of type <c>CharType</c>.
+        /// May be <c>nullptr</c>, in which case the result will be equivalent to a copy of <paramref name="first"/>.
+        /// </param>
+        /// <returns>
+        /// A new <see cref="BasicString{CharType}"/> containing the characters from <paramref name="first"/>
+        /// followed by the characters from <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// Delegates to the constructor that performs a single combined allocation when possible to minimize copies.
+        /// Allocation failures are propagated via the library's allocation helpers. No modification is performed on
+        /// either operand.
+        /// </remarks>
         [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const CharType* second )
         {
             auto firstSize = first.size( );
@@ -4161,6 +5168,18 @@ namespace Harlinn::Common::Core
             return BasicString( firstData, firstSize, second, secondSize );
         }
 
+        /// <summary>
+        /// Concatenates a single character and a <see cref="BasicString{CharType}"/>.
+        /// </summary>
+        /// <param name="first">The single character to place at the beginning of the resulting string.</param>
+        /// <param name="second">The string to append after the single character.</param>
+        /// <returns>
+        /// A new <see cref="BasicString{CharType}"/> containing <paramref name="first"/> followed by the contents of <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// This overload is a convenience that forwards to the two-sequence constructor using a pointer to <paramref name="first"/>
+        /// with a length of 1. Allocation semantics and possible exceptions are the same as other concatenation overloads.
+        /// </remarks>
         [[nodiscard]] friend BasicString<CharType> operator +( const CharType first, const BasicString<CharType>& second )
         {
             auto secondSize = second.size( );
@@ -4169,6 +5188,19 @@ namespace Harlinn::Common::Core
             return BasicString( &first, 1, secondData, secondSize );
         }
 
+        /// <summary>
+        /// Concatenates a <see cref="BasicString{CharType}"/> and a single character.
+        /// </summary>
+        /// <param name="first">The string whose contents will appear first in the result.</param>
+        /// <param name="second">The single character to append to the end of <paramref name="first"/>.</param>
+        /// <returns>
+        /// A new <see cref="BasicString{CharType}"/> containing the characters from <paramref name="first"/>
+        /// followed by <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// This overload constructs the result by forwarding to the concatenation constructor with a trailing
+        /// single-character sequence. Allocation failures are propagated through the library's allocation helpers.
+        /// </remarks>
         [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const CharType second )
         {
             auto firstSize = first.size( );
@@ -4182,29 +5214,77 @@ namespace Harlinn::Common::Core
 
 
 
+        /// <summary>
+        /// Appends a null-terminated character sequence to this string.
+        /// </summary>
+        /// <param name="other">Pointer to a null-terminated character sequence to append. May be <c>nullptr</c> or point to an empty string.</param>
+        /// <remarks>
+        /// <para>
+        /// The function computes the length of the input using <c>LengthOf</c>, ensures space for the appended characters
+        /// by calling <c>Extend</c> and then copies <c>otherLength</c> characters into the newly allocated region.
+        /// </para>
+        /// <para>
+        /// This operation preserves the copy-on-write semantics of <c>BasicString</c>. If the internal buffer is shared,
+        /// <c>Extend</c> will allocate a new unique buffer and copy existing contents before the append.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation for the expanded buffer fails (propagated from <c>Extend</c> / underlying allocation helpers).
+        /// </exception>
         void Append( const CharType* other )
         {
             auto otherLength = LengthOf( other );
             auto* dest = Extend( otherLength );
             MemCopy( dest, other, otherLength );
         }
+        /// <summary>
+        /// Alias for <see cref="Append(const CharType*)"/>.
+        /// </summary>
+        /// <param name="other">Pointer to a null-terminated character sequence to append.</param>
         void append( const CharType* other )
         {
             Append( other );
         }
 
 
+        /// <summary>
+        /// Appends exactly <paramref name="otherLength"/> characters from the provided buffer to this string.
+        /// </summary>
+        /// <param name="other">Pointer to the source character buffer. May be <c>nullptr</c> only when <paramref name="otherLength"/> is zero.</param>
+        /// <param name="otherLength">Number of characters to append from <paramref name="other"/>.</param>
+        /// <remarks>
+        /// The function calls <c>Extend</c> to ensure space for <paramref name="otherLength"/> characters and then copies
+        /// the specified number of characters into the destination region.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation for the expanded buffer fails (propagated from <c>Extend</c> / underlying allocation helpers).
+        /// </exception>
         void Append( const CharType* other, size_t otherLength )
         {
             auto* dest = Extend( otherLength );
             MemCopy( dest, other, otherLength );
         }
 
+        /// <summary>
+        /// Alias for <see cref="Append(const CharType*,size_t)"/>.
+        /// </summary>
+        /// <param name="other">Pointer to the source character buffer.</param>
+        /// <param name="otherLength">Number of characters to append.</param>
         void append( const CharType* other, size_t otherLength )
         {
             Append( other, otherLength );
         }
 
+        /// <summary>
+        /// Appends the character range [<paramref name="first"/>, <paramref name="last"/>) to this string.
+        /// </summary>
+        /// <param name="first">Pointer to the first character to append (inclusive).</param>
+        /// <param name="last">Pointer to one-past-the-last character to append (exclusive).</param>
+        /// <remarks>
+        /// If <paramref name="first"/> is less than <paramref name="last"/> the function computes the range length
+        /// and forwards to <see cref="Append(const CharType*,size_t)"/> to perform the append. When <paramref name="first"/>
+        /// equals or exceeds <paramref name="last"/>, no action is taken.
+        /// </remarks>
         void Append( const CharType* first, const CharType* last )
         {
             if ( first < last )
@@ -4212,12 +5292,30 @@ namespace Harlinn::Common::Core
                 Append( first, static_cast< size_type >( last - first ) );
             }
         }
+        /// <summary>
+        /// Alias for <see cref="Append(const CharType*,const CharType*)"/>.
+        /// </summary>
+        /// <param name="first">Pointer to the first character to append.</param>
+        /// <param name="last">Pointer to one-past-the-last character to append.</param>
         void append( const CharType* first, const CharType* last )
         {
             Append( first, last );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Appends the contents of a contiguous container-like span to this string.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> is <c>CharType</c>.</typeparam>
+        /// <param name="other">The span whose elements will be appended.</param>
+        /// <remarks>
+        /// The overload is constrained to contiguous container-like types (for example <c>std::basic_string_view</c>,
+        /// <c>std::basic_string</c> or other span-like types). It calls <c>Extend</c> to reserve space and then copies
+        /// <c>other.size()</c> characters from <c>other.data()</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation for the expanded buffer fails (propagated from <c>Extend</c> / underlying allocation helpers).
+        /// </exception>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<CharType, typename SpanT::value_type>
         void Append( const SpanT& other )
         {
@@ -4226,7 +5324,12 @@ namespace Harlinn::Common::Core
             MemCopy( dest, other.data( ), otherLength );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Alias for <see cref="Append(const SpanT&)"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose value_type equals <c>CharType</c>.</typeparam>
+        /// <param name="other">The span whose elements will be appended.</param>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<CharType, typename SpanT::value_type>
         void append( const SpanT& other )
         {
@@ -4234,63 +5337,329 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Appends <paramref name="count"/> repetitions of character <paramref name="c"/> to this string.
+        /// </summary>
+        /// <param name="count">Number of times to append <paramref name="c"/>.</param>
+        /// <param name="c">The character value to append repeatedly.</param>
+        /// <remarks>
+        /// The function calls <c>Extend</c> to ensure space and then fills the appended region with the provided character
+        /// using <c>MemSet</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation for the expanded buffer fails (propagated from <c>Extend</c> / underlying allocation helpers).
+        /// </exception>
         void Append( size_type count, CharType c )
         {
             auto* dest = Extend( count );
             MemSet( dest, c, count );
         }
 
+        /// <summary>
+        /// Alias for <see cref="Append(size_type,CharType)"/>.
+        /// </summary>
+        /// <param name="count">Number of times to append the character.</param>
+        /// <param name="c">Character to append.</param>
         void append( size_type count, CharType c )
         {
             Append( count, c );
         }
 
+        /// <summary>
+        /// Appends a single character to this string.
+        /// </summary>
+        /// <param name="c">The character to append.</param>
+        /// <remarks>
+        /// This is a convenience overload that appends a single character by extending the buffer by one and storing the character.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when allocation for the expanded buffer fails (propagated from <c>Extend</c> / underlying allocation helpers).
+        /// </exception>
         void Append( CharType c )
         {
             auto* dest = Extend( 1 );
             *dest = c;
         }
 
+        /// <summary>
+        /// Alias for <see cref="Append(CharType)"/>.
+        /// </summary>
+        /// <param name="c">The character to append.</param>
         void append( CharType c )
         {
             Append( c );
         }
 
+        /// <summary>
+        /// Appends a single character to the end of the string.
+        /// </summary>
+        /// <param name="c">The character to append.</param>
+        /// <remarks>
+        /// <para>
+        /// This method is a convenience wrapper that forwards to <see cref="Append(CharType)"/>.
+        /// The operation preserves the class's copy-on-write semantics: when the internal buffer
+        /// is shared among multiple <c>BasicString</c> instances a new unique buffer may be
+        /// allocated and the contents copied before the character is appended.
+        /// </para>
+        /// <para>
+        /// The call may therefore allocate memory and throw platform-specific exceptions if
+        /// allocation fails (for example the underlying allocator will call <c>ThrowOSError</c>).
+        /// After a successful call the appended character is the new last character of the string.
+        /// </para>
+        /// <para>
+        /// Non-const operations that expand or reallocate the internal buffer invalidate raw
+        /// pointers, iterators and references that refer to the previous buffer. Callers that
+        /// hold such references should reacquire them after this call.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation for the expanded buffer fails.
+        /// </exception>
+        /// <seealso cref="Append(const CharType*)"/>
+        /// <seealso cref="EnsureUnique()"/>
         void push_back( CharType c )
         {
             Append( c );
         }
 
+        /// <summary>
+        /// Removes the last character from the string.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method removes the character at the end of the string by erasing the element
+        /// at <c>end() - 1</c>. The caller must ensure the string is not empty prior to calling
+        /// this method; calling <c>pop_back</c> on an empty string is undefined and, in this
+        /// implementation, may trigger a range check that throws <c>std::out_of_range</c>.
+        /// </para>
+        /// <para>
+        /// The removal follows the class's copy-on-write semantics. If the internal buffer is
+        /// shared a unique buffer may be allocated during the erase operation. The operation may
+        /// therefore allocate and propagate platform-specific exceptions on allocation failure.
+        /// </para>
+        /// <para>
+        /// As with other non-const editing functions, this call can invalidate raw pointers,
+        /// iterators and references into the string's previous buffer.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="std::out_of_range">
+        /// Thrown when attempting to remove a character from an empty string (range check failure).
+        /// </exception>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying allocation (if any) fails while making the buffer unique or resizing.
+        /// </exception>
+        /// <example>
+        /// <code>
+        /// BasicString<char> s( "abc" );
+        /// s.pop_back(); // s == "ab"
+        /// </code>
+        /// </example>
+        /// <seealso cref="erase(const_iterator)"/>
+        /// <seealso cref="EnsureUnique()"/>
         void pop_back( )
         {
             erase( end( ) - 1 );
         }
 
-        BasicString<CharType>& operator += ( const CharType* other ) { Append( other ); return *this; }
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Appends a null-terminated character sequence to this string.
+        /// </summary>
+        /// <param name="other">
+        /// Pointer to a null-terminated character sequence of type <c>CharType</c>.
+        /// May be <c>nullptr</c>; when <c>nullptr</c> the call is a no-op.
+        /// </param>
+        /// <returns>
+        /// A reference to this <c>BasicString</c> instance after appending.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This operator forwards to <see cref="Append(const CharType*)"/> which computes the length
+        /// of the input and ensures space for the appended characters. The operation preserves the
+        /// class's copy-on-write semantics: when the internal buffer is shared a unique buffer will
+        /// be allocated and existing contents copied prior to appending.
+        /// </para>
+        /// <para>
+        /// The call may allocate memory and therefore may throw platform-specific exceptions (for example
+        /// via underlying allocation helpers such as <c>Internal::AllocateBytes</c> which call
+        /// <c>ThrowOSError</c>). Non-const operations that expand or reallocate the internal buffer will
+        /// invalidate raw pointers, iterators and references into the previous buffer.
+        /// </para>
+        /// </remarks>
+        BasicString<CharType>& operator += ( const CharType* other )
+        { 
+            Append( other ); 
+            return *this; 
+        }
+        
+        /// <summary>
+        /// Appends the contents of a contiguous container-like span to this string.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> is <c>CharType</c>.</typeparam>
+        /// <param name="other">The source container whose elements will be appended.</param>
+        /// <returns>
+        /// A reference to this <c>BasicString</c> instance after appending.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This template overload is constrained to contiguous container-like types (for example
+        /// <c>std::basic_string_view</c>, <c>std::basic_string</c> or other span-like types).
+        /// It forwards to <see cref="Append(const SpanT&)"/> which calls <c>Extend</c> to reserve space
+        /// and then copies <c>other.size()</c> characters from <c>other.data()</c>.
+        /// </para>
+        /// <para>
+        /// The operation may allocate memory and therefore may throw platform-specific exceptions on failure.
+        /// When the internal buffer is shared the call will produce a unique buffer for this instance
+        /// before performing the append. Existing iterators and pointers into the string may be invalidated.
+        /// </para>
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<CharType, typename SpanT::value_type>
-        BasicString<CharType>& operator += ( const SpanT& other ) { Append( other ); return *this; }
-        BasicString<CharType>& operator += ( CharType c ) { Append( c ); return *this; }
+        BasicString<CharType>& operator += ( const SpanT& other ) 
+        { 
+            Append( other ); 
+            return *this; 
+        }
+        
+        /// <summary>
+        /// Appends a single character to the end of the string.
+        /// </summary>
+        /// <param name="c">The character to append.</param>
+        /// <returns>
+        /// A reference to this <c>BasicString</c> instance after appending the character.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This is a convenience overload that extends the string by one character and stores <c>c</c>.
+        /// It preserves copy-on-write semantics: if the buffer is shared a unique buffer will be allocated
+        /// prior to the modification. The call may allocate memory and can therefore throw on allocation failure.
+        /// </para>
+        /// </remarks>
+        BasicString<CharType>& operator += ( CharType c )
+        { 
+            Append( c ); 
+            return *this; 
+        }
 
-        iterator Insert( size_type index, const CharType* str, size_type strLength,CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts a character sequence into this string at the specified character index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based character index where the insertion should occur.
+        /// Behavior:
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     If <paramref name="index"/> &lt; current length: the characters are inserted before the character at <paramref name="index"/>.
+        ///   </description></item>
+        ///   <item><description>
+        ///     If <paramref name="index"/> == current length: the characters are appended.
+        ///   </description></item>
+        ///   <item><description>
+        ///     If <paramref name="index"/> &gt; current length: the string is padded with <paramref name="padCharacter"/> up to <paramref name="index"/>,
+        ///     then the provided characters are inserted at that position.
+        ///   </description></item>
+        /// </list>
+        /// </param>
+        /// <param name="str">
+        /// Pointer to a source character buffer to insert. May point into this string's buffer (overlap is handled).
+        /// May be null when <paramref name="strLength"/> is zero.
+        /// </param>
+        /// <param name="strLength">Number of characters to insert from <paramref name="str"/>. May be zero.</param>
+        /// <param name="padCharacter">
+        /// Character used to fill any gap when <paramref name="index"/> &gt; current length. Defaults to the class
+        /// <see cref="DefaultPadCharacter"/>.
+        /// </param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within this string's internal buffer.
+        /// If no insertion occurs and the string is empty the returned iterator may contain a <c>nullptr</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The function preserves copy-on-write semantics of <see cref="BasicString{T}"/>:
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     If the buffer is shared, a new unique buffer is allocated and the contents copied prior to modification.
+        ///   </description></item>
+        ///   <item><description>
+        ///     When the existing allocation can accommodate the expanded size the buffer is expanded in-place;
+        ///     otherwise a new buffer is allocated and existing content is copied.
+        ///   </description></item>
+        ///   <item><description>
+        ///     Raw pointers, iterators and references into this string may be invalidated by this call because allocation or buffer movement may occur.
+        ///   </description></item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Overlap handling: if the source pointer <paramref name="str"/> points into this string's previous buffer, the function
+        /// copies the source into a small temporary buffer before performing the insertion to avoid corruption.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when memory allocation fails during buffer expansion or uniqueness creation. Underlying allocation helpers
+        /// (for example <c>Internal::AllocateBytes</c>) will signal platform-specific errors which are propagated as exceptions.
+        /// </exception>
+        /// <exception cref="std::out_of_range">
+        /// May be thrown by other callers that perform range checks on iterators derived from the returned iterator; this method
+        /// itself does not throw for out-of-range <paramref name="index"/> because it pads as necessary.
+        /// </exception>
+        /// <threadsafety>
+        /// This method is not synchronized. External synchronization is required if multiple threads may access or modify the same instance concurrently.
+        /// Creating a new unique buffer from a shared buffer is safe because other string instances that referenced the old buffer are not mutated.
+        /// </threadsafety>
+        /// <example>
+        /// <code>
+        /// // Insert "foo" at position 2, padding with spaces if needed
+        /// str.Insert( 2, "foo", 3 );
+        /// // Append "bar"
+        /// str.Insert( str.Length(), "bar", 3 );
+        /// </code>
+        /// </example>
+        iterator Insert( size_type index, const CharType* str, size_type strLength, CharType padCharacter = DefaultPadCharacter )
         {
             auto size = Length( );
+            // Used to check if pointer lies inside the current buffer
+            auto isWithinBuffer = [ & ]( const CharType* p ) noexcept
+            {
+                return p && data_->Contains( p );
+            };
+
+            // If we're inserting nothing into an existing string, possibly just return iterator or fill pad
             if ( size )
             {
                 if ( index < size )
                 {
                     if ( strLength )
                     {
+                        // If source points into current buffer, copy it to a temporary small_vector first.
+                        const CharType* src = str;
+                        boost::container::small_vector<CharType, 256> tmp;
+                        if ( isWithinBuffer( str ) )
+                        {
+                            tmp.assign( str, str + strLength );
+                            src = tmp.data( );
+                        }
+
+                        // Allocate space for inserted characters
                         auto endPtr = Extend( strLength );
                         auto startPtr = data_->buffer_;
                         auto positionPtr = startPtr + index;
-                        MemMove( positionPtr + strLength, positionPtr, static_cast< size_t >( endPtr - positionPtr ) );
-                        MemCopy( positionPtr, str, strLength );
-                        return iterator(positionPtr);
+
+                        // Move trailing characters to make room:
+                        // number of characters to move = endPtr - positionPtr
+                        MemMove( positionPtr + strLength,
+                                 positionPtr,
+                                 endPtr - positionPtr );
+
+                        // Copy the new characters into place
+                        MemCopyOrZero( positionPtr,
+                                src,
+                                strLength );
+
+                        return iterator( positionPtr );
                     }
                     else
                     {
-                        return iterator(data_->buffer_ + index);
+                        // Nothing to insert, return iterator to position
+                        return iterator( data_->buffer_ + index );
                     }
                 }
                 else if ( index == size )
@@ -4298,145 +5667,410 @@ namespace Harlinn::Common::Core
                     if ( strLength )
                     {
                         auto endPtr = Extend( strLength );
-                        MemCopy( endPtr, str, strLength );
-                        return iterator(endPtr);
+                        
+                        // if str points into buffer it cannot point into endPtr region (we extended), but protect anyway
+                        const CharType* src = str;
+                        boost::container::small_vector<CharType, 256> tmp;
+                        if ( isWithinBuffer( str ) )
+                        {
+                            tmp.assign( str, str + strLength );
+                            src = tmp.data( );
+                        }
+                        MemCopyOrZero( endPtr, src, strLength );
+                        
+                        return iterator( endPtr );
                     }
                     else
                     {
-                        return iterator(data_->buffer_ + index);
+                        return iterator( data_->buffer_ + index );
                     }
                 }
-                else
+                else 
                 {
+                    // index > size
+
                     auto padding = index - size;
+                    // Must allocate space for padding even if str is nullptr or strLength == 0
                     auto endPtr = Extend( padding + strLength );
+
+                    // Fill padding with padCharacter
                     MemSet( endPtr, padCharacter, padding );
+
                     auto positionPtr = endPtr + padding;
-                    MemCopy( positionPtr, str, strLength );
-                    return iterator(positionPtr);
+                    
+                    // handle overlap if str points into original buffer (note data_->Contains checks against old buffer)
+                    const CharType* src = str;
+                    boost::container::small_vector<CharType, 256> tmp;
+                    if ( isWithinBuffer( str ) )
+                    {
+                        tmp.assign( str, str + strLength );
+                        src = tmp.data( );
+                    }
+                    MemCopyOrZero( positionPtr, src, strLength );
+                    
+
+                    return iterator( positionPtr );
                 }
             }
-            else
+            else 
             {
+                // size == 0
+
+                // Must allocate index (padding) even when str is nullptr or strLength==0
                 auto endPtr = Extend( index + strLength );
+
                 if ( index )
                 {
+                    // fill initial padding
                     MemSet( endPtr, padCharacter, index );
-                    auto positionPtr = endPtr + index;
-                    MemCopy( positionPtr, str, strLength );
-                    return iterator(positionPtr);
                 }
-                else
-                {
-                    MemCopy( endPtr, str, strLength );
-                    return iterator(endPtr);
-                }
+
+                auto positionPtr = endPtr + index;
+
+                MemCopyOrZero( positionPtr, str, strLength );
+
+                return iterator( positionPtr );
             }
         }
 
-        iterator insert( size_type index, const CharType* str, size_type strLength, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts a character sequence into the string at the specified character index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index where insertion begins.
+        /// Behavior:
+        /// <list type="bullet">
+        ///   <item><description>If <paramref name="index"/> &lt; current length the characters are inserted before the character at <paramref name="index"/>.</description></item>
+        ///   <item><description>If <paramref name="index"/> == current length the characters are appended.</description></item>
+        ///   <item><description>If <paramref name="index"/> &gt; current length the string is padded with <paramref name="padCharacter"/> up to <paramref name="index"/>, then the provided characters are inserted.</description></item>
+        /// </list>
+        /// </param>
+        /// <param name="str">Pointer to the source characters to insert. May be null when <paramref name="strLength"/> is zero.</param>
+        /// <param name="strLength">Number of characters to copy from <paramref name="str"/>. May be zero.</param>
+        /// <param name="padCharacter">Character used to fill any gap when <paramref name="index"/> &gt; current length. Defaults to DefaultPadCharacter.</param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within the string's internal buffer.
+        /// If no insertion occurs and the string is empty the returned iterator may contain a null pointer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This function preserves copy-on-write semantics. If the internal buffer is shared a new unique buffer
+        /// will be allocated before modification. The operation may therefore allocate memory and throw if allocation fails.
+        /// </para>
+        /// <para>
+        /// The returned iterator refers to memory owned by this object and will be invalidated by subsequent non-const operations.
+        /// </para>
+        /// </remarks>
+        iterator insert( size_type index, const CharType* str, size_type strLength, CharType padCharacter = DefaultPadCharacter )
         {
             return Insert( index, str, strLength, padCharacter );
         }
 
-        template<SimpleSpanLike StringT>
+        /// <summary>
+        /// Inserts the contents of a contiguous container-like value into the string at the specified index.
+        /// </summary>
+        /// <typeparam name="StringT">A contiguous container-like type whose <c>value_type</c> must match the string character type.</typeparam>
+        /// <param name="index">Zero-based insertion index.</param>
+        /// <param name="str">The contiguous container whose contents will be inserted.</param>
+        /// <param name="padCharacter">Character used to pad when <paramref name="index"/> &gt; current length.</param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within the string's internal buffer.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This template is constrained to contiguous container-like types whose element type equals the BasicString character type.
+        /// It forwards to the pointer/length overload to perform the actual insert. See the pointer/length overload for detailed
+        /// behavior, exception and invalidation semantics.
+        /// </para>
+        /// </remarks>
+        template<ContiguousContainerLike StringT>
             requires std::is_same_v<CharType, typename StringT::value_type>
-        iterator Insert( size_type index, const StringT& str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        iterator Insert( size_type index, const StringT& str, CharType padCharacter = DefaultPadCharacter )
         {
             return Insert( index, str.data( ), str.size( ), padCharacter );
         }
 
-        template<SimpleSpanLike StringT>
+        /// <summary>
+        /// Alias for the templated Insert overload that accepts a contiguous container-like value.
+        /// </summary>
+        /// <typeparam name="StringT">A contiguous container-like type whose <c>value_type</c> must match the string character type.</typeparam>
+        /// <param name="index">Zero-based insertion index.</param>
+        /// <param name="str">The contiguous container whose contents will be inserted.</param>
+        /// <param name="padCharacter">Character used to pad when <paramref name="index"/> &gt; current length.</param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within the string's internal buffer.
+        /// </returns>
+        template<ContiguousContainerLike StringT>
             requires std::is_same_v<CharType, typename StringT::value_type>
-        iterator insert( size_type index, const StringT& str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        iterator insert( size_type index, const StringT& str, CharType padCharacter = DefaultPadCharacter )
         {
             return Insert( index, str.data( ), str.size( ), padCharacter );
         }
 
-        iterator Insert( size_type index, const CharType* str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts a null-terminated character sequence into the string at the specified index.
+        /// </summary>
+        /// <param name="index">Zero-based insertion index.</param>
+        /// <param name="str">Pointer to a null-terminated character sequence to insert. May be <c>nullptr</c>.</param>
+        /// <param name="padCharacter">Character used to pad when <paramref name="index"/> &gt; current length.</param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within the string's internal buffer.
+        /// </returns>
+        /// <remarks>
+        /// This overload computes the length of <paramref name="str"/> using LengthOf and forwards to the
+        /// length-aware Insert overload. See Insert(index, str, strLength, padCharacter) for behavior details,
+        /// allocation and invalidation semantics.
+        /// </remarks>
+        iterator Insert( size_type index, const CharType* str, CharType padCharacter = DefaultPadCharacter )
         {
             auto strLength = LengthOf( str );
             return Insert( index, str, strLength, padCharacter );
         }
-        iterator insert( size_type index, const CharType* str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Alias for the null-terminated character sequence Insert overload.
+        /// </summary>
+        /// <param name="index">Zero-based insertion index.</param>
+        /// <param name="str">Pointer to a null-terminated character sequence to insert. May be <c>nullptr</c>.</param>
+        /// <param name="padCharacter">Character used to pad when <paramref name="index"/> &gt; current length.</param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within the string's internal buffer.
+        /// </returns>
+        iterator insert( size_type index, const CharType* str, CharType padCharacter = DefaultPadCharacter )
         {
             auto strLength = LengthOf( str );
             return Insert( index, str, strLength, padCharacter );
         }
 
-        iterator Insert( size_type index, size_type count, CharType ch, CharType padCharacter = static_cast< CharType >(' ') )
+        /// <summary>
+        /// Inserts <paramref name="count"/> copies of the character <paramref name="ch"/> into this string at the specified <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based character index where the insertion begins. If <paramref name="index"/> &lt; current length the characters are
+        /// inserted before the character at <paramref name="index"/>. If <paramref name="index"/> == current length the characters are appended.
+        /// If <paramref name="index"/> &gt; current length the string is extended with <paramref name="padCharacter"/> up to <paramref name="index"/>
+        /// and the characters are written starting at that position.
+        /// </param>
+        /// <param name="count">
+        /// Number of times <paramref name="ch"/> will be inserted. When zero the call is a no-op except for the special-case
+        /// where both the string is empty and <c>index + count == 0</c> (no allocation is performed and an iterator equivalent to nullptr
+        /// is returned).
+        /// </param>
+        /// <param name="ch">The character to insert.</param>
+        /// <param name="padCharacter">
+        /// Character used to fill any gap when <paramref name="index"/> &gt; current length. Defaults to <c>DefaultPadCharacter</c>.
+        /// </param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within this string's internal buffer. If no insertion occurs and the string
+        /// is empty the returned iterator may contain a null pointer. If the call appends characters the returned iterator points to the
+        /// first newly appended character (the previous end). In the special (empty, index+count==0) no-op case an iterator(nullptr) is returned.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The implementation preserves copy-on-write semantics of <c>BasicString</c>. It calls internal helpers such as <c>Extend</c>
+        /// which ensure unique ownership of the internal buffer when necessary and allocate according to the class allocation granularity.
+        /// When the internal buffer is shared a new unique buffer will be allocated and the existing contents copied before insertion.
+        /// </para>
+        /// <para>
+        /// When possible the method performs in-place expansion (moving trailing characters with <c>MemMove</c>) to avoid an additional allocation.
+        /// Otherwise a new buffer is allocated and content is copied into the new storage. The function uses <c>MemSet</c> to write repeated
+        /// characters and <c>MemCopy/MemMove</c> to relocate existing content. 
+        /// </para>
+        /// <para>
+        /// This operation may invalidate existing raw pointers, iterators and references into the string because the internal buffer can be
+        /// replaced or modified. Callers that keep such references should reacquire them after this call. The method is not synchronized and
+        /// external synchronization is required if multiple threads may modify the same instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when memory allocation for the expanded buffer fails. Underlying allocation helpers (for example <c>Internal::AllocateBytes</c>)
+        /// will signal platform-specific errors which are propagated as exceptions.
+        /// </exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("abc");
+        /// // Insert three 'x' at position 1: result "axxxbc"
+        /// s.Insert(1, 3, 'x');
+        /// </code>
+        /// </example>
+        /// <seealso cref="Extend(size_t)"/>
+        iterator Insert( size_type index, size_type count, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
-            auto size = Length( );
-            if ( size )
+            auto currentSize = Length( );
+
+            // No-op: inserting zero characters at position zero in an empty string should not allocate.
+            if ( currentSize == 0 && ( index + count ) == 0 )
             {
-                if ( index < size )
+                return iterator( nullptr );
+            }
+
+            if ( currentSize )
+            {
+                if ( index < currentSize )
                 {
                     if ( count )
                     {
-                        auto endPtr = Extend( count );
+                        auto endPtr = Extend( count ); // returns pointer to old end
                         auto startPtr = data_->buffer_;
                         auto positionPtr = startPtr + index;
-                        MemMove( positionPtr + count, positionPtr, static_cast< size_t >( endPtr - positionPtr ) );
+                        // move trailing content right to create gap
+                        MemMove( positionPtr + count, positionPtr, static_cast<size_t>( endPtr - positionPtr ) );
                         MemSet( positionPtr, ch, count );
-                        return iterator(positionPtr);
+                        return iterator( positionPtr );
                     }
                     else
                     {
-                        return iterator(data_->buffer_+ index);
+                        return iterator( &data_->buffer_[ index ] );
                     }
                 }
-                else if( index == size )
+                else if ( index == currentSize )
                 {
                     if ( count )
                     {
                         auto endPtr = Extend( count );
+                        // write new characters at old end
                         MemSet( endPtr, ch, count );
-                        return iterator(endPtr);
+                        return iterator( endPtr );
                     }
                     else
                     {
-                        return iterator(data_->buffer_ + index);
+                        return iterator( &data_->buffer_[ index ] );
                     }
                 }
                 else
                 {
-                    auto padding = index - size;
+                    // index > currentSize: need to pad with padCharacter up to index, then insert 'count' chars
+                    size_type padding = index - currentSize;
+                    // ensure we allocate at least padding (padding > 0 here) plus count
                     auto endPtr = Extend( padding + count );
-                    MemSet( endPtr, padCharacter, padding );
+                    if ( padding )
+                    {
+                        MemSet( endPtr, padCharacter, padding );
+                    }
                     auto positionPtr = endPtr + padding;
-                    MemSet( positionPtr, ch, count );
-                    return iterator(positionPtr);
+                    if ( count )
+                    {
+                        MemSet( positionPtr, ch, count );
+                    }
+                    return iterator( positionPtr );
                 }
             }
             else
             {
-                auto endPtr = Extend( index + count );
+                // currentSize == 0 and (index + count) > 0 (we already handled the (0,0) no-op case above)
+                auto endPtr = Extend( index + count ); // index+count > 0 here
                 if ( index )
                 {
+                    // fill gap with padCharacter
                     MemSet( endPtr, padCharacter, index );
                     auto positionPtr = endPtr + index;
-                    MemSet( positionPtr, ch, count );
-                    return iterator(positionPtr);
+                    if ( count )
+                    {
+                        MemSet( positionPtr, ch, count );
+                    }
+                    return iterator( positionPtr );
                 }
                 else
                 {
-                    MemSet( endPtr, ch, count );
-                    return iterator(endPtr);
+                    // insert at beginning
+                    if ( count )
+                    {
+                        MemSet( endPtr, ch, count );
+                        return iterator( endPtr );
+                    }
+                    else
+                    {
+                        return iterator( nullptr );
+                    }
                 }
             }
         }
 
-        iterator insert( size_type index, size_type count, CharType ch, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts <paramref name="count"/> copies of <paramref name="ch"/> into this string at the specified <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">Zero-based character index where the insertion begins. If <paramref name="index"/> &lt; current length the characters are inserted before the character at <paramref name="index"/>. If <paramref name="index"/> == current length the characters are appended. If <paramref name="index"/> &gt; current length the string is padded with <paramref name="padCharacter"/> up to <paramref name="index"/>, then the characters are written starting at that position.</param>
+        /// <param name="count">Number of times <paramref name="ch"/> will be inserted. When zero the call is a no-op except for the special-case where both the string is empty and <c>index + count == 0</c> (no allocation is performed and an iterator equivalent to nullptr is returned).</param>
+        /// <param name="ch">The character to insert.</param>
+        /// <param name="padCharacter">Character used to fill any gap when <paramref name="index"/> &gt; current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within this string's internal buffer.
+        /// If no insertion occurs and the string is empty the returned iterator may contain a null pointer.
+        /// If the call appends characters the returned iterator points to the first newly appended character (the previous end).
+        /// In the special (empty, index+count==0) no-op case an iterator(nullptr) is returned.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method preserves the copy-on-write semantics of <c>BasicString</c>. If the internal buffer is shared a new unique buffer
+        /// will be allocated before modification. When possible the method performs in-place expansion (moving trailing characters with
+        /// <c>MemMove</c>) to avoid an additional allocation; otherwise a new buffer is allocated and content copied into the new storage.
+        /// </para>
+        /// <para>
+        /// The operation may invalidate existing pointers, references and iterators into the string because the internal buffer can be
+        /// replaced or modified. External synchronization is required if multiple threads may access or modify the same instance concurrently.
+        /// </para>
+        /// <exception cref="SystemException">Thrown when memory allocation for the expanded buffer fails. Underlying allocation helpers
+        /// (for example <c>Internal::AllocateBytes</c>) will signal platform-specific errors which are propagated as exceptions.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("abc");
+        /// // Insert three 'x' at position 1: result "axxxbc"
+        /// s.Insert(1, 3, 'x');
+        /// </code>
+        /// </example>
+        iterator insert( size_type index, size_type count, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
             return Insert( index, count, ch, padCharacter );
         }
 
-        iterator Insert( size_type index, CharType ch, CharType padCharacter = static_cast< CharType >( ' ' ) )
+
+        /// <summary>
+        /// Inserts a single character into the string at the specified character index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based character index where the character will be inserted.
+        /// If <paramref name="index"/> &lt; current length the character is inserted before the character at <paramref name="index"/>.
+        /// If <paramref name="index"/> == current length the character is appended.
+        /// If <paramref name="index"/> &gt; current length the string is padded with <paramref name="padCharacter"/> up to <paramref name="index"/>,
+        /// then the character is written at that position.
+        /// </param>
+        /// <param name="ch">The character to insert.</param>
+        /// <param name="padCharacter">Character used to fill any gap when <paramref name="index"/> &gt; current length. Defaults to DefaultPadCharacter.</param>
+        /// <returns>
+        /// An iterator pointing to the inserted character within the string's internal buffer.
+        /// If no insertion occurs and the string is empty the returned iterator may contain a null pointer.
+        /// </returns>
+        /// <remarks>
+        /// This overload is a convenience wrapper that forwards to the multi-character insertion implementation
+        /// with a repeat count of 1. The operation preserves copy-on-write semantics: when the internal buffer is
+        /// shared a unique buffer may be allocated and the existing contents copied before the insertion.
+        /// As a result, the call may allocate memory and will invalidate any existing pointers, iterators or references
+        /// into the previous buffer. Use <see cref="EnsureUnique"/> prior to taking raw pointers if you must avoid allocation.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when allocation for an expanded or unique buffer fails.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Insert character 'x' at index 2
+        /// BasicString<char> s("abef");
+        /// s.Insert(2, 'x'); // s becomes "abxef"
+        /// </code>
+        /// </example>
+        iterator Insert( size_type index, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
             return Insert( index, 1, ch, padCharacter );
         }
 
-        iterator insert( size_type index, CharType ch, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Alias for <see cref="Insert(size_type,CharType,CharType)"/>; inserts a single character at the specified index.
+        /// </summary>
+        /// <param name="index">Zero-based index where the character will be inserted. See <see cref="Insert(size_type,CharType,CharType)"/> for detailed behavior.</param>
+        /// <param name="ch">The character to insert.</param>
+        /// <param name="padCharacter">Character used to fill any gap when <paramref name="index"/> &gt; current length. Defaults to DefaultPadCharacter.</param>
+        /// <returns>An iterator pointing to the inserted character within the string's internal buffer.</returns>
+        /// <remarks>
+        /// This lowercase overload forwards to the canonical <c>Insert</c> method and preserves the same semantics,
+        /// copy-on-write behavior and potential allocation side-effects described there.
+        /// </remarks>
+        iterator insert( size_type index, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
             return Insert( index, 1, ch, padCharacter );
         }
@@ -4448,63 +6082,169 @@ namespace Harlinn::Common::Core
             return static_cast< size_type >( position.ptr_ - data( ) );
         }
     public:
-        iterator Insert( const_iterator position, const CharType* str, size_type strLength, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts a character sequence of the specified length at the given iterator position.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="str">Pointer to the source characters to insert. May be <c>nullptr</c> when <paramref name="strLength"/> is zero.</param>
+        /// <param name="strLength">Number of characters to copy from <paramref name="str"/> into this string.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>
+        /// An iterator pointing to the first inserted character within this string's internal buffer.
+        /// </returns>
+        /// <remarks>
+        /// The operation preserves copy-on-write semantics: if the internal buffer is shared a unique buffer
+        /// may be allocated. Overlap between <paramref name="str"/> and the current internal buffer is handled
+        /// by copying the source into a temporary buffer when necessary. This function may allocate memory and
+        /// invalidate existing pointers/iterators into this string.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for expanded or unique buffer fails.</exception>
+        iterator Insert( const_iterator position, const CharType* str, size_type strLength, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, str, strLength, padCharacter );
         }
-        iterator insert( const_iterator position, const CharType* str, size_type strLength, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        
+        /// <summary>
+        /// Alias for <see cref="Insert(const_iterator,const CharType*,size_type,CharType)"/> with identical semantics.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="str">Pointer to the source characters to insert. May be <c>nullptr</c> when <paramref name="strLength"/> is zero.</param>
+        /// <param name="strLength">Number of characters to copy from <paramref name="str"/> into this string.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the first inserted character within this string's internal buffer.</returns>
+        iterator insert( const_iterator position, const CharType* str, size_type strLength, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, str, strLength, padCharacter );
         }
-        template<SimpleSpanLike StringT>
+        
+        
+        /// <summary>
+        /// Inserts the contents of a contiguous container into this string at the specified iterator position.
+        /// </summary>
+        /// <typeparam name="StringT">A contiguous container type whose <c>value_type</c> matches this string's <c>CharType</c>.</typeparam>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="str">The contiguous container whose contents will be inserted.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the first inserted character within this string's internal buffer.</returns>
+        /// <remarks>
+        /// The template is constrained to contiguous container-like types with element type equal to <c>CharType</c>.
+        /// Behavior, allocation and overlap handling follow the pointer/length overload.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for expanded or unique buffer fails.</exception>
+        template<ContiguousContainerLike StringT>
             requires std::is_same_v<CharType, typename StringT::value_type>
-        iterator Insert( const_iterator position, const StringT& str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        iterator Insert( const_iterator position, const StringT& str, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, str.data( ), str.size( ), padCharacter );
         }
 
-        template<SimpleSpanLike StringT>
+        /// <summary>
+        /// Alias for the templated Insert overload that accepts a contiguous container-like value.
+        /// </summary>
+        /// <typeparam name="StringT">A contiguous container type whose <c>value_type</c> matches this string's <c>CharType</c>.</typeparam>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="str">The contiguous container whose contents will be inserted.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the first inserted character within this string's internal buffer.</returns>
+        template<ContiguousContainerLike StringT>
             requires std::is_same_v<CharType, typename StringT::value_type>
-        iterator insert( const_iterator position, const StringT& str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        iterator insert( const_iterator position, const StringT& str, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, str.data( ), str.size( ), padCharacter );
         }
 
-        iterator Insert( const_iterator position, const CharType* str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts a null-terminated character sequence at the specified iterator position.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="str">Pointer to a null-terminated character sequence to insert. May be <c>nullptr</c>.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the first inserted character within this string's internal buffer.</returns>
+        /// <remarks>
+        /// The length of <paramref name="str"/> is computed using <c>LengthOf</c> and the call forwards to the length-aware Insert overload.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for expanded or unique buffer fails.</exception>
+        iterator Insert( const_iterator position, const CharType* str, CharType padCharacter = DefaultPadCharacter )
         {
             auto strLength = LengthOf( str );
             auto index = ToIndex( position );
             return Insert( index, str, strLength, padCharacter );
         }
-        iterator insert( const_iterator position, const CharType* str, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Alias for <see cref="Insert(const_iterator,const CharType*,CharType)"/>.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="str">Pointer to a null-terminated character sequence to insert. May be <c>nullptr</c>.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the first inserted character within this string's internal buffer.</returns>
+        iterator insert( const_iterator position, const CharType* str, CharType padCharacter = DefaultPadCharacter )
         {
             auto strLength = LengthOf( str );
             auto index = ToIndex( position );
             return Insert( index, str, strLength, padCharacter );
         }
 
-        iterator Insert( const_iterator position, size_type count, CharType ch, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts <paramref name="count"/> copies of <paramref name="ch"/> at the given iterator position.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="count">Number of times to insert <paramref name="ch"/>.</param>
+        /// <param name="ch">Character value to insert repeatedly.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the first inserted character within this string's internal buffer.</returns>
+        /// <remarks>
+        /// The operation preserves copy-on-write semantics and may allocate. When inserting beyond the current length
+        /// the gap is filled with <paramref name="padCharacter"/> before the inserted characters are written.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for expanded or unique buffer fails.</exception>
+        iterator Insert( const_iterator position, size_type count, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, count, ch, padCharacter );
         }
-        iterator insert( const_iterator position, size_type count, CharType ch, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Alias for <see cref="Insert(const_iterator,size_type,CharType,CharType)"/>.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="count">Number of times to insert <paramref name="ch"/>.</param>
+        /// <param name="ch">Character value to insert repeatedly.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the first inserted character within this string's internal buffer.</returns>
+        iterator insert( const_iterator position, size_type count, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, count, ch, padCharacter );
         }
 
-        iterator Insert( const_iterator position, CharType ch, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Inserts a single character at the specified iterator position.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="ch">Character to insert.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the inserted character within this string's internal buffer.</returns>
+        /// <remarks>
+        /// This overload forwards to the multi-character insertion with count set to 1.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for expanded or unique buffer fails.</exception>
+        iterator Insert( const_iterator position, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, 1, ch, padCharacter );
         }
 
-        iterator insert( const_iterator position, CharType ch, CharType padCharacter = static_cast< CharType >( ' ' ) )
+        /// <summary>
+        /// Alias for <see cref="Insert(const_iterator,CharType,CharType)"/> to insert a single character.
+        /// </summary>
+        /// <param name="position">Iterator specifying the insertion location within this string.</param>
+        /// <param name="ch">Character to insert.</param>
+        /// <param name="padCharacter">Character used to pad if the insertion index is greater than the current length. Defaults to <see cref="DefaultPadCharacter"/>.</param>
+        /// <returns>An iterator pointing to the inserted character within this string's internal buffer.</returns>
+        iterator insert( const_iterator position, CharType ch, CharType padCharacter = DefaultPadCharacter )
         {
             auto index = ToIndex( position );
             return Insert( index, 1, ch, padCharacter );
@@ -4923,27 +6663,136 @@ namespace Harlinn::Common::Core
         }
 
     public:
+        /// <summary>
+        /// Compares two <see cref="BasicString"/> instances.
+        /// </summary>
+        /// <param name="first">The left-hand operand to compare. May be empty (no internal data).</param>
+        /// <param name="second">The right-hand operand to compare. May be empty (no internal data).</param>
+        /// <returns>
+        /// A signed integer less than, equal to, or greater than zero if <paramref name="first"/> is found,
+        /// respectively, to be less than, to match, or be greater than <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This static helper forwards to the internal buffer compare implementation and performs
+        /// an efficient comparison when both objects share the same internal buffer pointer.
+        /// </para>
+        /// <para>
+        /// The comparison uses <see cref="Internal::Compare(const CharType*, size_t, const CharType*, size_t)"/>
+        /// and may rely on platform locale/flags for wide/narrow specializations where applicable.
+        /// </para>
+        /// <list type="bullet">
+        ///   <item><description>Return &lt; 0: first &lt; second.</description></item>
+        ///   <item><description>Return == 0: first == second.</description></item>
+        ///   <item><description>Return &gt; 0: first &gt; second.</description></item>
+        /// </list>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// May be thrown when underlying locale-aware comparison helper fails (for example when calling
+        /// platform APIs such as CompareStringW/CompareStringA that propagate errors).
+        /// </exception>
+        /// <seealso cref="ICompare(const Data*,const Data*)"/>
         [[nodiscard]] static int Compare( const BasicString& first, const BasicString& second )
         {
             return Compare( first.data_, second.data_ );
         }
+        /// <summary>
+        /// Compares a null-terminated or pointer-length character sequence with a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to the left-hand character sequence. May be <c>nullptr</c>.</param>
+        /// <param name="second">The right-hand <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// A signed integer less than, equal to, or greater than zero if the character sequence is found,
+        /// respectively, to be less than, to match, or be greater than <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This overload detects identity cases to avoid unnecessary comparisons when the provided pointer
+        /// references the same internal buffer used by <paramref name="second"/>. When the pointer differs,
+        /// it forwards to the internal comparison routines.
+        /// </para>
+        /// <para>
+        /// The function handles <c>nullptr</c> safely: a non-null pointer compares greater than a null/empty string.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if an underlying platform comparison routine reports an error.
+        /// </exception>
+        /// <seealso cref="Compare(const BasicString&,const BasicString&)"/>
         [[nodiscard]] static int Compare( const CharType* first, const BasicString& second )
         {
             return Compare( first, second.data_ );
         }
+        /// <summary>
+        /// Compares a <see cref="BasicString"/> instance with a null-terminated or pointer-length character sequence.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">Pointer to the right-hand character sequence. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// A signed integer less than, equal to, or greater than zero if <paramref name="first"/> is found,
+        /// respectively, to be less than, to match, or be greater than the character sequence.
+        /// </returns>
+        /// <remarks>
+        /// This overload mirrors <see cref="Compare(const CharType*, const BasicString&)"/> and performs
+        /// identity checks to decide whether to call the internal compare implementation.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if an underlying platform comparison routine reports an error.
+        /// </exception>
+        /// <seealso cref="Compare(const BasicString&,const BasicString&)"/>
         [[nodiscard]] static int Compare( const BasicString& first, const CharType* second )
         {
             return Compare( first.data_, second );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Compares a contiguous container-like span against a <see cref="BasicString"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// A contiguous container-like type (for example <c>std::basic_string_view</c>,
+        /// <c>std::basic_string</c> or other span-like types).
+        /// </typeparam>
+        /// <param name="first">The contiguous container-like value to compare. Its <c>value_type</c> must match <c>CharType</c>.</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare to.</param>
+        /// <returns>
+        /// A signed integer less than, equal to, or greater than zero if <paramref name="first"/> is found,
+        /// respectively, to be less than, to match, or be greater than <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The template requires that <c>SpanT::value_type</c> is identical to this string's character type.
+        /// The function forwards to the internal compare helper that accepts a pointer and explicit length.
+        /// </para>
+        /// <para>
+        /// This overload performs a single-length-aware comparison and avoids creating temporary strings.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Compare(const BasicString&, const SpanT&)"/>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] static int Compare( const SpanT& first, const BasicString& second )
         {
             return Compare( first.data(), first.size(), second.data_ );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Compares a <see cref="BasicString"/> against a contiguous container-like span.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// A contiguous container-like type whose <c>value_type</c> must be identical to <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="first">The left-hand <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">The contiguous container-like value to compare to.</param>
+        /// <returns>
+        /// A signed integer less than, equal to, or greater than zero if <paramref name="first"/> is found,
+        /// respectively, to be less than, to match, or be greater than <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// The function delegates to the internal compare helper and validates via the template constraints
+        /// that the container element type matches the string character type.
+        /// </remarks>
+        /// <seealso cref="Compare(const SpanT&, const BasicString&)"/>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] static int Compare( const BasicString& first, const SpanT& second )
         {
@@ -4951,292 +6800,834 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Compares this instance with another <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="second">The string to compare with.</param>
+        /// <returns>
+        /// A signed integer less than, equal to, or greater than zero if this instance is found,
+        /// respectively, to be less than, to match, or be greater than <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// This instance method simply forwards to the static <see cref="Compare(const BasicString&,const BasicString&)"/>
+        /// helper and therefore inherits its behavior and performance characteristics.
+        /// </remarks>
         [[nodiscard]] int Compare( const BasicString& second ) const
         {
             return Compare( data_, second.data_ );
         }
+
+        /// <summary>
+        /// Compares this instance with a raw character pointer or null-terminated character sequence.
+        /// </summary>
+        /// <param name="second">Pointer to the character sequence to compare. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// A signed integer less than, equal to, or greater than zero if this instance is found,
+        /// respectively, to be less than, to match, or be greater than the pointed-to sequence.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the static compare helpers and benefits from identity checks
+        /// that avoid unnecessary work when pointers reference the same internal buffer.
+        /// </remarks>
         [[nodiscard]] int Compare( const CharType* second ) const
         {
             return Compare( data_, second );
         }
 
 
+        /// <summary>
+        /// Compares two <see cref="BasicString"/> instances using the class compare implementation.
+        /// </summary>
+        /// <param name="first">Left-hand operand to compare. May be empty.</param>
+        /// <param name="second">Right-hand operand to compare. May be empty.</param>
+        /// <returns>
+        /// A negative value if <paramref name="first"/> &lt; <paramref name="second"/>,
+        /// zero if equal, or a positive value if <paramref name="first"/> &gt; <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This static helper forwards to the internal <see cref="Compare(const Data*, const Data*)"/> overload
+        /// which performs efficient identity checks and delegates to locale-aware comparisons when necessary.
+        /// </para>
+        /// <para>
+        /// The comparison may surface platform-level errors (for example when calling CompareStringW/A).
+        /// Such errors propagate as exceptions from the underlying helpers (see <see cref="Internal::Compare"/>).
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="ICompare(const BasicString&, const BasicString&)"/>
         [[nodiscard]] static int compare( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second );
         }
+        /// <summary>
+        /// Compares a raw character sequence to a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to a null-terminated or length-aware character sequence. May be <c>nullptr</c>.</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// A negative value if the sequence &lt; <paramref name="second"/>,
+        /// zero if equal, or a positive value if the sequence &gt; <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// Identity cases are detected to avoid unnecessary comparisons when the provided pointer references
+        /// the same internal buffer used by <paramref name="second"/>. When the pointer differs the function
+        /// delegates to the internal comparison helpers which may use locale-aware APIs.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// May be thrown if an underlying platform comparison routine reports an error.
+        /// </exception>
         [[nodiscard]] static int compare( const CharType* first, const BasicString& second )
         {
             return Compare( first, second );
         }
+        /// <summary>
+        /// Compares a <see cref="BasicString"/> instance to a raw character sequence.
+        /// </summary>
+        /// <param name="first">The <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">Pointer to a null-terminated or length-aware character sequence. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// A negative value if <paramref name="first"/> &lt; the sequence,
+        /// zero if equal, or a positive value if <paramref name="first"/> &gt; the sequence.
+        /// </returns>
+        /// <remarks>
+        /// Mirrors <see cref="compare(const CharType*, const BasicString&)"/> and preserves the same identity
+        /// optimizations and error propagation behavior.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// May be thrown if an underlying platform comparison routine reports an error.
+        /// </exception>
         [[nodiscard]] static int compare( const BasicString& first, const CharType* second )
         {
             return Compare( first, second );
         }
 
+        /// <summary>
+        /// Compares this <see cref="BasicString"/> instance with another <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="second">The string to compare with.</param>
+        /// <returns>
+        /// A negative value if this instance &lt; <paramref name="second"/>,
+        /// zero if equal, or a positive value if this instance &gt; <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// Instance wrapper that forwards to the static <see cref="Compare(const BasicString&, const BasicString&)"/>.
+        /// Behaves consistently with other static and instance compare helpers in this class.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// May be thrown when underlying locale-aware comparison helpers fail.
+        /// </exception>
         [[nodiscard]] int compare( const BasicString& second ) const
         {
             return Compare( second );
         }
+        /// <summary>
+        /// Compares this <see cref="BasicString"/> instance with a raw character sequence.
+        /// </summary>
+        /// <param name="second">Pointer to a null-terminated or length-aware character sequence. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// A negative value if this instance &lt; the sequence,
+        /// zero if equal, or a positive value if this instance &gt; the sequence.
+        /// </returns>
+        /// <remarks>
+        /// For pointer inputs that reference the internal buffer of this instance the function may
+        /// detect identity and avoid additional work. Otherwise it delegates to internal comparison helpers.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown if an underlying platform comparison routine reports an error.
+        /// </exception>
         [[nodiscard]] int compare( const CharType* second ) const
         {
             return Compare( second );
         }
 
 
+        /// <summary>
+        /// Performs a case-insensitive comparison between two <see cref="BasicString"/> instances.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> operand to compare.</param>
+        /// <param name="second">The right-hand <see cref="BasicString"/> operand to compare.</param>
+        /// <returns>
+        /// A negative value if <paramref name="first"/> &lt; <paramref name="second"/>,
+        /// zero if they are equal, or a positive value if <paramref name="first"/> &gt; <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This helper forwards the comparison to the overload that accepts internal Data pointers
+        /// and performs a locale-aware, case-insensitive comparison using the library's internal
+        /// comparison helpers. Identity checks are performed in the called implementation to avoid
+        /// unnecessary work when both strings share the same internal buffer.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when an underlying platform comparison routine fails (for example when calling
+        /// Win32 CompareStringW/CompareStringA or other platform-specific APIs).
+        /// </exception>
+        /// <seealso cref="Compare(const BasicString&, const BasicString&)"/>
         [[nodiscard]] static int ICompare( const BasicString& first, const BasicString& second )
         {
             return ICompare( first.data_, second.data_ );
         }
+        
+        /// <summary>
+        /// Performs a case-insensitive comparison between a raw character pointer and a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to a null-terminated or length-aware character sequence of the string's CharType. May be <c>nullptr</c>.</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// A negative value if the character sequence &lt; <paramref name="second"/>,
+        /// zero if equal, or a positive value if the character sequence &gt; <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This overload performs identity-aware checks via the implementation that accepts a Data pointer.
+        /// If the provided pointer references the same internal buffer used by <paramref name="second"/>,
+        /// the comparison may be optimized to a direct equality test.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when an underlying platform comparison routine reports an error.
+        /// </exception>
+        /// <seealso cref="ICompare(const BasicString&, const BasicString&)"/>
         [[nodiscard]] static int ICompare( const CharType* first, const BasicString& second )
         {
             return ICompare( first, second.data_ );
         }
+        
+        /// <summary>
+        /// Performs a case-insensitive comparison between a <see cref="BasicString"/> and a raw character pointer.
+        /// </summary>
+        /// <param name="first">The <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">Pointer to a null-terminated or length-aware character sequence of the string's CharType. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// A negative value if <paramref name="first"/> &lt; the character sequence,
+        /// zero if equal, or a positive value if <paramref name="first"/> &gt; the character sequence.
+        /// </returns>
+        /// <remarks>
+        /// Mirrors the behavior of the other overloads and delegates to the Data-pointer accepting implementation.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when an underlying platform comparison routine reports an error.
+        /// </exception>
+        /// <seealso cref="ICompare(const BasicString&, const BasicString&)"/>
         [[nodiscard]] static int ICompare( const BasicString& first, const CharType* second )
         {
             return ICompare( first.data_, second );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Performs a case-insensitive comparison between a contiguous container-like span and a <see cref="BasicString"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> must match the string's character type.</typeparam>
+        /// <param name="first">The contiguous container-like value to compare (for example a span, string_view or string).</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare to.</param>
+        /// <returns>
+        /// A negative value if <paramref name="first"/> &lt; <paramref name="second"/>,
+        /// zero if equal, or a positive value if <paramref name="first"/> &gt; <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This template overload is constrained to contiguous container-like types whose element type matches the BasicString character type.
+        /// It forwards the call to the pointer/length based ICompare implementation to avoid creating temporaries.
+        /// </para>
+        /// <para>
+        /// The comparison is case-insensitive and may be locale-aware depending on the underlying implementation.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when an underlying platform comparison routine reports an error.
+        /// </exception>
+        /// <seealso cref="ICompare(const BasicString&, const BasicString&)"/>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] static int ICompare( const SpanT& first, const BasicString& second )
         {
             return ICompare( first.data( ), first.size( ), second.data_ );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Performs a case-insensitive comparison between a <see cref="BasicString"/> and a contiguous container-like span.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> must match the string's character type.</typeparam>
+        /// <param name="first">The <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">The contiguous container-like value to compare to.</param>
+        /// <returns>
+        /// A negative value if <paramref name="first"/> &lt; <paramref name="second"/>,
+        /// zero if equal, or a positive value if <paramref name="first"/> &gt; <paramref name="second"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This template overload is constrained to contiguous container-like types whose element type matches the BasicString character type.
+        /// It forwards to the pointer/length based ICompare helper to perform the comparison without allocating intermediates.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when an underlying platform comparison routine reports an error.
+        /// </exception>
+        /// <seealso cref="ICompare(const BasicString&, const BasicString&)"/>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] static int ICompare( const BasicString& first, const SpanT& second )
         {
             return ICompare( first.data_, second.data( ), second.size( ) );
         }
 
-
+        /// <summary>
+        /// Determines whether two <see cref="BasicString"/> instances contain equal character sequences.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> operand. May be empty.</param>
+        /// <param name="second">The right-hand <see cref="BasicString"/> operand. May be empty.</param>
+        /// <returns>
+        /// <c>true</c> if the contents of <paramref name="first"/> and <paramref name="second"/> are equal;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// The comparison performs an identity check to avoid unnecessary work when both strings share the same
+        /// internal buffer pointer, and delegates to the internal comparison helpers for content comparison.
+        /// Underlying locale-aware comparison helpers may raise platform-specific exceptions which will propagate.
+        /// </remarks>
         [[nodiscard]] friend bool operator == ( const BasicString& first, const BasicString& second )
         {
             return AreEqual( first.data_, second.data_ );
         }
+        
+        /// <summary>
+        /// Determines whether a null-terminated or pointer-length character sequence is equal to a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to the left-hand character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <param name="second">The right-hand <see cref="BasicString"/> operand to compare against. May be empty.</param>
+        /// <returns>
+        /// <c>true</c> if the character sequence pointed to by <paramref name="first"/> equals the contents of <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// If <paramref name="first"/> references the internal buffer of <paramref name="second"/>, the comparison is optimized.
+        /// A non-null pointer compares greater than a null/empty string only according to the underlying comparison logic.
+        /// Underlying comparison helpers may throw platform-specific exceptions.
+        /// </remarks>
         [[nodiscard]] friend bool operator == ( const CharType* first, const BasicString& second )
         {
             return AreEqual( first, second.data_ );
         }
+        
+        /// <summary>
+        /// Determines whether a <see cref="BasicString"/> is equal to a null-terminated or pointer-length character sequence.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> operand. May be empty.</param>
+        /// <param name="second">Pointer to the right-hand character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// <c>true</c> if the contents of <paramref name="first"/> equal the character sequence pointed to by <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Identity checks are performed to avoid extra work when the pointer references the internal buffer of <paramref name="first"/>.
+        /// Underlying comparison helpers may report errors which propagate as exceptions.
+        /// </remarks>
         [[nodiscard]] friend bool operator == ( const BasicString& first, const CharType* second )
         {
             return AreEqual( first.data_, second );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Determines whether a contiguous container-like span is equal to a <see cref="BasicString"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">The contiguous container-like type whose <c>value_type</c> must match <c>CharType</c>.</typeparam>
+        /// <param name="first">The contiguous container-like value to compare (for example <c>std::basic_string_view</c>).</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// <c>true</c> if the sequence represented by <paramref name="first"/> is equal to the contents of <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This overload is constrained to contiguous container-like types whose element type equals the string character type.
+        /// It performs a length-aware comparison and forwards to the internal helpers to avoid creating temporaries.
+        /// Underlying comparison helpers may throw platform-specific exceptions.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator == ( const SpanT& first, const BasicString& second )
         {
             return AreEqual( first.data(), first.size(), second.data_ );
         }
-        template<SimpleSpanLike SpanT>
+        
+        /// <summary>
+        /// Determines whether a <see cref="BasicString"/> is equal to a contiguous container-like span.
+        /// </summary>
+        /// <typeparam name="SpanT">The contiguous container-like type whose <c>value_type</c> must match <c>CharType</c>.</typeparam>
+        /// <param name="first">The <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">The contiguous container-like value to compare (for example <c>std::basic_string_view</c>).</param>
+        /// <returns>
+        /// <c>true</c> if the contents of <paramref name="first"/> equal the sequence represented by <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the internal comparison helper that accepts a pointer and explicit length for an efficient length-aware comparison.
+        /// The template constraint enforces element-type compatibility at compile time.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator == ( const BasicString& first, const SpanT& second )
         {
             return AreEqual( first.data_, second.data( ), second.size() );
         }
 
-        
-        [[nodiscard]] friend bool operator == ( const std::basic_string_view<CharType>& first, const BasicString& second )
-        {
-            return AreEqual( first.data( ), first.size( ), second.data_ );
-        }
-        [[nodiscard]] friend bool operator == ( const BasicString& first, const std::basic_string_view<CharType>& second )
-        {
-            return AreEqual( first.data_, second.data( ), second.size( ) );
-        }
 
-
-
+        /// <summary>
+        /// Determines whether the left-hand <see cref="BasicString"/> is less than or equal to the right-hand <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Left-hand operand to compare. May be empty.</param>
+        /// <param name="second">Right-hand operand to compare. May be empty.</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="first"/> is less than or equal to <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This friend operator forwards to the class <see cref="Compare(const BasicString&, const BasicString&)"/> helper,
+        /// which performs identity-aware and length-aware comparison. Platform-specific comparison helpers may be used
+        /// for locale-aware behavior when applicable.
+        /// </remarks>
         [[nodiscard]] friend bool operator <= ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) <= 0;
         }
+        /// <summary>
+        /// Determines whether the left-hand raw character pointer sequence is less than or equal to the given <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// <c>true</c> if the sequence pointed to by <paramref name="first"/> is less than or equal to <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This overload performs identity checks and delegates to the internal comparison helpers to avoid unnecessary work
+        /// when the provided pointer references the same internal buffer as <paramref name="second"/>.
+        /// </remarks>
         [[nodiscard]] friend bool operator <= ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) <= 0;
         }
+        
+        /// <summary>
+        /// Determines whether the <see cref="BasicString"/> is less than or equal to the given raw character pointer sequence.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="first"/> is less than or equal to the sequence pointed to by <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Mirrors the behavior of the pointer/BasicString overload and delegates to the class comparison helpers.
+        /// Identity cases are detected to optimize comparisons when possible.
+        /// </remarks>
         [[nodiscard]] friend bool operator <= ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) <= 0;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Determines whether a contiguous container-like span is less than or equal to a <see cref="BasicString"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// A contiguous container-like type whose <c>value_type</c> is the same as this string's <c>CharType</c>.
+        /// The template constraint is enforced by the <c>requires</c> clause on the declaration.
+        /// </typeparam>
+        /// <param name="first">The contiguous container-like value to compare (for example <c>std::basic_string_view</c>).</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// <c>true</c> if the sequence represented by <paramref name="first"/> is less than or equal to <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This template overload performs a length-aware comparison by forwarding the pointer and explicit length
+        /// to the internal compare helper to avoid creating temporaries. The function requires element-type compatibility.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator <= ( const SpanT& first, const BasicString& second )
         {
             return Compare( first.data( ), first.size( ), second.data_ ) <= 0;
         }
-        template<SimpleSpanLike SpanT>
+        
+        /// <summary>
+        /// Determines whether a <see cref="BasicString"/> is less than or equal to a contiguous container-like span.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// A contiguous container-like type whose <c>value_type</c> is the same as this string's <c>CharType</c>.
+        /// </typeparam>
+        /// <param name="first">The left-hand <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">The contiguous container-like value to compare (for example <c>std::basic_string_view</c>).</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="first"/> is less than or equal to the sequence represented by <paramref name="second"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This overload delegates to the internal compare helper that accepts a Data pointer and explicit length,
+        /// enforcing element-type compatibility via the template constraints.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator <= ( const BasicString& first, const SpanT& second )
         {
             return Compare( first.data_, second.data( ), second.size( ) ) <= 0;
         }
 
-        [[nodiscard]] friend bool operator <= ( const std::basic_string_view<CharType>& first, const BasicString& second )
-        {
-            return Compare( first.data( ), first.size( ), second.data_ ) <= 0;
-        }
-        [[nodiscard]] friend bool operator <= ( const BasicString& first, const std::basic_string_view<CharType>& second )
-        {
-            return Compare( first.data_, second.data( ), second.size( ) ) <= 0;
-        }
 
-
+        /// <summary>
+        /// Determines whether the left-hand <see cref="BasicString"/> is greater than or equal to the right-hand <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">The left-hand operand to compare. May be empty.</param>
+        /// <param name="second">The right-hand operand to compare. May be empty.</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="first"/> is greater than or equal to <paramref name="second"/> according to the
+        /// class lexicographic comparison semantics; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This friend operator forwards to <see cref="Compare(const BasicString&, const BasicString&)"/> which performs
+        /// identity-aware and length-aware comparison. Underlying locale-aware comparison helpers may propagate exceptions.
+        /// </remarks>
         [[nodiscard]] friend bool operator >= ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) >= 0;
         }
+        
+        /// <summary>
+        /// Determines whether a raw character sequence is greater than or equal to the given <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <param name="second">The right-hand <see cref="BasicString"/> operand to compare against.</param>
+        /// <returns>
+        /// <c>true</c> if the character sequence pointed to by <paramref name="first"/> is greater than or equal to
+        /// <paramref name="second"/> according to the class comparison semantics; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Identity checks are performed by the underlying comparison implementations to avoid unnecessary work
+        /// when the pointer references the same internal buffer as <paramref name="second"/>. Exceptions from
+        /// underlying compare helpers may propagate.
+        /// </remarks>
         [[nodiscard]] friend bool operator >= ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) >= 0;
         }
+        /// <summary>
+        /// Determines whether the left-hand <see cref="BasicString"/> is greater than or equal to a raw character sequence.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> operand to compare. May be empty.</param>
+        /// <param name="second">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="first"/> is greater than or equal to the character sequence pointed to by
+        /// <paramref name="second"/> according to the class comparison semantics; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Mirrors the behavior of the pointer/BasicString overload and performs identity-aware checks when possible.
+        /// Underlying locale-aware comparison helpers may propagate exceptions.
+        /// </remarks>
         [[nodiscard]] friend bool operator >= ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) >= 0;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Determines whether a contiguous container-like span is greater than or equal to a <see cref="BasicString"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> must match <c>CharType</c>.</typeparam>
+        /// <param name="first">The contiguous container-like value to compare (for example a span or string_view).</param>
+        /// <param name="second">The right-hand <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// <c>true</c> if the sequence represented by <paramref name="first"/> is greater than or equal to <paramref name="second"/>;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// The template constraint enforces element-type compatibility at compile time. The comparison forwards to the
+        /// length-aware compare helper that accepts a pointer and explicit length to avoid creating temporaries.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator >= ( const SpanT& first, const BasicString& second )
         {
             return Compare( first.data( ), first.size( ), second.data_ ) >= 0;
         }
-        template<SimpleSpanLike SpanT>
+        
+        /// <summary>
+        /// Determines whether a <see cref="BasicString"/> is greater than or equal to a contiguous container-like span.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> must match <c>CharType</c>.</typeparam>
+        /// <param name="first">The left-hand <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">The contiguous container-like value to compare (for example a span or string_view).</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="first"/> is greater than or equal to the sequence represented by <paramref name="second"/>;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// The overload forwards to the internal compare helper that accepts a Data pointer and explicit length and
+        /// enforces element-type compatibility via the template constraints.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator >= ( const BasicString& first, const SpanT& second )
         {
             return Compare( first.data_, second.data( ), second.size( ) ) >= 0;
         }
 
-        [[nodiscard]] friend bool operator >= ( const std::basic_string_view<CharType>& first, const BasicString& second )
-        {
-            return Compare( first.data( ), first.size( ), second.data_ ) >= 0;
-        }
-        [[nodiscard]] friend bool operator >= ( const BasicString& first, const std::basic_string_view<CharType>& second )
-        {
-            return Compare( first.data_, second.data( ), second.size( ) ) >= 0;
-        }
 
-
+        /// <summary>
+        /// Performs a lexicographic comparison between two <see cref="BasicString"/> instances.
+        /// </summary>
+        /// <param name="first">Left-hand operand to compare. May be empty.</param>
+        /// <param name="second">Right-hand operand to compare. May be empty.</param>
+        /// <returns>
+        /// <see langword="true"/> when the contents of <paramref name="first"/> are lexicographically
+        /// less than the contents of <paramref name="second"/>; otherwise <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// This function forwards to <see cref="Compare(const BasicString&, const BasicString&)"/> which
+        /// performs efficient identity-aware comparison. Underlying locale-aware comparison helpers may
+        /// propagate exceptions.
+        /// </remarks>
         [[nodiscard]] friend bool operator < ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) < 0;
         }
+        /// <summary>
+        /// Performs a lexicographic comparison between a raw character sequence and a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against. May be empty.</param>
+        /// <returns>
+        /// <see langword="true"/> when the character sequence pointed to by <paramref name="first"/> is
+        /// lexicographically less than the contents of <paramref name="second"/>; otherwise <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// The implementation performs identity checks to avoid unnecessary comparisons when
+        /// <paramref name="first"/> references the internal buffer of <paramref name="second"/>.
+        /// </remarks>
         [[nodiscard]] friend bool operator < ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) < 0;
         }
+        /// <summary>
+        /// Performs a lexicographic comparison between a <see cref="BasicString"/> and a raw character sequence.
+        /// </summary>
+        /// <param name="first">The <see cref="BasicString"/> instance to compare. May be empty.</param>
+        /// <param name="second">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// <see langword="true"/> when the contents of <paramref name="first"/> are lexicographically
+        /// less than the character sequence pointed to by <paramref name="second"/>; otherwise <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// Mirrors the pointer/BasicString overload and performs identity-aware checks for optimization.
+        /// </remarks>
         [[nodiscard]] friend bool operator < ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) < 0;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Performs a lexicographic comparison between a contiguous container-like span and a <see cref="BasicString"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> matches <c>CharType</c>.</typeparam>
+        /// <param name="first">The contiguous container-like value to compare (for example a span or string_view).</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns>
+        /// <see langword="true"/> when the sequence represented by <paramref name="first"/> is lexicographically
+        /// less than the contents of <paramref name="second"/>; otherwise <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// The template is constrained to contiguous container-like types with an element type identical to <c>CharType</c>.
+        /// The comparison forwards to the pointer/length compare helper to avoid temporaries.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator < ( const SpanT & first, const BasicString & second )
         {
             return Compare( first.data( ), first.size( ), second.data_ ) < 0;
         }
-        template<SimpleSpanLike SpanT>
+        
+        /// <summary>
+        /// Performs a lexicographic comparison between a <see cref="BasicString"/> and a contiguous container-like span.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> matches <c>CharType</c>.</typeparam>
+        /// <param name="first">The <see cref="BasicString"/> instance to compare. May be empty.</param>
+        /// <param name="second">The contiguous container-like value to compare (for example a span or string_view).</param>
+        /// <returns>
+        /// <see langword="true"/> when the contents of <paramref name="first"/> are lexicographically less than the sequence
+        /// represented by <paramref name="second"/>; otherwise <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// For efficiency this overload forwards to the Data-pointer + length compare helper and enforces
+        /// element-type compatibility via the template constraint.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator < ( const BasicString & first, const SpanT & second )
         {
             return Compare( first.data_, second.data( ), second.size( ) ) < 0;
         }
 
-        [[nodiscard]] friend bool operator < ( const std::basic_string_view<CharType>& first, const BasicString& second )
-        {
-            return Compare( first.data( ), first.size( ), second.data_ ) < 0;
-        }
-        [[nodiscard]] friend bool operator < ( const BasicString& first, const std::basic_string_view<CharType>& second )
-        {
-            return Compare( first.data_, second.data( ), second.size( ) ) < 0;
-        }
-
-
-
+        /// <summary>
+        /// Performs a lexicographic greater-than comparison between two <see cref="BasicString"/> instances.
+        /// </summary>
+        /// <param name="first">Left-hand operand to compare. May be empty.</param>
+        /// <param name="second">Right-hand operand to compare. May be empty.</param>
+        /// <returns><see langword="true"/> when <paramref name="first"/> is lexicographically greater than <paramref name="second"/>; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// This friend operator forwards to <see cref="Compare(const BasicString&, const BasicString&)"/> which performs
+        /// identity-aware and length-aware comparison. Underlying locale-aware comparison helpers may propagate exceptions.
+        /// </remarks>
         [[nodiscard]] friend bool operator > ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) > 0;
         }
+        /// <summary>
+        /// Performs a lexicographic greater-than comparison between a raw character pointer and a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <param name="second">The right-hand <see cref="BasicString"/> instance to compare against. May be empty.</param>
+        /// <returns><see langword="true"/> when the character sequence pointed to by <paramref name="first"/> is lexicographically greater than <paramref name="second"/>; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// Identity checks are performed by the underlying compare implementations to avoid unnecessary work
+        /// when the pointer references the same internal buffer as <paramref name="second"/>. Exceptions from
+        /// underlying compare helpers may propagate.
+        /// </remarks>
         [[nodiscard]] friend bool operator > ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) > 0;
         }
+        
+        /// <summary>
+        /// Performs a lexicographic greater-than comparison between a <see cref="BasicString"/> and a raw character pointer.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> instance to compare. May be empty.</param>
+        /// <param name="second">Pointer to a null-terminated or length-aware character sequence of type <c>CharType</c>. May be <c>nullptr</c>.</param>
+        /// <returns><see langword="true"/> when <paramref name="first"/> is lexicographically greater than the character sequence pointed to by <paramref name="second"/>; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// Mirrors the pointer/BasicString overload and performs identity-aware checks for optimization.
+        /// Underlying locale-aware comparison helpers may propagate exceptions.
+        /// </remarks>
         [[nodiscard]] friend bool operator > ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) > 0;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Performs a lexicographic greater-than comparison between a contiguous container-like span and a <see cref="BasicString"/>.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> matches <c>CharType</c>.</typeparam>
+        /// <param name="first">The contiguous container-like value to compare (for example a span or string_view).</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns><see langword="true"/> when the sequence represented by <paramref name="first"/> is lexicographically greater than <paramref name="second"/>; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// This template overload is constrained to contiguous container-like types with an element type identical to <c>CharType</c>.
+        /// The comparison forwards to the pointer/length compare helper to avoid creating temporaries.
+        /// Underlying comparison helpers may throw platform-specific exceptions.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator > ( const SpanT& first, const BasicString& second )
         {
             return Compare( first.data( ), first.size( ), second.data_ ) > 0;
         }
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Performs a lexicographic greater-than comparison between a <see cref="BasicString"/> and a contiguous container-like span.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> matches <c>CharType</c>.</typeparam>
+        /// <param name="first">The <see cref="BasicString"/> instance to compare. May be empty.</param>
+        /// <param name="second">The contiguous container-like value to compare (for example a span or string_view).</param>
+        /// <returns><see langword="true"/> when <paramref name="first"/> is lexicographically greater than the sequence represented by <paramref name="second"/>; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// For efficiency this overload forwards to the Data-pointer + length compare helper and enforces
+        /// element-type compatibility via the template constraint. Underlying comparison helpers may propagate exceptions.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator > ( const BasicString& first, const SpanT& second )
         {
             return Compare( first.data_, second.data( ), second.size( ) ) > 0;
         }
 
-        [[nodiscard]] friend bool operator > ( const std::basic_string_view<CharType>& first, const BasicString& second )
-        {
-            return Compare( first.data( ), first.size( ), second.data_ ) > 0;
-        }
-        [[nodiscard]] friend bool operator > ( const BasicString& first, const std::basic_string_view<CharType>& second )
-        {
-            return Compare( first.data_, second.data( ), second.size( ) ) > 0;
-        }
-
-
+        /// <summary>
+        /// Determines whether two <see cref="BasicString"/> instances contain different character sequences.
+        /// </summary>
+        /// <param name="first">Left-hand operand. May be empty.</param>
+        /// <param name="second">Right-hand operand. May be empty.</param>
+        /// <returns><c>true</c> when the contents differ; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Performs an identity-aware check and delegates to the internal comparison helper when required.
+        /// </remarks>
         [[nodiscard]] friend bool operator != ( const BasicString& first, const BasicString& second )
         {
             return AreEqual( first.data_, second.data_ ) == false;
         }
+        /// <summary>
+        /// Determines whether a raw character sequence is not equal to a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">Pointer to the left-hand character sequence. May be <c>nullptr</c>.</param>
+        /// <param name="second">Right-hand <see cref="BasicString"/> operand to compare against.</param>
+        /// <returns><c>true</c> when the character sequence differs from <paramref name="second"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// The implementation performs an identity-aware optimization when the provided pointer references
+        /// the same internal buffer used by <paramref name="second"/>.
+        /// </remarks>
         [[nodiscard]] friend bool operator != ( const CharType* first, const BasicString& second )
         {
             return AreEqual( first, second.data_ ) == false;
         }
+        /// <summary>
+        /// Determines whether a <see cref="BasicString"/> is not equal to a raw character sequence.
+        /// </summary>
+        /// <param name="first">Left-hand <see cref="BasicString"/> operand to compare. May be empty.</param>
+        /// <param name="second">Pointer to the right-hand character sequence. May be <c>nullptr</c>.</param>
+        /// <returns><c>true</c> when the contents of <paramref name="first"/> differ from <paramref name="second"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// The implementation performs an identity-aware optimization when the provided pointer references
+        /// the same internal buffer used by <paramref name="first"/>.
+        /// </remarks>
         [[nodiscard]] friend bool operator != ( const BasicString& first, const CharType* second )
         {
             return AreEqual( first.data_, second ) == false;
         }
 
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Determines whether a contiguous container-like span is not equal to a <see cref="BasicString"/>.
+        /// </summary>
+        /// <param name="first">The contiguous container-like value to compare (for example <c>std::basic_string_view</c>). Its element type must match <c>CharType</c>.</param>
+        /// <param name="second">The <see cref="BasicString"/> instance to compare against.</param>
+        /// <returns><c>true</c> when the contents of <paramref name="first"/> differ from <paramref name="second"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This overload performs a length-aware comparison by forwarding pointer and size to the internal helpers.
+        /// The template is constrained to contiguous containers whose <c>value_type</c> equals <c>CharType</c>.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator != ( const SpanT& first, const BasicString& second )
         {
             return AreEqual( first.data( ), first.size( ), second.data_ ) == false;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Determines whether a <see cref="BasicString"/> is not equal to a contiguous container-like span.
+        /// </summary>
+        /// <param name="first">The left-hand <see cref="BasicString"/> instance to compare.</param>
+        /// <param name="second">The contiguous container-like value to compare (for example <c>std::basic_string_view</c>). Its element type must match <c>CharType</c>.</param>
+        /// <returns><c>true</c> when the contents of <paramref name="first"/> differ from <paramref name="second"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This overload forwards to the internal length-aware comparison helper to avoid allocating temporaries.
+        /// The template constraint enforces element-type compatibility at compile time.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
         [[nodiscard]] friend bool operator != ( const BasicString& first, const SpanT& second )
         {
             return AreEqual( first.data_, second.data( ), second.size( ) ) == false;
         }
 
-        [[nodiscard]] friend bool operator != ( const std::basic_string_view<CharType>& first, const BasicString& second )
-        {
-            return AreEqual( first.data( ), first.size( ), second.data_ ) == false;
-        }
-
-        [[nodiscard]] friend bool operator != ( const BasicString& first, const std::basic_string_view<CharType>& second )
-        {
-            return AreEqual( first.data_, second.data( ), second.size( ) ) == false;
-        }
-
-
-
-
-
+        /// <summary>
+        /// Finds the first occurrence of the specified character in the string.
+        /// </summary>
+        /// <param name="c">The character to locate. The search is performed from the beginning of the string.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character if found; otherwise <c>BasicString::npos</c>.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n) in the length of the string where n is the number of characters stored.
+        /// - If the string is empty the function returns <c>npos</c>.
+        /// - The search uses the repository helper <c>MemChr</c> for efficient memory scanning.
+        /// - This method does not allocate memory and does not throw exceptions.
+        /// - Thread-safety: safe to call concurrently with other const operations. If other threads modify the string concurrently,
+        ///   external synchronization is required.
+        /// </remarks>
         [[nodiscard]] size_type IndexOf( CharType c ) const
         {
             if ( data_ )
@@ -5250,6 +7641,20 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character using a case-insensitive search.
+        /// </summary>
+        /// <param name="c">The character to locate in the string. The search is performed from the beginning of the string.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character if found; otherwise <c>BasicString::npos</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method performs a case-insensitive search using the repository helper <c>MemIChr</c> which
+        /// scans the underlying character buffer. The operation does not allocate heap memory and runs in
+        /// O(n) time where n is the string length. It is safe to call concurrently with other const operations;
+        /// if other threads mutate the same string instance external synchronization is required.
+        /// When the string is empty the function returns <c>npos</c>.
+        /// </remarks>
         [[nodiscard]] size_type IIndexOf( CharType c ) const
         {
             if ( data_ )
@@ -5265,31 +7670,76 @@ namespace Harlinn::Common::Core
 
 
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character in the string.
+        /// </summary>
+        /// <param name="c">The character to locate. The search is performed from the beginning of the string.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// This member is a thin wrapper around <see cref="IndexOf(CharType)"/> and preserves its complexity and
+        /// semantics (linear scan, O(n) time). The method is const and does not modify the string. The result is
+        /// valid while the string is not modified or destroyed. Use <see cref="IIndexOf(CharType)"/> for a
+        /// case-insensitive search.
+        /// </remarks>
         [[nodiscard]] size_type find_first_of( CharType c ) const
         {
             return IndexOf( c );
         }
 
+        /// <summary>
+        /// Finds the first occurrence of the specified character in the string.
+        /// </summary>
+        /// <param name="c">The character to locate. The search is performed from the beginning of the string.</param>
+        /// <returns>
+        /// The zero-based index of the first matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// Alias for <see cref="find_first_of(CharType)"/> / <see cref="IndexOf(CharType)"/> provided for API compatibility
+        /// with standard container naming. Complexity is O(n). This overload is const and does not allocate or throw.
+        /// </remarks>
         [[nodiscard]] size_type find( CharType c ) const
         {
             return IndexOf( c );
         }
 
         
-
-
+        /// <summary>
+        /// Finds the first occurrence of any character from a provided character set within the string,
+        /// starting the search at the specified index.
+        /// </summary>
+        /// <param name="searchChars">Pointer to an array of characters to search for. May be nullptr if numberOfSearchChars is zero.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the array pointed to by <paramref name="searchChars"/>.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. If greater than or equal to the string length the function returns <c>npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that equals any element of <paramref name="searchChars"/>.
+        /// Returns <c>BasicString::npos</c> when no matching character is found or when input conditions (empty buffer / invalid start) prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// - The search is performed over the active character buffer owned by this BasicString instance starting at <paramref name="start"/>.
+        /// - When <paramref name="numberOfSearchChars"/> equals 1 an optimized memory search (<c>MemChr</c>) is used for performance.
+        /// - Complexity: worst-case O(N * M) where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>. The single-character optimization is O(N).
+        /// - The function does not throw; it returns <c>npos</c> to indicate not-found or invalid start conditions. It performs no allocations and does not modify the string.
+        /// - Thread-safety: safe to call concurrently with other const operations. If other threads mutate the same instance concurrently external synchronization is required.
+        /// </remarks>
         [[nodiscard]] size_type IndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
+                // Validate start to avoid undefined behavior from pointer arithmetic beyond the buffer.
+                if ( start >= data_->size_ )
+                {
+                    return npos;
+                }
                 auto ptr = data_->buffer_ + start;
                 auto endPtr = data_->buffer_ + data_->size_;
                 if ( numberOfSearchChars == 1 && ptr < endPtr )
                 {
-                    auto p = MemChr( ptr, *searchChars, data_->size_ - start );
+                    auto p = MemChr( ptr, *searchChars, static_cast<size_type>( endPtr - ptr ) );
                     if ( p )
                     {
-                        return static_cast< size_type >( p - data_->buffer_ );
+                        return static_cast<size_type>( p - data_->buffer_ );
                     }
                 }
                 else
@@ -5303,7 +7753,7 @@ namespace Harlinn::Common::Core
                         {
                             if ( *ptr == *searchPtr )
                             {
-                                return static_cast< size_type >( ptr - data_->buffer_ );
+                                return static_cast<size_type>( ptr - data_->buffer_ );
                             }
                             searchPtr++;
                         }
@@ -5314,51 +7764,132 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Finds the first occurrence of any character from the provided character set starting at the specified index.
+        /// </summary>
+        /// <param name="searchChars">Pointer to the array of characters to search for. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. If greater than or equal to the string length the function returns <c>npos</c>.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the array pointed to by <paramref name="searchChars"/>. When equal to 1 an optimized memory scan is used.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that equals any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: worst-case O(N * M) where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>.
+        /// - When <paramref name="numberOfSearchChars"/> == 1 the implementation uses an optimized memory search (<c>MemChr</c>) for performance.
+        /// - The function performs no heap allocation and does not throw exceptions.
+        /// - Thread-safety: safe to call concurrently with other const operations. External synchronization is required if other threads mutate the same instance.
+        /// </remarks>
         [[nodiscard]] size_type find_first_of( const CharType* searchChars, size_type start, size_type numberOfSearchChars ) const
         {
             return IndexOfAnyOf( searchChars, numberOfSearchChars, start );
         }
 
 
+        /// <summary>
+        /// Finds the first occurrence of any character from a provided character set using a case-insensitive search.
+        /// </summary>
+        /// <param name="searchChars">Pointer to the array of characters to search for. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the array pointed to by <paramref name="searchChars"/>.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. If greater than or equal to the string length the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that equals any element of <paramref name="searchChars"/>,
+        /// comparing characters case-insensitively. Returns <see cref="BasicString::npos"/> when no matching character is found
+        /// or when input conditions prevent searching (for example: empty string, null search set, or invalid start).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method performs a case-insensitive scan of the underlying character buffer beginning at <paramref name="start"/>.
+        /// It implements a single-character optimization that uses <c>MemIChr</c> for O(n) performance when
+        /// <paramref name="numberOfSearchChars"/> == 1. For larger search sets the routine precomputes an uppercase copy
+        /// of the search characters (using <c>Core::ToUpper</c>) into a small temporary buffer (<c>boost::container::small_vector</c>)
+        /// to avoid repeated per-character conversions and reduce allocations for small sets.
+        /// </para>
+        /// <para>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>.
+        /// the single - character case is O( N ).
+        /// </para>
+        /// <para>
+        /// Thread-safety: this member is const and safe to call concurrently with other const operations on the same
+        /// BasicString instance. If other threads mutate the same instance concurrently, external synchronization is required.
+        /// </para>
+        /// <para>
+        /// This method does not throw on normal use. It uses only stack/automatic storage or small_vector for small search sets;
+        /// no heap allocation is performed for the single-character optimized path. Behavior relies on the repository memory
+        /// helpers such as <c>MemIChr</c> and character conversion helpers in <c>Core</c>.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] size_type IIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
-            if ( data_ && searchChars && numberOfSearchChars )
+            if ( !data_ || !searchChars || numberOfSearchChars == 0 )
             {
-                auto ptr = data_->buffer_ + start;
-                auto endPtr = data_->buffer_ + data_->size_;
-                if ( numberOfSearchChars == 1 && ptr < endPtr )
-                {
-                    auto p = MemIChr( ptr, *searchChars, data_->size_ - start );
-                    if ( p )
-                    {
-                        return static_cast< size_type >( p - data_->buffer_ );
-                    }
-                }
-                else
-                {
-                    auto searchEndPtr = searchChars + numberOfSearchChars;
-
-                    while ( ptr < endPtr )
-                    {
-                        auto searchPtr = searchChars;
-                        auto c = Core::ToUpper( *ptr );
-                        while ( searchPtr < searchEndPtr )
-                        {
-                            auto sc = Core::ToUpper( *searchPtr );
-                            if ( c == sc )
-                            {
-                                return static_cast< size_type >( ptr - data_->buffer_ );
-                            }
-                            searchPtr++;
-                        }
-                        ptr++;
-                    }
-                }
+                return npos;
             }
+
+            const size_type dataSize = data_->size_;
+            if ( dataSize == 0 || start >= dataSize )
+            {
+                return npos;
+            }
+
+            const CharType* ptr = data_->buffer_ + start;
+            const CharType* endPtr = data_->buffer_ + dataSize;
+            const size_type remaining = dataSize - start;
+
+            // Single-character optimization (case-insensitive scan)
+            if ( numberOfSearchChars == 1 )
+            {
+                auto p = MemIChr( ptr, *searchChars, remaining );
+                if ( p )
+                {
+                    return static_cast<size_type>( p - data_->buffer_ );
+                }
+                return npos;
+            }
+
+            // Precompute uppercase form of search set to avoid repeated conversions.
+            // Use small_vector as in the codebase to avoid heap for small sets.
+            boost::container::small_vector<CharType, 32> searchUpper;
+            searchUpper.reserve( numberOfSearchChars );
+            for ( size_type i = 0; i < numberOfSearchChars; ++i )
+            {
+                // If CharType == char, ensure safe cast if Core::ToUpper uses ctype functions internally.
+                searchUpper.push_back( Core::ToUpper( searchChars[ i ] ) );
+            }
+
+            while ( ptr < endPtr )
+            {
+                // convert current char once
+                CharType c = Core::ToUpper( *ptr );
+                for ( auto const& sc : searchUpper )
+                {
+                    if ( c == sc )
+                    {
+                        return static_cast<size_type>( ptr - data_->buffer_ );
+                    }
+                }
+                ++ptr;
+            }
+
             return npos;
         }
 
 
+        /// <summary>
+        /// Finds the first occurrence of any character from the specified set represented by another BasicString.
+        /// </summary>
+        /// <param name="searchChars">A BasicString whose characters form the set to search for. May be empty.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that equals any character from <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the pointer/length based implementation for efficiency when the search set has direct access
+        /// to its internal buffer. Complexity is O(N * M) in the worst case where N is the number of characters examined in this string
+        /// and M is the size of the search set; a single-character search in the underlying implementation is optimized to O(N).
+        /// The method does not allocate and is safe to call concurrently with other const operations. If this instance is empty the method returns <see cref="BasicString::npos"/>.
+        /// </remarks>
         [[nodiscard]] size_type IndexOfAnyOf( const BasicString<CharType>& searchChars, size_type start = 0 ) const
         {
             const auto* searchData = searchChars.data_;
@@ -5369,18 +7900,38 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Finds the first occurrence of any character from the provided contiguous container-like search set.
+        /// </summary>
+        /// <param name="searchChars">A contiguous container-like object (for example a span or string_view) whose element type equals CharType. The container's elements form the search set.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that equals any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// This templated overload performs a length-aware search by forwarding the container's data pointer and size
+        /// to the pointer/length based implementation to avoid creating temporaries. Complexity is O(N * M) in the worst case.
+        /// The function is constrained to contiguous container-like types whose element type matches this string's character type.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>,CharType>
         [[nodiscard]] size_type IndexOfAnyOf( const SpanT& searchChars, size_type start = 0 ) const
         {
             return IndexOfAnyOf( searchChars.data(), searchChars.size(), start );
         }
 
-        [[nodiscard]] size_type IndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = 0 ) const
-        {
-            return IndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
-        }
-
+        /// <summary>
+        /// Finds the first occurrence (case-insensitive) of any character contained in <paramref name="searchChars"/> starting at <paramref name="start"/>.
+        /// </summary>
+        /// <param name="searchChars">A <see cref="BasicString{CharType}"/> whose characters form the search set. May be empty.</param>
+        /// <param name="start">Zero-based index at which to start the search. If greater than or equal to the string length the function returns <see cref="BasicString::npos"/>.</param>
+        /// <returns>The zero-based index of the first matching character if found; otherwise <see cref="BasicString::npos"/>.</returns>
+        /// <remarks>
+        /// This overload forwards directly to the pointer/length based implementation for efficiency when the search set exposes an internal buffer.
+        /// The operation is case-insensitive and does not allocate memory. It is safe to call concurrently with other const operations on the same string;
+        /// external synchronization is required if other threads may mutate the same instance concurrently.
+        /// </remarks>
         [[nodiscard]] size_type IIndexOfAnyOf( const BasicString<CharType>& searchChars, size_type start = 0 ) const
         {
             const auto* searchData = searchChars.data_;
@@ -5391,19 +7942,46 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Finds the first occurrence (case-insensitive) of any character contained in the provided contiguous container starting at <paramref name="start"/>.
+        /// </summary>
+        /// <param name="searchChars">A contiguous container-like object (for example <c>std::basic_string_view</c>) whose element type matches this string's character type. The container's elements form the search set.</param>
+        /// <param name="start">Zero-based index at which to start the search. If greater than or equal to the string length the function returns <see cref="BasicString::npos"/>.</param>
+        /// <returns>The zero-based index of the first matching character if found; otherwise <see cref="BasicString::npos"/>.</returns>
+        /// <remarks>
+        /// This templated overload is constrained to contiguous container-like types whose element type equals the string character type.
+        /// It forwards to the pointer/length based case-insensitive search to avoid allocating temporaries. Complexity is O(N * M) in the worst case,
+        /// where N is the number of characters examined and M is the size of the search set. For single-character search sets an optimized O(N) path is used.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type IIndexOfAnyOf( const SpanT& searchChars, size_type start = 0 ) const
         {
             return IIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
         }
 
-        [[nodiscard]] size_type IIndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = 0 ) const
-        {
-            return IIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
-        }
 
-
+        /// <summary>
+        /// Finds the first occurrence of any character from the provided character array starting at the specified index.
+        /// </summary>
+        /// <param name="searchChars">Pointer to an array of characters to search for. May be <c>nullptr</c> or point to an empty sequence; when empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. Defaults to <c>0</c>. If <paramref name="start"/> is greater than or equal to the string length the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that equals any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined and M is the number of search characters.
+        /// An optimized O(N) path is used when <paramref name="searchChars"/> contains exactly one character.
+        /// The method performs no heap allocations and is safe to call concurrently with other const operations. If other threads
+        /// mutate the same string instance concurrently, external synchronization is required.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find first of 'a','b' starting at index 0
+        /// auto idx = s.IndexOfAnyOf( charsArray, 2, 0 );
+        /// </code>
+        /// </example>
         [[nodiscard]] size_type IndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = LengthOf( searchChars );
@@ -5414,11 +7992,47 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+
+        /// <summary>
+        /// Finds the first occurrence of any character from the provided null-terminated character sequence starting at the specified index.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated character sequence to search for. May be <c>nullptr</c> or point to an empty string; when empty the function returns <see cref="npos"/>.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. Defaults to <c>0</c>.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that equals any character in <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no match is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// This function is a thin wrapper around <see cref="IndexOfAnyOf(const CharType*, size_type, size_type)"/> and preserves its
+        /// performance/behavior characteristics (including the single-character optimization and non-allocating behavior).
+        /// </remarks>
         [[nodiscard]] size_type find_first_of( const CharType* searchChars, size_type start = 0 ) const
         {
             return IndexOfAnyOf( searchChars, start );
         }
 
+        /// <summary>
+        /// Finds the first occurrence (case-insensitive) of any character from a null-terminated search set
+        /// starting at the specified index in this string.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters to search for. May be <c>nullptr</c>.</param>
+        /// <param name="start">
+        /// Zero-based index in this string at which to start the search. If <paramref name="start"/>
+        /// is greater than or equal to the string length the function returns <see cref="npos"/>.
+        /// </param>
+        /// <returns>
+        /// The zero-based index of the first matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
+        /// <remarks>
+        /// This overload computes the length of the provided <paramref name="searchChars"/> using <c>LengthOf</c>
+        /// and delegates to the length-aware case-insensitive search (<c>IIndexOfAnyOf(..., size)</c>).
+        /// The search is performed case-insensitively and does not allocate memory in the single-character
+        /// fast-path; for larger search sets a small temporary buffer may be used by the length-aware overload.
+        /// Complexity is O(N * M) in the worst case where N is the number of characters examined and M is the
+        /// number of search characters; single-character searches are O(N).
+        /// This method is safe to call from multiple threads concurrently for read-only access. It does not
+        /// throw under normal operation (no heap allocation is required for the fast-path and length computation).
+        /// </remarks>
         [[nodiscard]] size_type IIndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = LengthOf( searchChars );
@@ -5439,67 +8053,251 @@ namespace Harlinn::Common::Core
         }
     public:
 
+        /// <summary>
+        /// Finds the first character in the string, starting at <paramref name="start"/>, that is NOT contained in the provided search set.
+        /// </summary>
+        /// <param name="searchChars">Pointer to an array of characters that form the search set. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="numberOfSearchChars">Number of characters in <paramref name="searchChars"/>. When zero the function treats the set as empty and returns <paramref name="start"/> (if <paramref name="start"/> is valid).</param>
+        /// <param name="start">Zero-based index within this string to begin the search. If <paramref name="start"/> is greater than or equal to the string length the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present in <paramref name="searchChars"/>. Returns <see cref="BasicString::npos"/> when no such character is found,
+        /// when the string is empty, or when <paramref name="start"/> is invalid.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Behavior and complexity:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       If <paramref name="numberOfSearchChars"/> is zero or <paramref name="searchChars"/> is <c>nullptr</c>, the function returns <paramref name="start"/> (subject to validation).
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       When <c>CharType</c> is <c>char</c> an optimized 256-entry lookup table (allocated on the stack) is used; this gives an O(N) scan with minimal per-character cost and does not allocate heap memory.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       For other character types (for example <c>wchar_t</c>) the algorithm uses a nested scan producing worst-case O(N*M) behavior where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// This function performs no heap allocations and does not throw. It is safe to call concurrently with other const operations on this instance;
+        /// external synchronization is required if other threads may mutate the string concurrently.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] size_type IndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
-            if ( data_ && start < data_->size_ )
+            // Validate data and start
+            if ( !data_ || start >= data_->size_ || data_->size_ == 0 )
             {
-                if ( searchChars && numberOfSearchChars )
+                return npos;
+            }
+
+            // Empty search set: every character is "not in" the empty set -> first candidate is 'start'
+            if ( numberOfSearchChars == 0 || searchChars == nullptr )
+            {
+                return start;
+            }
+
+            const CharType* ptr = data_->buffer_ + start;
+            const CharType* endPtr = data_->buffer_ + data_->size_;
+            const size_type remaining = static_cast<size_type>( endPtr - ptr );
+
+            // Single-character fast path
+            if ( numberOfSearchChars == 1 )
+            {
+                auto p = MemChr( ptr, *searchChars, remaining );
+                return p ? static_cast<size_type>( p - data_->buffer_ ) : npos;
+            }
+
+            // Optimized path for narrow characters: build 256-entry lookup table (no heap, constant time per char)
+            if constexpr ( std::is_same_v<CharType, char> )
+            {
+                bool table[ 256 ] = {};
+                for ( size_type i = 0; i < numberOfSearchChars; ++i )
                 {
-                    auto ptr = data_->buffer_ + start;
-                    auto endPtr = data_->buffer_ + data_->size_;
-                    while ( ptr < endPtr )
+                    table[ static_cast<unsigned char>( searchChars[ i ] ) ] = true;
+                }
+                for ( const CharType* it = ptr; it < endPtr; ++it )
+                {
+                    if ( !table[ static_cast<unsigned char>( *it ) ] )
                     {
-                        if ( Contains( searchChars, numberOfSearchChars, *ptr ) == false )
-                        {
-                            return static_cast< size_type >( ptr - data_->buffer_ );
-                        }
-                        ptr++;
+                        return static_cast<size_type>( it - data_->buffer_ );
                     }
                 }
-                else 
-                {
-                    return start;
-                }
+                return npos;
             }
-            return npos;
+            else
+            {
+                // Generic fallback (e.g. wchar_t): keep the simple O(N*M) scan but with clearer loops
+                for ( const CharType* it = ptr; it < endPtr; ++it )
+                {
+                    bool found = false;
+                    for ( size_type j = 0; j < numberOfSearchChars; ++j )
+                    {
+                        if ( *it == searchChars[ j ] )
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if ( !found )
+                    {
+                        return static_cast<size_type>( it - data_->buffer_ );
+                    }
+                }
+                return npos;
+            }
         }
 
+        /// <summary>
+        /// Finds the index of the first character at or after <paramref name="start"/> that is NOT contained
+        /// in the provided case-insensitive search set.
+        /// </summary>
+        /// <param name="searchChars">Pointer to an array of characters that form the search set. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the array pointed to by <paramref name="searchChars"/>.</param>
+        /// <param name="start">Zero-based index in this string at which to start the search. If greater than or equal to the string length the function returns <see cref="npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first character in this string that does NOT equal any element of <paramref name="searchChars"/>,
+        /// comparing characters case-insensitively. Returns <see cref="BasicString::npos"/> when no such character is found
+        /// or when input conditions (empty buffer / invalid start) prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>.
+        /// An optimized O(N) path is used when <paramref name="numberOfSearchChars"/> == 1 (single-character fast-path).
+        /// </para>
+        /// <para>
+        /// To minimize heap allocations this routine uses <c>boost::container::small_vector</c> to store the uppercase form of the search set
+        /// for small sizes. Case-insensitive comparisons are implemented using <c>Core::ToUpper</c> so the function handles both narrow and wide
+        /// character specializations uniformly. The function does not allocate in the single-character fast-path and returns <c>npos</c>
+        /// when no qualifying character is found.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is const and safe to call concurrently with other const operations. External synchronization is required
+        /// if other threads may mutate the same <see cref="BasicString"/> instance concurrently.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] size_type IIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
-            if ( data_ && start < data_->size_ )
+            // Validate data and start
+            if ( !data_ || start >= data_->size_ || data_->size_ == 0 )
             {
-                if ( searchChars && numberOfSearchChars )
+                return npos;
+            }
+
+            // Empty search set: every character is "not in" the empty set -> first candidate is 'start'
+            if ( numberOfSearchChars == 0 || searchChars == nullptr )
+            {
+                return start;
+            }
+
+            const size_type dataSize = data_->size_;
+            const CharType* ptr = data_->buffer_ + start;
+            const CharType* endPtr = data_->buffer_ + dataSize;
+
+            // Single-character fast path: find first character that is NOT equal (case-insensitive)
+            if ( numberOfSearchChars == 1 )
+            {
+                CharType target = Core::ToUpper( searchChars[ 0 ] );
+                for ( const CharType* p = ptr; p < endPtr; ++p )
                 {
-                    auto ptr = data_->buffer_ + start;
-                    auto endPtr = data_->buffer_ + data_->size_;
-                    while ( ptr < endPtr )
+                    if ( Core::ToUpper( *p ) != target )
                     {
-                        if ( IContains( searchChars, numberOfSearchChars, *ptr ) == false )
-                        {
-                            return static_cast< size_type >( ptr - data_->buffer_ );
-                        }
-                        ptr++;
+                        return static_cast<size_type>( p - data_->buffer_ );
                     }
                 }
-                else
-                {
-                    return start;
-                }
+                return npos;
             }
+
+            // Precompute uppercase form of search set
+            boost::container::small_vector<CharType, 32> searchUpper;
+            searchUpper.reserve( numberOfSearchChars );
+            for ( size_type i = 0; i < numberOfSearchChars; ++i )
+            {
+                searchUpper.push_back( Core::ToUpper( searchChars[ i ] ) );
+            }
+
+            // Find first character that is NOT in the (uppercased) search set
+            while ( ptr < endPtr )
+            {
+                CharType c = Core::ToUpper( *ptr );
+                bool inSet = false;
+                for ( auto const& sc : searchUpper )
+                {
+                    if ( c == sc )
+                    {
+                        inSet = true;
+                        break;
+                    }
+                }
+                if ( !inSet )
+                {
+                    return static_cast<size_type>( ptr - data_->buffer_ );
+                }
+                ++ptr;
+            }
+
             return npos;
         }
 
 
+        /// <summary>
+        /// Finds the first character in this string, at or after the specified <paramref name="start"/> index,
+        /// that is NOT contained in the provided character set.
+        /// </summary>
+        /// <param name="searchChars">Pointer to an array of characters that form the search set. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the array pointed to by <paramref name="searchChars"/>. When zero the search set is empty and the function will return <c>start</c> (if valid).</param>
+        /// <param name="start">Zero-based index within this string to begin the search. If <paramref name="start"/> is greater than or equal to the string length the function returns <c>BasicString::npos</c>.</param>
+        /// <returns>
+        /// The zero-based index of the first character that is NOT present in <paramref name="searchChars"/>.
+        /// Returns <c>BasicString::npos</c> when no such character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: worst-case O(N * M) where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>.
+        /// - Optimization: when <paramref name="numberOfSearchChars"/> == 1 a fast single-character scan is used (O(N)).
+        /// - The function performs no heap allocations and does not throw exceptions in normal operation.
+        /// - Thread-safety: safe to call concurrently with other const operations on the same instance. External synchronization is required if other threads mutate the instance concurrently.
+        /// </remarks>
         [[nodiscard]] size_type find_first_not_of( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             return IndexOfAnyBut( searchChars, numberOfSearchChars, start );
         }
 
+        /// <summary>
+        /// Finds the first character that is not equal to the specified character.
+        /// </summary>
+        /// <param name="searchChar">The character to exclude when searching. The search locates the first character that is not equal to this value.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character that is not equal to <paramref name="searchChar"/>.
+        /// Returns <see cref="BasicString::npos"/> when no such character is found.
+        /// </returns>
+        /// <remarks>
+        /// This is a convenience overload that forwards to <see cref="IndexOfAnyBut(const CharType*, size_type, size_type)"/>.
+        /// The implementation constructs a single-character set and delegates to the pointer/length variant.
+        /// </remarks>
         [[nodiscard]] size_type IndexOfAnyBut( const CharType searchChar, size_type start = 0 ) const
         {
             return IndexOfAnyBut( &searchChar, 1, start );
         }
 
+        /// <summary>
+        /// Finds the first character that is not equal to the specified character.
+        /// </summary>
+        /// <param name="searchChar">The character to exclude when searching. The search locates the first character that is not equal to this value.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character that is not equal to <paramref name="searchChar"/>.
+        /// Returns <see cref="BasicString::npos"/> when no such character is found.
+        /// </returns>
+        /// <remarks>
+        /// Lowercase alias that forwards to <see cref="IndexOfAnyBut(CharType,size_type)"/>.
+        /// </remarks>
         [[nodiscard]] size_type find_first_not_of( const CharType searchChar, size_type start = 0 ) const
         {
             return IndexOfAnyBut( searchChar, start );
@@ -5507,6 +8305,20 @@ namespace Harlinn::Common::Core
 
 
 
+        /// <summary>
+        /// Finds the first character that is not contained in the provided <see cref="BasicString"/> search set.
+        /// </summary>
+        /// <param name="searchChars">A <see cref="BasicString"/> whose characters form the search set. When empty the function returns <paramref name="start"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present in <paramref name="searchChars"/>.
+        /// If <paramref name="searchChars"/> is empty this function returns <paramref name="start"/>.
+        /// Returns <see cref="BasicString::npos"/> when the search fails (for example when this string is empty or no qualifying character is found).
+        /// </returns>
+        /// <remarks>
+        /// This overload obtains a pointer/length pair from <paramref name="searchChars"/> and forwards to the pointer/length based implementation:
+        /// <see cref="IndexOfAnyBut(const CharType*, size_type, size_type)"/>.
+        /// </remarks>
         [[nodiscard]] size_type IndexOfAnyBut( const BasicString& searchChars, size_type start = 0 ) const
         {
             auto* searchData = searchChars.data_;
@@ -5517,11 +8329,37 @@ namespace Harlinn::Common::Core
             return start;
         }
 
+        /// <summary>
+        /// Finds the first character that is not contained in the provided <see cref="BasicString"/> search set.
+        /// </summary>
+        /// <param name="searchChars">A <see cref="BasicString"/> whose characters form the search set. When empty the function returns <paramref name="start"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present in <paramref name="searchChars"/>.
+        /// If <paramref name="searchChars"/> is empty this function returns <paramref name="start"/>.
+        /// Returns <see cref="BasicString::npos"/> when the search fails.
+        /// </returns>
+        /// <remarks>
+        /// Lowercase alias that forwards to <see cref="IndexOfAnyBut(const BasicString&, size_type)"/>.
+        /// </remarks>
         [[nodiscard]] size_type find_first_not_of( const BasicString& searchChars, size_type start = 0 ) const
         {
             return IndexOfAnyBut( searchChars, start );
         }
 
+        /// <summary>
+        /// Performs a case-insensitive search for the first character that is not contained in the provided <see cref="BasicString"/> search set.
+        /// </summary>
+        /// <param name="searchChars">A <see cref="BasicString"/> whose characters form the case-insensitive search set. When empty the function returns <paramref name="start"/>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present (case-insensitively) in <paramref name="searchChars"/>.
+        /// If <paramref name="searchChars"/> is empty this function returns <paramref name="start"/>.
+        /// Returns <see cref="BasicString::npos"/> when the search fails.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to <see cref="IIndexOfAnyBut(const CharType*, size_type, size_type)"/>.
+        /// </remarks>
         [[nodiscard]] size_type IIndexOfAnyBut( const BasicString& searchChars, size_type start = 0 ) const
         {
             auto* searchData = searchChars.data_;
@@ -5532,98 +8370,323 @@ namespace Harlinn::Common::Core
             return start;
         }
 
+        /// <summary>
+        /// Finds the first character that is not contained in the provided null-terminated character sequence.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters that form the search set. May be <c>nullptr</c>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present in <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no such character is found or when input prevents searching.
+        /// </returns>
+        /// <remarks>
+        /// This overload computes the length of <paramref name="searchChars"/> using <c>LengthOf</c> and forwards to the length-aware implementation:
+        /// <see cref="IndexOfAnyBut(const CharType*, size_type, size_type)"/>.
+        /// </remarks>
         [[nodiscard]] size_type IndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = LengthOf( searchChars );
             return IndexOfAnyBut( searchChars, length, start );
         }
 
+        /// <summary>
+        /// Finds the first character that is not contained in the provided null-terminated character sequence.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters that form the search set. May be <c>nullptr</c>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present in <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no such character is found or when input prevents searching.
+        /// </returns>
+        /// <remarks>
+        /// Lowercase alias that forwards to <see cref="IndexOfAnyBut(const CharType*, size_type)"/>.
+        /// </remarks>
         [[nodiscard]] size_type find_first_not_of( const CharType* searchChars, size_type start = 0 ) const
         {
             return IndexOfAnyBut( searchChars, start );
         }
 
+        /// <summary>
+        /// Performs a case-insensitive search for the first character that is not contained in the provided null-terminated character sequence.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters that form the case-insensitive search set. May be <c>nullptr</c>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. Defaults to 0.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present (case-insensitively) in <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no such character is found or when input prevents searching.
+        /// </returns>
+        /// <remarks>
+        /// The length of <paramref name="searchChars"/> is computed using <c>LengthOf</c>; the call delegates to
+        /// <see cref="IIndexOfAnyBut(const CharType*, size_type, size_type)"/>.
+        /// </remarks>
         [[nodiscard]] size_type IIndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = LengthOf( searchChars );
             return IIndexOfAnyBut( searchChars, length, start );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Finds the first character in this string, at or after <paramref name="start"/>, that is NOT contained in the provided search set.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose element type must match this string's character type (<c>CharType</c>).</typeparam>
+        /// <param name="searchChars">The contiguous container providing the set of characters to exclude. The container's <c>value_type</c> must be <c>CharType</c>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. If <paramref name="start"/> is greater than or equal to this string's length the function returns <see cref="BasicString::npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present in <paramref name="searchChars"/>. Returns <see cref="BasicString::npos"/> when no such character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This templated overload is constrained to contiguous container-like types and forwards the call to the pointer/length based overload:
+        /// <c>IndexOfAnyBut(searchChars.data(), searchChars.size(), start)</c>. Complexity is worst-case O(N*M) where N is the number of
+        /// characters examined in this string and M is <paramref name="searchChars"/>. When <paramref name="searchChars"/> contains a single character
+        /// a specialized, optimized scan path is used by the underlying implementation. The function performs no heap allocations in the fast-path.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this member is const and safe to call concurrently with other const operations. External synchronization is required
+        /// if other threads may mutate the same <see cref="BasicString"/> instance concurrently.
+        /// </para>
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>,CharType>
         [[nodiscard]] size_type IndexOfAnyBut( const SpanT& searchChars, size_type start = 0 ) const
         {
             return IndexOfAnyBut( searchChars.data(), searchChars.size(), start );
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Finds the first character in this string, at or after <paramref name="start"/>, that is NOT contained in the provided search set (case-insensitive).
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose element type must match this string's character type (<c>CharType</c>).</typeparam>
+        /// <param name="searchChars">The contiguous container providing the set of characters to exclude. Comparison is performed case-insensitively. The container's <c>value_type</c> must be <c>CharType</c>.</param>
+        /// <param name="start">Zero-based index at which to begin the search. If <paramref name="start"/> is greater than or equal to this string's length the function returns <see cref="BasicString::npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the first character not present in <paramref name="searchChars"/>, comparing characters case-insensitively.
+        /// Returns <see cref="BasicString::npos"/> when no such character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This templated overload forwards to the pointer/length based case-insensitive implementation:
+        /// <c>IIndexOfAnyBut(searchChars.data(), searchChars.size(), start)</c>. Complexity is worst-case O(N*M) where N is the number of characters
+        /// examined and M is the size of the search set. For single-character search sets an optimized O(N) path is used. To minimize temporary work
+        /// the implementation may uppercase the search set into a small temporary buffer for small sizes.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is const and safe to call concurrently with other const operations. External synchronization is required
+        /// if other threads may mutate the same <see cref="BasicString"/> instance concurrently.
+        /// </para>
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type IIndexOfAnyBut( const SpanT& searchChars, size_type start = 0 ) const
         {
             return IIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
         }
 
-        [[nodiscard]] size_type IndexOfAnyBut( const std::basic_string_view<CharType>& searchChars, size_type start = 0 ) const
-        {
-            return IndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
-        }
-        [[nodiscard]] size_type IIndexOfAnyBut( const std::basic_string_view<CharType>& searchChars, size_type start = 0 ) const
-        {
-            return IIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
-        }
 
-
+        /// <summary>
+        /// Finds the last index (searching backwards) of any character present in the provided character array.
+        /// </summary>
+        /// <param name="searchChars">Pointer to the array of characters to search for. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the <paramref name="searchChars"/> array.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. If <paramref name="start"/> is greater than or equal to the string length the search begins at the last character.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found or when input conditions prevent searching
+        /// (for example: empty string, <c>nullptr</c> search set, or zero-length search set).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined in this string and
+        /// M is <paramref name="numberOfSearchChars"/>. No heap allocation is performed by this method.
+        /// </para>
+        /// <para>
+        /// The algorithm starts from <paramref name="start"/> (clamped to the last valid index) and
+        /// scans backwards. For each examined character it performs an in-array search using the repository
+        /// helper <c>MemChr</c> over the provided search set.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this const method is safe to call concurrently with other const operations. External
+        /// synchronization is required if other threads may mutate the same BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] size_type LastIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
-            if ( data_ && searchChars && numberOfSearchChars )
+            if ( !data_ || !searchChars || numberOfSearchChars == 0 || data_->size_ == 0 )
             {
-                if ( start >= data_->size_ )
-                {
-                    start = data_->size_ - 1;
-                }
-                do
-                {
-                    const auto* p = MemChr( searchChars, data_->buffer_[start], static_cast<size_t>( numberOfSearchChars ) );
-                    if ( p )
-                    {
-                        return start;
-                    }
-                } while ( start-- );
+                return npos;
             }
+
+            const size_type dataSize = data_->size_;
+
+            // Clamp start to last valid index
+            if ( start >= dataSize )
+            {
+                start = dataSize - 1;
+            }
+
+            // Single-character fast-path
+            if ( numberOfSearchChars == 1 )
+            {
+                const CharType target = searchChars[ 0 ];
+                // iterate backwards from start to 0 without arithmetic overflow/underflow
+                for ( size_type i = start; ; )
+                {
+                    if ( data_->buffer_[ i ] == target )
+                    {
+                        return i;
+                    }
+                    if ( i == 0 )
+                    {
+                        break;
+                    }
+                    --i;
+                }
+                return npos;
+            }
+
+            // General case: iterate backwards and test membership in the search set
+            for ( size_type i = start; ; )
+            {
+                // MemChr(buffer, ch, len) searches buffer[0..len-1] for ch.
+                const auto* p = MemChr( searchChars, data_->buffer_[ i ], static_cast<size_t>( numberOfSearchChars ) );
+                if ( p )
+                {
+                    return i;
+                }
+                if ( i == 0 )
+                {
+                    break;
+                }
+                --i;
+            }
+
             return npos;
         }
 
+        /// <summary>
+        /// Finds the last occurrence of any character from the specified character array.
+        /// </summary>
+        /// <param name="searchChars">Pointer to the array of characters to search for. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. If greater than or equal to the string length the search begins at the last character.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the <paramref name="searchChars"/> array.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>.
+        /// An optimized single-character fast-path is used when <paramref name="numberOfSearchChars"/> == 1.
+        /// </para>
+        /// <para>
+        /// The function performs no heap allocation in the single-character fast-path. For larger search sets the implementation
+        /// performs a backward scan using <c>MemChr</c> on the search array for membership testing.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this const method is safe to call concurrently with other const operations. External synchronization
+        /// is required if other threads may mutate the same BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
         [[nodiscard]] size_type find_last_of( const CharType* searchChars, size_type start, size_type numberOfSearchChars ) const
         {
             return LastIndexOfAnyOf( searchChars, numberOfSearchChars, start);
         }
 
 
+        /// <summary>
+        /// Finds the last occurrence (case-insensitive) of any character from the specified character array.
+        /// </summary>
+        /// <param name="searchChars">Pointer to the array of characters to search for. May be <c>nullptr</c> when <paramref name="numberOfSearchChars"/> is zero.</param>
+        /// <param name="numberOfSearchChars">Number of characters in the <paramref name="searchChars"/> array.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. If greater than or equal to the string length the search begins at the last character.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any element of <paramref name="searchChars"/>,
+        /// comparing characters case-insensitively. Returns <see cref="BasicString::npos"/> when no matching character is found
+        /// or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The implementation performs a case-insensitive comparison by uppercasing characters using <c>Core::ToUpper</c>.
+        /// A single-character fast-path (case-insensitive) is used when <paramref name="numberOfSearchChars"/> == 1.
+        /// </para>
+        /// <para>
+        /// For larger search sets the function precomputes the uppercase form of the search set into a small temporary buffer
+        /// (<c>boost::container::small_vector</c>) to minimize repeated conversions. For sufficiently large search sets this
+        /// may allocate on the heap.
+        /// </para>
+        /// <para>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined and M is <paramref name="numberOfSearchChars"/>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: safe to call concurrently with other const operations. External synchronization is required if other threads
+        /// mutate the same BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if memory allocation occurs while preparing uppercase search set.</exception>
         [[nodiscard]] size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
-            if ( data_ && searchChars && numberOfSearchChars )
+            if ( !data_ || !searchChars || numberOfSearchChars == 0 || data_->size_ == 0 )
             {
-                if ( start >= data_->size_ )
-                {
-                    start = data_->size_ - 1;
-                }
-                do
-                {
-                    auto c = Core::ToUpper( data_->buffer_[start] );
-                    for ( size_t i = 0; i < numberOfSearchChars; i++ )
-                    {
-                        auto sc = Core::ToUpper( searchChars[i] );
-                        if ( c == sc )
-                        {
-                            return start;
-                        }
-                    }
-                } while ( start-- );
+                return npos;
             }
+
+            const size_type dataSize = data_->size_;
+
+            // Clamp start to the last valid index (avoids under/overflow surprises).
+            const size_type clampedStart = ( start >= dataSize ) ? ( dataSize - 1 ) : start;
+
+            // Single-character fast-path (case-insensitive).
+            if ( numberOfSearchChars == 1 )
+            {
+                const CharType target = Core::ToUpper( searchChars[ 0 ] );
+                for ( size_type i = clampedStart + 1; i-- > 0; )
+                {
+                    if ( Core::ToUpper( data_->buffer_[ i ] ) == target )
+                    {
+                        return i;
+                    }
+                }
+                return npos;
+            }
+
+            // General case: precompute uppercase form of the search set and scan backwards.
+            // Using a small_vector avoids heap allocations for small search sets.
+            boost::container::small_vector<CharType, 32> searchUpper;
+            searchUpper.reserve( static_cast<size_t>( numberOfSearchChars ) );
+            for ( size_type k = 0; k < numberOfSearchChars; ++k )
+            {
+                searchUpper.push_back( Core::ToUpper( searchChars[ k ] ) );
+            }
+
+            for ( size_type i = clampedStart + 1; i-- > 0; )
+            {
+                const CharType c = Core::ToUpper( data_->buffer_[ i ] );
+                for ( const auto& sc : searchUpper )
+                {
+                    if ( c == sc )
+                    {
+                        return i;
+                    }
+                }
+            }
+
             return npos;
         }
 
 
+        /// <summary>
+        /// Finds the last occurrence of any character from the provided <see cref="BasicString"/> search set.
+        /// </summary>
+        /// <param name="searchChars">A <see cref="BasicString"/> whose characters form the set to search for. May be empty.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="BasicString::npos"/> which indicates the end of the string.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any character from <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found or when input conditions prevent searching.
+        /// </returns>
+        /// <remarks>
+        /// This overload forwards to the pointer/length based implementation for efficiency when the search set exposes an internal buffer.
+        /// Complexity and thread-safety are the same as described for the pointer/length overload.
+        /// </remarks>
         [[nodiscard]] size_type LastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
@@ -5634,25 +8697,56 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Alias for <see cref="LastIndexOfAnyOf(const BasicString&, size_type)"/>.
+        /// </summary>
+        /// <param name="searchChars">A <see cref="BasicString"/> whose characters form the search set. May be empty.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="BasicString::npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the last matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
         [[nodiscard]] size_type find_last_of( const BasicString& searchChars, size_type start = npos ) const
         {
             return LastIndexOfAnyOf( searchChars, start );
         }
 
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Finds the last occurrence of any character from the provided contiguous container-like search set.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose <c>value_type</c> matches <c>CharType</c>.</typeparam>
+        /// <param name="searchChars">The contiguous container providing the set of characters to search for.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="BasicString::npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the last character that equals any element of <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no matching character is found.
+        /// </returns>
+        /// <remarks>
+        /// This templated overload is constrained to contiguous container-like types and simply forwards the container's
+        /// data pointer and size to the pointer/length-based overload to avoid creating temporaries.
+        /// </remarks>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type LastIndexOfAnyOf( const SpanT& searchChars, size_type start = npos ) const
         {
             return LastIndexOfAnyOf( searchChars.data(), searchChars.size(), start );
         }
 
-        [[nodiscard]] size_type LastIndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
-        {
-            return LastIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
-        }
-
-
+        /// <summary>
+        /// Finds the last index (searching backwards) of any character contained in the specified
+        /// <see cref="BasicString{CharType}"/> using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="searchChars">A <see cref="BasicString{CharType}"/> whose characters form the set to search for. May be empty.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="BasicString::npos"/> which indicates the end of the string.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any character from <paramref name="searchChars"/>
+        /// when compared case-insensitively. Returns <see cref="BasicString::npos"/> if no match is found or when input prevents searching.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined and M is the size of <paramref name="searchChars"/>.
+        /// This overload forwards to the pointer/length based implementation and therefore avoids extra copies when the search set
+        /// exposes an internal buffer. The method is const and performs no allocations in the fast-path; external synchronization is
+        /// required if other threads may mutate this string concurrently.
         [[nodiscard]] size_type ILastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
@@ -5663,19 +8757,39 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        /// <summary>
+        /// Finds the last index (searching backwards) of any character contained in the provided contiguous container-like search set,
+        /// using a case-insensitive comparison.
+        /// </summary>
+        /// <typeparam name="SpanT">A contiguous container-like type whose element type must match <c>CharType</c>.</typeparam>
+        /// <param name="searchChars">The contiguous container providing the characters to search for.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="BasicString::npos"/> which indicates the end of the string.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any element of <paramref name="searchChars"/>
+        /// (case-insensitive). Returns <see cref="BasicString::npos"/> if no match is found or when input prevents searching.
+        /// </returns>
+        /// <remarks>
+        /// This template overload forwards to the pointer/length based implementation to avoid creating temporaries.
+        /// Complexity and thread-safety are the same as for the <see cref="ILastIndexOfAnyOf(const BasicString&, size_type)"/> overload.
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type ILastIndexOfAnyOf( const SpanT& searchChars, size_type start = npos ) const
         {
             return ILastIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
         }
 
-        [[nodiscard]] size_type ILastIndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
-        {
-            return ILastIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
-        }
-
-
+        /// <summary>
+        /// Finds the last occurrence (searching backwards) of any character from the provided null-terminated character array.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters to search for. May be <c>nullptr</c> or empty.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. If greater than or equal to the string length the search begins at the last character.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any character in <paramref name="searchChars"/>.
+        /// Returns <see cref="BasicString::npos"/> when no match is found or when input prevents searching.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: worst-case O(N * M) where N is the number of characters examined and M is the number of search characters.
+        /// An optimized single-character fast-path is used when <paramref name="searchChars"/> has length one. No heap allocation occurs in the fast-path.
         [[nodiscard]] size_type LastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = LengthOf( searchChars );
@@ -5686,12 +8800,32 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        /// <summary>
+        /// Alias for <see cref="LastIndexOfAnyOf(const CharType*, size_type)"/>. Finds the last occurrence of any character from the provided character set.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters to search for. May be <c>nullptr</c> or empty.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. Defaults to <see cref="BasicString::npos"/>.</param>
+        /// <returns>
+        /// The zero-based index of the last matching character if found; otherwise <see cref="BasicString::npos"/>.
+        /// </returns>
         [[nodiscard]] size_type find_last_of( const CharType* searchChars, size_type start = npos ) const
         {
             return LastIndexOfAnyOf( searchChars, start );
         }
 
 
+        /// <summary>
+        /// Finds the last occurrence (case-insensitive) of any character from the provided null-terminated character array.
+        /// </summary>
+        /// <param name="searchChars">Pointer to a null-terminated array of characters to search for. May be <c>nullptr</c> or empty.</param>
+        /// <param name="start">Zero-based index at which to start the backward search. If greater than or equal to the string length the search begins at the last character.</param>
+        /// <returns>
+        /// The zero-based index of the last character in this string that equals any character in <paramref name="searchChars"/>, comparing case-insensitively.
+        /// Returns <see cref="BasicString::npos"/> when no match is found or when input prevents searching.
+        /// </returns>
+        /// <remarks>
+        /// This overload computes the length of <paramref name="searchChars"/> and delegates to the length-aware case-insensitive implementation.
+        /// Complexity: worst-case O(N * M); single-character searches are optimized to O(N).
         [[nodiscard]] size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = LengthOf( searchChars );
@@ -5765,7 +8899,7 @@ namespace Harlinn::Common::Core
             return data_ ? data_->size_ - 1 : npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type LastIndexOfAnyBut( const SpanT& searchChars, size_type start = npos ) const
         {
@@ -5789,7 +8923,7 @@ namespace Harlinn::Common::Core
             return data_ ? data_->size_ - 1 : npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type ILastIndexOfAnyBut( const SpanT& searchChars, size_type start = npos ) const
         {
@@ -5910,7 +9044,7 @@ namespace Harlinn::Common::Core
             return IndexOf( searchString, start );
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>,CharType>
         [[nodiscard]] size_type IndexOf( const SpanT& searchString, size_type start = 0 ) const
         {
@@ -5921,7 +9055,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type find( const SpanT& searchString, size_type start = 0 ) const
         {
@@ -5952,7 +9086,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type IIndexOf( const SpanT& searchString, size_type start = 0 ) const
         {
@@ -6228,7 +9362,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type> ,CharType>
         [[nodiscard]] size_type LastIndexOf( const SpanT& searchString, size_type start = npos ) const
         {
@@ -6251,7 +9385,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
         [[nodiscard]] size_type ILastIndexOf( const SpanT& searchString, size_type start = npos ) const
         {
@@ -6829,7 +9963,7 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        template<typename VectorT = std::vector<std::basic_string_view<CharType>>, SimpleSpanLike SpanT>
+        template<typename VectorT = std::vector<std::basic_string_view<CharType>>, ContiguousContainerLike SpanT>
             requires std::is_same_v<CharType,std::remove_cvref_t<typename SpanT::value_type>>
         [[nodiscard]] VectorT Split( const SpanT& delimiterSpan, size_type start = 0 ) const
         {
@@ -6858,7 +9992,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        template<SimpleSpanLike VectorT, bool ignoreWhiteSpace = true>
+        template<ContiguousContainerLike VectorT, bool ignoreWhiteSpace = true>
         VectorT Split( CharType separator ) const
         {
             VectorT result;
@@ -7155,14 +10289,14 @@ namespace Harlinn::Common::Core
             Replace( replaceAtPosition, replaceLength, with, withLength, padCharacter );
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         void Replace( size_type replaceAtPosition, size_type replaceLength, const SpanT& with, CharType padCharacter = DefaultPadCharacter )
         {
             Replace( replaceAtPosition, replaceLength, with.data( ), with.size( ), padCharacter );
         }
 
-        template<SimpleSpanLike SpanT>
+        template<ContiguousContainerLike SpanT>
             requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
         void replace( size_type replaceAtPosition, size_type replaceLength, const SpanT& with, CharType padCharacter = DefaultPadCharacter )
         {
@@ -7317,8 +10451,8 @@ namespace Harlinn::Common::Core
 
     static_assert( AnsiStringLike< BasicString<char> > );
     static_assert( WideStringLike< BasicString<wchar_t> > );
-    static_assert( SimpleSpanLike< BasicString<char> > );
-    static_assert( SimpleSpanLike< BasicString<wchar_t> > );
+    static_assert( ContiguousContainerLike< BasicString<char> > );
+    static_assert( ContiguousContainerLike< BasicString<wchar_t> > );
 
 
 
@@ -7578,7 +10712,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        template<SimpleSpanLike T>
+        template<ContiguousContainerLike T>
             requires std::is_same_v<typename T::value_type, CharType>
         explicit FixedString( const T& str )
             : size_( ConvertSizeToInternalSize( CheckSize( str.size( ) ) ) )
@@ -7604,7 +10738,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        template<SimpleSpanLike T>
+        template<ContiguousContainerLike T>
             requires std::is_same_v<typename T::value_type, CharType>
         FixedString& operator = ( const T& str )
         {
