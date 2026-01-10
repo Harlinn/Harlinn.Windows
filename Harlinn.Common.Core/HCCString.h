@@ -551,7 +551,7 @@ namespace Harlinn::Common::Core
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 
-        static constexpr size_type npos = MAXUINT64;
+        static constexpr size_type npos = static_cast<size_type>( -1 );
         static constexpr size_type AllocationGranularity = 64;
         static constexpr CharType DefaultPadCharacter = static_cast< CharType >( ' ' );
         using Data = Internal::Data<CharType>;
@@ -1017,7 +1017,7 @@ namespace Harlinn::Common::Core
 
             auto currentSize = data_->size_;
             auto newSize = currentSize + extendSize;
-            auto newData = Allocate( newSize );
+            auto* newData = Allocate( newSize );
             MemCopy( newData->buffer_, data_->buffer_, currentSize );
             auto* tmp = data_;
             data_ = newData;
@@ -1813,7 +1813,7 @@ namespace Harlinn::Common::Core
         /// </remarks>
         template<typename InputIt>
             requires std::is_convertible_v<typename std::iterator_traits<InputIt>::value_type, CharType>&&
-                (std::forward_iterator<InputIt> == false) && std::input_iterator<InputIt>
+                !std::forward_iterator<InputIt> && std::input_iterator<InputIt>
         static Data* Initialize( InputIt first, InputIt last )
         {
 			boost::container::small_vector<CharType, 256> temp;
@@ -4310,7 +4310,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && data_->size_ )
             {
-                return T( data_->buffer, data_->size_ );
+                return T( data_->buffer_, data_->size_ );
             }
             else
             {
@@ -8839,50 +8839,205 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type LastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
-            if ( data_ )
+            if ( !data_ || data_->size_ == 0 )
             {
-                if ( start >= data_->size_ )
-                {
-                    start = data_->size_ - 1;
-                }
-                do
-                {
-                    const auto* p = MemChr( searchChars, data_->buffer_[start], static_cast<size_t>( numberOfSearchChars ) );
-                    if ( !p )
-                    {
-                        return start;
-                    }
-                } while ( start-- );
+                return npos;
             }
-            return npos;
+
+            // Clamp start to last valid index
+            const size_type lastIndex = data_->size_ - 1;
+            const size_type idx = ( start >= data_->size_ ) ? lastIndex : start;
+
+            // Empty search set or null pointer -> every character is "not in" the set, return clamped start
+            if ( !searchChars || numberOfSearchChars == 0 )
+            {
+                return idx;
+            }
+
+            // Single-character fast-path: find last char != target
+            if ( numberOfSearchChars == 1 )
+            {
+                const CharType target = searchChars[ 0 ];
+                for ( size_type i = idx; ; )
+                {
+                    if ( data_->buffer_[ i ] != target )
+                    {
+                        return i;
+                    }
+                    if ( i == 0 )
+                    {
+                        break;
+                    }
+                    --i;
+                }
+                return npos;
+            }
+
+            // Narrow-character optimization: 256-entry lookup table (no heap)
+            if constexpr ( std::is_same_v< CharType, char > )
+            {
+                // use unsigned char indexing; zero-init on stack is cheap
+                uint8_t table[ 256 ] = {};
+                for ( size_type j = 0; j < numberOfSearchChars; ++j )
+                {
+                    table[ static_cast<unsigned char>( searchChars[ j ] ) ] = 1;
+                }
+
+                for ( size_type i = idx; ; )
+                {
+                    if ( !table[ static_cast<unsigned char>( data_->buffer_[ i ] ) ] )
+                    {
+                        return i;
+                    }
+                    if ( i == 0 )
+                    {
+                        break;
+                    }
+                    --i;
+                }
+                return npos;
+            }
+            else
+            {
+                // Generic fallback for wider character types.
+                // Optimize membership testing:
+                // - For small search sets the nested loop is faster (avoid sorting/copy).
+                // - For larger search sets, copy and sort into a small_vector and use binary_search
+                //   to reduce per-character membership test cost from O(M) to O(log M).
+                constexpr size_type SmallSetThreshold = 8;
+                if ( numberOfSearchChars <= SmallSetThreshold )
+                {
+                    for ( size_type i = idx; ; )
+                    {
+                        bool inSet = false;
+                        for ( size_type j = 0; j < numberOfSearchChars; ++j )
+                        {
+                            if ( data_->buffer_[ i ] == searchChars[ j ] )
+                            {
+                                inSet = true;
+                                break;
+                            }
+                        }
+                        if ( !inSet )
+                        {
+                            return i;
+                        }
+                        if ( i == 0 )
+                        {
+                            break;
+                        }
+                        --i;
+                    }
+                    return npos;
+                }
+                else
+                {
+                    // use small_vector to avoid heap for modest sets; falls back to heap when needed
+                    boost::container::small_vector<CharType, 32> sortedSet;
+                    sortedSet.reserve( static_cast<size_t>( numberOfSearchChars ) );
+                    for ( size_type j = 0; j < numberOfSearchChars; ++j )
+                    {
+                        sortedSet.push_back( searchChars[ j ] );
+                    }
+                    std::sort( sortedSet.begin( ), sortedSet.end( ) );
+                    // optionally unique to reduce binary_search cost
+                    sortedSet.erase( std::unique( sortedSet.begin( ), sortedSet.end( ) ), sortedSet.end( ) );
+
+                    for ( size_type i = idx; ; )
+                    {
+                        if ( !std::binary_search( sortedSet.begin( ), sortedSet.end( ), data_->buffer_[ i ] ) )
+                        {
+                            return i;
+                        }
+                        if ( i == 0 )
+                        {
+                            break;
+                        }
+                        --i;
+                    }
+                    return npos;
+                }
+            }
         }
 
         [[nodiscard]] size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
-            if ( data_ )
+            if ( !data_ || data_->size_ == 0 )
             {
-                if ( start >= data_->size_ )
+                return npos;
+            }
+
+            const size_type dataSize = data_->size_;
+            // clamp start to last valid index
+            const size_type idx = ( start >= dataSize ) ? ( dataSize - 1 ) : start;
+
+            // empty search set -> every character is "not in" the set -> return clamped start
+            if ( numberOfSearchChars == 0 || searchChars == nullptr )
+            {
+                return idx;
+            }
+
+            // single-character case-insensitive fast-path
+            if ( numberOfSearchChars == 1 )
+            {
+                const CharType target = Core::ToUpper( searchChars[ 0 ] );
+                // iterate backwards safely (includes index 0)
+                for ( size_type i = idx + 1; i-- > 0; )
                 {
-                    start = data_->size_ - 1;
-                }
-                do
-                {
-                    auto c = Core::ToUpper( data_->buffer_[start] );
-                    size_t i = 0;
-                    for ( ; i < numberOfSearchChars; i++ )
+                    if ( Core::ToUpper( data_->buffer_[ i ] ) != target )
                     {
-                        auto sc = Core::ToUpper( searchChars[i] );
+                        return i;
+                    }
+                }
+                return npos;
+            }
+
+            // Precompute uppercase form of the search set to avoid repeated conversions.
+            // Use small_vector to avoid heap for modest sets.
+            boost::container::small_vector<CharType, 32> searchUpper;
+            searchUpper.reserve( static_cast<size_t>( numberOfSearchChars ) );
+            for ( size_type k = 0; k < numberOfSearchChars; ++k )
+            {
+                searchUpper.push_back( Core::ToUpper( searchChars[ k ] ) );
+            }
+
+            // For large search sets use sort+unique + binary_search to improve membership test cost.
+            constexpr size_type BinarySearchThreshold = 32;
+            bool useBinarySearch = searchUpper.size( ) > BinarySearchThreshold;
+            if ( useBinarySearch )
+            {
+                std::sort( searchUpper.begin( ), searchUpper.end( ) );
+                searchUpper.erase( std::unique( searchUpper.begin( ), searchUpper.end( ) ), searchUpper.end( ) );
+            }
+
+            // scan backwards (inclusive)
+            for ( size_type i = idx + 1; i-- > 0; )
+            {
+                const CharType c = Core::ToUpper( data_->buffer_[ i ] );
+                bool inSet = false;
+
+                if ( useBinarySearch )
+                {
+                    inSet = std::binary_search( searchUpper.begin( ), searchUpper.end( ), c );
+                }
+                else
+                {
+                    for ( const auto& sc : searchUpper )
+                    {
                         if ( c == sc )
                         {
+                            inSet = true;
                             break;
                         }
                     }
-                    if ( i == numberOfSearchChars )
-                    {
-                        return start;
-                    }
-                } while ( start-- );
+                }
+
+                if ( !inSet )
+                {
+                    return i;
+                }
             }
+
             return npos;
         }
 
