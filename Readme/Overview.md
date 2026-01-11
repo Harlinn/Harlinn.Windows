@@ -1,5 +1,5 @@
 ﻿# Overview
-This article describes Harlinn.Windows, a Visual Studio 2022 solution.
+This article describes Harlinn.Windows, a Visual Studio 2026 solution.
 
 Before you can build the solution, please read [the build instructions](./Build.md) and configure 
 your environment accordingly.  
@@ -11,12 +11,12 @@ source libraries.
 
 ![Developed using Dear ImGui and ImPlot](./Images/ImGuiDemo2.png)
 
-There are currently 641 projects in the solution, and this article provides a high-level overview of what's inside.
+There are currently 646 projects in the solution, and this article provides a high-level overview of what's inside.
 
 ### Why did I not use cmake and vcpkg? 
 This is a good question, and initially I tried to do just that, but there were some snags:
 1. The size of the release build, using vcpkg, for grpc.lib was 325 MB; while the size of the release build of 
-   Harlinn.grpc.dll is just 3.7 MB. Currently the combined size of all the native dlls created for a release 
+   Harlinn.grpc.dll is just 3.8 MB. Currently the combined size of all the native dlls created for a release 
    build of the solution is 118 MB.
 2. Some packages relied on different versions of the same package, including their own private copy of a package.
 3. Some packages were compiled with /sdl on, while others were not. I prefer to turn /sdl and /GS off for release builds, and on for debug builds.
@@ -50,11 +50,10 @@ In particular, I've included many of the unit tests, that can be expected to com
 
 I've also created a fair number of tests for my own projects:
 
-- **Harlinn.Common.Core.Tests:** 3503
+- **Harlinn.Common.Core.Tests:** 3102
 - **Harlinn.Windows.Tests:** 271
 - **Harlinn.OCI.Tests:** 49
 - **Harlinn.ODBC.Tests:** 310
-- **Harlinn.Timeseries.Tests:** 10
 - **Harlinn.Julia.Tests:** 11
  
 All tests can be found under the Tests folder.
@@ -80,7 +79,7 @@ Still, with this solution you can now:
  
   ![](./Images/HWSkiaSkottie3D.png)
 
-- Learn a lot about some of the most widely used open source packages available, using Visual Studio 2022 and C++.
+- Learn a lot about some of the most widely used open source packages available, using Visual Studio 2026 and C++.
 
 ## Harlinn.Common.Core
 Harlinn.Common.Core is a library packaged as a dll that provide 

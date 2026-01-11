@@ -36,6 +36,12 @@ namespace Harlinn::Common::Core
 
     namespace Internal
     {
+        HCC_EXPORT BasicStringMemoryPool& BasicStringMemoryPool::Instance( ) noexcept
+        {
+            static BasicStringMemoryPool instance;
+            return instance;
+        }
+
         WideString From( const char* text, size_t textLength, unsigned codePage, unsigned flags )
         {
             auto byteCount = static_cast<int>( textLength );

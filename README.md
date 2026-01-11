@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This is the repository for Harlinn.Windows, a Visual Studio 2022 Solution with a wide range of useful C and C++ libraries for 64-bit Windows software development. 
+This is the repository for Harlinn.Windows, a Visual Studio 2026 Solution with a wide range of useful C and C++ libraries for 64-bit Windows software development. 
 
 The code was originally published on [CodeProject.com](https://www.codeproject.com/Articles/5319700/Harlinn-Windows-A-Visual-Studio-2022-Solution) 
 in 2021, and has a history that goes back to 2012.

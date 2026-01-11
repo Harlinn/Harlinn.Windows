@@ -55,8 +55,7 @@ namespace Harlinn::Tools::DbXGen::Metadata
 
     void IndexInfo::AfterLoad( )
     {
-        std::vector<WideString> fieldNames;
-        fieldNames_.Split( L';', fieldNames );
+        std::vector<WideString> fieldNames = fieldNames_.Split( L';', true );
         auto classInfo = Owner( );
         for ( auto& fieldName : fieldNames )
         {

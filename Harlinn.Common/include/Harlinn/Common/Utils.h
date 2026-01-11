@@ -27,6 +27,7 @@
 #include <limits>
 #include <cmath>
 #include <string_view>
+#include <cwctype>
 #include "Concepts.h"
 
 namespace Harlinn::Common

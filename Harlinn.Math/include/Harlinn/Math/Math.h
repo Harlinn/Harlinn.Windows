@@ -1230,7 +1230,8 @@ namespace Harlinn::Math
     template<SignedIntegerType T>
     constexpr inline T FastAbs( T val ) noexcept
     {
-        constexpr T mask = val >> ( sizeof( T ) * CHAR_BIT - 1 );
+		constexpr int shift = sizeof( T ) * CHAR_BIT - 1;
+        T mask = val >> shift;
         return ( ( val + mask ) ^ mask );
     }
 

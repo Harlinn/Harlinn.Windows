@@ -116,13 +116,13 @@ namespace AdventureWorks.Tests
             DeleteTestPersonIfExists(connection);
             DeleteTestBusinessentityIfExists(connection);
 
-            var insertedBusinessEntity = StoredProcedures.InsertBusinessentity(connection, testBusinessEntity);
+            var insertedBusinessEntity = StoredProceduresWrapper.InsertBusinessentity(connection, testBusinessEntity);
             testPerson.Businessentityid = testBusinessEntity.Businessentityid;
-            var insertedPerson = StoredProcedures.InsertPerson(connection, testPerson);
+            var insertedPerson = StoredProceduresWrapper.InsertPerson(connection, testPerson);
             Assert.IsTrue(insertedPerson);
 
             testPerson.Middlename = "B";
-            var updatedPerson = StoredProcedures.UpdatePerson(connection, testPerson);
+            var updatedPerson = StoredProceduresWrapper.UpdatePerson(connection, testPerson);
             Assert.IsTrue(updatedPerson);
 
             var command = connection.CreateCommand();

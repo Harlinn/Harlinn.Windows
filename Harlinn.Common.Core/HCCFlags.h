@@ -201,7 +201,7 @@ namespace Harlinn::Common::Core
                     IntegerType intValue = 0;
                     for ( auto& part : parts )
                     {
-                        auto entry = Base::Find( part );
+                        auto entry = Base::Find( Trim( part ) );
                         if ( entry )
                         {
                             intValue |= entry->Value;

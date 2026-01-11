@@ -31,6 +31,172 @@ namespace Harlinn::Common::Core
 
     namespace Internal
     {
+
+        
+        /// <summary>
+		/// Memory pool for BasicString internal buffers.
+        /// </summary>
+        class BasicStringMemoryPool
+        {
+        public:
+            // must match BasicString allocation granularity
+            static constexpr size_t PoolAllocationGranularity = 64;
+        private:
+            // number of size-classes
+            static constexpr size_t PoolMaxClasses = 256;
+            // maximum pooled byte count (16 KiB)
+            static constexpr size_t PoolMaxSize = PoolAllocationGranularity * PoolMaxClasses; 
+
+            struct PoolFreeNode
+            {
+                PoolFreeNode* next;
+            };
+
+            std::array<std::atomic<PoolFreeNode*>, PoolMaxClasses> freeLists_;
+        public:
+            HCC_EXPORT static BasicStringMemoryPool& Instance( ) noexcept;
+
+            // Allocate 'count' bytes. Throws by calling ThrowOSError(E_OUTOFMEMORY) on failure.
+            char* AllocateBytes( size_t count )
+            {
+                if ( count == 0 )
+                {
+                    return nullptr;
+                }
+
+                // Use pool only for sizes up to PoolMaxSize
+                if ( count <= PoolMaxSize )
+                {
+                    const size_t index = IndexForSize( count );
+                    // pop from freelist
+                    PoolFreeNode* head = freeLists_[ index ].load( std::memory_order_acquire );
+                    while ( head )
+                    {
+                        PoolFreeNode* next = head->next;
+                        if ( freeLists_[ index ].compare_exchange_weak( head, next, std::memory_order_acq_rel, std::memory_order_acquire ) )
+                        {
+                            return reinterpret_cast<char*>( head );
+                        }
+                    }
+
+                    // no free block available
+                    size_t allocSize = SizeForIndex( index );
+                    auto result = reinterpret_cast<char*>( malloc( allocSize ) );
+                    if ( !result )
+                    {
+                        ThrowOSError( E_OUTOFMEMORY );
+                    }
+                    return result;
+                }
+                else
+                {
+                    // Large allocation
+                    auto result = reinterpret_cast<char*>( malloc( count ) );
+                    if ( !result )
+                    {
+                        ThrowOSError( E_OUTOFMEMORY );
+                    }
+                    return result;
+                }
+            }
+
+            // Free buffers allocated by AllocateBytes; 'size' is the allocation byte count.
+            void FreeBytes( char* bytes, size_t size ) noexcept
+            {
+                if ( !bytes )
+                {
+                    return;
+                }
+
+                if ( size == 0 )
+                {
+                    // unknown size, free to be safe
+                    free( bytes );
+                    return;
+                }
+
+                if ( size <= PoolMaxSize )
+                {
+                    const size_t index = IndexForSize( size );
+                    auto node = reinterpret_cast<PoolFreeNode*>( bytes );
+                    
+                    // push to freelist
+                    PoolFreeNode* head = freeLists_[ index ].load( std::memory_order_acquire );
+                    do
+                    {
+                        node->next = head;
+                    } while ( !freeLists_[ index ].compare_exchange_weak( head, node, std::memory_order_release, std::memory_order_acquire ) );
+                }
+                else
+                {
+                    free( bytes );
+                }
+            }
+
+        private:
+            BasicStringMemoryPool( ) noexcept
+            {
+                for ( auto& f : freeLists_ )
+                {
+                    f.store( nullptr, std::memory_order_relaxed );
+                }
+            }
+
+            ~BasicStringMemoryPool( ) noexcept
+            {
+                // Release cached blocks
+                for ( size_t i = 0; i < freeLists_.size( ); ++i )
+                {
+                    PoolFreeNode* head = freeLists_[ i ].exchange( nullptr, std::memory_order_acq_rel );
+                    while ( head )
+                    {
+                        PoolFreeNode* next = head->next;
+                        free( head );
+                        head = next;
+                    }
+                }
+            }
+
+            // No copy/move
+            BasicStringMemoryPool( const BasicStringMemoryPool& ) = delete;
+            BasicStringMemoryPool& operator=( const BasicStringMemoryPool& ) = delete;
+            BasicStringMemoryPool( BasicStringMemoryPool&& ) = delete;
+            BasicStringMemoryPool& operator=( BasicStringMemoryPool&& ) = delete;
+
+            static constexpr size_t IndexForSize( size_t size ) noexcept
+            {
+                size_t idx = ( size + PoolAllocationGranularity - 1 ) / PoolAllocationGranularity;
+                if ( idx == 0 )
+                {
+                    idx = 1;
+                }
+                // clamp to last index
+                if ( idx > PoolMaxClasses )
+                {
+                    idx = PoolMaxClasses;
+                }
+                return idx - 1;
+            }
+
+            static constexpr size_t SizeForIndex( size_t index ) noexcept
+            {
+                return ( index + 1 ) * PoolAllocationGranularity;
+            }
+
+            
+        };
+
+        
+        inline char* AllocateBytes( size_t count )
+        {
+            return BasicStringMemoryPool::Instance( ).AllocateBytes( count );
+        }
+        inline void FreeBytes( char* bytes, size_t size )
+        {
+            BasicStringMemoryPool::Instance( ).FreeBytes( bytes, size );
+        }
+
+        /*
         inline char* AllocateBytes( size_t count )
         {
             auto result = ( char* )malloc( count );
@@ -47,6 +213,7 @@ namespace Harlinn::Common::Core
                 free( bytes );
             }
         }
+        */
         
         template<typename CharT>
             requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
@@ -552,7 +719,7 @@ namespace Harlinn::Common::Core
 
 
         static constexpr size_type npos = static_cast<size_type>( -1 );
-        static constexpr size_type AllocationGranularity = 64;
+        static constexpr size_type AllocationGranularity = Internal::BasicStringMemoryPool::PoolAllocationGranularity;
         static constexpr CharType DefaultPadCharacter = static_cast< CharType >( ' ' );
         using Data = Internal::Data<CharType>;
         static constexpr size_t BufferHeaderSize = offsetof( Data, buffer_ );

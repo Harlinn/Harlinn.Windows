@@ -81,7 +81,8 @@ namespace Doxygen2Md
                         auto combined = IO::Path::Combine( templateDirectory, filename );
                         if ( IO::File::Exist( combined ) == false )
                         {
-                            throw IO::FileNotFoundException( filename );
+                            IO::FileNotFoundException exc( WideString::From( filename ) );
+                            throw exc;
                         }
                         filename = combined;
                     }
