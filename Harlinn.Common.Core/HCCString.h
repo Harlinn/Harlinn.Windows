@@ -655,16 +655,29 @@ namespace Harlinn::Common::Core
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Multiple BasicString instances may share the same internal buffer until a modifying operation requires
-    /// uniqueness. Call <see cref="EnsureUnique"/> before obtaining raw pointers/iterators if you intend
-    /// to mutate the contents while shared references may exist.
+    ///   This class is designed to be lightweight and efficient, with a focus on minimizing memory allocations
+    ///   and copies. It achieves this by using a reference counting mechanism to share the underlying buffer
+    ///   between multiple instances.
     /// </para>
     /// <para>
-    /// There are potential pitfalls when this class is used in 
-    /// a multi-threaded program, but they can easily be avoided:
+	///   It's important to note that this class is not thread-safe. If multiple threads mutates the same
+    ///   shared buffer concurrently, it may lead to data races and undefined behavior.
     /// </para>
-	/// <list type="number">
-	///   <item>
+    /// <para>
+    ///   It's the user's responsibility to ensure that no other threads are accessing the string while it 
+    ///   is being modified.
+    /// </para>
+    /// <para>
+    ///   Multiple BasicString instances may share the same internal buffer until a modifying operation requires
+    ///   uniqueness. Call <see cref="EnsureUnique"/> before obtaining raw pointers/iterators if you intend
+    ///   to mutate the contents while shared references may exist.
+    /// </para>
+    /// <para>
+    ///   There are potential pitfalls when this class is used in 
+    ///   a multi-threaded program, but they can easily be avoided:
+    /// </para>
+    /// <list type="number">
+    ///   <item>
     ///     <description>
     ///     There should be no problems as long as the strings 
     ///     are just passed around between threads. This is
@@ -673,7 +686,7 @@ namespace Harlinn::Common::Core
     ///   </item>
     ///   <item>
     ///     <description>
-    ///     Call EnsureUnique before changes are made using
+    ///     Call EnsureUnique or Clone before changes are made using
     ///     character references, iterators and pointers to
     ///     the contents of a string. This will invalidate
     ///     existing references, iterators and pointers to
@@ -686,7 +699,7 @@ namespace Harlinn::Common::Core
     ///   </item>
     ///   <item>
     ///     <description>
-    ///     Never call an editing function using a reference
+    ///     <b>Never</b> call an editing function using a <b>reference</b>
     ///     to a string object that is shared between threads.
     ///     Two string objects, each local to a separate thread,
     ///     may share the same internal data object, and this is
@@ -695,7 +708,94 @@ namespace Harlinn::Common::Core
     ///     be called. 
     ///     </description>
     ///   </item>
-	/// </list>
+    /// </list>
+    /// <para>
+	///   There are a few patterns that can be used to avoid problems in multi-threaded scenarios:
+	///   <list type="number">
+    ///     <item>
+    ///       <description>
+    ///         <para>
+    ///           Don't modify it after sharing the instance with other threads in the process.
+    ///         </para>
+    ///         <para>
+	///           This is the simplest approach. Once a BasicString instance is shared with another thread,
+	///           it should not be modified until all threads are done with it. It also covers most typical use cases.
+    ///         </para>
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <description>
+    ///         <para>
+	///           When modifying <b>shared</b> BasicString instances, use <see cref="Clone"/> to create a 
+    ///           private copy of the string. Apply your modifications to the clone, and then share the 
+    ///           modified clone with other threads when you're done with it.
+    ///         </para>
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <description>
+    ///         <para>
+	///           <b>Never</b> share references, pointers or iterators to a BasicString instance between threads if
+	///           you plan to modify the string. This can lead to data races and undefined behavior.
+    ///         </para>
+    ///         <para>
+	///           Always share BasicString instances by value between threads.
+    ///         </para>
+    ///       </description>
+    ///     </item>
+    ///   </list>
+    ///   </para>
+    ///   <para>
+	///     Compared to standard library string classes, this class offers a few advantages:
+	///     <list type="bullet">
+	///     <item>
+	///       <description>
+    ///         <para>
+	///           It allocates from a custom thread safe memory pool, which in most cases improve the performance significantly.
+    ///         </para>
+	///       </description>
+	///     </item>
+    ///     <item>
+	///       <description>
+    ///         <para>
+	///           Passing instances as function arguments and return values is usually more efficient. 
+    ///           Run BasicStringBenchmarks to assess the performance impact.
+    ///         </para>
+	///       </description>
+	///     </item>
+	///   </list>
+    /// </para>
+    /// <para>
+	///   However, there are also some disadvantages compared to standard library string classes:
+	///   <list type="bullet">
+	///     <item>
+	/// 	  <description>
+	/// 	   <para>
+	///          The standard library string classes are faster for most string manipulation operations.
+    ///        </para>
+	///       </description>
+	///     </item>
+    ///     <item>
+	/// 	  <description>
+	/// 	   <para>
+	///          The standard library string classes use small string optimization (SSO) for short strings, 
+    ///          which will reduce memory allocations for small string operations.
+    ///        </para>
+	///       </description>
+	///     </item>
+    ///     <item>
+	/// 	  <description>
+	/// 	   <para>
+	///          The standard library string classes may in some cases work much better with the algorithms provided by the standard library.
+	///          BasicString provides iterators that are compatible with standard library algorithms, but some algorithms may expect
+    ///          specific iterator traits or behaviors that BasicString does not provide. The algorithms implemented by the Microsoft 
+    ///          C++ development team are in some cases optimized for the iterators used with C++ string classes and other standard C++
+    ///          containers, and able to take advantage of private implementation details.
+    ///        </para>
+	///       </description>
+	///     </item>
+	///   </list>
+    /// </para>
     /// </remarks>
     /// <typeparam name="T">The character type of the string</typeparam>
     template<typename T>
