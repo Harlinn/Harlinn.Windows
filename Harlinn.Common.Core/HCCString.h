@@ -1203,19 +1203,31 @@ namespace Harlinn::Common::Core
         {
             if ( data_ )
             {
-                if ( position.ptr_ < data_->buffer_ )
+                // nullptr is not a valid position for a non-empty string
+                if ( position.ptr_ == nullptr )
+                {
+                    throw std::out_of_range( "position is null" );
+                }
+
+                const size_t currentSize = data_->size_;
+
+                // Convert pointers to integer addresses for well-defined comparisons
+                auto posAddr = reinterpret_cast<std::uintptr_t>( position.ptr_ );
+                auto beginAddr = reinterpret_cast<std::uintptr_t>( data_->buffer_ );
+                auto endAddr = reinterpret_cast<std::uintptr_t>( &data_->buffer_[ currentSize ] );
+
+                if ( posAddr < beginAddr )
                 {
                     throw std::out_of_range( "position < begin()" );
                 }
-                auto currentSize = data_->size_;
-                if ( position.ptr_ >= &data_->buffer_[ currentSize ] )
+                if ( posAddr >= endAddr )
                 {
                     throw std::out_of_range( "position >= end()" );
                 }
             }
             else
             {
-				// In this case position is considered to point to beginning of an empty string.
+                // For an empty string the class expects iterator.ptr_ == nullptr
                 if ( position.ptr_ != nullptr )
                 {
                     throw std::out_of_range( "string is empty" );
@@ -13234,37 +13246,116 @@ namespace Harlinn::Common::Core
 
 
 
+        /// <summary>
+        /// Releases any internal storage held by this string and makes the instance empty.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This operation decrements the reference count of the internal <c>Data</c> object (if any)
+        /// and frees the backing memory when the last reference is released. After this call the
+        /// string contains no data (<c>data_ == nullptr</c>).
+        /// </para>
+        /// <para>
+        /// Thread-safety: the reference count decrement is performed using interlocked primitives.
+        /// External synchronization is required if other threads may concurrently access or modify
+        /// the same BasicString instance.
+        /// </para>
+        /// </remarks>
         void erase( )
         {
             ReleaseData( data_ );
             data_ = nullptr;
         }
 
+        /// <summary>
+        /// Erases a region of characters from the string starting at the specified index.
+        /// </summary>
+        /// <param name="index">Zero-based index of the first character to erase. If >= length the call is a no-op.</param>
+        /// <param name="count">
+        /// Number of characters to remove beginning at <paramref name="index"/>. When equal to <c>npos</c> the erase
+        /// extends to the end of the string. If the sum of <paramref name="index"/> and <paramref name="count"/>
+        /// exceeds the current length the erase length is clamped to the available characters.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This method preserves the class's copy-on-write semantics. It chooses an in-place removal when the buffer is
+        /// uniquely owned and the internal rounded allocation remains compatible; otherwise it allocates a new buffer
+        /// and copies the preserved content. When the erase results in an empty string internal storage is released.
+        /// </para>
+        /// <para>
+        /// After this call any raw pointers, iterators or references into the prior buffer may be invalidated.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying memory allocation fails while performing the erase (for example when creating a new internal buffer).</exception>
         void erase( size_type index, size_type count = npos )
         {
             Erase( index, count );
         }
 
+        /// <summary>
+        /// Erases the character at the position indicated by <paramref name="position"/>.
+        /// </summary>
+        /// <param name="position">Iterator referring to the character to remove. The iterator must refer to this string.</param>
+        /// <returns>
+        /// An iterator pointing to the character that now occupies the original <paramref name="position"/>,
+        /// or an iterator equivalent to <c>nullptr</c> when the erase removes the entire contents.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The function validates that <paramref name="position"/> is within range using <see cref="RangeCheck"/>.
+        /// It then performs the erase operation which may allocate if the buffer is shared or the rounded allocation changes.
+        /// </para>
+        /// <para>
+        /// The returned iterator refers to memory owned by this BasicString instance and will be invalidated by any
+        /// subsequent non-const operation that modifies the string.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="std::out_of_range">Thrown when <paramref name="position"/> does not refer to a valid location in this string.</exception>
+        /// <exception cref="SystemException">Thrown when underlying memory allocation fails while performing the erase.</exception>
         iterator erase( const_iterator position )
         {
-            // RangeCheck throws if data_ is nullptr
             RangeCheck( position );
             return iterator(Erase( static_cast<size_type>(position - begin()) , 1 ));
         }
 
 
+        /// <summary>
+        /// Releases internal storage and resets the string to an empty state.
+        /// </summary>
+        /// <remarks>
+        /// This is an alias for <see cref="erase()"/>. After calling <see cref="Clear"/> the string contains no data
+        /// (<c>data_ == nullptr</c>).
+        /// </remarks>
         void Clear( )
         {
             ReleaseData( data_ );
             data_ = nullptr;
         }
 
+        /// <summary>
+        /// Clears the contents of the string.
+        /// </summary>
+        /// <remarks>
+        /// Lowercase alias for <see cref="Clear"/> to match common container APIs.
+        /// </remarks>
         void clear( )
         {
             Clear( );
         }
 
 
+        /// <summary>
+        /// Removes a sequence of characters from this string beginning at the specified index.
+        /// </summary>
+        /// <param name="start">Zero-based index of the first character to remove. If <paramref name="start"/> is greater than or equal to the current string length no action is taken.</param>
+        /// <param name="length">Number of characters to remove. When equal to <see cref="BasicString::npos"/> (the default) the call removes all characters from <paramref name="start"/> to the end of the string.</param>
+        /// <remarks>
+        /// This operation uses the internal <see cref="Erase"/> helper to perform the removal. When the removal results in an empty string
+        /// the internal storage may be released. If the internal buffer is shared the class copy-on-write semantics apply and the operation
+        /// will allocate a new unique buffer as needed. Any existing raw pointers, references or iterators into the string may be invalidated.
+        /// Thread-safety: the method is not synchronized; external synchronization is required if multiple threads may modify the same instance concurrently.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying allocation or OS helpers used by the internal erase/allocator fail.</exception>
         void Remove( size_type start, size_type length = npos )
         {
             if ( data_ && start < data_->size_ )
@@ -13273,6 +13364,19 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Removes the character range specified by the half-open interval [start, end).
+        /// </summary>
+        /// <param name="start">Zero-based index of the first character to remove. If <paramref name="start"/> is greater than or equal to the current string length the call is a no-op.</param>
+        /// <param name="end">Zero-based index one past the last character to remove (exclusive). When <paramref name="end"/> &lt;= <paramref name="start"/> no action is taken.</param>
+        /// <remarks>
+        /// The method delegates to <see cref="Erase"/> with the computed length (<c>end - start</c>) and follows the same behavior
+        /// and copy-on-write semantics as other editing operations in <c>BasicString</c>. If <paramref name="end"/> exceeds the current
+        /// string length the number of characters removed is clamped to the available characters starting at <paramref name="start"/>.
+        /// Any existing raw pointers, references or iterators into the string may be invalidated by this operation.
+        /// Thread-safety: not synchronized; external synchronization is required for concurrent writers.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying allocation or OS helpers used by the internal erase/allocator fail.</exception>
         void RemoveRange( size_type start, size_type end )
         {
             if ( data_ && start < data_->size_ && start < end )
@@ -13280,6 +13384,417 @@ namespace Harlinn::Common::Core
                 Erase( start, end - start );
             }
         }
+
+        /// Keeps the inclusive-exclusive character range [start, end) from the current string and discards all other characters.
+        /// </summary>
+        /// <param name="start">Zero-based index of the first character to keep. If <c>start</c> &gt;= current length the result becomes empty.</param>
+        /// <param name="end">One-past-the-end index of the region to keep. If <c>end</c> is greater than the current length it will be clamped to the current size. If <c>end</c> &lt;= <c>start</c> the result becomes empty.</param>
+        /// <remarks>
+        /// This operation replaces the current internal buffer with a new buffer containing only the characters in the specified range.
+        /// - If the requested range equals the entire current content (i.e. <c>start == 0</c> and <c>end - start == currentSize</c>) the method is a no-op.
+        /// - If the resulting length is zero the method releases the internal storage and sets <c>data_</c> to <c>nullptr</c>.
+        /// - When the operation requires allocation a new internal <c>Data</c> buffer is created using the class allocation policy and the preserved
+        ///   subrange is copied into it. The previous buffer is released via <c>ReleaseData</c>.
+        /// Complexity: O(n) in the length of the kept region due to allocation and copy when reallocation is required.
+        /// Thread-safety: This method is not synchronized. External synchronization is required when multiple threads may access or modify the same instance.
+        /// Ownership: After the call this object owns the retained buffer (reference count == 1) or holds no data when the result is empty.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying memory allocation for the new buffer fails.</exception>
+        void Keep( size_type start, size_type end )
+        {
+            if ( !data_ )
+            {
+                return;
+            }
+
+            const size_type currentSize = data_->size_;
+
+            // Normalize and validate range
+            if ( start >= currentSize || end <= start )
+            {
+                // Result is empty
+                ReleaseData( data_ );
+                data_ = nullptr;
+                return;
+            }
+
+            if ( end > currentSize )
+            {
+                end = currentSize;
+            }
+
+            const size_type newSize = static_cast<size_type>( end - start );
+
+            // Nothing to do if the requested range equals the current content
+            if ( start == 0 && newSize == currentSize )
+            {
+                return;
+            }
+
+            // Create a new buffer with the kept range and replace the current data
+            Data* newData = Initialize( data_->buffer_ + start, newSize );
+            ReleaseData( data_ );
+            data_ = newData;
+        }
+
+        /// <summary>
+        /// Removes leading and trailing white-space characters from the string.
+        /// </summary>
+        /// <remarks>
+        /// Trims whitespace from both ends of the string in-place. The function:
+        /// <list type="number">
+        ///   <item>
+        ///     <description>Scans from the beginning to find the first non-whitespace character.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Scans from the end to find the last non-whitespace character.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>If no trimming is required the method returns immediately; otherwise it calls <c>Keep(start, end)</c> to adjust the internal buffer.</description>
+        ///   </item>
+        /// </list>
+        /// Complexity: O(n) where n is the length of the string.
+        /// <para>
+        /// Side-effects and ownership:
+        /// - This operation may allocate or release internal storage via the class allocation helpers when shrinking the buffer.
+        /// - Callers holding raw pointers, iterators or references into the string should expect these to be invalidated when the buffer is changed.
+        /// - The method preserves the copy-on-write semantics of <c>BasicString&lt;T&gt;</c>: when the internal buffer is shared the implementation may create a unique buffer prior to modification.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is not synchronized. External synchronization is required if multiple threads may modify the same BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when underlying allocation or OS helpers used by the container fail (for example when memory cannot be allocated).</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("  hello world  ");
+        /// s.Trim(); // s == "hello world"
+        /// </code>
+        /// </example>
+        void Trim( )
+        {
+            if ( !data_ )
+            {
+                return;
+            }
+
+            size_type start = 0;
+            size_type end = data_->size_;
+
+            // Trim leading whitespace
+            while ( start < end && Internal::IsWhiteSpace( data_->buffer_[ start ] ) )
+            {
+                ++start;
+            }
+
+            // Trim trailing whitespace
+            while ( end > start && Internal::IsWhiteSpace( data_->buffer_[ end - 1 ] ) )
+            {
+                --end;
+            }
+
+            if ( start == 0 && end == data_->size_ )
+            {
+                // Nothing to trim
+                return;
+            }
+
+            Keep( start, end );
+        }
+
+        /// <summary>
+        /// Returns a new string with leading and trailing whitespace removed.
+        /// </summary>
+        /// <returns>
+        /// A <c>BasicString</c> instance that contains the characters from this string
+        /// with leading and trailing whitespace removed. If the original string contains
+        /// no leading or trailing whitespace the returned string references the same
+        /// internal buffer (shared via reference counting).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The operation scans the internal buffer from both ends to locate the first
+        /// and last non-whitespace characters using <c>Internal::IsWhiteSpace</c>.
+        /// Complexity is O(n) where n is the length of the string.
+        /// </para>
+        /// <para>
+        /// If the string is empty the method returns an empty <c>BasicString</c>.
+        /// When no trimming is required the returned value is constructed from the
+        /// existing internal <c>Data*</c> pointer and therefore shares ownership via
+        /// reference counting. Callers that intend to modify the returned buffer in-place
+        /// should call <c>EnsureUnique()</c> on the result before mutating to obtain
+        /// exclusive ownership.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is const and safe to call concurrently with other
+        /// const operations. External synchronization is required if other threads may
+        /// modify this string concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Underlying allocation helpers may throw if a new buffer must be allocated during substring creation.
+        /// </exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("  hello world  ");
+        /// auto t = s.Trimmed(); // t == "hello world"
+        /// </code>
+        /// </example>
+        BasicString Trimmed( ) const
+        {
+            if ( !data_ )
+            {
+                return {};
+            }
+
+            size_type start = 0;
+            size_type end = data_->size_;
+
+            // Trim leading whitespace
+            while ( start < end && Internal::IsWhiteSpace( data_->buffer_[ start ] ) )
+            {
+                ++start;
+            }
+
+            // Trim trailing whitespace
+            while ( end > start && Internal::IsWhiteSpace( data_->buffer_[ end - 1 ] ) )
+            {
+                --end;
+            }
+
+            if ( start == 0 && end == data_->size_ )
+            {
+                // Nothing to trim
+                return BasicString(data_);
+            }
+
+            return SubString( start, end - start );
+        }
+
+        /// <summary>
+        /// Removes leading whitespace characters from this string.
+        /// </summary>
+        /// <remarks>
+        /// Trims whitespace from the start of the string in-place. If the string is empty this call is a no-op.
+        /// The function uses <c>Internal::IsWhiteSpace</c> to identify whitespace characters and advances a
+        /// start index until the first non-whitespace character or the end of the string is reached. If no
+        /// characters are trimmed the function returns immediately; otherwise it calls <c>Keep(start, end)</c>
+        /// to adjust the stored content which may release or reallocate the internal buffer as needed.
+        /// <para>
+        /// Important notes:
+        /// <list type="bullet">
+        ///   <item><description>Callers holding raw pointers, iterators or references into the string must be
+        ///   prepared for those references to become invalid after this call because the internal buffer may be replaced.</description></item>
+        ///   <item><description>This method is not synchronized; external synchronization is required when multiple
+        ///   threads may access or modify the same BasicString instance concurrently.</description></item>
+        /// </list>
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when an underlying allocation or OS error occurs during buffer reallocation or release.</exception>
+        void TrimLeft( )
+        {
+            if ( !data_ )
+            {
+                return;
+            }
+
+            size_type start = 0;
+            size_type end = data_->size_;
+
+            // Trim leading whitespace
+            while ( start < end && Internal::IsWhiteSpace( data_->buffer_[ start ] ) )
+            {
+                ++start;
+            }
+
+            if ( start == 0 && end == data_->size_ )
+            {
+                // Nothing to trim
+                return;
+            }
+
+            Keep( start, end );
+        }
+
+        /// <summary>
+        /// Returns a new string with leading whitespace removed.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="BasicString"/> instance containing the substring that starts at the first non-whitespace
+        /// character and continues to the end of this string. If this string is empty an empty <see cref="BasicString"/>
+        /// is returned. If there is no leading whitespace the method returns a shallow copy that shares the same
+        /// internal data buffer.
+        /// </returns>
+        /// <remarks>
+        /// The method scans the internal buffer from the beginning and advances a start index while characters
+        /// satisfy <see cref="Internal::IsWhiteSpace"/>. If no trimming is necessary the function returns a
+        /// shallow copy constructed from the existing internal <c>Data*</c>. When trimming is required the method
+        /// returns a substring created by <see cref="SubString"/>, which may allocate a new internal buffer.
+        /// Because allocation may occur this function can propagate exceptions raised by the underlying allocator
+        /// (for example when <c>Internal::AllocateBytes</c> fails).
+        ///
+        /// Thread-safety: the function is const and safe to call concurrently with other const operations. If other
+        /// threads may mutate this instance concurrently, callers must provide external synchronization.
+        ///
+        /// Ownership: when a shallow copy is returned the internal reference count is incremented. When a new buffer
+        /// is allocated the returned instance owns its buffer exclusively.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for the resulting substring fails.</exception>
+        BasicString TrimmedLeft( ) const
+        {
+            if ( !data_ )
+            {
+                return {};
+            }
+
+            size_type start = 0;
+            size_type end = data_->size_;
+
+            // Trim leading whitespace
+            while ( start < end && Internal::IsWhiteSpace( data_->buffer_[ start ] ) )
+            {
+                ++start;
+            }
+
+            if ( start == 0 && end == data_->size_ )
+            {
+                // Nothing to trim
+                return BasicString( data_ );
+            }
+
+            return SubString( start, end - start );
+        }
+
+
+        /// <summary>
+        /// Removes trailing whitespace characters from the end of the string.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Scans the internal character buffer from the end toward the beginning and removes
+        /// any characters for which <c>Internal::IsWhiteSpace</c> returns <c>true</c>.
+        /// The operation is performed in-place when possible by delegating to the internal
+        /// <c>Keep(start,end)</c> helper which updates the stored size and buffer contents
+        /// as required.
+        /// </para>
+        /// <para>
+        /// Complexity: O(n) where n is the number of trailing characters examined (in the worst
+        /// case the entire string length). The method does not allocate memory by itself but may
+        /// call internal helpers that allocate when the buffer needs to be reallocated (for example
+        /// when producing a unique buffer); such allocations propagate platform-specific exceptions.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is not synchronized. External synchronization is required
+        /// if multiple threads may concurrently modify the same <c>BasicString</c> instance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when an underlying allocation or OS error occurs while making the buffer unique
+        /// or when releasing/allocating internal storage. Underlying helpers (for example
+        /// <c>Internal::AllocateBytes</c> / <c>ReleaseData</c>) will propagate platform-specific errors.
+        /// </exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("hello   ");
+        /// s.TrimRight(); // s becomes "hello"
+        /// </code>
+        /// </example>
+        void TrimRight( )
+        {
+            if ( !data_ )
+            {
+                return;
+            }
+
+            size_type start = 0;
+            size_type end = data_->size_;
+
+            // Trim trailing whitespace
+            while ( end > start && Internal::IsWhiteSpace( data_->buffer_[ end - 1 ] ) )
+            {
+                --end;
+            }
+
+            if ( start == 0 && end == data_->size_ )
+            {
+                // Nothing to trim
+                return;
+            }
+
+            Keep( start, end );
+        }
+
+        /// <summary>
+        /// Returns a new string with trailing whitespace removed.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="BasicString"/> that contains the characters from this string
+        /// with any trailing whitespace characters removed. If this string is empty
+        /// an empty <see cref="BasicString"/> is returned.
+        /// </returns>
+        /// <remarks>
+        /// The method scans the current string from the end towards the start and
+        /// reduces the logical end position until the last non-whitespace character
+        /// is found. Whitespace is determined by <see cref="Internal::IsWhiteSpace"/>.
+        /// This operation does not modify this instance; it returns either a substring
+        /// that shares or allocates internal storage depending on whether trimming is
+        /// required:
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>
+        ///       If no trailing whitespace exists the method returns a shallow reference
+        ///       to the existing internal buffer by constructing a <see cref="BasicString"/>
+        ///       from the current internal data pointer.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        ///       If trimming is required a new string is created via <see cref="SubString"/>
+        ///       which may allocate memory according to the class allocation policy.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// Complexity: O(n) where n is the length of the string.
+        /// Thread-safety: safe for concurrent const access. External synchronization is
+        /// required if other threads may concurrently modify this instance.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying memory allocation fails while creating the resulting substring.
+        /// </exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("hello   ");
+        /// auto trimmed = s.TrimmedRight(); // trimmed == "hello"
+        /// </code>
+        /// </example>
+        /// <seealso>SubString</seealso>
+        /// <seealso>Internal::IsWhiteSpace</seealso>
+        BasicString TrimmedRight( ) const
+        {
+            if ( !data_ )
+            {
+                return {};
+            }
+
+            size_type start = 0;
+            size_type end = data_->size_;
+
+            // Trim trailing whitespace
+            while ( end > start && Internal::IsWhiteSpace( data_->buffer_[ end - 1 ] ) )
+            {
+                --end;
+            }
+
+            if ( start == 0 && end == data_->size_ )
+            {
+                // Nothing to trim
+                return BasicString( data_ );
+            }
+
+            return SubString( start, end - start );
+        }
+
+
 
         void TrimRight( const CharType* charactersToRemove, size_type numberOfCharactersToRemove )
         {
@@ -13304,63 +13819,162 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 auto currentLength = data_->size_;
-                auto currentAllocationSize = AllocationByteCount( currentLength );
-                if ( (data_->referenceCount_ == 1) && 
-                    (data_->Contains( with, replaceAtPosition ) == false) )
+                auto currentAllocationSize = currentLength ? AllocationByteCountForLengthNotZero( currentLength ) : 0;
+
+                // local deleter used for exception-safe temporary allocations that come from malloc
+                struct RawFree
+                {
+                    void operator()( Data* p ) const noexcept
+                    {
+                        if ( p )
+                        {
+                            size_t allocationByteCount = AllocationByteCountForLengthNotZero( p->size_ );
+                            Internal::FreeBytes( reinterpret_cast<char*>( p ), allocationByteCount );
+                        }
+                    }
+                };
+
+                // clamp replaceLength when replaceAtPosition is inside the string
+                if ( replaceAtPosition < currentLength )
+                {
+                    auto maxReplaceLength = currentLength - replaceAtPosition;
+                    if ( maxReplaceLength < replaceLength )
+                    {
+                        replaceLength = maxReplaceLength;
+                    }
+                }
+                else
+                {
+                    // when replaceAtPosition >= currentLength, replaceLength must be treated as 0 (nothing to remove)
+                    replaceLength = 0;
+                }
+
+                // Helper: determine if source region [with, with+withLength) overlaps the replacement region
+                auto SourceOverlapsReplacement = [ & ]( ) noexcept -> bool
+                {
+                    if ( !with || withLength == 0 )
+                    {
+                        return false;
+                    }
+                    const CharType* buf = data_->buffer_;
+                    const CharType* bufEnd = buf + data_->size_;
+
+                    // If 'with' is outside the buffer entirely there is no overlap.
+                    if ( with < buf || with >= bufEnd )
+                    {
+                        return false;
+                    }
+
+                    // 'with' starts inside buffer. Compute offsets safely.
+                    size_type srcStart = static_cast<size_type>( with - buf );
+                    // If withLength extends beyond the buffer, treat as overlap (and force allocation path)
+                    if ( withLength > data_->size_ - srcStart )
+                    {
+                        return true;
+                    }
+                    size_type srcEnd = srcStart + withLength; // one past last source character
+
+                    size_type replaceStart = replaceAtPosition;
+                    size_type replaceEnd = replaceStart + replaceLength;
+
+                    // overlap if intervals intersect
+                    return !( srcEnd <= replaceStart || srcStart >= replaceEnd );
+                };
+
+                bool sourceOverlaps = SourceOverlapsReplacement( );
+
+                // Ensure no integer overflow when computing new length: newLength = currentLength - replaceLength + withLength
+                auto SafeComputeNewLength = [ & ]( size_type& outNewLength ) -> bool
+                {
+                    size_type preserved = currentLength - replaceLength; // replaceLength already clamped
+                    if ( withLength > std::numeric_limits<size_type>::max( ) - preserved )
+                    {
+                        return false; // overflow
+                    }
+                    outNewLength = preserved + withLength;
+                    return true;
+                };
+
+                // In-place path only allowed when buffer unique and source does not overlap replacement region
+                if ( ( data_->referenceCount_ == 1 ) && ( sourceOverlaps == false ) )
                 {
                     if ( replaceAtPosition < currentLength )
                     {
-                        auto maxReplaceLength = currentLength - replaceAtPosition;
-                        if ( maxReplaceLength < replaceLength )
+                        // replace inside existing content
+                        size_type newLength = 0;
+                        if ( !SafeComputeNewLength( newLength ) )
                         {
-                            replaceLength = maxReplaceLength;
+                            throw std::length_error( "string size overflow in Replace" );
                         }
-                        if ( withLength != replaceLength )
+
+                        // if resulting length is zero, release current buffer and return empty
+                        if ( newLength == 0 )
                         {
-                            auto newLength = currentLength + withLength - replaceLength;
-                            auto curentRemainingPosition = replaceAtPosition + replaceLength;
-                            auto remainingLength = currentLength - curentRemainingPosition;
-                            auto newRemainingPosition = replaceAtPosition + withLength;
-                            size_type newAllocationSize = AllocationByteCount( newLength );
-                            if ( newAllocationSize == currentAllocationSize )
-                            {
-                                MemMove( data_->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
-                                MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
-                                data_->size_ = newLength;
-                                data_->buffer_[ newLength ] = static_cast< CharType >( 0 );
-                            }
-                            else
-                            {
-                                std::unique_ptr<Data> tmp( Allocate( newAllocationSize, newLength ) );
-                                MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
-                                MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
-                                MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
-                                ReleaseData( data_ );
-                                data_ = tmp.release( );
-                            }
+                            ReleaseData( data_ );
+                            data_ = nullptr;
+                            return;
+                        }
+
+                        auto currentRemainingPosition = replaceAtPosition + replaceLength;
+                        auto remainingLength = currentLength - currentRemainingPosition;
+                        auto newRemainingPosition = replaceAtPosition + withLength;
+                        size_type newAllocationSize = AllocationByteCountForLengthNotZero( newLength );
+
+                        if ( newAllocationSize == currentAllocationSize )
+                        {
+                            // move trailing data to its new position (in-place)
+                            MemMove( data_->buffer_ + newRemainingPosition, data_->buffer_ + currentRemainingPosition, remainingLength );
+                            // copy the replacement data (use MemCopyOrZero to handle possible null 'with')
+                            MemCopyOrZero( data_->buffer_ + replaceAtPosition, with, withLength );
+                            data_->size_ = newLength;
+                            data_->buffer_[ newLength ] = static_cast<CharType>( 0 );
                         }
                         else
                         {
-                            // No change in size, just overwrite
-                            MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
+                            // allocate temporary buffer with RAII that frees with the correct raw-free function
+                            std::unique_ptr<Data, RawFree> tmp( Allocate( newAllocationSize, newLength ) );
+                            MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
+                            MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + currentRemainingPosition, remainingLength );
+                            MemCopyOrZero( tmp->buffer_ + replaceAtPosition, with, withLength );
+                            ReleaseData( data_ );
+                            // transfer ownership of the newly allocated buffer into data_ (tmp.release() avoids calling RawFree)
+                            data_ = tmp.release( );
                         }
                     }
                     else
                     {
+                        // replaceAtPosition >= currentLength -> pad + append
                         if ( withLength )
                         {
-                            auto newLength = replaceAtPosition + withLength;
-                            size_type newAllocationSize = AllocationByteCount( newLength );
+                            size_type newLength = 0;
+                            if ( replaceAtPosition > std::numeric_limits<size_type>::max( ) - withLength )
+                            {
+                                throw std::length_error( "string size overflow in Replace" );
+                            }
+                            newLength = replaceAtPosition + withLength;
+
+                            if ( newLength == 0 )
+                            {
+                                ReleaseData( data_ );
+                                data_ = nullptr;
+                                return;
+                            }
+                            size_type newAllocationSize = AllocationByteCountForLengthNotZero( newLength );
                             if ( newAllocationSize == currentAllocationSize )
                             {
-                                MemSet( data_->buffer_ + data_->size_, padCharacter, replaceAtPosition - data_->size_ );
-                                MemCopy( data_->buffer_ + replaceAtPosition, with, withLength );
+                                // fill gap
+                                if ( replaceAtPosition > data_->size_ )
+                                {
+                                    MemSet( data_->buffer_ + data_->size_, padCharacter, replaceAtPosition - data_->size_ );
+                                }
+                                MemCopyOrZero( data_->buffer_ + replaceAtPosition, with, withLength );
                                 data_->size_ = newLength;
-                                data_->buffer_[ newLength ] = static_cast< CharType >( 0 );
+                                data_->buffer_[ newLength ] = static_cast<CharType>( 0 );
                             }
                             else
                             {
-                                std::unique_ptr<Data> tmp( Initialize( data_->buffer_, data_->size_, padCharacter, replaceAtPosition, with, withLength ) );
+                                // Create new buffer initialized with old content + padding + with
+                                std::unique_ptr<Data, RawFree> tmp( Initialize( data_->buffer_, data_->size_, padCharacter, replaceAtPosition - data_->size_, with, withLength ) );
                                 ReleaseData( data_ );
                                 data_ = tmp.release( );
                             }
@@ -13369,24 +13983,32 @@ namespace Harlinn::Common::Core
                 }
                 else
                 {
+                    // Shared buffer or source overlaps: always allocate new buffer and copy
                     if ( replaceAtPosition < currentLength )
                     {
-                        auto maxReplaceLength = currentLength - replaceAtPosition;
-                        if ( maxReplaceLength < replaceLength )
+                        size_type newLength = 0;
+                        if ( !SafeComputeNewLength( newLength ) )
                         {
-                            replaceLength = maxReplaceLength;
+                            throw std::length_error( "string size overflow in Replace" );
                         }
-                        
-                        auto newLength = currentLength + withLength - replaceLength;
-                        auto curentRemainingPosition = replaceAtPosition + replaceLength;
-                        auto remainingLength = currentLength - curentRemainingPosition;
-                        auto newRemainingPosition = replaceAtPosition + withLength;
-                        size_type newAllocationSize = AllocationByteCount( newLength );
 
-                        std::unique_ptr<Data> tmp( Allocate( newAllocationSize, newLength ) );
+                        if ( newLength == 0 )
+                        {
+                            ReleaseData( data_ );
+                            data_ = nullptr;
+                            return;
+                        }
+
+                        auto currentRemainingPosition = replaceAtPosition + replaceLength;
+                        auto remainingLength = currentLength - currentRemainingPosition;
+                        auto newRemainingPosition = replaceAtPosition + withLength;
+                        size_type newAllocationSize = AllocationByteCountForLengthNotZero( newLength );
+
+                        std::unique_ptr<Data, RawFree> tmp( Allocate( newAllocationSize, newLength ) );
                         MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
-                        MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
-                        MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
+                        MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + currentRemainingPosition, remainingLength );
+                        // If 'with' points inside the old buffer, reading it now is safe because we haven't released data_ yet.
+                        MemCopyOrZero( tmp->buffer_ + replaceAtPosition, with, withLength );
                         ReleaseData( data_ );
                         data_ = tmp.release( );
                     }
@@ -13394,7 +14016,8 @@ namespace Harlinn::Common::Core
                     {
                         if ( withLength )
                         {
-                            std::unique_ptr<Data> tmp( Initialize( data_->buffer_, data_->size_, padCharacter, replaceAtPosition - data_->size_, with, withLength ) );
+                            // pad + append in new buffer
+                            std::unique_ptr<Data, RawFree> tmp( Initialize( data_->buffer_, data_->size_, padCharacter, replaceAtPosition - data_->size_, with, withLength ) );
                             ReleaseData( data_ );
                             data_ = tmp.release( );
                         }
@@ -13403,7 +14026,8 @@ namespace Harlinn::Common::Core
             }
             else
             {
-                data_ = Initialize( padCharacter, replaceAtPosition, with, withLength);
+                // No data_: create new buffer with padding then 'with'
+                data_ = Initialize( padCharacter, replaceAtPosition, with, withLength );
             }
         }
 
