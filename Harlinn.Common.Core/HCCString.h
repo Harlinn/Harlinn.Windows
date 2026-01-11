@@ -2180,10 +2180,20 @@ namespace Harlinn::Common::Core
         /// which throws a platform-specific error.
         /// </exception>
         template<typename InputIt>
-			requires std::is_convertible_v<typename std::iterator_traits<InputIt>::value_type, CharType> && 
-                std::forward_iterator<InputIt>
+			requires std::is_same_v<typename std::iterator_traits<InputIt>::value_type, CharType> && 
+                std::bidirectional_iterator<InputIt>
         static Data* Initialize( InputIt first, InputIt last )
         {
+            /*
+            if ( first != last )
+            {
+				backIt = last - 1;
+                if ( *backIt == static_cast<CharType>( 0 ) )
+                {
+                    last = backIt;
+				}
+            }
+            */
             auto size = std::distance( first, last );
             if ( size )
             {
@@ -2212,8 +2222,8 @@ namespace Harlinn::Common::Core
         /// contiguous buffer and then allocates the final internal <c>Data</c> object sized to the exact element count.
         /// </remarks>
         template<typename InputIt>
-            requires std::is_convertible_v<typename std::iterator_traits<InputIt>::value_type, CharType>&&
-                !std::forward_iterator<InputIt> && std::input_iterator<InputIt>
+            requires std::is_same_v<typename std::iterator_traits<InputIt>::value_type, CharType>&&
+                !std::bidirectional_iterator<InputIt> && std::input_iterator<InputIt>
         static Data* Initialize( InputIt first, InputIt last )
         {
 			boost::container::small_vector<CharType, 256> temp;
@@ -2221,6 +2231,13 @@ namespace Harlinn::Common::Core
             {
                 temp.push_back( static_cast<CharType>( *first ) );
             }
+
+            /*
+            if ( temp.size( ) && temp.back() == static_cast<CharType>( 0 ) )
+            {
+                temp.pop_back( );
+            }
+            */
 
             if ( temp.empty( ) )
             {
@@ -3638,7 +3655,7 @@ namespace Harlinn::Common::Core
         /// </code>
         /// </example>
         template<std::input_iterator InputIt>
-            requires std::is_convertible_v<typename std::iterator_traits<InputIt>::value_type, CharType>
+            requires std::is_same_v<typename std::iterator_traits<InputIt>::value_type, CharType>
         BasicString( InputIt first, InputIt last )
             : data_( Initialize( first, last ) )
         {
@@ -3671,7 +3688,7 @@ namespace Harlinn::Common::Core
         /// will report platform-specific errors which are forwarded as exceptions.
         /// </exception>
         template <std::ranges::input_range R>
-			requires std::is_convertible_v<std::ranges::range_value_t<R>, CharType>
+			requires std::is_same_v<std::ranges::range_value_t<R>, CharType>
         BasicString( const R& range )
             : data_( Initialize( std::ranges::begin( range ), std::ranges::end( range ) ) )
         {
