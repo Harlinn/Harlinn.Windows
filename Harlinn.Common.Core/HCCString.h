@@ -554,99 +554,209 @@ namespace Harlinn::Common::Core
             }
             return start;
         }
-
-        template<typename CharType, bool ignoreWhiteSpace, typename VectorT>
-        const CharType* SplitProcessToken( const CharType* start, const CharType* end, CharType separator, VectorT& result )
+        template<typename CharType, typename size_type, typename SubStringT, typename VectorT>
+            requires std::is_constructible_v<SubStringT, const CharType*, size_type>
+        [[nodiscard]] inline VectorT Split( const CharType* buffer, const size_type length, CharType separator, bool removeEmptyEntries = false, size_type count = SubStringT::npos )
         {
-            using DestinationT = typename VectorT::value_type;
-            auto pos = start;
-            if constexpr ( ignoreWhiteSpace )
+            VectorT result;
+
+            // count == 0 is a no-op 
+            if ( count == 0 )
             {
-                
-                while ( pos < end )
-                {
-                    CharType c = *pos;
-                    if ( c == separator || IsWhiteSpace( c ) )
-                    {
-                        break;
-                    }
-                    ++pos;
-                }
-                result.emplace_back( start, static_cast<typename DestinationT::size_type >( pos - start ) );
-                return pos;
+                // return empty result.
+                return result;
             }
-            else
+
+            // If string is empty: follow common semantics and produce one empty 
+            // token unless removeEmptyEntries is true.
+            if ( buffer == nullptr || length == 0 )
             {
-                while ( pos < end )
+                if ( !removeEmptyEntries )
                 {
-                    CharType c = *pos;
-                    if ( c == separator )
-                    {
-                        break;
-                    }
-                    ++pos;
+                    result.emplace_back( );
                 }
-                result.emplace_back( start, static_cast< typename DestinationT::size_type >( pos - start ) );
-                return pos;
+                return result;
             }
+
+            size_type last = 0;
+
+            for ( size_type i = 0; i < length; ++i )
+            {
+                if ( buffer[ i ] == separator )
+                {
+                    // if count is limited and we've already produced count-1 entries, add the rest and return
+                    if ( count != SubStringT::npos && result.size( ) == ( count - 1 ) )
+                    {
+                        size_type restLen = ( length > last ) ? ( length - last ) : 0;
+                        if ( !( removeEmptyEntries && restLen == 0 ) )
+                        {
+                            result.emplace_back( buffer + last, restLen );
+                        }
+                        return result;
+                    }
+
+                    size_type tokenLen = i - last;
+                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
+                    {
+                        result.emplace_back( buffer + last, tokenLen );
+                    }
+                    last = i + 1;
+                }
+            }
+
+            // tail
+            size_type tailLen = ( length > last ) ? ( length - last ) : 0;
+            if ( !( removeEmptyEntries && tailLen == 0 ) )
+            {
+                result.emplace_back( buffer + last, tailLen );
+            }
+
+            return result;
         }
 
-        template<typename CharType, bool ignoreWhiteSpace>
-        const CharType* SplitProcessSeparator( const CharType* start, const CharType* end, CharType separator, bool& foundSeparator )
+        template<typename CharType, typename size_type, typename SubStringT, typename VectorT, typename ContainerT>
+            requires std::is_convertible_v<typename ContainerT::value_type, CharType> &&
+                std::is_constructible_v<SubStringT, const CharType*, size_type>
+        [[nodiscard]] inline VectorT Split( const CharType* buffer, const size_type length, const ContainerT& separators, bool removeEmptyEntries = false, size_type count = SubStringT::npos )
         {
-            foundSeparator = false;
-            auto pos = start;
-            if constexpr ( ignoreWhiteSpace )
+            VectorT result;
+
+            // count == 0 is a no-op 
+            if ( count == 0 )
             {
-                pos = SkipWhiteSpace( pos, end );
-                if ( pos < end )
-                {
-                    CharType c = *pos;
-                    if ( c == separator )
-                    {
-                        foundSeparator = true;
-                        pos++;
-                    }
-                    pos = SkipWhiteSpace( pos, end );
-                }
-                return pos;
+                // return empty result.
+                return result;
             }
-            else
+
+            // If string is empty: follow common semantics and produce one empty 
+            // token unless removeEmptyEntries is true.
+            if ( buffer == nullptr || length == 0 )
             {
-                if ( pos < end )
+                if ( !removeEmptyEntries )
                 {
-                    CharType c = *pos;
-                    if ( c == separator )
-                    {
-                        foundSeparator = true;
-                        pos++;
-                    }
+                    result.emplace_back( );
                 }
-                return pos;
+                return result;
             }
+
+            size_type last = 0;
+
+            auto isSeparator = [ &separators ]( CharType c )
+            {
+                return std::find( std::begin( separators ), std::end( separators ), c ) != std::end( separators );
+            };
+
+            for ( size_type i = 0; i < length; ++i )
+            {
+                if ( isSeparator( buffer[ i ] ) )
+                {
+                    if ( count != SubStringT::npos && result.size( ) == ( count - 1 ) )
+                    {
+                        size_type restLen = ( i >= last ) ? ( length - last ) : 0;
+                        if ( !( removeEmptyEntries && restLen == 0 ) )
+                        {
+                            result.emplace_back( buffer + last, restLen );
+                        }
+                        return result;
+                    }
+
+                    size_type tokenLen = i - last;
+                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
+                    {
+                        result.emplace_back( buffer + last, tokenLen );
+                    }
+                    last = i + 1;
+                }
+            }
+
+            size_type tailLen = length - last;
+            if ( !( removeEmptyEntries && tailLen == 0 ) )
+            {
+                result.emplace_back( buffer + last, tailLen );
+            }
+
+            return result;
         }
 
-
-
-        template<typename CharType, bool ignoreWhiteSpace = true, typename VectorT>
-        void Split( const CharType* string, size_t stringLength, CharType separator, VectorT& result )
+        template<typename CharType, typename size_type, typename SubStringT, typename VectorT>
+            requires std::is_constructible_v<SubStringT, const CharType*, size_type>
+        [[nodiscard]] inline VectorT Split( const CharType* buffer, const size_type length, const std::basic_string_view<CharType>& separator, bool removeEmptyEntries = false, size_type count = SubStringT::npos )
         {
-            using DestinationT = typename VectorT::value_type;
-            auto startIt = string;
-            auto endIt = string + stringLength;
-            result.clear( );
-            bool moreTokensExpected = true;
-            while ( startIt < endIt && moreTokensExpected )
+            VectorT result;
+            
+            // count == 0 is a no-op 
+            if ( count == 0 )
             {
-                startIt = SplitProcessToken<CharType, ignoreWhiteSpace, VectorT>( startIt, endIt, separator, result );
-                startIt = SplitProcessSeparator<CharType, ignoreWhiteSpace>( startIt, endIt, separator, moreTokensExpected );
+                // return empty result.
+                return result;
             }
-            if ( moreTokensExpected )
-            {
-                result.emplace_back( );
-            }
-        }
 
+            // If string is empty: follow common semantics and produce one empty 
+            // token unless removeEmptyEntries is true.
+            if ( buffer == nullptr || length == 0 )
+            {
+                if ( !removeEmptyEntries )
+                {
+                    result.emplace_back( );
+                }
+                return result;
+            }
+
+            const CharType* sepBuf = separator.data( );
+            const size_type sepLen = separator.size( );
+
+            if ( sepLen == 0 )
+            {
+                // For simplicity, mimic common expectation: empty separator -> single element (the whole string)
+                result.emplace_back( buffer, length );
+                return result;
+            }
+
+            size_type last = 0;
+            for ( size_type i = 0; i + sepLen <= length; )
+            {
+                if ( MemCmp( &buffer[ i ], sepBuf, sepLen ) == 0 )
+                {
+                    if ( count != SubStringT::npos && result.size( ) == ( count - 1 ) )
+                    {
+                        size_type restLen = ( i >= last ) ? ( length - last ) : 0;
+                        if ( !( removeEmptyEntries && restLen == 0 ) )
+                        {
+                            result.emplace_back( buffer + last, restLen );
+                        }
+                        return result;
+                    }
+
+                    size_type tokenLen = i - last;
+                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
+                    {
+                        if ( tokenLen == 0 )
+                        {
+                            result.emplace_back( );
+                        }
+                        else
+                        {
+                            result.emplace_back( buffer + last, tokenLen );
+                        }
+                    }
+                    i += sepLen;
+                    last = i;
+                }
+                else
+                {
+                    ++i;
+                }
+            }
+
+            // tail
+            size_type tailLen = length - last;
+            if ( !( removeEmptyEntries && tailLen == 0 ) )
+            {
+                result.emplace_back( buffer + last, tailLen );
+            }
+
+            return result;
+        }
 
     }
 
@@ -12963,60 +13073,8 @@ namespace Harlinn::Common::Core
             requires std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
         [[nodiscard]] VectorT Split( CharType separator, bool removeEmptyEntries = false, size_type count = npos ) const
         {
-            VectorT result;
-
-            // Guard: count == 0 is a no-op -> return empty result.
-            if ( count == 0 )
-            {
-                return result;
-            }
-
-            // If string is empty: follow common semantics -> produce one empty token unless removeEmptyEntries is true.
-            if ( !data_ || data_->size_ == 0 )
-            {
-                if ( !removeEmptyEntries )
-                {
-                    result.emplace_back( ); // default-constructed (empty) SubStringT
-                }
-                return result;
-            }
-
-            const CharType* buffer = data_->buffer_;
-            const size_type length = data_->size_;
-            size_type last = 0;
-
-            for ( size_type i = 0; i < length; ++i )
-            {
-                if ( buffer[ i ] == separator )
-                {
-                    // if count is limited and we've already produced count-1 entries, add the rest and return
-                    if ( count != npos && result.size( ) == ( count - 1 ) )
-                    {
-                        size_type restLen = ( length > last ) ? ( length - last ) : 0;
-                        if ( !( removeEmptyEntries && restLen == 0 ) )
-                        {
-                            result.emplace_back( buffer + last, restLen );
-                        }
-                        return result;
-                    }
-
-                    size_type tokenLen = i - last;
-                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
-                    {
-                        result.emplace_back( buffer + last, tokenLen );
-                    }
-                    last = i + 1;
-                }
-            }
-
-            // tail
-            size_type tailLen = ( length > last ) ? ( length - last ) : 0;
-            if ( !( removeEmptyEntries && tailLen == 0 ) )
-            {
-                result.emplace_back( buffer + last, tailLen );
-            }
-
-            return result;
+			auto view = To<std::basic_string_view<CharType>>( );
+			return Internal::Split<CharType,size_type, SubStringT, VectorT>( view.data(), view.size(), separator, removeEmptyEntries, count );
         }
 
         /// <summary>
@@ -13054,56 +13112,8 @@ namespace Harlinn::Common::Core
                      std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
         [[nodiscard]] VectorT Split( const ContainerT& separators, bool removeEmptyEntries = false, size_type count = npos ) const
         {
-            VectorT result;
-            if ( count == 0 )
-            {
-                return result;
-            }
-
-            if ( !data_ || data_->size_ == 0 )
-            {
-                return result;
-            }
-
-            const CharType* buffer = data_->buffer_;
-            const size_type length = data_->size_;
-            size_type last = 0;
-
-            auto isSeparator = [ &separators ]( CharType c )
-            {
-                return std::find( std::begin( separators ), std::end( separators ), c ) != std::end( separators );
-            };
-
-            for ( size_type i = 0; i < length; ++i )
-            {
-                if ( isSeparator( buffer[ i ] ) )
-                {
-                    if ( count != npos && result.size( ) == ( count - 1 ) )
-                    {
-                        size_type restLen = ( i >= last ) ? ( length - last ) : 0;
-                        if ( !( removeEmptyEntries && restLen == 0 ) )
-                        {
-                            result.emplace_back( buffer + last, restLen );
-                        }
-                        return result;
-                    }
-
-                    size_type tokenLen = i - last;
-                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
-                    {
-                        result.emplace_back( buffer + last, tokenLen );
-                    }
-                    last = i + 1;
-                }
-            }
-
-            size_type tailLen = length - last;
-            if ( !( removeEmptyEntries && tailLen == 0 ) )
-            {
-                result.emplace_back( buffer + last, tailLen );
-            }
-
-            return result;
+            auto view = To<std::basic_string_view<CharType>>( );
+            return Internal::Split<CharType, size_type, SubStringT, VectorT, ContainerT>( view.data(), view.size(), separators, removeEmptyEntries, count );
         }
 
         /// <summary>
@@ -13135,75 +13145,8 @@ namespace Harlinn::Common::Core
             requires std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
         [[nodiscard]] VectorT Split( const std::basic_string_view<CharType>& separator, bool removeEmptyEntries = false, size_type count = npos ) const
         {
-            VectorT result;
-            if ( !data_ || data_->size_ == 0 || count == 0 )
-            {
-                return result;
-            }
-
-            const CharType* buffer = data_->buffer_;
-            const size_type length = data_->size_;
-            const CharType* sepBuf = separator.data( );
-            const size_type sepLen = separator.size( );
-
-            if ( sepLen == 0 )
-            {
-                // For simplicity, mimic common expectation: empty separator -> single element (the whole string)
-                if constexpr (std::is_same_v<BasicString<CharType>, SubStringT>)
-                { 
-                    result.emplace_back( BasicString( data_ ) );
-                }
-                else
-                {
-                    result.emplace_back( data_->buffer_, data_->size_ );
-                }
-                return result;
-            }
-
-            size_type last = 0;
-            for ( size_type i = 0; i + sepLen <= length; )
-            {
-                if ( MemCmp( &buffer[ i ], sepBuf, sepLen ) == 0 )
-                {
-                    if ( count != npos && result.size( ) == ( count - 1 ) )
-                    {
-                        size_type restLen = ( i >= last ) ? ( length - last ) : 0;
-                        if ( !( removeEmptyEntries && restLen == 0 ) )
-                        {
-                            result.emplace_back( buffer + last, restLen );
-                        }
-                        return result;
-                    }
-
-                    size_type tokenLen = i - last;
-                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
-                    {
-                        if ( tokenLen == 0 )
-                        {
-                            result.emplace_back( );
-                        }
-                        else
-                        {
-                            result.emplace_back( buffer + last, tokenLen );
-                        }
-                    }
-                    i += sepLen;
-                    last = i;
-                }
-                else
-                {
-                    ++i;
-                }
-            }
-
-            // tail
-            size_type tailLen = length - last;
-            if ( !( removeEmptyEntries && tailLen == 0 ) )
-            {
-                result.emplace_back( buffer + last, tailLen );
-            }
-
-            return result;
+            auto view = To<std::basic_string_view<CharType>>( );
+            return Internal::Split<CharType, size_type, SubStringT, VectorT>( view.data(), view.size(), separator, removeEmptyEntries, count );
         }
 
         /// <summary>
@@ -14491,6 +14434,9 @@ namespace Harlinn::Common::Core
         using value_type = typename Base::value_type;
         using Base::begin;
         using Base::end;
+        using Base::data;
+        using Base::size;
+        using Base::npos;
     public:
         constexpr BasicStringView( ) noexcept
         {
@@ -14579,28 +14525,138 @@ namespace Harlinn::Common::Core
             }
         }
 
-        template<bool ignoreWhiteSpace = true, typename VectorT>
-        void Split( CharType separator, VectorT& result ) const
+        template<typename T>
+            requires std::is_same_v<typename T::value_type, value_type>&& std::is_constructible_v<T, const value_type*, size_t>&& std::is_constructible_v<T>
+        T To( ) const
         {
-            if ( Base::data( ) )
+			auto buffer = data( );
+			auto length = size( );
+            if ( buffer && length )
             {
-                Internal::Split<CharType, ignoreWhiteSpace, VectorT>( Base::data( ), Base::size( ), separator, result );
+                return T( buffer, length );
             }
             else
             {
-                using DestinationT = typename VectorT::value_type;
-                result.clear( );
-                result.push_back( DestinationT( ) );
+                return {};
             }
         }
 
-        template<SimpleSpanLike VectorT, bool ignoreWhiteSpace = true>
-        VectorT Split( CharType separator ) const
+
+        /// <summary>
+        /// Splits this string into a sequence of substrings using the specified separator character.
+        /// </summary>
+        /// <param name="separator">The character used as the delimiter for splitting the string.</param>
+        /// <param name="removeEmptyEntries">When <c>true</c> any empty tokens produced by adjacent separators or separators at the ends are omitted from the result; when <c>false</c> empty tokens are preserved.</param>
+        /// <param name="count">Maximum number of substrings to produce. When equal to <c>npos</c> (the default) there is no limit. When <c>count</c> is zero the function returns an empty vector.</param>
+        /// <returns>A <c>VectorT</c> containing the substrings as <c>SubStringT</c> elements. The vector preserves the original left-to-right order of tokens.</returns>
+        /// <remarks>
+        /// - This method is a thin, const wrapper around <c>Internal::Split</c> and does not modify the source string.
+        /// - Template constraint: <c>SubStringT</c> must be constructible from a pointer/length pair (<c>const CharType*, size_type</c>).
+        /// - Behavior:
+        ///   <list type="number">
+        ///     <item><description>If the source string is empty the returned vector contains one empty token when <c>removeEmptyEntries == false</c>, otherwise it is empty.</description></item>
+        ///     <item><description>When <c>count</c> is specified and the result reaches <c>count - 1</c> items, the remainder of the source is returned as the final token.</description></item>
+        ///   </list>
+        /// - Complexity: O(N) where N is the number of characters examined; additional cost depends on <c>VectorT</c> growth and <c>SubStringT</c> construction costs.
+        /// - Thread-safety: this member function is const and safe to call concurrently with other const operations. External synchronization is required for concurrent writers.
+        /// </remarks>
+        /// <exception cref="std::bad_alloc">Thrown when memory allocation fails while constructing the returned vector or substring elements.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Split "a,,b,c" by ',' preserving empty entries:
+        /// auto tokens = s.Split&lt;std::string_view, std::vector&lt;std::string_view&gt;&gt;( ',', false );
+        /// // tokens: { "a", "", "b", "c" }
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicStringView<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicStringView<CharType>::size_type>
+        [[nodiscard]] VectorT Split( CharType separator, bool removeEmptyEntries = false, size_type count = npos ) const
         {
-            VectorT result;
-            Split( separator, result );
-            return result;
+            return Internal::Split<CharType, size_type, SubStringT, VectorT>( Base::data( ), Base::size( ), separator, removeEmptyEntries, count );
         }
+
+        /// <summary>
+        /// Splits this string into a sequence of substrings using the specified separator string.
+        /// </summary>
+        /// <typeparam name="SubStringT">
+        /// Type of substrings produced. Must be constructible from <c>const CharType*</c> 
+        /// and <c>BasicStringView&lt;CharType&gt;::size_type</c>.
+        /// </typeparam>
+        /// <typeparam name="VectorT">
+        /// Container type used to collect results (for example <c>std::vector&lt;SubStringT&gt;</c>). 
+        /// Must be default-constructible and support <c>emplace_back(SubStringT)</c>.
+        /// </typeparam>
+        /// <param name="separator">
+        /// The separator string used to split the current string. An empty separator produces a 
+        /// single token containing the whole string (no splitting).
+        /// </param>
+        /// <param name="removeEmptyEntries">
+        /// If <c>true</c> empty tokens are omitted from the returned collection; 
+        /// if <c>false</c> empty tokens are included.
+        /// </param>
+        /// <param name="count">
+        /// Maximum number of tokens to produce. Defaults to <c>npos</c> which means no limit. 
+        /// When <c>count</c> is non-zero and the number of potential tokens exceeds <c>count</c>, 
+        /// the last returned token contains the remainder of the string.
+        /// </param>
+        /// <returns>A <c>VectorT</c> containing the resulting substrings of type 
+        /// <c>SubStringT</c>. When the source string is empty the result is either 
+        /// empty or a single empty token depending on <paramref name="removeEmptyEntries"/> semantics.</returns>
+        /// <remarks>
+        /// This overload constructs a <c>std::basic_string_view&lt;CharType&gt;</c> over <paramref name="separator"/> 
+        /// and delegates to the corresponding <c>Split(const std::basic_string_view&lt;CharType&gt;&)</c> overload 
+        /// to perform the actual splitting. No additional copying of the separator contents is 
+        /// performed beyond the view construction.
+        /// The function is <c>const</c> and safe to call concurrently with other const operations. 
+        /// The returned substrings are constructed using <c>SubStringT</c> and may allocate.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation fails during substring container or substring construction.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Example: split on comma, keep empty entries
+        /// BasicString<char> s("a,,b,c");
+        /// auto tokens = s.Split<>( std::string(",") ); // tokens == { "a", "", "b", "c" }
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicStringView<CharType>, typename VectorT = std::vector<SubStringT>, typename ContainerT>
+            requires std::is_convertible_v<typename ContainerT::value_type, CharType> &&
+                std::is_constructible_v<SubStringT, const CharType*, typename BasicStringView<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const ContainerT& separators, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            return Internal::Split<CharType, size_type, SubStringT, VectorT, ContainerT>( Base::data( ), Base::size( ), separators, removeEmptyEntries, count );
+        }
+
+        template<typename SubStringT = BasicStringView<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicStringView<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const std::basic_string_view<CharType>& separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            return Internal::Split<CharType, size_type, SubStringT, VectorT>( Base::data( ), Base::size( ), separator, removeEmptyEntries, count );
+        }
+
+        template<typename SubStringT = BasicStringView<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicStringView<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const CharType* separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            std::basic_string_view<CharType> view( separator );
+            return Split<SubStringT, VectorT>( view, removeEmptyEntries, count );
+        }
+
+        template<typename SubStringT = BasicStringView<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicStringView<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const BasicString<CharType>& separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            std::basic_string_view<CharType> view( separator.c_str( ), separator.size( ) );
+            return Split<SubStringT, VectorT>( view, removeEmptyEntries, count );
+        }
+
+        template<typename SubStringT = BasicStringView<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicStringView<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const std::basic_string<CharType>& separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            std::basic_string_view<CharType> view( separator.c_str( ), separator.size( ) );
+            return Split<SubStringT, VectorT>( view, removeEmptyEntries, count );
+        }
+
 
     };
 

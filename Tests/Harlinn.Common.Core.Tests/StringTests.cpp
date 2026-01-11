@@ -11183,7 +11183,6 @@ BOOST_AUTO_TEST_CASE( SplitTest1A )
     AnsiString source{ "Debug | Info | Error" };
     AnsiStringView sourceView = source;
     
-    std::vector<std::string_view> result2;
     auto result1 = source.Split<std::string_view>( '|', true );
 
     auto count = result1.size( );
@@ -11191,7 +11190,7 @@ BOOST_AUTO_TEST_CASE( SplitTest1A )
     bool equal = count == 3;
     BOOST_TEST( equal );
 
-    sourceView.Split( '|', result2 );
+    auto result2 = sourceView.Split( '|', false );
 
     count = result2.size( );
 
@@ -11205,7 +11204,6 @@ BOOST_AUTO_TEST_CASE( SplitTest1W )
 {
     WideString source{ L"Debug | Info | Error" };
     WideStringView sourceView = source;
-    std::vector<std::wstring_view> result2;
     auto result1 = source.Split<std::wstring_view>( L'|', true );
 
     auto count = result1.size( );
@@ -11213,7 +11211,7 @@ BOOST_AUTO_TEST_CASE( SplitTest1W )
     bool equal = count == 3;
     BOOST_TEST( equal );
 
-    sourceView.Split( L'|', result2 );
+    auto result2 = sourceView.Split( '|', false );
 
     count = result2.size( );
 
@@ -11227,7 +11225,7 @@ BOOST_AUTO_TEST_CASE( SplitTest2A )
 {
     AnsiString source{ "," };
     AnsiStringView sourceView = source;
-    std::vector<std::string_view> result2;
+    
     auto result1 = source.Split<std::string_view>( ',', true );
 
     auto count = result1.size( );
@@ -11235,7 +11233,7 @@ BOOST_AUTO_TEST_CASE( SplitTest2A )
     bool equal = count == 0;
     BOOST_TEST( equal );
 
-    sourceView.Split( ',', result2 );
+    auto result2 = sourceView.Split( ',', false );
 
     count = result2.size( );
 
@@ -11249,7 +11247,7 @@ BOOST_AUTO_TEST_CASE( SplitTest3A )
 {
     AnsiString source { "" };
     AnsiStringView sourceView = source;
-    std::vector<std::string_view> result2;
+    
     auto result1 = source.Split<std::string_view>( ',', true );
 
     auto count = result1.size( );
@@ -11257,7 +11255,7 @@ BOOST_AUTO_TEST_CASE( SplitTest3A )
     bool equal = count == 0;
     BOOST_TEST( equal );
 
-    sourceView.Split( ',', result2 );
+    auto result2 = sourceView.Split( '|', false );
 
     count = result2.size( );
 
@@ -11271,7 +11269,7 @@ BOOST_AUTO_TEST_CASE( SplitTest4A )
 {
     AnsiString source { "0" };
     AnsiStringView sourceView = source;
-    std::vector<std::string_view> result2;
+    
     auto result1 = source.Split<std::string_view>( ',', true );
 
     auto count = result1.size( );
@@ -11279,7 +11277,7 @@ BOOST_AUTO_TEST_CASE( SplitTest4A )
     bool equal = count == 1;
     BOOST_TEST( equal );
 
-    sourceView.Split( ',', result2 );
+    auto result2 = sourceView.Split( '|', false );
 
     count = result2.size( );
 
