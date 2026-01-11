@@ -11285,7 +11285,32 @@ BOOST_AUTO_TEST_CASE( SplitTest4A )
     BOOST_TEST( equal );
 }
 
+// --run_test=StringTests/JoinTest1A
+BOOST_AUTO_TEST_CASE( JoinTest1A )
+{
+	std::vector<int> values{ 1, 2, 3, 4, 5 };
+	auto result = AnsiString::Join( ",", values );
+	bool equal = result == "1,2,3,4,5";
+	BOOST_TEST( equal );
+}
 
+// --run_test=StringTests/JoinTest1W
+BOOST_AUTO_TEST_CASE( JoinTest1W )
+{
+    std::vector<int> values{ 1, 2, 3, 4, 5 };
+    auto result = WideString::Join( L", ", values );
+    bool equal = result == L"1, 2, 3, 4, 5";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/JoinTest2A
+BOOST_AUTO_TEST_CASE( JoinTest2A )
+{
+    std::vector<const char*> values{ "100", "2", "3", "4", "0x5" };
+    auto result = AnsiString::Join( ",", values );
+    bool equal = result == "100,2,3,4,0x5";
+    BOOST_TEST( equal );
+}
 
 
 

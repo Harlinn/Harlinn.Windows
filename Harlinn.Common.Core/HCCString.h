@@ -32,6 +32,10 @@ namespace Harlinn::Common::Core
     namespace Internal
     {
 
+        template<typename T, typename CharType>
+        concept ValueTypeIs = requires { typename T::value_type; }&&
+            std::same_as<std::remove_cvref_t<typename T::value_type>, CharType>;
+
         
         /// <summary>
 		/// Memory pool for BasicString internal buffers.
@@ -13246,6 +13250,167 @@ namespace Harlinn::Common::Core
         {
             std::basic_string_view<CharType> view( separator.c_str( ), separator.size( ) );
             return Split<SubStringT, VectorT>( view, removeEmptyEntries, count );
+        }
+    private:
+        // Determines if a range element can be treated as "string-like"
+        template<typename E>
+        static constexpr bool IsStringLikeV =
+            std::is_same_v<std::remove_cvref_t<E>, BasicString> ||
+            std::is_convertible_v<E, const CharType*> ||
+            ( ContiguousContainerLike<E> && Internal::ValueTypeIs<E, CharType> ) ||
+            ( requires ( const E& v ) { BasicString<CharType>::From( v ); } ) ||
+            ( requires ( const E& v ) { std::format( L"{}", v ); } ) ||
+            ( requires ( const E& v ) { std::format( "{}", v ); } );
+	public:
+
+        template< std::ranges::input_range RangeT >
+            requires IsStringLikeV<std::ranges::range_value_t<RangeT>>
+        [[nodiscard]] static BasicString Join( const CharType* separator, size_type separatorLength, const RangeT& values )
+        {
+            BasicString result;
+
+            auto it = std::ranges::begin( values );
+            auto endIt = std::ranges::end( values );
+
+            // Nothing to join
+            if ( it == endIt )
+            {
+                return result;
+            }
+
+            bool first = true;
+            for ( ; it != endIt; ++it )
+            {
+                if ( !first )
+                {
+                    // append separator
+                    if ( separator && separatorLength > 0 )
+                    {
+                        result.Append( separator, separatorLength );
+                    }
+                }
+
+                // append element depending on element type
+                using Elem = std::remove_cvref_t<std::ranges::range_value_t<RangeT>>;
+
+                if constexpr ( std::is_same_v<Elem, BasicString> )
+                {
+                    const BasicString& e = static_cast<const BasicString&>( *it );
+                    if ( e )
+                    {
+                        result.Append( e );
+                    }
+                }
+                else if constexpr ( ContiguousContainerLike<Elem> && Internal::ValueTypeIs<Elem, CharType> )
+                {
+                    const Elem& e = *it;
+                    result.Append( e.data( ), e.size( ) );
+                }
+                else if constexpr ( requires ( Elem e ){ BasicString<CharType>::From( e ); } )
+                {
+                    BasicString tmp = BasicString::From( static_cast<const Elem>( *it ) );
+                    if ( tmp )
+                    {
+                        result.Append( tmp );
+					}
+                }
+                else if constexpr ( requires ( const Elem & v ) { std::format( L"{}", v ); } )
+                {
+                    if constexpr ( std::is_same_v<char, CharType> && ( requires ( const Elem & v ) { std::format( "{}", v ); } ) )
+                    {
+                        auto tmp = std::format( "{}", *it );
+                        if ( !tmp.empty( ) )
+                        {
+                            result.Append( tmp );
+                        }
+					}
+                    else
+                    {
+                        auto tmp = std::format( L"{}", *it );
+                        if ( !tmp.empty( ) )
+                        {
+                            result.Append( tmp );
+                        }
+                    }
+				}
+                else if constexpr ( requires ( const Elem & v ) { std::format( "{}", v ); } )
+                {
+                    if constexpr ( std::is_same_v<wchar_t, CharType> && ( requires ( const Elem & v ) { std::format( "L{}", v ); } ) )
+                    {
+                        auto tmp = std::format( "L{}", *it );
+                        if ( !tmp.empty( ) )
+                        {
+                            result.Append( tmp );
+                        }
+					}
+                    else
+                    {
+                        auto tmp = std::format( "{}", *it );
+                        if ( !tmp.empty( ) )
+                        {
+                            result.Append( tmp );
+                        }
+                    }
+                }
+                else if constexpr ( std::is_convertible_v<Elem, const CharType*> )
+                {
+                    if constexpr ( std::is_pointer_v<std::remove_cvref_t<std::ranges::range_value_t<RangeT>>> ||
+                                   std::is_convertible_v<std::ranges::range_value_t<RangeT>, const CharType*> )
+                    {
+                        const CharType* ptr = static_cast<const CharType*>( *it );
+                        result.Append( ptr );
+                    }
+                    else
+                    {
+                        // fallback: try to obtain pointer via To<BasicString> construction
+                        BasicString tmp = BasicString::From( static_cast<const CharType*>( *it ) );
+                        result.Append( tmp.data_ ? tmp.data_->buffer_ : nullptr, tmp.data_ ? tmp.data_->size_ : 0 );
+                    }
+                }
+                else
+                {
+                    // Fallback: try to create BasicString from the element (requires a suitable constructor)
+                    BasicString tmp( *it );
+                    if ( tmp )
+                    {
+                        result.Append( tmp );
+                    }
+                }
+
+                first = false;
+            }
+
+            return result;
+        }
+
+        template< std::ranges::input_range RangeT >
+            requires IsStringLikeV<std::ranges::range_value_t<RangeT>>
+        [[nodiscard]] static BasicString Join( const BasicString& separator, const RangeT& values )
+        {
+            return Join( separator.c_str(), separator.size(), values );
+        }
+
+
+        /// <summary>
+        /// Convenience overload: Join where separator is provided as a null-terminated C-string (or pointer).
+        /// </summary>
+        template< std::ranges::input_range RangeT >
+            requires IsStringLikeV<std::ranges::range_value_t<RangeT>>
+        [[nodiscard]] static BasicString Join( const CharType* separator, const RangeT& values )
+        {
+			auto separatorLength = LengthOf( separator );
+            return Join( separator, separatorLength, values );
+        }
+
+        /// <summary>
+        /// Convenience overload: Join where separator is provided as a contiguous container-like value (e.g. std::basic_string_view or std::basic_string).
+        /// </summary>
+        template< ContiguousContainerLike SepT, std::ranges::input_range RangeT >
+            requires std::is_same_v<std::remove_cvref_t<typename SepT::value_type>, CharType>&&
+                IsStringLikeV<std::ranges::range_value_t<RangeT>>
+            [[nodiscard]] static BasicString Join( const SepT& separator, const RangeT& values )
+        {
+            return Join( BasicString::From( separator ), values );
         }
 
         /// <summary>
