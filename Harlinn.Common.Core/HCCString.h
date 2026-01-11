@@ -1281,63 +1281,70 @@ namespace Harlinn::Common::Core
         /// </exception>
         CharType* Erase( size_t offset, size_t numberOfCharactersToErase )
         {
-            if ( data_ )
+            if ( !data_ )
             {
-                auto currentSize = data_->size_;
-
-                if ( offset < currentSize )
-                {
-                    if ( ( offset + numberOfCharactersToErase ) > currentSize )
-                    {
-                        numberOfCharactersToErase = currentSize - offset;
-                    }
-                    size_t newSize = currentSize - numberOfCharactersToErase;
-                    if ( newSize )
-                    {
-                        auto currentBufferSize = AllocationByteCountForLengthNotZero( currentSize );
-                        auto newBufferSize = AllocationByteCountForLengthNotZero( newSize );
-
-                        if ( ( data_->referenceCount_ == 1 ) && ( currentBufferSize == newBufferSize ) )
-                        {
-                            size_t remainingSize = currentSize - ( offset + numberOfCharactersToErase );
-                            if ( remainingSize )
-                            {
-                                auto* dest = &data_->buffer_[offset];
-                                MemMove( dest, dest + numberOfCharactersToErase, remainingSize );
-                            }
-                            data_->buffer_[newSize] = 0;
-                            data_->size_ = newSize;
-                        }
-                        else
-                        {
-                            auto* newData = Allocate( newSize );
-                            if ( offset )
-                            {
-                                MemCopy( newData->buffer_, data_->buffer_, offset );
-                            }
-                            size_t remainingSize = currentSize - ( offset + numberOfCharactersToErase );
-                            if ( remainingSize )
-                            {
-                                MemCopy( &newData->buffer_[offset], &data_->buffer_[offset + numberOfCharactersToErase], remainingSize );
-                            }
-                            ReleaseData( data_ );
-                            data_ = newData;
-                        }
-                        return &data_->buffer_[offset];
-
-                    }
-                    else
-                    {
-                        ReleaseData( data_ );
-                        data_ = nullptr;
-                    }
-                }
-                else
-                {
-                    return &data_->buffer_[ currentSize ];
-                }
+                return nullptr;
             }
-            return nullptr;
+
+            const size_t currentSize = data_->size_;
+
+            if ( offset >= currentSize )
+            {
+                return &data_->buffer_[ currentSize ];
+            }
+
+            const size_t available = currentSize - offset;
+
+            if ( numberOfCharactersToErase == 0 )
+            {
+                return &data_->buffer_[ offset ];
+            }
+
+            if ( numberOfCharactersToErase > available )
+            {
+                numberOfCharactersToErase = available;
+            }
+
+            const size_t newSize = currentSize - numberOfCharactersToErase;
+
+            if ( newSize == 0 )
+            {
+                ReleaseData( data_ );
+                data_ = nullptr;
+                return nullptr;
+            }
+
+            const size_t currentBufferSize = AllocationByteCountForLengthNotZero( currentSize );
+            const size_t newBufferSize = AllocationByteCountForLengthNotZero( newSize );
+
+            if ( ( data_->referenceCount_ == 1 ) && ( currentBufferSize == newBufferSize ) )
+            {
+                const size_t remainingSize = currentSize - ( offset + numberOfCharactersToErase );
+                if ( remainingSize )
+                {
+                    auto* dest = &data_->buffer_[ offset ];
+                    MemMove( dest, dest + numberOfCharactersToErase, remainingSize );
+                }
+                data_->size_ = newSize;
+                data_->buffer_[ newSize ] = 0;
+                return &data_->buffer_[ offset ];
+            }
+            else
+            {
+                Data* newData = Allocate( newSize );
+                if ( offset )
+                {
+                    MemCopy( newData->buffer_, data_->buffer_, offset );
+                }
+                const size_t remainingSize = currentSize - ( offset + numberOfCharactersToErase );
+                if ( remainingSize )
+                {
+                    MemCopy( &newData->buffer_[ offset ], &data_->buffer_[ offset + numberOfCharactersToErase ], remainingSize );
+                }
+                ReleaseData( data_ );
+                data_ = newData;
+                return &data_->buffer_[ offset ];
+            }
         }
 
 
@@ -11036,11 +11043,145 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Determines whether this string begins with the specified character sequence.
+        /// </summary>
+        /// <param name="str">Pointer to the character sequence to compare against the start of this string. May be <c>nullptr</c> when <paramref name="strLength"/> == 0.</param>
+        /// <param name="strLength">Number of characters in <paramref name="str"/> to compare. When zero this function returns <c>true</c>.</param>
+        /// <returns>
+        /// <c>true</c> if this string starts with the specified sequence; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: O(<paramref name="strLength"/>). If this string is empty and <paramref name="strLength"/> &gt; 0 the function returns <c>false</c>.
+        /// The comparison is binary and performed using the repository helper <c>MemCmp</c>.
+        /// This method is <c>noexcept</c> and does not allocate memory.
+        /// Thread-safety: safe to call concurrently with other const operations. If other threads mutate this instance external synchronization is required.
+        /// </remarks>
+        [[nodiscard]] bool StartsWith( const CharType* str, size_type strLength ) const noexcept
+        {
+            if ( strLength == 0 )
+            {
+                return true;
+            }
+
+            if ( !data_ || !str || data_->size_ < strLength )
+            {
+                return false;
+            }
+
+            return MemCmp( data_->buffer_, str, strLength ) == 0;
+        }
+
+        /// <summary>
+        /// Determines whether this string begins with the specified character sequence using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="str">Pointer to the character sequence to compare against the start of this string. May be <c>nullptr</c> when <paramref name="strLength"/> == 0.</param>
+        /// <param name="strLength">Number of characters in <paramref name="str"/> to compare. When zero this function returns <c>true</c>.</param>
+        /// <returns>
+        /// <c>true</c> if this string starts with the specified sequence when compared case-insensitively; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: O(<paramref name="strLength"/>). Comparison is case-insensitive and performed using the repository helper <c>MemICmp</c>.
+        /// This method is <c>noexcept</c> and does not allocate memory.
+        /// Thread-safety: safe to call concurrently with other const operations. If other threads mutate this instance external synchronization is required.
+        /// </remarks>
+        [[nodiscard]] bool IStartsWith( const CharType* str, size_type strLength ) const noexcept
+        {
+            if ( strLength == 0 )
+            {
+                return true;
+            }
+
+            if ( !data_ || !str || data_->size_ < strLength )
+            {
+                return false;
+            }
+            return MemICmp( data_->buffer_, str, strLength ) == 0;
+        }
+
+        /// <summary>
+        /// Determines whether the substring of this string starting at <paramref name="start"/> begins with the specified sequence.
+        /// </summary>
+        /// <param name="str">Pointer to the character sequence to compare. May be <c>nullptr</c> when <paramref name="strLength"/> == 0.</param>
+        /// <param name="strLength">Number of characters in <paramref name="str"/> to compare. When zero this function returns <c>true</c>.</param>
+        /// <param name="start">Zero-based index in this string at which to begin the comparison. If <paramref name="start"/> is greater than or equal to this string's length the function returns <c>false</c>.</param>
+        /// <returns>
+        /// <c>true</c> if the substring starting at <paramref name="start"/> begins with the specified sequence; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: O(<paramref name="strLength"/>). The function validates <paramref name="start"/> and ensures the pattern fits into the remaining characters.
+        /// Comparison is binary and performed using <c>MemCmp</c>. This method is <c>noexcept</c> and does not allocate memory.
+        /// Thread-safety: safe to call concurrently with other const operations. External synchronization is required if other threads mutate this instance.
+        /// </remarks>
+        [[nodiscard]] bool StartsWith( const CharType* str, size_type strLength, size_t start ) const noexcept
+        {
+            if ( start >= data_->size_ )
+            {
+                return false;
+            }
+
+            if ( strLength == 0 )
+            {
+                return true;
+            }
+
+            if ( !data_ || !str || data_->size_ < strLength + start )
+            {
+                return false;
+            }
+
+            return MemCmp( &data_->buffer_[start], str, strLength ) == 0;
+        }
+
+        /// <summary>
+        /// Determines whether the substring of this string starting at <paramref name="start"/> begins with the specified sequence using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="str">Pointer to the character sequence to compare. May be <c>nullptr</c> when <paramref name="strLength"/> == 0.</param>
+        /// <param name="strLength">Number of characters in <paramref name="str"/> to compare. When zero this function returns <c>true</c>.</param>
+        /// <param name="start">Zero-based index in this string at which to begin the comparison. If <paramref name="start"/> is greater than or equal to this string's length the function returns <c>false</c>.</param>
+        /// <returns>
+        /// <c>true</c> if the substring starting at <paramref name="start"/> begins with the specified sequence when compared case-insensitively; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Complexity: O(<paramref name="strLength"/>). Uses <c>MemICmp</c> for case-insensitive binary comparison. The method is <c>noexcept</c> and does not allocate.
+        /// Thread-safety: safe to call concurrently with other const operations. External synchronization is required if other threads mutate this instance.
+        /// </remarks>
+        [[nodiscard]] bool IStartsWith( const CharType* str, size_type strLength, size_t start ) const noexcept
+        {
+            if ( start >= data_->size_ )
+            {
+                return false;
+            }
+
+            if ( strLength == 0 )
+            {
+                return true;
+            }
+
+            if ( !data_ || !str || data_->size_ < strLength + start )
+            {
+                return false;
+            }
+
+            return MemICmp( &data_->buffer_[ start ], str, strLength ) == 0;
+        }
+
+
+        /// <summary>
+        /// Determines whether this string starts with the provided string.
+        /// </summary>
+        /// <param name="str">The string to test as a prefix. May be empty or contain no internal data.</param>
+        /// <returns><c>true</c> when this string begins with the characters in <paramref name="str"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Delegates to the pointer/length overload <see cref="StartsWith(const CharType*, size_type)"/> when <paramref name="str"/> has internal data.
+        /// Returns <c>false</c> when <paramref name="str"/> contains no internal data. Complexity is O(n) where n is the length of <paramref name="str"/>.
+        /// Thread-safety: safe to call from multiple threads for const access. No allocation is performed.
+        /// </remarks>
         [[nodiscard]] bool StartsWith( const BasicString& str ) const
         {
             if ( str.data_ )
             {
-                return StartsWith( str.data_->buffer_ );
+                return StartsWith( str.data_->buffer_, str.data_->size_ );
             }
             else
             {
@@ -11048,36 +11189,21 @@ namespace Harlinn::Common::Core
             }
         }
 
-        [[nodiscard]] bool starts_with( const BasicString& str ) const
-        {
-            return StartsWith( str );
-        }
-
-
-        [[nodiscard]] bool IStartsWith( const CharType* str ) const
-        {
-            if ( data_ && data_->buffer_[0] && str && str[0] )
-            {
-                const CharType* p = data_->buffer_;
-                while ( *p && *str )
-                {
-                    if ( Core::ToUpper( *p ) != Core::ToUpper( *str ) )
-                    {
-                        break;
-                    }
-                    p++;
-                    str++;
-                }
-                return *str == L'\x00';
-            }
-            return false;
-        }
-
+        /// <summary>
+        /// Determines whether this string starts with the provided string using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="str">The string to test as a prefix. May be empty or contain no internal data.</param>
+        /// <returns><c>true</c> when this string begins with the characters in <paramref name="str"/>, ignoring case; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Delegates to the pointer/length overload <see cref="IStartsWith(const CharType*, size_type)"/> when <paramref name="str"/> has internal data.
+        /// Returns <c>false</c> when <paramref name="str"/> contains no internal data. Complexity is O(n) where n is the length of <paramref name="str"/>.
+        /// Case-insensitive comparison uses the library's character conversion helpers. Thread-safety: const.
+        /// </remarks>
         [[nodiscard]] bool IStartsWith( const BasicString& str ) const
         {
             if ( str.data_ )
             {
-                return IStartsWith( str.data_->buffer_ );
+                return IStartsWith( str.data_->buffer_, str.data_->size_ );
             }
             else
             {
@@ -11085,7 +11211,248 @@ namespace Harlinn::Common::Core
             }
         }
 
-        [[nodiscard]] bool EndsWith( const CharType ch ) const
+        /// <summary>
+        /// Determines whether the substring of this string starting at <paramref name="start"/> starts with the provided string.
+        /// </summary>
+        /// <param name="str">The string to test as a prefix. May be empty or contain no internal data.</param>
+        /// <param name="start">Zero-based character index in this string at which to begin the test.</param>
+        /// <returns><c>true</c> when the substring beginning at <paramref name="start"/> begins with <paramref name="str"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Delegates to the pointer/length overload <see cref="StartsWith(const CharType*, size_type, size_type)"/> when <paramref name="str"/> has internal data.
+        /// If <paramref name="str"/> has no internal data the function returns <c>false</c>. Complexity is O(n) where n is the length of <paramref name="str"/>.
+        /// The function pads or validates <paramref name="start"/> according to underlying overload semantics.
+        /// </remarks>
+        [[nodiscard]] bool StartsWith( const BasicString& str, size_type start ) const
+        {
+            if ( str.data_ )
+            {
+                return StartsWith( str.data_->buffer_, str.data_->size_, start );
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the substring of this string starting at <paramref name="start"/> starts with the provided string, ignoring case.
+        /// </summary>
+        /// <param name="str">The string to test as a prefix. May be empty or contain no internal data.</param>
+        /// <param name="start">Zero-based character index in this string at which to begin the test.</param>
+        /// <returns><c>true</c> when the substring beginning at <paramref name="start"/> begins with <paramref name="str"/>, ignoring case; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Delegates to the pointer/length overload <see cref="IStartsWith(const CharType*, size_type, size_type)"/> when <paramref name="str"/> has internal data.
+        /// Returns <c>false</c> when <paramref name="str"/> contains no internal data. Complexity is O(n) where n is the length of <paramref name="str"/>.
+        /// Case-insensitive comparison uses the library's character conversion helpers. Thread-safety: const.
+        /// </remarks>
+        [[nodiscard]] bool IStartsWith( const BasicString& str, size_type start ) const
+        {
+            if ( str.data_ )
+            {
+                return IStartsWith( str.data_->buffer_, str.data_->size_, start );
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether this string starts with the content of a contiguous container.
+        /// </summary>
+        /// <typeparam name="T">Type of the contiguous container. Its element type must match the string character type.</typeparam>
+        /// <param name="container">The container providing the prefix characters. Must expose contiguous storage via data() and size().</param>
+        /// <returns><c>true</c> when this string begins with the characters in <paramref name="container"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This overload is constrained to contiguous container-like types whose element type equals the string character type.
+        /// It forwards to <see cref="StartsWith(const CharType*, size_type)"/> and performs no allocation. Complexity O(n).
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool StartsWith( const T& container ) const noexcept
+        {
+            return StartsWith( container.data(), container.size() );
+		}
+
+        /// <summary>
+        /// Determines whether the substring of this string starting at <paramref name="start"/> starts with the content of a contiguous container.
+        /// </summary>
+        /// <typeparam name="T">Type of the contiguous container. Its element type must match the string character type.</typeparam>
+        /// <param name="container">The container providing the prefix characters. Must expose contiguous storage via data() and size().</param>
+        /// <param name="start">Zero-based character index in this string at which to begin the test.</param>
+        /// <returns><c>true</c> when the substring beginning at <paramref name="start"/> begins with the characters in <paramref name="container"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Forwards to <see cref="StartsWith(const CharType*, size_type, size_type)"/>. No allocation performed. Complexity O(n).
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool StartsWith( const T& container, size_type start ) const noexcept
+        {
+            return StartsWith( container.data( ), container.size( ), start );
+        }
+
+        /// <summary>
+        /// Determines whether this string starts with the content of a contiguous container using a case-insensitive comparison.
+        /// </summary>
+        /// <typeparam name="T">Type of the contiguous container. Its element type must match the string character type.</typeparam>
+        /// <param name="container">The container providing the prefix characters. Must expose contiguous storage via data() and size().</param>
+        /// <returns><c>true</c> when this string begins with the characters in <paramref name="container"/>, ignoring case; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Forwards to <see cref="IStartsWith(const CharType*, size_type)"/>. Case-insensitive comparison uses library helpers. Complexity O(n).
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool IStartsWith( const T& container ) const noexcept
+        {
+            return IStartsWith( container.data( ), container.size( ) );
+        }
+
+        /// <summary>
+        /// Determines whether the substring of this string starting at <paramref name="start"/> starts with the content of a contiguous container using a case-insensitive comparison.
+        /// </summary>
+        /// <typeparam name="T">Type of the contiguous container. Its element type must match the string character type.</typeparam>
+        /// <param name="container">The container providing the prefix characters. Must expose contiguous storage via data() and size().</param>
+        /// <param name="start">Zero-based character index in this string at which to begin the test.</param>
+        /// <returns><c>true</c> when the substring beginning at <paramref name="start"/> begins with the characters in <paramref name="container"/>, ignoring case; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Forwards to <see cref="IStartsWith(const CharType*, size_type, size_type)"/>. No allocation performed in common paths. Complexity O(n).
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool IStartsWith( const T& container, size_type start ) const noexcept
+        {
+            return IStartsWith( container.data( ), container.size( ), start );
+        }
+
+        /// <summary>
+        /// Alias for <see cref="StartsWith(const BasicString&)"/>.
+        /// </summary>
+        /// <param name="str">The string to test as a prefix.</param>
+        /// <returns><c>true</c> when this string starts with <paramref name="str"/>; otherwise <c>false</c>.</returns>
+        [[nodiscard]] bool starts_with( const BasicString& str ) const noexcept
+        {
+            return StartsWith( str );
+        }
+
+        /// <summary>
+        /// Alias for <see cref="StartsWith(const BasicString&, size_type)"/>.
+        /// </summary>
+        /// <param name="str">The string to test as a prefix.</param>
+        /// <param name="start">Zero-based index at which to begin the test.</param>
+        /// <returns><c>true</c> when the substring beginning at <paramref name="start"/> starts with <paramref name="str"/>; otherwise <c>false</c>.</returns>
+        [[nodiscard]] bool starts_with( const BasicString& str, size_type start ) const noexcept
+        {
+            return StartsWith( str, start );
+        }
+
+        /// <summary>
+        /// Alias template for <see cref="StartsWith(const T&)"/> for contiguous container-like types.
+        /// </summary>
+        /// <typeparam name="T">Contiguous container-like type whose element type equals the string character type.</typeparam>
+        /// <param name="str">The container providing the prefix characters.</param>
+        /// <returns><c>true</c> when this string starts with the characters in <paramref name="str"/>; otherwise <c>false</c>.</returns>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool starts_with( const T& str ) const noexcept
+        {
+            return StartsWith( str );
+        }
+
+        /// <summary>
+        /// Alias template for <see cref="StartsWith(const T&, size_type)"/> for contiguous container-like types.
+        /// </summary>
+        /// <typeparam name="T">Contiguous container-like type whose element type equals the string character type.</typeparam>
+        /// <param name="str">The container providing the prefix characters.</param>
+        /// <param name="start">Zero-based index at which to begin the test.</param>
+        /// <returns><c>true</c> when the substring beginning at <paramref name="start"/> starts with the characters in <paramref name="str"/>; otherwise <c>false</c>.</returns>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool starts_with( const T& str, size_type start ) const noexcept
+        {
+            return StartsWith( str, start );
+        }
+
+
+        /// <summary>
+        /// Determines whether this string instance begins with the specified prefix using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="str">Pointer to a null-terminated character sequence representing the prefix to test. May be <c>nullptr</c>. The function treats the pointer as a sequence of characters of the same <c>CharType</c> as the string.</param>
+        /// <returns>
+        /// <c>true</c> when the prefix is non-null and this string starts with the characters in <paramref name="str"/>,
+        /// comparing characters case-insensitively; otherwise <c>false</c>. A null <paramref name="str"/> always returns <c>false</c>.
+        /// An empty prefix (zero-length string) returns <c>true</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The comparison is performed character-by-character using <c>Core::ToUpper</c> to achieve case-insensitive matching.
+        /// The method returns early on the first mismatching character. If this string has no internal data or its length is zero
+        /// the method returns <c>false</c> except when the prefix is empty (which is considered a match).
+        /// </para>
+        /// <para>
+        /// Complexity: O(P) where P is the length of the provided prefix. The method does not allocate heap memory.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the method is a const operation and is safe to call concurrently with other const methods.
+        /// External synchronization is required if other threads may concurrently mutate the same instance.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown by underlying repository helpers (for example if locale or OS helpers used internally fail).</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Case-insensitive prefix test
+        /// BasicString<char> s("HelloWorld");
+        /// bool starts = s.IStartsWith("hello"); // true
+        /// </code>
+        /// </example>
+        [[nodiscard]] bool IStartsWith( const CharType* str ) const noexcept
+        {
+            // no match
+            if ( str == nullptr )
+            {
+                return false;
+            }
+
+            // Empty prefix is a match. 
+            if ( str[ 0 ] == CharType{ 0 } )
+            {
+                return true;
+            }
+
+            if ( !data_ || data_->size_ == 0 )
+            {
+                return false;
+            }
+
+            const CharType* p = data_->buffer_;
+            const CharType* s = str;
+
+            while ( *p != CharType{ 0 } && *s != CharType{ 0 } )
+            {
+                if ( Core::ToUpper( *p ) != Core::ToUpper( *s ) )
+                {
+                    return false;
+                }
+                ++p;
+                ++s;
+            }
+
+            // s must be exhausted
+            return *s == CharType{ 0 };
+        }
+
+        /// <summary>
+        /// Determines whether this string ends with the specified character.
+        /// </summary>
+        /// <param name="ch">The character to compare against the last character of the string. Comparison is performed using an ordinal (exact) match.</param>
+        /// <returns>
+        /// <c>true</c> if the string is not empty and its last character equals <paramref name="ch"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method performs a constant-time check and does not allocate memory.
+        /// It safely handles empty strings and returns <c>false</c> when the string has no characters.
+        /// The call is safe for concurrent readers (const usage); external synchronization is required if other threads may mutate the instance.
+        /// </remarks>
+        [[nodiscard]] bool EndsWith( const CharType ch ) const noexcept
         {
             if ( data_  )
             {
@@ -11098,109 +11465,651 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        [[nodiscard]] bool ends_with( const CharType ch ) const
+        /// <summary>
+        /// Determines whether this string ends with the specified character using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="ch">The character to compare against the last character of the string. Comparison is performed case-insensitively.</param>
+        /// <returns>
+        /// <c>true</c> if the string is not empty and its last character equals <paramref name="ch"/> when compared case-insensitively; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Comparison is performed by converting both the stored character and <paramref name="ch"/> to their uppercase forms via <c>Core::ToUpper</c>.
+        /// This method does not allocate memory and is noexcept. It is safe for concurrent readers; external synchronization is required for concurrent writers.
+        /// </remarks>
+        [[nodiscard]] bool IEndsWith( const CharType ch ) const noexcept
         {
-            return EndsWith( ch );
-        }
-
-        [[nodiscard]] bool EndsWith( const CharType* str ) const
-        {
-            if ( data_ && data_->size_ && str && str[0] )
+            if ( data_ )
             {
-                auto otherLength = LengthOf( str );
-                if ( otherLength <= data_->size_ )
+                auto size = data_->size_;
+                if ( size )
                 {
-                    return Internal::Compare( &data_->buffer_[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;
+                    return Core::ToUpper( data_->buffer_[ size - 1 ] ) == Core::ToUpper( ch );
                 }
             }
             return false;
         }
 
+
+        /// <summary>
+        /// Determines whether this string ends with the specified character.
+        /// </summary>
+        /// <param name="ch">The character to test for at the end of the string. Precondition: none (function handles empty strings).</param>
+        /// <returns>
+        /// <c>true</c> when the last character of this string equals <paramref name="ch"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// This is a noexcept, non-allocating convenience wrapper that forwards to the internal
+        /// <c>EndsWith</c> implementation which performs the actual check. Callers may use this
+        /// method in performance-sensitive code paths; it does not modify the string or its ownership.
+        /// </remarks>
+        [[nodiscard]] bool ends_with( const CharType ch ) const noexcept
+        {
+            return EndsWith( ch );
+        }
+
+        /// <summary>
+        /// Determines whether this string ends with the specified character sequence.
+        /// </summary>
+        /// <param name="str">
+        /// Pointer to the character sequence to test for as a suffix. May be <c>nullptr</c>, 
+        /// in which case the method returns <c>false</c>.
+        /// </param>
+        /// <param name="strLength">Number of characters in <paramref name="str"/> to compare. 
+        /// When zero the method returns <c>true</c> (empty sequence is a suffix of any string).</param>
+        /// <returns>
+        /// <c>true</c> when this string ends with the sequence specified by <paramref name="str"/> and 
+        /// <paramref name="strLength"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The comparison is binary and length-aware: exactly <paramref name="strLength"/> characters are compared
+        /// from the end of this string against <paramref name="str"/> using the repository helper <c>MemCmp</c>.
+        /// The method does not perform locale-aware or case-insensitive comparison; use the appropriate comparison helpers
+        /// for those semantics.
+        /// </para>
+        /// <para>
+        /// Behaviour:
+        /// - If <paramref name="str"/> is <c>nullptr</c> the function returns <c>false</c>.
+        /// - If <paramref name="strLength"/> is zero the function returns <c>true</c>.
+        /// - If this string is shorter than <paramref name="strLength"/> the function returns <c>false</c>.
+        /// </para>
+        /// <para>
+        /// Complexity: O(n) where n is <paramref name="strLength"/>. The routine performs no heap allocations and is marked <c>noexcept</c>.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("hello");
+        /// bool ends = s.EndsWith("lo", 2); // true
+        /// </code>
+        /// </example>
+        [[nodiscard]] bool EndsWith( const CharType* str, size_type strLength ) const noexcept
+        {
+            if ( str == nullptr )
+            {
+                return false;
+            }
+
+            if ( strLength == 0 )
+            {
+                return true;
+            }
+
+            if ( !data_ || strLength > data_->size_ )
+            {
+                return false;
+            }
+
+            return MemCmp( &data_->buffer_[ data_->size_ - strLength ], str, strLength ) == 0;
+        }
+
+        /// <summary>
+        /// Determines whether the string ends with the specified character sequence terminating 
+        /// at the given end index.
+        /// </summary>
+        /// <param name="str">
+        /// Pointer to the character sequence to compare against the end of the string. May be <c>nullptr</c> 
+        /// only when <paramref name="strLength"/> == 0.
+        /// </param>
+        /// <param name="strLength">
+        /// The number of characters in <paramref name="str"/> to compare. When zero, the function 
+        /// follows <c>std::string</c>-like semantics and returns whether <paramref name="end"/> is 
+        /// a valid index (<= length).
+        /// </param>
+        /// <param name="end">
+        /// The zero-based index in this string that denotes the exclusive end position to consider 
+        /// for the comparison. Values greater than the current length are clamped to the current 
+        /// length.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the substring ending at <paramref name="end"/> (exclusive) has the same 
+        /// sequence of characters as the provided <paramref name="str"/> of length 
+        /// <paramref name="strLength"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// - This method does not allocate memory and is marked <c>noexcept</c>. It performs a 
+        /// binary-safe comparison of <paramref name="strLength"/> characters using the <c>MemCmp</c> 
+        /// function.
+        /// - Behavior details:
+        ///   <list type="bullet">
+        ///     <item>
+        ///       <description>
+        ///         When <paramref name="strLength"/> is zero the method returns <c>end &lt;= dataSize</c> 
+        ///         (i.e. an empty pattern matches any valid end position).
+        ///     </description></item>
+        ///     <item>
+        ///       <description>
+        ///         If <paramref name="str"/> is <c>nullptr</c> while <paramref name="strLength"/> &gt; 0 
+        ///         the function returns <c>false</c>.
+        ///       </description>
+        ///     </item>
+        ///     <item>
+        ///       <description>
+        ///         If <paramref name="end"/> &gt; current length it is treated as 
+        ///         the current length (clamped).
+        ///       </description>
+        ///     </item>
+        ///     <item>
+        ///       <description>
+        ///         If <paramref name="strLength"/> &gt; <paramref name="end"/> the comparison 
+        ///         cannot succeed and the function returns <c>false</c>.
+        ///       </description>
+        ///     </item>
+        ///   </list>
+        /// - Thread-safety: safe to call concurrently with other const operations. The returned 
+        ///   pointer references internal storage only for read operations; no mutation occurs.
+        /// </remarks>
+        [[nodiscard]] bool EndsWith( const CharType* str, size_type strLength, size_type end ) const noexcept
+        {
+            const size_type dataSize = data_ ? data_->size_ : 0;
+
+            if ( strLength == 0 )
+            {
+                return end <= dataSize;
+            }
+
+            if ( !data_ || !str )
+            {
+                return false;
+            }
+
+            if ( end > dataSize )
+            {
+                end = dataSize;
+            }
+
+            if ( strLength > end )
+            {
+                return false;
+            }
+
+            const size_type startIndex = end - strLength;
+            const CharType* lhs = &data_->buffer_[ startIndex ];
+
+            return MemCmp( lhs, str, strLength ) == 0;
+        }
+
+
+        /// <summary>
+        /// Determines whether this string instance ends with the specified null-terminated character sequence.
+        /// </summary>
+        /// <param name="str">
+        /// Pointer to a null-terminated character sequence to test as a suffix. May be <c>nullptr</c> 
+        /// or point to an empty string; when <c>nullptr</c> the function behaves as if provided 
+        /// an empty sequence.
+        /// </param>
+        /// <returns><c>true</c> if this string ends with the characters in <paramref name="str"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// This overload computes the length of <paramref name="str"/> using <c>LengthOf</c> and forwards
+        /// to the length-aware overload <c>EndsWith(const CharType*, size_type)</c>. The operation is
+        /// read-only, does not allocate heap memory and is safe to call from const contexts. The result
+        /// is valid only as long as this instance is not modified. For case-insensitive suffix checks,
+        /// use the corresponding case-insensitive comparison helpers if available.
+        /// </remarks>
+        [[nodiscard]] bool EndsWith( const CharType* str ) const noexcept
+        {
+            auto strLength = LengthOf( str );
+			return EndsWith( str, strLength );
+        }
+
+        /// <summary>
+        /// Determines whether the string ends with the specified character sequence using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="str">Pointer to the character sequence to compare as a suffix. Must not be <c>nullptr</c>.</param>
+        /// <param name="strLength">Number of characters in <paramref name="str"/> to compare. When zero the function returns <c>true</c>.</param>
+        /// <returns>
+        /// <c>true</c> when this string ends with the provided sequence (case-insensitive); otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The comparison is performed case-insensitively by calling the repository helper <c>MemICmp</c> on the trailing
+        /// <paramref name="strLength"/> characters of the internal buffer. If <paramref name="strLength"/> is greater than
+        /// this string's length the function returns <c>false</c>. If <paramref name="str"/> is <c>nullptr</c> the function
+        /// returns <c>false</c>. A <paramref name="strLength"/> of zero returns <c>true</c> (empty sequence is considered a suffix).
+        /// </para>
+        /// <para>
+        /// Complexity: O(m) where m == <paramref name="strLength"/>. The function is const and noexcept and does not allocate.
+        /// Callers must ensure the memory pointed to by <paramref name="str"/> is valid for <paramref name="strLength"/> characters.
+        /// </para>
+        /// </remarks>
+        [[nodiscard]] bool IEndsWith( const CharType* str, size_type strLength ) const noexcept
+        {
+            if ( str == nullptr )
+            {
+                return false;
+            }
+
+            if ( strLength == 0 )
+            {
+                return true;
+            }
+
+            if ( !data_ || strLength > data_->size_ )
+            {
+                return false;
+            }
+
+            return MemICmp( &data_->buffer_[ data_->size_ - strLength ], str, strLength ) == 0;
+        }
+
+        /// <summary>
+        /// Performs a case-insensitive check whether this string ends with the specified character sequence
+        /// when considering the logical end position specified by <paramref name="end"/>.
+        /// </summary>
+        /// <param name="str">Pointer to the character sequence to compare. May be <c>nullptr</c> only when <paramref name="strLength"/> == 0.</param>
+        /// <param name="strLength">Number of characters in <paramref name="str"/> to compare. When zero the function returns whether <paramref name="end"/> is a valid end position (<= current length).</param>
+        /// <param name="end">Exclusive end index in this string to consider as the end position. If greater than the current length it is clamped to the current length.</param>
+        /// <returns>
+        /// <c>true</c> when the substring of this string that ends at <paramref name="end"/> and has length <paramref name="strLength"/>
+        /// is equal to the provided sequence <paramref name="str"/>, using a case-insensitive comparison; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n) where n == <paramref name="strLength"/>.
+        /// - This routine does not allocate or throw and is declared <c>noexcept</c>.
+        /// - If <paramref name="strLength"/> is zero the function follows std::string-like semantics and returns whether
+        ///   <paramref name="end"/> is a valid end index (<= current size()).
+        /// - If <paramref name="end"/> is greater than the current string length it will be clamped to the current length before the comparison.
+        /// - Comparison is performed using the repository helper <c>MemICmp</c> which implements a binary case-insensitive memory comparison
+        ///   consistent with the rest of the Harlinn.Common.Core string utilities.
+        /// - Thread-safety: safe to call concurrently with other const operations. Callers must ensure external synchronization for concurrent writers.
+        /// </remarks>
+        [[nodiscard]] bool IEndsWith( const CharType* str, size_type strLength, size_type end ) const noexcept
+        {
+            const size_type dataSize = data_ ? data_->size_ : 0;
+
+            if ( strLength == 0 )
+            {
+                return end <= dataSize;
+            }
+
+            if ( !data_ || !str )
+            {
+                return false;
+            }
+
+            if ( end > dataSize )
+            {
+                end = dataSize;
+            }
+
+            if ( strLength > end )
+            {
+                return false;
+            }
+
+            const size_type startIndex = end - strLength;
+            const CharType* lhs = &data_->buffer_[ startIndex ];
+
+            return MemICmp( lhs, str, strLength ) == 0;
+        }
+
+        /// <summary>
+        /// Performs a case-insensitive suffix check for a null-terminated or pointer/length character sequence.
+        /// </summary>
+        /// <param name="str">Pointer to a null-terminated character sequence to test as suffix. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// <c>true</c> when this string ends with the characters in <paramref name="str"/> (case-insensitive); otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// - The function computes the length of <paramref name="str"/> and forwards to the length-aware overload.
+        /// - Returns <c>false</c> when this string is empty or when <paramref name="str"/> is not a suffix.
+        /// - No allocation is performed and the method is noexcept.
+        [[nodiscard]] bool IEndsWith( const CharType* str ) const noexcept
+        {
+            auto strLength = LengthOf( str );
+            return IEndsWith( str, strLength );
+        }
+
+        /// <summary>
+        /// Tests whether this string ends with the specified null-terminated character sequence.
+        /// </summary>
+        /// <param name="str">Pointer to a null-terminated character sequence to test as suffix. May be <c>nullptr</c>.</param>
+        /// <returns>
+        /// <c>true</c> when this string ends with the characters in <paramref name="str"/> (case-sensitive); otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// - Delegates to the canonical <see cref="EndsWith(const CharType*, size_t)"/> implementation using computed length.
+        /// - Returns <c>false</c> when this string is empty or when <paramref name="str"/> is not a suffix.
         [[nodiscard]] bool ends_with( const CharType* str ) const
         {
             return EndsWith( str );
         }
 
+        /// <summary>
+        /// Determines whether this string ends with the contents of another <see cref="BasicString{T}"/>.
+        /// </summary>
+        /// <param name="str">The string whose contents will be tested as a suffix of this string.</param>
+        /// <returns>
+        /// <c>true</c> if this string ends with the characters contained in <paramref name="str"/> (case-sensitive); otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// - If <paramref name="str"/> is empty the result is <c>false</c> (no implicit empty-suffix match is performed here).
+        /// - The implementation performs an identity-aware check and forwards to the pointer/length overload for efficiency when possible.
         [[nodiscard]] bool EndsWith( const BasicString& str ) const
         {
             auto* other = str.data_;
-            if ( data_ && data_->size_ && other && other->size_ )
+            if ( other )
             {
-                if ( other->size_ <= data_->size_ )
-                {
-                    return Internal::Compare( &data_->buffer_[data_->size_ - other->size_], other->size_, other->buffer_, other->size_ ) == 0;
-                }
+                return EndsWith( other->buffer_, other->size_ );
             }
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this string ends with the contents of another <see cref="BasicString{T}"/>.
+        /// </summary>
+        /// <param name="str">The string whose contents will be tested as a suffix of this string.</param>
+        /// <returns>
+        /// <c>true</c> if this string ends with the characters contained in <paramref name="str"/> (case-sensitive); otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Lowercase alias that forwards to <see cref="EndsWith(const BasicString&)"/> to provide STL-like naming compatibility.
         [[nodiscard]] bool ends_with( const BasicString& str ) const
         {
             return EndsWith( str );
         }
 
-        [[nodiscard]] bool IEndsWith( const CharType* str ) const
-        {
-            if ( data_ && data_->size_ && str && str[0] )
-            {
-                auto otherLength = LengthOf( str );
-                if ( otherLength <= data_->size_ )
-                {
-                    return Internal::ICompare( &data_->buffer_[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;
-                }
-            }
-            return false;
-        }
+        /// <summary>
+        /// Performs a case-insensitive suffix check against another <see cref="BasicString{T}"/>.
+        /// </summary>
+        /// <param name="str">The string whose contents will be tested as a suffix of this string (case-insensitive).</param>
+        /// <returns>
+        /// <c>true</c> when this string ends with the characters in <paramref name="str"/> comparing case-insensitively; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// - The method attempts to use the other string's internal buffer for efficiency and forwards to a pointer/length case-insensitive overload.
+        /// - Returns <c>false</c> when this string is empty or when <paramref name="str"/> is empty or not a suffix.
         [[nodiscard]] bool IEndsWith( const BasicString& str ) const
         {
             auto* other = str.data_;
-            if ( data_ && data_->size_ && other && other->size_ )
+            if ( other )
             {
-                if ( other->size_ <= data_->size_ )
-                {
-                    return Internal::ICompare( &data_->buffer_[data_->size_ - other->size_], other->size_, other->buffer_, other->size_ ) == 0;
-                }
+                return EndsWith( other->buffer_, other->size_ );
             }
             return false;
         }
 
-        [[nodiscard]] size_type Count( CharType what, size_type start = 0 ) const
+        /// <summary>
+        /// Determines whether this string ends with the sequence contained in <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container">A contiguous container-like object whose <c>value_type</c> is identical to the string's character type. The container's contents are compared to the trailing characters of this string.</param>
+        /// <returns><c>true</c> if this string ends with the characters in <paramref name="container"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// The comparison is length-aware and performed by calling the pointer/length overload that accepts the container's <c>data()</c> and <c>size()</c>.
+        /// No heap allocation is performed. This method is safe to call concurrently with other const operations on the same string instance.
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool EndsWith( const T& container ) const noexcept
         {
-            size_type result = 0;
-            if ( data_ )
+            return EndsWith( container.data( ), container.size( ) );
+		}
+        /// <summary>
+        /// Determines whether this string ends with the sequence contained in <paramref name="container"/>, using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="container">A contiguous container-like object whose <c>value_type</c> is identical to the string's character type. The container's contents are compared to the trailing characters of this string in a case-insensitive manner.</param>
+        /// <returns><c>true</c> if this string ends with the characters in <paramref name="container"/> when compared case-insensitively; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Case-insensitive comparison semantics follow the library's internal case-insensitive compare helpers.
+        /// The routine forwards to the pointer/length case-insensitive overload. No heap allocation is performed in common paths.
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool IEndsWith( const T& container ) const noexcept
+        {
+            return IEndsWith( container.data( ), container.size( ) );
+        }
+        
+        /// <summary>
+        /// Alias for <see cref="EndsWith(const T&)"/>; determines whether this string ends with the sequence contained in <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container">A contiguous container-like object whose <c>value_type</c> matches the string's character type.</param>
+        /// <returns><c>true</c> if this string ends with the contents of <paramref name="container"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Lowercase alternative to preserve compatibility with common naming conventions. For case-insensitive checks use <see cref="IEndsWith(const T&)"/>.
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool ends_with( const T& container ) const noexcept
+        {
+            return EndsWith( container.data( ), container.size( ) );
+        }
+
+        /// <summary>
+        /// Determines whether the substring of this string that ends at index <paramref name="end"/> ends with the sequence contained in <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container">A contiguous container-like object whose <c>value_type</c> is identical to the string's character type. The container's contents are compared to the trailing characters of the substring defined by <paramref name="end"/>.</param>
+        /// <param name="end">One-past-the-last character index within this string to consider when testing the suffix. If <paramref name="end"/> is greater than the string length it is clamped to <c>size()</c>.</param>
+        /// <returns><c>true</c> if the substring [0, end) of this string ends with the characters in <paramref name="container"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// The method forwards to the pointer/length overload that accepts explicit length and an end index.
+        /// This allows checking suffixes of a prefix of the string without creating temporaries. No heap allocation is performed in common paths.
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool EndsWith( const T& container, size_type end ) const noexcept
+        {
+            return EndsWith( container.data( ), container.size( ), end );
+        }
+
+        /// <summary>
+        /// Determines whether the substring of this string that ends at index <paramref name="end"/> ends with the sequence contained in <paramref name="container"/>, using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="container">A contiguous container-like object whose <c>value_type</c> is identical to the string's character type. The container's contents are compared case-insensitively to the trailing characters of the substring defined by <paramref name="end"/>.</param>
+        /// <param name="end">One-past-the-last character index within this string to consider when testing the suffix. If <paramref name="end"/> is greater than the string length it is clamped to <c>size()</c>.</param>
+        /// <returns><c>true</c> if the substring [0, end) of this string ends with the characters in <paramref name="container"/> when compared case-insensitively; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Case-insensitive semantics follow the repository's internal compare helpers. The method forwards to the pointer/length case-insensitive overload.
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool IEndsWith( const T& container, size_type end ) const noexcept
+        {
+            return IEndsWith( container.data( ), container.size( ), end );
+        }
+
+        /// <summary>
+        /// Alias for <see cref="EndsWith(const T&, size_type)"/>; determines whether the substring of this string that ends at <paramref name="end"/> ends with <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container">A contiguous container-like object whose <c>value_type</c> matches the string's character type.</param>
+        /// <param name="end">One-past-the-last character index within this string to consider when testing the suffix. Values greater than the string length are clamped to <c>size()</c>.</param>
+        /// <returns><c>true</c> if the substring [0, end) ends with the contents of <paramref name="container"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Provides a lowercase API equivalent to <see cref="EndsWith(const T&, size_type)"/> for naming compatibility.
+        /// </remarks>
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<CharType, std::remove_cvref_t<typename T::value_type>>
+        [[nodiscard]] bool ends_with( const T& container, size_type end ) const noexcept
+        {
+            return EndsWith( container.data( ), container.size( ), end );
+        }
+
+        /// <summary>
+        /// Counts the number of occurrences of the specified character in the string,
+        /// starting the search at the given zero-based index.
+        /// </summary>
+        /// <param name="what">The character to count. Comparison is performed using the string's character equality.</param>
+        /// <param name="start">Zero-based index within the string to begin counting. If <paramref name="start"/> is greater than or equal to the string length the function returns zero.</param>
+        /// <returns>
+        /// The number of occurrences of <paramref name="what"/> found at or after <paramref name="start"/>.
+        /// Returns <see cref="BasicString::npos"/> only for functions that signal not-found; this function returns a count (0..n).
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: O(n) where n is the number of characters examined (from <paramref name="start"/> to end).
+        /// - The implementation uses the repository memory helper <c>MemChr</c> for efficient scanning.
+        /// - This method is a const operation and does not modify the string. It does not allocate heap memory or throw exceptions in normal operation.
+        /// - Thread-safety: safe to call concurrently with other const operations on the same BasicString instance; external synchronization is required if other threads may mutate the instance concurrently.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s( "hello world" );
+        /// auto count = s.Count( 'l' ); // count == 3
+        /// auto countFrom5 = s.Count( 'l', 5 ); // countFrom5 == 2 (search starts at index 5)
+        /// </code>
+        /// </example>
+        [[nodiscard]] size_type Count( CharType what, size_type start = 0 ) const noexcept
+        {
+            if ( !data_ || start >= data_->size_ )
             {
-                while ( start < data_->size_ )
+                return 0;
+            }
+            size_type result = 0;
+            const CharType* ptr = data_->buffer_ + start;
+            const size_type remaining = data_->size_ - start;
+            const CharType* endPtr = data_->buffer_ + data_->size_;
+            const CharType* p = MemChr( ptr, what, remaining );
+            while ( p )
+            {
+                ++result;
+                ++p; 
+                if ( p >= endPtr )
                 {
-                    auto index = IndexOf( what, start );
-                    if ( index != npos )
-                    {
-                        result++;
-                        start = index + 1;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    break;
                 }
+                p = MemChr( p, what, static_cast<size_type>( endPtr - p ) );
             }
             return result;
         }
 
-        [[nodiscard]] size_type Count( const CharType* what, size_type whatLength, size_type start = 0 ) const
+        /// <summary>
+        /// Counts the number of occurrences of a character in this string using a case-insensitive search.
+        /// </summary>
+        /// <param name="what">The character to count. Comparison is performed case-insensitively.</param>
+        /// <param name="start">Zero-based index at which to start the search. If <paramref name="start"/> is greater than or equal to the string length the function returns zero.</param>
+        /// <returns>The number of occurrences of <paramref name="what"/> in the substring starting at <paramref name="start"/>. Returns zero for empty strings or when <paramref name="start"/> is out of range.</returns>
+        /// <remarks>
+        /// This method performs a linear scan from <paramref name="start"/> to the end of the string and uses
+        /// the repository helper <c>MemIChr</c> to locate occurrences in a case-insensitive manner.
+        /// Complexity is O(n) where n is the number of characters examined. The method does not allocate heap memory
+        /// and is safe to call concurrently with other const operations on the same BasicString instance.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Count occurrences of 'a' or 'A' in the entire string
+        /// BasicString<char> s("Abracadabra");
+        /// auto count = s.ICount( 'a' ); // count == 5
+        /// </code>
+        /// </example>
+        [[nodiscard]] size_type ICount( CharType what, size_type start = 0 ) const noexcept
+        {
+            if ( !data_ || start >= data_->size_ )
+            {
+                return 0;
+            }
+            size_type result = 0;
+            const CharType* ptr = data_->buffer_ + start;
+            const size_type remaining = data_->size_ - start;
+            const CharType* endPtr = data_->buffer_ + data_->size_;
+            const CharType* p = MemIChr( ptr, what, remaining );
+            while ( p )
+            {
+                ++result;
+                ++p;
+                if ( p >= endPtr )
+                {
+                    break;
+                }
+                p = MemIChr( p, what, static_cast<size_type>( endPtr - p ) );
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Counts the number of non-overlapping occurrences of a substring in this string.
+        /// </summary>
+        /// <param name="what">
+        /// Pointer to the substring to search for. May be <c>nullptr</c> only 
+        /// when <paramref name="whatLength"/> is zero.
+        /// </param>
+        /// <param name="whatLength">
+        /// Number of characters in the substring pointed to by <paramref name="what"/>. 
+        /// When zero the function returns 0.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index in this string at which to start the search. Defaults to 0. 
+        /// If greater than or equal to the string length the function returns 0.
+        /// </param>
+        /// <returns>
+        /// The number of non-overlapping occurrences of the specified substring found in 
+        /// this string beginning at <paramref name="start"/>. Returns 0 when no occurrences 
+        /// are found or when inputs cause no search to be performed (for example: 
+        /// empty string, <c>nullptr</c> substring with zero length, or <paramref name="start"/> out of range).
+        /// </returns>
+        /// <remarks>
+        /// - This method counts non-overlapping matches: after a match is found the search 
+        ///   continues at the character position immediately after the matched substring 
+        ///   (i.e. index = foundIndex + <paramref name="whatLength"/>).
+        /// - Complexity: worst-case O(N * M) where N is the length of this string 
+        ///   (from <paramref name="start"/>) and M is <paramref name="whatLength"/>. 
+        ///   The implementation reuses the class's efficient IndexOf helper which 
+        ///   may provide faster behavior for many inputs.
+        /// - The function does not allocate memory and is marked <c>noexcept</c>. It performs 
+        ///   only read-only operations on the internal buffer.
+        /// - Thread-safety: safe to call concurrently with other const operations. 
+        ///   External synchronization is required if other threads may mutate the 
+        ///   same instance concurrently.
+        /// - If <paramref name="what"/> is <c>nullptr</c> and <paramref name="whatLength"/> is 
+        ///   non-zero the call behaves as not found and returns 0; if both are zero the call 
+        ///   returns 0.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString<char> s("ababab");
+        /// // Count non-overlapping occurrences of "ab"
+        /// auto count = s.Count( "ab", 2 ); // count == 3
+        /// // For overlapping pattern "aba" in "ababa" result is non-overlapping:
+        /// BasicString<char> t("ababa");
+        /// auto c2 = t.Count( "aba", 3 ); // c2 == 1 (matches at index 0 only)
+        /// </code>
+        /// </example>
+        [[nodiscard]] size_type Count( const CharType* what, size_type whatLength, size_type start = 0 ) const noexcept
         {
             size_type result = 0;
             if ( data_ && what && whatLength )
             {
-                while ( start < data_->size_ )
+                const size_type dataSize = data_->size_;
+                
+                if ( start >= dataSize || whatLength > dataSize )
+                {
+                    return 0;
+                }
+
+                const size_type lastStart = dataSize - whatLength;
+                while ( start <= lastStart )
                 {
                     auto index = IndexOf( what, whatLength, start );
-                    if ( index != npos )
+                    if ( index == npos )
                     {
-                        result++;
-                        start = index + whatLength;
+                        break;
                     }
-                    else
+
+                    ++result;
+
+                    start = index + whatLength;
+                    
+                    if ( start > lastStart )
                     {
+                        // No room left, so stop.
                         break;
                     }
                 }
@@ -11208,209 +12117,988 @@ namespace Harlinn::Common::Core
             return result;
         }
 
+        /// <summary>
+        /// Counts the number of non-overlapping, case-insensitive occurrences of a substring within this string starting at a specified index.
+        /// </summary>
+        /// <param name="what">Pointer to the substring to search for. May be <c>nullptr</c> when <paramref name="whatLength"/> is zero.</param>
+        /// <param name="whatLength">Number of characters in the substring to search for. When zero the function returns zero.</param>
+        /// <param name="start">Zero-based index in this string where the search begins. If greater than or equal to the string length the function returns zero.</param>
+        /// <returns>The number of non-overlapping occurrences of the given substring found at or after <paramref name="start"/>.</returns>
+        /// <remarks>
+        /// <para>
+        /// This method performs a repeated case-insensitive search using <see cref="IIndexOf(const CharType*, size_type, size_type)"/>.
+        /// For each found occurrence the search position is advanced by <paramref name="whatLength"/> to avoid counting overlapping matches.
+        /// </para>
+        /// <para>
+        /// Complexity: worst-case O(N * M) where N is the length of the examined portion of the string and M is <paramref name="whatLength"/>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the method is a const operation and safe to call concurrently with other const methods. If other threads mutate the same
+        /// instance concurrently, external synchronization is required.
+        /// </para>
+        /// <para>
+        /// Exception behavior: the method is declared <c>noexcept</c>. If any underlying helper called by this routine throws an exception,
+        /// program termination may occur due to the noexcept specification.
+        /// </para>
+        /// </remarks>
+        [[nodiscard]] size_type ICount( const CharType* what, size_type whatLength, size_type start = 0 ) const noexcept
+        {
+            size_type result = 0;
+            if ( data_ && what && whatLength )
+            {
+                const size_type dataSize = data_->size_;
+
+                if ( start >= dataSize || whatLength > dataSize )
+                {
+                    return 0;
+                }
+
+                const size_type lastStart = dataSize - whatLength;
+                while ( start <= lastStart )
+                {
+                    auto index = IIndexOf( what, whatLength, start );
+                    if ( index == npos )
+                    {
+                        break;
+                    }
+
+                    ++result;
+
+                    start = index + whatLength;
+
+                    if ( start > lastStart )
+                    {
+                        // No room left, so stop.
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// Counts the number of occurrences of the specified substring in this string.
+        /// </summary>
+        /// <param name="what">The substring to search for. When empty the function returns 0.</param>
+        /// <param name="start">Zero-based index at which to start the search. When greater than the string length the function returns 0.</param>
+        /// <returns>
+        /// The number of (non-overlapping) occurrences of <paramref name="what"/> found in this string
+        /// at or after <paramref name="start"/>. Returns 0 when <paramref name="what"/> is empty or not found.
+        /// </returns>
+        /// <remarks>
+        /// The search is performed using the internal, length-aware search helpers and does not allocate
+        /// additional heap memory for common paths. Complexity is O(n*m) in the worst case where n is the
+        /// number of characters scanned and m is the length of the search pattern; typical behaviour is
+        /// linear for well-distributed patterns. This method is const and safe to call concurrently with
+        /// other const operations. If other threads mutate this BasicString concurrently, external synchronization is required.
+        /// </remarks>
+        /// <exception cref="SystemException">When underlying memory or OS helpers report an error during search.</exception>
         [[nodiscard]] size_type Count( const BasicString& what, size_type start = 0 ) const
         {
-            if ( what.data_ )
+			auto* data = what.data_;
+            if ( data )
             {
-                return Count( what.data_->buffer_, what.data_->size_, start );
+                return Count( data->buffer_, data->size_, start );
             }
             return 0;
         }
 
-        [[nodiscard]] size_type Count( const std::basic_string_view<CharType>& what, size_type start = 0 ) const
+        /// <summary>
+        /// Counts the number of occurrences of the specified substring in this string using a case-insensitive comparison.
+        /// </summary>
+        /// <param name="what">The substring to search for (case-insensitive). When empty the function returns 0.</param>
+        /// <param name="start">Zero-based index at which to start the search. When greater than the string length the function returns 0.</param>
+        /// <returns>
+        /// The number of (non-overlapping) occurrences of <paramref name="what"/> found in this string
+        /// at or after <paramref name="start"/>, compared case-insensitively. Returns 0 when <paramref name="what"/> is empty or not found.
+        /// </returns>
+        /// <remarks>
+        /// This method performs a case-insensitive search by delegating to the internal case-insensitive helpers.
+        /// It follows the same complexity and thread-safety guarantees as <see cref="Count(const BasicString&, size_type)"/>.
+        /// </remarks>
+        /// <exception cref="SystemException">When underlying memory or OS helpers report an error during search.</exception>
+        [[nodiscard]] size_type ICount( const BasicString& what, size_type start = 0 ) const
         {
-            if ( what.size() )
+            auto* data = what.data_;
+            if ( data )
             {
-                return Count( what.data(), what.size( ), start );
+                return ICount( data->buffer_, data->size_, start );
             }
             return 0;
         }
 
-        template<typename T >
-            requires std::is_convertible_v<size_type, typename T::value_type>
-        [[nodiscard]] bool Locate( CharType what, size_type start, T& container)
+        /// <summary>
+        /// Counts the number of occurrences of the specified contiguous container sequence in this string.
+        /// </summary>
+        /// <typeparam name="T">A contiguous container-like type whose element type is convertible to <c>size_type</c>.</typeparam>
+        /// <param name="what">The contiguous container providing the sequence to search for. When empty the function returns 0.</param>
+        /// <param name="start">Zero-based index at which to start the search. When greater than the string length the function returns 0.</param>
+        /// <returns>
+        /// The number of (non-overlapping) occurrences of the sequence represented by <paramref name="what"/>
+        /// found in this string at or after <paramref name="start"/>. Returns 0 when <paramref name="what"/> is empty or not found.
+        /// </returns>
+        /// <remarks>
+        /// This templated overload is constrained to contiguous container-like types whose element type is
+        /// convertible to the string character type. The implementation forwards to the pointer/length based
+        /// <see cref="Count(const CharType*, size_type, size_type)"/> helper to avoid temporaries.
+        /// </remarks>
+        /// <exception cref="SystemException">When underlying memory or OS helpers report an error during search.</exception>
+        template<Common::ContiguousContainerLike T >
+			requires std::is_convertible_v<size_type, typename T::value_type>
+        [[nodiscard]] size_type Count( const T& what, size_type start = 0 ) const
         {
-            container.clear( );
-            if ( data_ )
-            {
-                while ( start < data_->size_ )
-                {
-                    auto index = IndexOf( what, start );
-                    if ( index != npos )
-                    {
-                        container.push_back( index );
-                        start = index + 1;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            return container.size( ) > 0;
+			return Count( what.data( ), what.size( ), start );
         }
 
-        template<typename T >
+        /// <summary>
+        /// Counts the number of occurrences of the specified contiguous container sequence in this string using a case-insensitive comparison.
+        /// </summary>
+        /// <typeparam name="T">A contiguous container-like type whose element type is convertible to <c>size_type</c>.</typeparam>
+        /// <param name="what">The contiguous container providing the sequence to search for (case-insensitive). When empty the function returns 0.</param>
+        /// <param name="start">Zero-based index at which to start the search. When greater than the string length the function returns 0.</param>
+        /// <returns>
+        /// The number of (non-overlapping) occurrences of the sequence represented by <paramref name="what"/>
+        /// found in this string at or after <paramref name="start"/>, compared case-insensitively. Returns 0 when <paramref name="what"/> is empty or not found.
+        /// </returns>
+        /// <remarks>
+        /// This templated overload forwards to the pointer/length based case-insensitive helper
+        /// <see cref="ICount(const CharType*, size_type, size_type)"/> to avoid creating temporaries.
+        /// </remarks>
+        /// <exception cref="SystemException">When underlying memory or OS helpers report an error during search.</exception>
+        template<Common::ContiguousContainerLike T >
             requires std::is_convertible_v<size_type, typename T::value_type>
-        [[nodiscard]] bool Locate( const CharType* what, size_type whatLength, size_type start, T& container )
+        [[nodiscard]] size_type ICount( const T& what, size_type start = 0 ) const
         {
-            container.clear( );
-            if ( data_ )
-            {
-                while ( start < data_->size_ )
-                {
-                    auto index = IndexOf( what, whatLength, start );
-                    if ( index != npos )
-                    {
-                        container.push_back( index );
-                        start = index + whatLength;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            return container.size( ) > 0;
+            return ICount( what.data( ), what.size( ), start );
         }
 
 
+        /// <summary>
+        /// Finds all occurrences of a character in the string and stores their 
+        /// indices in the provided container.
+        /// </summary>
+        /// <typeparam name="T">
+        /// A container type that can hold index values. Must provide <c>value_type</c>, 
+        /// <c>clear()</c>, <c>emplace_back(value_type)</c> and <c>size()</c>, and 
+        /// its <c>value_type</c> must be constructible from <see cref="BasicString::size_type"/>.
+        /// </typeparam>
+        /// <param name="what">
+        /// The character to locate in the string.
+        /// </param>
+        /// <param name="positions">
+        /// An output container that will be cleared and then filled with zero-based 
+        /// indices where <paramref name="what"/> occurs.
+        /// </param>
+        /// <param name="start">
+        /// The zero-based index within the string where the search begins. Defaults to 0.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> when at least one occurrence is found and written to <paramref name="positions"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The function clears <paramref name="positions"/> before use. It repeatedly calls 
+        /// <see cref="IndexOf(CharType, size_type)"/> to locate successive occurrences starting 
+        /// at <paramref name="start"/> and appends each found index to <paramref name="positions"/>.
+        /// </para>
+        /// <para>
+        /// Complexity: O(n) where n is the length of the string in the common case; actual cost 
+        /// depends on the distribution of matches and the complexity of <c>T::emplace_back</c>. 
+        /// No heap allocations are performed by this function itself beyond those performed by 
+        /// the output container.
+        /// </para>
+        /// <para>
+        /// The template constraint requires that the output container's element type can be 
+        /// constructed from <see cref="BasicString::size_type"/>.
+        /// Typical usages use `std::vector<BasicString::size_type>` or similar 
+        /// contiguous containers.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this is a const member and safe to call concurrently with other const 
+        /// operations. External synchronization is required if other threads may mutate the 
+        /// same BasicString instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find all occurrences of 'a' in an Ansi BasicString
+        /// BasicString<char> s("abracadabra");
+        /// std::vector<BasicString<char>::size_type> pos;
+        /// if ( s.Locate( 'a', pos ) )
+        /// {
+        ///     // pos now contains indices of all 'a' characters
+        /// }
+        /// </code>
+        /// </example>
+        template<typename T>
+            requires requires( T& c, typename BasicString::size_type v )
+            {
+                typename T::value_type;
+                { c.clear( ) };
+                { c.emplace_back( static_cast<typename T::value_type>( v ) ) };
+                { c.size( ) };
+            }&& std::is_constructible_v<typename T::value_type, size_type>
+        [[nodiscard]] bool Locate( CharType what, T& positions, size_type start = 0 ) const
+        {
+            positions.clear( );
 
+            if ( !data_ )
+            {
+                return false;
+            }
+
+            while ( start < data_->size_ )
+            {
+                auto index = IndexOf( what, start );
+                if ( index == npos )
+                {
+                    break;
+                }
+
+                positions.emplace_back( static_cast<typename T::value_type>( index ) );
+
+                start = index + 1;
+            }
+
+            return positions.size( ) > 0;
+        }
+
+        /// <summary>
+        /// Finds all occurrences of the specified character (case-insensitive) and 
+        /// records their zero-based indices.
+        /// </summary>
+        /// <param name="what">
+        /// The character to locate. Comparison is performed case-insensitively.
+        /// </param>
+        /// <param name="positions">
+        /// A contiguous container that will receive the indices of each occurrence. 
+        /// The container is cleared on entry. The container type <c>T</c> must provide 
+        /// <c>value_type</c>, <c>clear()</c>, <c>emplace_back(value_type)</c> and <c>size()</c>, and
+        /// its <c>value_type</c> must be constructible from <c>BasicString::size_type</c>.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index in this string at which to begin the search. Defaults to 0.
+        /// </param>
+        /// <returns><c>true</c> if one or more occurrences were found and appended 
+        /// to <paramref name="positions"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The function clears <paramref name="positions"/> and then repeatedly calls 
+        /// <c>IIndexOf(what, start)</c> to locate subsequent occurrences.
+        /// For each found index <c>idx</c> the implementation performs
+        /// <c>positions.emplace_back(static_cast<typename T::value_type>(idx))</c>.
+        /// </para>
+        /// <para>
+        /// Complexity: O(n) in the number of characters scanned from <paramref name="start"/> 
+        /// to the end of the string.
+        /// </para>
+        /// <para>
+        /// Template constraints: the container <c>T</c> must expose <c>value_type</c>, 
+        /// <c>clear()</c>, <c>emplace_back(value_type)</c> and <c>size()</c>,
+        /// and <c>typename T::value_type</c> must be constructible from <c>BasicString::size_type</c>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this method is const and safe to call concurrently with other const 
+        /// operations. External synchronization is required if other threads may mutate the 
+        /// same <c>BasicString</c> instance concurrently.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Collect positions of 'a' (case-insensitive) into a vector
+        /// BasicString<char> s("AbBaA");
+        /// std::vector<size_t> pos;
+        /// if ( s.ILocate( 'a', pos ) )
+        /// {
+        ///     // pos contains indices of occurrences: {0, 3, 4}
+        /// }
+        /// </code>
+        /// </example>
+        template<typename T>
+            requires requires( T& c, typename BasicString::size_type v )
+            {
+                typename T::value_type;
+                { c.clear( ) };
+                { c.emplace_back( static_cast<typename T::value_type>( v ) ) };
+                { c.size( ) };
+            }&& std::is_constructible_v<typename T::value_type, size_type>
+        [[nodiscard]] bool ILocate( CharType what, T& positions, size_type start = 0 ) const
+        {
+            positions.clear( );
+
+            if ( !data_ )
+            {
+                return false;
+            }
+
+            while ( start < data_->size_ )
+            {
+                auto index = IIndexOf( what, start );
+                if ( index == npos )
+                {
+                    break;
+                }
+
+                positions.emplace_back( static_cast<typename T::value_type>( index ) );
+
+                start = index + 1;
+            }
+
+            return positions.size( ) > 0;
+        }
+
+
+        /// <summary>
+        /// Finds all non-overlapping occurrences of a substring in this string and records their starting indices.
+        /// </summary>
+        /// <param name="what">Pointer to the pattern to search for. May be <c>nullptr</c> only when <paramref name="whatLength"/> is zero.</param>
+        /// <param name="whatLength">Number of characters in the pattern to search for. When zero the function returns <c>false</c>.</param>
+        /// <param name="positions">Output container that will be cleared and filled with the zero-based start indices of each match.
+        /// The container type <c>T</c> must expose <c>value_type</c>, <c>clear()</c>, <c>emplace_back(value)</c> and <c>size()</c>,
+        /// and its <c>value_type</c> must be constructible from <c>BasicString::size_type</c>.</param>
+        /// <param name="start">Zero-based index within this string at which to begin the search. Defaults to <c>0</c>.</param>
+        /// <returns><c>true</c> when at least one occurrence was found and recorded into <paramref name="positions"/>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// <para>
+        /// The method repeatedly calls <see cref="IndexOf(const CharType*, size_type, size_type)"/> to locate the next occurrence.
+        /// After each match the search advances by <paramref name="whatLength"/> characters to ensure non-overlapping results.
+        /// </para>
+        /// <para>
+        /// Thread-safety: this is a const operation and is safe to call concurrently with other const operations on the same
+        /// BasicString instance. External synchronization is required if other threads may mutate the same instance concurrently.
+        /// </para>
+        /// <para>
+        /// The container <paramref name="positions"/> is cleared on entry. If no matches are found the container is left empty and the function returns <c>false</c>.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">May be thrown if underlying comparison/search helpers invoked by <c>IndexOf</c> report an OS or allocation error.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Find occurrences of "ab" and record positions
+        /// std::vector<BasicString<char>::size_type> pos;
+        /// str.Locate( "ab", 2, pos );
+        /// </code>
+        /// </example>
+        template<typename T>
+            requires requires( T& c, typename BasicString::size_type v )
+            {
+                typename T::value_type;
+                { c.clear( ) };
+                { c.emplace_back( static_cast<typename T::value_type>( v ) ) };
+                { c.size( ) };
+            }&& std::is_constructible_v<typename T::value_type, size_type>
+        [[nodiscard]] bool Locate( const CharType* what, size_type whatLength, T& positions, size_type start = 0 ) const
+        {
+            positions.clear( );
+
+            if ( !data_ )
+            {
+                return false;
+            }
+
+            if ( what == nullptr || whatLength == 0 )
+            {
+                return false;
+            }
+
+            const size_type dataSize = data_->size_;
+            if ( whatLength > dataSize )
+            {
+                return false;
+            }
+
+            const size_type maxStart = dataSize - whatLength;
+
+            while ( start <= maxStart )
+            {
+                auto index = IndexOf( what, whatLength, start );
+                if ( index == npos )
+                {
+                    break;
+                }
+
+                positions.emplace_back( static_cast<typename T::value_type>( index ) );
+
+                start = index + whatLength;
+            }
+
+            return positions.size( ) > 0;
+        }
+
+
+            /// <summary>
+        /// Creates a new string that is a substring of this string.
+        /// </summary>
+        /// <param name="start">
+        /// Zero-based index of the first character to include in the substring. 
+        /// If <paramref name="start"/> is greater than or equal to the current 
+        /// string length an empty string is returned.
+        /// </param>
+        /// <param name="length">
+        /// The number of characters to include in the substring. When <see cref="BasicString::npos"/> is 
+        /// specified or when <paramref name="length"/> exceeds the available characters starting at 
+        /// <paramref name="start"/>, the substring extends to the end of the string.
+        /// </param>
+        /// <returns>
+        /// A <see cref="BasicString"/> containing the requested character sequence.
+        /// Returns an empty <see cref="BasicString"/> when the source has no data, 
+        /// when <paramref name="start"/> is out of range, or when the computed 
+        /// <paramref name="length"/> is zero. When the requested substring spans the 
+        /// entire string (that is, <paramref name="start"/> == 0 and <paramref name="length"/> 
+        /// equals the string length) the returned <see cref="BasicString"/> shares the 
+        /// same internal buffer (no copy) and increments the reference count.
+        /// Otherwise the contents are copied into a newly allocated internal buffer 
+        /// owned by the returned string.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Ownership and copy-on-write: this function returns a shared buffer when the 
+        /// requested substring equals the entire string (efficient shallow copy via 
+        /// internal reference-counted Data).
+        /// </para>
+        /// <para>
+        /// Thread-safety: the operation is not synchronized. Producing a shared reference 
+        /// (when the whole-string case applies) is thread-safe because the internal reference 
+        /// count is incremented using interlocked operations. Callers that will mutate 
+        /// returned buffers should call <see cref="EnsureUnique"/> on the returned instance 
+        /// before performing in-place modifications.
+        /// </para>
+        /// <para>
+        /// Performance: copying occurs only when necessary. The routine uses the class's 
+        /// allocation granularity and internal memory helpers to perform efficient copies 
+        /// and to maintain the terminating null invariant.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when allocation of a new internal buffer fails while creating the substring.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Extract "world" from "hello world"
+        /// BasicString<char> s("hello world");
+        /// auto sub = s.SubString(6, 5); // sub == "world"
+        /// </code>
+        /// </example>
         [[nodiscard]] BasicString SubString( size_type start, size_type length = npos ) const
         {
-            if ( data_ && ( start < data_->size_ ) )
-            {
-                if ( length > ( data_->size_ - start ) )
-                {
-                    length = data_->size_ - start;
-                }
-                if ( ( start == 0 ) && ( length == data_->size_ ) )
-                {
-                    return BasicString( data_ );
-                }
-                else
-                {
-                    return BasicString( data_->buffer_ + start, length );
-                }
-            }
-            else
+            if ( !data_ )
             {
                 return BasicString( );
             }
+
+            auto currentSize = data_->size_;
+            if ( start >= currentSize )
+            {
+                return {};
+            }
+
+            size_type available = currentSize - start;
+            if ( length > available )
+            {
+                length = available;
+            }
+
+            if ( length == 0 )
+            {
+                return {};
+            }
+
+            if ( start == 0 && length == currentSize )
+            {
+                return BasicString( data_ );
+            }
+
+            // Otherwise copy the requested slice
+            return BasicString( data_->buffer_ + start, length );
         }
 
+        /// <summary>
+        /// Alias for <see cref="SubString(size_type,size_type)"/>; returns a substring from 
+        /// the specified start index and length.
+        /// </summary>
+        /// <param name="start">
+        /// Zero-based index of the first character to include in the substring.
+        /// </param>
+        /// <param name="length">
+        /// Number of characters to include. Defaults to <see cref="BasicString::npos"/> which extends to the end.
+        /// </param>
+        /// <returns>
+        /// A <see cref="BasicString"/> containing the requested substring. See <see cref="SubString(size_type,size_type)"/> for detailed semantics.
+        /// </returns>
+        /// <remarks>
+        /// This lowercase alias forwards to <see cref="SubString(size_type,size_type)"/> and preserves its behavior, including sharing the internal
+        /// buffer in the full-string case and allocating/copying otherwise.
+        /// </remarks>
         [[nodiscard]] BasicString substr( size_type start, size_type length = npos ) const
         {
             return SubString( start, length );
         }
 
-
-        template<typename VectorT = std::vector<std::basic_string_view<CharType>>>
-        [[nodiscard]] VectorT Split( const CharType* delimiters, size_type delimitersLength, size_type start ) const
+        /// <summary>
+        /// Splits the string into substrings separated by a single character separator.
+        /// </summary>
+        /// <param name="separator">
+        /// The character used to separate tokens.
+        /// </param>
+        /// <param name="removeEmptyEntries">
+        /// When <c>true</c> empty tokens produced by consecutive separators or leading/trailing separators are omitted
+        /// from the returned collection. When <c>false</c> empty tokens are preserved.
+        /// </param>
+        /// <param name="count">
+        /// Maximum number of substrings to return. When <c>npos</c> (default) there is no upper limit.
+        /// If <paramref name="count"/> &gt; 0 and the number of possible tokens exceeds <paramref name="count"/>,
+        /// the remainder of the string (including separators) is returned as the final element.
+        /// A value of <c>0</c> causes an immediate return of an empty collection.
+        /// </param>
+        /// <returns>
+        /// A vector of substrings of type <typeparamref name="SubStringT"/> (defaulting to <c>BasicString&lt;CharType&gt;</c>).
+        /// The resulting vector is empty when <paramref name="count"/> is zero or when the string is empty and
+        /// <paramref name="removeEmptyEntries"/> is <c>true</c>. Otherwise semantics follow the rules described above.
+        /// </returns>
+        /// <remarks>
+        /// - Behavior:
+        ///   <list type="number">
+        ///     <item><description>If the current string is empty and <paramref name="removeEmptyEntries"/> is <c>false</c>,
+        ///     a single empty token is returned.</description></item>
+        ///     <item><description>Tokenization is performed on character boundaries; no locale or multi-code-unit processing is done here.</description></item>
+        ///     <item><description>When <paramref name="count"/> is reached the rest of the input (from the last split position)
+        ///     is appended as the last token without further splitting.</description></item>
+        ///   </list>
+        /// - Complexity: O(n) in the number of characters scanned plus the cost of constructing tokens.
+        /// - Thread-safety: const operation; safe to call concurrently with other const operations. Mutating operations require external synchronization.
+        /// - Ownership: returned substrings are constructed from pointer/length pairs; recipients own their copies.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when an allocation for the result vector or substring construction fails.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Example: split "a,,b,c" on ',' with and without removing empty entries
+        /// BasicString<char> s("a,,b,c");
+        /// auto tokens1 = s.Split(',', false); // tokens1 == { "a", "", "b", "c" }
+        /// auto tokens2 = s.Split(',', true);  // tokens2 == { "a", "b", "c" }
+        ///
+        /// // Example: count limits the number of returned tokens
+        /// auto tokens3 = s.Split(',', false, 2); // tokens3 == { "a", ",b,c" }
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicString<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
+        [[nodiscard]] VectorT Split( CharType separator, bool removeEmptyEntries = false, size_type count = npos ) const
         {
-            using DestT = typename VectorT::value_type;
             VectorT result;
-            if ( data_ && ( start < data_->size_ ) )
+
+            // Guard: count == 0 is a no-op -> return empty result.
+            if ( count == 0 )
             {
-                auto startPtr = data_->buffer_ + start;
-                auto endPtr = startPtr + data_->size_;
-                auto ptr = startPtr;
-                while ( ptr < endPtr )
+                return result;
+            }
+
+            // If string is empty: follow common semantics -> produce one empty token unless removeEmptyEntries is true.
+            if ( !data_ || data_->size_ == 0 )
+            {
+                if ( !removeEmptyEntries )
                 {
-                    if ( Contains( delimiters, delimitersLength, *ptr ) )
+                    result.emplace_back( ); // default-constructed (empty) SubStringT
+                }
+                return result;
+            }
+
+            const CharType* buffer = data_->buffer_;
+            const size_type length = data_->size_;
+            size_type last = 0;
+
+            for ( size_type i = 0; i < length; ++i )
+            {
+                if ( buffer[ i ] == separator )
+                {
+                    // if count is limited and we've already produced count-1 entries, add the rest and return
+                    if ( count != npos && result.size( ) == ( count - 1 ) )
                     {
-                        size_type length = ptr - startPtr;
-                        result.emplace_back( DestT( startPtr, length ) );
-                        startPtr = ptr + 1;
+                        size_type restLen = ( length > last ) ? ( length - last ) : 0;
+                        if ( !( removeEmptyEntries && restLen == 0 ) )
+                        {
+                            result.emplace_back( buffer + last, restLen );
+                        }
+                        return result;
                     }
-                    ptr++;
-                }
-                if ( startPtr < endPtr )
-                {
-                    size_type length = endPtr - startPtr;
-                    result.emplace_back( DestT( startPtr, length ) );
+
+                    size_type tokenLen = i - last;
+                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
+                    {
+                        result.emplace_back( buffer + last, tokenLen );
+                    }
+                    last = i + 1;
                 }
             }
+
+            // tail
+            size_type tailLen = ( length > last ) ? ( length - last ) : 0;
+            if ( !( removeEmptyEntries && tailLen == 0 ) )
+            {
+                result.emplace_back( buffer + last, tailLen );
+            }
+
             return result;
         }
 
-        template<typename VectorT = std::vector<std::basic_string_view<CharType>>, ContiguousContainerLike SpanT>
-            requires std::is_same_v<CharType,std::remove_cvref_t<typename SpanT::value_type>>
-        [[nodiscard]] VectorT Split( const SpanT& delimiterSpan, size_type start = 0 ) const
-        {
-            return Split<VectorT>( delimiterSpan.data(), delimiterSpan.size(), start );
-        }
-
-        template<typename VectorT = std::vector<std::basic_string_view<CharType>>>
-        [[nodiscard]] VectorT Split( const CharType* delimiters, size_type start = 0 ) const
-        {
-            size_type delimitersLength = LengthOf( delimiters );
-            return Split<VectorT>( delimiters, delimitersLength, start );
-        }
-
-        template<bool ignoreWhiteSpace = true, typename VectorT>
-        void Split( CharType separator, VectorT& result ) const
-        {
-            if ( data_ )
-            {
-                Internal::Split<CharType, ignoreWhiteSpace, VectorT>( data_->buffer_, data_->size_, separator, result );
-            }
-            else
-            {
-                using DestinationT = typename VectorT::value_type;
-                result.clear( );
-                result.push_back( DestinationT() );
-            }
-        }
-
-        template<ContiguousContainerLike VectorT, bool ignoreWhiteSpace = true>
-        VectorT Split( CharType separator ) const
+        /// <summary>
+        /// Splits the current string into a sequence of substrings using any character contained in <paramref name="separators"/> as delimiter(s).
+        /// </summary>
+        /// <param name="separators">A contiguous container whose element type is convertible to the string <c>CharType</c>. Each element is treated as a separator character.</param>
+        /// <param name="removeEmptyEntries">When <c>true</c> empty tokens (zero-length) are omitted from the result; when <c>false</c> empty tokens are preserved.</param>
+        /// <param name="count">Maximum number of substrings to return. When equal to <c>BasicString::npos</c> (default) all tokens are returned. When <c>count</c> is zero an empty vector is returned.</param>
+        /// <returns>
+        /// A container of type <c>VectorT</c> containing substrings represented as <c>SubStringT</c> constructed from pointer/length pairs referencing the characters copied into each substring.
+        /// When the source string is empty the returned container is empty.
+        /// </returns>
+        /// <remarks>
+        /// <para>Complexity: O(n) where n is the number of characters in the source string (plus cost of constructing result elements).</para>
+        /// <para>Behavior details:
+        /// <list type="bullet">
+        ///   <item><description>Tokens are produced by splitting at any single character found in <paramref name="separators"/>.</description></item>
+        ///   <item><description>If <paramref name="count"/> is specified and the number of produced tokens reaches <c>count - 1</c>, the remainder of the string (including separators) is returned as the last token.</description></item>
+        ///   <item><description>When <paramref name="removeEmptyEntries"/> is <c>true</c>, zero-length tokens produced by adjacent separators or separators at the ends are omitted.</description></item>
+        /// </list>
+        /// </para>
+        /// <para>Thread-safety: this method is <c>const</c> and safe to call concurrently with other const operations. It does not mutate the source string.</para>
+        /// <para>Ownership: the returned <c>SubStringT</c> instances are constructed from the substring pointer/length and own their contents according to the <c>SubStringT</c> constructor semantics.</para>
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation fails while constructing the result vector or substring elements.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Example: split by comma or semicolon, remove empty entries
+        /// std::vector<char> seps = { ',', ';' };
+        /// auto parts = myString.Split( seps, true );
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicString<CharType>, typename VectorT = std::vector<SubStringT>, typename ContainerT>
+            requires std::is_convertible_v<typename ContainerT::value_type, CharType> &&
+                     std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const ContainerT& separators, bool removeEmptyEntries = false, size_type count = npos ) const
         {
             VectorT result;
-            Split( separator, result );
+            if ( count == 0 )
+            {
+                return result;
+            }
+
+            if ( !data_ || data_->size_ == 0 )
+            {
+                return result;
+            }
+
+            const CharType* buffer = data_->buffer_;
+            const size_type length = data_->size_;
+            size_type last = 0;
+
+            auto isSeparator = [ &separators ]( CharType c )
+            {
+                return std::find( std::begin( separators ), std::end( separators ), c ) != std::end( separators );
+            };
+
+            for ( size_type i = 0; i < length; ++i )
+            {
+                if ( isSeparator( buffer[ i ] ) )
+                {
+                    if ( count != npos && result.size( ) == ( count - 1 ) )
+                    {
+                        size_type restLen = ( i >= last ) ? ( length - last ) : 0;
+                        if ( !( removeEmptyEntries && restLen == 0 ) )
+                        {
+                            result.emplace_back( buffer + last, restLen );
+                        }
+                        return result;
+                    }
+
+                    size_type tokenLen = i - last;
+                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
+                    {
+                        result.emplace_back( buffer + last, tokenLen );
+                    }
+                    last = i + 1;
+                }
+            }
+
+            size_type tailLen = length - last;
+            if ( !( removeEmptyEntries && tailLen == 0 ) )
+            {
+                result.emplace_back( buffer + last, tailLen );
+            }
+
             return result;
         }
 
+        /// <summary>
+        /// Splits the current string into a sequence of substrings using the specified separator.
+        /// </summary>
+        /// <typeparam name="SubStringT">The substring type to produce. Must be constructible from <c>const CharType*</c> and <c>BasicString::size_type</c>. Defaults to <c>BasicString&lt;CharType&gt;</c>.</typeparam>
+        /// <typeparam name="VectorT">The container type used to collect substrings. Must support <c>emplace_back(const SubStringT&)</c> and default construction. Defaults to <c>std::vector&lt;SubStringT&gt;</c>.</typeparam>
+        /// <param name="separator">A contiguous view of characters that denotes the separator sequence. When <paramref name="separator"/> is empty the whole string is returned as a single element.</param>
+        /// <param name="removeEmptyEntries">If <c>true</c> zero-length tokens (adjacent separators or leading/trailing separators) are omitted from the result; otherwise empty tokens are included.</param>
+        /// <param name="count">Maximum number of tokens to produce. When equal to <c>npos</c> there is no limit. If the limit is reached the remaining characters (from the last split point to the end) are returned as the final token.</param>
+        /// <returns>
+        /// A <c>VectorT</c> instance containing the resulting substrings in order. When the source string is empty or <paramref name="count"/> is <c>0</c> an empty container is returned.
+        /// </returns>
+        /// <remarks>
+        /// - Complexity: linear in the length of the source string (O(N)) plus cost of constructing substrings. For each found separator a constant amount of work is done; token construction cost depends on <c>SubStringT</c>.
+        /// - Ownership: when <c>SubStringT</c> is <c>BasicString&lt;CharType&gt;</c> the substring constructor that takes a pointer/length will allocate a new internal buffer and copy the characters (unique owned buffer). If <c>SubStringT</c> is constructible from a pointer/length without copy semantics, the behaviour follows that type's contract.
+        /// - Thread-safety: this method is const and safe to call concurrently with other const operations. Concurrent mutations of the same instance require external synchronization.
+        /// - Error handling: allocation or OS-level failures during substring construction or internal operations propagate as platform-specific exceptions (for example <c>SystemException</c>) from the underlying allocation helpers.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Split on comma, keep empty entries
+        /// auto parts = s.Split( std::basic_string_view<CharType>( ',', 1 ), false );
+        /// // Limit to 3 tokens, remove empty entries
+        /// auto parts2 = s.Split( std::basic_string_view<CharType>( ",", 1 ), true, 3 );
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicString<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const std::basic_string_view<CharType>& separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            VectorT result;
+            if ( !data_ || data_->size_ == 0 || count == 0 )
+            {
+                return result;
+            }
+
+            const CharType* buffer = data_->buffer_;
+            const size_type length = data_->size_;
+            const CharType* sepBuf = separator.data( );
+            const size_type sepLen = separator.size( );
+
+            if ( sepLen == 0 )
+            {
+                // For simplicity, mimic common expectation: empty separator -> single element (the whole string)
+                if constexpr (std::is_same_v<BasicString<CharType>, SubStringT>)
+                { 
+                    result.emplace_back( BasicString( data_ ) );
+                }
+                else
+                {
+                    result.emplace_back( data_->buffer_, data_->size_ );
+                }
+                return result;
+            }
+
+            size_type last = 0;
+            for ( size_type i = 0; i + sepLen <= length; )
+            {
+                if ( MemCmp( &buffer[ i ], sepBuf, sepLen ) == 0 )
+                {
+                    if ( count != npos && result.size( ) == ( count - 1 ) )
+                    {
+                        size_type restLen = ( i >= last ) ? ( length - last ) : 0;
+                        if ( !( removeEmptyEntries && restLen == 0 ) )
+                        {
+                            result.emplace_back( buffer + last, restLen );
+                        }
+                        return result;
+                    }
+
+                    size_type tokenLen = i - last;
+                    if ( !( removeEmptyEntries && tokenLen == 0 ) )
+                    {
+                        if ( tokenLen == 0 )
+                        {
+                            result.emplace_back( );
+                        }
+                        else
+                        {
+                            result.emplace_back( buffer + last, tokenLen );
+                        }
+                    }
+                    i += sepLen;
+                    last = i;
+                }
+                else
+                {
+                    ++i;
+                }
+            }
+
+            // tail
+            size_type tailLen = length - last;
+            if ( !( removeEmptyEntries && tailLen == 0 ) )
+            {
+                result.emplace_back( buffer + last, tailLen );
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Splits the string using a null-terminated separator sequence and returns a vector of substrings.
+        /// </summary>
+        /// <typeparam name="SubStringT">The substring type to produce. Must be constructible from a pointer/length pair: <c>SubStringT(const CharType*, size_type)</c>.</typeparam>
+        /// <typeparam name="VectorT">The container type used to collect the substrings. Defaults to <c>std::vector&lt;SubStringT&gt;</c>.</typeparam>
+        /// <param name="separator">Pointer to a null-terminated separator sequence. When <c>nullptr</c> or an empty separator is provided behavior is delegated to the span-based overload.</param>
+        /// <param name="removeEmptyEntries">When <c>true</c> any empty tokens produced by adjacent separators or leading/trailing separators are omitted from the result. When <c>false</c> empty tokens are preserved.</param>
+        /// <param name="count">Maximum number of substrings to produce. Defaults to <c>npos</c> for no limit. When a positive limit is provided the last element may contain the remainder of the input.</param>
+        /// <returns>
+        /// A <c>VectorT</c> containing the produced substrings in their original order. When no tokens are produced an empty container is returned.
+        /// </returns>
+        /// <remarks>
+        /// This overload constructs a <c>std::basic_string_view&lt;CharType&gt;</c> from the provided <paramref name="separator"/> and forwards
+        /// the work to the span-based <c>Split</c> implementation. The function preserves the copy-on-write/reference-counted semantics
+        /// of <c>BasicString</c> for the returned substring elements (see <c>BasicString::EnsureUnique</c> and related APIs).
+        /// - If <paramref name="separator"/> is <c>nullptr</c> or an empty string the behavior is the same as calling the span overload with an empty separator view.
+        /// - The method does not allocate except for the returned container and elements created by the underlying Split implementation; allocation failures
+        ///   are reported via repository allocation helpers and may result in a <c>SystemException</c>.
+        /// - Thread-safety: the call is const and safe to call concurrently with other const operations. External synchronization is required if other threads may mutate this instance concurrently.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Split on single-character separator
+        /// BasicString<char> s("a,b,,c");
+        /// auto parts = s.Split(",", true); // {"a","b","c"}
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicString<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const CharType* separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            std::basic_string_view<CharType> view( separator );
+            return Split<SubStringT, VectorT>( view, removeEmptyEntries, count );
+        }
+
+        /// <summary>
+        /// Splits this string using the specified <see cref="BasicString"/> separator and returns a collection of substrings.
+        /// </summary>
+        /// <param name="separator">The separator string to split on. The separator is converted to a string view and forwarded to the view-based overload.</param>
+        /// <param name="removeEmptyEntries">If <c>true</c> any empty tokens produced by adjacent separators or separators at the ends are omitted from the result.</param>
+        /// <param name="count">Maximum number of substrings to produce. Use <c>npos</c> (default) to indicate no limit.</param>
+        /// <returns>
+        /// A container of type <c>VectorT</c> containing the resulting substrings. Each element type is <c>SubStringT</c> and must be
+        /// constructible from a pointer/length pair (<c>const CharType*, size_type</c>).
+        /// </returns>
+        /// <remarks>
+        /// This overload simply creates a <c>std::basic_string_view&lt;CharType&gt;</c> from the provided <paramref name="separator"/>
+        /// and forwards to the string-view based <c>Split</c> implementation which performs the actual tokenization.
+        /// The method does not modify this string instance and preserves copy-on-write semantics of the underlying storage.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when allocation of the result container or substring elements fails.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Split on BasicString separator
+        /// BasicString<char> s("one,two,,three");
+        /// auto tokens = s.Split( BasicString<char>(",") );
+        /// // tokens -> {"one","two","","three"}
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicString<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const BasicString& separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            std::basic_string_view<CharType> view( separator.c_str(), separator.size() );
+            return Split<SubStringT, VectorT>( view, removeEmptyEntries, count );
+        }
+
+        /// <summary>
+        /// Splits this string using the specified <see cref="std::basic_string&lt;CharType&gt;"/> separator and returns a collection of substrings.
+        /// </summary>
+        /// <param name="separator">The separator string to split on. The separator is converted to a string view and forwarded to the view-based overload.</param>
+        /// <param name="removeEmptyEntries">If <c>true</c> any empty tokens produced by adjacent separators or separators at the ends are omitted from the result.</param>
+        /// <param name="count">Maximum number of substrings to produce. Use <c>npos</c> (default) to indicate no limit.</param>
+        /// <returns>
+        /// A container of type <c>VectorT</c> containing the resulting substrings. Each element type is <c>SubStringT</c> and must be
+        /// constructible from a pointer/length pair (<c>const CharType*, size_type</c>).
+        /// </returns>
+        /// <remarks>
+        /// This overload constructs a <c>std::basic_string_view&lt;CharType&gt;</c> from the provided <paramref name="separator"/>
+        /// and delegates to the string-view based <c>Split</c> implementation which performs tokenization. This method is a convenience
+        /// overload that avoids requiring callers to create a string_view explicitly.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when allocation of the result container or substring elements fails.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Split on std::string separator
+        /// BasicString<wchar_t> s(L"alpha|beta|gamma");
+        /// auto tokens = s.Split( std::basic_string<wchar_t>(L"|") );
+        /// // tokens -> {L"alpha",L"beta",L"gamma"}
+        /// </code>
+        /// </example>
+        template<typename SubStringT = BasicString<CharType>, typename VectorT = std::vector<SubStringT>>
+            requires std::is_constructible_v<SubStringT, const CharType*, typename BasicString<CharType>::size_type>
+        [[nodiscard]] VectorT Split( const std::basic_string<CharType>& separator, bool removeEmptyEntries = false, size_type count = npos ) const
+        {
+            std::basic_string_view<CharType> view( separator.c_str( ), separator.size( ) );
+            return Split<SubStringT, VectorT>( view, removeEmptyEntries, count );
+        }
+
+        /// <summary>
+        /// Convert all characters in this string to their uppercase form in-place.
+        /// </summary>
+        /// <returns>Reference to this <see cref="BasicString"/> instance after conversion.</returns>
+        /// <remarks>
+        /// The operation enforces copy-on-write semantics: if the internal buffer is shared with other
+        /// <see cref="BasicString"/> instances, a unique buffer will be created by calling <see cref="EnsureUnique()"/>
+        /// before applying the conversion. This invalidates any existing pointers, iterators or references
+        /// into the previous buffer. The conversion is performed using <c>Core::ToUpper</c> and affects the
+        /// active character data only.
+        /// Thread-safety: the method is not synchronized. External synchronization is required if multiple
+        /// threads may concurrently modify the same instance.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when allocation is required to obtain a unique buffer and the allocation fails.</exception>
         BasicString& UpperCase( )
         {
-            if ( data_ )
+            if ( data_ && data_->size_ )
             {
-                if ( data_->referenceCount_ > 1 )
-                {
-                    auto newData = Allocate( data_->size_ );
-                    MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
-                    ReleaseData( data_ );
-                    data_ = newData;
-                }
+                EnsureUnique( );
                 Core::ToUpper( data_->buffer_, data_->size_ );
             }
             return *this;
         }
 
+        /// <summary>
+        /// Convert all characters in this string to their lowercase form in-place.
+        /// </summary>
+        /// <returns>Reference to this <see cref="BasicString"/> instance after conversion.</returns>
+        /// <remarks>
+        /// The operation enforces copy-on-write semantics: if the internal buffer is shared with other
+        /// <see cref="BasicString"/> instances, a unique buffer will be created by calling <see cref="EnsureUnique()"/>
+        /// before applying the conversion. This invalidates any existing pointers, iterators or references
+        /// into the previous buffer. The conversion is performed using <c>Core::ToLower</c> and affects the
+        /// active character data only.
+        /// Thread-safety: the method is not synchronized. External synchronization is required if multiple
+        /// threads may concurrently modify the same instance.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when allocation is required to obtain a unique buffer and the allocation fails.</exception>
         BasicString& LowerCase( )
         {
-            if ( data_ )
+            if ( data_ && data_->size_ )
             {
-                if ( data_->referenceCount_ > 1 )
-                {
-                    auto newData = Allocate( data_->size_ );
-                    MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
-                    ReleaseData( data_ );
-                    data_ = newData;
-                }
+                EnsureUnique( );
                 Core::ToLower( data_->buffer_, data_->size_ );
             }
             return *this;
         }
 
+        /// <summary>
+        /// Create a new <see cref="BasicString"/> that is a lowercase copy of this string.
+        /// </summary>
+        /// <returns>
+        /// A newly allocated <see cref="BasicString"/> instance containing the lowercase conversion
+        /// of the current string. The returned object owns its buffer (reference count == 1).
+        /// If this string is empty, an empty <see cref="BasicString"/> is returned.
+        /// </returns>
+        /// <remarks>
+        /// This function allocates a new internal buffer sized to the current string length, copies
+        /// the characters and then converts them to lowercase using <c>Core::ToLower</c>. The operation
+        /// does not mutate this instance and therefore does not affect other instances that may share
+        /// the same internal buffer.
+        /// Thread-safety: the method is const and safe to call concurrently with other const operations.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for the new buffer fails.</exception>
         [[nodiscard]] BasicString ToLower( ) const
         {
-            if ( data_ )
+            if ( data_ && data_->size_ )
             {
-                auto newData = Allocate( data_->size_ );
+                auto* newData = Allocate( data_->size_ );
+                BasicString result( newData, false );
                 MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
-                Core::ToLower( newData->buffer_, newData->size_ );
-                return BasicString( newData );
+                Core::ToLower( result.data( ), result.size( ) );
+                return result;
             }
             else
             {
@@ -11418,14 +13106,31 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Create a new <see cref="BasicString"/> that is an uppercase copy of this string.
+        /// </summary>
+        /// <returns>
+        /// A newly allocated <see cref="BasicString"/> instance containing the uppercase conversion
+        /// of the current string. The returned object owns its buffer (reference count == 1).
+        /// If this string is empty, an empty <see cref="BasicString"/> is returned.
+        /// </returns>
+        /// <remarks>
+        /// This function allocates a new internal buffer sized to the current string length, copies
+        /// the characters and then converts them to uppercase using <c>Core::ToUpper</c>. The operation
+        /// does not mutate this instance and therefore does not affect other instances that may share
+        /// the same internal buffer.
+        /// Thread-safety: the method is const and safe to call concurrently with other const operations.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for the new buffer fails.</exception>
         [[nodiscard]] BasicString ToUpper( ) const
         {
-            if ( data_ )
+            if ( data_ && data_->size_ )
             {
-                auto newData = Allocate( data_->size_ );
+                auto* newData = Allocate( data_->size_ );
+                BasicString result( newData, false );
                 MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
-                Core::ToUpper( newData->buffer_, newData->size_ );
-                return BasicString( newData );
+                Core::ToUpper( result.data( ), result.size( ) );
+                return result;
             }
             else
             {
@@ -11434,16 +13139,43 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Returns a new string where the first character is converted to upper-case.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="BasicString"/> instance containing the same characters as this string,
+        /// but with the first character converted to its upper-case form when a change is required.
+        /// If this string is empty an empty <see cref="BasicString"/> is returned.
+        /// If the first character is already upper-case the original string is returned unchanged (shared).
+        /// </returns>
+        /// <remarks>
+        /// This method follows the copy-on-write / reference-counted semantics of <see cref="BasicString"/>.
+        /// - If the string is empty the call returns an empty string and performs no allocations.
+        /// - If the first character is already upper-case the method returns *this without allocating.
+        /// - Otherwise the method allocates a new internal Data buffer sized to the current string length,
+        ///   copies the existing contents, converts the first character to upper-case and returns a new
+        ///   <see cref="BasicString"/> that owns the newly allocated buffer.
+        /// Thread-safety: this routine is not synchronized. Converting a shared buffer to a unique buffer is safe
+        /// because other string instances that referenced the old buffer are not mutated.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for the new buffer fails.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString&lt;char&gt; s("hello");
+        /// auto t = s.FirstToUpper(); // t == "Hello", s unchanged
+        /// </code>
+        /// </example>
         [[nodiscard]] BasicString FirstToUpper( ) const
         {
-            if ( data_ )
+            if ( data_ && data_->size_ )
             {
                 if ( IsLower( 0 ) )
                 {
                     auto newData = Allocate( data_->size_ );
+                    BasicString result( newData, false );
                     MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                     *newData->buffer_ = Core::ToUpper( *newData->buffer_ );
-                    return BasicString( newData );
+                    return result;
                 }
                 return *this;
             }
@@ -11453,16 +13185,43 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Returns a new string where the first character is converted to lower-case.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="BasicString"/> instance containing the same characters as this string,
+        /// but with the first character converted to its lower-case form when a change is required.
+        /// If this string is empty an empty <see cref="BasicString"/> is returned.
+        /// If the first character is already lower-case the original string is returned unchanged (shared).
+        /// </returns>
+        /// <remarks>
+        /// This method follows the copy-on-write / reference-counted semantics of <see cref="BasicString"/>.
+        /// - If the string is empty the call returns an empty string and performs no allocations.
+        /// - If the first character is already lower-case the method returns *this without allocating.
+        /// - Otherwise the method allocates a new internal Data buffer sized to the current string length,
+        ///   copies the existing contents, converts the first character to lower-case and returns a new
+        ///   <see cref="BasicString"/> that owns the newly allocated buffer.
+        /// Thread-safety: this routine is not synchronized. Converting a shared buffer to a unique buffer is safe
+        /// because other string instances that referenced the old buffer are not mutated.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when memory allocation for the new buffer fails.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// BasicString&lt;char&gt; s("Hello");
+        /// auto t = s.FirstToLower(); // t == "hello", s unchanged
+        /// </code>
+        /// </example>
         [[nodiscard]] BasicString FirstToLower( ) const
         {
-            if ( data_ )
+            if ( data_ && data_->size_ )
             {
                 if ( IsUpper( 0 ) )
                 {
                     auto newData = Allocate( data_->size_ );
+                    BasicString result( newData, false );
                     MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                     *newData->buffer_ = Core::ToLower( *newData->buffer_ );
-                    return BasicString( newData );
+                    return result;
                 }
                 return *this;
             }

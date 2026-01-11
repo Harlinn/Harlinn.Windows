@@ -11182,9 +11182,9 @@ BOOST_AUTO_TEST_CASE( SplitTest1A )
 {
     AnsiString source{ "Debug | Info | Error" };
     AnsiStringView sourceView = source;
-    std::vector<std::string_view> result1;
+    
     std::vector<std::string_view> result2;
-    source.Split( '|', result1 );
+    auto result1 = source.Split<std::string_view>( '|', true );
 
     auto count = result1.size( );
 
@@ -11205,9 +11205,8 @@ BOOST_AUTO_TEST_CASE( SplitTest1W )
 {
     WideString source{ L"Debug | Info | Error" };
     WideStringView sourceView = source;
-    std::vector<std::wstring_view> result1;
     std::vector<std::wstring_view> result2;
-    source.Split( L'|', result1 );
+    auto result1 = source.Split<std::wstring_view>( L'|', true );
 
     auto count = result1.size( );
 
@@ -11228,13 +11227,12 @@ BOOST_AUTO_TEST_CASE( SplitTest2A )
 {
     AnsiString source{ "," };
     AnsiStringView sourceView = source;
-    std::vector<std::string_view> result1;
     std::vector<std::string_view> result2;
-    source.Split( ',', result1 );
+    auto result1 = source.Split<std::string_view>( ',', true );
 
     auto count = result1.size( );
 
-    bool equal = count == 2;
+    bool equal = count == 0;
     BOOST_TEST( equal );
 
     sourceView.Split( ',', result2 );
@@ -11251,13 +11249,12 @@ BOOST_AUTO_TEST_CASE( SplitTest3A )
 {
     AnsiString source { "" };
     AnsiStringView sourceView = source;
-    std::vector<std::string_view> result1;
     std::vector<std::string_view> result2;
-    source.Split( ',', result1 );
+    auto result1 = source.Split<std::string_view>( ',', true );
 
     auto count = result1.size( );
 
-    bool equal = count == 1;
+    bool equal = count == 0;
     BOOST_TEST( equal );
 
     sourceView.Split( ',', result2 );
@@ -11274,9 +11271,8 @@ BOOST_AUTO_TEST_CASE( SplitTest4A )
 {
     AnsiString source { "0" };
     AnsiStringView sourceView = source;
-    std::vector<std::string_view> result1;
     std::vector<std::string_view> result2;
-    source.Split( ',', result1 );
+    auto result1 = source.Split<std::string_view>( ',', true );
 
     auto count = result1.size( );
 

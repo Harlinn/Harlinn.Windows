@@ -1502,7 +1502,7 @@ namespace Harlinn::Common
     /// <remarks>
     /// This function wraps <c>memcmp</c>.
     /// </remarks>
-    [[nodiscard]] inline int MemCmp( const char* first, const char* second, size_t length )
+    [[nodiscard]] inline int MemCmp( const char* first, const char* second, size_t length ) noexcept
     {
         if ( length )
         {
@@ -1520,6 +1520,41 @@ namespace Harlinn::Common
         }
 		return 0;
     }
+
+    /// <summary>
+    /// Compares two byte sequences in a case-insensitive manner.
+    /// </summary>
+    /// <param name="first">Pointer to the first buffer to compare. Must be non-null when <paramref name="length"/> &gt; 0.</param>
+    /// <param name="second">Pointer to the second buffer to compare. Must be non-null when <paramref name="length"/> &gt; 0.</param>
+    /// <param name="length">The number of bytes to compare. When zero, the function returns 0.</param>
+    /// <returns>
+    /// A negative value if <paramref name="first"/> is less than <paramref name="second"/>,
+    /// zero if they are equal, or a positive value if <paramref name="first"/> is greater than <paramref name="second"/>.
+    /// </returns>
+    /// <remarks>
+    /// This wrapper calls the platform-specific `_memicmp` implementation for runtime comparisons.
+    /// In debug builds the function asserts that pointers are non-null when <paramref name="length"/> &gt; 0.
+    /// Zero-length comparisons are treated as equal and return 0.
+    /// </remarks>
+    [[nodiscard]] inline int MemICmp( const char* first, const char* second, size_t length ) noexcept
+    {
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !first )
+            {
+                assert( false && "first is null" );
+            }
+            if ( !second )
+            {
+                assert( false && "second is null" );
+            }
+#endif
+            return _memicmp( first, second, length );
+        }
+        return 0;
+    }
+
 
     /// <summary>
     /// Compares two wide character sequences lexicographically.
@@ -1540,7 +1575,7 @@ namespace Harlinn::Common
     /// <remarks>
     /// This function wraps <c>wmemcmp</c>.
     /// </remarks>
-    [[nodiscard]] inline int MemCmp( const wchar_t* first, const wchar_t* second, size_t length )
+    [[nodiscard]] inline int MemCmp( const wchar_t* first, const wchar_t* second, size_t length ) noexcept
     {
         if ( length )
         {
@@ -1558,6 +1593,85 @@ namespace Harlinn::Common
         }
 		return 0;
     }
+
+    /// <summary>
+    /// Case-insensitive comparison of two wide character sequences.
+    /// </summary>
+    /// <param name="first">Pointer to the first wide character buffer. Must be non-null when <paramref name="second"/> is non-null and <paramref name="length"/> &gt; 0.</param>
+    /// <param name="second">Pointer to the second wide character buffer. Must be non-null when <paramref name="first"/> is non-null and <paramref name="length"/> &gt; 0.</param>
+    /// <param name="length">The number of wide characters to compare. When zero, the function returns 0.</param>
+    /// <returns>
+    /// A negative value if <paramref name="first"/> is less than <paramref name="second"/>,
+    /// zero if they are equal, or a positive value if <paramref name="first"/> is greater than <paramref name="second"/>.
+    /// </returns>
+    /// <remarks>
+    /// This helper performs a locale-independent, case-insensitive comparison by upper-casing each character
+    /// using `std::towupper` and comparing the results. It is used by the wide-character overload of `MemICmp`.
+    /// The function does not perform null-termination checks beyond the provided <paramref name="length"/>.
+    /// </remarks>
+    [[nodiscard]] inline int _wmemicmp( const wchar_t* first, const wchar_t* second, size_t length ) noexcept
+    {
+        if ( length == 0 )
+        {
+            return 0;
+        }
+
+#ifdef _DEBUG
+        if ( !first )
+        {
+            assert( false && "first is null" );
+        }
+        if ( !second )
+        {
+            assert( false && "second is null" );
+        }
+#endif
+
+        for ( size_t i = 0; i < length; ++i )
+        {
+            // Use std::towupper which takes/returns wint_t; cast to avoid narrowing.
+            wchar_t a = static_cast<wchar_t>( std::towupper( static_cast<wint_t>( first[ i ] ) ) );
+            wchar_t b = static_cast<wchar_t>( std::towupper( static_cast<wint_t>( second[ i ] ) ) );
+            if ( a < b ) return -1;
+            if ( a > b ) return 1;
+        }
+        return 0;
+    }
+
+    /// <summary>
+    /// Compares two wide character sequences in a case-insensitive manner.
+    /// </summary>
+    /// <param name="first">Pointer to the first buffer to compare. Must be non-null when <paramref name="length"/> &gt; 0.</param>
+    /// <param name="second">Pointer to the second buffer to compare. Must be non-null when <paramref name="length"/> &gt; 0.</param>
+    /// <param name="length">The number of wide characters to compare. When zero, the function returns 0.</param>
+    /// <returns>
+    /// A negative value if <paramref name="first"/> is less than <paramref name="second"/>,
+    /// zero if they are equal, or a positive value if <paramref name="first"/> is greater than <paramref name="second"/>.
+    /// </returns>
+    /// <remarks>
+    /// This function delegates to the internal `_wmemicmp` implementation for runtime comparisons.
+    /// In debug builds the function asserts that pointers are non-null when <paramref name="length"/> &gt; 0.
+    /// Zero-length comparisons are treated as equal and return 0.
+    /// </remarks>
+    [[nodiscard]] inline int MemICmp( const wchar_t* first, const wchar_t* second, size_t length ) noexcept
+    {
+        if ( length )
+        {
+#ifdef _DEBUG
+            if ( !first )
+            {
+                assert( false && "first is null" );
+            }
+            if ( !second )
+            {
+                assert( false && "second is null" );
+            }
+#endif
+            return _wmemicmp( first, second, length );
+        }
+        return 0;
+    }
+
 
     /// <summary>
     /// Scans a byte buffer for the first occurrence of the specified byte value.

@@ -194,8 +194,7 @@ namespace Harlinn::Common::Core
             auto trimmedStrLength = trimmedStr.Length( );
             if ( trimmedStrLength && Base::entries_.size( ) )
             {
-                std::vector<StringType> parts;
-                trimmedStr.Split( separator_, parts );
+                auto parts = trimmedStr.Split<StringType>( separator_, true );
                 auto partsCount = parts.size( );
                 if ( partsCount )
                 {
