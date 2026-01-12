@@ -235,139 +235,133 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        inline int Compare( DWORD compareFlags, const char* first, int firstLength, const char* second, int secondLength )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int Compare( DWORD compareFlags, const CharT* first, int firstLength, const CharT* second, int secondLength )
         {
-            if ( first && second )
+            if ( first == nullptr && second == nullptr )
             {
-                auto result = CompareStringA( LOCALE_USER_DEFAULT, compareFlags, first, firstLength, second, secondLength );
-                if ( !result )
+                return 0;
+            }
+
+            // If one side is null, treat null as an empty sequence.
+            if ( first == nullptr )
+            {
+                size_t slen = ( secondLength == -1 ) ? Common::LengthOf( second ) : static_cast<size_t>( std::max( 0, secondLength ) );
+                return slen == 0 ? 0 : -1;
+            }
+            if ( second == nullptr )
+            {
+                size_t flen = ( firstLength == -1 ) ? Common::LengthOf( first ) : static_cast<size_t>( std::max( 0, firstLength ) );
+                return flen == 0 ? 0 : 1;
+            }
+
+            // Both not null ...
+
+            // Fast path: binary comparison when no locale flags are requested.
+            if ( compareFlags == 0 )
+            {
+                // Faster than the Win32 locale functions.
+                size_t flen = ( firstLength == -1 ) ? Common::LengthOf( first ) : static_cast<size_t>( std::max( 0, firstLength ) );
+                size_t slen = ( secondLength == -1 ) ? Common::LengthOf( second ) : static_cast<size_t>( std::max( 0, secondLength ) );
+
+                if ( flen == 0 && slen == 0 )
                 {
-                    ThrowLastOSError( );
+                    // Nothing to compare
+                    return 0;
                 }
-                return result - 2;
+
+                size_t common = std::min( flen, slen );
+                if ( common )
+                {
+                    int r = MemCmp( first, second, common );
+                    if ( r != 0 )
+                    {
+                        return r < 0 ? -1 : 1;
+                    }
+                }
+
+                // If prefix equal, shorter string is less.
+                if ( flen == slen )
+                {
+                    return 0;
+                }
+                return flen < slen ? -1 : 1;
             }
-            else if ( first )
+
+            int result = 0;
+            if constexpr ( std::is_same_v<CharT, char> )
             {
-                return 1;
+                result = CompareStringA( LOCALE_USER_DEFAULT, compareFlags, first, firstLength, second, secondLength );
             }
-            else if ( second )
+            else
             {
-                return -1;
+                result = CompareStringW( LOCALE_USER_DEFAULT, compareFlags, first, firstLength, second, secondLength );
+			}
+            if ( !result )
+            {
+                ThrowLastOSError( );
             }
-            return 0;
+            // CompareStringA/W returns 0 on error, 1 (LESS), 2 (EQUAL), 3 (GREATER).
+            // Convert to -1/0/1 by subtracting 2.
+            return result - 2;
         }
 
-        inline int Compare( DWORD compareFlags, const wchar_t* first, int firstLength, const wchar_t* second, int secondLength )
-        {
-            if ( first && second )
-            {
-                auto result = CompareStringW( LOCALE_USER_DEFAULT, compareFlags, first, static_cast<int>( firstLength ), second, static_cast<int>( secondLength ) );
-                if ( !result )
-                {
-                    ThrowLastOSError( );
-                }
-                return result - 2;
-            }
-            else if ( first )
-            {
-                return 1;
-            }
-            else if ( second )
-            {
-                return -1;
-            }
-            return 0;
-        }
-
-
-        inline int Compare( const char* first, size_t firstLength, const char* second, size_t secondLength )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int Compare( const CharT* first, size_t firstLength, const CharT* second, size_t secondLength )
         {
             return Compare( 0, first, static_cast<int>( firstLength ), second, static_cast<int>( secondLength ) );
         }
 
-        inline int Compare( const wchar_t* first, size_t firstLength, const wchar_t* second, size_t secondLength )
-        {
-            return Compare( 0, first, static_cast<int>( firstLength ), second, static_cast<int>( secondLength ) );
-        }
-
-        inline int Compare( const char* first, size_t firstLength, const char* second )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int Compare( const CharT* first, size_t firstLength, const CharT* second )
         {
             return Compare( 0, first, static_cast<int>( firstLength ), second, -1 );
         }
 
-        inline int Compare( const wchar_t* first, size_t firstLength, const wchar_t* second )
-        {
-            return Compare( 0, first, static_cast<int>( firstLength ), second, -1 );
-        }
-
-        inline int Compare( const char* first, const char* second, size_t secondLength )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int Compare( const CharT* first, const CharT* second, size_t secondLength )
         {
             return Compare( 0, first, -1, second, static_cast<int>( secondLength ) );
         }
 
-        inline int Compare( const wchar_t* first, const wchar_t* second, size_t secondLength )
-        {
-            return Compare( 0, first, -1, second, static_cast<int>( secondLength ) );
-        }
-
-
-        inline int Compare( const char* first, const char* second )
-        {
-            return Compare( 0, first, -1, second, -1 );
-        }
-        inline int Compare( const wchar_t* first, const wchar_t* second )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int Compare( const CharT* first, const CharT* second )
         {
             return Compare( 0, first, -1, second, -1 );
         }
 
-        inline int ICompare( const char* first, size_t firstLength, const char* second, size_t secondLength )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int ICompare( const CharT* first, size_t firstLength, const CharT* second, size_t secondLength )
         {
             return Compare( NORM_IGNORECASE, first, static_cast<int>( firstLength ), second, static_cast<int>( secondLength ) );
         }
 
-        inline int ICompare( const wchar_t* first, size_t firstLength, const wchar_t* second, size_t secondLength )
-        {
-            return Compare( NORM_IGNORECASE, first, static_cast<int>( firstLength ), second, static_cast<int>( secondLength ) );
-        }
-
-        inline int ICompare( const char* first, size_t firstLength, const char* second )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int ICompare( const CharT* first, size_t firstLength, const CharT* second )
         {
             return Compare( NORM_IGNORECASE, first, static_cast<int>( firstLength ), second, -1 );
         }
 
-        inline int ICompare( const wchar_t* first, size_t firstLength, const wchar_t* second )
-        {
-            return Compare( NORM_IGNORECASE, first, static_cast<int>( firstLength ), second, -1 );
-        }
-
-        inline int ICompare( const char* first, const char* second, size_t secondLength )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int ICompare( const CharT* first, const CharT* second, size_t secondLength )
         {
             return Compare( NORM_IGNORECASE, first, -1, second, static_cast<int>( secondLength ) );
         }
 
-        inline int ICompare( const wchar_t* first, const wchar_t* second, size_t secondLength )
-        {
-            return Compare( NORM_IGNORECASE, first, -1, second, static_cast<int>( secondLength ) );
-        }
-
-
-        inline int ICompare( const char* first, const char* second )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline int ICompare( const CharT* first, const CharT* second )
         {
             return Compare( NORM_IGNORECASE, first, -1, second, -1 );
         }
-        inline int ICompare( const wchar_t* first, const wchar_t* second )
-        {
-            return Compare( NORM_IGNORECASE, first, -1, second, -1 );
-        }
-
-
-        
-
-        
-
-
-
-
 
         inline bool IsSpace( char c ) noexcept
         {
@@ -510,13 +504,17 @@ namespace Harlinn::Common::Core
 
 
         template< typename T >
+            requires std::is_same_v<T, char> || std::is_same_v<T, wchar_t>
         struct Data
         {
             using CharType = T;
             size_t referenceCount_ = 1;
             size_t size_ = 0;
-            CharType buffer_[1024];
-
+#ifdef _DEBUG
+            CharType buffer_[ 1024 ];
+#else
+            CharType buffer_[1];
+#endif
             size_t AddRef( ) noexcept
             {
                 return InterlockedIncrementSizeT( &referenceCount_ );
