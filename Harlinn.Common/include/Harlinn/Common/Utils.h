@@ -22,32 +22,81 @@
 #define _USE_MATH_DEFINES 1
 #endif
 
+#include <array>
 #include <bit>
 #include <cassert>
-#include <limits>
 #include <cmath>
-#include <string_view>
 #include <cwctype>
+#include <limits>
+#include <string_view>
+
 #include "Concepts.h"
 
 namespace Harlinn::Common
 {
+    /// <summary>
+    /// Evaluates to true when the type `T`, after removing cv-qualifiers and references,
+    /// is not the boolean type (`bool`).
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type to test. CV-qualifiers and references are ignored.
+    /// </typeparam>
     template<typename T>
     inline constexpr bool IsNotBoolean = std::is_same_v<std::remove_cvref_t<T>, bool> == false;
+
+    /// <summary>
+    /// Evaluates to true when the type <c>T</c>, after removing cv-qualifiers and references,
+    /// is the boolean type (<c>bool</c>).
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type to test. CV-qualifiers and references are ignored.
+    /// </typeparam>
     template<typename T>
     inline constexpr bool IsBoolean = std::is_same_v<std::remove_cvref_t<T>, bool>;
+
+    /// <summary>
+    /// Evaluates to true when the type <c>T</c>, after removing cv-qualifiers and references,
+    /// is an integral type and is not the boolean type (<c>bool</c>).
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type to test. CV-qualifiers and references are ignored. Boolean is excluded.
+    /// </typeparam>
     template<typename T>
     inline constexpr bool IsInteger = std::is_integral_v<std::remove_cvref_t<T>> && IsBoolean<T> == false;
 
+    /// <summary>
+    /// Evaluates to true when the type <c>T</c>, after removing cv-qualifiers and references,
+    /// is a signed integral type (boolean excluded).
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type to test. CV-qualifiers and references are ignored.
+    /// </typeparam>
     template<typename T>
-    inline constexpr bool IsSignedInteger = IsInteger<std::remove_cvref_t<T>> && std::is_signed_v<std::remove_cvref_t<T>>;
+    inline constexpr bool IsSignedInteger = IsInteger<T> && std::is_signed_v<std::remove_cvref_t<T>>;
 
+    /// <summary>
+    /// Evaluates to true when the type <c>T</c>, after removing cv-qualifiers and references,
+    /// is an unsigned integral type (boolean excluded).
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type to test. CV-qualifiers and references are ignored.
+    /// </typeparam>
     template<typename T>
     inline constexpr bool IsUnsignedInteger = IsInteger<T> && std::is_unsigned_v<std::remove_cvref_t<T>>;
 
+    /// <summary>
+    /// Evaluates to true when the type <c>T</c>, after removing cv-qualifiers and references,
+    /// is a floating-point type.
+    /// </summary>
+    /// <typeparam name="T">The type to test. CV-qualifiers and references are ignored.</typeparam>
     template<typename T>
     inline constexpr bool IsFloatingPoint = std::is_floating_point_v<std::remove_cvref_t<T>>;
 
+    /// <summary>
+    /// Evaluates to true when the type <c>T</c> is either an integral type (excluding <c>bool</c>)
+    /// or a floating-point type. CV-qualifiers and references are removed before testing.
+    /// </summary>
+    /// <typeparam name="T">The type to test. CV-qualifiers and references are ignored.</typeparam>
     template<typename T>
     inline constexpr bool IsArithmetic = IsInteger<T> || IsFloatingPoint<T>;
 
@@ -82,69 +131,235 @@ namespace Harlinn::Common
     }
 
 
+    /// <summary>
+    /// Maps a type to an unsigned integer type with the same storage size.
+    /// </summary>
+    /// <typeparam name="T">Source type. CV-qualifiers and references are ignored when determining the size.</typeparam>
+    /// <remarks>
+    /// This alias uses the `Internal::MakeUnsignedHelper` specializations for sizes 1, 2, 4 and 8
+    /// to select the appropriate unsigned integer type (`Byte`, `UInt16`, `UInt32`, `UInt64`).
+    /// The resulting type is typically used to manipulate the bit-pattern representation of `T`.
+    /// </remarks>
     template<typename T>
     using MakeUnsigned = typename Internal::MakeUnsignedHelper< sizeof( T ) >::Type;
 
+    /// <summary>
+    /// Bit mask selecting the fraction (mantissa) bits for the storage type corresponding to <c>T</c>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The source type whose bit-pattern is being described. CV-qualifiers and references are ignored.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// Unsigned integer type used to represent the bit-pattern of <c>T</c>. 
+    /// Defaults to <c>MakeUnsigned&lt;std::remove_cvref_t&lt;T&gt;&gt;</c>.
+    /// </typeparam>
+    /// <returns>
+    /// The mask value with all fraction/mantissa bits set for type <c>U</c>. 
+    /// The primary template defaults to all ones.
+    /// </returns>
+    /// <remarks>
+    /// Primary template yields <c>std::numeric_limits&lt;U&gt;::max()</c>. 
+    /// Specializations provide precise IEEE-754 masks for
+    /// single- and double-precision floating-point types.
+    /// </remarks>
     template<typename T, typename U = MakeUnsigned< std::remove_cvref_t<T> > >
-    inline constexpr U FractionMask = std::numeric_limits<std::remove_cvref_t<T>>::max( );
+    inline constexpr U FractionMask = std::numeric_limits<U>::max( );
 
+    /// <summary>
+    /// Bit mask selecting the exponent bits for the storage type corresponding to <c>T</c>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The source type whose bit-pattern is being described. CV-qualifiers 
+    /// and references are ignored.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// Unsigned integer type used to represent the bit-pattern of <c>T</c>. 
+    /// Defaults to <c>MakeUnsigned&lt;std::remove_cvref_t&lt;T&gt;&gt;</c>.
+    /// </typeparam>
+    /// <returns>
+    /// The mask value with exponent bits set for type <c>U</c>. 
+    /// The primary template defaults to zero.
+    /// </returns>
+    /// <remarks>
+    /// Primary template yields zero; specializations provide the 
+    /// IEEE-754 exponent masks for float and double.
+    /// </remarks>
     template<typename T, typename U = MakeUnsigned< std::remove_cvref_t<T> > >
     inline constexpr U ExponentMask = 0;
 
+    /// <summary>
+    /// Fraction (mantissa) mask specialization for IEEE-754 single-precision (<c>float</c>).
+    /// </summary>
+    /// <typeparam name="float">
+    /// The floating-point type being described.
+    /// </typeparam>
+    /// <typeparam name="UInt32">
+    /// The unsigned integer type used to represent the <c>float</c> bit-pattern.
+    /// </typeparam>
+    /// <returns>
+    /// The 32-bit mask selecting the 23 fraction bits of an IEEE-754 single-precision float.
+    /// </returns>
+    /// <remarks>
+    /// The binary literal has the lower 23 bits set (mantissa). 
+    /// <c>std::bit_cast</c> is used to ensure the constant is of type <c>UInt32</c>.
+    /// </remarks>
     template<>
     inline constexpr UInt32 FractionMask<float, UInt32> = std::bit_cast< UInt32 >( 0b00000000011111111111111111111111 );
+    
+    /// <summary>
+    /// Exponent mask specialization for IEEE-754 single-precision (<c>float</c>).
+    /// </summary>
+    /// <typeparam name="float">
+    /// The floating-point type being described.
+    /// </typeparam>
+    /// <typeparam name="UInt32">
+    /// The unsigned integer type used to represent the <c>float</c> bit-pattern.
+    /// </typeparam>
+    /// <returns>
+    /// The 32-bit mask selecting the 8 exponent bits of an IEEE-754 single-precision float.
+    /// </returns>
+    /// <remarks>
+    /// The binary literal corresponds to the exponent field (8 bits) positioned in the IEEE-754 single-precision layout.
+    /// </remarks>
     template<>
     inline constexpr UInt32 ExponentMask<float, UInt32> = std::bit_cast< UInt32 >( 0b01111111100000000000000000000000 );
 
+    /// <summary>
+    /// Fraction (mantissa) mask specialization for IEEE-754 double-precision (<c>double</c>).
+    /// </summary>
+    /// <typeparam name="double">The floating-point type being described.</typeparam>
+    /// <typeparam name="UInt64">The unsigned integer type used to represent the <c>double</c> bit-pattern.</typeparam>
+    /// <returns>The 64-bit mask selecting the 52 fraction bits of an IEEE-754 double-precision value.</returns>
+    /// <remarks>
+    /// The binary literal has the lower 52 bits set (mantissa). <c>std::bit_cast</c> ensures the constant is of type <c>UInt64</c>.
+    /// </remarks>
     template<>
     inline constexpr UInt64 FractionMask<double, UInt64> = std::bit_cast< UInt64 >( 0b0000000000001111111111111111111111111111111111111111111111111111 );
+    
+    /// <summary>
+    /// Exponent mask specialization for IEEE-754 double-precision (<c>double</c>).
+    /// </summary>
+    /// <typeparam name="double">The floating-point type being described.</typeparam>
+    /// <typeparam name="UInt64">The unsigned integer type used to represent the <c>double</c> bit-pattern.</typeparam>
+    /// <returns>The 64-bit mask selecting the 11 exponent bits of an IEEE-754 double-precision value.</returns>
+    /// <remarks>
+    /// The binary literal corresponds to the exponent field (11 bits) positioned in the IEEE-754 double-precision layout.
+    /// </remarks>
     template<>
     inline constexpr UInt64 ExponentMask<double, UInt64> = std::bit_cast< UInt64 >( 0b0111111111110000000000000000000000000000000000000000000000000000 );
 
 
 
 #pragma pack(push,1)
+    /// <summary>
+    /// Represents an 8-bit storage unit exposing the raw byte value.
+    /// </summary>
+    /// <remarks>
+    /// This type is a simple wrapper around a single <c>Byte</c> and is used when explicit 8-bit
+    /// access is required (for example bitwise operations or byte-level views).
+    /// </remarks>
     struct Bits8
     {
+        /// <summary>
+        /// The underlying 8-bit value.
+        /// </summary>
         Byte Value;
     };
+
+    /// <summary>
+    /// Represents a 16-bit storage view that can be accessed as two bytes or as a 16-bit value.
+    /// </summary>
+    /// <remarks>
+    /// The anonymous struct provides low/high byte access. Use <c>Low</c> and <c>High</c> for byte-wise
+    /// manipulation and <c>Value</c> to treat the two bytes as a single <c>UInt16</c> value.
+    /// The layout relies on the surrounding <c>#pragma pack(push,1)</c> to define packing.
+    /// </remarks>
     union Bits16
     {
         struct
         {
-            //! \unnamed{struct:1}
+            /// <summary>
+            /// The low-order byte (least significant byte) of the 16-bit storage.
+            /// </summary>
             Byte Low;
-            //! \unnamed{struct:2}
+            /// <summary>
+            /// The high-order byte (most significant byte) of the 16-bit storage.
+            /// </summary>
             Byte High;
         };
+        /// <summary>
+        /// The 16-bit unsigned view of the storage.
+        /// </summary>
         UInt16 Value;
     };
 
+    /// <summary>
+    /// Represents a 32-bit storage view that can be accessed as two 16-bit halves, a 32-bit unsigned value,
+    /// a 32-bit signed integer, or a single-precision floating-point value.
+    /// </summary>
+    /// <remarks>
+    /// Use the <c>Low</c> and <c>High</c> members to access the lower and upper 16-bit halves respectively.
+    /// The union provides multiple interpretations of the same 32-bit bit-pattern without changing memory.
+    /// </remarks>
     union Bits32
     {
         struct
         {
-            //! \unnamed{struct:1}
+            /// <summary>
+            /// The lower 16-bit half of the 32-bit storage.
+            /// </summary>
             Bits16 Low;
-            //! \unnamed{struct:2}
+            /// <summary>
+            /// The upper 16-bit half of the 32-bit storage.
+            /// </summary>
             Bits16 High;
         };
+        /// <summary>
+        /// The 32-bit unsigned integer view of the storage.
+        /// </summary>
         UInt32 Value;
+        /// <summary>
+        /// The 32-bit signed integer view of the storage.
+        /// </summary>
         Int32 Int32Value;
+        /// <summary>
+        /// The 32-bit single-precision floating-point view of the storage.
+        /// </summary>
         Single SingleValue;
     };
 
+    /// <summary>
+    /// Represents a 64-bit storage view that can be accessed as two 32-bit halves, a 64-bit unsigned value,
+    /// a 64-bit signed integer, or a double-precision floating-point value.
+    /// </summary>
+    /// <remarks>
+    /// Use <c>Low</c> and <c>High</c> to manipulate the lower and upper 32-bit halves. The union permits
+    /// reinterpretation of the underlying 64-bit bit-pattern as different scalar types without casting.
+    /// </remarks>
     union Bits64
     {
         struct
         {
-            //! \unnamed{struct:1}
+            /// <summary>
+            /// The lower 32-bit half of the 64-bit storage.
+            /// </summary>
             Bits32 Low;
-            //! \unnamed{struct:2}
+            /// <summary>
+            /// The upper 32-bit half of the 64-bit storage.
+            /// </summary>
             Bits32 High;
         };
+        /// <summary>
+        /// The 64-bit unsigned integer view of the storage.
+        /// </summary>
         UInt64 Value;
+        /// <summary>
+        /// The 64-bit signed integer view of the storage.
+        /// </summary>
         Int64 Int64Value;
+        /// <summary>
+        /// The 64-bit double-precision floating-point view of the storage.
+        /// </summary>
         Double DoubleValue;
     };
 
@@ -153,30 +368,59 @@ namespace Harlinn::Common
 
     namespace Internal
     {
-        template<typename T, std::size_t... N>
-        inline constexpr T ByteSwapImpl( T value, std::index_sequence<N...> )
+        template<typename T>
+        inline constexpr T ByteSwapImpl( T value )
         {
-            return ( ( ( ( value >> ( N * CHAR_BIT ) ) & ( T )( unsigned char )( -1 ) ) << ( ( sizeof( T ) - 1 - N ) * CHAR_BIT ) ) | ... );
-        };
+            constexpr std::size_t S = sizeof( T );
+            using ByteArray = std::array<unsigned char, S>;
+            ByteArray bytes = std::bit_cast<ByteArray>( value );
+
+            // Reverse bytes in-place
+            for ( std::size_t i = 0; i < S / 2; ++i )
+            {
+                unsigned char tmp = bytes[ i ];
+                bytes[ i ] = bytes[ S - 1 - i ];
+                bytes[ S - 1 - i ] = tmp;
+            }
+            return std::bit_cast<T>( bytes );
+        }
     }
+
     /// <summary>
-    /// Reverses the order of bytes in an integer.
+    /// Reverses the order of bytes in an integral value.
     /// </summary>
     /// <typeparam name="T">
-    /// An integral type, normally deduced from the argument.
+    /// An integral type. CV-qualifiers and references are ignored. The type must satisfy the <c>IntegerType</c> concept.
     /// </typeparam>
     /// <param name="value">
-    /// An integral value.
+    /// The integral value whose byte order will be reversed.
     /// </param>
     /// <returns>
-    /// An integral value calculated by reversing the order of the bytes from the argument.
+    /// The value produced by reversing the byte order of <paramref name="value"/>.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    /// In a constant-evaluated context the byte reversal is performed 
+    /// using a constexpr algorithm implemented by <c>Internal::ByteSwapImpl</c> 
+    /// operating on the unsigned bit-pattern of <typeparamref name="T"/>.
+    /// </para>
+    /// <para>
+    /// At runtime the implementation dispatches to platform-specific intrinsics for performance:
+    /// <c>_byteswap_ushort</c>, <c>_byteswap_ulong</c>, and <c>_byteswap_uint64</c> are used for 2-, 4- and 8-byte
+    /// storage sizes respectively. For 1-byte types the original value is returned unchanged.
+    /// </para>
+    /// <para>
+    /// The function uses <c>std::bit_cast</c> to safely reinterpret between signed and unsigned representations
+    /// without invoking undefined behavior. The caller must ensure <typeparamref name="T"/> models the
+    /// <c>IntegerType</c> concept defined in <c>Concepts.h</c>.
+    /// </para>
+    /// </remarks>
     template<IntegerType T>
     inline constexpr T ByteSwap( T value )
     {
         if ( std::is_constant_evaluated( ) )
         {
-            return std::bit_cast< T >( Internal::ByteSwapImpl( std::bit_cast< std::make_unsigned_t<T> >( value ), std::make_index_sequence<sizeof( T )>( ) ) );
+            return std::bit_cast< T >( Internal::ByteSwapImpl( std::bit_cast< std::make_unsigned_t<T> >( value ) ) );
         }
         else
         {
@@ -202,11 +446,48 @@ namespace Harlinn::Common
         }
     }
 
+    /// <summary>
+    /// Reverses the bytes of a floating point value, or an enum.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type, or an enum type.
+    /// </typeparam>
+    /// <param name="value">
+    /// The value.
+    /// </param>
+    /// <returns>
+    /// The result.
+    /// </returns>
+    template<typename T>
+        requires ( IsFloatingPoint<std::remove_cvref_t<T>> || std::is_enum_v<std::remove_cvref_t<T>> )
+    inline constexpr T ByteSwap( const T value ) noexcept
+    {
+        using Type = std::remove_cvref_t<T>;
+        using UIntType = MakeUnsigned<Type>;
+        std::bit_cast<Type>( ByteSwap( std::bit_cast<UIntType>( value ) ) );
+    }
 
+
+    /// <summary>
+    /// Compile-time helper that provides a bit-mask value and a sized integer type for a mask width.
+    /// </summary>
+    /// <typeparam name="N">The number of bits in the mask. Must be in the range [0,64].</typeparam>
+    /// <remarks>
+    /// The nested <c>type</c> alias selects the smallest unsigned integer type that can hold <c>N</c> bits:
+    /// - <= 8 -> <c>Byte</c>
+    /// - <= 16 -> <c>UInt16</c>
+    /// - <= 32 -> <c>UInt32</c>
+    /// - otherwise -> <c>UInt64</c>.
+    /// The static constexpr <c>value</c> contains a mask with the lowest <c>N</c> bits set when <c>N != 0</c>.
+    /// </remarks>
     template<size_t N>
     struct BitMask
     {
-        static_assert( N <= 64 && N > 0, "Unsupported bit-mask width" );
+        static_assert( N <= 64, "Unsupported bit-mask width" );
+        
+        /// <summary>
+        /// Unsigned integer type capable of holding <c>N</c> bits.
+        /// </summary>
         using type = std::conditional_t
             <
             N <= 8, Byte,
@@ -220,90 +501,84 @@ namespace Harlinn::Common
             >
             >
             >;
-        static constexpr type value = ( ( static_cast< type >( 1 ) << ( N - 1 ) ) - 1 ) ^ ( static_cast< type >( 1 ) << ( N - 1 ) );
+
+        /// <summary>
+        /// The bit-mask value with the lowest <c>N</c> bits set.
+        /// </summary>
+        /// <remarks>
+        /// If <c>N == 0</c> the value is zero. For <c>N &gt; 0</c> the expression computes
+        /// a mask with the least-significant <c>N</c> bits set to one.
+        /// </remarks>
+        static constexpr type value = N ? ( ( static_cast< type >( 1 ) << ( N - 1 ) ) - 1 ) ^ ( static_cast< type >( 1 ) << ( N - 1 ) ) : 0;
     };
 
+    /// <summary>
+    /// Variable template convenience that yields <c>BitMask&lt;N&gt;::value</c>.
+    /// </summary>
+    /// <typeparam name="N">
+    /// The number of bits in the mask.
+    /// </typeparam>
     template<size_t N>
     inline constexpr auto BitMask_v = BitMask<N>::value;
+    
+    /// <summary>
+    /// Alias for the integer type selected by <c>BitMask&lt;N&gt;</c>.
+    /// </summary>
+    /// <typeparam name="N">The number of bits the type must be able to represent.</typeparam>
     template<size_t N>
     using BitMask_t = typename BitMask<N>::type;
 
     /// <summary>
-    /// Creates a bitmask with the <c>N</c> right-most bits set to 1, and all other bits
-    /// set to 0.
+    /// Produces a value of type <c>T</c> with the lowest <c>N</c> bits set to one (trailing ones).
     /// </summary>
-    /// <typeparam name="T">
-    /// An unsigned integral type.
-    /// </typeparam>
-    /// <typeparam name="N">
-    /// The number if rightmost bits to set.
-    /// </typeparam>
+    /// <typeparam name="T">An integer type (signed or unsigned). CV-qualifiers and references are ignored.</typeparam>
+    /// <typeparam name="N">Number of trailing one bits to set. Must be <= <c>CHAR_BIT * sizeof(T)</c>.</typeparam>
     /// <returns>
-    /// The bitmask.
+    /// A value of type <c>T</c> where the least-significant <c>N</c> bits are ones and all higher bits are zero.
     /// </returns>
-    template <UnsignedIntegerType T, size_t N>
-        requires ( N <= CHAR_BIT * sizeof( T ) )
-    constexpr T MaskTrailingOnes( )
-    {
-        return BitMask_v<N>;
-    }
-
-    template <SignedIntegerType T, size_t N>
+    /// <remarks>
+    /// The implementation uses <c>BitMask_v&lt;N&gt;</c> for the mask and <c>std::bit_cast</c> to safely convert between
+    /// signed and unsigned representations.
+    /// </remarks>
+    template <IntegerType T, size_t N>
         requires ( N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskTrailingOnes( )
     {
         return std::bit_cast< T >( static_cast< std::make_unsigned_t<T> >( BitMask_v<N> ) );
     }
 
-
     /// <summary>
-    /// Creates a bitmask with the <c>N</c> left-most bits set to 1, and all other bits
-    /// set to 0.
+    /// Produces a value of type <c>T</c> with the highest <c>N</c> bits set to one (leading ones).
     /// </summary>
-    /// <typeparam name="T">
-    /// An unsigned integral type.
-    /// </typeparam>
-    /// <typeparam name="N">
-    /// The number if rightmost bits to set.
-    /// </typeparam>
+    /// <typeparam name="T">An integer type (signed or unsigned). CV-qualifiers and references are ignored.</typeparam>
+    /// <typeparam name="N">Number of leading one bits to set. Must be <= <c>CHAR_BIT * sizeof(T)</c>.</typeparam>
     /// <returns>
-    /// The bitmask.
+    /// A value of type <c>T</c> where the most-significant <c>N</c> bits are ones and all lower bits are zero.
     /// </returns>
-    template <UnsignedIntegerType T, size_t N>
-        requires ( N <= CHAR_BIT * sizeof( T ) )
-    constexpr T MaskLeadingOnes( )
-    {
-        return ~BitMask_v<( CHAR_BIT * sizeof( T ) ) - N>;
-    }
-
-    template <SignedIntegerType T, size_t N>
+    /// <remarks>
+    /// The result is computed by creating a mask for the complementary width and inverting it.
+    /// Uses <c>std::bit_cast</c> and unsigned arithmetic to avoid undefined behavior when manipulating signed types.
+    /// </remarks>
+    template <IntegerType T, size_t N>
         requires ( N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskLeadingOnes( )
     {
         return std::bit_cast< T >( static_cast< std::make_unsigned_t<T> >( ~BitMask_v<( CHAR_BIT * sizeof( T ) ) - N> ) );
     }
 
-    /// <summary>
-    /// Creates a bitmask with the <c>N</c> right-most bits set to 0, and all other bits
-    /// set to 1.
-    /// </summary>
-    /// <typeparam name="T">
-    /// An unsigned integral type.
-    /// </typeparam>
-    /// <typeparam name="N">
-    /// The number if rightmost bits to clear.
-    /// </typeparam>
-    /// <returns>
-    /// The bitmask.
-    /// </returns>
-    template <UnsignedIntegerType T, size_t N>
-        requires ( N <= CHAR_BIT * sizeof( T ) )
-    constexpr T MaskTrailingZeros( )
-    {
-        return ~BitMask_v<N>;
-    }
 
-    template <SignedIntegerType T, size_t N>
+    /// <summary>
+    /// Produces a value of type <c>T</c> with the lowest <c>N</c> bits cleared (trailing zeros) and all other bits set.
+    /// </summary>
+    /// <typeparam name="T">An integer type (signed or unsigned). CV-qualifiers and references are ignored.</typeparam>
+    /// <typeparam name="N">Number of trailing zero bits. Must be <= <c>CHAR_BIT * sizeof(T)</c>.</typeparam>
+    /// <returns>
+    /// A value of type <c>T</c> where the least-significant <c>N</c> bits are zero and all higher bits are one.
+    /// </returns>
+    /// <remarks>
+    /// Implemented as the bitwise complement of <c>BitMask_v&lt;N&gt;</c>, cast back to <c>T</c> via <c>std::bit_cast</c>.
+    /// </remarks>
+    template <IntegerType T, size_t N>
         requires ( N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskTrailingZeros( )
     {
@@ -311,26 +586,18 @@ namespace Harlinn::Common
     }
 
     /// <summary>
-    /// Creates a bitmask with the <c>N</c> left-most bits set to 0, and all other bits
-    /// set to 1.
+    /// Produces a value of type <c>T</c> with the highest <c>N</c> bits cleared (leading zeros) and all other bits set.
     /// </summary>
-    /// <typeparam name="T">
-    /// An unsigned integral type.
-    /// </typeparam>
-    /// <typeparam name="N">
-    /// The number if rightmost bits to clear.
-    /// </typeparam>
+    /// <typeparam name="T">An integer type (signed or unsigned). CV-qualifiers and references are ignored.</typeparam>
+    /// <typeparam name="N">Number of leading zero bits. Must be <= <c>CHAR_BIT * sizeof(T)</c>.</typeparam>
     /// <returns>
-    /// The bitmask.
+    /// A value of type <c>T</c> where the most-significant <c>N</c> bits are zero and all lower bits are one.
     /// </returns>
-    template <UnsignedIntegerType T, size_t N>
-        requires ( N <= CHAR_BIT * sizeof( T ) )
-    constexpr T MaskLeadingZeros( )
-    {
-        return BitMask_v<( CHAR_BIT * sizeof( T ) ) - N>;
-    }
-
-    template <SignedIntegerType T, size_t N>
+    /// <remarks>
+    /// This function uses <c>BitMask_v&lt;(CHAR_BIT * sizeof(T)) - N&gt;</c> to compute the mask for the lower bits,
+    /// then casts to <c>T</c> using <c>std::bit_cast</c>.
+    /// </remarks>
+    template <IntegerType T, size_t N>
         requires ( N <= CHAR_BIT * sizeof( T ) )
     constexpr T MaskLeadingZeros( )
     {
@@ -338,9 +605,6 @@ namespace Harlinn::Common
     }
 
 
-    /// <summary>
-    /// Reverses the order of the bits of a byte.
-    /// </summary>
     inline constexpr Byte ReverseBits( Byte b ) noexcept
     {
         /*
@@ -350,47 +614,35 @@ namespace Harlinn::Common
         return b;
     }
 
-    /// <summary>
-    /// Reverses the order of the bits of a SByte.
-    /// </summary>
     inline constexpr SByte ReverseBits( SByte b ) noexcept
     {
         return std::bit_cast< SByte >( ReverseBits( std::bit_cast< Byte >( b ) ) );
     }
-    /// <summary>
-    /// Reverses the order of the bits of a char.
-    /// </summary>
     inline constexpr char ReverseBits( char b ) noexcept
     {
         return std::bit_cast< char >( ReverseBits( std::bit_cast< Byte >( b ) ) );
     }
 
     /// <summary>
-    /// Reverses the order of the bits of an UInt16.
+    /// Reverses the order of the bits of an 16-bit unsigned value.
     /// </summary>
+    /// <param name="val">
+    /// The 16-bit value whose bits will be reversed.
+    /// </param>
+    /// <returns>
+    /// The bit-reversed value.
+    /// </returns>
     inline constexpr UInt16 ReverseBits( UInt16 val ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
-        {
-            UInt16 hi = static_cast< UInt16 >( ReverseBits( static_cast< Byte >( val & 0x00FF ) ) ) << 8;
-            UInt16 lo = static_cast< UInt16 >( ReverseBits( static_cast< Byte >( val >> 8 ) ) );
-            UInt16 result = lo | hi;
-            return result;
-        }
-        else
-        {
-            Byte* srcPtr = reinterpret_cast< Byte* >( &val );
-            UInt16 result;
-            Byte* resultPtr = reinterpret_cast< Byte* >( &result );
+        // Extract low and high bytes, reverse each byte and swap
+        UInt16 lowByte = static_cast<UInt16>( static_cast<Byte>( val & 0x00FF ) );
+        UInt16 highByte = static_cast<UInt16>( static_cast<Byte>( val >> 8 ) );
 
-            resultPtr[ 0 ] = ReverseBits( srcPtr[ 1 ] );
-            resultPtr[ 1 ] = ReverseBits( srcPtr[ 0 ] );
-            return result;
-        }
+        UInt16 revLow = static_cast<UInt16>( ReverseBits( static_cast<Byte>( lowByte ) ) );
+        UInt16 revHigh = static_cast<UInt16>( ReverseBits( static_cast<Byte>( highByte ) ) );
+
+        return static_cast<UInt16>( ( revLow << 8 ) | revHigh );
     }
-    /// <summary>
-    /// Reverses the order of the bits of an Int16.
-    /// </summary>
     inline constexpr Int16 ReverseBits( Int16 val ) noexcept
     {
         return std::bit_cast< Int16 >( ReverseBits( std::bit_cast< UInt16 >( val ) ) );
@@ -400,31 +652,21 @@ namespace Harlinn::Common
         return std::bit_cast< wchar_t >( ReverseBits( std::bit_cast< UInt16 >( val ) ) );
     }
 
-
     /// <summary>
-    /// Reverses the order of the bits of an UInt32.
+    /// Reverses the order of the bits of an UInt32 value.
     /// </summary>
+    /// <param name="val">The 32-bit value whose bits will be reversed.</param>
+    /// <returns>The bit-reversed 32-bit value.</returns>
     inline constexpr UInt32 ReverseBits( UInt32 val ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
-        {
-            UInt32 hi = static_cast< UInt32 >( ReverseBits( static_cast< UInt16 >( val & 0xFFFF ) ) ) << 16;
-            UInt32 lo = static_cast< UInt32 >( ReverseBits( static_cast< UInt16 >( val >> 16 ) ) );
-            UInt32 result = lo | hi;
-            return result;
-        }
-        else
-        {
-            Byte* srcPtr = reinterpret_cast< Byte* >( &val );
-            UInt32 result;
-            Byte* resultPtr = reinterpret_cast< Byte* >( &result );
+        // Split into 16-bit halves, reverse each half (which in turn reverses bytes and bits)
+        UInt32 low = static_cast<UInt32>( static_cast<UInt16>( val & 0xFFFFu ) );
+        UInt32 high = static_cast<UInt32>( static_cast<UInt16>( val >> 16 ) );
 
-            resultPtr[ 0 ] = ReverseBits( srcPtr[ 3 ] );
-            resultPtr[ 1 ] = ReverseBits( srcPtr[ 2 ] );
-            resultPtr[ 2 ] = ReverseBits( srcPtr[ 1 ] );
-            resultPtr[ 3 ] = ReverseBits( srcPtr[ 0 ] );
-            return result;
-        }
+        UInt32 revLow = static_cast<UInt32>( ReverseBits( static_cast<UInt16>( low ) ) );
+        UInt32 revHigh = static_cast<UInt32>( ReverseBits( static_cast<UInt16>( high ) ) );
+
+        return ( revLow << 16 ) | revHigh;
     }
     /// <summary>
     /// Reverses the order of the bits of an Int32.
@@ -453,29 +695,13 @@ namespace Harlinn::Common
     /// </summary>
     inline constexpr UInt64 ReverseBits( UInt64 val ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
-        {
-            UInt64 hi = static_cast< UInt64 >( ReverseBits( static_cast< UInt32 >( val & 0xFFFFFFFF ) ) ) << 32;
-            UInt64 lo = static_cast< UInt64 >( ReverseBits( static_cast< UInt32 >( val >> 32 ) ) );
-            UInt64 result = lo | hi;
-            return result;
-        }
-        else
-        {
-            Byte* srcPtr = reinterpret_cast< Byte* >( &val );
-            UInt64 result;
-            Byte* resultPtr = reinterpret_cast< Byte* >( &result );
+        UInt64 low = static_cast<UInt64>( static_cast<UInt32>( val & 0xFFFFFFFFULL ) );
+        UInt64 high = static_cast<UInt64>( static_cast<UInt32>( val >> 32 ) );
 
-            resultPtr[ 0 ] = ReverseBits( srcPtr[ 7 ] );
-            resultPtr[ 1 ] = ReverseBits( srcPtr[ 6 ] );
-            resultPtr[ 2 ] = ReverseBits( srcPtr[ 5 ] );
-            resultPtr[ 3 ] = ReverseBits( srcPtr[ 4 ] );
-            resultPtr[ 4 ] = ReverseBits( srcPtr[ 3 ] );
-            resultPtr[ 5 ] = ReverseBits( srcPtr[ 2 ] );
-            resultPtr[ 6 ] = ReverseBits( srcPtr[ 1 ] );
-            resultPtr[ 7 ] = ReverseBits( srcPtr[ 0 ] );
-            return result;
-        }
+        UInt64 revLow = static_cast<UInt64>( ReverseBits( static_cast<UInt32>( low ) ) );
+        UInt64 revHigh = static_cast<UInt64>( ReverseBits( static_cast<UInt32>( high ) ) );
+
+        return ( revLow << 32 ) | revHigh;
     }
 
     /// <summary>
@@ -513,44 +739,59 @@ namespace Harlinn::Common
     /// <returns>
     /// Returns true if a set bit was found and the value pointed to by index is valid.
     /// </returns>
+    /// <summary>
+    /// Search the mask data from least significant bit (LSB) to the most significant bit (MSB) for a set bit (1).
+    /// </summary>
+    /// <param name="index">Optional pointer that will receive the zero-based index of the found bit. May be null.</param>
+    /// <param name="bits">Integer value to search (CV-qualifiers and references are ignored).</param>
+    /// <returns>True if a set bit was found; otherwise false. When true and <paramref name="index"/> is non-null the index is written.</returns>
+    /// <remarks>
+    /// - Uses a constexpr fast-path (`std::countr_zero`) for constant evaluation and platform intrinsics
+    ///   (`_BitScanForward` / `_BitScanForward64`) for runtime on MSVC for best performance.
+    /// - Operates on the unsigned bit-pattern of `T` via `std::bit_cast` to avoid UB when `T` is signed.
+    /// </remarks>
     template<IntegerType T>
     constexpr bool IndexOfBitFromLSB( unsigned long* index, T bits )
     {
+        using UIntType = std::make_unsigned_t<T>;
+        // Work on the unsigned bit-pattern
+        const UIntType valueU = std::bit_cast<UIntType>( bits );
+
         if ( std::is_constant_evaluated( ) )
         {
-            using UIntType = std::make_unsigned_t<T>;
-            auto value = std::bit_cast< UIntType >( bits );
-            auto maskSize = ( ( sizeof( bits ) - 1 ) * 8 ) + 7;
-            for ( UIntType i = 0; i < maskSize; i++ )
+            // Constant-eval: use std::countr_zero (constexpr) instead of manual loop.
+            if ( valueU == static_cast<UIntType>( 0 ) )
             {
-                if ( value & ( static_cast< UIntType >( 1 ) << i ) )
-                {
-                    if ( index )
-                    {
-                        *index = static_cast<unsigned long>(i);
-                    }
-                    return true;
-                }
+                return false;
             }
-            return false;
+            // std::countr_zero is well-defined for unsigned integer types and is constexpr.
+            unsigned long idx = static_cast<unsigned long>( std::countr_zero( valueU ) );
+            if ( index )
+            {
+                *index = idx;
+            }
+            return true;
         }
         else
         {
-            constexpr auto bitsSize = sizeof( bits );
-
-            if constexpr ( bitsSize > 4 )
+            // Runtime: dispatch to MSVC intrinsics for performance.
+            if constexpr ( sizeof( UIntType ) > 4 )
             {
-                auto value = std::bit_cast< UInt64 >( bits );
-                return _BitScanForward64( index, value ) != 0;
+                // Use 64-bit intrinsic. Cast the value to UInt64 to match intrinsic signature.
+                auto v = std::bit_cast<UInt64>( bits );
+                return _BitScanForward64( index, v ) != 0;
             }
             else
             {
-                using UIntType = std::make_unsigned_t<T>;
-                auto value = std::bit_cast< UIntType >( bits );
-                return _BitScanForward( index, value ) != 0;
+                // Use 32-bit intrinsic. Ensure the value is passed as unsigned long (DWORD).
+                auto v = static_cast<unsigned long>( valueU );
+                return _BitScanForward( index, v ) != 0;
             }
         }
     }
+
+
+
 
     /// <summary>
     /// Search the mask data from least significant bit (LSB) to the most significant bit (MSB) for a set bit (1).
@@ -575,53 +816,79 @@ namespace Harlinn::Common
     /// <summary>
     /// Search the mask data from most significant bit (MSB) to least significant bit (LSB) for a set bit (1).
     /// </summary>
-    /// <param name="index">
-    /// Pointer to a value that will receive the zero based index of the
-    /// of the bit, if found.
-    /// </param>
-    /// <param name="bits">
-    /// The value to search.
-    /// </param>
-    /// <returns>
-    /// Returns true if a set bit was found and the value pointed to by index is valid.
-    /// </returns>
+    /// <param name="index">Optional pointer that will receive the zero-based index of the found bit. May be null.</param>
+    /// <param name="bits">Integer value to search (CV-qualifiers and references are ignored).</param>
+    /// <returns>True if a set bit was found; otherwise false. When true and <paramref name="index"/> is non-null the index is written.</returns>
+    /// <remarks>
+    /// - In constant-evaluated contexts uses <c>std::bit_width</c> (constexpr) to compute the index in O(1).
+    /// - At runtime dispatches to MSVC intrinsics <c>_BitScanReverse</c>/<c>_BitScanReverse64</c> for maximum performance on Windows/x64.
+    /// - Operates on the unsigned bit-pattern of <c>T</c> via <c>std::bit_cast</c> to avoid signed-shift UB.
+    /// </remarks>
     template<IntegerType T>
     constexpr bool IndexOfBitFromMSB( unsigned long* index, T bits )
     {
         using UIntType = std::make_unsigned_t<T>;
+        const UIntType valueU = std::bit_cast<UIntType>( bits );
 
         if ( std::is_constant_evaluated( ) )
         {
-            auto value = std::bit_cast< UIntType >( bits );
-            auto maskSize = ( ( sizeof( bits ) - 1 ) * 8 ) + 7;
-            for ( int i = static_cast< int >( maskSize ); i >= 0; i-- )
+            if ( valueU == static_cast<UIntType>( 0 ) )
             {
-                if ( value & ( static_cast< UIntType >( 1 ) << i ) )
-                {
-                    if ( index )
-                    {
-                        *index = i;
-                    }
-                    return true;
-                }
+                return false;
             }
-            return false;
+            // std::bit_width(valueU) returns floor(log2(valueU)) + 1 for valueU > 0
+            unsigned long idx = static_cast<unsigned long>( std::bit_width( valueU ) - 1u );
+            if ( index )
+            {
+                *index = idx;
+            }
+            return true;
         }
         else
         {
-            constexpr auto bitsSize = sizeof( bits );
-
-            if constexpr ( bitsSize > 4 )
+#ifdef _MSC_VER
+            if constexpr ( sizeof( UIntType ) > 4 )
             {
-                auto value = std::bit_cast< UInt64 >( bits );
-                return _BitScanReverse64( index, value ) != 0;
+                UInt64 v = std::bit_cast<UInt64>( bits );
+                unsigned long tmpIndex = 0;
+                const auto rc = _BitScanReverse64( &tmpIndex, v );
+                if ( rc != 0 )
+                {
+                    if ( index )
+                    {
+                        *index = tmpIndex;
+                    }
+                    return true;
+                }
+                return false;
             }
             else
             {
-                using UIntType = std::make_unsigned_t<T>;
-                auto value = std::bit_cast< UIntType >( bits );
-                return _BitScanReverse( index, value ) != 0;
+                unsigned long v = static_cast<unsigned long>( valueU );
+                unsigned long tmpIndex = 0;
+                const auto rc = _BitScanReverse( &tmpIndex, v );
+                if ( rc != 0 )
+                {
+                    if ( index )
+                    {
+                        *index = tmpIndex;
+                    }
+                    return true;
+                }
+                return false;
             }
+#else
+            if ( valueU == static_cast<UIntType>( 0 ) )
+            {
+                return false;
+            }
+            unsigned long idx = static_cast<unsigned long>( std::bit_width( valueU ) - 1u );
+            if ( index )
+            {
+                *index = idx;
+            }
+            return true;
+#endif
         }
     }
 
@@ -659,17 +926,39 @@ namespace Harlinn::Common
 #ifdef _DEBUG
         if ( !std::is_constant_evaluated( ) )
         {
-            assert( numberOfBitsToSet <= 64 && numberOfBitsToSet > 0 && "The value of numberOfBitsToSet must be in the range [1,64]" );
+            // Keep the original assertion semantics in debug builds, but function remains well-defined in release.
+            assert( numberOfBitsToSet <= 64 && "The value of numberOfBitsToSet must be in the range [0,64]" );
         }
 #endif
-        UInt64 mostSignificantBit = 1ULL << ( numberOfBitsToSet - 1 );
+
+        // Handle edge cases explicitly to avoid undefined behavior from shifts:
+        if ( numberOfBitsToSet == 0 )
+        {
+            return 0ULL;
+        }
+        if ( numberOfBitsToSet >= 64 )
+        {
+            return static_cast<UInt64>( ~static_cast<UInt64>( 0 ) ); // all ones
+        }
+
+        // Now 1 <= numberOfBitsToSet <= 63
         if ( std::is_constant_evaluated( ) )
         {
-            return ( mostSignificantBit - 1 ) ^ mostSignificantBit;
+            // Constexpr-friendly arithmetic: (1 << n) - 1
+            return ( ( static_cast<UInt64>( 1 ) << numberOfBitsToSet ) - 1ULL );
         }
         else
         {
-            return _blsmsk_u64( mostSignificantBit );
+#ifdef _MSC_VER
+            // Runtime: use BLSMSK intrinsic for best performance on MSVC.
+            // BLSMSK(msb) produces a mask with all bits <= the provided single set bit set;
+            // provide the bit at position (n-1).
+            UInt64 msb = static_cast<UInt64>( 1 ) << ( numberOfBitsToSet - 1 );
+            return _blsmsk_u64( msb );
+#else
+            // Portable runtime fallback: same as consteval arithmetic
+            return ( ( static_cast<UInt64>( 1 ) << numberOfBitsToSet ) - 1ULL );
+#endif
         }
     }
 
@@ -688,17 +977,38 @@ namespace Harlinn::Common
 #ifdef _DEBUG
         if ( !std::is_constant_evaluated( ) )
         {
-            assert( numberOfBitsToSet <= 32 && numberOfBitsToSet > 0 && "The value of numberOfBitsToSet must be in the range [1,32]" );
+            // Preserve developer assertion in debug builds; production still behaves safely for out-of-range inputs.
+            assert( numberOfBitsToSet <= 32 && "The value of numberOfBitsToSet must be in the range [0,32]" );
         }
 #endif
-        UInt32 mostSignificantBit = 1ULL << ( numberOfBitsToSet - 1 );
+
+        // Avoid undefined behaviour: handle 0 and >=32 explicitly
+        if ( numberOfBitsToSet == 0 )
+        {
+            return 0u;
+        }
+        if ( numberOfBitsToSet >= 32 )
+        {
+            return static_cast<UInt32>( ~static_cast<UInt32>( 0 ) ); // 0xFFFFFFFFu
+        }
+
+        // Now 1 <= numberOfBitsToSet <= 31
         if ( std::is_constant_evaluated( ) )
         {
-            return ( mostSignificantBit - 1 ) ^ mostSignificantBit;
+            // Constexpr-friendly: (1u << n) - 1
+            return ( ( static_cast<UInt32>( 1u ) << numberOfBitsToSet ) - 1u );
         }
         else
         {
-            return _blsmsk_u32( mostSignificantBit );
+#ifdef _MSC_VER
+            // Runtime: use BLSMSK intrinsic on MSVC for best performance.
+            // Provide the single-bit value at position (n-1).
+            UInt32 msb = static_cast<UInt32>( 1u ) << ( numberOfBitsToSet - 1 );
+            return _blsmsk_u32( msb );
+#else
+            // Portable runtime fallback
+            return ( ( static_cast<UInt32>( 1u ) << numberOfBitsToSet ) - 1u );
+#endif
         }
     }
 
@@ -719,14 +1029,28 @@ namespace Harlinn::Common
     /// </returns>
     inline constexpr UInt64 ExtractBits64( UInt64 value, UInt32 start, UInt32 len ) noexcept
     {
+        if ( len == 0 || start >= 64 )
+        {
+            return 0ULL;
+        }
+        const uint64_t start64 = static_cast<uint64_t>( start );
+        const uint64_t len64 = static_cast<uint64_t>( len );
+        const uint64_t maxAvailable = 64u - start64;
+        const uint64_t effectiveLen = ( len64 > maxAvailable ) ? maxAvailable : len64;
+
         if ( std::is_constant_evaluated( ) )
         {
-            UInt64 mask = len ? CreateBitMask64( len ) : 0;
+            UInt64 mask = CreateBitMask64( static_cast<unsigned>( effectiveLen ) );
             return ( value >> start ) & mask;
         }
         else
         {
-            return _bextr_u64( value, start, len );
+#ifdef _MSC_VER
+            return _bextr_u64( value, static_cast<unsigned long>( start ), static_cast<unsigned long>( effectiveLen ) );
+#else
+            UInt64 mask = CreateBitMask64( static_cast<unsigned>( effectiveLen ) );
+            return ( value >> start ) & mask;
+#endif
         }
     }
     /// <summary>
@@ -746,14 +1070,30 @@ namespace Harlinn::Common
     /// </returns>
     inline constexpr UInt32 ExtractBits32( UInt32 value, UInt32 start, UInt32 len ) noexcept
     {
+        if ( len == 0 || start >= 32 )
+        {
+            return 0u;
+        }
+
+        const uint64_t start64 = static_cast<uint64_t>( start );
+        const uint64_t len64 = static_cast<uint64_t>( len );
+        const uint64_t maxAvailable = 32u - start64;
+        const uint64_t effectiveLen64 = ( len64 > maxAvailable ) ? maxAvailable : len64;
+        const unsigned effectiveLen = static_cast<unsigned>( effectiveLen64 );
+
         if ( std::is_constant_evaluated( ) )
         {
-            UInt32 mask = len ? CreateBitMask32( len ) : 0;
+            UInt32 mask = CreateBitMask32( effectiveLen );
             return ( value >> start ) & mask;
         }
         else
         {
-            return _bextr_u32( value, start, len );
+#ifdef _MSC_VER
+            return _bextr_u32( value, static_cast<unsigned long>( start ), static_cast<unsigned long>( effectiveLen ) );
+#else
+            UInt32 mask = CreateBitMask32( effectiveLen );
+            return ( value >> start ) & mask;
+#endif
         }
     }
 
@@ -771,30 +1111,35 @@ namespace Harlinn::Common
     /// <returns>
     /// The aligned address.
     /// </returns>
-    template<size_t N>
-    inline const void* AlignTo( const void* address )
+    template<size_t N, typename T>
+    inline constexpr T* AlignTo( T* address ) noexcept
     {
-        return reinterpret_cast< const void* >( ( reinterpret_cast< size_t >( address ) + N ) & ~static_cast< size_t >( N ) );
+        static_assert( N > 0, "AlignTo<N>: alignment N must be > 0" );
+
+        constexpr bool IsPow2 = ( N & ( N - 1 ) ) == 0;
+
+        const size_t addr = reinterpret_cast<size_t>( address );
+
+        if constexpr ( IsPow2 )
+        {
+            // Fast path for power-of-two alignments: (addr + (N-1)) & ~(N-1)
+            constexpr size_t mask = static_cast<size_t>( N - 1 );
+            const size_t aligned = ( addr + mask ) & ~mask;
+            return reinterpret_cast<T*>( aligned );
+        }
+        else
+        {
+            // Generic path for arbitrary N: compute remainder and add the minimal delta.
+            const size_t rem = addr % static_cast<size_t>( N );
+            if ( rem == 0 )
+            {
+                return address;
+            }
+            const size_t aligned = addr + ( static_cast<size_t>( N ) - rem );
+            return reinterpret_cast<T*>( aligned );
+        }
     }
 
-    /// <summary>
-    /// Calculates the address that is aligned on an <c>N</c> byte boundary
-    /// greater, or equal, to <c>address</c>. 
-    /// </summary>
-    /// <typeparam name="N">
-    /// The requested alignment.
-    /// </typeparam>
-    /// <param name="address">
-    /// The address to calculate the alignment for. 
-    /// </param>
-    /// <returns>
-    /// The aligned address.
-    /// </returns>
-    template<size_t N>
-    inline void* AlignTo( void* address )
-    {
-        return reinterpret_cast< void* >( ( reinterpret_cast< size_t >( address ) + N ) & ~static_cast< size_t >( N ) );
-    }
 
     /// <summary>
     /// Calculates the number of bytes between the argument <c>address</c> 
@@ -804,117 +1149,189 @@ namespace Harlinn::Common
     /// <typeparam name="N"></typeparam>
     /// <param name="address"></param>
     /// <returns></returns>
-    template<size_t N>
-    inline size_t AlignedPaddingFor( const void* address )
+    template<size_t N, typename T>
+    inline constexpr size_t AlignedPaddingFor( const T* address ) noexcept
     {
-        return ( ( reinterpret_cast< size_t >( address ) + N ) & ~static_cast< size_t >( N ) ) - reinterpret_cast< size_t >( address );
+        static_assert( N > 0, "AlignedPaddingFor<N>: alignment N must be > 0" );
+
+        constexpr bool IsPow2 = ( N & ( N - 1 ) ) == 0;
+
+        const size_t addr = reinterpret_cast<size_t>( address );
+
+        if constexpr ( IsPow2 )
+        {
+            // Use bit operations for power-of-two alignments.
+            // Avoids potential unsigned overflow from (addr + mask).
+            constexpr size_t mask = static_cast<size_t>( N - 1 );
+            const size_t rem = addr & mask;
+            return rem ? ( ( mask + 1 ) - rem ) : 0u;
+        }
+        else
+        {
+            // Generic alignment: compute remainder via modulo and return delta.
+            const size_t rem = addr % static_cast<size_t>( N );
+            return rem == 0 ? 0u : ( static_cast<size_t>( N ) - rem );
+        }
     }
 
-    /// <summary>
-    /// Reverses the bytes of a floating point value, or an enum.
-    /// </summary>
-    /// <typeparam name="T">
-    /// A floating point type, or an enum type.
-    /// </typeparam>
-    /// <param name="value">
-    /// The value.
-    /// </param>
-    /// <returns>
-    /// The result.
-    /// </returns>
-    template<typename T>
-        requires ( IsFloatingPoint<std::remove_cvref_t<T>> || std::is_enum_v<std::remove_cvref_t<T>> )
-    inline constexpr T ByteSwap( const T value ) noexcept
-    {
-        using Type = std::remove_cvref_t<T>;
-        using UIntType = MakeUnsigned<Type>;
-        std::bit_cast< Type >( ByteSwap( std::bit_cast< UIntType >( value ) ) );
-    }
+    
 
 
     template<typename T1, typename T2>
-        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast< UInt64 >( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 )
+            && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> )
+            && std::is_trivially_copyable_v<std::remove_cvref_t<T2>>
     inline constexpr T1 GetHigh32Bits( T2 val ) noexcept
     {
-        auto value = std::bit_cast< UInt64 >( val );
-        return std::bit_cast< T1 >( static_cast< UInt32 >( value >> 32 ) );
+        UInt64 bits;
+        if constexpr ( std::is_integral_v<std::remove_cvref_t<T2>> )
+        {
+            bits = static_cast< UInt64 >( val );
+        }
+        else
+        {
+            bits = std::bit_cast< UInt64 >( val );
+        }
+
+        const UInt32 high32 = static_cast< UInt32 >( bits >> 32 );
+        return std::bit_cast< T1 >( high32 );
     }
 
 
     template<typename T1, typename T2>
-        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast< UInt64 >( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 )
+            && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> )
+            && std::is_trivially_copyable_v<std::remove_cvref_t<T2>>
     inline constexpr T2 SetHigh32Bits( T2 x, T1 value ) noexcept
     {
-        return std::bit_cast< T2 >( ( std::bit_cast< UInt64 >( x ) & 0x00000000FFFFFFFFULL ) + ( static_cast< UInt64 >( std::bit_cast< UInt32 >( value ) ) << 32 ) );
+        UInt64 bits;
+        if constexpr ( std::is_integral_v<std::remove_cvref_t<T2>> )
+        {
+            bits = static_cast<UInt64>( x );
+        }
+        else
+        {
+            bits = std::bit_cast<UInt64>( x );
+        }
+
+        const UInt32 high32 = std::bit_cast<UInt32>( value );
+
+        const UInt64 resultBits = ( bits & 0x00000000FFFFFFFFULL ) | ( static_cast<UInt64>( high32 ) << 32 );
+
+        return std::bit_cast<T2>( resultBits );
     }
 
     template<typename T1, typename T2>
-        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast< UInt64 >( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 )
+            && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> )
+            && std::is_trivially_copyable_v<std::remove_cvref_t<T2>>
     inline constexpr T1 GetLow32Bits( T2 val ) noexcept
     {
-        auto value = std::bit_cast< UInt64 >( val );
-        return std::bit_cast< T1 >( static_cast< UInt32 >( value ) );
+        UInt64 bits;
+        if constexpr ( std::is_integral_v<std::remove_cvref_t<T2>> )
+        {
+            bits = static_cast<UInt64>( val );
+        }
+        else
+        {
+            bits = std::bit_cast<UInt64>( val );
+        }
+
+        const UInt32 low32 = static_cast<UInt32>( bits & 0xFFFFFFFFULL );
+        return std::bit_cast<T1>( low32 );
     }
 
 
     template<typename T1, typename T2>
-        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast< UInt64 >( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 )
+            && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> )
+            && std::is_trivially_copyable_v<std::remove_cvref_t<T2>>
     inline constexpr T2 SetLow32Bits( T2 x, T1 value ) noexcept
     {
-        return std::bit_cast< T2 >( ( std::bit_cast< UInt64 >( x ) & 0xFFFFFFFF00000000ULL ) + static_cast< UInt64 >( std::bit_cast< UInt32 >( value ) ) );
+        UInt64 bits;
+        if constexpr ( std::is_integral_v<std::remove_cvref_t<T2>> )
+        {
+            // Fast path for integral storage types
+            bits = static_cast<UInt64>( x );
+        }
+        else
+        {
+            bits = std::bit_cast<UInt64>( x );
+        }
+
+        const UInt32 low32 = std::bit_cast<UInt32>( value );
+
+        const UInt64 resultBits = ( bits & 0xFFFFFFFF00000000ULL ) | static_cast<UInt64>( low32 );
+
+        return std::bit_cast<T2>( resultBits );
     }
 
     template<typename T1, typename T2, typename T3>
-        requires ( sizeof( T1 ) == 8 ) && ( std::is_same_v<Int32, T2> || std::is_same_v<UInt32, T2> ) && ( std::is_same_v<Int32, T3> || std::is_same_v<UInt32, T3> ) && requires( UInt64 v1 )
-    {
-        { std::bit_cast< T1 >( v1 ) }->std::same_as<T1>;
-    }
+        requires ( sizeof(T1) == 8 )
+            && ( std::is_same_v<Int32, T2> || std::is_same_v<UInt32, T2> )
+            && ( std::is_same_v<Int32, T3> || std::is_same_v<UInt32, T3> )
+            && std::is_trivially_copyable_v<std::remove_cvref_t<T1>>
+            && std::is_trivially_copyable_v<std::remove_cvref_t<T2>>
+            && std::is_trivially_copyable_v<std::remove_cvref_t<T3>>
     inline constexpr T1 From32BitsTo64Bits( T2 high32Bits, T3 low32Bits ) noexcept
     {
-        return std::bit_cast< T1 >( ( static_cast< UInt64 >( high32Bits ) << 32 ) + static_cast< UInt64 >( low32Bits ) );
+        const UInt64 high = static_cast<UInt64>( std::bit_cast<UInt32>( high32Bits ) ) << 32;
+        const UInt64 low  = static_cast<UInt64>( std::bit_cast<UInt32>( low32Bits ) );
+        const UInt64 combined = high | low;
+
+        return std::bit_cast<T1>( combined );
+    }
+
+    constexpr inline bool IsSubnormal( double value ) noexcept
+    { 
+        const UInt64 bits = std::bit_cast<UInt64>( value );
+        return ( ( bits & ExponentMask<double> ) == 0ULL ) && ( ( bits & FractionMask<double> ) != 0ULL );
     }
 
     constexpr inline int Exponent( double value ) noexcept
     {
-        return static_cast< int >( std::bit_cast< Int64 >( std::bit_cast< UInt64 >( value ) >> 52 ) - 1023 );
+        const UInt64 bits = std::bit_cast<UInt64>( value );
+        const unsigned expBits = static_cast<unsigned>( ( bits >> 52 ) & 0x7FFu );
+        // Normalized numbers: exponent = e - 1023
+        // Subnormals / zero : exponent = 1 - 1023  (i.e. -1022)
+        return expBits ? ( static_cast<int>( expBits ) - 1023 ) : ( 1 - 1023 );
     }
+
+    constexpr inline bool IsSubnormal( float value ) noexcept
+    {
+        const UInt32 bits = std::bit_cast<UInt32>( value );
+        return ( ( bits & ExponentMask<float> ) == 0u ) && ( ( bits & FractionMask<float> ) != 0u );
+    }
+
     constexpr inline int Exponent( float v ) noexcept
     {
-        return std::bit_cast< Int32 >( std::bit_cast< UInt32 >( v ) >> 23 ) - 127;
+        const UInt32 bits = std::bit_cast<UInt32>( v );
+        const unsigned expBits = static_cast<unsigned>( ( bits >> 23 ) & 0xFFu );
+        // Normalized numbers: exponent = e - 127
+        // Subnormals / zero : exponent = 1 - 127  (i.e. -126)
+        return expBits ? ( static_cast<int>( expBits ) - 127 ) : ( 1 - 127 );
     }
 
 
     constexpr inline UInt64 Significand( double value ) noexcept
     {
-        return std::bit_cast< UInt64 >( value ) & ( ( 1ULL << 52 ) - 1 );
+        return std::bit_cast<UInt64>( value ) & FractionMask<double>;
     }
 
     constexpr inline UInt32 Significand( float v ) noexcept
     {
-        return std::bit_cast< UInt32 >( v ) & ( ( 1 << 23 ) - 1 );
+        return std::bit_cast<UInt32>( v ) & FractionMask<float>;
     }
 
 
-    constexpr inline UInt64 FastSignBit( double value )
+    constexpr inline UInt64 FastSignBit( double value ) noexcept
     {
-        return std::bit_cast< UInt64 >( value ) & 0x8000000000000000;
+        return std::bit_cast<UInt64>( value ) & 0x8000000000000000ULL;
     }
 
-    constexpr UInt32 FastSignBit( float v )
+    constexpr inline UInt32 FastSignBit( float v ) noexcept
     {
-        return std::bit_cast< UInt32 >( v ) & 0x80000000;
+        return std::bit_cast<UInt32>( v ) & 0x80000000UL;
     }
 
     /// <summary>
@@ -1908,107 +2325,72 @@ namespace Harlinn::Common
         return 0;
     }
 
-    inline constexpr int Compare( nullptr_t s1, const char* s2 ) noexcept
+    template<typename CharT>
+        requires ( std::is_same_v< std::remove_cvref_t<CharT>, char > ||
+            std::is_same_v< std::remove_cvref_t<CharT>, wchar_t > )
+    inline constexpr int Compare( nullptr_t s1, const CharT* s2 ) noexcept
     {
-        return s2 && s2[ 0 ] ? -1 : 0;
+#ifdef _DEBUG
+        assert( s1 == nullptr );
+#endif
+        return ( s2 && s2[ 0 ] ) ? -1 : 0;
     }
 
-    inline constexpr int Compare( const char* s1, nullptr_t s2 ) noexcept
+    template<typename CharT>
+        requires ( std::is_same_v< std::remove_cvref_t<CharT>, char > ||
+            std::is_same_v< std::remove_cvref_t<CharT>, wchar_t > )
+    inline constexpr int Compare( const CharT* s1, nullptr_t s2 ) noexcept
     {
+#ifdef _DEBUG
+        assert( s2 == nullptr );
+#endif
         return s1 && s1[ 0 ] ? 1 : 0;
     }
 
-    inline constexpr int Compare( const char* s1, const char* s2 ) noexcept
+    template<typename CharT>
+        requires ( std::is_same_v< std::remove_cvref_t<CharT>, char > ||
+            std::is_same_v< std::remove_cvref_t<CharT>, wchar_t > )
+    inline constexpr int Compare( const CharT* s1, const CharT* s2 ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        // fast-path: identical pointer -> equal
+        if ( s1 == s2 )
         {
-            if ( s1 && s1[ 0 ] )
-            {
-                if ( s2 && s2[ 0 ] )
-                {
-                    return std::string_view( s1 ).compare( s2 );
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else if ( s2 && s2[ 0 ] )
-            {
-                return -1;
-            }
             return 0;
+        }
+
+        if constexpr ( std::is_same_v< std::remove_cvref_t<CharT>, char > )
+        {
+            // treat null as empty
+            const char* a = s1 ? s1 : "";
+            const char* b = s2 ? s2 : "";
+
+            if ( std::is_constant_evaluated( ) )
+            {
+                const int rc = std::string_view( a ).compare( b );
+                return rc > 0 ? 1 : rc < 0 ? -1 : 0;
+            }
+            else
+            {
+                const int rc = strcmp( a, b );
+                return rc > 0 ? 1 : rc < 0 ? -1 : 0;
+            }
         }
         else
         {
-            if ( s1 && s1[ 0 ] )
-            {
-                if ( s2 && s2[ 0 ] )
-                {
-                    return strcmp( s1, s2 );
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else if ( s2 && s2[ 0 ] )
-            {
-                return -1;
-            }
-            return 0;
-        }
-    }
+            // treat null as empty
+            const wchar_t* a = s1 ? s1 : L"";
+            const wchar_t* b = s2 ? s2 : L"";
 
-    inline constexpr int Compare( nullptr_t s1, const wchar_t* s2 ) noexcept
-    {
-        return s2 && s2[ 0 ] ? -1 : 0;
-    }
-
-    inline constexpr int Compare( const wchar_t* s1, nullptr_t s2 ) noexcept
-    {
-        return s1 && s1[ 0 ] ? 1 : 0;
-    }
-
-    inline constexpr int Compare( const wchar_t* s1, const wchar_t* s2 ) noexcept
-    {
-        if ( std::is_constant_evaluated( ) )
-        {
-            if ( s1 && s1[ 0 ] )
+            if ( std::is_constant_evaluated( ) )
             {
-                if ( s2 && s2[ 0 ] )
-                {
-                    return std::wstring_view( s1 ).compare( s2 );
-                }
-                else
-                {
-                    return 1;
-                }
+                const int rc = std::wstring_view( a ).compare( b );
+                return rc > 0 ? 1 : rc < 0 ? -1 : 0;
             }
-            else if ( s2 && s2[ 0 ] )
+            else
             {
-                return -1;
+                const int rc = wcscmp( a, b );
+                return rc > 0 ? 1 : rc < 0 ? -1 : 0;
             }
-            return 0;
-        }
-        else
-        {
-            if ( s1 && s1[ 0 ] )
-            {
-                if ( s2 && s2[ 0 ] )
-                {
-                    return wcscmp( s1, s2 );
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else if ( s2 && s2[ 0 ] )
-            {
-                return -1;
-            }
-            return 0;
         }
     }
 
@@ -2032,9 +2414,9 @@ namespace Harlinn::Common
 
     template<typename T1, typename T2 >
         requires requires( const T1& t1, const T2& t2 )
-    {
-        { t1.compare( t2 ) } ->std::convertible_to<int>;
-    }
+        {
+            { t1.compare( t2 ) } ->std::convertible_to<int>;
+        }
     inline int Compare( const T1& v1, const T2& v2 ) noexcept
     {
         return v1.compare( v2 );

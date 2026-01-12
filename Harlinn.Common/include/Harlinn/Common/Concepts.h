@@ -22,6 +22,7 @@
 #endif
 
 #include <iterator>
+#include <ranges>
 #include "BasicTypes.h"
 
 namespace Harlinn::Common
@@ -33,14 +34,154 @@ namespace Harlinn::Common
     concept ApiCharType = std::is_same_v<T, char> || std::is_same_v<T, wchar_t>;
 
     /// <summary>
-    /// Matches most containers with sequential memory layout.
+    /// Constrains types that satisfy the `std::ranges::input_range` concept,
+    /// i.e. ranges that can be iterated over using an input iterator (single-pass
+    /// iteration). Use this when only single-pass traversal is required.
     /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as an input-iterable range.
+    /// </typeparam>
     template<typename T>
-    concept ForwardIterable = std::is_base_of_v<std::forward_iterator_tag, typename std::iterator_traits<typename T::const_iterator>::iterator_category>&& requires ( T t1 )
-    {
-        { t1.begin( ) };
-        { t1.end( ) };
-    };
+    concept InputRange = std::ranges::input_range<T>;
+
+    /// <summary>
+    /// Constrains range types that satisfy `std::ranges::output_range` for element type `T`,
+    /// i.e. ranges that can be written-to through an output iterator accepting values of type `T`.
+    /// </summary>
+    /// <typeparam name="RangeT">
+    /// Range type to be checked as an output range.
+    /// </typeparam>
+    /// <typeparam name="T">
+    /// Element type that can be assigned to the range via an output iterator.
+    /// </typeparam>
+    template<typename RangeT, typename T>
+    concept OutputRange = std::ranges::output_range<RangeT,T>;
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::forward_range` concept,
+    /// i.e. ranges that are iterable using a forward iterator (single-pass or multi-pass
+    /// forward iteration is supported).
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a forward-iterable range.
+    /// </typeparam>
+    template<typename T>
+    concept ForwardRange = std::ranges::forward_range<T>;
+
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::bidirectional_range` concept,
+    /// i.e. ranges whose iterators support both forward and backward traversal.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a bidirectional range.
+    /// </typeparam>
+    template<typename T>
+    concept BidirectionalRange = std::ranges::bidirectional_range<T>;
+
+    
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::random_access_range` concept,
+    /// i.e. ranges whose iterators support constant-time random access (iterator
+    /// arithmetic, indexing and full ordering).
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a random-access range.
+    /// </typeparam>
+    template<typename T>
+    concept RandomAccessRange = std::ranges::random_access_range<T>;
+
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::contiguous_range` concept,
+    /// i.e. ranges whose elements are stored contiguously in memory and can be
+    /// accessed via pointers or contiguous iterators.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a contiguous range.
+    /// </typeparam>
+    template<typename T>
+    concept ContiguousRange = std::ranges::contiguous_range<T>;
+
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::range` concept,
+    /// i.e. types that provide `begin()`/`end()` (are iterable as a range).
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a range.
+    /// </typeparam>
+    template<typename T>
+    concept Range = std::ranges::range<T>;
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::borrowed_range` concept,
+    /// i.e. ranges whose iterators may remain valid even if the range object is a temporary.
+    /// Commonly true for views and other types that allow borrowing.
+    /// </summary>
+    /// <typeparam name="T">Type to be checked as a borrowed range.</typeparam>
+    template<typename T>
+    concept BorrowedRange = std::ranges::borrowed_range<T>;
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::sized_range` concept,
+    /// i.e. ranges that provide a `size()` and where the size can be determined
+    /// in constant time without iterating the range.
+    /// </summary>
+    /// <typeparam name="T">Type to be checked as a sized range.</typeparam>
+    template<typename T>
+    concept SizedRange = std::ranges::sized_range<T>;
+
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::view` concept,
+    /// i.e. lightweight (possibly non-owning) range adapters whose iterators
+    /// may remain valid even when the view object is a temporary.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a view (e.g., range view or adaptor type).
+    /// </typeparam>
+    template<typename T>
+    concept View = std::ranges::view<T>;
+
+    
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::common_range` concept,
+    /// i.e. ranges whose `begin()` and `end()` return the same iterator type
+    /// (a "common" end), making them suitable for algorithms that require
+    /// comparable begin/end iterators.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a common range.
+    /// </typeparam>
+    template<typename T>
+    concept CommonRange = std::ranges::common_range<T>;
+
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::viewable_range` concept,
+    /// i.e. ranges that can be used with range-view adaptors (either a view type
+    /// or a range that can be bound-to a view).
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a viewable range.
+    /// </typeparam>
+    template<typename T>
+    concept ViewableRange = std::ranges::viewable_range<T>;
+
+    /// <summary>
+    /// Constrains types that satisfy the `std::ranges::constant_range` concept,
+    /// i.e. ranges whose elements are accessed as constant values (cannot be
+    /// modified through the range's iterator).
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type to be checked as a constant range.
+    /// </typeparam>
+    template<typename T>
+    concept ConstantRange = std::ranges::constant_range<T>;
+
+
+
 
     /// <summary>
     /// Matches contiguous containers that expose `size()` and `data()` and provide
@@ -56,6 +197,81 @@ namespace Harlinn::Common
         { t.data( ) } -> std::convertible_to<const typename T::value_type*>;
         { t[ 0 ] } -> std::convertible_to<typename T::const_reference>;
     };
+
+
+    
+    /// <summary>
+    /// Constrains types that declare a nested `value_type`.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type that must declare a nested `value_type` (e.g., container or span-like type).
+    /// </typeparam>
+    template<typename T>
+    concept HasValueType = requires { typename T::value_type; };
+
+    /// <summary>
+    /// Constrains types that declare a nested `value_type` and where that nested
+    /// `value_type`, after removing cv-qualifiers and references, is the same as
+    /// `ValueType`.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type that must declare a nested `value_type` (e.g. container or span-like type).
+    /// </typeparam>
+    /// <typeparam name="ExpectedValueType">
+    /// Expected element/value type to compare against `T::value_type`.
+    /// </typeparam>
+    template<typename T, typename ExpectedValueType>
+    concept ValueTypeIs = requires { typename T::value_type; } && std::same_as<std::remove_cvref_t<typename T::value_type>, ExpectedValueType>;
+
+
+    /// <summary>
+    /// Constrains types that declare a nested `key_type`.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type that must declare a nested `key_type` (e.g., associative container type).
+    /// </typeparam>
+    template<typename T>
+    concept HasKeyType = requires { typename T::key_type; };
+
+    
+    /// <summary>
+    /// Constrains types that declare a nested `key_type` and where that nested
+    /// `key_type`, after removing cv-qualifiers and references, is the same as
+    /// `ExpectedKeyType`.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type that must declare a nested `key_type` (e.g., associative container type).
+    /// </typeparam>
+    /// <typeparam name="ExpectedKeyType">
+    /// Expected key type to compare against `T::key_type`.
+    /// </typeparam>
+    template<typename T, typename ExpectedKeyType>
+    concept KeyTypeIs = requires { typename T::key_type; }&& std::same_as<std::remove_cvref_t<typename T::key_type>, ExpectedKeyType>;
+
+    /// <summary>
+    /// Constrains types that declare a nested `mapped_type`.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type that must declare a nested `mapped_type` (e.g., associative 
+    /// container type such as `std::map` or `std::unordered_map`).
+    /// </typeparam>
+    template<typename T>
+    concept HasMappedType = requires { typename T::mapped_type; };
+    
+    /// <summary>
+    /// Constrains types that declare a nested `mapped_type` and where that nested
+    /// `mapped_type`, after removing cv-qualifiers and references, is the same as
+    /// `ExpectedMappedType`.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type that must declare a nested `mapped_type` (e.g., associative container 
+    /// type such as `std::map` or `std::unordered_map`).
+    /// </typeparam>
+    /// <typeparam name="ExpectedMappedType">
+    /// Expected mapped type to compare against `T::mapped_type`.
+    /// </typeparam>
+    template<typename T, typename ExpectedMappedType>
+    concept MappedTypeIs = requires { typename T::mapped_type; }&& std::same_as<std::remove_cvref_t<typename T::mapped_type>, ExpectedMappedType>;
 
 
     /// <summary>

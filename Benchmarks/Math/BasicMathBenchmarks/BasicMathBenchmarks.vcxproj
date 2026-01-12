@@ -162,6 +162,9 @@
   <ItemGroup>
     <ClInclude Include="BenchmarkUtils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Output.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

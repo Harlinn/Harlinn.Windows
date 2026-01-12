@@ -32,9 +32,7 @@ namespace Harlinn::Common::Core
     namespace Internal
     {
 
-        template<typename T, typename CharType>
-        concept ValueTypeIs = requires { typename T::value_type; }&&
-            std::same_as<std::remove_cvref_t<typename T::value_type>, CharType>;
+        
 
         
         /// <summary>
@@ -13238,14 +13236,23 @@ namespace Harlinn::Common::Core
         }
 
         /// <summary>
-        /// Splits this string using the specified <see cref="std::basic_string&lt;CharType&gt;"/> separator and returns a collection of substrings.
+        /// Splits this string using the specified <see cref="std::basic_string&lt;CharType&gt;"/> 
+        /// separator and returns a collection of substrings.
         /// </summary>
-        /// <param name="separator">The separator string to split on. The separator is converted to a string view and forwarded to the view-based overload.</param>
-        /// <param name="removeEmptyEntries">If <c>true</c> any empty tokens produced by adjacent separators or separators at the ends are omitted from the result.</param>
-        /// <param name="count">Maximum number of substrings to produce. Use <c>npos</c> (default) to indicate no limit.</param>
+        /// <param name="separator">
+        /// The separator string to split on. The separator is converted to a string view 
+        /// and forwarded to the view-based overload.
+        /// </param>
+        /// <param name="removeEmptyEntries">
+        /// If <c>true</c> any empty tokens produced by adjacent separators or separators 
+        /// at the ends are omitted from the result.
+        /// </param>
+        /// <param name="count">
+        /// Maximum number of substrings to produce. Use <c>npos</c> (default) to indicate no limit.
+        /// </param>
         /// <returns>
-        /// A container of type <c>VectorT</c> containing the resulting substrings. Each element type is <c>SubStringT</c> and must be
-        /// constructible from a pointer/length pair (<c>const CharType*, size_type</c>).
+        /// A container of type <c>VectorT</c> containing the resulting substrings. Each element 
+        /// type is <c>SubStringT</c> and must be constructible from a pointer/length pair (<c>const CharType*, size_type</c>).
         /// </returns>
         /// <remarks>
         /// This overload constructs a <c>std::basic_string_view&lt;CharType&gt;</c> from the provided <paramref name="separator"/>
@@ -13274,12 +13281,47 @@ namespace Harlinn::Common::Core
         static constexpr bool IsStringLikeV =
             std::is_same_v<std::remove_cvref_t<E>, BasicString> ||
             std::is_convertible_v<E, const CharType*> ||
-            ( ContiguousContainerLike<E> && Internal::ValueTypeIs<E, CharType> ) ||
+            ( ContiguousContainerLike<E> && ValueTypeIs<E, CharType> ) ||
             ( requires ( const E& v ) { BasicString<CharType>::From( v ); } ) ||
             ( requires ( const E& v ) { std::format( L"{}", v ); } ) ||
             ( requires ( const E& v ) { std::format( "{}", v ); } );
 	public:
 
+        /// <summary>
+        /// Joins a range of values into a single <see cref="BasicString"/> using the provided separator.
+        /// </summary>
+        /// <typeparam name="RangeT">
+        /// A type satisfying <c>std::ranges::input_range</c>. The <c>range_value_t</c> of the range must be string-like
+        /// (as defined by <c>IsStringLikeV</c>) so that each element can be treated as a contiguous character sequence.
+        /// </typeparam>
+        /// <param name="separator">
+        /// Pointer to the separator character sequence inserted between consecutive values. May be <c>nullptr</c> when
+        /// <paramref name="separatorLength"/> is zero.
+        /// </param>
+        /// <param name="separatorLength">
+        /// Number of characters in the separator. When zero no separator characters are inserted between values.
+        /// </param>
+        /// <param name="values">
+        /// The input range of values to join. Elements are traversed in range order and concatenated.
+        /// Each element may be a null-terminated string, a pointer/length pair, a span-like object, or any type
+        /// recognized by <c>IsStringLikeV</c>.
+        /// </param>
+        /// <returns>
+        /// A newly constructed <see cref="BasicString"/> containing the concatenation of all elements from
+        /// <paramref name="values"/>, with <paramref name="separator"/> inserted between adjacent elements.
+        /// If <paramref name="values"/> is empty the function returns an empty <see cref="BasicString"/>.
+        /// </returns>
+        /// <remarks>
+        /// - The function performs a single-pass traversal of <paramref name="values"/> and allocates storage
+        ///   sized to hold the combined result according to the string allocation granularity used by
+        ///   <see cref="BasicString{T}"/>.
+        /// - The operation may throw platform allocation-related exceptions if memory allocation fails.
+        /// - This routine is const with respect to the input range object; however, concurrent modification of
+        ///   the supplied <paramref name="values"/> range by other threads is not supported and must be avoided.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown when underlying allocation helpers fail to allocate the required buffer.
+        /// </exception>
         template< std::ranges::input_range RangeT >
             requires IsStringLikeV<std::ranges::range_value_t<RangeT>>
         [[nodiscard]] static BasicString Join( const CharType* separator, size_type separatorLength, const RangeT& values )
@@ -13318,7 +13360,7 @@ namespace Harlinn::Common::Core
                         result.Append( e );
                     }
                 }
-                else if constexpr ( ContiguousContainerLike<Elem> && Internal::ValueTypeIs<Elem, CharType> )
+                else if constexpr ( ContiguousContainerLike<Elem> && ValueTypeIs<Elem, CharType> )
                 {
                     const Elem& e = *it;
                     result.Append( e.data( ), e.size( ) );
