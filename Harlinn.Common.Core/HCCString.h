@@ -5647,8 +5647,25 @@ namespace Harlinn::Common::Core
         void Append( const CharType* other )
         {
             auto otherLength = LengthOf( other );
-            auto* dest = Extend( otherLength );
-            MemCopy( dest, other, otherLength );
+            if ( otherLength )
+            {
+				if ( data_ && data_->Contains( other, otherLength ) )
+                {
+                    // special case: appending from our own buffer
+                    boost::container::small_vector<CharType, 32> temp;
+					temp.assign( other, other + otherLength );
+                    auto* dest = Extend( otherLength );
+                    MemCopy( dest, temp.data( ), otherLength );
+                }
+                else
+                {
+                    auto* dest = Extend( otherLength );
+                    MemCopy( dest, other, otherLength );
+                }
+                auto* dest = Extend( otherLength );
+                MemCopy( dest, other, otherLength );
+            }
+            
         }
         /// <summary>
         /// Alias for <see cref="Append(const CharType*)"/>.
@@ -5674,8 +5691,19 @@ namespace Harlinn::Common::Core
         /// </exception>
         void Append( const CharType* other, size_t otherLength )
         {
-            auto* dest = Extend( otherLength );
-            MemCopy( dest, other, otherLength );
+            if ( data_ && data_->Contains( other, otherLength ) )
+            {
+                // special case: appending from our own buffer
+                boost::container::small_vector<CharType, 32> temp( otherLength );
+				temp.assign( other, other + otherLength );
+                auto* dest = Extend( otherLength );
+                MemCopy( dest, temp.data( ), otherLength );
+            }
+            else
+            {
+                auto* dest = Extend( otherLength );
+                MemCopy( dest, other, otherLength );
+            }
         }
 
         /// <summary>
@@ -5692,7 +5720,7 @@ namespace Harlinn::Common::Core
         /// Appends the character range [<paramref name="first"/>, <paramref name="last"/>) to this string.
         /// </summary>
         /// <param name="first">Pointer to the first character to append (inclusive).</param>
-        /// <param name="last">Pointer to one-past-the-last character to append (exclusive).</param>
+        /// <|param name="last">Pointer to one-past-the-last character to append (exclusive).</param>
         /// <remarks>
         /// If <paramref name="first"/> is less than <paramref name="last"/> the function computes the range length
         /// and forwards to <see cref="Append(const CharType*,size_t)"/> to perform the append. When <paramref name="first"/>
@@ -5732,9 +5760,7 @@ namespace Harlinn::Common::Core
             requires std::is_same_v<CharType, typename SpanT::value_type>
         void Append( const SpanT& other )
         {
-            auto otherLength = other.size( );
-            auto* dest = Extend( otherLength );
-            MemCopy( dest, other.data( ), otherLength );
+			Append( other.data( ), other.size( ) );
         }
 
         /// <summary>
@@ -16508,30 +16534,30 @@ namespace Harlinn::Common::Core
 
     inline [[nodiscard]] AnsiString FormatV( const std::string_view fmt, const std::format_args args )
     {
-        AnsiString result;
+        boost::container::small_vector<char, 128> result;
         std::vformat_to( std::back_insert_iterator{ result }, fmt, args );
-        return result;
+        return AnsiString( result.data( ), result.size( ) );
     }
 
     inline [[nodiscard]] WideString FormatV( const std::wstring_view fmt, const std::wformat_args args )
     {
-        WideString result;
+        boost::container::small_vector<wchar_t, 128> result;
         std::vformat_to( std::back_insert_iterator{ result }, fmt, args );
-        return result;
+        return WideString( result.data( ), result.size( ) );
     }
 
     inline [[nodiscard]] AnsiString FormatV( const std::locale& locale, const std::string_view fmt, const std::format_args args )
     {
-        AnsiString result;
+        boost::container::small_vector<char, 128> result;
         std::vformat_to( std::back_insert_iterator{ result }, locale, fmt, args );
-        return result;
+        return AnsiString( result.data( ), result.size( ) );
     }
 
     inline [[nodiscard]] WideString FormatV( const std::locale& locale, const std::wstring_view fmt, const std::wformat_args args )
     {
-        WideString result;
+        boost::container::small_vector<wchar_t, 128> result;
         std::vformat_to( std::back_insert_iterator{ result }, locale, fmt, args );
-        return result;
+        return WideString( result.data( ), result.size( ) );
     }
 
 
