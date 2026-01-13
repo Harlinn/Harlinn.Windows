@@ -806,5 +806,152 @@ static void BenchmarkWideStringRangesSearchHttps( benchmark::State& state )
 BENCHMARK( BenchmarkWideStringRangesSearchHttps );
 
 
+static void BenchmarkStdWStringIndexOperatorAccess( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    for ( auto _ : state )
+    {
+        const std::wstring& s = input;
+        wchar_t acc = 0;
+        for ( size_t i = 0; i < s.size( ); ++i )
+        {
+            // Access characters using operator[] on a const std::wstring
+            wchar_t c = s[ i ];
+            acc ^= c;
+        }
+        benchmark::DoNotOptimize( acc );
+    }
+}
+BENCHMARK( BenchmarkStdWStringIndexOperatorAccess );
+
+static void BenchmarkWideStringIndexOperatorAccess( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    const WideString winput( input.c_str( ) );
+    for ( auto _ : state )
+    {
+        const WideString& s = winput;
+        wchar_t acc = 0;
+        for ( size_t i = 0; i < s.size( ); ++i )
+        {
+            // Access characters using operator[] on a const WideString
+            wchar_t c = s[ i ];
+            acc ^= c;
+        }
+        benchmark::DoNotOptimize( acc );
+    }
+}
+BENCHMARK( BenchmarkWideStringIndexOperatorAccess );
+
+std::wstring operator + ( const std::wstring& lhs, const std::wstring_view& rhs )
+{
+    std::wstring result;
+    result.reserve( lhs.size() + rhs.size() );
+    result.append_range( lhs );
+    result.append_range( rhs );
+    return result;
+}
+
+static void BenchmarkStdWstringOperatorPlusMix( benchmark::State& state )
+{
+    const wchar_t ch = L'X';
+    const std::wstring_view sv = L"_sv_segment_";
+    const std::wstring s = L"_wstring_segment_";
+    for ( auto _ : state )
+    {
+        std::wstring result = std::wstring( 1, ch ) + sv + s + sv;
+        benchmark::DoNotOptimize( result );
+        benchmark::ClobberMemory( );
+    }
+}
+BENCHMARK( BenchmarkStdWstringOperatorPlusMix );
+
+
+static void BenchmarkWideStringOperatorPlusMix( benchmark::State& state )
+{
+    const wchar_t ch = L'X';
+    const std::wstring_view sv = L"_sv_segment_";
+    const std::wstring s = L"_wstring_segment_";
+
+    WideString ws_from_wstring( s.data( ), s.size( ) );
+    WideString ws_from_sv( sv.data( ), sv.size( ) );
+
+    for ( auto _ : state )
+    {
+        WideString result = ch + ws_from_sv + ws_from_wstring + ws_from_sv;
+        benchmark::DoNotOptimize( result );
+        benchmark::ClobberMemory( );
+    }
+}
+BENCHMARK( BenchmarkWideStringOperatorPlusMix );
+
+static void BenchmarkStdWStringIteratorAccess( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    for ( auto _ : state )
+    {
+        const std::wstring& s = input;
+        wchar_t acc = 0;
+        for ( auto it = s.cbegin( ); it != s.cend( ); ++it )
+        {
+            wchar_t c = *it;
+            acc ^= c;
+        }
+        benchmark::DoNotOptimize( acc );
+    }
+}
+BENCHMARK( BenchmarkStdWStringIteratorAccess );
+
+static void BenchmarkWideStringIteratorAccess( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    const WideString winput( input.c_str( ) );
+    for ( auto _ : state )
+    {
+        const WideString& s = winput;
+        wchar_t acc = 0;
+        for ( auto it = s.cbegin( ); it != s.cend( ); ++it )
+        {
+            wchar_t c = *it;
+            acc ^= c;
+        }
+        benchmark::DoNotOptimize( acc );
+    }
+}
+BENCHMARK( BenchmarkWideStringIteratorAccess );
+
+static void BenchmarkStdWStringRangeForAccess( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    for ( auto _ : state )
+    {
+        const std::wstring& s = input;
+        wchar_t acc = 0;
+        for ( auto c : s )
+        {
+            acc ^= c;
+        }
+        benchmark::DoNotOptimize( acc );
+    }
+}
+BENCHMARK( BenchmarkStdWStringRangeForAccess );
+
+static void BenchmarkWideStringRangeForAccess( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    const WideString winput( input.c_str( ) );
+    for ( auto _ : state )
+    {
+        const WideString& s = winput;
+        wchar_t acc = 0;
+        for ( auto c : s )
+        {
+            acc ^= c;
+        }
+        benchmark::DoNotOptimize( acc );
+    }
+}
+BENCHMARK( BenchmarkWideStringRangeForAccess );
+
 
 BENCHMARK_MAIN( );
