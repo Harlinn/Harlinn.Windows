@@ -363,6 +363,149 @@ namespace Harlinn::Common::Core
             return Compare( NORM_IGNORECASE, first, -1, second, -1 );
         }
 
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline size_t Find( const CharT* what, size_t whatLength, const CharT* buffer, size_t bufferLength )
+        {
+            constexpr size_t npos = static_cast<size_t>( -1 );
+
+            if ( whatLength == 0 )
+            {
+                return 0;
+            }
+            if ( !what || !buffer || bufferLength < whatLength )
+            {
+                return npos;
+            }
+
+            if ( whatLength == 1 )
+            {
+                const CharT* found = MemChr( buffer, what[ 0 ], bufferLength );
+                if constexpr ( std::is_same_v<CharT, char> )
+                {
+                    found = static_cast<const CharT*>( memchr( buffer, what[ 0 ], bufferLength ) );
+				}
+                else
+                {
+                    found = static_cast<const CharT*>( wmemchr( buffer, what[ 0 ], bufferLength ) );
+				}
+                return found ? static_cast<size_t>( found - buffer ) : npos;
+            }
+
+            const CharT first = what[ 0 ];
+            const CharT* lastStart = buffer + ( bufferLength - whatLength );
+            const CharT* scanPtr = buffer;
+
+            while ( scanPtr <= lastStart )
+            {
+                // Search for next candidate (limits search range so we never start beyond lastStart)
+                size_t remainingForSearch = static_cast<size_t>( lastStart - scanPtr ) + 1;
+                const CharT* candidate;
+                if constexpr ( std::is_same_v<CharT, char> )
+                {
+                    candidate = static_cast<const CharT*>( memchr( scanPtr, first, remainingForSearch ) );
+                }
+                else
+                {
+					candidate = static_cast<const CharT*>( wmemchr( scanPtr, first, remainingForSearch ) );
+                }
+                if ( !candidate )
+                {
+                    break;
+                }
+
+                // verify full pattern
+                int cmp;
+                if constexpr ( std::is_same_v<CharT, char> )
+                { 
+                    cmp = memcmp( candidate, what, whatLength );
+                }
+                else
+                {
+                    cmp = wmemcmp( candidate, what, whatLength );
+				}
+                if ( cmp == 0 )
+                {
+                    return static_cast<size_t>( candidate - buffer );
+                }
+
+                // Continue searching after this candidate
+                scanPtr = candidate + 1;
+            }
+
+            return npos;
+        }
+
+
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline size_t Find( const CharT* what, const CharT* buffer, size_t bufferLength )
+        {
+            constexpr size_t npos = static_cast<size_t>( -1 );
+
+            if ( !what || what[ 0 ] == static_cast<CharT>( 0 ) )
+            {
+                return 0;
+            }
+
+            if ( !buffer || bufferLength == 0 )
+            {
+                return npos;
+            }
+
+            const CharT first = what[ 0 ];
+            const CharT* scanPtr = buffer;
+            const CharT* endPtr = buffer + bufferLength;
+
+            while ( scanPtr < endPtr )
+            {
+                const CharT* candidate = nullptr;
+                const size_t remaining = static_cast<size_t>( endPtr - scanPtr );
+
+                if constexpr ( std::is_same_v<CharT, char> )
+                {
+                    candidate = static_cast<const CharT*>( memchr( scanPtr, first, remaining ) );
+                }
+                else
+                {
+                    candidate = static_cast<const CharT*>( wmemchr( scanPtr, first, remaining ) );
+                }
+
+                if ( !candidate )
+                {
+                    return npos;
+                }
+
+                // Compare pattern (terminated by '\0') against buffer starting at candidate.
+                const CharT* p = what;
+                const CharT* b = candidate;
+
+                // Walk both until pattern terminator, buffer end or mismatch.
+                while ( *p != static_cast<CharT>( 0 ) && b != endPtr && *p == *b )
+                {
+                    ++p;
+                    ++b;
+                }
+
+                // If we reached pattern terminator, full match found.
+                if ( *p == static_cast<CharT>( 0 ) )
+                {
+                    return static_cast<size_t>( candidate - buffer );
+                }
+
+                // If we ran out of buffer before fully matching, no possible match beyond this point.
+                if ( b == endPtr )
+                {
+                    return npos;
+                }
+
+                // Continue searching after this candidate.
+                scanPtr = candidate + 1;
+            }
+
+            return npos;
+        }
+
         inline bool IsSpace( char c ) noexcept
         {
 #pragma warning(push)
@@ -8071,6 +8214,19 @@ namespace Harlinn::Common::Core
         {
             if ( data_ )
             {
+                auto first = data_->buffer_;
+                auto last = data_->buffer_ + data_->size_;
+                auto result = std::ranges::find( first, last, c );
+                if ( result != last )
+                {
+                    return static_cast<size_type>( result - first );
+                }
+            }
+            return npos;
+            
+            /*
+            if ( data_ )
+            {
                 auto* foundAt = MemChr( data_->buffer_, c, data_->size_ );
                 return foundAt ? foundAt - data_->buffer_ : npos;
             }
@@ -8078,6 +8234,7 @@ namespace Harlinn::Common::Core
             {
                 return npos;
             }
+            */
         }
 
         /// <summary>
@@ -9726,27 +9883,30 @@ namespace Harlinn::Common::Core
 
 
         /// <summary>
-        /// Finds the first occurrence of the specified character sequence in this string,
-        /// starting the search at the specified <paramref name="start"/> index.
+        /// Finds the first occurrence of the specified character sequence within this string,
+        /// starting the search at the given index.
         /// </summary>
-        /// <param name="searchString">Pointer to the pattern to search for. May be <c>nullptr</c> only when <paramref name="searchStringLength"/> == 0.</param>
-        /// <param name="searchStringLength">Number of characters in the pattern. When zero the function follows std::string semantics and returns <paramref name="start"/> if it is valid (<= size()), otherwise <c>npos</c>.</param>
-        /// <param name="start">Zero-based index in this string where the search begins. If greater than the string length or if the pattern is longer than the remaining characters the function returns <c>npos</c>.</param>
+        /// <param name="searchString">
+        /// Pointer to the sequence to search for. May be <c>nullptr</c> when <paramref name="searchStringLength"/> is zero.
+        /// </param>
+        /// <param name="searchStringLength">
+        /// Number of characters in <paramref name="searchString"/>. When zero the function 
+        /// returns <paramref name="start"/> if <paramref name="start"/> is within the valid range.
+        /// </param>
+        /// <param name="start">
+        /// Zero-based index in this string at which to start the search. If greater than 
+        /// the string length the function returns <c>npos</c>.</param>
         /// <returns>
-        /// The zero-based index of the first matching occurrence of <paramref name="searchString"/> or
-        /// <c>BasicString::npos</c> when no match is found or input conditions prevent searching.
+        /// The zero-based index of the first match, or <c>BasicString::npos</c> when no match 
+        /// is found or input conditions prevent searching.
         /// </returns>
         /// <remarks>
-        /// - Complexity: Best/average-case O(n) where n is the number of characters examined. An optimized
-        ///   single-character fast-path is used for patterns of length 1.
-        /// - The search is implemented in a binary-safe manner using repository memory helpers
-        ///   (for example <c>MemChr</c> and <c>MemCmp</c>) to avoid locale and integer-cast issues.
-        /// - The method is const and does not allocate memory in the common paths; it is safe to call
-        ///   concurrently with other const operations. If the string is empty and <paramref name="searchStringLength"/> > 0,
-        ///   the function returns <c>npos</c>.
-        /// - Behavior for empty pattern follows <c>std::string</c> semantics: return <paramref name="start"/> when valid.
+        /// - Complexity: linear in the portion of the string scanned; worst-case behavior depends on the underlying search algorithm (commonly O(N*M) for naive algorithms).
+        /// - The function does not allocate heap memory and performs only read access to the internal buffer.
+        /// - If <paramref name="searchStringLength"/> == 0 the call returns <paramref name="start"/> when <paramref name="start"/> <= data size, otherwise <c>npos</c>.
+        /// - If the string is empty, or <paramref name="start"/> is out of range, or the pattern is longer than the remaining characters, the function returns <c>npos</c>.
+        /// - Thread-safety: this const method is safe to call concurrently with other const operations. External synchronization is required if other threads may mutate the same instance concurrently.
         /// </remarks>
-        /// <exception cref="SystemException">May be thrown if underlying memory helpers report an OS or allocation error.</exception>
         [[nodiscard]] size_type IndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
             const size_type dataSize = data_ ? data_->size_ : 0;
@@ -9759,42 +9919,11 @@ namespace Harlinn::Common::Core
             {
                 return npos;
             }
-
-            const CharType* buffer = data_->buffer_;
-            const size_type lastStartIndex = dataSize - searchStringLength;
-            const CharType* ptr = buffer + start;
-            const CharType* lastPtr = buffer + lastStartIndex;
-
-            // Fast path: single character pattern.
-            if ( searchStringLength == 1 )
-            {
-                auto remaining = static_cast<size_type>( dataSize - ( ptr - buffer ) );
-                auto* found = MemChr( ptr, *searchString, remaining );
-                return found ? static_cast<size_type>( found - buffer ) : npos;
-            }
-
-            // General case: find occurrences of first character, then compare full pattern.
-            const CharType firstChar = searchString[ 0 ];
-            while ( ptr <= lastPtr )
-            {
-                auto remaining = static_cast<size_type>( dataSize - ( ptr - buffer ) );
-                auto* p = MemChr( ptr, firstChar, remaining );
-                if ( !p || p > lastPtr )
-                {
-                    break;
-                }
-
-                // Use binary-safe memory compare for exact match (avoids locale and int-cast issues).
-                if ( MemCmp( p, searchString, searchStringLength ) == 0 )
-                {
-                    return static_cast<size_type>( p - buffer );
-                }
-
-                // continue searching after the candidate
-                ptr = p + 1;
-            }
-
-            return npos;
+            auto result = std::ranges::search(data_->buffer_ + start, data_->buffer_ + data_->size_, searchString, searchString + searchStringLength);
+            if(result.empty()) {
+                return npos;
+			}
+			return static_cast<size_type>( result.begin( ) - data_->buffer_ );
         }
 
         /// <summary>
