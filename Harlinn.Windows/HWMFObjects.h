@@ -2,7 +2,7 @@
 #ifndef HARLINN_WINDOWS_HWMFOBJECTS_H_
 #define HARLINN_WINDOWS_HWMFOBJECTS_H_
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -1278,7 +1278,7 @@ namespace Harlinn::Windows::Media
         /// </p>
         /// <p>
         /// In cases where the Source is MP4-based, the value is set based off the values 
-        /// of default_crypt_byte_block within the track encryption box (‘tenc’) in the MP4 header.
+        /// of default_crypt_byte_block within the track encryption box (ï¿½tencï¿½) in the MP4 header.
         /// </p>
         /// </remarks>
         UInt32 GetEncryptionCryptByteBlock() const
@@ -1298,7 +1298,7 @@ namespace Harlinn::Windows::Media
         /// </p>
         /// <p>
         /// In cases where the Source is MP4-based, the value is set based off the values 
-        /// of default_crypt_byte_block within the track encryption box (‘tenc’) in the MP4 header.
+        /// of default_crypt_byte_block within the track encryption box (ï¿½tencï¿½) in the MP4 header.
         /// </p>
         /// </remarks>
         void SetEncryptionCryptByteBlock(UInt32 value) const
@@ -1313,22 +1313,22 @@ namespace Harlinn::Windows::Media
         /// <p>
         /// The value of this attribute is a member of the MFSampleEncryptionProtectionScheme 
         /// enumeration. In cases where the media source is MP4-based, the value is set based 
-        /// off the value of the scheme_type field within the scheme type box (‘schm’) in the 
-        /// MP4 header (‘moov’ or ‘moof’).
+        /// off the value of the scheme_type field within the scheme type box (ï¿½schmï¿½) in the 
+        /// MP4 header (ï¿½moovï¿½ or ï¿½moofï¿½).
         /// </p>
         /// <p>
-        /// If the scheme_type field in an MP4-based file, or stream, is set to ‘cenc’ or ‘cbc1’, 
+        /// If the scheme_type field in an MP4-based file, or stream, is set to ï¿½cencï¿½ or ï¿½cbc1ï¿½, 
         /// then the MFSampleExtension_Encryption_ProtectionScheme attribute should be set to 
         /// PROTECTION_SCHEME_AES_CTR or PROTECTION_SCHEME_CBC, respectively, and no values 
         /// should be set for MFSampleExtension_Encryption_CryptByteBlock and 
         /// MFSampleExtension_Encryption_SkipByteBlock.
         /// </p>
         /// <p>
-        /// If the scheme_type field in an MP4-based file, or stream, is set to ‘cens’ or ‘cbcs’, 
+        /// If the scheme_type field in an MP4-based file, or stream, is set to ï¿½censï¿½ or ï¿½cbcsï¿½, 
         /// then the MFSampleExtension_Encryption_ProtectionScheme attribute should be set to 
         /// PROTECTION_SCHEME_AES_CTR or PROTECTION_SCHEME_CBC, respectively, and 
         /// MFSampleExtension_Encryption_CryptByteBlock and MFSampleExtension_Encryption_SkipByteBlock 
-        /// must be set using the values in the ‘tenc’ box.
+        /// must be set using the values in the ï¿½tencï¿½ box.
         /// </p>
         /// </remarks>
         MFSampleEncryptionProtectionScheme GetEncryptionProtectionScheme() const
@@ -1342,22 +1342,22 @@ namespace Harlinn::Windows::Media
         /// <p>
         /// The value of this attribute is a member of the MFSampleEncryptionProtectionScheme 
         /// enumeration. In cases where the media source is MP4-based, the value is set based 
-        /// off the value of the scheme_type field within the scheme type box (‘schm’) in the 
-        /// MP4 header (‘moov’ or ‘moof’).
+        /// off the value of the scheme_type field within the scheme type box (ï¿½schmï¿½) in the 
+        /// MP4 header (ï¿½moovï¿½ or ï¿½moofï¿½).
         /// </p>
         /// <p>
-        /// If the scheme_type field in an MP4-based file, or stream, is set to ‘cenc’ or ‘cbc1’, 
+        /// If the scheme_type field in an MP4-based file, or stream, is set to ï¿½cencï¿½ or ï¿½cbc1ï¿½, 
         /// then the MFSampleExtension_Encryption_ProtectionScheme attribute should be set to 
         /// PROTECTION_SCHEME_AES_CTR or PROTECTION_SCHEME_CBC, respectively, and no values 
         /// should be set for MFSampleExtension_Encryption_CryptByteBlock and 
         /// MFSampleExtension_Encryption_SkipByteBlock.
         /// </p>
         /// <p>
-        /// If the scheme_type field in an MP4-based file, or stream, is set to ‘cens’ or ‘cbcs’, 
+        /// If the scheme_type field in an MP4-based file, or stream, is set to ï¿½censï¿½ or ï¿½cbcsï¿½, 
         /// then the MFSampleExtension_Encryption_ProtectionScheme attribute should be set to 
         /// PROTECTION_SCHEME_AES_CTR or PROTECTION_SCHEME_CBC, respectively, and 
         /// MFSampleExtension_Encryption_CryptByteBlock and MFSampleExtension_Encryption_SkipByteBlock 
-        /// must be set using the values in the ‘tenc’ box.
+        /// must be set using the values in the ï¿½tencï¿½ box.
         /// </p>
         /// </remarks>
         void SetEncryptionProtectionScheme(MFSampleEncryptionProtectionScheme value) const
@@ -1393,7 +1393,7 @@ namespace Harlinn::Windows::Media
         /// </p>
         /// <p>
         /// In cases where the Source is MP4-based, the value is set based off the values of 
-        /// default_skip_byte_block within the track encryption box (‘tenc’) in the MP4 header.
+        /// default_skip_byte_block within the track encryption box (ï¿½tencï¿½) in the MP4 header.
         /// </p>
         /// </remarks>
         UInt32 GetEncryptionSkipByteBlock() const
@@ -1413,7 +1413,7 @@ namespace Harlinn::Windows::Media
         /// </p>
         /// <p>
         /// In cases where the Source is MP4-based, the value is set based off the values of 
-        /// default_skip_byte_block within the track encryption box (‘tenc’) in the MP4 header.
+        /// default_skip_byte_block within the track encryption box (ï¿½tencï¿½) in the MP4 header.
         /// </p>
         /// </remarks>
         void SetEncryptionSkipByteBlock(UInt32 value) const

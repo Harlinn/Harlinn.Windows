@@ -2,7 +2,7 @@
 #ifndef HARLINN_WINDOWS_HWGRAPHICSD3D12_H_
 #define HARLINN_WINDOWS_HWGRAPHICSD3D12_H_
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -394,8 +394,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// <remarks>
         /// <para>
         /// This method allocates additional storage if needed for the converted root signature (memory 
-        /// owned by the deserializer interface). If conversion is done, the deserializer interface doesn’t 
-        /// free the original deserialized root signature memory – all versions the interface has been 
+        /// owned by the deserializer interface). If conversion is done, the deserializer interface doesnï¿½t 
+        /// free the original deserialized root signature memory ï¿½ all versions the interface has been 
         /// asked to convert to are available until the deserializer is destroyed.
         /// </para>
         /// <para>
@@ -2539,7 +2539,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// This method binds a constant buffer by GPU virtual address to the compute pipeline's root signature.
         /// The caller is responsible for ensuring that the address is valid and references a resource that is
         /// created for GPU access (for example, a buffer resource). This call does not perform any resource
-        /// state transitions — the application must ensure the resource is in a state suitable for shader access.
+        /// state transitions ï¿½ the application must ensure the resource is in a state suitable for shader access.
         ///
         /// The binding affects only the compute root signature state for the current command list. If the
         /// same root parameter is used for graphics or other command lists, those bindings must be set separately.
@@ -2568,7 +2568,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// This method binds a constant buffer by GPU virtual address to the graphics pipeline's root signature.
         /// The caller is responsible for ensuring that the address is valid and references a resource that is
         /// created for GPU access (for example, a buffer resource). This call does not perform any resource
-        /// state transitions — the application must ensure the resource is in a state suitable for shader access.
+        /// state transitions ï¿½ the application must ensure the resource is in a state suitable for shader access.
         ///
         /// The binding affects only the graphics root signature state for the current command list. If the
         /// same root parameter is used for compute or other command lists, those bindings must be set separately.

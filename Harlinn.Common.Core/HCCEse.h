@@ -2,7 +2,7 @@
 #ifndef __HCCESENT_H__
 #define __HCCESENT_H__
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -4068,7 +4068,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4126,7 +4126,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4183,7 +4183,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4241,7 +4241,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4282,7 +4282,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4324,7 +4324,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4366,7 +4366,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4407,7 +4407,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4448,7 +4448,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4489,7 +4489,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4530,7 +4530,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4571,7 +4571,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4612,7 +4612,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4653,7 +4653,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4694,7 +4694,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4735,7 +4735,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4776,7 +4776,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4817,7 +4817,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4858,7 +4858,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4899,7 +4899,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4940,7 +4940,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -4981,7 +4981,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5022,7 +5022,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5063,7 +5063,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5104,7 +5104,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5145,7 +5145,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5186,7 +5186,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5234,7 +5234,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5281,7 +5281,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5322,7 +5322,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5363,7 +5363,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5404,7 +5404,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5445,7 +5445,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5486,7 +5486,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5533,7 +5533,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5575,7 +5575,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -5621,7 +5621,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain characters only from the following sets: 0 through 9, 
         /// A through Z, a through z, and all other punctuation except for exclamation 
-        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) ï¿½ that is, 
         /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -6222,7 +6222,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
         /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
-        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// "[" (opening bracket), and "]" (closing bracket) ï¿½ that is, the ASCII characters 
         /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -6268,7 +6268,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
         /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
-        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// "[" (opening bracket), and "]" (closing bracket) ï¿½ that is, the ASCII characters 
         /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -6315,7 +6315,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
         /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
-        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// "[" (opening bracket), and "]" (closing bracket) ï¿½ that is, the ASCII characters 
         /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -6363,7 +6363,7 @@ namespace Harlinn::Common::Core::Ese
         /// <item>
         /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
         /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
-        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// "[" (opening bracket), and "]" (closing bracket) ï¿½ that is, the ASCII characters 
         /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
         /// </item>
         /// <item>
@@ -8674,7 +8674,7 @@ namespace Harlinn::Common::Core::Ese
         // service is stopped. These cached messages will be flushed to the eventlog when 
         // the service becomes operational. 
         //
-        // Valid range: 0 – 2147483647
+        // Valid range: 0 ï¿½ 2147483647
         //
         // Any messages that overflow the cache will be dropped.
         static unsigned long long QueryEventLogCacheSize( )

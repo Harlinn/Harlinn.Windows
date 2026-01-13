@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Copyright.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": "--dry-run"
+    }
+  }
+}

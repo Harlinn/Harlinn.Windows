@@ -2,7 +2,7 @@
 #ifndef __HCCSECURITY_H__
 #define __HCCSECURITY_H__
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -6556,7 +6556,7 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
         // This is read-only for input parameters or read/write for output 
         // parameters.
         Token = SECBUFFER_TOKEN,
-        // These are transport-to-package–specific parameters. For example, 
+        // These are transport-to-packageï¿½specific parameters. For example, 
         // the NetWare redirector may supply the server object identifier, 
         // while DCE RPC can supply an association UUID, and so on.
         PackageParameters =  SECBUFFER_PKG_PARAMS,

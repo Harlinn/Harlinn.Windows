@@ -2,7 +2,7 @@
 #ifndef HARLINN_AI_HAIMETADATA_H_
 #define HARLINN_AI_HAIMETADATA_H_
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

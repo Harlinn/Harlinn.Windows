@@ -2,7 +2,7 @@
 #ifndef __HWGRAPHICS_H__
 #define __HWGRAPHICS_H__
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -2222,7 +2222,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// </param>
         /// <param name="pitch">
         /// The byte count of each scanline, which is equal to (the image width in 
-        /// pixels × the number of bytes per pixel) + memory padding. If srcData is 
+        /// pixels ï¿½ the number of bytes per pixel) + memory padding. If srcData is 
         /// NULL, this value is ignored. (Note that pitch is also sometimes called 
         /// stride.)
         /// </param>
@@ -7774,7 +7774,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// The returned bounds reflect which pixels would be impacted by calling 
         /// DrawImage with the same image and a target offset of (0,0). They do not 
         /// reflect the current clip rectangle set on the device context or the extent 
-        /// of the context’s current target image.
+        /// of the contextï¿½s current target image.
         /// </p>
         /// </remarks>
         void GetImageWorldBounds( ID2D1Image* image, D2D1_RECT_F* worldBounds ) const
@@ -7867,7 +7867,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// </p>
         /// <p>
         /// You cannot use SetTarget to render to a bitmap/command list from multiple device 
-        /// contexts simultaneously. An image is considered “being rendered to” if it has 
+        /// contexts simultaneously. An image is considered ï¿½being rendered toï¿½ if it has 
         /// ever been set on a device context within a BeginDraw/EndDraw timespan. If an 
         /// attempt is made to render to an image through multiple device contexts, all 
         /// subsequent device contexts after the first will enter an error state.
@@ -9746,7 +9746,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// Sets the transform to apply to this style's nib shape.
         /// </summary>
         /// <param name="transform">
-        /// The transform to apply to this style’s nib shape. Note that 
+        /// The transform to apply to this styleï¿½s nib shape. Note that 
         /// the translation components of the transform matrix are ignored 
         /// for the purposes of rendering.
         /// </param>
@@ -10163,9 +10163,9 @@ namespace Harlinn::Windows::Graphics::D2D
         /// calling OfferResources.
         /// </summary>
         /// <param name="resourcesDiscarded">
-        /// Returns with TRUE if the corresponding resource’s content was 
+        /// Returns with TRUE if the corresponding resourceï¿½s content was 
         /// discarded and is now undefined, or FALSE if the corresponding 
-        /// resource’s old content is still intact. The caller can pass in 
+        /// resourceï¿½s old content is still intact. The caller can pass in 
         /// nullptr, if the caller intends to fill the resources with new 
         /// content regardless of whether the old content was discarded.
         /// </param>
@@ -10495,7 +10495,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// </param>
         /// <param name="alphaMode">
         /// The alpha mode of the image; this is determined automatically from 
-        /// the source’s pixel format if D2D1_ALPHA_MODE_UNKNOWN is passed.
+        /// the sourceï¿½s pixel format if D2D1_ALPHA_MODE_UNKNOWN is passed.
         /// </param>
         /// <param name="imageSource">
         /// 
@@ -11168,7 +11168,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// <param name="transforms">
         /// <p>
         /// A pointer to an array containing the transforms to apply to each 
-        /// sprite’s destination rectangle.
+        /// spriteï¿½s destination rectangle.
         /// </p>
         /// <p>
         /// Direct2D will not transform the destination rectangle of any sprites 
@@ -11213,7 +11213,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// any transforms and will yield the fastest drawing performance. On the other 
         /// hand, if any sprite in the batch has any value set for a property, then internally 
         /// Direct2D must allocate space for that property array and assign every sprite a 
-        /// value for that property (even if it’s just the default value).
+        /// value for that property (even if itï¿½s just the default value).
         /// </p>
         /// </remarks>
         void AddSprites(UINT32 spriteCount, const D2D1_RECT_F* destinationRectangles, const D2D1_RECT_U* sourceRectangles = nullptr, const D2D1_COLOR_F* colors = nullptr, const D2D1_MATRIX_3X2_F* transforms = nullptr, UINT32 destinationRectanglesStride = sizeof( D2D1_RECT_F ), UINT32 sourceRectanglesStride = sizeof( D2D1_RECT_U ), UINT32 colorsStride = sizeof( D2D1_COLOR_F ), UINT32 transformsStride = sizeof( D2D1_MATRIX_3X2_F ) ) const
@@ -11265,7 +11265,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// </param>
         /// <param name="transforms">
         /// <p>
-        /// A pointer to an array containing the transforms to apply to each sprite’s 
+        /// A pointer to an array containing the transforms to apply to each spriteï¿½s 
         /// destination rectangle.
         /// </p>
         /// <p>
@@ -11584,7 +11584,7 @@ namespace Harlinn::Windows::Graphics::D2D
         /// </param>
         /// <param name="bitmap">
         /// The bitmap from which the sprites are to be sourced. Each 
-        /// sprite’s source rectangle refers to a portion of this bitmap.
+        /// spriteï¿½s source rectangle refers to a portion of this bitmap.
         /// </param>
         /// <param name="interpolationMode">
         /// The interpolation mode to use when drawing this sprite batch. This 
@@ -11624,9 +11624,9 @@ namespace Harlinn::Windows::Graphics::D2D
         /// <param name="brush">
         /// Describes how the area is painted. A null brush will cause the context-fill 
         /// value to come from the defaultFillBrush. If the defaultFillBrush is also null, 
-        /// the context-fill value will be 'none'. To set the ‘context-fill’ value, this 
+        /// the context-fill value will be 'none'. To set the ï¿½context-fillï¿½ value, this 
         /// method uses the provided brush with its opacity set to 1. To set the 
-        /// ‘context-fill-opacity’ value, this method uses the opacity of the provided brush.
+        /// ï¿½context-fill-opacityï¿½ value, this method uses the opacity of the provided brush.
         /// </param>
         void SetFill( ID2D1Brush* brush = nullptr ) const
         {

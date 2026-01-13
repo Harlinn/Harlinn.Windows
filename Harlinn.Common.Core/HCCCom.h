@@ -2,7 +2,7 @@
 #ifndef __HCCCOM_H__
 #define __HCCCOM_H__
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -2907,7 +2907,7 @@ public: \
         /// and one entry per interface defined by the <c>HCCComInterfaces.xm</c> include macro expansion.
         /// </returns>
         /// <remarks>
-        /// The function performs a series of temporary <c>QueryInterface</c> calls — each successful call will acquire
+        /// The function performs a series of temporary <c>QueryInterface</c> calls ï¿½ each successful call will acquire
         /// a reference which is immediately released by this routine. The caller is responsible for COM initialization
         /// on the calling thread (for example, by calling <c>CoInitializeEx</c> or equivalent) before invoking this function.
         /// This routine does not throw on COM failure; it simply omits interfaces that fail the <c>QueryInterface</c> call.

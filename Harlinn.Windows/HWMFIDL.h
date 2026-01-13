@@ -2,7 +2,7 @@
 #ifndef HARLINN_WINDOWS_HWMFIDL_H_
 #define HARLINN_WINDOWS_HWMFIDL_H_
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -3576,7 +3576,7 @@ namespace Harlinn::Windows::Media
     /// <summary>
     /// <para>
     /// Optionally supported by media sinks to perform required tasks before shutdown. 
-    /// This functionality is typically exposed by archive sinks—that is, media sinks 
+    /// This functionality is typically exposed by archive sinksï¿½that is, media sinks 
     /// that write to a file. It is used to perform tasks such as flushing data to 
     /// disk or updating a file header.
     /// </para>

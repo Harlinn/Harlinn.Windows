@@ -3,7 +3,7 @@
 #define HARLINN_WINDOWS_HWSTREAMINGMEDIASINK_H_
 
 /*
-   Copyright 2024-2025 Espen Harlinn
+   Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -1081,7 +1081,7 @@ namespace Harlinn::Windows::Media
         /// If the application creates the media sink, it is responsible for calling Shutdown to 
         /// avoid memory or resource leaks. In most applications, however, the application creates 
         /// an activation object for the media sink, and the Media Session uses that object to 
-        /// create the media sink. In that case, the Media Session — not the application — shuts 
+        /// create the media sink. In that case, the Media Session ï¿½ not the application ï¿½ shuts 
         /// down the media sink. (For more information, see Activation Objects.)
         /// </p>
         /// <p>
@@ -1210,8 +1210,8 @@ namespace Harlinn::Windows::Media
         /// <p>
         /// The value given in llClockStartOffset is the presentation time when the clock starts, so 
         /// it is relative to the start of the presentation. Media sinks should not render any data 
-        /// with a presentation time earlier than llClockStartOffSet. If a sample straddles the offset—that 
-        /// is, if the offset falls between the sample's start and stop times—the sink should either 
+        /// with a presentation time earlier than llClockStartOffSet. If a sample straddles the offsetï¿½that 
+        /// is, if the offset falls between the sample's start and stop timesï¿½the sink should either 
         /// trim the sample so that only data after llClockStartOffset is rendered, or else simply drop the sample.
         /// </p>
         /// </remarks>
