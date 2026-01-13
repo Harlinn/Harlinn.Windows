@@ -77,6 +77,57 @@ static void BenchmarkWideStringCStringConstructor( benchmark::State& state )
 }
 BENCHMARK( BenchmarkWideStringCStringConstructor );
 
+
+static void BenchmarkStdWStringFromTwoCStyleStringsConstructor( benchmark::State& state )
+{
+    const wchar_t* part1 = sampleText;
+    const wchar_t* part2 = L" Additional tail to simulate a second C-style string.";
+    for ( auto _ : state )
+    {
+        std::wstring str = std::wstring( part1 ) + part2;
+        benchmark::DoNotOptimize( str );
+    }
+}
+BENCHMARK( BenchmarkStdWStringFromTwoCStyleStringsConstructor );
+
+static void BenchmarkWideStringFromTwoCStyleStringsConstructor( benchmark::State& state )
+{
+    const wchar_t* part1 = sampleText;
+    const wchar_t* part2 = L" Additional tail to simulate a second C-style string.";
+    for ( auto _ : state )
+    {
+        WideString str( part1, part2 );
+        benchmark::DoNotOptimize( str );
+    }
+}
+BENCHMARK( BenchmarkWideStringFromTwoCStyleStringsConstructor );
+
+
+static void BenchmarkStdWStringFromCharAndCStyleStringConstructor( benchmark::State& state )
+{
+    wchar_t c = L'A';
+    const wchar_t* tail = L" Additional tail to simulate appending a C-style string.";
+    for ( auto _ : state )
+    {
+        std::wstring str = std::wstring( 1, c ) + tail;
+        benchmark::DoNotOptimize( str );
+    }
+}
+BENCHMARK( BenchmarkStdWStringFromCharAndCStyleStringConstructor );
+
+static void BenchmarkWideStringFromCharAndCStyleStringConstructor( benchmark::State& state )
+{
+    wchar_t c = L'A';
+    const wchar_t* tail = L" Additional tail to simulate appending a C-style string.";
+    for ( auto _ : state )
+    {
+        WideString str( c, 1 ,std::basic_string_view( tail ) );
+        benchmark::DoNotOptimize( str );
+    }
+}
+BENCHMARK( BenchmarkWideStringFromCharAndCStyleStringConstructor );
+
+
 static void BenchmarkStdWStringAppendChar1( benchmark::State& state )
 {
     for ( auto _ : state )
@@ -588,6 +639,171 @@ static void BenchmarkWideStringFormat3( benchmark::State& state )
 }
 BENCHMARK( BenchmarkWideStringFormat3 );
 
+
+static std::wstring MakeInputStd( size_t n )
+{
+    return std::wstring( n, L'a' );
+}
+
+static const wchar_t* g_input_cstr = [ ]( ) -> const wchar_t*
+{
+    static std::wstring s = MakeInputStd( 1024 );
+    return s.c_str( );
+}( );
+
+
+static void BenchmarkStdWStringCStringAssign( benchmark::State& state )
+{
+    for ( auto _ : state )
+    {
+        std::wstring s;
+        s.assign( g_input_cstr );
+        benchmark::DoNotOptimize( s );
+    }
+}
+BENCHMARK( BenchmarkStdWStringCStringAssign );
+
+static void BenchmarkWideStringCStringAssign( benchmark::State& state )
+{
+    for ( auto _ : state )
+    {
+        WideString s;
+        s.Assign( g_input_cstr );
+        benchmark::DoNotOptimize( s );
+    }
+}
+BENCHMARK( BenchmarkWideStringCStringAssign );
+
+static auto TestSpan( )
+{
+    static std::wstring s = MakeInputStd( 1024 );
+    static std::span span = s;
+    return span;
+};
+
+
+static void BenchmarkStdWStringSpanAssign( benchmark::State& state )
+{
+    for ( auto _ : state )
+    {
+        std::wstring s;
+        s.assign_range( TestSpan( ) );
+        benchmark::DoNotOptimize( s );
+    }
+}
+BENCHMARK( BenchmarkStdWStringSpanAssign );
+
+static void BenchmarkWideStringSpanAssign( benchmark::State& state )
+{
+    for ( auto _ : state )
+    {
+        WideString s;
+        s.Assign( TestSpan( ) );
+        benchmark::DoNotOptimize( s );
+    }
+}
+BENCHMARK( BenchmarkWideStringSpanAssign );
+
+static void BenchmarkStdWStringHash1( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 20 );
+    std::hash<std::wstring> hasher;
+    for ( auto _ : state )
+    {
+        auto h = hasher( input );
+        benchmark::DoNotOptimize( h );
+    }
+}
+BENCHMARK( BenchmarkStdWStringHash1 );
+
+static void BenchmarkWideStringHash1( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 20 );
+    WideString winput( input.c_str( ) );
+    std::hash<WideString> hasher;
+    for ( auto _ : state )
+    {
+        auto h = hasher( winput );
+        benchmark::DoNotOptimize( h );
+    }
+}
+BENCHMARK( BenchmarkWideStringHash1 );
+
+static void BenchmarkStdWStringHash2( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    std::hash<std::wstring> hasher;
+    for ( auto _ : state )
+    {
+        auto h = hasher( input );
+        benchmark::DoNotOptimize( h );
+    }
+}
+BENCHMARK( BenchmarkStdWStringHash2 );
+
+static void BenchmarkWideStringHash2( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 );
+    WideString winput( input.c_str( ) );
+    std::hash<WideString> hasher;
+    for ( auto _ : state )
+    {
+        auto h = hasher( winput );
+        benchmark::DoNotOptimize( h );
+    }
+}
+BENCHMARK( BenchmarkWideStringHash2 );
+
+static void BenchmarkStdWStringHash3( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024* 1024 );
+    std::hash<std::wstring> hasher;
+    for ( auto _ : state )
+    {
+        auto h = hasher( input );
+        benchmark::DoNotOptimize( h );
+    }
+}
+BENCHMARK( BenchmarkStdWStringHash3 );
+
+static void BenchmarkWideStringHash3( benchmark::State& state )
+{
+    const std::wstring input = MakeInputStd( 1024 * 1024 );
+    WideString winput( input.c_str( ) );
+    std::hash<WideString> hasher;
+    for ( auto _ : state )
+    {
+        auto h = hasher( winput );
+        benchmark::DoNotOptimize( h );
+    }
+}
+BENCHMARK( BenchmarkWideStringHash3 );
+
+static void BenchmarkStdWStringRangesSearchHttps( benchmark::State& state )
+{
+    std::wstring str( longSampleText );
+    std::wstring_view pattern = L"https";
+    for ( auto _ : state )
+    {
+        auto result = std::ranges::search( str, pattern );
+        size_t index = result.empty( ) ? std::wstring::npos : static_cast<size_t>( result.begin( ) - str.begin( ) );
+        benchmark::DoNotOptimize( index );
+    }
+}
+BENCHMARK( BenchmarkStdWStringRangesSearchHttps );
+
+static void BenchmarkWideStringRangesSearchHttps( benchmark::State& state )
+{
+    WideString str( longSampleText );
+    std::wstring_view pattern = L"https";
+    for ( auto _ : state )
+    {
+        auto result = std::ranges::search( str, pattern );
+        size_t index = result.empty( ) ? static_cast<size_t>( WideString::npos ) : static_cast<size_t>( result.begin( ) - str.begin( ) );
+        benchmark::DoNotOptimize( index );
+    }
+}
+BENCHMARK( BenchmarkWideStringRangesSearchHttps );
 
 
 
