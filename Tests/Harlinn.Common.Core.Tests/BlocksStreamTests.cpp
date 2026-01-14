@@ -17,6 +17,7 @@
 
 using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
+using BlocksStream = Harlinn::Common::Core::IO::Blocks::Stream;
 namespace
 {
     class LocalFixture
@@ -25,9 +26,270 @@ namespace
         LocalFixture( ) {}
         ~LocalFixture( ) {}
     };
+
+    static void FillPattern( std::vector<Byte>& buf, uint8_t start = 0 )
+    {
+        uint8_t v = start;
+        for ( size_t i = 0; i < buf.size( ); ++i )
+        {
+            buf[ i ] = v;
+            v = static_cast<uint8_t>( v + 1 );
+        }
+    }
 }
 
 BOOST_FIXTURE_TEST_SUITE( BlocksStreamTests, LocalFixture )
+
+BOOST_AUTO_TEST_CASE( SetSize_GrowsAndReportsSize )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+    Stream s;
+
+    const size_t blockSize = Stream::BlockDataSize;
+
+    // Grow to small size
+    s.SetSize( 500 );
+    bool ok1 = ( s.Size( ) == static_cast<long long>( 500 ) );
+    BOOST_TEST( ok1 );
+
+    // Grow to exact multiple of block size
+    const long long multi = static_cast<long long>( blockSize * 3 );
+    s.SetSize( multi );
+    bool ok2 = ( s.Size( ) == multi );
+    BOOST_TEST( ok2 );
+    bool ok3 = ( s.LastBlockSize( ) == static_cast<size_t>( blockSize ) );
+    BOOST_TEST( ok3 );
+
+    // Grow to non-full last block
+    const long long mixed = static_cast<long long>( blockSize * 2 + 123 );
+    s.SetSize( mixed );
+    bool ok4 = ( s.Size( ) == mixed );
+    BOOST_TEST( ok4 );
+    bool ok5 = ( s.LastBlockSize( ) == static_cast<size_t>( 123 ) );
+    BOOST_TEST( ok5 );
+
+    // Clean up
+    s.Clear( );
+    bool ok6 = ( s.Size( ) == 0 );
+    BOOST_TEST( ok6 );
+}
+
+BOOST_AUTO_TEST_CASE( WriteThenRead_Simple )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+    Stream s;
+
+    const size_t writeCount = 500;
+    std::vector<Byte> writeBuf( writeCount );
+    FillPattern( writeBuf, 0x10 );
+
+    auto written = s.Write( writeBuf.data( ), writeBuf.size( ) );
+    bool ok1 = ( written == static_cast<long long>( writeCount ) );
+    BOOST_TEST( ok1 );
+
+    // Read back
+    std::vector<Byte> readBuf( writeCount );
+    s.SetPosition( 0 );
+    auto read = s.Read( readBuf.data( ), readBuf.size( ) );
+    bool ok2 = ( read == static_cast<long long>( writeCount ) );
+    BOOST_TEST( ok2 );
+
+    bool contentEqual = std::equal( writeBuf.begin( ), writeBuf.end( ), readBuf.begin( ) );
+    BOOST_TEST( contentEqual );
+}
+
+BOOST_AUTO_TEST_CASE( WriteAcrossBlocks_ReadBack )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    Stream s;
+    const size_t blockSize = Stream::BlockDataSize;
+    const size_t total = blockSize + 100;
+
+    std::vector<Byte> writeBuf( total );
+    FillPattern( writeBuf, 0x5A );
+
+    auto written = s.Write( writeBuf.data( ), writeBuf.size( ) );
+    bool ok1 = ( written == static_cast<long long>( total ) );
+    BOOST_TEST( ok1 );
+
+    s.SetPosition( 0 );
+    std::vector<Byte> readBuf( total );
+    auto read = s.Read( readBuf.data( ), readBuf.size( ) );
+    bool ok2 = ( read == static_cast<long long>( total ) );
+    BOOST_TEST( ok2 );
+
+    bool eq = std::equal( writeBuf.begin( ), writeBuf.end( ), readBuf.begin( ) );
+    BOOST_TEST( eq );
+
+    bool sizeOk = ( s.Size( ) == static_cast<long long>( total ) );
+    BOOST_TEST( sizeOk );
+}
+
+BOOST_AUTO_TEST_CASE( Overwrite_WithinAndAcrossBlocks )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    Stream s;
+    const size_t blockSize = Stream::BlockDataSize;
+    const size_t initial = blockSize * 3 + 50;
+
+    // Prepare initial data
+    std::vector<Byte> init( initial );
+    FillPattern( init, 0x00 );
+    s.Write( init.data( ), init.size( ) );
+
+    // Overwrite starting near middle of second block
+    const size_t overwritePos = blockSize + 10;
+    s.SetPosition( static_cast<long long>( overwritePos ) );
+
+    const size_t overwriteLen = 200; // will cross into next block
+    std::vector<Byte> over( overwriteLen );
+    FillPattern( over, 0xF0 );
+    auto w = s.Write( over.data( ), over.size( ) );
+    bool ok1 = ( w == static_cast<long long>( overwriteLen ) );
+    BOOST_TEST( ok1 );
+
+    // Read back the region around overwrite
+    const size_t checkStart = overwritePos - 5;
+    const size_t checkLen = overwriteLen + 10;
+    std::vector<Byte> checkBuf( checkLen );
+    s.SetPosition( static_cast<long long>( checkStart ) );
+    auto r = s.Read( checkBuf.data( ), checkBuf.size( ) );
+    bool ok2 = ( r == static_cast<long long>( checkLen ) );
+    BOOST_TEST( ok2 );
+
+    // Validate bytes before overwrite remain original
+    bool prefixOk = true;
+    for ( size_t i = 0; i < 5; ++i )
+    {
+        if ( checkBuf[ i ] != init[ checkStart + i ] )
+        {
+            prefixOk = false;
+            break;
+        }
+    }
+    BOOST_TEST( prefixOk );
+
+    // Validate overwritten region
+    bool overwrittenOk = true;
+    for ( size_t i = 0; i < overwriteLen; ++i )
+    {
+        if ( checkBuf[ 5 + i ] != over[ i ] )
+        {
+            overwrittenOk = false;
+            break;
+        }
+    }
+    BOOST_TEST( overwrittenOk );
+
+    // Validate suffix after overwrite remains original
+    bool suffixOk = true;
+    for ( size_t i = 0; i < 5; ++i )
+    {
+        if ( checkBuf[ 5 + overwriteLen + i ] != init[ checkStart + 5 + overwriteLen + i ] )
+        {
+            suffixOk = false;
+            break;
+        }
+    }
+    BOOST_TEST( suffixOk );
+}
+
+BOOST_AUTO_TEST_CASE( SeekAndPositionBehavior )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    Stream s;
+    const size_t total = 1024;
+    std::vector<Byte> buf( total );
+    FillPattern( buf, 0x11 );
+    s.Write( buf.data( ), buf.size( ) );
+
+    // Seek absolute (start)
+    auto pos1 = s.Seek( 10, Stream::SeekOrigin::StartOfFile );
+    bool ok1 = ( pos1 == 10 );
+    BOOST_TEST( ok1 );
+    bool posMatch1 = ( s.Position( ) == 10 );
+    BOOST_TEST( posMatch1 );
+
+    // Seek relative
+    auto pos2 = s.Seek( 5, Stream::SeekOrigin::CurrentPosition );
+    bool ok2 = ( pos2 == 15 );
+    BOOST_TEST( ok2 );
+    bool posMatch2 = ( s.Position( ) == 15 );
+    BOOST_TEST( posMatch2 );
+
+    // Seek from end (negative offset)
+    auto pos3 = s.Seek( -100, Stream::SeekOrigin::EndOfFile );
+    bool ok3 = ( pos3 == static_cast<long long>( s.Size( ) - 100 ) );
+    BOOST_TEST( ok3 );
+    bool posMatch3 = ( s.Position( ) == pos3 );
+    BOOST_TEST( posMatch3 );
+}
+
+BOOST_AUTO_TEST_CASE( ConvertToBytes_MatchesWrittenData )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    Stream s;
+    const size_t total = 1500;
+    std::vector<Byte> writeBuf( total );
+    FillPattern( writeBuf, 0x20 );
+
+    s.Write( writeBuf.data( ), writeBuf.size( ) );
+
+    auto bytes = s.ToBytes( );
+    bool ok1 = ( bytes.size( ) == writeBuf.size( ) );
+    BOOST_TEST( ok1 );
+
+    bool eq = std::equal( bytes.begin( ), bytes.end( ), writeBuf.begin( ) );
+    BOOST_TEST( eq );
+}
+
+BOOST_AUTO_TEST_CASE( SetSize_Shrink )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    Stream s;
+    const size_t blockSize = Stream::BlockDataSize;
+    const long long large = static_cast<long long>( blockSize * 4 + 10 );
+    s.SetSize( large );
+    
+    s.SetSize( static_cast<long long>( blockSize ) );
+	bool ok1 = ( s.Size( ) == static_cast<long long>( blockSize ) );
+    BOOST_TEST( ok1 );
+    s.SetSize( 0 );
+    bool ok2 = ( s.Size( ) == 0 );
+	BOOST_TEST( ok2 );
+    
+}
+
+BOOST_AUTO_TEST_CASE( ReadOnEmptyStreamReturnsZero )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    Stream s;
+    std::array<Byte, 64> buffer;
+    std::memset( buffer.data( ), 0xCC, buffer.size( ) );
+    auto read = s.Read( buffer.data( ), buffer.size( ) );
+    bool ok = ( read == 0 );
+    BOOST_TEST( ok );
+
+    // Reading with nullptr must not crash and should return 0 per implementation
+    auto readNull = s.Read( nullptr, 10 );
+    bool okNull = ( readNull == 0 );
+    BOOST_TEST( okNull );
+}
+
 
 // --run_test=BlocksStreamTests/WriteTest1
 BOOST_AUTO_TEST_CASE( WriteTest1 )
