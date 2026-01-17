@@ -2459,6 +2459,8 @@ namespace Harlinn::Common
 
 
     // Bit manipulation
+
+    /*
     template<typename T>
         requires IsInteger<T>
     constexpr inline bool IsPowerOfTwo( T v ) noexcept
@@ -2576,21 +2578,267 @@ namespace Harlinn::Common
         v++;
         return v;
     }
-
+    */
 
     template<typename T>
-    class MallocaDeleter
+        requires IsInteger<T>
+    constexpr inline bool IsPowerOfTwo( T v ) noexcept
+    {
+        using U = std::make_unsigned_t<T>;
+        const U u = static_cast< U >( v );
+        // Negative signed values become large unsigned values; treat negatives as not power-of-two.
+        // The test below correctly yields false for those cases because u != 0 && (u & (u - 1)) == 0
+        // will be false for a two's-complement negative when interpreted as unsigned.
+        return u != 0u && ( ( u & ( u - 1u ) ) == 0u );
+    }
+    template<typename T>
+        requires IsInteger<T>
+    constexpr inline bool IsPowerOf2( T v ) noexcept
+    {
+        return IsPowerOfTwo( v );
+    }
+
+    template<typename T>
+        requires std::is_enum_v<std::remove_cvref_t<T>>
+    constexpr inline bool IsPowerOfTwo( T v ) noexcept
+    {
+        using UT = std::underlying_type_t<std::remove_cvref_t<T>>;
+        using U = std::make_unsigned_t<UT>;
+        const U u = static_cast< U >( static_cast< UT >( v ) );
+        return u != 0u && ( ( u & ( u - 1u ) ) == 0u );
+    }
+    template<typename T>
+        requires std::is_enum_v<std::remove_cvref_t<T>>
+    constexpr inline bool IsPowerOf2( T v ) noexcept
+    {
+        return IsPowerOfTwo( v );
+    }
+
+    namespace Internal
+    {
+        template<typename U>
+        constexpr inline U NextPowerOfTwoUnsignedHelper( U v ) noexcept
+        {
+            static_assert( std::is_unsigned_v<U> );
+            if ( v == 0u )
+            {
+                return U( 1 );
+            }
+
+            const unsigned width = static_cast< unsigned >( sizeof( U ) * 8 );
+            const U highestPower = U( 1 ) << ( width - 1 );
+
+            if ( v > highestPower )
+            {
+                // Cannot represent the strictly greater next power-of-two; saturate to highestPower.
+                return highestPower;
+            }
+
+            U x = v - 1u;
+            for ( unsigned shift = 1u; shift < width; shift <<= 1u )
+            {
+                x |= ( x >> shift );
+            }
+            return x + 1u;
+        }
+    }
+    
+
+    template<SignedIntegerType T>
+    constexpr inline T NextPowerOfTwo( T v ) noexcept
+    {
+        using U = std::make_unsigned_t<T>;
+        if constexpr ( std::is_signed_v<T> )
+        {
+            if ( v <= 0 )
+            {
+                return static_cast< T >( 1 );
+            }
+        }
+        const U u = static_cast< U >( v );
+        U r = Internal::NextPowerOfTwoUnsignedHelper<U>( u );
+
+        const U maxSigned = static_cast< U >( std::numeric_limits<T>::max( ) );
+        if ( r > maxSigned )
+        {
+            r = maxSigned;
+        }
+        return static_cast< T >( r );
+    }
+
+    template<UnsignedIntegerType T>
+    constexpr inline T NextPowerOfTwo( T v ) noexcept
+    {
+        return Internal::NextPowerOfTwoUnsignedHelper<T>( v );
+    }
+
+
+
+    /// <summary>
+    /// Stateless deleter that releases memory allocated by the C runtime allocator family using <c>free</c>.
+    /// </summary>
+    /// <typeparam name="T">The pointed-to element type. The deleter accepts a pointer of type <c>T*</c> and forwards it to <c>free</c>.</typeparam>
+    /// <remarks>
+    /// - Use this deleter with smart pointers (for example `std::unique_ptr<T, FreeDeleter<T>>`) to automatically
+    ///   free memory allocated with C allocation functions such as <c>malloc</c>, <c>calloc</c> or <c>realloc</c>.
+    /// - The pointer passed to <c>operator()</c> MUST originate from a compatible C allocator. Passing pointers
+    ///   allocated by <c>new</c> / <c>new[]</c> results in undefined behavior.
+    /// - Per the C standard, calling <c>free</c> with a null pointer is a no-op; the deleter safely accepts <c>nullptr</c>.
+    /// - The operation does not throw exceptions.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Allocate with malloc and manage with unique_ptr + FreeDeleter
+    /// void* raw = std::malloc( sizeof(int) * 10 );
+    /// auto p = std::unique_ptr<int, FreeDeleter<int>>( static_cast<int*>( raw ) );
+    /// // memory will be released via free when 'p' is destroyed
+    /// </code>
+    /// </example>
+    template<typename T>
+    class FreeDeleter
     {
     public:
-        MallocaDeleter( ) = default;
+        FreeDeleter( ) = default;
+        /// <summary>Frees memory previously allocated with a C allocator (for example <c>malloc</c>).</summary>
+        /// <param name="p">Pointer to be freed. May be <c>nullptr</c>.</param>
+        void operator()( T* p ) const
+        {
+            free( p );
+        };
+    };
+
+    /// <summary>
+    /// Stateless deleter that releases memory allocated with the Microsoft-specific automatic allocator (<c>_malloca</c>)
+    /// by calling the matching <c>_freea</c>.
+    /// </summary>
+    /// <typeparam name="T">The pointed-to element type. The deleter accepts a pointer of type <c>T*</c> and forwards it to <c>_freea</c>.</typeparam>
+    /// <remarks>
+    /// - Use this deleter with smart pointers when memory is allocated with the Microsoft CRT helper <c>_malloca</c>.
+    /// - Memory allocated with <c>_malloca</c> must be freed with <c>_freea</c>. Passing such memory to <c>free</c>
+    ///   (or vice versa) is undefined behavior.
+    /// - The pointer passed to <c>operator()</c> may be <c>nullptr</c>; <c>_freea</c> handles that case.
+    /// - This deleter is Microsoft-specific; do not use on non-MSVC toolchains without verifying availability.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Allocate with _malloca and manage with unique_ptr + FreeADeleter
+    /// auto raw = static_cast<char*>( _malloca( 256 ) );
+    /// auto p = std::unique_ptr<char, FreeADeleter<char>>( raw );
+    /// // memory will be released via _freea when 'p' is destroyed
+    /// </code>
+    /// </example>
+    template<typename T>
+    class FreeADeleter
+    {
+    public:
+        FreeADeleter( ) = default;
+        /// <summary>Releases memory previously allocated with <c>_malloca</c>.</summary>
+        /// <param name="p">Pointer to be freed. May be <c>nullptr</c>.</param>
         void operator()( T* p ) const
         {
             _freea( p );
         };
     };
 
+    /// <summary>
+    /// Stateless deleter that releases memory allocated via COM allocator functions by calling <c>CoTaskMemFree</c>.
+    /// </summary>
+    /// <typeparam name="T">The pointed-to element type. Typically used with <c>void</c> or POD pointer types returned by COM APIs.</typeparam>
+    /// <remarks>
+    /// - Use this deleter with smart pointers (for example `std::unique_ptr<T, CoTaskMemFreeDeleter<T>>`) to manage memory
+    ///   obtained from COM allocation functions such as <c>CoTaskMemAlloc</c> or functions that document the caller must
+    ///   free the returned buffer with <c>CoTaskMemFree</c>.
+    /// - Per the Windows API, <c>CoTaskMemFree</c> accepts a null pointer and performs no action. The deleter therefore
+    ///   safely accepts <c>nullptr</c>.
+    /// - Ensure that the memory passed to this deleter was allocated by a compatible COM allocator (for example <c>CoTaskMemAlloc</c>);
+    ///   mismatched allocators may cause heap corruption.
+    /// - The operation does not throw exceptions.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Example: receive memory from a COM API that uses CoTaskMemAlloc and manage with unique_ptr
+    /// void* raw = nullptr;
+    /// // Assume SomeComFunction allocates memory using CoTaskMemAlloc and returns via out parameter:
+    /// // HRESULT hr = SomeComFunction(&raw);
+    /// // Manage the returned buffer:
+    /// auto p = std::unique_ptr<void, CoTaskMemFreeDeleter<void>>( raw );
+    /// // memory will be released via CoTaskMemFree when 'p' is destroyed
+    /// </code>
+    /// </example>
+    template<typename T>
+    class CoTaskMemFreeDeleter
+    {
+    public:
+        CoTaskMemFreeDeleter( ) = default;
+        /// <summary>Frees memory previously allocated by a COM allocator using <c>CoTaskMemFree</c>.</summary>
+        /// <param name="p">Pointer to be freed. May be <c>nullptr</c>.</param>
+        void operator()( T* p ) const
+        {
+            CoTaskMemFree( p );
+        };
+    };
+
+    /// <summary>
+    /// Stateless deleter that calls the <c>Release</c> method on a reference-counted object.
+    /// </summary>
+    /// <typeparam name="T">The object type which must provide a <c>Release()</c> member function (for example COM interface pointers deriving from <c>IUnkown</c>).</typeparam>
+    /// <remarks>
+    /// - This deleter is intended for use with objects that implement COM-style reference counting where the correct
+    ///   way to release a reference is to call the object's <c>Release()</c> method rather than using <c>delete</c>.
+    /// - The template requires that <c>T*</c> supports the expression <c>p->Release()</c>.
+    /// - The caller is responsible for ensuring the pointer is valid before the deleter is invoked. If a null pointer
+    ///   is possible, wrap the pointer or use a guard to avoid calling <c>Release</c> on <c>nullptr</c>.
+    /// - The deleter does not call <c>delete</c> and does not take ownership beyond invoking <c>Release</c>.
+    /// - The operation does not throw exceptions.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Example with a COM interface pointer:
+    /// IUnknown* raw = nullptr;
+    /// // ... obtain interface pointer, e.g. CoCreateInstance(...)
+    /// // Manage with unique_ptr and ReleaseDeleter:
+    /// auto p = std::unique_ptr<IUnknown, ReleaseDeleter<IUnknown>>( raw );
+    /// // When 'p' is destroyed, p->Release() is invoked.
+    /// </code>
+    /// </example>
+    template<typename T>
+        requires requires ( T* p )
+    {
+        { p->Release( ) };
+    }
+    class ReleaseDeleter
+    {
+    public:
+        ReleaseDeleter( ) = default;
+        /// <summary>Calls <c>Release()</c> on the provided pointer.</summary>
+        /// <param name="p">Pointer to the object whose <c>Release()</c> method will be invoked. Must not be <c>nullptr</c>.</param>
+        void operator()( T* p ) const
+        {
+            p->Release( );
+        };
+    };
+
     namespace Internal
     {
+        /// <summary>
+        /// Internal RAII helper that invokes the provided callable when the guard is destroyed.
+        /// </summary>
+        /// <typeparam name="Fn">
+        /// Type of the callable object. Must be invocable with no arguments.
+        /// </typeparam>
+        /// <remarks>
+        /// - This type is intended for internal use and is returned by the free function <c>Finally</c>.
+        /// - The guard stores the callable in the base class subobject and invokes it from the destructor via <c>operator()()</c>.
+        /// - The type is non-copyable and non-movable to ensure a single deterministic invocation of the callable.
+        /// - Use the <c>Finally</c> factory function to construct instances of this type.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Typical usage via the Finally factory:
+        /// auto guard = Finally( [&](){ /* cleanup */ } );
+        /// // 'cleanup' will be called automatically when 'guard' goes out of scope.
+        /// </code>
+        /// </example>
         template <typename Fn>
         struct FinallyImpl : public Fn
         {
@@ -2607,12 +2855,61 @@ namespace Harlinn::Common
         };
     }
 
+    /// <summary>
+    /// Creates a scope-bound guard that will invoke the supplied callable when the returned guard is destroyed.
+    /// </summary>
+    /// <typeparam name="Fn">
+    /// Type of the callable to store. Must be invocable with no arguments.
+    /// </typeparam>
+    /// <param name="Func">
+    /// Callable to invoke at scope exit; forwarded into the returned guard.
+    /// </param>
+    /// <returns>
+    /// An instance of <c>Internal::FinallyImpl&lt;Fn&gt;</c> that will invoke <paramref name="Func"/> from its destructor.
+    /// </returns>
+    /// <remarks>
+    /// - The returned guard is non-copyable and non-movable to ensure a single invocation of the callable.
+    /// - The callable is invoked from the guard's destructor; it MUST NOT throw. Throwing from a destructor invoked during stack
+    ///   unwinding will result in <c>std::terminate</c>.
+    /// - Use this factory to perform scope-based cleanup (RAII) without writing a custom guard type.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Run cleanup on scope exit:
+    /// auto guard = Finally( [&](){
+    ///     // cleanup actions here
+    /// } );
+    /// // cleanup will run when 'guard' is destroyed (end of scope)
+    /// </code>
+    /// </example>
     template <typename Fn>
+        requires std::is_invocable_v<Fn>
     inline Internal::FinallyImpl<Fn> Finally( Fn&& Func )
     {
         return { std::forward<Fn>( Func ) };
     }
 
+    /// <summary>
+    /// Determines whether adding two signed integers can be performed without overflowing or underflowing.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Signed integer type (CV-qualifiers and references are ignored).
+    /// </typeparam>
+    /// <param name="lhs">
+    /// Left operand.
+    /// </param>
+    /// <param name="rhs">
+    /// Right operand.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the sum <c>lhs + rhs</c> is representable in type <c>T</c>; otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - The function avoids performing the addition when it might overflow by using division/subtraction-based bounds checks.
+    /// - For <c>rhs &gt; 0</c> the check ensures <c>lhs &lt;= Max - rhs</c> to detect positive overflow.
+    /// - For <c>rhs &lt;= 0</c> the check ensures <c>lhs &gt;= Min - rhs</c> to detect negative underflow.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
     template<SignedIntegerType T>
     constexpr inline bool IsAdditionSafe( T lhs, T rhs ) noexcept
     {
@@ -2670,6 +2967,44 @@ namespace Harlinn::Common
         return static_cast< T >( lhs + rhs );
     }
 
+    /// <summary>
+    /// Determines whether adding two unsigned integers can be performed without overflowing the type <c>T</c>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An unsigned integer type (CV-qualifiers and references are ignored).
+    /// </typeparam>
+    /// <param name="lhs">
+    /// Left operand.
+    /// </param>
+    /// <param name="rhs">
+    /// Right operand.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> when <c>lhs + rhs</c> is representable in type <c>T</c>; otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - The function avoids performing the addition (which could overflow) and instead compares <c>lhs</c> against
+    ///   <c>std::numeric_limits&lt;T&gt;::max() - rhs</c>. For unsigned types the minimum value is zero, so only the
+    ///   upper bound needs checking.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c> and is suitable for use in constant-evaluated contexts.
+    /// - If the function returns <c>false</c>, callers should handle the overflow case (for example by clamping,
+    ///   using <c>SafeAddition</c>, or returning an error).
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// UInt32 a = 4000000000u;
+    /// UInt32 b = 500000000u;
+    /// if ( IsAdditionSafe<UInt32>( a, b ) )
+    /// {
+    ///     UInt32 sum = static_cast<UInt32>( a + b );
+    /// }
+    /// else
+    /// {
+    ///     // handle overflow (e.g. clamp)
+    ///     UInt32 sum = std::numeric_limits<UInt32>::max();
+    /// }
+    /// </code>
+    /// </example>
     template<UnsignedIntegerType T>
     constexpr inline bool IsAdditionSafe( T lhs, T rhs ) noexcept
     {
@@ -2706,6 +3041,30 @@ namespace Harlinn::Common
     }
 
 
+    /// <summary>
+    /// Determines whether subtracting <paramref name="rhs"/> from <paramref name="lhs"/> can be performed
+    /// without overflowing or underflowing the representable range of the signed integer type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Signed integer type (CV-qualifiers and references are ignored).
+    /// </typeparam>
+    /// <param name="lhs">
+    /// left operand.</param>
+    /// <param name="rhs">
+    /// right operand.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> when <c>lhs - rhs</c> is representable in type <typeparamref name="T"/>; otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - The function avoids performing the subtraction when it might overflow by using bound checks against
+    ///   <c>std::numeric_limits&lt;T&gt;::min()</c> and <c>std::numeric_limits&lt;T&gt;::max()</c>.
+    /// - When <c>rhs &gt; 0</c> it checks for underflow: the operation is safe when
+    ///   <c>lhs &gt;= Min + rhs</c>.
+    /// - When <c>rhs &lt;= 0</c> the subtraction is equivalent to adding <c>-rhs</c>; it checks for positive overflow:
+    ///   the operation is safe when <c>lhs &lt;= Max + rhs</c> (note <c>rhs</c> is non-positive in this branch).
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
     template<SignedIntegerType T>
     constexpr inline bool IsSubtractionSafe( T lhs, T rhs ) noexcept
     {
@@ -2726,6 +3085,33 @@ namespace Harlinn::Common
         }
     }
 
+    /// <summary>
+    /// Subtracts <paramref name="rhs"/> from <paramref name="lhs"/> and clamps the result to the valid range
+    /// for the signed integer type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">A signed integer type (CV-qualifiers and references are ignored).</typeparam>
+    /// <param name="lhs">The minuend (left operand).</param>
+    /// <param name="rhs">The subtrahend (right operand).</param>
+    /// <returns>
+    /// The value of <c>lhs - rhs</c> if representable in <typeparamref name="T"/>;
+    /// otherwise <c>std::numeric_limits&lt;T&gt;::min()</c> for underflow or
+    /// <c>std::numeric_limits&lt;T&gt;::max()</c> for overflow.
+    /// </returns>
+    /// <remarks>
+    /// - The implementation performs bounds checks to avoid undefined behaviour from signed integer overflow.
+    /// - When <c>rhs &gt; 0</c> the function detects potential underflow and returns <c>MinValue</c> if needed.
+    ///   When <c>rhs &lt; 0</c> the subtraction is equivalent to addition of <c>-rhs</c> and the function
+    ///   detects potential overflow and returns <c>MaxValue</c> if needed.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>, suitable for constant-evaluated contexts.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Example: clamp on underflow
+    /// int32_t a = std::numeric_limits<int32_t>::min() + 5;
+    /// int32_t b = 10;
+    /// auto r = SafeSubtraction<int32_t>( a, b ); // r == std::numeric_limits<int32_t>::min()
+    /// </code>
+    /// </example>
     template<SignedIntegerType T>
     constexpr inline T SafeSubtraction( T lhs, T rhs ) noexcept
     {
@@ -2753,6 +3139,29 @@ namespace Harlinn::Common
         return static_cast< T >( lhs - rhs );
     }
 
+    /// <summary>
+    /// Determines whether subtracting <paramref name="rhs"/> from <paramref name="lhs"/>
+    /// can be performed for an unsigned integer type <typeparamref name="T"/> without underflow.
+    /// </summary>
+    /// <typeparam name="T">An unsigned integer type (CV-qualifiers and references are ignored).</typeparam>
+    /// <param name="lhs">The minuend (left operand).</param>
+    /// <param name="rhs">The subtrahend (right operand).</param>
+    /// <returns>
+    /// <c>true</c> when <c>lhs - rhs</c> is representable in type <typeparamref name="T"/> (i.e. no underflow);
+    /// otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - For unsigned integers an underflow occurs when <c>lhs &lt; rhs</c>. This function performs the
+    ///   simple bound check <c>lhs &gt;= rhs</c> to determine safety without performing the subtraction.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>, suitable for use in constant-evaluated contexts.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// UInt32 a = 5u;
+    /// UInt32 b = 10u;
+    /// bool ok = IsSubtractionSafe&lt;UInt32&gt;( a, b ); // ok == false (would underflow)
+    /// </code>
+    /// </example>
     template<UnsignedIntegerType T>
     constexpr inline bool IsSubtractionSafe( T lhs, T rhs ) noexcept
     {
@@ -2775,6 +3184,365 @@ namespace Harlinn::Common
         // Clamp to zero in that case; otherwise perform the subtraction.
         return ( lhs < rhs ) ? static_cast< T >( 0 ) : static_cast< T >( lhs - rhs );
     }
+
+    /// <summary>
+    /// Determines whether the multiplication <c>lhs * rhs</c> can be performed for the signed integer
+    /// type <typeparamref name="T"/> without overflowing or underflowing the representable range.
+    /// </summary>
+    /// <typeparam name="T">Signed integer type (CV-qualifiers and references are ignored).</typeparam>
+    /// <param name="lhs">Left operand.</param>
+    /// <param name="rhs">Right operand.</param>
+    /// <returns>
+    /// <c>true</c> when the product <c>lhs * rhs</c> is representable in type <typeparamref name="T"/>; otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - The function avoids performing the multiplication when it might overflow by using division-based bounds checks.
+    /// - Fast-path: if either operand is zero the product is always representable.
+    /// - For non-zero operands the implementation compares against <c>std::numeric_limits&lt;T&gt;::max()</c>
+    ///   or <c>std::numeric_limits&lt;T&gt;::min()</c> as appropriate to detect overflow/underflow without causing UB.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Safe: fits in int32_t
+    /// bool ok1 = IsMultiplicationSafe<int32_t>( 10000, 2000 );
+    /// // Unsafe: would overflow int32_t
+    /// bool ok2 = IsMultiplicationSafe<int32_t>( std::numeric_limits<int32_t>::max(), 2 );
+    /// </code>
+    /// </example>
+    template<SignedIntegerType T>
+    constexpr inline bool IsMultiplicationSafe( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+
+        // Fast-paths
+        if ( lhs == 0 || rhs == 0 )
+        {
+            return true;
+        }
+
+        // Both operands non-zero. Use division to check bounds without performing multiplication.
+        if ( lhs > 0 )
+        {
+            if ( rhs > 0 )
+            {
+                // both positive: lhs <= Max / rhs
+                return lhs <= ( MaxValue / rhs );
+            }
+            else
+            {
+                // lhs > 0, rhs < 0: rhs >= Min / lhs
+                return rhs >= ( MinValue / lhs );
+            }
+        }
+        else // lhs < 0
+        {
+            if ( rhs > 0 )
+            {
+                // lhs < 0, rhs > 0: lhs >= Min / rhs
+                return lhs >= ( MinValue / rhs );
+            }
+            else
+            {
+                // both negative: lhs >= Max / rhs
+                // (product is positive; compare using Max)
+                return lhs >= ( MaxValue / rhs );
+            }
+        }
+    }
+
+    /// <summary>
+    /// Multiplies two signed integers and clamps the result to the valid range for the type.
+    /// </summary>
+    /// <typeparam name="T">A signed integer type.</typeparam>
+    /// <param name="lhs">Left operand.</param>
+    /// <param name="rhs">Right operand.</param>
+    /// <returns>
+    /// The product <c>lhs * rhs</c> if it fits in type <typeparamref name="T"/>; otherwise
+    /// returns <c>std::numeric_limits&lt;T&gt;::max()</c> or <c>std::numeric_limits&lt;T&gt;::min()</c>
+    /// depending on the sign of the mathematical product.
+    /// </returns>
+    /// <remarks>
+    /// - The implementation avoids performing a multiplication that would overflow by first
+    ///   using <see cref="IsMultiplicationSafe"/>. If the multiplication is safe the product
+    ///   is performed and returned.
+    /// - When the product cannot be represented in <typeparamref name="T"/>, the function
+    ///   clamps to the appropriate endpoint (max for positive overflow, min for negative overflow).
+    /// - This function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// int32_t a = 100000;
+    /// int32_t b = 30000;
+    /// int32_t safeProduct = SafeMultiplication<int32_t>(a, b); // clamped to INT32_MAX
+    /// </code>
+    /// </example>
+    template<SignedIntegerType T>
+    constexpr inline T SafeMultiplication( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+
+        // Zero fast-path
+        if ( lhs == 0 || rhs == 0 )
+        {
+            return static_cast< T >( 0 );
+        }
+
+        // If safe, perform multiplication
+        if ( IsMultiplicationSafe( lhs, rhs ) )
+        {
+            return static_cast< T >( lhs * rhs );
+        }
+
+        // Overflow/underflow: determine sign of the mathematical product.
+        // Product is positive when operands have same sign.
+        const bool productIsPositive = ( ( lhs > 0 ) == ( rhs > 0 ) );
+        return productIsPositive ? MaxValue : MinValue;
+    }
+
+
+    /// <summary>
+    /// Determines whether the multiplication of two unsigned integers can be performed
+    /// without overflowing the representable range for the type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">An unsigned integer type.</typeparam>
+    /// <param name="lhs">Left operand.</param>
+    /// <param name="rhs">Right operand.</param>
+    /// <returns>
+    /// <c>true</c> if <c>lhs * rhs</c> is representable in type <typeparamref name="T"/>; otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - The check avoids performing the multiplication directly (which would overflow on success),
+    ///   and instead uses the bound check <c>lhs <= max / rhs</c>.
+    /// - If either operand is zero the multiplication is safe.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    template<UnsignedIntegerType T>
+    constexpr inline bool IsMultiplicationSafe( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+
+        // Fast-path: zero product is always safe.
+        if ( lhs == static_cast< T >( 0 ) || rhs == static_cast< T >( 0 ) )
+        {
+            return true;
+        }
+
+        // Avoid division by zero; rhs != 0 here.
+        return lhs <= ( MaxValue / rhs );
+    }
+
+
+    /// <summary>
+    /// Multiplies two unsigned integers and clamps the result to the valid range for the type.
+    /// </summary>
+    /// <typeparam name="T">An unsigned integer type.</typeparam>
+    /// <param name="lhs">Left operand.</param>
+    /// <param name="rhs">Right operand.</param>
+    /// <returns>
+    /// The product <c>lhs * rhs</c> if it fits in type <typeparamref name="T"/>; otherwise
+    /// returns <c>std::numeric_limits&lt;T&gt;::max()</c>.
+    /// </returns>
+    /// <remarks>
+    /// - The implementation uses <c>IsMultiplicationSafe</c> to avoid performing a multiplication that would overflow.
+    /// - When either operand is zero the result is zero.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// UInt32 a = 100000u;
+    /// UInt32 b = 600u;
+    /// UInt32 product = SafeMultiplication<UInt32>(a, b); // may be clamped to UINT32_MAX if overflow
+    /// </code>
+    /// </example>
+    template<UnsignedIntegerType T>
+    constexpr inline T SafeMultiplication( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+
+        // Fast-path: zero product is always safe.
+        if ( lhs == static_cast< T >( 0 ) || rhs == static_cast< T >( 0 ) )
+        {
+            return static_cast< T >( 0 );
+        }
+
+        // If safe, perform multiplication (checked above to avoid overflow).
+        if ( IsMultiplicationSafe( lhs, rhs ) )
+        {
+            return static_cast< T >( lhs * rhs );
+        }
+
+        // Overflow: clamp to maximum representable unsigned value.
+        return MaxValue;
+    }
+
+    /// <summary>
+    /// Determines whether the division <c>lhs / rhs</c> can be performed for signed integer
+    /// type <typeparamref name="T"/> without causing undefined behaviour (division by zero or
+    /// signed overflow).
+    /// </summary>
+    /// <typeparam name="T">Signed integer type.</typeparam>
+    /// <param name="lhs">Dividend.</param>
+    /// <param name="rhs">Divisor.</param>
+    /// <returns>
+    /// <c>true</c> when the division is safe to perform (no divide-by-zero and no signed overflow),
+    /// otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - Division by zero is not allowed and returns <c>false</c>.
+    /// - The only signed-integer division that can overflow on two's-complement architectures is
+    ///   when <c>lhs == std::numeric_limits&lt;T&gt;::min()</c> and <c>rhs == -1</c>. This function
+    ///   detects and reports that case as unsafe.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Safe
+    /// bool ok1 = IsDivisionSafe<int32_t>( 10, 2 ); // true
+    /// // Divide by zero
+    /// bool ok2 = IsDivisionSafe<int32_t>( 10, 0 ); // false
+    /// // Overflow case
+    /// bool ok3 = IsDivisionSafe<int32_t>( std::numeric_limits<int32_t>::min(), -1 ); // false
+    /// </code>
+    /// </example>
+    template<SignedIntegerType T>
+    constexpr inline bool IsDivisionSafe( T lhs, T rhs ) noexcept
+    {
+        // Division by zero is always unsafe.
+        if ( rhs == static_cast< T >( 0 ) )
+        {
+            return false;
+        }
+
+        // The only signed division that can overflow is MIN / -1.
+        // Check and reject that specific case.
+        if ( rhs == static_cast< T >( -1 ) && lhs == std::numeric_limits<T>::min( ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Divides two signed integers and clamps the result to the valid range for the type.
+    /// </summary>
+    /// <typeparam name="T">A signed integer type.</typeparam>
+    /// <param name="lhs">Dividend.</param>
+    /// <param name="rhs">Divisor.</param>
+    /// <returns>
+    /// The quotient <c>lhs / rhs</c> if it can be performed without undefined behaviour;
+    /// otherwise the result is clamped to <c>std::numeric_limits&lt;T&gt;::max()</c> or
+    /// <c>std::numeric_limits&lt;T&gt;::min()</c> depending on the mathematical sign of
+    /// the result or the operand signs in the case of division by zero.
+    /// </returns>
+    /// <remarks>
+    /// - Division by zero is not permitted; this function returns <c>MaxValue</c> when
+    ///   <paramref name="lhs"/> is non-negative and <c>MinValue</c> when <paramref name="lhs"/>
+    ///   is negative to provide a well-defined clamped result.
+    /// - The only signed integer division that can overflow on two's-complement machines is
+    ///   <c>MinValue / -1</c>; this case is detected and clamps to <c>MaxValue</c>.
+    /// - For all other inputs the operation performs the normal quotient <c>lhs / rhs</c>.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// int32_t a = 10;
+    /// int32_t b = 2;
+    /// int32_t r = SafeDivision<int32_t>(a, b); // 5
+    /// int32_t z = SafeDivision<int32_t>(a, 0); // INT32_MAX
+    /// int32_t ov = SafeDivision<int32_t>(std::numeric_limits<int32_t>::min(), -1); // INT32_MAX (clamped)
+    /// </code>
+    /// </example>
+    template<SignedIntegerType T>
+    constexpr inline T SafeDivision( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+
+        // Division by zero: clamp based on sign of dividend to give deterministic result.
+        if ( rhs == static_cast< T >( 0 ) )
+        {
+            return ( lhs >= static_cast< T >( 0 ) ) ? MaxValue : MinValue;
+        }
+
+        // MIN / -1 is the only signed integer division that can overflow.
+        if ( lhs == MinValue && rhs == static_cast< T >( -1 ) )
+        {
+            return MaxValue;
+        }
+        return static_cast< T >( lhs / rhs );
+    }
+
+    /// <summary>
+    /// Determines whether the division <c>lhs / rhs</c> can be performed for an unsigned integer
+    /// type <typeparamref name="T"/> without causing undefined behaviour (division by zero).
+    /// </summary>
+    /// <typeparam name="T">
+    /// An unsigned integer type.
+    /// </typeparam>
+    /// <param name="lhs">
+    /// Dividend (unused for safety check but included for symmetry with signed overload).
+    /// </param>
+    /// <param name="rhs">
+    /// Divisor. Division is unsafe when this is zero.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if <c>rhs</c> is non-zero and the division is therefore safe; otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// - For unsigned integer types there is no overflow from the division operation itself;
+    ///   the only undefined behaviour to guard against is division by zero.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    template<UnsignedIntegerType T>
+    constexpr inline bool IsDivisionSafe( T lhs, T rhs ) noexcept
+    {
+        // lhs is intentionally unused 
+        ( void )lhs; 
+        return rhs != static_cast< T >( 0 );
+    }
+
+    /// <summary>
+    /// Divides two unsigned integers and clamps the result to the valid range for the type.
+    /// </summary>
+    /// <typeparam name="T">An unsigned integer type.</typeparam>
+    /// <param name="lhs">Dividend.</param>
+    /// <param name="rhs">Divisor.</param>
+    /// <returns>
+    /// The quotient <c>lhs / rhs</c> when <c>rhs != 0</c>. If <c>rhs == 0</c> the function
+    /// returns <c>std::numeric_limits&lt;T&gt;::max()</c> to provide a well-defined clamped result
+    /// instead of performing a division-by-zero.
+    /// </returns>
+    /// <remarks>
+    /// - Unsigned integer division cannot overflow; the only undefined behaviour to guard against is division by zero.
+    /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// UInt32 a = 10u;
+    /// UInt32 b = 2u;
+    /// UInt32 r = SafeDivision<UInt32>(a, b); // 5
+    /// UInt32 z = SafeDivision<UInt32>(a, 0u); // UINT32_MAX (clamped)
+    /// </code>
+    /// </example>
+    template<UnsignedIntegerType T>
+    constexpr inline T SafeDivision( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+
+        // Check for division by zero: return saturated value.
+        if ( rhs == static_cast< T >( 0 ) )
+        {
+            return MaxValue;
+        }
+
+        // Normal case:
+        return static_cast< T >( lhs / rhs );
+    }
+
 
 
 }

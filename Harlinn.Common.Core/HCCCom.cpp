@@ -55,7 +55,7 @@ namespace Harlinn::Common::Core
         InterfaceType* pInterface = GetInterface( );
         ULONG numberOfElementsFetched = 0;
         LPOLESTR* oleStrings = (LPOLESTR*)_malloca( celt * sizeof( LPOLESTR ) );
-        std::unique_ptr<LPOLESTR, MallocaDeleter<LPOLESTR>> elementsPtr( oleStrings );
+        std::unique_ptr<LPOLESTR, FreeADeleter<LPOLESTR>> elementsPtr( oleStrings );
         auto hr = pInterface->Next( celt, oleStrings, &numberOfElementsFetched );
         if ( SUCCEEDED( hr ) )
         {

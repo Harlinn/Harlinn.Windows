@@ -1482,7 +1482,14 @@ namespace Harlinn::Math
         }
         else
         {
-            result.second = Internal::OpenLibM::modf( val, &result.first );
+            if consteval
+            {
+                result.second = Internal::OpenLibM::modf( val, &result.first );
+            }
+            else
+            { 
+                result.second = std::modf( val, &result.first );
+            }
         }
         return result;
     }
@@ -1517,7 +1524,14 @@ namespace Harlinn::Math
         }
         else
         {
-            return Internal::OpenLibM::modf( val, integerPart );
+            if consteval
+            {
+                return Internal::OpenLibM::modf( val, integerPart );
+            }
+            else
+            {
+                return std::modf( val, integerPart );
+            }
         }
     }
 
@@ -1552,7 +1566,14 @@ namespace Harlinn::Math
         }
         else
         {
-            return Internal::OpenLibM::modf( val, &integerPart );
+            if consteval
+            { 
+                return Internal::OpenLibM::modf( val, &integerPart );
+            }
+            else
+            {
+                return std::modf( val, &integerPart );
+            }
         }
     }
 

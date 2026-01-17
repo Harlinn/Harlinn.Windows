@@ -201,7 +201,7 @@ namespace Harlinn::Common::Core
         {
             auto pInterface = GetInterface( );
             IUnknown** pElements = (IUnknown**)_malloca( requestedNumberOfElements * sizeof( IUnknown* ) );
-            std::unique_ptr<IUnknown*, MallocaDeleter<IUnknown*>> elementsPtr( pElements );
+            std::unique_ptr<IUnknown*, FreeADeleter<IUnknown*>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( IUnknown* ) );
             ULONG actual = 0;
 

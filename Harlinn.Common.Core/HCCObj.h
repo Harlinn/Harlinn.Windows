@@ -363,7 +363,7 @@ namespace Harlinn::Common::Core
     {
         auto pInterface = GetInterface( );
         IMoniker** pElements = (IMoniker**)_malloca( requestedNumberOfElements * sizeof( IMoniker* ) );
-        std::unique_ptr<IMoniker*, MallocaDeleter<IMoniker*>> elementsPtr( pElements );
+        std::unique_ptr<IMoniker*, FreeADeleter<IMoniker*>> elementsPtr( pElements );
         memset( pElements, 0, requestedNumberOfElements * sizeof( IMoniker* ) );
         ULONG actual = 0;
 
@@ -678,7 +678,7 @@ namespace Harlinn::Common::Core
         {
             auto pInterface = GetInterface( );
             STATSTG* pElements = (STATSTG*)_malloca( requestedNumberOfElements * sizeof( STATSTG ) );
-            std::unique_ptr<STATSTG, MallocaDeleter<STATSTG>> elementsPtr( pElements );
+            std::unique_ptr<STATSTG, FreeADeleter<STATSTG>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( STATSTG ) );
             ULONG actual = 0;
 
@@ -1148,7 +1148,7 @@ namespace Harlinn::Common::Core
         {
             auto pInterface = GetInterface( );
             FORMATETC* pElements = (FORMATETC*)_malloca( requestedNumberOfElements * sizeof( FORMATETC ) );
-            std::unique_ptr<FORMATETC, MallocaDeleter<FORMATETC>> elementsPtr( pElements );
+            std::unique_ptr<FORMATETC, FreeADeleter<FORMATETC>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( FORMATETC ) );
             ULONG actual = 0;
 
@@ -1215,7 +1215,7 @@ namespace Harlinn::Common::Core
         {
             auto pInterface = GetInterface( );
             STATDATA* pElements = (STATDATA*)_malloca( requestedNumberOfElements * sizeof( STATDATA ) );
-            std::unique_ptr<STATDATA, MallocaDeleter<STATDATA>> elementsPtr( pElements );
+            std::unique_ptr<STATDATA, FreeADeleter<STATDATA>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( STATDATA ) );
             ULONG actual = 0;
 
@@ -5588,7 +5588,7 @@ namespace Harlinn::Common::Core
         {
             auto pInterface = GetInterface( );
             CONNECTDATA* elements = (CONNECTDATA*)_malloca( requestedNumberOfElements * sizeof( CONNECTDATA ) );
-            std::unique_ptr<CONNECTDATA, MallocaDeleter<CONNECTDATA>> elementsPtr( elements );
+            std::unique_ptr<CONNECTDATA, FreeADeleter<CONNECTDATA>> elementsPtr( elements );
             memset( elements, 0, requestedNumberOfElements * sizeof( CONNECTDATA ) );
             ULONG actual = 0;
 
@@ -5704,7 +5704,7 @@ namespace Harlinn::Common::Core
         {
             auto pInterface = GetInterface( );
             IConnectionPoint** pElements = (IConnectionPoint**)_malloca( requestedNumberOfElements * sizeof( IConnectionPoint* ) );
-            std::unique_ptr<IConnectionPoint*, MallocaDeleter<IConnectionPoint*>> elementsPtr( pElements );
+            std::unique_ptr<IConnectionPoint*, FreeADeleter<IConnectionPoint*>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( IConnectionPoint* ) );
             ULONG actual = 0;
 
