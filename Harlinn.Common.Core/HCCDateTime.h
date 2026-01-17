@@ -2507,6 +2507,27 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Adds an integral tick count to this <see cref="TimeSpan"/> in-place.
+        /// </summary>
+        /// <typeparam name="T">An integral type convertible to <c>long long</c> (e.g. <c>int</c>, <c>long</c>, <c>long long</c>).</typeparam>
+        /// <param name="value">The value to add, interpreted as a number of ticks (1 tick = 100 ns). May be negative to subtract ticks.</param>
+        /// <returns>Reference to this <see cref="TimeSpan"/> after the addition (<c>*this</c>).</returns>
+        /// <remarks>
+        /// <para>
+        /// - The parameter <paramref name="value"/> is converted to <c>long long</c> via <c>static_cast</c> and added to the internal tick count.
+        /// - In debug builds an assertion verifies the operation is safe using <c>IsAdditionSafe</c>. There is no automatic overflow
+        ///   detection in release builds; callers MUST ensure the operation does not overflow the 64-bit tick range.
+        /// - This operation mutates the object and therefore is not thread-safe for concurrent access to the same instance.
+        /// - Complexity: O(1).
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(500); // 500 ms
+        /// ts += TimeSpan::TicksPerMillisecond;           // add 1 ms (10000 ticks)
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan& operator += ( const T& value ) noexcept
@@ -2521,6 +2542,28 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to this instance plus an integral tick count.
+        /// </summary>
+        /// <typeparam name="T">An integral type convertible to <c>long long</c>.</typeparam>
+        /// <param name="value">The value to add, interpreted as a number of ticks (1 tick = 100 ns). May be negative to subtract ticks.</param>
+        /// <returns>A <see cref="TimeSpan"/> whose tick count equals <c>this->Ticks() + static_cast<long long>(value)</c>.</returns>
+        /// <remarks>
+        /// <para>
+        /// - The parameter <paramref name="value"/> is converted to <c>long long</c> and added to the internal tick count to produce a
+        ///   new <see cref="TimeSpan"/>; the original instance is not modified.
+        /// - In debug builds an assertion verifies the addition is safe using <c>IsAdditionSafe</c>. No runtime overflow checks are performed
+        ///   in release builds; callers MUST ensure the addition does not overflow the representable tick range.
+        /// - Thread-safety: this method is const and safe to call concurrently on distinct objects.
+        /// - Complexity: O(1).
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.0); // 1 second
+        /// TimeSpan result = ts + (TimeSpan::TicksPerSecond / 2); // +0.5s
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan operator + ( const T& value ) const noexcept
@@ -2534,6 +2577,27 @@ namespace Harlinn::Common::Core
             return TimeSpan( ticks_ + static_cast<long long>( value ) );
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to an integral tick count plus a <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <typeparam name="T">An integral type convertible to <c>long long</c>.</typeparam>
+        /// <param name="value">Left-hand operand, interpreted as a number of ticks (1 tick = 100 ns).</param>
+        /// <param name="timeSpan">Right-hand operand <see cref="TimeSpan"/> to add.</param>
+        /// <returns>A <see cref="TimeSpan"/> whose tick count equals <c>static_cast<long long>(value) + timeSpan.Ticks()</c>.</returns>
+        /// <remarks>
+        /// <para>
+        /// - This friend operator implements the commutative addition form (<c>T + TimeSpan</c>).
+        /// - In debug builds an assertion verifies the operation is safe via <c>IsAdditionSafe</c>. No runtime overflow checks are performed
+        ///   in release builds; callers MUST ensure operands produce a representable tick value.
+        /// - Complexity: O(1). The function is noexcept and does not modify its operands.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(250);
+        /// TimeSpan sum = TimeSpan::TicksPerMillisecond * 10 + ts; // add 10 ms + 250 ms
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         friend constexpr TimeSpan operator + ( const T& value, const TimeSpan& timeSpan ) noexcept
@@ -2547,6 +2611,27 @@ namespace Harlinn::Common::Core
             return TimeSpan( static_cast<long long>( value ) + timeSpan.ticks_ );
         }
 
+        /// <summary>
+        /// Subtracts an integral tick count from this <see cref="TimeSpan"/> in-place.
+        /// </summary>
+        /// <typeparam name="T">An integral type convertible to <c>long long</c> (for example <c>int</c>, <c>long</c>, <c>long long</c>).</typeparam>
+        /// <param name="value">The value to subtract, interpreted as a number of ticks (1 tick = 100 ns). May be negative to add ticks.</param>
+        /// <returns>Reference to this <see cref="TimeSpan"/> after the subtraction (<c>*this</c>).</returns>
+        /// <remarks>
+        /// <para>
+        /// - The parameter <paramref name="value"/> is converted to <c>long long</c> via <c>static_cast</c> and subtracted from the internal tick count.
+        /// - In debug builds an assertion verifies the operation is safe using <c>IsSubtractionSafe</c>.
+        ///   There is no automatic overflow detection in release builds; callers MUST ensure the operation does not overflow the 64-bit tick range.
+        /// - This operation mutates the object and therefore is not thread-safe for concurrent access to the same instance.
+        /// - Complexity: O(1).
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(500); // 500 ms
+        /// ts -= TimeSpan::TicksPerMillisecond;           // subtract 1 ms (10000 ticks)
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan& operator -= ( const T& value ) noexcept
@@ -2561,6 +2646,27 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to this instance minus an integral tick count.
+        /// </summary>
+        /// <typeparam name="T">An integral type convertible to <c>long long</c>.</typeparam>
+        /// <param name="value">The value to subtract, interpreted as a number of ticks (1 tick = 100 ns). May be negative to add ticks.</param>
+        /// <returns>A <see cref="TimeSpan"/> whose tick count equals <c>this->Ticks() - static_cast<long long>(value)</c>.</returns>
+        /// <remarks>
+        /// <para>
+        /// - The parameter <paramref name="value"/> is converted to <c>long long</c> and subtracted from the internal tick count to produce a new <see cref="TimeSpan"/>.
+        /// - In debug builds an assertion verifies the subtraction is safe using <c>IsSubtractionSafe</c>. No runtime overflow checks are performed
+        ///   in release builds; callers MUST ensure the subtraction does not overflow the representable tick range.
+        /// - Thread-safety: this method is const and safe to call concurrently on distinct objects.
+        /// - Complexity: O(1).
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.0); // 1 second
+        /// TimeSpan result = ts - (TimeSpan::TicksPerSecond / 2); // -0.5s
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan operator - ( const T& value ) const noexcept
@@ -2574,6 +2680,27 @@ namespace Harlinn::Common::Core
             return TimeSpan( ticks_ - static_cast<long long>( value ) );
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to an integral tick count minus the given <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <typeparam name="T">An integral type convertible to <c>long long</c>.</typeparam>
+        /// <param name="value">Left-hand operand, interpreted as a number of ticks (1 tick = 100 ns).</param>
+        /// <param name="timeSpan">Right-hand operand <see cref="TimeSpan"/> to subtract.</param>
+        /// <returns>A <see cref="TimeSpan"/> whose tick count equals <c>static_cast<long long>(value) - timeSpan.Ticks()</c>.</returns>
+        /// <remarks>
+        /// <para>
+        /// - This friend operator implements the subtraction form (<c>T - TimeSpan</c>).
+        /// - In debug builds an assertion verifies the operation is safe via <c>IsSubtractionSafe</c>. No runtime overflow checks are performed
+        ///   in release builds; callers MUST ensure operands produce a representable tick value.
+        /// - Complexity: O(1). The function is <c>noexcept</c> and does not modify its operands.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(250);
+        /// TimeSpan result = TimeSpan::TicksPerMillisecond * 10 - ts; // 10 ms - 250 ms
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         friend constexpr TimeSpan operator - ( const T& value, const TimeSpan& timeSpan ) noexcept
@@ -2591,6 +2718,12 @@ namespace Harlinn::Common::Core
             requires std::is_integral_v<T>
         constexpr TimeSpan& operator *= ( const T& value ) const noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsMultiplicationSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             ticks_ *= static_cast<long long>( value );
             return *this;
         }

@@ -174,7 +174,7 @@ namespace Harlinn::Common::Core
         {
             return wcstod( start, end );
         }
-
+    }
 
 
     HCC_EXPORT std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan )
