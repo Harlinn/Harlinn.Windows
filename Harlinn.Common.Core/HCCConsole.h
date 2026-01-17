@@ -22,6 +22,7 @@
 #include <HCCDef.h>
 #include <HCCError.h>
 #include <HCCString.h>
+#include <HCCIO.h>
 
 namespace Harlinn::Common::Core
 {

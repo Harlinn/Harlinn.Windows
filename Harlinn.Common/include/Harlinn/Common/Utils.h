@@ -25,6 +25,7 @@
 #include <array>
 #include <bit>
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <cwctype>
 #include <limits>
@@ -99,6 +100,20 @@ namespace Harlinn::Common
     /// <typeparam name="T">The type to test. CV-qualifiers and references are ignored.</typeparam>
     template<typename T>
     inline constexpr bool IsArithmetic = IsInteger<T> || IsFloatingPoint<T>;
+
+
+    namespace Internal
+    {
+        template<typename T>
+        struct IsStdChronoDuration : std::false_type {};
+
+        template<typename Rep, typename Period>
+        struct IsStdChronoDuration<std::chrono::duration<Rep, Period>> : std::true_type {};
+    }
+
+    template<typename T>
+    inline constexpr bool IsStdChronoDuration = Internal::IsStdChronoDuration<std::remove_cvref_t<T>>::value;
+
 
     namespace Internal
     {
@@ -2597,6 +2612,170 @@ namespace Harlinn::Common
     {
         return { std::forward<Fn>( Func ) };
     }
+
+    template<SignedIntegerType T>
+    constexpr inline bool IsAdditionSafe( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+        if ( rhs > 0 )
+        {
+            // positive rhs: overflow if lhs > MaxValue - rhs
+            return lhs <= ( MaxValue - rhs );
+        }
+        else
+        {
+            // non-positive rhs (rhs == 0 handled here too): underflow if lhs < MinValue - rhs
+            return lhs >= ( MinValue - rhs );
+        }
+    }
+
+    /// <summary>
+    /// Adds two signed integers and clamps the result to the valid range for the type.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Signed integer type.
+    /// </typeparam>
+    /// <param name="lhs">
+    /// Left operand.
+    /// </param>
+    /// <param name="rhs">
+    /// Right operand.
+    /// </param>
+    /// <returns>
+    /// The sum clamped to [std::numeric_limits<T>::min(), std::numeric_limits<T>::max()].
+    /// </returns>
+    template<SignedIntegerType T>
+    constexpr inline T SafeAddition( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+
+        if ( rhs > 0 )
+        {
+            // Would overflow to > MaxValue
+            if ( lhs > ( MaxValue - rhs ) )
+            {
+                return MaxValue;
+            }
+        }
+        else if ( rhs < 0 )
+        {
+            // Would underflow to < MinValue
+            if ( lhs < ( MinValue - rhs ) )
+            {
+                return MinValue;
+            }
+        }
+        return static_cast< T >( lhs + rhs );
+    }
+
+    template<UnsignedIntegerType T>
+    constexpr inline bool IsAdditionSafe( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+        return lhs <= ( MaxValue - rhs );
+    }
+
+    /// <summary>
+    /// Adds two unsigned integers and clamps the result to the valid range for the type.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Unsigned integer type.
+    /// </typeparam>
+    /// <param name="lhs">
+    /// Left operand.
+    /// </param>
+    /// <param name="rhs">
+    /// Right operand.
+    /// </param>
+    /// <returns>
+    /// The sum clamped to std::numeric_limits<T>::max().
+    /// </returns>
+    template<UnsignedIntegerType T>
+    constexpr inline T SafeAddition( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        // Overflow if lhs > MaxValue - rhs
+        if ( lhs > ( MaxValue - rhs ) )
+        {
+            return MaxValue;
+        }
+        return static_cast< T >( lhs + rhs );
+    }
+
+
+    template<SignedIntegerType T>
+    constexpr inline bool IsSubtractionSafe( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+
+        if ( rhs > 0 )
+        {
+            // Subtracting a positive rhs can underflow: lhs - rhs < MinValue
+            // Safe when lhs >= MinValue + rhs (no underflow).
+            return lhs >= ( MinValue + rhs );
+        }
+        else
+        {
+            // Subtracting a non-positive rhs is equivalent to adding -rhs (>=0),
+            // which can overflow if lhs > MaxValue + rhs (rhs is <= 0 so this is safe to compute).
+            return lhs <= ( MaxValue + rhs );
+        }
+    }
+
+    template<SignedIntegerType T>
+    constexpr inline T SafeSubtraction( T lhs, T rhs ) noexcept
+    {
+        const T MaxValue = std::numeric_limits<T>::max( );
+        const T MinValue = std::numeric_limits<T>::min( );
+
+        if ( rhs > 0 )
+        {
+            // Subtracting a positive rhs can underflow: lhs - rhs < MinValue
+            if ( lhs < ( MinValue + rhs ) )
+            {
+                return MinValue;
+            }
+        }
+        else if ( rhs < 0 )
+        {
+            // Subtracting a negative rhs is equivalent to adding -rhs (positive),
+            // which can overflow: lhs - rhs > MaxValue  <=>  lhs > MaxValue + rhs  (rhs <= 0)
+            if ( lhs > ( MaxValue + rhs ) )
+            {
+                return MaxValue;
+            }
+        }
+
+        return static_cast< T >( lhs - rhs );
+    }
+
+    template<UnsignedIntegerType T>
+    constexpr inline bool IsSubtractionSafe( T lhs, T rhs ) noexcept
+    {
+        // For unsigned integers subtraction underflows when lhs < rhs.
+        // It's safe to subtract when lhs >= rhs.
+        return lhs >= rhs;
+    }
+
+    /// <summary>
+    /// Subtracts two unsigned integers and clamps the result to the valid range for the type.
+    /// </summary>
+    /// <typeparam name="T">Unsigned integer type.</typeparam>
+    /// <param name="lhs">Left operand.</param>
+    /// <param name="rhs">Right operand.</param>
+    /// <returns>The difference clamped to [0, std::numeric_limits<T>::max()].</returns>
+    template<UnsignedIntegerType T>
+    constexpr inline T SafeSubtraction( T lhs, T rhs ) noexcept
+    {
+        // For unsigned types an underflow occurs when lhs < rhs.
+        // Clamp to zero in that case; otherwise perform the subtraction.
+        return ( lhs < rhs ) ? static_cast< T >( 0 ) : static_cast< T >( lhs - rhs );
+    }
+
 
 }
 

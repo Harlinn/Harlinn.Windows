@@ -517,10 +517,89 @@ namespace Harlinn::Common::Core::Test
     };
 
 
-
-
-
-
 }
+
+//
+// Stream output for C++20 three-way comparison result types.
+// These overloads provide human-readable names for the ordering results
+// and are intended for use in test diagnostics and logging.
+//
+// Note: adding functions to namespace std is technically undefined in general,
+// but providing stream operators for the standard ordering types is a pragmatic
+// choice for test utilities. Keep these overloads small and dependency-free.
+//
+
+namespace std
+{
+    template<typename CharT, typename Traits>
+    basic_ostream<CharT, Traits>& operator<<( basic_ostream<CharT, Traits>& os, const strong_ordering& v )
+    {
+        if ( v < 0 )
+        {
+            os << static_cast< CharT >( 'l' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 's' ) << static_cast< CharT >( 's' ); // "less"
+        }
+        else if ( v > 0 )
+        {
+            os << static_cast< CharT >( 'g' ) << static_cast< CharT >( 'r' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'a' )
+                << static_cast< CharT >( 't' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'r' ); // "greater"
+        }
+        else
+        {
+            os << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'q' ) << static_cast< CharT >( 'u' ) << static_cast< CharT >( 'a' )
+                << static_cast< CharT >( 'l' ); // "equal"
+        }
+        return os;
+    }
+
+    template<typename CharT, typename Traits>
+    basic_ostream<CharT, Traits>& operator<<( basic_ostream<CharT, Traits>& os, const weak_ordering& v )
+    {
+        if ( v < 0 )
+        {
+            os << static_cast< CharT >( 'l' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 's' ) << static_cast< CharT >( 's' ); // "less"
+        }
+        else if ( v > 0 )
+        {
+            os << static_cast< CharT >( 'g' ) << static_cast< CharT >( 'r' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'a' )
+                << static_cast< CharT >( 't' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'r' ); // "greater"
+        }
+        else
+        {
+            // weak_ordering::equivalent (note: not necessarily bitwise-equal)
+            os << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'q' ) << static_cast< CharT >( 'u' ) << static_cast< CharT >( 'i' )
+                << static_cast< CharT >( 'v' ) << static_cast< CharT >( 'a' ) << static_cast< CharT >( 'l' ) << static_cast< CharT >( 'e' )
+                << static_cast< CharT >( 'n' ) << static_cast< CharT >( 't' ); // "equivalent"
+        }
+        return os;
+    }
+
+    template<typename CharT, typename Traits>
+    basic_ostream<CharT, Traits>& operator<<( basic_ostream<CharT, Traits>& os, const partial_ordering& v )
+    {
+        if ( v < 0 )
+        {
+            os << static_cast< CharT >( 'l' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 's' ) << static_cast< CharT >( 's' ); // "less"
+        }
+        else if ( v > 0 )
+        {
+            os << static_cast< CharT >( 'g' ) << static_cast< CharT >( 'r' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'a' )
+                << static_cast< CharT >( 't' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'r' ); // "greater"
+        }
+        else if ( v == 0 )
+        {
+            os << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'q' ) << static_cast< CharT >( 'u' ) << static_cast< CharT >( 'a' )
+                << static_cast< CharT >( 'l' ); // "equal"
+        }
+        else
+        {
+            // unordered
+            os << static_cast< CharT >( 'u' ) << static_cast< CharT >( 'n' ) << static_cast< CharT >( 'o' ) << static_cast< CharT >( 'r' )
+                << static_cast< CharT >( 'd' ) << static_cast< CharT >( 'e' ) << static_cast< CharT >( 'r' ) << static_cast< CharT >( 'e' )
+                << static_cast< CharT >( 'd' ); // "unordered"
+        }
+        return os;
+    }
+}
+
 
 #endif

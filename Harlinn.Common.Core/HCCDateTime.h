@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __HCCDATETIME_H__
 #define __HCCDATETIME_H__
 /*
@@ -135,7 +135,8 @@ namespace Harlinn::Common::Core
 
     class DateTime;
     /// <summary>
-    /// Represents a time interval.
+    /// TimeSpan represents a time interval stored as an integer 
+    /// count of "ticks" (ticks_), where one tick = 100 ns (like .NET).
     /// </summary>
     class TimeSpan : public TimeBase
     {
@@ -158,46 +159,383 @@ namespace Harlinn::Common::Core
     private:
         long long ticks_;
 
-        HCC_EXPORT static TimeSpan Interval( double theValue, int theScale );
+        /// <summary>
+        /// Converts a floating-point interval value, scaled by <paramref name="theScale"/>, into a <see cref="TimeSpan"/>.
+        /// The value is converted to whole milliseconds by rounding to nearest millisecond, then multiplied by
+        /// <c>TicksPerMillisecond</c> (1 tick = 100 ns) to produce the internal tick count stored by <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <param name="theValue">The interval value (may be fractional). Must not be NaN.</param>
+        /// <param name="theScale">
+        /// Scale factor applied to <paramref name="theValue"/> to obtain milliseconds. 
+        /// Examples: <c>TimeSpan::MillisPerSecond</c> to convert seconds -> milliseconds, <c>TimeSpan::MillisPerDay</c> to convert days -> milliseconds.
+        /// </param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing the interval. Fractional milliseconds are rounded to the nearest millisecond
+        /// before conversion to ticks.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Implementation details:
+        /// - Computes <c>milliSeconds = theValue * theScale</c>.
+        /// - Rounds to nearest integer millisecond by adding <c>+0.5</c> for non-negative values and <c>-0.5</c> for negative values,
+        ///   then truncates to a 64-bit integer and multiplies by <c>TicksPerMillisecond</c>.
+        /// </para>
+        /// <para>
+        /// Range considerations:
+        /// - The function checks that the computed millisecond value fits in the library's allowed range
+        ///   (see <c>TimeBase::MaxMilliSeconds</c> / <c>TimeBase::MinMilliSeconds</c>). If the millisecond value would
+        ///   overflow 64-bit ticks it throws <see cref="OverflowException"/>.
+        /// </para>
+        /// <para>
+        /// Thread-safety: function is pure (no side effects) and safe to call concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="theValue"/> is NaN.</exception>
+        /// <exception cref="OverflowException">Thrown when the computed millisecond value is outside the representable range and would overflow ticks.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1.5 seconds -> milliseconds = 1.5 * TimeSpan::MillisPerSecond (1500), rounded -> TimeSpan of 1500 ms
+        /// TimeSpan ts = TimeSpan::Interval( 1.5, TimeSpan::MillisPerSecond );
+        ///
+        /// // Equivalent convenience helper:
+        /// TimeSpan ts2 = TimeSpan::FromSeconds( 1.5 );
+        ///
+        /// // Use ToTimeout() when passing to Windows wait APIs:
+        /// DWORD timeout = ts.ToTimeout();
+        /// WaitForSingleObject(handle, timeout);
+        /// </code>
+        /// </example>
+        HCC_EXPORT static TimeSpan Interval( double value, int scale );
     public:
 
+        /// <summary>
+        /// Converts an interval expressed as days, hours, minutes, seconds and milliseconds
+        /// into the internal tick count used by this library (1 tick = 100 nanoseconds).
+        /// </summary>
+        /// <param name="days">
+        /// Number of days comprising the interval. May be negative to represent a negative interval.
+        /// The value is treated as whole days and combined with the other components to form the total interval.
+        /// </param>
+        /// <param name="hours">
+        /// Number of hours (0..23 in typical usage). The function does not enforce per-field limits;
+        /// the components are combined into a total millisecond count before range checks are applied.
+        /// </param>
+        /// <param name="minutes">
+        /// Number of minutes (0..59 in typical usage). See remarks for behavior when components exceed usual bounds.
+        /// </param>
+        /// <param name="seconds">
+        /// Number of seconds (0..59 in typical usage).
+        /// </param>
+        /// <param name="milliseconds">
+        /// Number of milliseconds (0..999 in typical usage).
+        /// </param>
+        /// <returns>
+        /// The total interval expressed in ticks (100 ns units). The returned tick count uses the same
+        /// epoch/unit convention as `DateTime` and Windows `FILETIME` when combined with the library's
+        /// `FileTimeOffset` constant.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: the components are first combined to produce a total number of milliseconds:
+        ///   totalMillis = ((days * 24 + hours) * 3600 + minutes * 60 + seconds) * 1000 + milliseconds.
+        ///   The final result is totalMillis * `TicksPerMillisecond` (where `TicksPerMillisecond` == 10,000).
+        /// - The function performs a range check on the total millisecond value and throws
+        ///   `ArgumentOutOfRangeException` if the total milliseconds fall outside the representable range
+        ///   (see `TimeBase::MaxMilliSeconds` and `TimeBase::MinMilliSeconds`).
+        /// - Typical callers pass small, non-negative values for hours/minutes/seconds/milliseconds and
+        ///   use `days` for multi-day intervals. If callers supply component values outside the usual
+        ///   per-field ranges (for example `hours >= 24`), those values are still incorporated into the
+        ///   total interval arithmetic (no per-field normalization is performed here).
+        /// - The returned tick value is suitable for use with this library's `DateTime` APIs and can be
+        ///   converted to a Windows `FILETIME` representation by subtracting/adding the `FileTimeOffset`
+        ///   constant where appropriate. Windows API functions that accept timeouts (for example
+        ///   `WaitForSingleObject`) use milliseconds (DWORD), not ticks — convert ticks to milliseconds
+        ///   before calling such APIs.
+        /// - The function is thread-safe and has no side-effects; it uses only integer arithmetic.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when the computed total interval in milliseconds is outside the allowed range.
+        /// </exception>
         HCC_EXPORT static long long TimeToTicks( int days, int hours, int minutes, int seconds = 0, int milliseconds = 0 );
 
+        /// <summary>
+        /// Converts an arbitrary `std::chrono` duration to the internal tick representation used by `TimeSpan`.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy `IsStdChronoDuration`.</typeparam>
+        /// <param name="duration">The duration to convert. May be negative to represent a negative interval.</param>
+        /// <returns>
+        /// The number of ticks (100-nanosecond units) corresponding to `duration`, returned as a <c>long long</c>.
+        /// The conversion is performed using `std::chrono::duration_cast` to a duration with period 1 / 10,000,000
+        /// seconds (100 ns), then the underlying count is returned.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Precision & rounding: `std::chrono::duration_cast` performs a narrowing conversion. When converting
+        ///   from a duration with finer resolution or a floating-point representation the result is truncated
+        ///   toward zero (fractional sub-tick parts are discarded). Callers that require specific rounding
+        ///   should perform that rounding before calling this function.
+        /// </para>
+        /// <para>
+        /// - Range & overflow: No runtime overflow checking is performed. If the converted tick count does not fit
+        ///   in a `long long` the result may overflow or wrap depending on the implementation. Callers should ensure
+        ///   the `duration` value is within an acceptable range (for example relative to `TimeBase::MinTicks` / `TimeBase::MaxTicks`)
+        ///   before calling this function if overflow must be avoided.
+        /// </para>
+        /// <para>
+        /// - Thread-safety: function is pure and has no side effects.
+        /// </para>
+        /// </remarks>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        static constexpr long long DurationToTicks( const DurationT& duration )
+        {
+            return std::chrono::duration_cast<std::chrono::duration<long long, std::ratio<1, 10000000>>>( duration ).count();
+        }
+
+        /// <summary>
+        /// Converts an internal tick count (100-nanosecond units) into a `std::chrono` duration.
+        /// </summary>
+        /// <typeparam name="DurationT">
+        /// Target `std::chrono::duration` type. Defaults to `std::chrono::system_clock::duration`.
+        /// </typeparam>
+        /// <param name="ticks">
+        /// Number of ticks (1 tick = 100 ns). May be negative to represent a negative interval.
+        /// </param>
+        /// <returns>
+        /// A value of type <paramref name="DurationT"/> representing the same interval as <paramref name="ticks"/>.
+        /// The conversion is implemented with `std::chrono::duration_cast` from a 
+        /// 100-ns tick duration to the requested duration type.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Rounding/Precision: `std::chrono::duration_cast` truncates toward zero when converting to a coarser-grained
+        ///   duration. Sub-tick fractions are discarded. If callers require a different rounding policy they should
+        ///   perform rounding before calling this function.
+        /// </para>
+        /// <para>
+        /// - Range and overflow: There is no built-in runtime check for overflow when converting the constructed
+        ///   100-ns duration to the target type. If the resulting count does not fit in the representation of
+        ///   <c>DurationT::rep</c> the behavior is implementation-defined (possible wrap/overflow). Callers should
+        ///   ensure the tick value is within acceptable bounds before converting when overflow must be avoided.
+        /// </para>
+        /// <para>Thread-safety: the function is pure and has no side-effects.</para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Convert TimeSpan ticks to std::chrono::milliseconds
+        /// long long ticks = ts.Ticks();
+        /// auto ms = TimeSpan::TicksToDuration<std::chrono::milliseconds>(ticks);
+        ///
+        /// // Default template (system_clock::duration)
+        /// auto dur = TimeSpan::TicksToDuration( ticks );
+        /// </code>
+        /// </example>
+        template<typename DurationT = std::chrono::system_clock::duration>
+            requires IsStdChronoDuration < DurationT >
+        static constexpr DurationT TicksToDuration( long long ticks )
+        {
+            return std::chrono::duration_cast<DurationT>( std::chrono::duration<long long, std::ratio<1, 10000000>>( ticks ) );
+        }
+
+
+        /// <summary>
+        /// Initializes a new <see cref="TimeSpan"/> representing a zero-length interval.
+        /// </summary>
+        /// <remarks>
+        /// - This constexpr, noexcept constructor sets the internal tick count (<c>ticks_</c>) to zero,
+        ///   which corresponds to an interval of 0 (see <see cref="TimeSpan::Zero"/>).
+        /// - The object is trivially constructible and safe for use in constant-evaluated contexts.
+        /// - No allocation or I/O is performed and no exceptions are thrown.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Default constructed TimeSpan is zero
+        /// TimeSpan t;                // t.Ticks() == 0
+        /// auto z = TimeSpan::Zero(); // equivalent
+        /// </code>
+        /// </example>
         constexpr TimeSpan( ) noexcept
             : ticks_( 0 )
-        {
+        { }
 
-        }
-
+        /// <summary>
+        /// Initializes a new <see cref="TimeSpan"/> with the specified number of ticks.
+        /// </summary>
+        /// <param name="ticks">
+        /// The number of ticks to store in the TimeSpan. One tick equals 100 nanoseconds (0.1 microsecond).
+        /// The value may be negative to represent a negative time interval.
+        /// </param>
+        /// <remarks>
+        /// - This constructor is declared <c>constexpr</c> so it can be used in constant-evaluated contexts.
+        /// - No range validation is performed by this constructor; callers that need to ensure the value
+        ///   fits DateTime-related ranges should validate against <see cref="TimeBase::MinTicks"/> /
+        ///   <see cref="TimeBase::MaxTicks"/> or use higher-level factory functions.
+        /// - The stored value is the internal representation used throughout the library and matches the
+        ///   100-nanosecond tick unit used by Windows FILETIME/SYSTEMTIME conversions.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Create a TimeSpan representing one millisecond:
+        /// TimeSpan oneMs( TimeSpan::TicksPerMillisecond );
+        /// </code>
+        /// </example>
         constexpr explicit TimeSpan( long long ticks )
             : ticks_( ticks )
-        {
+        { }
 
-        }
+        /// <summary>
+        /// Constructs a <see cref="TimeSpan"/> from a `std::chrono` duration by converting the duration
+        /// to the internal tick representation (1 tick = 100 ns).
+        /// </summary>
+        /// <typeparam name="DurationT">The `std::chrono::duration` type. Must satisfy `IsStdChronoDuration`.</typeparam>
+        /// <param name="duration">The duration to convert. May be negative to represent a negative interval.</param>
+        /// <remarks>
+        /// - Conversion is implemented by `DurationToTicks` which uses `std::chrono::duration_cast` to a
+        ///   duration with a period of 1/10,000,000 (100 ns) and stores the resulting count in the internal
+        ///   tick field (`ticks_`).
+        /// - `std::chrono::duration_cast` truncates toward zero; fractional sub-tick parts are discarded.
+        /// - This constructor is `constexpr` and `noexcept`, and performs no runtime range checking. Callers
+        ///   that require validation against `TimeBase::MinTicks`/`TimeBase::MaxTicks` should perform those
+        ///   checks before constructing or use higher-level helpers.
+        /// - The tick unit matches Windows `FILETIME`/`SYSTEMTIME` 100-nanosecond units; when passing timeouts to
+        ///   Windows APIs that expect milliseconds (for example `WaitForSingleObject`) convert ticks to milliseconds
+        ///   (divide by `TicksPerMillisecond`) and clamp to the API's range (use `TimeSpan::ToTimeout()`).
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Construct from std::chrono::milliseconds
+        /// TimeSpan ts = TimeSpan( std::chrono::milliseconds(1500) ); // 1.5 seconds
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr explicit TimeSpan( const DurationT& duration ) noexcept
+            : ticks_( DurationToTicks( duration ) )
+        { }
 
-        constexpr explicit TimeSpan( std::chrono::system_clock::duration value )
-            : ticks_( value.count() )
-        {
-        }
-
-
+        /// <summary>
+        /// Initializes a new <see cref="TimeSpan"/> that represents the interval specified by hours, minutes and seconds.
+        /// </summary>
+        /// <param name="hours">
+        /// Number of whole hours in the interval. The value may be negative to produce a negative interval.
+        /// </param>
+        /// <param name="minutes">
+        /// Number of whole minutes in the interval. Typical callers pass values in 0..59; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <param name="seconds">
+        /// Number of whole seconds in the interval. Typical callers pass values in 0..59; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <remarks>
+        /// - The constructor computes the internal tick count by calling `TimeToTicks(0, hours, minutes, seconds)` and
+        ///   stores the resulting tick count in the object (<c>ticks_</c>).
+        /// - The unit used is ticks where 1 tick = 100 nanoseconds. The combination of components is converted to
+        ///   total milliseconds and then to ticks.
+        /// - If the resulting total milliseconds falls outside the representable range (see <c>TimeBase::MaxMilliSeconds</c>
+        ///   / <c>TimeBase::MinMilliSeconds</c>), an <see cref="ArgumentOutOfRangeException"/> is thrown.
+        /// - This constructor does not perform per-field range normalization (for example hours >= 24); callers that need
+        ///   normalized component semantics should normalize before calling.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the computed total interval is outside the allowed range.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1 hour 30 minutes:
+        /// TimeSpan ts(1, 30, 0);
+        /// </code>
+        /// </example>
         TimeSpan( int hours, int minutes, int seconds )
             : ticks_( TimeToTicks( 0, hours, minutes, seconds ) )
-        {
+        { }
 
-        }
-
+        /// <summary>
+        /// Initializes a new <see cref="TimeSpan"/> that represents the interval specified by days, hours, minutes and seconds.
+        /// </summary>
+        /// <param name="days">
+        /// Number of whole days in the interval. May be negative to represent a negative interval.
+        /// </param>
+        /// <param name="hours">
+        /// Number of whole hours in the interval. Typical callers pass values in 0..23; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <param name="minutes">
+        /// Number of whole minutes in the interval. Typical callers pass values in 0..59; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <param name="seconds">
+        /// Number of whole seconds in the interval. Typical callers pass values in 0..59; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <remarks>
+        /// - The constructor calls <see cref="TimeToTicks(int,int,int,int)"/> to compute the internal tick count
+        ///   (1 tick = 100 nanoseconds) from the supplied components. The combination is converted to total milliseconds
+        ///   and then to ticks.
+        /// - No per-field normalization is performed; if callers need normalized fields (for example hours >= 24)
+        ///   they should normalize before calling this constructor.
+        /// - The resulting tick value corresponds to the same 100-nanosecond unit used by Windows <c>FILETIME</c>.
+        ///   When passing intervals to Windows APIs that accept milliseconds (for example <c>WaitForSingleObject</c>),
+        ///   convert ticks to milliseconds (divide by <see cref="TicksPerMillisecond"/>) and clamp to the API's range
+        ///   (use <see cref="TimeSpan::ToTimeout"/> for a safe conversion to a DWORD timeout).
+        /// - The constructor is not constexpr and may throw when the computed total interval is out of range.
+        /// - Thread-safety: the constructor is pure (no global state) and safe to call concurrently.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the computed total interval in milliseconds is outside the allowed range.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // Two days, 3 hours, 15 minutes and 30 seconds:
+        /// TimeSpan ts(2, 3, 15, 30);
+        /// </code>
+        /// </example>
         TimeSpan( int days, int hours, int minutes, int seconds )
             : ticks_( TimeToTicks( days, hours, minutes, seconds ) )
-        {
+        { }
 
-        }
-
+        /// <summary>
+        /// Initializes a new <see cref="TimeSpan"/> that represents the interval specified by
+        /// days, hours, minutes, seconds and milliseconds.
+        /// </summary>
+        /// <param name="days">
+        /// Number of whole days in the interval. May be negative to represent a negative interval.
+        /// </param>
+        /// <param name="hours">
+        /// Number of whole hours in the interval. Typical callers use 0..23; values outside that range
+        /// are accepted and incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <param name="minutes">
+        /// Number of whole minutes in the interval. Typical callers use 0..59; values outside that range
+        /// are accepted and incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <param name="seconds">
+        /// Number of whole seconds in the interval. Typical callers use 0..59; values outside that range
+        /// are accepted and incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <param name="milliseconds">
+        /// Number of whole milliseconds in the interval. Typical callers use 0..999; values outside that range
+        /// are accepted and incorporated into the total interval arithmetic.
+        /// </param>
+        /// <remarks>
+        /// - The constructor computes the internal tick count by calling
+        ///   <see cref="TimeToTicks(int,int,int,int,int)"/> and stores the resulting tick count in <c>ticks_</c>.
+        /// - Units: 1 tick = 100 nanoseconds. The supplied components are combined to total milliseconds,
+        ///   then converted to ticks (no fractional-millisecond rounding is performed).
+        /// - No per-field normalization is performed (for example hours >= 24); callers that require normalized
+        ///   component semantics should normalize before calling this constructor.
+        /// - The resulting tick value corresponds to the 100-nanosecond units used by Windows <c>FILETIME</c>.
+        ///   When passing intervals to Windows APIs that accept milliseconds (for example <c>WaitForSingleObject</c>),
+        ///   convert ticks to milliseconds (divide by <see cref="TicksPerMillisecond"/>) and clamp to the API's range
+        ///   (use <see cref="TimeSpan::ToTimeout"/> for a safe conversion to a DWORD timeout).
+        /// - This constructor may throw when the computed total interval is out of the representable range.
+        /// - Thread-safety: the constructor performs only local computations and is safe to call concurrently.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the computed total interval in milliseconds is outside the allowed range.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1 day, 2 hours, 3 minutes, 4 seconds, 500 milliseconds
+        /// TimeSpan ts(1, 2, 3, 4, 500);
+        /// </code>
+        /// </example>
         TimeSpan( int days, int hours, int minutes, int seconds, int milliseconds )
             : ticks_( TimeToTicks( days, hours, minutes, seconds, milliseconds ) )
-        {
-
-        }
+        { }
 
         constexpr size_t hash( ) const noexcept
         {
@@ -207,6 +545,36 @@ namespace Harlinn::Common::Core
             return x;
         }
 
+        /// <summary>
+        /// Computes a non-cryptographic hash value for this <see cref="TimeSpan"/> instance.
+        /// </summary>
+        /// <returns>
+        /// A <c>size_t</c> hash value derived from the internal tick count (<c>ticks_</c>).
+        /// The value is suitable for use with <c>std::hash</c>-based containers (for example <c>std::unordered_map</c>
+        /// and <c>std::unordered_set</c>).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Implementation details:
+        /// - The function mixes the 64-bit tick value using a well-known 64-bit integer mixing/finalizer
+        ///   sequence (the SplitMix64 / fmix64 style finalizer constants) to produce a uniformly-distributed
+        ///   64-bit result before returning it as <c>size_t</c>.
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, allowing compile-time evaluation where possible.
+        /// - The hash is deterministic and repeatable within the same platform and implementation, but it is
+        ///   intentionally non-cryptographic. Do not use this value for security-sensitive purposes.
+        /// - On platforms where <c>size_t</c> is narrower than 64 bits (for example 32-bit targets), the
+        ///   computed 64-bit mixed value will be truncated to fit <c>size_t</c>. The project targets x64 by default,
+        ///   so truncation is not expected in typical builds.
+        /// - The function reads only object-local state (<c>ticks_</c>) and has no side-effects; it is thread-safe.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Use TimeSpan in an unordered_set (std::hash specialization is provided in this header).
+        /// std::unordered_set<TimeSpan> set;
+        /// set.insert( TimeSpan::FromSeconds(1.0) );
+        /// </code>
+        /// </example>
         static TimeSpan UserTime( )
         {
             Int64 creationTime;
@@ -217,204 +585,1020 @@ namespace Harlinn::Common::Core
             return TimeSpan( userTime );
         }
 
+        /// <summary>
+        /// Gets the raw tick count stored by this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// The number of ticks (1 tick = 100 nanoseconds) represented by this <see cref="TimeSpan"/>.
+        /// The returned value may be negative to represent a negative interval.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The value is the internal representation used throughout the library and matches the 100-nanosecond
+        ///   unit used by Windows <c>FILETIME</c> and .NET <c>TimeSpan</c>.
+        /// - This function is <c>constexpr</c> and <c>noexcept</c>; it performs no allocation or I/O.
+        /// - The call has no side effects and is safe to use concurrently from multiple threads.
+        /// - To convert ticks to milliseconds, divide the result by <see cref="TicksPerMillisecond"/> or
+        ///   use the convenience functions such as <see cref="ToMilliseconds"/> / <see cref="TotalMilliseconds"/>.
+        /// - When passing timeouts to Win32 APIs that expect a DWORD timeout (milliseconds), convert and clamp
+        ///   appropriately (see <see cref="ToTimeout"/>).
+        /// </para>
+        /// </remarks>
         constexpr long long Ticks( ) const noexcept
         {
             return ticks_;
         }
 
+        /// <summary>
+        /// Gets the number of whole days represented by this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// The total number of whole days in the interval. Calculated as the integer division of the internal
+        /// tick count by <c>TicksPerDay</c> (1 day = <c>TicksPerDay</c> ticks). The returned value may be
+        /// negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - This function performs integer division: fractional day parts are discarded (truncated toward zero).
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe to call from
+        ///   multiple threads concurrently.
+        /// - The return type is <c>int</c>. If the total days do not fit in an <c>int</c>, the result will be
+        ///   converted from a 64-bit value to <c>int</c> using a narrowing conversion; callers that must preserve
+        ///   large values should use <see cref="ToMilliseconds"/> / <see cref="TotalDays"/> or otherwise handle
+        ///   the full 64-bit tick count before converting.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 36 hours -> 1 day
+        /// TimeSpan ts = TimeSpan( 0, 36, 0, 0 );
+        /// int days = ts.Days(); // 1
+        /// </code>
+        /// </example>
         constexpr int Days( ) const noexcept
         {
             return static_cast<int>( ticks_ / TicksPerDay );
         }
 
+        /// <summary>
+        /// Gets the hours component of this <see cref="TimeSpan"/> within a 24-hour day.
+        /// </summary>
+        /// <returns>
+        /// The number of whole hours represented by this <see cref="TimeSpan"/> modulo 24.
+        /// - For non-negative intervals the result is in the range 0..23.
+        /// - For negative intervals the result may be negative (range -23..23) because the computation uses
+        ///   integer division and the signed remainder operator.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: the value is computed as <c>static_cast<int>((ticks_ / TicksPerHour) % 24)</c>.
+        ///   Integer division discards any fractional hour (truncates toward zero), so fractional-hour parts are lost.
+        /// - The returned value is the hour component of the interval when expressed in days/hours/minutes/seconds:
+        ///   it does not represent the total hours in the interval (use <see cref="TotalHours"/> for that).
+        /// - For negative intervals the hour component follows C++ signed remainder semantics; callers that require
+        ///   a non-negative hour component for negative intervals should normalize the value explicitly.
+        /// - This function is <c>constexpr</c> and <c>noexcept</c> and has no side-effects.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 36 hours -> Days() == 1, Hours() == 12
+        /// TimeSpan ts = TimeSpan( 0, 36, 0, 0 );
+        /// int hours = ts.Hours(); // 12
+        ///
+        /// // -3 hours -> Days() == 0, Hours() == -3
+        /// TimeSpan neg = TimeSpan::FromHours( -3.0 );
+        /// int negHours = neg.Hours(); // -3
+        /// </code>
+        /// </example>
         constexpr int Hours( ) const noexcept
         {
             return static_cast<int>( ( ticks_ / TicksPerHour ) % 24 );
         }
 
-        constexpr int Milliseconds( ) const noexcept
-        {
-            return static_cast<int>( ( ticks_ / TicksPerMillisecond ) % 1000 );
-        }
-
+        /// <summary>
+        /// Gets the minutes component of this <see cref="TimeSpan"/> within an hour.
+        /// </summary>
+        /// <returns>
+        /// The number of whole minutes represented by this <see cref="TimeSpan"/> modulo 60.
+        /// - For non-negative intervals the result is in the range 0..59.
+        /// - For negative intervals the result may be negative (range -59..59) because the computation uses
+        ///   integer division and the signed remainder operator.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: the value is computed as <c>static_cast<int>((ticks_ / TicksPerMinute) % 60)</c>.
+        ///   Integer division discards any fractional minute (truncates toward zero), so fractional-minute parts are lost.
+        /// - The returned value is the minute component when the interval is expressed as days/hours/minutes/seconds:
+        ///   it does not represent the total minutes in the interval (use <see cref="TotalMinutes"/> for that).
+        /// - For negative intervals the minute component follows C++ signed remainder semantics; callers that require
+        ///   a non-negative minute component for negative intervals should normalize the value explicitly.
+        /// - This function is <c>constexpr</c> and <c>noexcept</c> and has no side-effects.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 90 minutes -> 1 hour 30 minutes
+        /// TimeSpan ts = TimeSpan::FromMinutes( 90.0 );
+        /// int minutes = ts.Minutes(); // 30
+        /// int hours = ts.Hours();     // 1
+        /// </code>
+        /// </example>
         constexpr int Minutes( ) const noexcept
         {
             return static_cast<int>( ( ticks_ / TicksPerMinute ) % 60 );
         }
 
+        /// <summary>
+        /// Gets the seconds component of this <see cref="TimeSpan"/> within a minute.
+        /// </summary>
+        /// <returns>
+        /// The number of whole seconds represented by this <see cref="TimeSpan"/> modulo 60.
+        /// - For non-negative intervals the result is in the range 0..59.
+        /// - For negative intervals the result may be negative (range -59..59) because the computation uses
+        ///   integer division and the signed remainder operator.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: the value is computed as <c>static_cast<int>((ticks_ / TicksPerSecond) % 60)</c>.
+        ///   Integer division discards any fractional second (truncates toward zero), so fractional-second parts are lost.
+        /// - The returned value is the seconds component when the interval is expressed as
+        ///   days/hours/minutes/seconds; it does not represent the total seconds in the interval
+        ///   (use <see cref="TotalSeconds"/> or <see cref="ToSeconds"/> for that).
+        /// - For negative intervals the seconds component follows C++ signed remainder semantics; callers that require
+        ///   a non-negative seconds component for negative intervals should normalize the value explicitly.
+        /// - This function is <c>constexpr</c> and <c>noexcept</c> and has no side-effects.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 90 seconds -> 1 minute 30 seconds
+        /// TimeSpan ts = TimeSpan::FromSeconds( 90.0 );
+        /// int seconds = ts.Seconds(); // 30
+        /// int minutes = ts.Minutes(); // 1
+        /// </code>
+        /// </example>
         constexpr int Seconds( ) const noexcept
         {
             return static_cast<int>( ( ticks_ / TicksPerSecond ) % 60 );
         }
 
+        /// <summary>
+        /// Gets the milliseconds component of this <see cref="TimeSpan"/> within a second.
+        /// </summary>
+        /// <returns>
+        /// The number of whole milliseconds represented by this <see cref="TimeSpan"/> modulo 1000.
+        /// - For non-negative intervals the result is in the range 0..999.
+        /// - For negative intervals the result may be negative (range -999..999) because the computation uses
+        ///   integer division and the signed remainder operator.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: the value is computed as <c>static_cast<int>((ticks_ / TicksPerMillisecond) % 1000)</c>.
+        ///   Integer division discards any fractional millisecond (truncates toward zero), so fractional-millisecond parts are lost.
+        /// - The returned value is the millisecond component when the interval is expressed as
+        ///   days/hours/minutes/seconds/milliseconds; it does not represent the total milliseconds in the interval
+        ///   (use <see cref="ToMilliseconds"/> or <see cref="TotalMilliseconds"/> for that).
+        /// - For negative intervals the millisecond component follows C++ signed remainder semantics; callers that require
+        ///   a non-negative millisecond component for negative intervals should normalize the value explicitly.
+        /// - This function is <c>constexpr</c> and <c>noexcept</c> and has no side-effects.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1500 milliseconds -> 1 second 500 milliseconds
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1500.0);
+        /// int ms = ts.Milliseconds(); // 500
+        /// </code>
+        /// </example>
+        constexpr int Milliseconds( ) const noexcept
+        {
+            return static_cast< int >( ( ticks_ / TicksPerMillisecond ) % 1000 );
+        }
+
+        /// <summary>
+        /// Gets the number of whole days represented by this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// The total number of whole days in the interval, computed as <c>ticks_ / TicksPerDay</c>.
+        /// The returned value may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: integer division is used and fractional day parts are discarded (truncated toward zero).
+        /// - Use <see cref="TotalDays"/> to obtain the interval expressed as a fractional number of days.
+        /// - The value is derived from the internal tick unit (1 tick = 100 nanoseconds). When interoperating
+        ///   with OS APIs that expect timeouts in milliseconds, convert ticks to milliseconds (divide by
+        ///   <see cref="TicksPerMillisecond"/>) and clamp as appropriate (see <see cref="ToTimeout"/>).
+        /// - This function is <c>constexpr</c>, <c>noexcept</c> and has no side-effects; it is safe to call from multiple threads.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 36 hours -> 1 whole day
+        /// TimeSpan ts = TimeSpan::FromHours(36.0);
+        /// long long days = ts.ToDays(); // 1
+        /// </code>
+        /// </example>
+        constexpr long long ToDays( ) const noexcept
+        {
+            return ticks_ / TicksPerDay;
+        }
+
+        /// <summary>
+        /// Gets the number of whole hours represented by this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// The total number of whole hours in the interval, computed as <c>ticks_ / TicksPerHour</c>.
+        /// The returned value may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: integer division is used and fractional hour parts are discarded (truncated toward zero).
+        /// - Use <see cref="TotalHours"/> to obtain the interval expressed as a fractional number of hours.
+        /// - The value is derived from the internal tick unit (1 tick = 100 nanoseconds). When interoperating
+        ///   with OS APIs that expect timeouts in milliseconds, convert ticks to milliseconds (divide by
+        ///   <see cref="TicksPerMillisecond"/>) and clamp as appropriate (see <see cref="ToTimeout"/>).
+        /// - This function is <c>constexpr</c>, <c>noexcept</c> and has no side-effects; it is safe to call from multiple threads.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 36 hours -> 36 whole hours
+        /// TimeSpan ts = TimeSpan::FromHours(36.0);
+        /// long long hours = ts.ToHours(); // 36
+        /// // For components use Days()/Hours(): Days()==1, Hours()==12
+        /// </code>
+        /// </example>
+        constexpr long long ToHours( ) const noexcept
+        {
+            return ticks_ / TicksPerHour;
+        }
+
+        /// <summary>
+        /// Gets the number of whole seconds represented by this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// The total number of whole seconds in the interval, computed as <c>ticks_ / TicksPerSecond</c>.
+        /// The returned value may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - Computation uses integer division; any fractional second portion is discarded (truncated toward zero).
+        /// - For a fractional number of seconds use <see cref="TotalSeconds"/> which returns a <c>double</c>.
+        /// - The internal unit is ticks (1 tick = 100 nanoseconds). Converting to seconds loses sub-second precision.
+        /// - No additional overflow checking is performed; when interoperating with APIs that expect different units
+        ///   (for example Windows timeouts in milliseconds) convert and clamp appropriately (see <see cref="ToTimeout"/>).
+        /// - This function is <c>constexpr</c>, <c>noexcept</c> and has no side-effects; it is safe to call concurrently.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 90 seconds -> ToSeconds() == 90
+        /// TimeSpan ts = TimeSpan::FromSeconds(90.0);
+        /// long long seconds = ts.ToSeconds(); // 90
+        /// </code>
+        /// </example>
         constexpr long long ToSeconds( ) const noexcept
         {
             return ticks_ / TicksPerSecond;
         }
 
-        constexpr double TotalDays( ) const noexcept
-        {
-            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerDay );
-        }
-
-        constexpr double TotalHours( ) const noexcept
-        {
-            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerHour );
-        }
-
+        /// <summary>
+        /// Gets the number of whole milliseconds represented by this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// The total number of whole milliseconds in the interval, computed as <c>ticks_ / TicksPerMillisecond</c>.
+        /// The returned value may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - Computation uses integer division; any fractional millisecond portion is discarded (truncated toward zero).
+        /// - For a fractional number of milliseconds use <see cref="TotalMilliseconds"/> which returns a <c>double</c>
+        ///   and applies clamping to the representable range.
+        /// - The internal unit is ticks (1 tick = 100 nanoseconds). Converting to milliseconds loses sub-millisecond precision.
+        /// - No additional overflow checking is performed by this method. When interoperating with APIs that expect
+        ///   different units (for example Windows timeouts in milliseconds) convert and clamp appropriately (see <see cref="ToTimeout"/>).
+        /// - This function is <c>constexpr</c>, <c>noexcept</c> and has no side-effects; it is safe to call concurrently.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1500 milliseconds -> ToMilliseconds() == 1500
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1500.0);
+        /// long long ms = ts.ToMilliseconds(); // 1500
+        /// </code>
+        /// </example>
         constexpr long long ToMilliseconds( ) const noexcept
         {
             return ticks_ / TicksPerMillisecond;
         }
 
-        constexpr double TotalMilliseconds( ) const noexcept
-        {
-            auto result = ticks_ / TicksPerMillisecond;
-            if ( result > MaxMilliSeconds )
-            {
-                return static_cast<double>( MaxMilliSeconds );
-            }
-
-            if ( result < MinMilliSeconds )
-            {
-                return static_cast<double>( MinMilliSeconds );
-            }
-
-            return static_cast<double>( result );
-        }
-
+        /// <summary>
+        /// Gets the number of whole microseconds represented by this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// The total number of whole microseconds in the interval, computed as <c>ticks_ / TicksPerMicrosecond</c>.
+        /// The returned value may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - Computation: integer division is used and any fractional microsecond portion is discarded (truncated toward zero).
+        /// - Units: 1 tick == 100 nanoseconds, and <c>TicksPerMicrosecond</c> == 10, so the result is effectively <c>ticks_ / 10</c>.
+        /// - Range & overflow: no runtime overflow checking is performed. If the underlying tick count is large enough
+        ///   that the computed microsecond value does not fit in a 64-bit signed integer, behavior depends on the platform
+        ///   (possible wrap/overflow). Callers that require guaranteed range safety must validate before calling.
+        /// - Interoperability: most Windows wait/timeout APIs (for example __WaitForSingleObject__, __Sleep__) accept timeouts
+        ///   in milliseconds (DWORD). To pass an interval derived from microseconds to such APIs, convert microseconds to
+        ///   milliseconds (divide by 1000) and clamp to the API's expected range (use <see cref="ToTimeout"/> for safe conversion
+        ///   to a DWORD timeout). For high-resolution timing on Windows use QueryPerformanceCounter/QueryPerformanceFrequency
+        ///   or multimedia/high-resolution timer APIs as appropriate.
+        /// - Thread-safety: the method is pure, has no side-effects and is safe to call concurrently.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1.5 milliseconds -> 1500 microseconds
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1.5);
+        /// long long us = ts.ToMicroseconds(); // 1500
+        /// </code>
+        /// </example>
         constexpr long long ToMicroseconds( ) const noexcept
         {
             return ticks_ / TicksPerMicrosecond;
         }
 
+        /// <summary>
+        /// Gets the interval represented by this <see cref="TimeSpan"/> expressed as a fractional number of days.
+        /// </summary>
+        /// <returns>
+        /// A <c>double</c> containing the total number of days represented by this <see cref="TimeSpan"/>.
+        /// Computed as <c>static_cast<double>(ticks_) / static_cast<double>(TicksPerDay)</c>. The value preserves
+        /// fractional days and may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - This method performs floating-point division and therefore returns fractional days (for example 36 hours -> 1.5 days).
+        /// - The internal representation uses ticks (1 tick = 100 ns). Converting large tick counts to <c>double</c> may lose precision
+        ///   due to the limits of IEEE-754 double precision; callers that require integer accuracy should use <see cref="ToDays"/> or
+        ///   work with the raw tick count via <see cref="Ticks"/>.
+        /// - No range clamping is performed by this method. If callers require bounded results, they should clamp the returned value themselves.
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe for concurrent use.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 36 hours -> 1.5 days
+        /// TimeSpan ts = TimeSpan::FromHours(36.0);
+        /// double days = ts.TotalDays(); // 1.5
+        /// </code>
+        /// </example>
+        constexpr double TotalDays( ) const noexcept
+        {
+            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerDay );
+        }
 
+        /// <summary>
+        /// Gets the interval represented by this <see cref="TimeSpan"/> expressed as a fractional number of hours.
+        /// </summary>
+        /// <returns>
+        /// A <c>double</c> containing the total number of hours represented by this <see cref="TimeSpan"/>.
+        /// Computed as <c>static_cast<double>(ticks_) / static_cast<double>(TicksPerHour)</c>. The value preserves
+        /// fractional hours and may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - This method performs floating-point division and therefore returns fractional hours (for example 90 minutes -> 1.5 hours).
+        /// - The internal representation uses ticks (1 tick = 100 ns). Converting large tick counts to <c>double</c> may lose precision
+        ///   due to the limits of IEEE-754 double precision; callers that require integer accuracy should use <see cref="ToHours"/> or
+        ///   work with the raw tick count via <see cref="Ticks"/>.
+        /// - No range clamping is performed by this method. If callers require bounded results, they should clamp the returned value themselves.
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe for concurrent use.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 90 minutes -> 1.5 hours
+        /// TimeSpan ts = TimeSpan::FromMinutes(90.0);
+        /// double hours = ts.TotalHours(); // 1.5
+        /// </code>
+        /// </example>
+        constexpr double TotalHours( ) const noexcept
+        {
+            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerHour );
+        }
+
+
+        /// <summary>
+        /// Gets the interval represented by this <see cref="TimeSpan"/> expressed as a fractional number of minutes.
+        /// </summary>
+        /// <returns>
+        /// A <c>double</c> containing the total number of minutes represented by this <see cref="TimeSpan"/>.
+        /// Computed as <c>static_cast<double>(ticks_) / static_cast<double>(TicksPerMinute)</c>. The value preserves
+        /// fractional minutes and may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - This method performs floating-point division and therefore returns fractional minutes (for example 90 seconds -> 1.5 minutes).
+        /// - The internal representation uses ticks (1 tick = 100 ns). Converting large tick counts to <c>double</c> may lose precision
+        ///   due to the limits of IEEE-754 double precision; callers that require integer accuracy should use <see cref="ToMinutes"/> or
+        ///   work with the raw tick count via <see cref="Ticks"/>.
+        /// - No range clamping is performed by this method. If callers require bounded results, they should clamp the returned value themselves.
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe for concurrent use.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 90 seconds -> 1.5 minutes
+        /// TimeSpan ts = TimeSpan::FromSeconds(90.0);
+        /// double minutes = ts.TotalMinutes(); // 1.5
+        /// </code>
+        /// </example>
         constexpr double TotalMinutes( ) const noexcept
         {
             return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerMinute );
         }
 
+        /// <summary>
+        /// Gets the interval represented by this <see cref="TimeSpan"/> expressed as a fractional number of seconds.
+        /// </summary>
+        /// <returns>
+        /// A <c>double</c> containing the total number of seconds represented by this <see cref="TimeSpan"/>.
+        /// Computed as <c>static_cast<double>(ticks_) / static_cast<double>(TicksPerSecond)</c>. The value preserves
+        /// fractional seconds and may be negative for negative intervals.
+        /// </returns>
+        /// <remarks>
+        /// - This method performs floating-point division and therefore returns fractional seconds (for example 1500 milliseconds -> 1.5 seconds).
+        /// - The internal representation uses ticks (1 tick = 100 ns). Converting large tick counts to <c>double</c> may lose precision
+        ///   due to the limits of IEEE-754 double precision; callers that require integer accuracy should use <see cref="ToSeconds"/> or
+        ///   work with the raw tick count via <see cref="Ticks"/>.
+        /// - No range clamping is performed by this method. If callers require bounded results, they should clamp the returned value themselves.
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe for concurrent use.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 90 seconds -> 90.0
+        /// TimeSpan ts = TimeSpan::FromSeconds(90.0);
+        /// double seconds = ts.TotalSeconds(); // 90.0
+        ///
+        /// // 1500 milliseconds -> 1.5 seconds
+        /// TimeSpan ts2 = TimeSpan::FromMilliseconds(1500.0);
+        /// double sec = ts2.TotalSeconds(); // 1.5
+        /// </code>
+        /// </example>
         constexpr double TotalSeconds( ) const noexcept
         {
             return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerSecond );
         }
 
-        constexpr TimeSpan Add( const TimeSpan& other ) const noexcept
+        /// <summary>
+        /// Gets the total number of milliseconds represented by this <see cref="TimeSpan"/> as a <c>double</c>.
+        /// </summary>
+        /// <returns>
+        /// The total number of whole milliseconds in the interval returned as a <c>double</c>. The value may be negative
+        /// for negative intervals. If the computed millisecond value is outside the representable millisecond range
+        /// (<see cref="TimeBase::MinMilliSeconds"/> .. <see cref="TimeBase::MaxMilliSeconds"/>), the result is clamped
+        /// to the corresponding limit.
+        /// </returns>
+        /// <remarks>
+        /// - The function converts the internal tick count (<c>ticks_</c>; 1 tick = 100 ns) to milliseconds using
+        ///   integer division: <c>result = ticks_ / TicksPerMillisecond</c>. Any fractional-millisecond component is
+        ///   discarded (truncation toward zero).
+        /// - After computing the whole-millisecond result the function clamps the value to the library limits
+        ///   (<see cref="TimeBase::MaxMilliSeconds"/> / <see cref="TimeBase::MinMilliSeconds"/>) and returns the
+        ///   clamped value as a <c>double</c>.
+        /// - If callers require fractional-millisecond precision, compute it from ticks using floating-point arithmetic,
+        ///   for example: <c>static_cast<double>(ticks_) * MillisecondsPerTick</c>.
+        /// - This method is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe to call concurrently.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1500 milliseconds -> TotalMilliseconds() == 1500.0
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1500.0);
+        /// double ms = ts.TotalMilliseconds(); // 1500.0
+        /// 
+        /// // To obtain fractional milliseconds from ticks:
+        /// double fractionalMs = static_cast<double>( ts.Ticks() ) * TimeSpan::MillisecondsPerTick;
+        /// </code>
+        /// </example>
+        constexpr double TotalMilliseconds( ) const noexcept
         {
-            return TimeSpan( ticks_ + other.ticks_ );
+            auto result = ticks_ / TicksPerMillisecond;
+            if ( result > MaxMilliSeconds )
+            {
+                return static_cast< double >( MaxMilliSeconds );
+            }
+
+            if ( result < MinMilliSeconds )
+            {
+                return static_cast< double >( MinMilliSeconds );
+            }
+
+            return static_cast< double >( result );
         }
 
+
+        /// <summary>
+        /// Converts this TimeSpan to a Windows-style timeout value expressed in milliseconds.
+        /// </summary>
+        /// <returns>
+        /// A timeout value as a <c>UInt32</c> suitable for APIs that accept a DWORD timeout (for example
+        /// <see cref="WaitForSingleObject"/>, <see cref="WaitForMultipleObjects"/> and <see cref="Sleep"/>).
+        /// - If the interval is larger than the special Windows value <c>INFINITE</c> (<c>0xFFFFFFFF</c>), this method returns <c>INFINITE</c>.
+        /// - If the interval is negative, this method returns <c>0</c> (an immediate/non-blocking timeout).
+        /// - Otherwise the method returns the interval truncated to whole milliseconds.
+        /// </returns>
+        /// <remarks>
+        /// - The TimeSpan internal unit is ticks (100 ns). Conversion to milliseconds discards any fractional
+        ///   millisecond component (integer division), so sub-millisecond precision is lost.
+        /// - The returned <c>UInt32</c> is compatible with the DWORD timeout parameters used by the Windows API.
+        /// - Use <c>INFINITE</c> to request an indefinite wait; this method clamps values larger than <c>INFINITE</c> to that value.
+        /// - A return value of <c>0</c> means "do not wait" when passed to the Windows wait APIs (poll).
+        /// - This function is noexcept and constexpr; it performs only integer arithmetic and comparisons.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(500);
+        /// DWORD timeout = ts.ToTimeout(); // 500
+        /// WaitForSingleObject(handle, timeout);
+        /// </code>
+        /// </example>
+        constexpr UInt32 ToTimeout( ) const noexcept
+        {
+            auto millis = ticks_ / TicksPerMillisecond;
+            if ( millis > static_cast< long long >( INFINITE ) )
+            {
+                return INFINITE;
+            }
+            else if ( millis < 0 )
+            {
+                return 0;
+            }
+            return static_cast< UInt32 >( millis );
+        }
+
+        /// <summary>
+        /// Compares two <see cref="TimeSpan"/> values and returns an integer that indicates
+        /// their relative ordering.
+        /// </summary>
+        /// <param name="t1">The left operand to compare.</param>
+        /// <param name="t2">The right operand to compare.</param>
+        /// <returns>
+        /// - A value less than zero (<c>-1</c>) when <paramref name="t1"/> is less than <paramref name="t2"/>;
+        /// - Zero (<c>0</c>) when they are equal;
+        /// - A value greater than zero (<c>1</c>) when <paramref name="t1"/> is greater than <paramref name="t2"/>.
+        /// </returns>
+        /// <remarks>
+        /// - The function is <c>constexpr</c> and <c>noexcept</c> and may be evaluated in constant expressions.
+        /// - Implementation uses only comparisons (no subtraction) so it cannot overflow and exhibits defined behavior
+        ///   for all valid <see cref="TimeSpan"/> values.
+        /// - The return values are canonicalized to -1/0/+1 using boolean-to-integer conversion:
+        ///   <c>static_cast<int>(t1.ticks_ > t2.ticks_) - static_cast<int>(t1.ticks_ < t2.ticks_)</c>.
+        /// - Complexity: constant time O(1). Thread-safe and has no side-effects.
+        /// - Note: callers that prefer C++20 three-way comparison semantics can use the <c>operator&lt;&gt;&gt;()</c>
+        ///   or the free comparison operators provided by this type.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan a = TimeSpan::FromSeconds(1.0);
+        /// TimeSpan b = TimeSpan::FromSeconds(2.0);
+        /// int cmp = TimeSpan::Compare(a, b); // cmp == -1
+        /// if ( cmp &lt; 0 ) { /* a &lt; b */ }
+        /// </code>
+        /// </example>
         static constexpr int Compare( const TimeSpan& t1, const TimeSpan& t2 ) noexcept
         {
-            if ( t1.ticks_ > t2.ticks_ )
-            {
-                return 1;
-            }
-            if ( t1.ticks_ < t2.ticks_ )
-            {
-                return -1;
-            }
-            return 0;
+            return static_cast< int >( t1.ticks_ > t2.ticks_ ) - static_cast< int >( t1.ticks_ < t2.ticks_ );
         }
 
+        /// <summary>
+        /// Compares this <see cref="TimeSpan"/> instance to another <see cref="TimeSpan"/> and returns an integer
+        /// that indicates the relative ordering.
+        /// </summary>
+        /// <param name="value">The <see cref="TimeSpan"/> to compare with this instance.</param>
+        /// <returns>
+        /// - A value less than zero (<c>-1</c>) when this instance is less than <paramref name="value"/>;
+        /// - Zero (<c>0</c>) when this instance equals <paramref name="value"/>;
+        /// - A value greater than zero (<c>1</c>) when this instance is greater than <paramref name="value"/>.
+        /// </returns>
+        /// <remarks>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c> and may be evaluated in constant expressions.
+        /// - Implementation uses boolean comparisons only (no subtraction) to avoid overflow:
+        ///   <c>static_cast<int>(ticks_ > value.ticks_) - static_cast<int>(ticks_ < value.ticks_)</c>.
+        /// - Returns canonicalized -1/0/+1 results. Complexity is O(1). The call has no side-effects and is thread-safe.
+        /// - For C++20 three-way comparison semantics prefer using <c>operator&lt;&gt;&gt;()</c> which is also provided.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan a = TimeSpan::FromSeconds(1.0);
+        /// TimeSpan b = TimeSpan::FromSeconds(2.0);
+        /// int cmp = a.CompareTo(b); // cmp == -1
+        /// </code>
+        /// </example>
         constexpr int CompareTo( const TimeSpan& value ) const noexcept
         {
-            if ( ticks_ > value.ticks_ )
-            {
-                return 1;
-            }
-            if ( ticks_ < value.ticks_ )
-            {
-                return -1;
-            }
-            return 0;
+            return static_cast< int >( ticks_ > value.ticks_ ) - static_cast< int >( ticks_ < value.ticks_ );
         }
 
+        /// <summary>
+        /// Returns the magnitude (absolute value) of this <see cref="TimeSpan"/> as a <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals the absolute magnitude of this instance's
+        /// internal tick count (<c>ticks_</c>). For non-negative intervals the returned value equals this instance.
+        /// For negative intervals the returned value is produced by clearing the sign bit of the underlying
+        /// two's‑complement representation.
+        /// </returns>
+        /// <remarks>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c> and implemented in a branchless, well-defined manner:
+        ///   it casts <c>ticks_</c> to an unsigned 64-bit value, applies the mask <c>0x7FFFFFFFFFFFFFFF</c> to clear
+        ///   the sign bit, and constructs a <see cref="TimeSpan"/> from the masked value.
+        /// - Casting to <c>UInt64</c> before the bitwise-and makes the operation fully defined by the C++ standard
+        ///   (bitwise operations on signed negative integers are implementation-defined). The masked result is
+        ///   guaranteed to fit in a signed 64-bit value (<= <c>LLONG_MAX</c>) so the conversion back to
+        ///   <c>long long</c> is well-defined.
+        /// - Special-case: the minimum two's‑complement value (INT64_MIN / −2^63) cannot be represented as a positive
+        ///   signed 64-bit value. With this implementation the masked result for that input becomes zero. If callers
+        ///   require a different policy for that extreme value (for example saturate to <c>LLONG_MAX</c> or throw),
+        ///   implement an explicit branch to detect and handle <c>ticks_ == std::numeric_limits<long long>::min()</c>.
+        /// - Complexity: O(1). The method has no side-effects and is thread-safe.
+        /// - Rationale: using the unsigned-mask approach avoids a signed negation which would overflow for INT64_MIN,
+        ///   preserving <c>noexcept</c> and <c>constexpr</c> guarantees.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan positive = TimeSpan::FromSeconds(5.0);    // positive.Ticks() >= 0
+        /// TimeSpan absPos = positive.Duration();             // absPos == positive
+        ///
+        /// TimeSpan negative = TimeSpan::FromSeconds(-5.0);   // negative.Ticks() < 0
+        /// TimeSpan absNeg = negative.Duration();             // absNeg == magnitude of negative
+        ///
+        /// // Extreme case: INT64_MIN
+        /// TimeSpan minVal = TimeSpan::MinValue();
+        /// TimeSpan absMin = minVal.Duration();               // implementation-defined policy: masked result -> 0
+        /// </code>
+        /// </example>
+        constexpr TimeSpan Duration( ) const noexcept
+        {
+            constexpr UInt64 Mask = 0x7FFFFFFFFFFFFFFFULL;
+            auto unsignedTicks = static_cast< UInt64 >( ticks_ );
+            return TimeSpan( static_cast< long long >( unsignedTicks & Mask ) );
+        }
+
+        /// <summary>
+        /// Returns a <see cref="TimeSpan"/> with the sign of this interval inverted.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals the negation of this instance's
+        /// tick count. When the value is the minimum representable 64-bit tick count (MinInt64)
+        /// negation cannot be represented in a signed 64-bit integer; this function therefore
+        /// saturates and returns <see cref="TimeSpan::MaxValue()"/> to avoid undefined behavior.
+        /// </returns>
+        /// <remarks>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>.
+        /// - Signed negation of <c>std::numeric_limits<long long>::min()</c> is a signed overflow and
+        ///   would be undefined behavior. This implementation explicitly handles that case to guarantee
+        ///   defined behavior across platforms.
+        /// - Behavior choice for the extreme value (MinInt64) is to saturate to MaxInt64. Alternatives:
+        ///   - throw an exception (changes noexcept contract),
+        ///   - return the original value (preserve bits, surprising to callers),
+        ///   - return Duration() or another sentinel.
+        ///   Saturation was chosen to keep the routine noexcept/constexpr and avoid UB while providing a
+        ///   useful numeric result.
+        /// - Performance: common-case path is a single negation (compiled to a single instruction on x64).
+        ///   The MinInt64 branch is extremely rare and will be well predicted as not-taken in typical workloads.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan t = TimeSpan::FromSeconds(5.0); // +5s
+        /// TimeSpan neg = t.Negate();               // -5s
+        /// 
+        /// // Safe for extreme value:
+        /// TimeSpan minVal = TimeSpan::MinValue();
+        /// TimeSpan negMin = minVal.Negate();      // negMin == TimeSpan::MaxValue()
+        /// </code>
+        /// </example>
+        constexpr TimeSpan Negate( ) const noexcept
+        {
+            // Avoid signed overflow when ticks_ == MinInt64.
+            if ( ticks_ == MinInt64 )
+            {
+                // Saturate to MaxInt64 to preserve noexcept/constexpr and avoid UB.
+                return TimeSpan( MaxInt64 );
+            }
+            return TimeSpan( -ticks_ );
+        }
+
+
+        /// <summary>
+        /// Creates a <see cref="TimeSpan"/> that represents the specified number of days.
+        /// </summary>
+        /// <param name="value">Number of days, may be fractional. The value is converted to milliseconds by multiplying
+        /// with <c>MillisPerDay</c> and then rounded to the nearest whole millisecond before conversion to ticks.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing <paramref name="value"/> days. Fractional-day portions are preserved
+        /// by first converting to milliseconds and rounding to the nearest millisecond; the resulting millisecond value
+        /// is converted to ticks (1 tick = 100 ns).
+        /// </returns>
+        /// <remarks>
+        /// - Implementation delegates to <see cref="Interval(double,int)"/> using the scale factor <c>MillisPerDay</c>.
+        /// - The conversion uses rounding to the nearest millisecond. Callers requiring different rounding semantics
+        ///   should perform the rounding themselves and use <see cref="TimeSpan::FromMilliseconds(double)"/> or
+        ///   construct from ticks directly.
+        /// - Exceptions:
+        ///   - <see cref="ArgumentException"/> is thrown by <see cref="Interval(double,int)"/> when <paramref name="value"/> is NaN.
+        ///   - <see cref="OverflowException"/> is thrown when the computed millisecond value is outside the representable range
+        ///     (see <c>TimeBase::MaxMilliSeconds</c> / <c>TimeBase::MinMilliSeconds</c>).
+        /// - Complexity: O(1). The function is thread-safe and has no side-effects other than constructing the result.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1.5 days -> 36 hours
+        /// TimeSpan ts = TimeSpan::FromDays(1.5); // equivalent to FromHours(36.0)
+        /// </code>
+        /// </example>
         static TimeSpan FromDays( double value )
         {
             return Interval( value, MillisPerDay );
         }
 
-        constexpr TimeSpan Duration( ) const noexcept
-        {
-            return TimeSpan( ticks_ >= 0 ? ticks_ : -ticks_ );
-        }
-
-
+        /// <summary>
+        /// Creates a <see cref="TimeSpan"/> that represents the specified number of hours.
+        /// </summary>
+        /// <param name="value">Number of hours, may be fractional. The value is converted to milliseconds by multiplying
+        /// with <c>MillisPerHour</c> and then rounded to the nearest whole millisecond before conversion to ticks.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing <paramref name="value"/> hours. Fractional-hour portions are preserved
+        /// by first converting to milliseconds and rounding to the nearest millisecond; the resulting millisecond value
+        /// is converted to ticks (1 tick = 100 ns).
+        /// </returns>
+        /// <remarks>
+        /// - Implementation delegates to <see cref="Interval(double,int)"/> using the scale factor <c>MillisPerHour</c>.
+        /// - The conversion uses rounding to the nearest millisecond. Callers requiring different rounding semantics
+        ///   should perform the rounding themselves and use <see cref="TimeSpan::FromMilliseconds(double)"/> or
+        ///   construct from ticks directly.
+        /// - Exceptions:
+        ///   - <see cref="ArgumentException"/> is thrown by <see cref="Interval(double,int)"/> when <paramref name="value"/> is NaN.
+        ///   - <see cref="OverflowException"/> is thrown when the computed millisecond value is outside the representable range
+        ///     (see <c>TimeBase::MaxMilliSeconds</c> / <c>TimeBase::MinMilliSeconds</c>).
+        /// - Complexity: O(1). The function is thread-safe and has no side-effects other than constructing the result.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1.5 hours -> 90 minutes
+        /// TimeSpan ts = TimeSpan::FromHours(1.5); // equivalent to FromMinutes(90.0)
+        /// </code>
+        /// </example>
         static TimeSpan FromHours( double value )
         {
             return Interval( value, MillisPerHour );
         }
 
-        static TimeSpan FromMilliseconds( double value )
-        {
-            return Interval( value, 1 );
-        }
-
+        /// <summary>
+        /// Creates a <see cref="TimeSpan"/> that represents the specified number of minutes.
+        /// </summary>
+        /// <param name="value">Number of minutes, may be fractional. The value is converted to milliseconds by multiplying
+        /// with <c>MillisPerMinute</c> and then rounded to the nearest whole millisecond before conversion to ticks.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing <paramref name="value"/> minutes. Fractional-minute portions are preserved
+        /// by first converting to milliseconds and rounding to the nearest millisecond; the resulting millisecond value
+        /// is converted to ticks (1 tick = 100 ns).
+        /// </returns>
+        /// <remarks>
+        /// - Implementation delegates to <see cref="Interval(double,int)"/> using the scale factor <c>MillisPerMinute</c>.
+        /// - The conversion uses rounding to the nearest millisecond. Callers requiring different rounding semantics
+        ///   should perform the rounding themselves and use <see cref="TimeSpan::FromMilliseconds(double)"/> or
+        ///   construct from ticks directly.
+        /// - Exceptions:
+        ///   - <see cref="ArgumentException"/> is thrown by <see cref="Interval(double,int)"/> when <paramref name="value"/> is NaN.
+        ///   - <see cref="OverflowException"/> is thrown when the computed millisecond value is outside the representable range
+        ///     (see <c>TimeBase::MaxMilliSeconds</c> / <c>TimeBase::MinMilliSeconds</c>).
+        /// - Complexity: O(1). The function is thread-safe and has no side-effects other than constructing the result.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1.5 minutes -> 90 seconds
+        /// TimeSpan ts = TimeSpan::FromMinutes(1.5); // equivalent to FromSeconds(90.0)
+        /// </code>
+        /// </example>
         static TimeSpan FromMinutes( double value )
         {
             return Interval( value, MillisPerMinute );
         }
 
-        constexpr TimeSpan Negate( ) const noexcept
-        {
-            return TimeSpan( -ticks_ );
-        }
-
+        /// <summary>
+        /// Creates a <see cref="TimeSpan"/> that represents the specified number of seconds.
+        /// </summary>
+        /// <param name="value">Number of seconds, may be fractional. The value is converted to milliseconds by multiplying
+        /// with <c>MillisPerSecond</c> and then rounded to the nearest whole millisecond before conversion to ticks.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing <paramref name="value"/> seconds. Fractional-second portions are preserved
+        /// by first converting to milliseconds and rounding to the nearest millisecond; the resulting millisecond value
+        /// is converted to ticks (1 tick = 100 ns).
+        /// </returns>
+        /// <remarks>
+        /// - Implementation delegates to <see cref="Interval(double,int)"/> using the scale factor <c>MillisPerSecond</c>.
+        /// - The conversion uses rounding to the nearest millisecond. Callers requiring different rounding semantics
+        ///   should perform the rounding themselves and use <see cref="TimeSpan::FromMilliseconds(double)"/> or
+        ///   construct from ticks directly.
+        /// - Exceptions:
+        ///   - <see cref="ArgumentException"/> is thrown by <see cref="Interval(double,int)"/> when <paramref name="value"/> is NaN.
+        ///   - <see cref="OverflowException"/> is thrown when the computed millisecond value is outside the representable range
+        ///     (see <c>TimeBase::MaxMilliSeconds</c> / <c>TimeBase::MinMilliSeconds</c>).
+        /// - Complexity: O(1). The function is thread-safe and has no side-effects other than constructing the result.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1.5 seconds -> 1500 milliseconds
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.5); // equivalent to FromMilliseconds(1500.0)
+        /// </code>
+        /// </example>
         static TimeSpan FromSeconds( double value )
         {
             return Interval( value, MillisPerSecond );
         }
 
-        static constexpr TimeSpan FromDuration( std::chrono::system_clock::duration value )
+        /// <summary>
+        /// Creates a <see cref="TimeSpan"/> that represents the specified number of milliseconds.
+        /// </summary>
+        /// <param name="value">Number of milliseconds, may be fractional. The value is rounded to the nearest whole millisecond before conversion to ticks (1 tick = 100 ns).</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing <paramref name="value"/> milliseconds. Fractional-millisecond portions are rounded
+        /// to the nearest millisecond and converted to ticks.
+        /// </returns>
+        /// <remarks>
+        /// - Implementation delegates to <see cref="Interval(double,int)"/> using a scale factor of <c>1</c> (milliseconds).
+        /// - Rounding behavior: fractional milliseconds are rounded to the nearest whole millisecond by <see cref="Interval(double,int)"/>.
+        /// - Exceptions:
+        ///   - <see cref="ArgumentException"/> is thrown by <see cref="Interval(double,int)"/> when <paramref name="value"/> is NaN.
+        ///   - <see cref="OverflowException"/> is thrown when the computed millisecond value is outside the representable range
+        ///     (see <c>TimeBase::MaxMilliSeconds</c> / <c>TimeBase::MinMilliSeconds</c>).
+        /// - Complexity: O(1). The function is thread-safe and has no side-effects other than constructing the result.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1500 milliseconds -> 1.5 seconds
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1500.0);
+        /// </code>
+        /// </example>
+        static TimeSpan FromMilliseconds( double value )
         {
-            return TimeSpan( value.count() );
+            return Interval( value, 1 );
         }
 
-        constexpr TimeSpan Subtract( const TimeSpan& other ) const noexcept
+        /// <summary>
+        /// Creates a <see cref="TimeSpan"/> from a `std::chrono::duration`.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the `IsStdChronoDuration` constraint.</typeparam>
+        /// <param name="value">The duration value to convert. May be negative to represent a negative interval.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> that represents the same interval as <paramref name="value"/>.
+        /// The conversion maps the duration to the library's internal 100-nanosecond tick unit using
+        /// `DurationToTicks` (100 ns ticks = 1 / 10,000,000 second).
+        /// </returns>
+        /// <remarks>
+        /// - The conversion is implemented using `DurationToTicks`, which performs a `std::chrono::duration_cast`
+        ///   to a 100‑ns tick duration and returns the underlying integer count. Fractional sub-tick parts are
+        ///   discarded (truncated toward zero).
+        /// - No runtime range checking is performed here. If the converted tick count does not fit in a
+        ///   <c>long long</c> the result may overflow. Callers that require range-safety should validate
+        ///   <paramref name="value"/> relative to <see cref="TimeBase::MinTicks"/> / <see cref="TimeBase::MaxTicks"/>
+        ///   before calling this function.
+        /// - The function is <c>constexpr</c> and has no side-effects; it is safe to call in constant expressions
+        ///   and concurrently from multiple threads.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Construct a TimeSpan of 1.5 seconds from std::chrono::milliseconds
+        /// TimeSpan ts = TimeSpan::FromDuration( std::chrono::milliseconds(1500) );
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        static constexpr TimeSpan FromDuration( const DurationT& value )
         {
-            return TimeSpan( ticks_ - other.ticks_ );
+            auto ticks = DurationToTicks( value );
+            return TimeSpan( ticks );
         }
 
+        /// <summary>
+        /// Creates a <see cref="TimeSpan"/> that represents the specified number of ticks.
+        /// </summary>
+        /// <param name="value">The number of ticks (100-nanosecond units) to store in the resulting <see cref="TimeSpan"/>. May be negative to represent a negative interval.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals <paramref name="value"/>.
+        /// </returns>
+        /// <remarks>
+        /// - This factory is a trivial wrapper around the explicit <see cref="TimeSpan(long long)"/> constructor and performs no validation or range checking.
+        /// - One tick equals 100 nanoseconds (0.1 microsecond). Use <see cref="TimeSpan::TicksPerMillisecond"/>, <see cref="TicksPerSecond"/>, etc. to convert between units.
+        /// - The function does not adjust or clamp values; callers that require values constrained to <see cref="TimeBase::MinTicks"/> / <see cref="TimeBase::MaxTicks"/>
+        ///   must validate or clamp before calling this function.
+        /// - Thread-safety: the function is pure and has no side-effects; it is safe to call concurrently.
+        /// - For convenience when converting from `std::chrono::duration` use <see cref="FromDuration"/> which performs an appropriate conversion to ticks.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Create a TimeSpan representing 1 millisecond (TicksPerMillisecond == 10000)
+        /// TimeSpan ts = TimeSpan::FromTicks( TimeSpan::TicksPerMillisecond );
+        /// </code>
+        /// </example>
         static TimeSpan FromTicks( long long value )
         {
             return TimeSpan( value );
         }
 
+        /// <summary>
+        /// Adds the specified <see cref="TimeSpan"/> to this instance and returns the sum.
+        /// </summary>
+        /// <param name="other">The <see cref="TimeSpan"/> to add. May be negative to perform subtraction.</param>
+        /// <returns>
+        /// A new <see cref="TimeSpan"/> whose tick count equals the sum of this instance's tick count
+        /// and <paramref name="other"/>'s tick count.
+        /// </returns>
+        /// <remarks>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c> and performs a pure arithmetic addition of the
+        ///   internal tick counts: <c>ticks_ + other.ticks_</c>.
+        /// - No runtime overflow detection is performed in release builds. Signed overflow of 64-bit ticks
+        ///   is undefined behavior in C++; therefore callers must ensure the operands are in a safe range
+        ///   before calling this method. In debug builds the implementation asserts that the addition is safe
+        ///   by calling <c>IsAdditionSafe(ticks_, other.ticks_)</c>.
+        /// - Complexity: O(1). Thread-safe for distinct objects; the call has no side-effects and reads only
+        ///   object-local state.
+        /// - If callers require guaranteed overflow-safe semantics, validate operands against
+        ///   <c>TimeBase::MinTicks</c>/<c>TimeBase::MaxTicks</c> or provide a checked wrapper that handles
+        ///   overflow (for example saturate or return an error).
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan a = TimeSpan::FromSeconds(30.0);
+        /// TimeSpan b = TimeSpan::FromMinutes(1.0);
+        /// TimeSpan result = a.Add(b); // result represents 90 seconds
+        /// </code>
+        /// </example>
+        constexpr TimeSpan Add( const TimeSpan& other ) const noexcept
+        {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, other.ticks_ ) );
+            }
+#endif
+            return TimeSpan( ticks_ + other.ticks_ );
+        }
+
+
+        constexpr TimeSpan Subtract( const TimeSpan& other ) const noexcept
+        {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, other.ticks_ ) );
+            }
+#endif
+            return TimeSpan( ticks_ - other.ticks_ );
+        }
+
+        
+
         constexpr TimeSpan& operator += ( const TimeSpan& other ) noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, other.ticks_ ) );
+            }
+#endif
             ticks_ += other.ticks_;
             return *this;
         }
 
         constexpr TimeSpan operator + ( const TimeSpan& other ) const noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, other.ticks_ ) );
+            }
+#endif
             return TimeSpan(ticks_ + other.ticks_ );
         }
 
         constexpr TimeSpan& operator -= ( const TimeSpan& other ) noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, other.ticks_ ) );
+            }
+#endif
             ticks_ -= other.ticks_;
             return *this;
         }
 
         constexpr TimeSpan operator - ( const TimeSpan& other ) const noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, other.ticks_ ) );
+            }
+#endif
             return TimeSpan( ticks_ - other.ticks_ );
         }
 
-
-        constexpr TimeSpan& operator = ( const std::chrono::system_clock::duration& value )
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr TimeSpan& operator = ( const DurationT& value )
         {
-            ticks_ = value.count( );
+            ticks_ = DurationToTicks( value );
             return *this;
         }
 
 
         template<typename T>
             requires std::is_integral_v<T>
-        constexpr TimeSpan& operator += ( const T& value ) const noexcept
+        constexpr TimeSpan& operator += ( const T& value ) noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             ticks_ += static_cast<long long>( value );
             return *this;
         }
@@ -423,6 +1607,12 @@ namespace Harlinn::Common::Core
             requires std::is_integral_v<T>
         constexpr TimeSpan operator + ( const T& value ) const noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             return TimeSpan( ticks_ + static_cast<long long>( value ) );
         }
 
@@ -430,13 +1620,25 @@ namespace Harlinn::Common::Core
             requires std::is_integral_v<T>
         friend constexpr TimeSpan operator + ( const T& value, const TimeSpan& timeSpan ) noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( static_cast< long long >( value ), ticks_ ) );
+            }
+#endif
             return TimeSpan( static_cast<long long>( value ) + timeSpan.ticks_ );
         }
 
         template<typename T>
             requires std::is_integral_v<T>
-        constexpr TimeSpan& operator -= ( const T& value ) const noexcept
+        constexpr TimeSpan& operator -= ( const T& value ) noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             ticks_ -= static_cast<long long>( value );
             return *this;
         }
@@ -445,6 +1647,12 @@ namespace Harlinn::Common::Core
             requires std::is_integral_v<T>
         constexpr TimeSpan operator - ( const T& value ) const noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             return TimeSpan( ticks_ - static_cast<long long>( value ) );
         }
 
@@ -452,6 +1660,12 @@ namespace Harlinn::Common::Core
             requires std::is_integral_v<T>
         friend constexpr TimeSpan operator - ( const T& value, const TimeSpan& timeSpan ) noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( static_cast< long long >( value ), ticks_ ) );
+            }
+#endif
             return TimeSpan( static_cast<long long>( value ) - timeSpan.ticks_ );
         }
 
@@ -504,34 +1718,35 @@ namespace Harlinn::Common::Core
             return ticks_ != 0;
         }
 
-        constexpr bool operator == ( const TimeSpan& other ) const noexcept
+        constexpr std::strong_ordering operator<=>( const TimeSpan& other ) const noexcept
         {
-            return ticks_ == other.ticks_;
+            return ticks_ <=> other.ticks_;
         }
-        constexpr bool operator != ( const TimeSpan& other ) const noexcept
+
+        constexpr bool operator !=( const TimeSpan& other ) const noexcept
         {
             return ticks_ != other.ticks_;
         }
-        constexpr bool operator <  ( const TimeSpan& other ) const noexcept
+
+        constexpr bool operator ==( const TimeSpan& other ) const noexcept
         {
-            return ticks_ < other.ticks_;
-        }
-        constexpr bool operator <= ( const TimeSpan& other ) const noexcept
-        {
-            return ticks_ <= other.ticks_;
-        }
-        constexpr bool operator >  ( const TimeSpan& other ) const noexcept
-        {
-            return ticks_ > other.ticks_;
-        }
-        constexpr bool operator >= ( const TimeSpan& other ) const noexcept
-        {
-            return ticks_ >= other.ticks_;
+            return ticks_ == other.ticks_;
         }
 
-        constexpr std::chrono::system_clock::duration ToDuration( ) const noexcept
+
+        template<typename DurationT = std::chrono::system_clock::duration>
+            requires IsStdChronoDuration<DurationT>
+        constexpr std::strong_ordering operator<=>( const DurationT& other ) const noexcept
         {
-            return std::chrono::system_clock::duration( Ticks( ) );
+            return ticks_ <=> DurationToTicks( other );
+        }
+
+
+        template<typename DurationT = std::chrono::system_clock::duration>
+            requires IsStdChronoDuration<DurationT>
+        constexpr DurationT ToDuration( ) const noexcept
+        {
+            return TicksToDuration<DurationT>( ticks_ );
         }
 
 

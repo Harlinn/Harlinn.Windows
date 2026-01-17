@@ -27,6 +27,49 @@ namespace
         ~LocalFixture( ) {}
     };
 
+    class FakeStream
+    {
+    public:
+        explicit FakeStream( std::vector<unsigned char> data ) noexcept
+            : data_( std::move( data ) ), position_( 0 )
+        { }
+
+        // Reads up to numberOfBytesToRead bytes into buffer, returns number of bytes read as long long.
+        long long Read( void* buffer, size_t numberOfBytesToRead )
+        {
+            if ( buffer == nullptr || numberOfBytesToRead == 0 )
+            {
+                return 0;
+            }
+
+            if ( position_ >= data_.size( ) )
+            {
+                return 0; // EOF
+            }
+
+            const size_t available = data_.size( ) - position_;
+            const size_t toRead = std::min( numberOfBytesToRead, available );
+            std::memcpy( buffer, data_.data( ) + position_, toRead );
+            position_ += toRead;
+            return static_cast<long long>( toRead );
+        }
+
+    private:
+        std::vector<unsigned char> data_;
+        size_t position_;
+    };
+
+    static std::vector<unsigned char> MakePatternData( size_t size )
+    {
+        std::vector<unsigned char> result;
+        result.resize( size );
+        for ( size_t i = 0; i < size; ++i )
+        {
+            result[ i ] = static_cast<unsigned char>( i & 0xFF );
+        }
+        return result;
+    }
+
     static void FillPattern( std::vector<Byte>& buf, uint8_t start = 0 )
     {
         uint8_t v = start;
@@ -39,6 +82,127 @@ namespace
 }
 
 BOOST_FIXTURE_TEST_SUITE( BlocksStreamTests, LocalFixture )
+
+
+BOOST_AUTO_TEST_CASE( EmptySource )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    FakeStream source( MakePatternData( 0 ) );
+    Stream s;
+
+    long long read = s.LoadFrom( source );
+    bool cond1 = ( read == 0 );
+    BOOST_TEST( cond1 );
+
+    bool cond2 = ( s.size( ) == 0 );
+    BOOST_TEST( cond2 );
+
+    bool cond3 = ( s.Blocks( ).size( ) == 0 );
+    BOOST_TEST( cond3 );
+
+    auto bytes = s.ToBytes( );
+    bool cond4 = ( bytes.empty( ) );
+    BOOST_TEST( cond4 );
+}
+
+BOOST_AUTO_TEST_CASE( SmallSourceLessThanBlock )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    const size_t smallSize = Stream::BlockDataSize / 4; // smaller than a block
+    auto srcData = MakePatternData( smallSize );
+    FakeStream source( srcData );
+    Stream s;
+
+    long long read = s.LoadFrom( source );
+    bool cond1 = ( static_cast<size_t>( read ) == smallSize );
+    BOOST_TEST( cond1 );
+
+    bool cond2 = ( s.size( ) == smallSize );
+    BOOST_TEST( cond2 );
+
+    bool cond3 = ( s.Blocks( ).size( ) == 1 );
+    BOOST_TEST( cond3 );
+
+    bool cond4 = ( static_cast<size_t>( s.LastBlockSize( ) ) == smallSize );
+    BOOST_TEST( cond4 );
+
+    auto bytes = s.ToBytes( );
+    bool cond5 = ( bytes.size( ) == smallSize );
+    BOOST_TEST( cond5 );
+
+    // Compare contents
+    bool cond6 = std::equal( bytes.begin( ), bytes.end( ), srcData.begin( ) );
+    BOOST_TEST( cond6 );
+}
+
+BOOST_AUTO_TEST_CASE( ExactMultipleOfBlock )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    const size_t blocks = 2;
+    const size_t totalSize = blocks * Stream::BlockDataSize;
+    auto srcData = MakePatternData( totalSize );
+    FakeStream source( srcData );
+    Stream s;
+
+    long long read = s.LoadFrom( source );
+    bool cond1 = ( static_cast<size_t>( read ) == totalSize );
+    BOOST_TEST( cond1 );
+
+    bool cond2 = ( static_cast<size_t>( s.size( ) ) == totalSize );
+    BOOST_TEST( cond2 );
+
+    bool cond3 = ( s.Blocks( ).size( ) == blocks );
+    BOOST_TEST( cond3 );
+
+    bool cond4 = ( static_cast<size_t>( s.LastBlockSize( ) ) == Stream::BlockDataSize );
+    BOOST_TEST( cond4 );
+
+    auto bytes = s.ToBytes( );
+    bool cond5 = ( bytes.size( ) == totalSize );
+    BOOST_TEST( cond5 );
+
+    bool cond6 = std::equal( bytes.begin( ), bytes.end( ), srcData.begin( ) );
+    BOOST_TEST( cond6 );
+}
+
+BOOST_AUTO_TEST_CASE( MultipleBlocksWithPartial )
+{
+    using namespace Harlinn::Common::Core::IO::Blocks;
+    using Stream = BlocksStream;
+
+    const size_t fullBlocks = 3;
+    const size_t partial = 123;
+    const size_t totalSize = fullBlocks * Stream::BlockDataSize + partial;
+    auto srcData = MakePatternData( totalSize );
+    FakeStream source( srcData );
+    Stream s;
+
+    long long read = s.LoadFrom( source );
+    bool cond1 = ( static_cast<size_t>( read ) == totalSize );
+    BOOST_TEST( cond1 );
+
+    bool cond2 = ( static_cast<size_t>( s.size( ) ) == totalSize );
+    BOOST_TEST( cond2 );
+
+    bool cond3 = ( s.Blocks( ).size( ) == ( fullBlocks + 1 ) ); // 3 full + 1 partial
+    BOOST_TEST( cond3 );
+
+    bool cond4 = ( static_cast<size_t>( s.LastBlockSize( ) ) == partial );
+    BOOST_TEST( cond4 );
+
+    auto bytes = s.ToBytes( );
+    bool cond5 = ( bytes.size( ) == totalSize );
+    BOOST_TEST( cond5 );
+
+    bool cond6 = std::equal( bytes.begin( ), bytes.end( ), srcData.begin( ) );
+    BOOST_TEST( cond6 );
+}
 
 BOOST_AUTO_TEST_CASE( SetSize_GrowsAndReportsSize )
 {

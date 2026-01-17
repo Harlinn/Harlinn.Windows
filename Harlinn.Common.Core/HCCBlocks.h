@@ -40,6 +40,20 @@ namespace Harlinn::Common::Core::IO::Blocks
         /// how many bytes of payload each block can hold.
         /// </remarks>
         static constexpr size_t DataSize = BlockSize - 2 * sizeof( Block* );
+
+        struct BlockFree
+        {
+            void operator()( Block* block ) const noexcept
+            {
+                if ( block )
+                {
+                    Block::Free( block );
+                }
+            }
+        };
+
+		using UniquePtr = std::unique_ptr<Block, BlockFree>;
+
     private:
         Block* next_;
         Block* previous_;
@@ -189,6 +203,15 @@ namespace Harlinn::Common::Core::IO::Blocks
         Byte* data( ) noexcept
         {
             return data_;
+        }
+
+        constexpr size_t size( ) const noexcept
+        {
+            return DataSize;
+		}
+        constexpr size_t Size( ) const noexcept
+        {
+            return DataSize;
         }
 
     };
@@ -689,7 +712,9 @@ namespace Harlinn::Common::Core::IO::Blocks
 
 
 
-
+    /// <summary>
+	/// This Stream class provides a fast block-based in-memory stream implementation.
+    /// </summary>
     class Stream
     {
     public:
@@ -1661,7 +1686,45 @@ namespace Harlinn::Common::Core::IO::Blocks
 
 
     public:
-
+        /// <summary>
+        /// Load all bytes from a source stream into this block stream.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Source stream type implementing the <c>IO::StreamReader</c> concept.
+        /// </typeparam>
+        /// <param name="stream">
+        /// Reference to the source stream to read from. The function reads until the source reports EOF (Read returns 0).
+        /// </param>
+        /// <remarks>
+        /// </remarks>
+        template<StreamReader T>
+        long long LoadFrom( T& stream )
+        {
+            Clear( );
+			long long totalBytesRead = 0;
+            while ( true )
+            {
+                Block::UniquePtr block( Block::Allocate( ) );
+                const long long readResult = stream.Read( block->data( ), block->Size( ) );
+                const size_t bytesRead = static_cast<size_t>( readResult );
+                if ( bytesRead > 0 )
+                {
+                    currentBlock_ = block.get( );
+                    currentNumber_++;
+                    currentOffset_ = bytesRead;
+                    lastBlockSize_ = bytesRead;
+                    blockManager_.Append( block.release( ) );
+                    totalBytesRead += bytesRead;
+                    
+                }
+                if ( bytesRead < BlockDataSize )
+                {
+                    // Partial read, we're done.
+                    break;
+                }
+            }
+            return totalBytesRead;
+        }
 
     };
 

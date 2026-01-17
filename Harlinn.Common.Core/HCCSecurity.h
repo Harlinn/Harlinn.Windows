@@ -1592,6 +1592,51 @@ namespace Harlinn::Common::Core::Security
         }
     };
 
+
+    /// <summary>
+    /// Common base enumerators for access-right enums used throughout the Security module.
+    /// </summary>
+    /// <remarks>
+    /// This macro expands to a set of named access-right enumerators mapped to the corresponding
+    /// Windows access-mask and file constants. It is intended to be reused as the common leading
+    /// enumerators in `enum class` declarations that represent access rights (for example
+    /// `TokenAccessRights`, `PipeAccessRights`, etc.). The macro itself does not declare an enum,
+    /// it only expands to enumerator definitions and must be used inside an `enum` or `enum class`
+    /// with an appropriate underlying type (typically `DWORD`).
+    ///
+    /// Enumerators added by this macro:
+    /// <list type="bullet">
+    /// <item><description>`None` = 0 — no access rights.</description></item>
+    /// <item><description>`Delete` = DELETE — right to delete the object.</description></item>
+    /// <item><description>`ReadPermissions` = READ_CONTROL — read access to object's security information (read control).</description></item>
+    /// <item><description>`Synchronize` = SYNCHRONIZE — synchronize right.</description></item>
+    /// <item><description>`ChangePermissions` = WRITE_DAC — modify the DACL (change permissions).</description></item>
+    /// <item><description>`TakeOwnership` = WRITE_OWNER — take ownership right.</description></item>
+    /// <item><description>`SystemSecurity` = ACCESS_SYSTEM_SECURITY — access to SACL / system security.</description></item>
+    /// <item><description>`MaximumAllowed` = MAXIMUM_ALLOWED — request the maximum allowed access.</description></item>
+    /// <item><description>`StandardRightsRequiredMask`, `StandardRightsAllMask`, `StandardRightsRead`, `StandardRightsWrite`, `StandardRightsExecute` — standard rights masks.</description></item>
+    /// </list>
+    ///
+    /// <para>
+    /// Notes:
+    /// - Because this is a macro, it is not type-safe. Use the strongly-typed enum wrappers in this header
+    ///   (e.g. `AccessMaskT` specializations) when possible.
+    /// - Do not redefine these names locally; the macro is provided to avoid repetition of the common base
+    ///   rights across multiple enum declarations.
+    /// </para>
+    ///
+    /// <example>
+    /// <code language="cpp">
+    /// /// <summary>Access rights for a token.</summary>
+    /// enum class TokenAccessRights : DWORD
+    /// {
+    ///     HCC_COMMON_CORE_SECURITY_BASE_ENUM_ACCESS_RIGHTS,
+    ///     AssignPrimary = TOKEN_ASSIGN_PRIMARY,
+    ///     Duplicate = TOKEN_DUPLICATE,
+    ///     // ...
+    /// };
+    /// </code>
+    /// </example>
 #define HCC_COMMON_CORE_SECURITY_BASE_ENUM_ACCESS_RIGHTS \
 None = 0, \
 Delete = DELETE, \
