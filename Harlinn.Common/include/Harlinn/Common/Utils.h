@@ -2616,60 +2616,172 @@ namespace Harlinn::Common
 
     namespace Internal
     {
-        template<typename U>
-        constexpr inline U NextPowerOfTwoUnsignedHelper( U v ) noexcept
+
+        constexpr inline Byte NextPowerOfTwoImpl( Byte v ) noexcept
         {
-            static_assert( std::is_unsigned_v<U> );
-            if ( v == 0u )
-            {
-                return U( 1 );
-            }
+            v--;
+            v |= v >> 1;
+            v |= v >> 2;
+            v |= v >> 4;
+            v++;
+            return v;
+        }
 
-            const unsigned width = static_cast< unsigned >( sizeof( U ) * 8 );
-            const U highestPower = U( 1 ) << ( width - 1 );
+        constexpr inline UInt16 NextPowerOfTwoImpl( UInt16 v ) noexcept
+        {
+            v--;
+            v |= v >> 1;
+            v |= v >> 2;
+            v |= v >> 4;
+            v |= v >> 8;
+            v++;
+            return v;
+        }
 
-            if ( v > highestPower )
-            {
-                // Cannot represent the strictly greater next power-of-two; saturate to highestPower.
-                return highestPower;
-            }
 
-            U x = v - 1u;
-            for ( unsigned shift = 1u; shift < width; shift <<= 1u )
-            {
-                x |= ( x >> shift );
-            }
-            return x + 1u;
+        constexpr inline UInt32 NextPowerOfTwoImpl( UInt32 v ) noexcept
+        {
+            v--;
+            v |= v >> 1;
+            v |= v >> 2;
+            v |= v >> 4;
+            v |= v >> 8;
+            v |= v >> 16;
+            v++;
+            return v;
+        }
+
+        constexpr inline UInt64 NextPowerOfTwoImpl( UInt64 v ) noexcept
+        {
+            v--;
+            v |= v >> 1;
+            v |= v >> 2;
+            v |= v >> 4;
+            v |= v >> 8;
+            v |= v >> 16;
+            v |= v >> 32;
+            v++;
+            return v;
         }
     }
     
 
+    /// <summary>
+    /// Computes the next power-of-two greater than or equal to the supplied signed integer value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A signed integer type. CV-qualifiers and references are ignored.
+    /// </typeparam>
+    /// <param name="v">
+    /// Input value. If <paramref name="v"/> is negative the function returns zero.
+    /// </param>
+    /// <returns>
+    /// The smallest power-of-two value of type <typeparamref name="T"/> that is >= <paramref name="v"/>.
+    /// If <paramref name="v"/> is negative the function returns 0. If the next power-of-two does not
+    /// fit in the positive range of <typeparamref name="T"/>, the result is clamped to <c>std::numeric_limits&lt;T&gt;::max()</c>.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// - This implementation is branchless where possible: it interprets the signed input as an unsigned
+    ///   bit-pattern, computes the next power-of-two using unsigned bit-twiddling, clamps to the maximum
+    ///   positive value for the signed type if required, and selects zero for negative inputs using
+    ///   bit-masks. Using unsigned arithmetic and bit operations avoids undefined behaviour associated
+    ///   with signed shifting/overflow.
+    /// </para>
+    /// <para>
+    /// - The conversion to an unsigned type and all intermediate arithmetic are performed on the unsigned
+    ///   representation. The function therefore behaves correctly for two's-complement representations and
+    ///   is safe in constexpr and noexcept contexts.
+    /// </para>
+    /// <para>
+    /// - Complexity: O(1). No allocations. The routine uses a small fixed number of arithmetic and bitwise
+    ///   operations and is suitable for hot paths.
+    /// </para>
+    /// <para>
+    /// - Note: For callers that need the next power-of-two for unsigned inputs use the <c>NextPowerOfTwo</c>
+    ///   overload constrained to unsigned integer types.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Typical usage:
+    /// int32_t a = 13;
+    /// int32_t nextA = NextPowerOfTwo<int32_t>( a ); // nextA == 16
+    ///
+    /// int32_t b = -5;
+    /// int32_t nextB = NextPowerOfTwo<int32_t>( b ); // nextB == 0
+    ///
+    /// // When the next power would exceed the positive range it is clamped:
+    /// int64_t nearMax = std::numeric_limits<int64_t>::max() - 1;
+    /// int64_t nextNearMax = NextPowerOfTwo<int64_t>( nearMax ); // nextNearMax == std::numeric_limits<int64_t>::max()
+    /// </code>
+    /// </example>
     template<SignedIntegerType T>
     constexpr inline T NextPowerOfTwo( T v ) noexcept
     {
         using U = std::make_unsigned_t<T>;
-        if constexpr ( std::is_signed_v<T> )
-        {
-            if ( v <= 0 )
-            {
-                return static_cast< T >( 1 );
-            }
-        }
-        const U u = static_cast< U >( v );
-        U r = Internal::NextPowerOfTwoUnsignedHelper<U>( u );
+
+        const U ut = static_cast< U >( v );
+
+        constexpr unsigned SignShift = static_cast< unsigned >( sizeof( T ) * 8 - 1 );
+        const U signBit = ut >> SignShift;
+        const U negMask = static_cast< U >( 0 ) - signBit;
+
+        U r = Internal::NextPowerOfTwoImpl( ut );
 
         const U maxSigned = static_cast< U >( std::numeric_limits<T>::max( ) );
-        if ( r > maxSigned )
-        {
-            r = maxSigned;
-        }
-        return static_cast< T >( r );
+        const U overflow = static_cast< U >( r > maxSigned );
+        const U overflowMask = static_cast< U >( 0 ) - overflow;
+        const U clamped = ( r & ~overflowMask ) | ( maxSigned & overflowMask );
+
+        const U resultU = clamped & ~negMask;
+
+        return static_cast< T >( resultU );
     }
 
+    /// <summary>
+    /// Computes the next power-of-two greater than or equal to the supplied unsigned integer value.
+    /// </summary>
+    /// <typeparam name="T">An unsigned integer type. CV-qualifiers and references are ignored.</typeparam>
+    /// <param name="v">Input value. When <paramref name="v"/> is zero the function returns zero.</param>
+    /// <returns>
+    /// The smallest power-of-two value of type <typeparamref name="T"/> that is >= <paramref name="v"/>.
+    /// If <paramref name="v"/> is zero the function returns zero. If the computed next power-of-two
+    /// does not fit in the range of <typeparamref name="T"/> the underlying implementation may wrap
+    /// (resulting in zero) due to unsigned arithmetic.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// - This overload delegates to <c>Internal::NextPowerOfTwoImpl</c>, which implements a branchless
+    ///   bit-twiddling algorithm: it clears all bits below the highest set bit and then adds one to
+    ///   produce the next power-of-two. The routine is <c>constexpr</c> and <c>noexcept</c>.
+    /// </para>
+    /// <para>
+    /// - Behavior for out-of-range results: callers that require saturation rather than wrap-around
+    ///   should use a checked/clamped variant or manually verify the input against the type's maximum
+    ///   representable power-of-two prior to calling this function.
+    /// </para>
+    /// <para>
+    /// - Complexity: O(1). No allocations. Suitable for performance-critical code paths.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// UInt32 a = 13u;
+    /// UInt32 nextA = NextPowerOfTwo&lt;UInt32&gt;( a ); // nextA == 16u
+    ///
+    /// UInt32 z = 0u;
+    /// UInt32 nextZ = NextPowerOfTwo&lt;UInt32&gt;( z ); // nextZ == 0u
+    ///
+    /// // If the next power would overflow the unsigned type the result may wrap to zero:
+    /// UInt32 large = 0x80000001u;
+    /// UInt32 wrapped = NextPowerOfTwo&lt;UInt32&gt;( large ); // wrapped == 0u (wrap)
+    /// </code>
+    /// </example>
     template<UnsignedIntegerType T>
     constexpr inline T NextPowerOfTwo( T v ) noexcept
     {
-        return Internal::NextPowerOfTwoUnsignedHelper<T>( v );
+        return Internal::NextPowerOfTwoImpl( v );
     }
 
 

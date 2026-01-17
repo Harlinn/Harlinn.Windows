@@ -257,6 +257,8 @@ namespace Harlinn::Common::Core
         /// </exception>
         HCC_EXPORT static long long TimeToTicks( int days, int hours, int minutes, int seconds = 0, int milliseconds = 0 );
 
+        HCC_EXPORT static long long TimeToTicks( int days, int hours, int minutes, int seconds, double fraction );
+
         /// <summary>
         /// Converts an arbitrary `std::chrono` duration to the internal tick representation used by `TimeSpan`.
         /// </summary>
@@ -537,13 +539,9 @@ namespace Harlinn::Common::Core
             : ticks_( TimeToTicks( days, hours, minutes, seconds, milliseconds ) )
         { }
 
-        constexpr size_t hash( ) const noexcept
-        {
-            auto x = ( ticks_ ^ ( ticks_ >> 30 ) ) * UINT64_C( 0xbf58476d1ce4e5b9 );
-            x = ( x ^ ( x >> 27 ) ) * UINT64_C( 0x94d049bb133111eb );
-            x = x ^ ( x >> 31 );
-            return x;
-        }
+        TimeSpan( int days, int hours, int minutes, int seconds, double fraction )
+            : ticks_( TimeToTicks( days, hours, minutes, seconds, fraction ) )
+        { }
 
         /// <summary>
         /// Computes a non-cryptographic hash value for this <see cref="TimeSpan"/> instance.
@@ -573,6 +571,111 @@ namespace Harlinn::Common::Core
         /// // Use TimeSpan in an unordered_set (std::hash specialization is provided in this header).
         /// std::unordered_set<TimeSpan> set;
         /// set.insert( TimeSpan::FromSeconds(1.0) );
+        /// </code>
+        /// </example>
+        constexpr size_t hash( ) const noexcept
+        {
+            auto x = ( ticks_ ^ ( ticks_ >> 30 ) ) * UINT64_C( 0xbf58476d1ce4e5b9 );
+            x = ( x ^ ( x >> 27 ) ) * UINT64_C( 0x94d049bb133111eb );
+            x = x ^ ( x >> 31 );
+            return x;
+        }
+
+        /// <summary>
+        /// Retrieves the amount of time the calling thread has executed in kernel mode and
+        /// returns that time as a <see cref="TimeSpan"/> (ticks = 100 ns).
+        /// </summary>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing the cumulative kernel-mode execution time for
+        /// the calling thread. The value is constructed directly from the Windows <c>FILETIME</c>
+        /// kernel-time value returned by <c>GetThreadTimes</c>, which reports time in 100-nanosecond
+        /// intervals (the same tick unit used by this library).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This function calls the Windows API <c>GetThreadTimes</c> with a pseudo-handle returned
+        /// by <c>GetCurrentThread()</c>. The API fills four <c>FILETIME</c> values:
+        /// creation time, exit time, kernel time and user time. Each <c>FILETIME</c> is a 64-bit
+        /// value expressing the number of 100-nanosecond intervals since January 1, 1601 (UTC).
+        /// The implementation here reinterprets the kernel-time <c>FILETIME</c> as a 64-bit
+        /// integer and constructs a <see cref="TimeSpan"/> directly from that tick count.
+        /// </para>
+        /// <para>
+        /// Platform/availability: this function requires the Windows API <c>GetThreadTimes</c>
+        /// and therefore is only meaningful on Windows. The call uses the calling thread's
+        /// pseudo-handle and does not require closing a handle.
+        /// </para>
+        /// <para>
+        /// Thread-safety: the function queries the calling thread's kernel time and has no
+        /// side-effects; it is safe to call from multiple threads concurrently.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Example: obtain kernel time for the calling thread and print milliseconds
+        /// auto kt = TimeSpan::KernelTime();
+        /// std::cout &lt;&lt; "Kernel time (ms): " &lt;&lt; kt.ToMilliseconds() &lt;&lt; std::endl;
+        ///
+        /// // Equivalent direct Windows usage (illustrative) replaced by the above:
+        /// // FILETIME creation, exit, kernel, user;
+        /// // if ( GetThreadTimes( GetCurrentThread(), &creation, &exit, &kernel, &user ) )
+        /// // {
+        /// //     ULARGE_INTEGER ku{};
+        /// //     ku.LowPart = kernel.dwLowDateTime;
+        /// //     ku.HighPart = kernel.dwHighDateTime;
+        /// //     TimeSpan kernelTime( static_cast<long long>( ku.QuadPart ) );
+        /// //     std::cout << "Kernel time (ms): " << kernelTime.ToMilliseconds() << std::endl;
+        /// // }
+        /// </code>
+        /// </example>
+        static TimeSpan KernelTime( )
+        {
+            Int64 creationTime;
+            Int64 exitTime;
+            Int64 kernelTime;
+            Int64 userTime;
+            GetThreadTimes( GetCurrentThread( ), ( LPFILETIME )&creationTime, ( LPFILETIME )&exitTime, ( LPFILETIME )&kernelTime, ( LPFILETIME )&userTime );
+            return TimeSpan( kernelTime );
+        }
+
+        /// <summary>
+        /// Retrieves the amount of time the calling thread has executed in user mode and
+        /// returns that time as a <see cref="TimeSpan"/> (ticks = 100 ns).
+        /// </summary>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing the cumulative user-mode execution time for
+        /// the calling thread. The value is constructed from the 64-bit FILETIME value returned
+        /// by <c>GetThreadTimes</c> for the thread's user-time field. FILETIME values are expressed
+        /// in 100-nanosecond units (the same tick unit used by this library).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This function calls the Windows API <c>GetThreadTimes</c> using the calling thread's
+        /// pseudo-handle returned by <c>GetCurrentThread()</c>. The API expects four <c>LPFILETIME</c>
+        /// pointers for creation time, exit time, kernel time and user time. The implementation here
+        /// reinterprets local 64-bit integers as <c>FILETIME</c> structures (via pointer cast) and
+        /// constructs a <see cref="TimeSpan"/> from the resulting 64-bit tick count.
+        /// </para>
+        /// <para>
+        /// Platform: requires Windows API <c>GetThreadTimes</c>; meaningful only on Windows targets.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Preferred usage: query user-mode CPU time for the calling thread
+        /// TimeSpan userTime = TimeSpan::UserTime();
+        /// std::cout &lt;&lt; "User time (ms): " &lt;&lt; userTime.ToMilliseconds() &lt;&lt; std::endl;
+        ///
+        /// // Equivalent low-level Windows usage (illustrative; the above call replaces this):
+        /// // FILETIME creation, exit, kernel, user;
+        /// // if ( GetThreadTimes( GetCurrentThread(), &creation, &exit, &kernel, &user ) )
+        /// // {
+        /// //     ULARGE_INTEGER u{};
+        /// //     u.LowPart = user.dwLowDateTime;
+        /// //     u.HighPart = user.dwHighDateTime;
+        /// //     TimeSpan userTimeDirect( static_cast<long long>( u.QuadPart ) );
+        /// //     std::cout << "User time (ms): " << userTimeDirect.ToMilliseconds() << std::endl;
+        /// // }
         /// </code>
         /// </example>
         static TimeSpan UserTime( )
@@ -1093,11 +1196,11 @@ namespace Harlinn::Common::Core
         /// <example>
         /// <code language="cpp">
         /// TimeSpan ts = TimeSpan::FromMilliseconds(500);
-        /// DWORD timeout = ts.ToTimeout(); // 500
+        /// DWORD timeout = ts.ToWindowsAPITimeout(); // 500
         /// WaitForSingleObject(handle, timeout);
         /// </code>
         /// </example>
-        constexpr UInt32 ToTimeout( ) const noexcept
+        constexpr UInt32 ToWindowsAPITimeout( ) const noexcept
         {
             auto millis = ticks_ / TicksPerMillisecond;
             if ( millis > static_cast< long long >( INFINITE ) )
@@ -1142,8 +1245,102 @@ namespace Harlinn::Common::Core
         /// </example>
         static constexpr int Compare( const TimeSpan& t1, const TimeSpan& t2 ) noexcept
         {
-            return static_cast< int >( t1.ticks_ > t2.ticks_ ) - static_cast< int >( t1.ticks_ < t2.ticks_ );
+            const bool gt = t1.ticks_ > t2.ticks_;
+            const bool lt = t1.ticks_ < t2.ticks_;
+            return static_cast< int >( gt ) - static_cast< int >( lt );
         }
+
+        /// <summary>
+        /// Compares a <see cref="TimeSpan"/> with a `std::chrono` duration and returns an integer that indicates their relative ordering.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="t1">The <see cref="TimeSpan"/> left operand to compare.</param>
+        /// <param name="t2">The `std::chrono` duration right operand to compare.</param>
+        /// <returns>
+        /// - A value less than zero (<c>-1</c>) when <paramref name="t1"/> is less than <paramref name="t2"/>; 
+        /// - Zero (<c>0</c>) when they are equal;
+        /// - A value greater than zero (<c>1</c>) when <paramref name="t1"/> is greater than <paramref name="t2"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The duration <paramref name="t2"/> is converted to the library internal tick unit (100 ns) using <c>DurationToTicks</c>.
+        ///   That conversion uses <c>std::chrono::duration_cast</c> and therefore truncates fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - If the converted tick count for <paramref name="t2"/> does not fit in a <c>long long</c> the result may overflow;
+        ///   callers that require full range-safety should validate the duration before calling or use a checked conversion.
+        /// </para>
+        /// <para>
+        /// - The implementation uses comparisons only (no subtraction) to avoid signed overflow and is therefore defined
+        ///   for all representable tick values. The function is <c>constexpr</c> and <c>noexcept</c>.
+        /// </para>
+        /// <para>
+        /// - Thread-safety: pure function with no side-effects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Compare TimeSpan with std::chrono::milliseconds
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.0); // 1 second
+        /// using namespace std::chrono;
+        /// int cmp = TimeSpan::Compare( ts, milliseconds(1500) ); // cmp == -1 (1s < 1.5s)
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        static constexpr int Compare( const TimeSpan& t1, const DurationT& t2 ) noexcept
+        {
+            auto t2Ticks = DurationToTicks( t2 );
+            const bool gt = t1.ticks_ > t2Ticks;
+            const bool lt = t1.ticks_ < t2Ticks;
+            return static_cast< int >( gt ) - static_cast< int >( lt );
+        }
+
+        /// <summary>
+        /// Compares a `std::chrono` duration with a <see cref="TimeSpan"/> and returns an integer that indicates their relative ordering.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="t1">The `std::chrono` duration left operand to compare.</param>
+        /// <param name="t2">The <see cref="TimeSpan"/> right operand to compare.</param>
+        /// <returns>
+        /// - A value less than zero (<c>-1</c>) when <paramref name="t1"/> is less than <paramref name="t2"/>; 
+        /// - Zero (<c>0</c>) when they are equal;
+        /// - A value greater than zero (<c>1</c>) when <paramref name="t1"/> is greater than <paramref name="t2"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The duration <paramref name="t1"/> is converted to the library internal tick unit (100 ns) using <c>DurationToTicks</c>.
+        ///   That conversion uses <c>std::chrono::duration_cast</c> and therefore truncates fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - If the converted tick count for <paramref name="t1"/> does not fit in a <c>long long</c> the result may overflow;
+        ///   callers that require full range-safety should validate the duration before calling or use a checked conversion.
+        /// </para>
+        /// <para>
+        /// - The implementation uses comparisons only (no subtraction) to avoid signed overflow and is therefore defined
+        ///   for all representable tick values. The function is <c>constexpr</c> and <c>noexcept</c>.
+        /// </para>
+        /// <para>
+        /// - Thread-safety: pure function with no side-effects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Compare std::chrono::seconds with TimeSpan
+        /// using namespace std::chrono;
+        /// int cmp = TimeSpan::Compare( seconds(2), TimeSpan::FromSeconds(1.5) ); // cmp == 1 (2s > 1.5s)
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        static constexpr int Compare( const DurationT& t1, const TimeSpan& t2 ) noexcept
+        {
+            auto t1Ticks = DurationToTicks( t1 );
+            const bool gt = t1Ticks > t2.ticks_;
+            const bool lt = t1Ticks < t2.ticks_;
+            return static_cast< int >( gt ) - static_cast< int >( lt );
+        }
+
 
         /// <summary>
         /// Compares this <see cref="TimeSpan"/> instance to another <see cref="TimeSpan"/> and returns an integer
@@ -1171,7 +1368,61 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr int CompareTo( const TimeSpan& value ) const noexcept
         {
-            return static_cast< int >( ticks_ > value.ticks_ ) - static_cast< int >( ticks_ < value.ticks_ );
+            const bool gt = ticks_ > value.ticks_;
+            const bool lt = ticks_ < value.ticks_;
+            return static_cast< int >( gt ) - static_cast< int >( lt );
+        }
+
+        /// <summary>
+        /// Compares this <see cref="TimeSpan"/> instance to a `std::chrono` duration and returns an integer
+        /// that indicates their relative ordering.
+        /// </summary>
+        /// <typeparam name="DurationT">
+        /// A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.
+        /// </typeparam>
+        /// <param name="value">
+        /// The duration to compare with this <see cref="TimeSpan"/>. May be negative.
+        /// </param>
+        /// <returns>
+        /// - A value less than zero (<c>-1</c>) when this <see cref="TimeSpan"/> is less than <paramref name="value"/>;
+        /// - Zero (<c>0</c>) when they are equal;
+        /// - A value greater than zero (<c>1</c>) when this <see cref="TimeSpan"/> is greater than <paramref name="value"/>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The provided duration is converted to the library internal tick unit (100 ns) using <c>DurationToTicks</c>.
+        ///   That conversion uses <c>std::chrono::duration_cast</c> to a 100-ns tick duration and therefore truncates
+        ///   fractional sub-tick parts toward zero (no rounding).
+        /// </para>
+        /// <para>
+        /// - The conversion result is stored in a <c>long long</c>. If the duration magnitude exceeds the range
+        ///   representable by <c>long long</c> the converted value may overflow; callers that require full range safety
+        ///   should validate the duration prior to calling or use a checked conversion.
+        /// </para>
+        /// <para>
+        /// - To avoid signed overflow this comparison implementation uses only relational comparisons of the underlying
+        ///   tick counts (no subtraction). The result is canonicalized to -1/0/+1.
+        /// </para>
+        /// <para>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>. It is pure and has no side-effects and is safe for
+        ///   concurrent use.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.0); // 1 second
+        /// int cmp = ts.CompareTo( milliseconds(1500) ); // cmp == -1 (1s < 1.5s)
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr int CompareTo( const DurationT& value ) const noexcept
+        {
+            auto valueTicks = DurationToTicks( value );
+            const bool gt = ticks_ > valueTicks;
+            const bool lt = ticks_ < valueTicks;
+            return static_cast< int >( gt ) - static_cast< int >( lt );
         }
 
         /// <summary>
@@ -1218,51 +1469,6 @@ namespace Harlinn::Common::Core
             auto unsignedTicks = static_cast< UInt64 >( ticks_ );
             return TimeSpan( static_cast< long long >( unsignedTicks & Mask ) );
         }
-
-        /// <summary>
-        /// Returns a <see cref="TimeSpan"/> with the sign of this interval inverted.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="TimeSpan"/> whose internal tick count equals the negation of this instance's
-        /// tick count. When the value is the minimum representable 64-bit tick count (MinInt64)
-        /// negation cannot be represented in a signed 64-bit integer; this function therefore
-        /// saturates and returns <see cref="TimeSpan::MaxValue()"/> to avoid undefined behavior.
-        /// </returns>
-        /// <remarks>
-        /// - The method is <c>constexpr</c> and <c>noexcept</c>.
-        /// - Signed negation of <c>std::numeric_limits<long long>::min()</c> is a signed overflow and
-        ///   would be undefined behavior. This implementation explicitly handles that case to guarantee
-        ///   defined behavior across platforms.
-        /// - Behavior choice for the extreme value (MinInt64) is to saturate to MaxInt64. Alternatives:
-        ///   - throw an exception (changes noexcept contract),
-        ///   - return the original value (preserve bits, surprising to callers),
-        ///   - return Duration() or another sentinel.
-        ///   Saturation was chosen to keep the routine noexcept/constexpr and avoid UB while providing a
-        ///   useful numeric result.
-        /// - Performance: common-case path is a single negation (compiled to a single instruction on x64).
-        ///   The MinInt64 branch is extremely rare and will be well predicted as not-taken in typical workloads.
-        /// </remarks>
-        /// <example>
-        /// <code language="cpp">
-        /// TimeSpan t = TimeSpan::FromSeconds(5.0); // +5s
-        /// TimeSpan neg = t.Negate();               // -5s
-        /// 
-        /// // Safe for extreme value:
-        /// TimeSpan minVal = TimeSpan::MinValue();
-        /// TimeSpan negMin = minVal.Negate();      // negMin == TimeSpan::MaxValue()
-        /// </code>
-        /// </example>
-        constexpr TimeSpan Negate( ) const noexcept
-        {
-            // Avoid signed overflow when ticks_ == MinInt64.
-            if ( ticks_ == MinInt64 )
-            {
-                // Saturate to MaxInt64 to preserve noexcept/constexpr and avoid UB.
-                return TimeSpan( MaxInt64 );
-            }
-            return TimeSpan( -ticks_ );
-        }
-
 
         /// <summary>
         /// Creates a <see cref="TimeSpan"/> that represents the specified number of days.
@@ -1482,6 +1688,86 @@ namespace Harlinn::Common::Core
         }
 
         /// <summary>
+        /// Returns a <see cref="TimeSpan"/> whose tick count is the negation of this instance's tick count.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> representing the arithmetic negation of this instance.
+        /// If this instance contains the minimum two's‑complement 64-bit value (<c>std::numeric_limits<long long>::min()</c>)
+        /// negation would overflow; this function explicitly handles that case and saturates the result to
+        /// <see cref="TimeSpan::MaxValue()"/> to avoid undefined behavior.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The implementation performs a well-defined, branch-efficient unsigned two's‑complement negation:
+        ///   it casts the underlying tick value to <c>UInt64</c>, computes the negation in unsigned arithmetic and
+        ///   conditionally selects <c>MaxInt64</c> when the original value equals <c>MinInt64</c>.
+        /// </para>
+        /// <para>
+        /// - This guarantees there is no signed overflow (undefined behavior) when negating the most-negative 64-bit value.
+        ///   The chosen policy is saturation to <c>MaxInt64</c> for that extreme input.
+        /// </para>
+        /// <para>
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has O(1) complexity and no side-effects.
+        ///   It is safe to call from multiple threads concurrently.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan t = TimeSpan::FromSeconds(5.0);      // +5s
+        /// TimeSpan neg = t.Negate();                   // -5s
+        ///
+        /// TimeSpan minVal = TimeSpan::MinValue();
+        /// TimeSpan saturated = minVal.Negate();        // saturated == TimeSpan::MaxValue()
+        /// </code>
+        /// </example>
+        constexpr TimeSpan Negate( ) const noexcept
+        {
+            using U = UInt64;
+            constexpr U MinTicksU = static_cast< U >( MinInt64 );
+            constexpr U MaxTicksU = static_cast< U >( MaxInt64 );
+
+            const U ut = static_cast< U >( ticks_ );
+            // 0 or 1
+            const U isMin = static_cast< U >( ut == MinTicksU ); 
+            // 0 or all-ones
+            const U mask = static_cast< U >( 0ULL - isMin );
+
+            // two's-complement negation (unsigned)
+            const U uneg = static_cast< U >( ~ut ) + 1ULL;
+            const U selected = ( uneg & ~mask ) | ( MaxTicksU & mask );
+
+            return TimeSpan( std::bit_cast< long long >( selected ) );
+        }
+
+        /// <summary>
+        /// Returns the unary negation of this <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals the negation of this instance's tick count.
+        /// The operation delegates to <c>Negate()</c>, which explicitly handles the extreme two's‑complement
+        /// minimum value to avoid signed overflow (it saturates to <c>TimeSpan::MaxValue()</c>).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - This operator is <c>constexpr</c> and <c>noexcept</c>.
+        /// - Delegating to <c>Negate()</c> guarantees defined behavior for <c>std::numeric_limits<long long>::min()</c>
+        ///   instead of producing undefined signed overflow.
+        /// - The operator has no side-effects and is safe to call concurrently on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan t = TimeSpan::FromSeconds(5.0); // +5s
+        /// TimeSpan neg = -t;                       // neg == TimeSpan::FromSeconds(-5.0)
+        /// </code>
+        /// </example>
+        constexpr TimeSpan operator-( ) const noexcept
+        {
+            return Negate( );
+        }
+
+
+        /// <summary>
         /// Adds the specified <see cref="TimeSpan"/> to this instance and returns the sum.
         /// </summary>
         /// <param name="other">The <see cref="TimeSpan"/> to add. May be negative to perform subtraction.</param>
@@ -1520,7 +1806,93 @@ namespace Harlinn::Common::Core
             return TimeSpan( ticks_ + other.ticks_ );
         }
 
+        /// <summary>
+        /// Adds a `std::chrono` duration to this <see cref="TimeSpan"/> and returns the resulting interval.
+        /// </summary>
+        /// <typeparam name="DurationT">
+        /// A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.
+        /// </typeparam>
+        /// <param name="duration">
+        /// The duration to add. May be negative to subtract time.
+        /// </param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals the sum of this instance's ticks and the converted
+        /// <paramref name="duration"/> measured in ticks (1 tick = 100 ns).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The supplied <paramref name="duration"/> is converted to the library internal tick unit using
+        ///   <c>DurationToTicks</c>. That conversion uses <c>std::chrono::duration_cast</c> to a 100 ns tick
+        ///   duration and therefore truncates fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - No runtime overflow checking is performed in this call. If the converted tick count for
+        ///   <paramref name="duration"/> causes the sum to overflow a signed 64-bit value, the behavior would be
+        ///   undefined in C++. In debug builds the implementation asserts that the addition is safe
+        ///   by calling <c>IsAdditionSafe(ticks_, durationTicks)</c>.
+        /// </para>
+        /// <para>
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, pure (no side-effects) and safe to call concurrently.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.0);         // 1 second
+        /// auto result = ts.Add( milliseconds(1500) );      // result == TimeSpan::FromMilliseconds(2500.0)
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr TimeSpan Add( const DurationT& duration ) const noexcept
+        {
+            auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, durationTicks ) );
+            }
+#endif
+            return TimeSpan( ticks_ + durationTicks );
+        }
 
+
+        /// <summary>
+        /// Subtracts the specified <see cref="TimeSpan"/> from this instance and returns the difference.
+        /// </summary>
+        /// <param name="other">
+        /// The <see cref="TimeSpan"/> to subtract. May be negative to perform addition.
+        /// </param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals <c>ticks_ - other.ticks_</c>.
+        /// The result may be negative if the subtrahend is larger than this instance.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - This method is <c>constexpr</c> and <c>noexcept</c> and performs a plain signed subtraction of
+        ///   the internal 64-bit tick counts (1 tick = 100 ns).
+        /// </para>
+        /// <para>
+        /// - No runtime overflow detection is performed in release builds. Signed overflow of 64-bit integers
+        ///   is undefined behavior in C++; therefore callers MUST ensure the operands are in a safe range
+        ///   before calling this method. In debug builds the implementation asserts the subtraction is safe
+        ///   by calling <c>IsSubtractionSafe(ticks_, other.ticks_)</c>.
+        /// </para>
+        /// <para>
+        /// - Thread-safety: the method has no side-effects and is safe to call concurrently on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Subtract two TimeSpan values
+        /// TimeSpan a = TimeSpan::FromMinutes(5.0);   // 5 minutes
+        /// TimeSpan b = TimeSpan::FromMinutes(2.0);   // 2 minutes
+        /// TimeSpan diff = a.Subtract(b);             // diff == TimeSpan::FromMinutes(3.0)
+        ///
+        /// // If you are unsure about overflow, validate first:
+        /// // assert( IsSubtractionSafe( a.Ticks(), b.Ticks() ) );
+        /// </code>
+        /// </example>
         constexpr TimeSpan Subtract( const TimeSpan& other ) const noexcept
         {
 #ifdef _DEBUG
@@ -1532,8 +1904,90 @@ namespace Harlinn::Common::Core
             return TimeSpan( ticks_ - other.ticks_ );
         }
 
+        /// <summary>
+        /// Subtracts a `std::chrono` duration from this <see cref="TimeSpan"/> and returns the resulting interval.
+        /// </summary>
+        /// <typeparam name="DurationT">
+        /// A <c>std::chrono::duration</c> type. Must satisfy the <c>IsStdChronoDuration</c> constraint.
+        /// </typeparam>
+        /// <param name="duration">The duration to subtract. May be negative to perform addition.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals this instance's tick count minus the converted
+        /// <paramref name="duration"/> measured in ticks (1 tick = 100 ns).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The supplied <paramref name="duration"/> is converted to the library internal tick unit using
+        ///   <c>DurationToTicks</c>. That conversion uses <c>std::chrono::duration_cast</c> to a 100-ns tick
+        ///   duration and therefore truncates fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - No runtime overflow checking is performed in release builds. If the converted tick count for
+        ///   <paramref name="duration"/> causes the subtraction to overflow a signed 64-bit value, the behavior is
+        ///   undefined in C++. In debug builds the implementation asserts that the subtraction is safe
+        ///   by calling <c>IsSubtractionSafe(ticks_, durationTicks)</c>.
+        /// </para>
+        /// <para>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>, pure (no side-effects) and safe to call concurrently.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromMinutes(5.0);          // 5 minutes
+        /// auto result = ts.Subtract( seconds(30) );         // result == TimeSpan::FromMinutes(4.5)
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr TimeSpan Subtract( const DurationT& duration ) const noexcept
+        {
+            auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, durationTicks ) );
+            }
+#endif
+            return TimeSpan( ticks_ - durationTicks );
+        }
+
         
 
+        /// <summary>
+        /// Adds the specified <see cref="TimeSpan"/> to this instance in-place.
+        /// </summary>
+        /// <param name="other">
+        /// The <see cref="TimeSpan"/> to add. May be negative to perform subtraction.
+        /// </param>
+        /// <returns>Reference to this instance after the addition (<c>*this</c>).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The operation performs a plain signed 64-bit addition of the internal tick counts:
+        ///   <c>ticks_ += other.ticks_</c>. One tick equals 100 nanoseconds.
+        /// </para>
+        /// <para>
+        /// - No runtime overflow checking is performed in release builds. Signed overflow of a 64-bit integer
+        ///   is undefined behavior in C++; therefore callers MUST ensure the operands are in a safe range
+        ///   before invoking this operator. In debug builds the implementation asserts the addition is safe
+        ///   by calling <c>IsAdditionSafe(ticks_, other.ticks_)</c> when not evaluated in a constant expression.
+        /// </para>
+        /// <para>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>. It mutates the object and is therefore not
+        ///   thread-safe for concurrent callers that access the same instance; calling on distinct objects is safe.
+        /// </para>
+        /// <para>
+        /// - Complexity: O(1). No allocations are performed.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan a = TimeSpan::FromMinutes(5.0); // 5 minutes
+        /// TimeSpan b = TimeSpan::FromMinutes(2.0); // 2 minutes
+        /// a += b; // a now represents 7 minutes
+        /// </code>
+        /// </example>
         constexpr TimeSpan& operator += ( const TimeSpan& other ) noexcept
         {
 #ifdef _DEBUG
@@ -1546,6 +2000,85 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        /// <summary>
+        /// Adds the specified `std::chrono` duration to this instance in-place.
+        /// </summary>
+        /// <typeparam name="DurationT">
+        /// A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.
+        /// </typeparam>
+        /// <param name="duration">
+        /// The duration to add. May be negative to perform subtraction. The duration is converted to the internal tick unit (1 tick = 100 ns) using <c>DurationToTicks</c>.
+        /// </param>
+        /// <returns>
+        /// Reference to this instance after the addition (<c>*this</c>).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The provided <paramref name="duration"/> is converted to ticks via <c>DurationToTicks</c>, which uses
+        ///   <c>std::chrono::duration_cast</c> to a 100-ns tick duration and therefore truncates fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - This operation performs a plain signed 64-bit addition of the underlying tick counts:
+        ///   <c>ticks_ += durationTicks</c>. No runtime overflow checking is performed in release builds.
+        ///   Signed overflow of a 64-bit integer is undefined behavior in C++; callers MUST ensure the operands are
+        ///   in a safe range before invoking this operator. In debug builds an assertion verifies safety by calling
+        ///   <c>IsAdditionSafe(ticks_, durationTicks)</c> when not evaluated in a constant expression.
+        /// </para>
+        /// <para>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>. It mutates the object and therefore is not thread-safe
+        ///   for concurrent callers that access the same instance; calling on distinct objects is safe.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromMinutes(5.0);   // 5 minutes
+        /// ts += seconds(30);                          // ts now represents 5 minutes 30 seconds
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr TimeSpan& operator += ( const DurationT& duration ) noexcept
+        {
+            const auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, durationTicks ) );
+            }
+#endif
+            ticks_ += durationTicks;
+            return *this;
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> representing the sum of this instance and the specified <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <param name="other">The <see cref="TimeSpan"/> to add. May be negative to perform subtraction.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals <c>ticks_ + other.ticks_</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Performs a plain signed 64-bit addition of the internal tick counts (1 tick = 100 ns).
+        /// - No runtime overflow checking is performed in release builds. Signed overflow of a 64-bit integer
+        ///   is undefined behavior in C++; callers MUST ensure the operands are in a safe range before calling.
+        ///   In debug builds the implementation asserts that the addition is safe by calling
+        ///   <c>IsAdditionSafe(ticks_, other.ticks_)</c> when not evaluated in a constant expression.
+        /// </para>
+        /// <para>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>, has no side-effects (does not mutate *this),
+        ///   and is safe to call concurrently on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Add two TimeSpan values
+        /// TimeSpan a = TimeSpan::FromMinutes(5.0); // 5 minutes
+        /// TimeSpan b = TimeSpan::FromMinutes(2.0); // 2 minutes
+        /// TimeSpan sum = a + b;                    // sum == TimeSpan::FromMinutes(7.0)
+        /// </code>
+        /// </example>
         constexpr TimeSpan operator + ( const TimeSpan& other ) const noexcept
         {
 #ifdef _DEBUG
@@ -1557,6 +2090,127 @@ namespace Harlinn::Common::Core
             return TimeSpan(ticks_ + other.ticks_ );
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> obtained by adding the specified `std::chrono` duration to this instance.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="duration">The duration to add. May be negative to perform subtraction. The duration is converted to the internal tick unit (1 tick = 100 ns) using <c>DurationToTicks</c>.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals <c>ticks_ + DurationToTicks(duration)</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The <paramref name="duration"/> is converted to ticks by <c>DurationToTicks</c>, which uses
+        ///   <c>std::chrono::duration_cast</c> to a 100-nanosecond tick duration; fractional sub-tick parts are truncated toward zero.
+        /// </para>
+        /// <para>
+        /// - No runtime overflow checking is performed in release builds. Signed overflow of the 64-bit tick count is
+        ///   undefined behavior in C++; callers MUST ensure the operands are in a safe range before calling this operator.
+        ///   In debug builds an assertion verifies safety by calling <c>IsAdditionSafe(ticks_, durationTicks)</c> when not evaluated in a constant expression.
+        /// </para>
+        /// <para>
+        /// - The operator is <c>constexpr</c> and <c>noexcept</c>. It does not mutate this instance and is safe to call concurrently on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromMinutes(5.0);   // 5 minutes
+        /// auto result = ts + seconds(30);             // result == TimeSpan::FromMinutes(5.5)
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr TimeSpan operator + ( const DurationT& duration ) const noexcept
+        {
+            const auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( ticks_, durationTicks ) );
+            }
+#endif
+            return TimeSpan( ticks_ + durationTicks );
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to the sum of the specified `std::chrono` duration and the given <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="duration">The duration to add. May be negative to perform subtraction. Converted to internal ticks (100 ns) via <c>DurationToTicks</c>.</param>
+        /// <param name="timeSpan">The <see cref="TimeSpan"/> to add to.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals <c>DurationToTicks(duration) + timeSpan.Ticks()</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The conversion from <paramref name="duration"/> to ticks uses <c>std::chrono::duration_cast</c> inside <c>DurationToTicks</c>;
+        ///   fractional sub-tick parts are truncated toward zero.
+        /// </para>
+        /// <para>
+        /// - No runtime overflow checking is performed in release builds. Signed 64-bit overflow when adding the converted ticks
+        ///   is undefined behavior in C++. In debug builds an assertion calls <c>IsAdditionSafe(durationTicks, timeSpan.ticks_)</c>
+        ///   when not evaluated in a constant expression to help detect potential overflow.
+        /// </para>
+        /// <para>
+        /// - The operator is <c>constexpr</c> and <c>noexcept</c>. It does not modify its operands and is safe to call concurrently on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan base = TimeSpan::FromMinutes(5.0);      // 5 minutes
+        /// auto result = seconds(30) + base;                // result == 5 minutes 30 seconds
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr friend TimeSpan operator + ( const DurationT& duration, const TimeSpan& timeSpan ) noexcept
+        {
+            const auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsAdditionSafe( durationTicks, timeSpan.ticks_ ) );
+            }
+#endif
+            return TimeSpan( durationTicks + timeSpan.ticks_ );
+        }
+
+
+
+        /// <summary>
+        /// Subtracts the specified <see cref="TimeSpan"/> from this instance in-place.
+        /// </summary>
+        /// <param name="other">The <see cref="TimeSpan"/> to subtract. May be negative to perform addition.</param>
+        /// <returns>Reference to this instance after the subtraction (<c>*this</c>).</returns>
+        /// <remarks>
+        /// <para>
+        /// - Performs a plain signed 64-bit subtraction of the internal tick counts:
+        ///   <c>ticks_ -= other.ticks_</c> (1 tick = 100 ns).
+        /// </para>
+        /// <para>
+        /// - No runtime overflow checking is performed in release builds. Signed overflow of a 64-bit integer
+        ///   is undefined behavior in C++; callers MUST ensure the operands are in a safe range before invoking
+        ///   this operator. In debug builds the implementation asserts that the subtraction is safe by calling
+        ///   <c>IsSubtractionSafe(ticks_, other.ticks_)</c> when not evaluated in a constant expression.
+        /// </para>
+        /// <para>
+        /// - The operator is <c>constexpr</c> and <c>noexcept</c>. It mutates the object and therefore is not
+        ///   thread-safe for concurrent modifications of the same instance; calling on distinct objects is safe.
+        /// </para>
+        /// <para>
+        /// - Complexity: O(1). No allocations are performed.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Subtract two TimeSpan values in-place
+        /// TimeSpan a = TimeSpan::FromMinutes(5.0); // 5 minutes
+        /// TimeSpan b = TimeSpan::FromMinutes(2.0); // 2 minutes
+        /// a -= b; // a now represents 3 minutes
+        /// </code>
+        /// </example>
         constexpr TimeSpan& operator -= ( const TimeSpan& other ) noexcept
         {
 #ifdef _DEBUG
@@ -1569,6 +2223,78 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        /// <summary>
+        /// Subtracts the specified `std::chrono` duration from this <see cref="TimeSpan"/> in-place.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="duration">Duration to subtract. May be negative to perform addition.</param>
+        /// <returns>Reference to this instance after the subtraction (<c>*this</c>).</returns>
+        /// <remarks>
+        /// <para>
+        /// - The supplied <paramref name="duration"/> is converted to the library internal tick unit (100 ns) using
+        ///   <c>DurationToTicks</c>. That conversion uses <c>std::chrono::duration_cast</c> and therefore truncates
+        ///   fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - No runtime overflow checking is performed in release builds. If the converted tick count for
+        ///   <paramref name="duration"/> causes the subtraction to overflow a signed 64-bit value, the behavior is
+        ///   undefined in C++. In debug builds the implementation asserts that the subtraction is safe by calling
+        ///   <c>IsSubtractionSafe(ticks_, durationTicks)</c> when not evaluated in a constant expression.
+        ///   Callers that require defined overflow semantics should validate with <c>IsSubtractionSafe</c> or use
+        ///   a checked/clamping helper prior to calling.
+        /// </para>
+        /// <para>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>. It mutates the object and therefore is not thread-safe
+        ///   for concurrent modifications of the same instance; calling on distinct objects is safe.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromMinutes(5.0);   // 5 minutes
+        /// ts -= seconds(30);                          // ts now represents 4 minutes 30 seconds
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr TimeSpan& operator -= ( const DurationT& duration ) noexcept
+        {
+            const auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, durationTicks ) );
+            }
+#endif
+            ticks_ -= durationTicks;
+            return *this;
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> that is the result of subtracting <paramref name="other"/> from this instance.
+        /// </summary>
+        /// <param name="other">The <see cref="TimeSpan"/> to subtract. May be negative to perform addition.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals <c>ticks_ - other.ticks_</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The operation performs a plain signed 64-bit subtraction of the internal tick counts (1 tick = 100 ns).
+        /// - No runtime overflow checking is performed in release builds. Signed overflow of 64-bit integers is undefined
+        ///   behaviour in C++; callers MUST ensure the operands are in a safe range before calling. In debug builds the
+        ///   implementation asserts safety via <c>IsSubtractionSafe(ticks_, other.ticks_)</c> when not evaluated in a constant expression.
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and does not mutate this instance.
+        /// - Complexity: O(1). Thread-safe when called on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // Subtract two TimeSpan values
+        /// TimeSpan a = TimeSpan::FromMinutes(5.0);   // 5 minutes
+        /// TimeSpan b = TimeSpan::FromMinutes(2.0);   // 2 minutes
+        /// TimeSpan diff = a - b;                     // diff == TimeSpan::FromMinutes(3.0)
+        /// </code>
+        /// </example>
         constexpr TimeSpan operator - ( const TimeSpan& other ) const noexcept
         {
 #ifdef _DEBUG
@@ -1580,12 +2306,204 @@ namespace Harlinn::Common::Core
             return TimeSpan( ticks_ - other.ticks_ );
         }
 
+        /// <summary>
+        /// Subtracts the specified `std::chrono` duration from this <see cref="TimeSpan"/> and returns the resulting interval.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="duration">
+        /// The duration to subtract. May be negative to perform addition. The duration is converted to the library's
+        /// internal tick unit (100 ns) using <c>DurationToTicks</c>.
+        /// </param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals <c>ticks_ - DurationToTicks(duration)</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Conversion: <c>DurationToTicks</c> uses <c>std::chrono::duration_cast</c> to convert the supplied duration
+        ///   to 100-nanosecond ticks. This is a narrowing conversion and truncates fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - Overflow safety: this operator performs a plain signed 64-bit subtraction of tick counts. Signed overflow of a
+        ///   64-bit integer is undefined behavior in C++; therefore no automatic runtime overflow checking is performed in
+        ///   release builds. In debug builds an assertion checks <c>IsSubtractionSafe(ticks_, durationTicks)</c> (when not
+        ///   evaluated in a constant expression) to help catch unsafe usage.
+        /// </para>
+        /// <para>
+        /// - Behavior on exceptional inputs:
+        ///   <list type="bullet">
+        ///     <item><description>If the converted tick count for <c>duration</c> is outside the range representable by <c>long long</c>,
+        ///     the conversion may overflow; callers that require full range-safety should validate the duration before calling.</description></item>
+        ///     <item><description>If overflow would occur during the subtraction and assertions are disabled, the result is undefined
+        ///     (program behaviour is undefined). Use a checked/clamped helper if defined semantics are required.</description></item>
+        ///   </list>
+        /// </para>
+        /// <para>
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>, has O(1) complexity, and has no side-effects. It is safe for concurrent
+        ///   use on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromSeconds(2.0);      // 2 seconds
+        /// auto result = ts - milliseconds(500);         // result == TimeSpan::FromMilliseconds(1500.0)
+        ///
+        /// // If unsure about overflow, validate beforehand:
+        /// auto durTicks = TimeSpan::DurationToTicks(milliseconds(500));
+        /// assert( IsSubtractionSafe( ts.Ticks(), durTicks ) );
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr TimeSpan operator - ( const DurationT& duration ) const noexcept
+        {
+            const auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( ticks_, durationTicks ) );
+            }
+#endif
+            return TimeSpan( ticks_ - durationTicks );
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to the result of subtracting the specified <paramref name="timeSpan"/>
+        /// from the supplied `std::chrono` <paramref name="duration"/>.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="duration">
+        /// The left-hand operand duration. Converted to the library internal tick unit (100 ns) using <c>DurationToTicks</c>.
+        /// May be negative to represent a negative interval.
+        /// </param>
+        /// <param name="timeSpan">The right-hand operand <see cref="TimeSpan"/> to subtract from <paramref name="duration"/>.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose internal tick count equals <c>DurationToTicks(duration) - timeSpan.Ticks()</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Conversion: <c>DurationToTicks</c> calls <c>std::chrono::duration_cast</c> to convert <paramref name="duration"/>
+        ///   to 100-nanosecond ticks. This is a narrowing conversion: fractional sub-tick parts are truncated toward zero.
+        /// </para>
+        /// <para>
+        /// - Overflow safety: the operator performs a plain signed 64-bit subtraction of the converted tick count and the
+        ///   <see cref="TimeSpan"/>'s tick count. Signed overflow of 64-bit integers is undefined behaviour in C++; no runtime
+        ///   overflow checking is performed in release builds. In debug builds an assertion verifies <c>IsSubtractionSafe(durationTicks, timeSpan.ticks_)</c>
+        ///   when not evaluated in a constant expression.
+        /// </para>
+        /// <para>
+        /// - Error conditions:
+        ///   <list type="bullet">
+        ///     <item><description>If <c>DurationToTicks(duration)</c> produces a value outside the range of <c>long long</c>, the conversion may overflow;</description></item>
+        ///     <item><description>If the subtraction would overflow and assertions are disabled, the result is undefined. Use a checked or clamping helper if defined semantics are required.</description></item>
+        ///   </list>
+        /// </para>
+        /// <para>
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, pure (no side-effects) and safe to call concurrently on distinct objects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// // 2.0 seconds - 1.5 seconds -> 0.5 seconds
+        /// auto result = seconds(2) - TimeSpan::FromSeconds(1.5); // result == TimeSpan::FromMilliseconds(500)
+        ///
+        /// // Validate before calling when unsure about overflow:
+        /// auto durTicks = TimeSpan::DurationToTicks(seconds(2));
+        /// assert( IsSubtractionSafe( durTicks, TimeSpan::FromSeconds(1.5).Ticks() ) );
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        friend constexpr TimeSpan operator - ( const DurationT& duration, const TimeSpan& timeSpan ) noexcept
+        {
+            const auto durationTicks = DurationToTicks( duration );
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsSubtractionSafe( durationTicks, timeSpan.ticks_ ) );
+            }
+#endif
+            return TimeSpan( durationTicks - timeSpan.ticks_ );
+        }
+
+        /// <summary>
+        /// Assigns a `std::chrono` duration to this <see cref="TimeSpan"/> by converting the duration
+        /// to the library internal tick unit (1 tick = 100 ns) and storing the resulting tick count.
+        /// </summary>
+        /// <typeparam name="DurationT">A `std::chrono::duration` type. Must satisfy the <c>IsStdChronoDuration</c> constraint.</typeparam>
+        /// <param name="value">The duration to assign. May be negative to represent a negative interval.</param>
+        /// <returns>
+        /// A reference to this <see cref="TimeSpan"/> instance after assignment (<c>*this</c>).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Conversion is performed by <c>DurationToTicks(value)</c>, which uses <c>std::chrono::duration_cast</c>
+        ///   to convert the supplied duration to 100-nanosecond ticks. That conversion truncates fractional sub-tick
+        ///   parts toward zero.
+        /// </para>
+        /// <para>
+        /// - No runtime range checking is performed. If the converted tick count is outside the representable
+        ///   range of <c>long long</c> or unacceptable for the receiving <see cref="TimeSpan"/>, the behavior
+        ///   may be implementation-defined or lead to overflow. Callers that require range-safety should validate
+        ///   the input duration before assignment or use a checked/clamping helper.
+        /// </para>
+        /// <para>
+        /// - The assignment is <c>constexpr</c> and does not allocate; it is a simple conversion and store operation.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts;
+        /// ts = milliseconds(1500); // ts now represents 1.5 seconds
+        /// </code>
+        /// </example>
         template<typename DurationT>
             requires IsStdChronoDuration<DurationT>
         constexpr TimeSpan& operator = ( const DurationT& value )
         {
             ticks_ = DurationToTicks( value );
             return *this;
+        }
+
+        /// <summary>
+        /// Converts this <see cref="TimeSpan"/> to a `std::chrono` duration type.
+        /// </summary>
+        /// <typeparam name="DurationT">Target `std::chrono::duration` type. Must satisfy <c>IsStdChronoDuration</c>.</typeparam>
+        /// <returns>
+        /// A value of type <typeparamref name="DurationT"/> that represents the same interval as this <see cref="TimeSpan"/>.
+        /// The conversion is implemented by <c>TicksToDuration</c>, which performs a <c>std::chrono::duration_cast</c>
+        /// from the internal 100-nanosecond tick duration to the requested duration type.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Precision and rounding: <c>std::chrono::duration_cast</c> performs a narrowing conversion. When converting
+        ///   to a coarser-grained duration fractional sub-tick parts are truncated toward zero (no rounding).
+        /// </para>
+        /// <para>
+        /// - Range and overflow: No runtime overflow checking is performed. If the resulting count does not fit in
+        ///   <c>DurationT::rep</c> the conversion may overflow or wrap depending on the implementation. Callers that
+        ///   require guaranteed range-safety should validate the tick value against the target representation before
+        ///   converting or use a checked helper.
+        /// </para>
+        /// <para>
+        /// - The operator is <c>constexpr</c> and <c>noexcept</c> and has no side-effects; it is safe for concurrent use.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.5); // 1.5 seconds
+        /// milliseconds ms = static_cast<milliseconds>( ts ); // ms == 1500ms
+        /// seconds s = static_cast<seconds>( ts ); // s == 1s (fraction truncated)
+        /// </code>
+        /// </example>
+        template<typename DurationT>
+            requires IsStdChronoDuration<DurationT>
+        constexpr explicit operator DurationT( ) const noexcept
+        {
+            return TicksToDuration<DurationT>( ticks_ );
         }
 
 
@@ -1758,7 +2676,7 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT WideString ToString( ) const;
         HCC_EXPORT WideString ToString( const WideString& format ) const;
-
+        /*
         HCC_EXPORT static bool TryParse( const wchar_t* text, TimeSpan& result );
         HCC_EXPORT static bool TryParse( const char* text, TimeSpan& result );
         HCC_EXPORT bool TryParse( const WideString& text, TimeSpan& result );
@@ -1768,8 +2686,405 @@ namespace Harlinn::Common::Core
         HCC_EXPORT static TimeSpan Parse( const char* text );
         HCC_EXPORT static TimeSpan Parse( const WideString& text );
         HCC_EXPORT static TimeSpan Parse( const AnsiString& text );
+        */
 
         HCC_EXPORT friend std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan );
+
+        /// <summary>
+        /// Attempts to parse a character buffer into a <see cref="TimeSpan"/> using formats
+        /// compatible with .NET/C# <c>TimeSpan.TryParse</c> (for example: "[-][d.]hh:mm[:ss[.fffffff]]").
+        /// </summary>
+        /// <typeparam name="CharT">Character type: <c>char</c> or <c>wchar_t</c>.</typeparam>
+        /// <param name="s">Pointer to the character buffer to parse (not required to be null terminated).</param>
+        /// <param name="sLength">Length of the buffer in characters.</param>
+        /// <param name="result">Out parameter that receives the parsed <see cref="TimeSpan"/> on success.
+        /// On failure it is set to <c>TimeSpan::Zero()</c>.</param>
+        /// <returns><c>true</c> when parsing succeeds and the value fits in the representable range;
+        /// otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// <para>
+        /// - Supported input (subset of .NET TimeSpan patterns):
+        ///   <list type="bullet">
+        ///     <item><description><c>[-][d.]hh:mm</c></description></item>
+        ///     <item><description><c>[-][d.]hh:mm:ss</c></description></item>
+        ///     <item><description><c>[-][d.]hh:mm:ss.fffffff</c> where fraction has up to 7 digits (100 ns ticks).</description></item>
+        ///   </list>
+        /// - Leading and trailing white-space is ignored. The sign (<c>'-'</c>) may precede the entire value.
+        /// - Fractional seconds are converted to ticks (1 tick = 100 ns). Fractional digits are truncated/padded
+        ///   to 7 digits (no rounding).
+        /// - The routine performs overflow-safe checks using the library helpers. If any intermediate multiplication
+        ///   or addition would overflow a signed 64-bit value the function fails and returns <c>false</c>.
+        /// - This function is <c>constexpr</c> and <c>noexcept</c>. On failure <paramref name="result"/> is set to <c>TimeSpan::Zero()</c>.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // char example
+        /// const char* s = "1.02:03:04.500"; // 1 day, 2 hours, 3 minutes, 4.5 seconds
+        /// TimeSpan ts;
+        /// bool ok = TimeSpan::TryParse( s, strlen( s ), ts );
+        /// // ok == true, ts represents 1d 2h 3m 4.5s
+        ///
+        /// // wchar_t example
+        /// const wchar_t* ws = L"-00:30:00"; // negative 30 minutes
+        /// ok = TimeSpan::TryParse( ws, wcslen( ws ), ts );
+        /// // ok == true, ts == -30 minutes
+        /// </code>
+        /// </example>
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        static bool TryParse( const CharT* s, size_t sLength, TimeSpan& result ) noexcept
+        {
+            // Local character constants
+            constexpr CharT Dot = static_cast< CharT >( '.' );
+            constexpr CharT Comma = static_cast< CharT >( ',' );
+            constexpr CharT Plus = static_cast< CharT >( '+' );
+            constexpr CharT Minus = static_cast< CharT >( '-' );
+            constexpr CharT Colon = static_cast< CharT >( ':' );
+            constexpr CharT Space = static_cast< CharT >( ' ' );
+            constexpr CharT Tab = static_cast< CharT >( '\t' );
+
+            auto fail = [ & ]( ) -> bool
+                {
+                    result = TimeSpan::Zero( );
+                    return false;
+                };
+
+            if ( s == nullptr )
+            {
+                return fail( );
+            }
+
+            const CharT* p = s;
+            const CharT* end = s + sLength;
+
+            // skip leading simple whitespace (space and tab)
+            while ( p < end && ( *p == Space || *p == Tab ) ) ++p;
+            if ( p == end ) return fail( );
+
+            // optional sign
+            bool negative = false;
+            if ( *p == Minus ) { negative = true; ++p; }
+            else if ( *p == Plus ) { ++p; }
+
+            // digit parser with overflow checks: accumulates into outValue, returns digit count or -1 on overflow
+            auto parseDigits = [ & ]( const CharT*& it, const CharT* itEnd, long long& outValue ) -> int
+                {
+                    outValue = 0;
+                    int digits = 0;
+                    while ( it < itEnd )
+                    {
+                        CharT c = *it;
+                        if ( c < static_cast< CharT >( '0' ) || c > static_cast< CharT >( '9' ) ) break;
+                        int d = static_cast< int >( c - static_cast< CharT >( '0' ) );
+                        if ( !IsMultiplicationSafe<long long>( outValue, 10 ) ) return -1;
+                        long long tmp = outValue * 10;
+                        if ( !IsAdditionSafe<long long>( tmp, d ) ) return -1;
+                        outValue = tmp + d;
+                        ++it;
+                        ++digits;
+                    }
+                    return digits;
+                };
+
+            // Precomputed powers for scaling fractional part to 7 digits (ticks)
+            // pow10Asc[k] == 10^k
+            static constexpr long long Pow10_7[ ] = { 1LL, 10LL, 100LL, 1000LL, 10000LL, 100000LL, 1000000LL, 10000000LL };
+            // Note: scale = 10^(7 - fracDigits) -> use Pow10_7[7 - fracDigits]
+
+            // Parse first numeric token (could be: days OR hours depending on separators)
+            const CharT* tokenStart = p;
+            long long firstValue = 0;
+            int firstDigits = parseDigits( p, end, firstValue );
+            if ( firstDigits == -1 ) return fail( );
+            if ( firstDigits == 0 ) return fail( ); // first token must have at least one digit
+
+            // If end -> single number -> treat as days
+            if ( p == end )
+            {
+                // firstValue -> days
+                long long days = firstValue;
+                // compute ticks = days * TicksPerDay
+                if ( !IsMultiplicationSafe<long long>( days, TicksPerDay ) ) return fail( );
+                long long ticks = days * TicksPerDay;
+                if ( negative )
+                {
+                    if ( ticks == MinInt64 ) return fail( );
+                    ticks = -ticks;
+                }
+                result = TimeSpan( ticks );
+                return true;
+            }
+
+            // Look at separator after first token
+            if ( *p == Dot )
+            {
+                // Pattern: days '.' time-part
+                long long days = firstValue;
+                ++p; // consume '.'
+
+                // After dot we expect at least one digit for hours
+                if ( p >= end ) return fail( );
+                long long hours = 0;
+                int hoursDigits = parseDigits( p, end, hours );
+                if ( hoursDigits == -1 ) return fail( );
+                if ( hoursDigits == 0 ) return fail( );
+
+                long long minutes = 0;
+                long long seconds = 0;
+                long long fractionTicks = 0;
+
+                if ( p < end && *p == Colon )
+                {
+                    // there is a colon after hours => parse minutes
+                    ++p;
+                    if ( p >= end ) return fail( );
+                    int minuteDigits = parseDigits( p, end, minutes );
+                    if ( minuteDigits == -1 ) return fail( );
+                    if ( minuteDigits == 0 ) return fail( );
+
+                    // optional :seconds
+                    if ( p < end && *p == Colon )
+                    {
+                        ++p;
+                        if ( p >= end ) return fail( );
+                        int secondDigits = parseDigits( p, end, seconds );
+                        if ( secondDigits == -1 ) return fail( );
+                        if ( secondDigits == 0 ) return fail( );
+
+                        // optional fractional part after seconds
+                        if ( p < end && ( *p == Dot || *p == Comma ) )
+                        {
+                            ++p;
+                            long long fracValue = 0;
+                            int fracDigits = 0;
+                            // accumulate up to 7 digits
+                            while ( p < end && fracDigits < 7 )
+                            {
+                                CharT c = *p;
+                                if ( c < static_cast< CharT >( '0' ) || c > static_cast< CharT >( '9' ) ) break;
+                                int d = static_cast< int >( c - static_cast< CharT >( '0' ) );
+                                if ( !IsMultiplicationSafe<long long>( fracValue, 10 ) ) return fail( );
+                                long long tmp = fracValue * 10;
+                                if ( !IsAdditionSafe<long long>( tmp, d ) ) return fail( );
+                                fracValue = tmp + d;
+                                ++p;
+                                ++fracDigits;
+                            }
+                            // skip remaining fractional digits (truncate)
+                            while ( p < end )
+                            {
+                                CharT c = *p;
+                                if ( c < static_cast< CharT >( '0' ) || c > static_cast< CharT >( '9' ) ) break;
+                                ++p;
+                            }
+                            if ( fracDigits > 0 )
+                            {
+                                int idx = 7 - fracDigits;
+                                long long scale = Pow10_7[ idx ];
+                                if ( !IsMultiplicationSafe<long long>( fracValue, scale ) ) return fail( );
+                                fractionTicks = fracValue * scale;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // No colon after hours -> treat as days.hours (hours only), minutes/seconds = 0
+                    // (e.g. "10.20" => 10 days, 20 hours)
+                }
+
+                // skip trailing whitespace
+                while ( p < end && ( *p == Space || *p == Tab ) ) ++p;
+                if ( p != end ) return fail( );
+
+                // Compose ticks with overflow checks
+                long long ticks = 0;
+                if ( days != 0 )
+                {
+                    if ( !IsMultiplicationSafe<long long>( days, TicksPerDay ) ) return fail( );
+                    long long dTicks = days * TicksPerDay;
+                    if ( !IsAdditionSafe<long long>( ticks, dTicks ) ) return fail( );
+                    ticks += dTicks;
+                }
+                if ( hours != 0 )
+                {
+                    if ( !IsMultiplicationSafe<long long>( hours, TicksPerHour ) ) return fail( );
+                    long long hTicks = hours * TicksPerHour;
+                    if ( !IsAdditionSafe<long long>( ticks, hTicks ) ) return fail( );
+                    ticks += hTicks;
+                }
+                if ( minutes != 0 )
+                {
+                    if ( !IsMultiplicationSafe<long long>( minutes, TicksPerMinute ) ) return fail( );
+                    long long mTicks = minutes * TicksPerMinute;
+                    if ( !IsAdditionSafe<long long>( ticks, mTicks ) ) return fail( );
+                    ticks += mTicks;
+                }
+                if ( seconds != 0 )
+                {
+                    if ( !IsMultiplicationSafe<long long>( seconds, TicksPerSecond ) ) return fail( );
+                    long long sTicks = seconds * TicksPerSecond;
+                    if ( !IsAdditionSafe<long long>( ticks, sTicks ) ) return fail( );
+                    ticks += sTicks;
+                }
+                if ( fractionTicks != 0 )
+                {
+                    if ( !IsAdditionSafe<long long>( ticks, fractionTicks ) ) return fail( );
+                    ticks += fractionTicks;
+                }
+
+                if ( negative )
+                {
+                    if ( ticks == MinInt64 ) return fail( );
+                    ticks = -ticks;
+                }
+
+                result = TimeSpan( ticks );
+                return true;
+            }
+            else if ( *p == Colon )
+            {
+                // Pattern: time-part without days => firstValue is hours
+                long long hours = firstValue;
+                ++p; // consume ':'
+                if ( p >= end ) return fail( );
+                long long minutes = 0;
+                int minuteDigits = parseDigits( p, end, minutes );
+                if ( minuteDigits == -1 ) return fail( );
+                if ( minuteDigits == 0 ) return fail( );
+
+                long long seconds = 0;
+                long long fractionTicks = 0;
+
+                if ( p < end && *p == Colon )
+                {
+                    ++p;
+                    if ( p >= end ) return fail( );
+                    int secondDigits = parseDigits( p, end, seconds );
+                    if ( secondDigits == -1 ) return fail( );
+                    if ( secondDigits == 0 ) return fail( );
+
+                    // optional fractional part
+                    if ( p < end && ( *p == Dot || *p == Comma ) )
+                    {
+                        ++p;
+                        long long fracValue = 0;
+                        int fracDigits = 0;
+                        while ( p < end && fracDigits < 7 )
+                        {
+                            CharT c = *p;
+                            if ( c < static_cast< CharT >( '0' ) || c > static_cast< CharT >( '9' ) ) break;
+                            int d = static_cast< int >( c - static_cast< CharT >( '0' ) );
+                            if ( !IsMultiplicationSafe<long long>( fracValue, 10 ) ) return fail( );
+                            long long tmp = fracValue * 10;
+                            if ( !IsAdditionSafe<long long>( tmp, d ) ) return fail( );
+                            fracValue = tmp + d;
+                            ++p;
+                            ++fracDigits;
+                        }
+                        while ( p < end )
+                        {
+                            CharT c = *p;
+                            if ( c < static_cast< CharT >( '0' ) || c > static_cast< CharT >( '9' ) ) break;
+                            ++p;
+                        }
+                        if ( fracDigits > 0 )
+                        {
+                            int idx = 7 - fracDigits;
+                            long long scale = Pow10_7[ idx ];
+                            if ( !IsMultiplicationSafe<long long>( fracValue, scale ) ) return fail( );
+                            fractionTicks = fracValue * scale;
+                        }
+                    }
+                }
+
+                // skip trailing whitespace
+                while ( p < end && ( *p == Space || *p == Tab ) ) ++p;
+                if ( p != end ) return fail( );
+
+                // Compose ticks
+                long long ticks = 0;
+                if ( hours != 0 )
+                {
+                    if ( !IsMultiplicationSafe<long long>( hours, TicksPerHour ) ) return fail( );
+                    long long hTicks = hours * TicksPerHour;
+                    if ( !IsAdditionSafe<long long>( ticks, hTicks ) ) return fail( );
+                    ticks += hTicks;
+                }
+                if ( minutes != 0 )
+                {
+                    if ( !IsMultiplicationSafe<long long>( minutes, TicksPerMinute ) ) return fail( );
+                    long long mTicks = minutes * TicksPerMinute;
+                    if ( !IsAdditionSafe<long long>( ticks, mTicks ) ) return fail( );
+                    ticks += mTicks;
+                }
+                if ( seconds != 0 )
+                {
+                    if ( !IsMultiplicationSafe<long long>( seconds, TicksPerSecond ) ) return fail( );
+                    long long sTicks = seconds * TicksPerSecond;
+                    if ( !IsAdditionSafe<long long>( ticks, sTicks ) ) return fail( );
+                    ticks += sTicks;
+                }
+                if ( fractionTicks != 0 )
+                {
+                    if ( !IsAdditionSafe<long long>( ticks, fractionTicks ) ) return fail( );
+                    ticks += fractionTicks;
+                }
+
+                if ( negative )
+                {
+                    if ( ticks == MinInt64 ) return fail( );
+                    ticks = -ticks;
+                }
+
+                result = TimeSpan( ticks );
+                return true;
+            }
+            else
+            {
+                // Unexpected separator after first token -> fail
+                return fail( );
+            }
+        }
+
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        static bool TryParse( const CharT* text, TimeSpan& result )
+        {
+            auto length = LengthOf( text );
+            return TryParse<CharT>( text, length, result );
+        }
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<typename T::value_type, char> || std::is_same_v<typename T::value_type, wchar_t>
+        bool TryParse( const T& text, TimeSpan& result )
+        {
+            return TryParse<typename T::value_type>( text.data( ), text.size( ), result );
+        }
+        
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        static TimeSpan Parse( const CharT* text )
+        {
+            TimeSpan result;
+            if ( TryParse( text, result ) )
+            {
+                return result;
+            }
+            throw std::invalid_argument( "Invalid TimeSpan format" );
+        }
+        
+        template<ContiguousContainerLike T>
+            requires std::is_same_v<typename T::value_type, char> || std::is_same_v<typename T::value_type, wchar_t>
+        static TimeSpan Parse( const T& text )
+        {
+            TimeSpan result;
+            if ( TryParse( text, result ) )
+            {
+                return result;
+            }
+            throw std::invalid_argument( "Invalid TimeSpan format" );
+        }
 
     };
 

@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE( TimeSpanTryParseTest2 )
 BOOST_AUTO_TEST_CASE( TimeSpanTryParseTest3 )
 {
     TimeSpan timeSpan;
-    bool success = TimeSpan::TryParse( L"90:10:11:12", timeSpan );
+    bool success = TimeSpan::TryParse( L"90.10:11:12", timeSpan );
     BOOST_CHECK( success );
     auto days = timeSpan.Days( );
     BOOST_CHECK( days == 90 );
@@ -182,16 +182,143 @@ BOOST_AUTO_TEST_CASE( TimeSpanTryParseTest4 )
     auto hours = timeSpan.Hours( );
     BOOST_CHECK( hours == 0 );
     auto minutes = timeSpan.Minutes( );
-    BOOST_CHECK( minutes == 10 );
+    BOOST_CHECK( minutes == 0 );
     printf( "Minutes: %d\n", minutes );
     auto seconds = timeSpan.Seconds( );
-    BOOST_CHECK( seconds == 0 );
+    BOOST_CHECK( seconds == 10 );
 
 }
 
 
+// --run_test=TimeSpanTests/TimeSpanTryParseCases
+BOOST_AUTO_TEST_CASE( TimeSpanTryParseCases )
+{
+    struct Case
+    {
+        const wchar_t* input;
+        TimeSpan expected;
+    };
+
+    std::vector<Case> cases =
+    {
+        // "1" -> 1 day
+        { L"1", TimeSpan::FromDays( 1 ) },
+
+        // "14" -> 14 days
+        { L"14", TimeSpan::FromDays( 14 ) },
+
+        // "1:2:3" -> 1 hour, 2 minutes and 3 seconds
+        { L"1:2:3", TimeSpan(0, 1, 2, 3, 0) },
+
+        // "0:0:0.250" -> 250 milliseconds -> 250ms * 10,000 ticks/ms = 2,500,000 ticks
+        { L"0:0:0.250", TimeSpan(0,0,0,0,.250) },
+
+        // "10.20:30:40.50" -> 10 days, 20 hours, 30 minutes, 40 seconds and .50 -> 50 with 2 digits -> 50 * 10^(7-2) ticks
+        { L"10.20:30:40.50", TimeSpan(10, 20, 30, 40, .50) },
+
+        // "99.23:59:59.9999999" -> 7 fractional digits -> directly ticks = 9,999,999
+        { L"99.23:59:59.9999999", TimeSpan(99, 23, 59, 59, .9999999) },
+
+        // "0023:0059:0059.0099" -> hours=23, minutes=59, seconds=59, fraction "0099" -> value 99, digits 4
+        { L"0023:0059:0059.0099", TimeSpan( 0, 23, 59, 59, .0099 ) },
+
+        // "23:0:0" -> 23 hours
+        { L"23:0:0", TimeSpan(0, 23, 0, 0, 0) },
+
+        // "0:59:0" -> 59 minutes
+        { L"0:59:0", TimeSpan(0, 0, 59, 0, 0) },
+
+        // "0:0:59" -> 59 seconds
+        { L"0:0:59", TimeSpan(0, 0, 0, 59, 0) },
+
+        // "10:0" -> 10 hours (hh:mm)
+        { L"10:0", TimeSpan(0, 10, 0, 0, 0) },
+
+        // "0:10" -> 10 minutes (hh:mm)
+        { L"0:10", TimeSpan(0, 0, 10, 0, 0) },
+
+        // "10:20:0" -> 10 hours and 20 minutes
+        { L"10:20:0", TimeSpan(0, 10, 20, 0, 0) },
+
+        // "10:20" -> 10 hours and 20 minutes (hh:mm)
+        { L"10:20", TimeSpan(0, 10, 20, 0, 0) },
+
+        // "10.20" -> 10 days and 20 hours (days.hours)
+        { L"10.20", TimeSpan(10, 20, 0, 0, 0) },
+
+        // "0.12:00" -> 12 hours
+        { L"0.12:00", TimeSpan(0, 12, 0, 0, 0) },
+
+        // "3.12:00" -> 3 days and 12 hours
+        { L"3.12:00", TimeSpan(3, 12, 0, 0, 0) },
+
+        // "-1" -> -1 day
+        { L"-1", -TimeSpan::FromDays( 1 ) },
+
+        // "-14" -> -14 days
+        { L"-14", -TimeSpan::FromDays( 14 ) },
+
+        // "-1:2:3" -> -1 hour, 2 minutes and 3 seconds
+        { L"-1:2:3", -TimeSpan( 0, 1, 2, 3, 0 ) },
+
+        // "-0:0:0.250" -> -250 milliseconds -> 250ms * 10,000 ticks/ms = 2,500,000 ticks
+        { L"-0:0:0.250", -TimeSpan( 0,0,0,0,.250 ) },
+
+        // "-10.20:30:40.50" -> -10 days, 20 hours, 30 minutes, 40 seconds and .50 -> 50 with 2 digits -> 50 * 10^(7-2) ticks
+        { L"-10.20:30:40.50", -TimeSpan( 10, 20, 30, 40, .50 ) },
+
+        // "-99.23:59:59.9999999" -> 7 fractional digits -> directly ticks = 9,999,999
+        { L"-99.23:59:59.9999999", -TimeSpan( 99, 23, 59, 59, .9999999 ) },
+
+        // "-0023:0059:0059.0099" -> - hours=23, minutes=59, seconds=59, fraction "0099" -> value 99, digits 4
+        { L"-0023:0059:0059.0099", -TimeSpan( 0, 23, 59, 59, .0099 ) },
+
+        // "-23:0:0" -> -23 hours
+        { L"-23:0:0", -TimeSpan( 0, 23, 0, 0, 0 ) },
+
+        // "-0:59:0" -> -59 minutes
+        { L"-0:59:0", -TimeSpan( 0, 0, 59, 0, 0 ) },
+
+        // "-0:0:59" -> -59 seconds
+        { L"-0:0:59", -TimeSpan( 0, 0, 0, 59, 0 ) },
+
+        // "-10:0" -> -10 hours (hh:mm)
+        { L"-10:0", -TimeSpan( 0, 10, 0, 0, 0 ) },
+
+        // "-0:10" -> -10 minutes (hh:mm)
+        { L"-0:10", -TimeSpan( 0, 0, 10, 0, 0 ) },
+
+        // "-10:20:0" -> -10 hours and 20 minutes
+        { L"-10:20:0", -TimeSpan( 0, 10, 20, 0, 0 ) },
+
+        // "-10:20" -> -10 hours and 20 minutes (hh:mm)
+        { L"-10:20", -TimeSpan( 0, 10, 20, 0, 0 ) },
+
+        // "-10.20" -> -10 days and 20 hours (days.hours)
+        { L"-10.20", -TimeSpan( 10, 20, 0, 0, 0 ) },
+
+        // "-0.12:00" -> -12 hours
+        { L"-0.12:00", -TimeSpan( 0, 12, 0, 0, 0 ) },
+
+        // "-3.12:00" -> -3 days and 12 hours
+        { L"-3.12:00", -TimeSpan( 3, 12, 0, 0, 0 ) }
+    };
+
+    for ( const auto& tc : cases )
+    {
+        TimeSpan ts;
+        bool success = TimeSpan::TryParse( tc.input, ts );
+        BOOST_TEST( success );
+
+        // compute expected ticks from components
+        long long expectedTicks = tc.expected.Ticks( );
+        long long ticks = ts.Ticks( );
+        long long difference = std::max( expectedTicks, ticks ) - std::min( expectedTicks, ticks );
 
 
-
+        bool okTicks = ( ticks == expectedTicks );
+        BOOST_TEST( okTicks );
+    }
+}
 
 BOOST_AUTO_TEST_SUITE_END( )

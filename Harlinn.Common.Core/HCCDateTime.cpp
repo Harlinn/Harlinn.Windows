@@ -78,6 +78,21 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+    long long TimeSpan::TimeToTicks( int days, int hours, int minutes, int seconds, double fraction )
+    {
+        long long ticks = ( static_cast<long long>( days ) * 3600 * 24 +
+            static_cast<long long>( hours ) * 3600 +
+            static_cast< long long >( minutes ) * 60 + seconds ) * TicksPerSecond;
+        ticks += static_cast<long long>( fraction * TicksPerSecond );
+
+        if ( ticks > MaxTicks || ticks < MinTicks )
+        {
+            throw ArgumentOutOfRangeException( );
+        }
+        return ticks;
+    }
+
+
     TimeSpan TimeSpan::Interval( double value, int scale )
     {
         if ( _isnan( value ) )
@@ -161,179 +176,6 @@ namespace Harlinn::Common::Core
         }
 
 
-        template <typename CharType >
-        bool TryParseImpl( const CharType* text, TimeSpan& result )
-        {
-            constexpr wchar_t timeSeparator = ':';
-            constexpr wchar_t fractionSeparator = '.';
-            constexpr wchar_t minus = '-';
-
-
-            const CharType* start = text;
-            // eat white space
-            while ( *start && iswblank( *start ) )
-            {
-                start++;
-            }
-            if ( *start )
-            {
-                bool negative = false;
-                if ( *start == minus )
-                {
-                    negative = true;
-                    start++;
-                }
-                if ( *start )
-                {
-                    _set_errno( 0 );
-                    CharType* end = nullptr;
-                    int days = ToInt32( start, &end, 10 );
-                    if ( days || errno == 0 )
-                    {
-                        if ( *end == timeSeparator )
-                        {
-                            start = end + 1;
-                            int hours = ToInt32( start, &end, 10 );
-                            if ( hours || errno == 0 )
-                            {
-                                if ( *end == timeSeparator )
-                                {
-                                    start = end + 1;
-                                    int minutes = ToInt32( start, &end, 10 );
-                                    if ( minutes || errno == 0 )
-                                    {
-                                        if ( *end == timeSeparator )
-                                        {
-                                            start = end + 1;
-                                            int seconds = ToInt32( start, &end, 10 );
-                                            if ( seconds || errno == 0 )
-                                            {
-                                                if ( *end == fractionSeparator )
-                                                {
-                                                    double fraction = ToDouble( start, &end );
-                                                    if ( fraction || errno == 0 )
-                                                    {
-                                                        result = ( negative ? TimeSpan( -days, hours, minutes, seconds ) : TimeSpan( days, hours, minutes, seconds ) ) + TimeSpan::FromSeconds( fraction );
-                                                        return true;
-                                                    }
-                                                    else
-                                                    {
-                                                        return false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    result = negative ? TimeSpan( -days, hours, minutes, seconds ) : TimeSpan( days, hours, minutes, seconds );
-                                                    return true;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                return false;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            result = negative ? TimeSpan( -days, hours, minutes, 0 ) : TimeSpan( days, hours, minutes, 0 );
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        return false;
-                                    }
-                                }
-                                else
-                                {
-                                    result = negative ? TimeSpan( -days, hours, 0, 0 ) : TimeSpan( days, hours, 0, 0 );
-                                    return true;
-                                }
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            result = negative ? TimeSpan( -days, 0, 0, 0 ) : TimeSpan( days, 0, 0, 0 );
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    // nothing useful
-                    return false;
-                }
-            }
-            else
-            {
-                // Only white space
-                return false;
-            }
-        }
-    }
-
-    bool TimeSpan::TryParse( const wchar_t* text, TimeSpan& result )
-    {
-        return TryParseImpl( text, result );
-    }
-
-
-    bool TimeSpan::TryParse( const char* text, TimeSpan& result )
-    {
-        return TryParseImpl( text, result );
-    }
-
-    bool TimeSpan::TryParse( const WideString& text, TimeSpan& result )
-    {
-        return TryParse( text.c_str( ), result );
-    }
-    bool TimeSpan::TryParse( const AnsiString& text, TimeSpan& result )
-    {
-        return TryParse( text.c_str( ), result );
-    }
-
-
-    TimeSpan TimeSpan::Parse( const wchar_t* text )
-    {
-        TimeSpan timeSpan;
-        if ( TryParse( text, timeSpan ) )
-        {
-            return timeSpan;
-        }
-        else
-        {
-            HCC_THROW( ArgumentException, L"Invalid timespan" );
-        }
-    }
-
-    TimeSpan TimeSpan::Parse( const char* text )
-    {
-        TimeSpan timeSpan;
-        if ( TryParse( text, timeSpan ) )
-        {
-            return timeSpan;
-        }
-        else
-        {
-            HCC_THROW( ArgumentException, L"Invalid timespan" );
-        }
-    }
-
-    TimeSpan TimeSpan::Parse( const WideString& text )
-    {
-        return Parse( text.c_str( ) );
-    }
-    TimeSpan TimeSpan::Parse( const AnsiString& text )
-    {
-        return Parse( text.c_str( ) );
-    }
 
     HCC_EXPORT std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan )
     {
