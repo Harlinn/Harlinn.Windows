@@ -278,7 +278,7 @@ BOOST_AUTO_TEST_CASE( NormalXMMatrixScalingTest1 )
 }
 
 
-
+#pragma optimize( "", off )
 // --run_test=Transform3DTests/PointTransformationMatrixTest1
 BOOST_AUTO_TEST_CASE( PointTransformationMatrixTest1 )
 {
@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE( PointTransformationMatrixTest1 )
     const Math::Vector<float, 3> translation( 4.f, 4.f, 4.f );
 
     auto transformation = Math::TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
-    PrintLn( L"Transformation: {}", transformation );
+    //PrintLn( L"Transformation: {}", transformation );
 
     Math::Point3f p1( 2.f, 2.f, 2.f );
     Math::Point3f expected( 7.23640394f, 8.98319530f, 7.33583355f );
@@ -302,7 +302,7 @@ BOOST_AUTO_TEST_CASE( PointTransformationMatrixTest1 )
     if ( !equal )
     {
         PrintLn( L"Expected: {}", expected );
-        PrintLn( L"Result:   {}", result1 );
+        PrintLn( L"Result1:   {}", result1 );
     }
     Math::Point3f result = result1;
     equal = AllEqual( expected, result, 1.0e-7f );
@@ -313,7 +313,7 @@ BOOST_AUTO_TEST_CASE( PointTransformationMatrixTest1 )
     }
     BOOST_CHECK( equal );
 }
-
+#pragma optimize( "", on )
 // --run_test=Transform3DTests/PointXMMatrixTransformationTest2
 BOOST_AUTO_TEST_CASE( PointXMMatrixTransformationTest2 )
 {
