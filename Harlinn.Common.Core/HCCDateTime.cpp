@@ -109,7 +109,7 @@ namespace Harlinn::Common::Core
         return TimeSpan( (long long)milliSeconds * TicksPerMillisecond );
     }
 
-
+    /*
     WideString TimeSpan::ToWideString( ) const
     {
         wchar_t buffer[128];
@@ -154,6 +154,7 @@ namespace Harlinn::Common::Core
     {
         return ToWideString( theFormat );
     }
+    */
 
     namespace
     {
@@ -179,7 +180,7 @@ namespace Harlinn::Common::Core
 
     HCC_EXPORT std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan )
     {
-        auto str = timeSpan.ToAnsiString( );
+        auto str = timeSpan.ToString<std::string>();
         stream << str;
         return stream;
     }

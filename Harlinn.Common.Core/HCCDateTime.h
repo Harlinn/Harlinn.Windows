@@ -539,6 +539,51 @@ namespace Harlinn::Common::Core
             : ticks_( TimeToTicks( days, hours, minutes, seconds, milliseconds ) )
         { }
 
+        /// <summary>
+        /// Initializes a new <see cref="TimeSpan"/> that represents the interval specified by
+        /// days, hours, minutes, seconds and a fractional second component.
+        /// </summary>
+        /// <param name="days">
+        /// Number of whole days in the interval. May be negative to represent a negative interval.
+        /// </param>
+        /// <param name="hours">
+        /// Number of whole hours in the interval. Typical callers use 0..23; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic (no per-field normalization is performed).
+        /// </param>
+        /// <param name="minutes">
+        /// Number of whole minutes in the interval. Typical callers use 0..59; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic.
+        /// </param>
+        /// <param name="seconds">
+        /// Number of whole seconds in the interval. Typical callers use 0..59; values outside that range
+        /// are accepted and will be incorporated into the total interval arithmetic.
+        /// </param>
+        /// <param name="fraction">
+        /// Fractional seconds expressed in seconds (for example, 0.5 represents 500 ms). The fractional value is
+        /// converted to ticks by multiplying with <c>TicksPerSecond</c> and truncating toward zero (no rounding).
+        /// The sign of <paramref name="fraction"/> contributes to the overall interval sign when combined with the other components.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// - This constructor delegates to <see cref="TimeToTicks(int,int,int,int,double)"/> to compute the internal
+        ///   tick count (1 tick = 100 ns) and stores the resulting value in <c>ticks_</c>.
+        /// - No per-field normalization is performed (for example hours >= 24); the components are combined arithmetically
+        ///   into a total interval before conversion to ticks.
+        /// - Fractional seconds are truncated to whole ticks (no rounding). Callers that require a specific rounding policy
+        ///   should convert/round prior to construction or construct from ticks directly.
+        /// - Range &amp; overflow: if the computed tick count is outside the representable range
+        ///   (<see cref="TimeBase::MinTicks"/> .. <see cref="TimeBase::MaxTicks"/>), an <see cref="ArgumentOutOfRangeException"/>
+        ///   is thrown by <see cref="TimeToTicks(int,int,int,int,double)"/>.
+        /// - Thread-safety: constructor performs only local computations and is safe to call concurrently.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the computed total interval in ticks is outside the allowed range.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1 day, 2 hours, 3 minutes, 4.5 seconds
+        /// TimeSpan ts(1, 2, 3, 4, 0.5);
+        /// </code>
+        /// </example>
         TimeSpan( int days, int hours, int minutes, int seconds, double fraction )
             : ticks_( TimeToTicks( days, hours, minutes, seconds, fraction ) )
         { }
@@ -716,29 +761,30 @@ namespace Harlinn::Common::Core
         /// Gets the number of whole days represented by this <see cref="TimeSpan"/>.
         /// </summary>
         /// <returns>
-        /// The total number of whole days in the interval. Calculated as the integer division of the internal
-        /// tick count by <c>TicksPerDay</c> (1 day = <c>TicksPerDay</c> ticks). The returned value may be
-        /// negative for negative intervals.
+        /// The total number of whole days in the interval, computed as <c>ticks_ / TicksPerDay</c>.
+        /// The returned value may be negative for negative intervals. If the computed day count does not
+        /// fit in an <c>int</c> the result is clamped to <c>std::numeric_limits<int>::max()</c> or
+        /// <c>std::numeric_limits<int>::min()</c> to avoid narrowing-induced implementation-defined behavior.
         /// </returns>
         /// <remarks>
-        /// - This function performs integer division: fractional day parts are discarded (truncated toward zero).
-        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe to call from
-        ///   multiple threads concurrently.
-        /// - The return type is <c>int</c>. If the total days do not fit in an <c>int</c>, the result will be
-        ///   converted from a 64-bit value to <c>int</c> using a narrowing conversion; callers that must preserve
-        ///   large values should use <see cref="ToMilliseconds"/> / <see cref="TotalDays"/> or otherwise handle
-        ///   the full 64-bit tick count before converting.
+        /// - This function performs integer division and discards fractional day parts (truncates toward zero).
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>, has O(1) complexity and no side-effects.
+        /// - Use <see cref="ToDays"/> if the full 64-bit day count is required.
         /// </remarks>
-        /// <example>
-        /// <code language="cpp">
-        /// // 36 hours -> 1 day
-        /// TimeSpan ts = TimeSpan( 0, 36, 0, 0 );
-        /// int days = ts.Days(); // 1
-        /// </code>
-        /// </example>
         constexpr int Days( ) const noexcept
         {
-            return static_cast<int>( ticks_ / TicksPerDay );
+            const long long d = ticks_ / TicksPerDay;
+            constexpr long long IntMaxLL = static_cast< long long >( std::numeric_limits<int>::max( ) );
+            constexpr long long IntMinLL = static_cast< long long >( std::numeric_limits<int>::min( ) );
+
+            const long long maskPos = -static_cast< long long >( d > IntMaxLL );
+            const long long maskNeg = -static_cast< long long >( d < IntMinLL );
+
+            const long long selected = ( d & ~( maskPos | maskNeg ) )
+                | ( IntMaxLL & maskPos )
+                | ( IntMinLL & maskNeg );
+
+            return static_cast< int >( selected );
         }
 
         /// <summary>
@@ -772,7 +818,8 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr int Hours( ) const noexcept
         {
-            return static_cast<int>( ( ticks_ / TicksPerHour ) % 24 );
+            const long long rem = ticks_ % TicksPerDay;
+            return static_cast< int >( rem / TicksPerHour );
         }
 
         /// <summary>
@@ -803,7 +850,8 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr int Minutes( ) const noexcept
         {
-            return static_cast<int>( ( ticks_ / TicksPerMinute ) % 60 );
+            const long long rem = ticks_ % TicksPerHour;
+            return static_cast< int >( rem / TicksPerMinute );
         }
 
         /// <summary>
@@ -866,8 +914,78 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr int Milliseconds( ) const noexcept
         {
-            return static_cast< int >( ( ticks_ / TicksPerMillisecond ) % 1000 );
+            const long long rem = ticks_ % TicksPerSecond;
+            return static_cast< int >( rem / TicksPerMillisecond );
         }
+
+        /// <summary>
+        /// Gets the microseconds component of this <see cref="TimeSpan"/> within the current second.
+        /// </summary>
+        /// <returns>
+        /// The number of whole microseconds within the second.
+        /// For non-negative intervals the result is in the range 0..999999.
+        /// For negative intervals the value follows C++ signed-remainder semantics and may be negative (range -999999..999999).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Implementation extracts the tick remainder modulo <c>TicksPerSecond</c> and converts that remainder to microseconds
+        ///   by dividing by <c>TicksPerMicrosecond</c>. This keeps intermediate values bounded (within one second) and avoids
+        ///   large intermediate quotients (safer and often more optimizer-friendly than computing <c>(ticks_ / TicksPerMicrosecond) % 1000000</c>).
+        /// - The method is <c>constexpr</c> and <c>noexcept</c>, has constant time complexity O(1), and has no side-effects.
+        /// - For formatting or display where a non-negative component is required for negative intervals, callers should normalize
+        ///   the interval (for example by taking the absolute value) before extracting components.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1500.123); // 1.500123 seconds
+        /// int us = ts.Microseconds(); // 500123 for positive ts
+        /// </code>
+        /// </example>
+        constexpr int Microseconds( ) const noexcept
+        {
+            const long long rem = ticks_ % TicksPerSecond;
+            return static_cast< int >( rem / TicksPerMicrosecond );
+        }
+
+        /// <summary>
+        /// Gets the nanoseconds component of this <see cref="TimeSpan"/> within the current second.
+        /// </summary>
+        /// <returns>
+        /// The number of whole nanoseconds within the second, expressed as an <c>int</c>.
+        /// - For non-negative intervals the value is in the range 0..999,999,900 and is always a multiple of 100 (ticks are 100 ns).
+        /// - For negative intervals the value follows C++ signed-remainder semantics and may be negative (range -999,999,900..999,999,900).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Implementation: extracts the tick remainder modulo <c>TicksPerSecond</c> and multiplies that remainder by 100
+        ///   to convert ticks (100 ns units) to nanoseconds. Each tick equals 100 nanoseconds.
+        /// - No rounding is performed; sub-tick precision is not representable (nanosecond result is always a multiple of 100).
+        /// - Safety and overflow: intermediate values are bounded (|rem| &lt; <c>TicksPerSecond</c>), so multiplying by 100 fits comfortably
+        ///   in a 64-bit signed integer and the final <c>int</c> conversion is safe because the result magnitude &lt; 1e9 &lt;&lt; <c>INT_MAX</c>.
+        /// - Semantics for negative intervals: the function returns a signed nanosecond component. If a non-negative component is required
+        ///   for display of negative intervals, normalize the interval (for example, take the absolute value or decompose using normalized helpers).
+        /// - Complexity: O(1). The method is <c>constexpr</c>, <c>noexcept</c> and has no side-effects.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1.500000900 seconds -> nanoseconds component = 900
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1500.0);
+        /// // add 9 ticks (9 * 100 ns = 900 ns)
+        /// ts += 9;
+        /// int ns = ts.Nanoseconds(); // 900
+        /// </code>
+        /// </example>
+        constexpr int Nanoseconds( ) const noexcept
+        {
+            const long long rem = ticks_ % TicksPerSecond;
+            return static_cast< int >( rem * 100 );
+        }
+
+
+
+
 
         /// <summary>
         /// Gets the number of whole days represented by this <see cref="TimeSpan"/>.
@@ -1011,6 +1129,74 @@ namespace Harlinn::Common::Core
             return ticks_ / TicksPerMicrosecond;
         }
 
+
+        /// <summary>
+        /// Returns the total number of nanoseconds represented by this <see cref="TimeSpan"/>.
+        /// The internal representation is ticks where 1 tick == 100 nanoseconds; this function
+        /// converts ticks -> nanoseconds with saturation to avoid signed overflow.
+        /// </summary>
+        /// <returns>
+        /// The interval expressed in nanoseconds (1 tick == 100 ns). If the exact product
+        /// (ticks * 100) would exceed <c>std::numeric_limits<long long>::max()</c> the function
+        /// returns <c>std::numeric_limits<long long>::max()</c>. If the exact product would be
+        /// less than <c>std::numeric_limits<long long>::min()</c> the function returns
+        /// <c>std::numeric_limits<long long>::min()</c>.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Implementation notes:
+        /// - The routine is branchless and overflow-safe. It avoids signed overflow (undefined behavior)
+        ///   by performing the multiplication in unsigned arithmetic and using branchless masks to
+        ///   select either the computed product or the appropriate saturated limit.
+        /// - Masks are produced from relational tests (converted to -1/0) so selection is done with
+        ///   bitwise operations only. The selected unsigned result is then cast back to <c>long long</c>.
+        /// - Using unsigned multiplication is well-defined modulo 2^64; selection logic guarantees the
+        ///   final chosen value is representable as a signed 64-bit integer before casting.
+        /// - Complexity: O(1). The method is <c>constexpr</c>, <c>noexcept</c>, has no side-effects,
+        ///   and is thread-safe (reads only object-local state).
+        /// - Rationale: saturating semantics are chosen to provide well-defined behavior at the limits
+        ///   instead of performing a signed multiply that could invoke undefined behavior on overflow.
+        /// </para>
+        /// <para>
+        /// Performance:
+        /// - Branchless form helps reduce branch-misprediction cost on hot code paths.
+        /// - Modern compilers will optimize the constant arithmetic; on x64 this pattern maps to a small
+        ///   number of integer operations and logical instructions.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(1500.0); // 1.5 seconds == 15,000,000 nanoseconds
+        /// long long ns = ts.ToNanoseconds(); // ns == 1500000000
+        /// </code>
+        /// </example>
+        constexpr long long ToNanoseconds( ) const noexcept
+        {
+            const long long ticks = ticks_;
+            constexpr long long MaxDiv = std::numeric_limits<long long>::max( ) / 100;
+            constexpr long long MinDiv = std::numeric_limits<long long>::min( ) / 100;
+
+            const long long maskPos = -static_cast< long long >( ticks > MaxDiv );
+            const long long maskNeg = -static_cast< long long >( ticks < MinDiv );
+
+            const unsigned long long uprod = static_cast< unsigned long long >( ticks ) * 100ULL;
+
+            const unsigned long long umask = ~( static_cast< unsigned long long >( maskPos ) | static_cast< unsigned long long >( maskNeg ) );
+
+            const unsigned long long uselectedProd = uprod & umask;
+
+            constexpr unsigned long long ullMax = static_cast< unsigned long long >( std::numeric_limits<long long>::max( ) );
+            constexpr unsigned long long ullMin = static_cast< unsigned long long >( std::numeric_limits<long long>::min( ) );
+
+            const unsigned long long uresult =
+                ( uselectedProd )
+                | ( ullMax & static_cast< unsigned long long >( maskPos ) )
+                | ( ullMin & static_cast< unsigned long long >( maskNeg ) );
+
+            return static_cast< long long >( uresult );
+        }
+
+
         /// <summary>
         /// Gets the interval represented by this <see cref="TimeSpan"/> expressed as a fractional number of days.
         /// </summary>
@@ -1036,7 +1222,9 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr double TotalDays( ) const noexcept
         {
-            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerDay );
+            const long long wholeDays = ticks_ / TicksPerDay;
+            const long long remTicks = ticks_ % TicksPerDay; 
+            return static_cast< double >( wholeDays ) + static_cast< double >( remTicks ) * DaysPerTick;
         }
 
         /// <summary>
@@ -1064,7 +1252,9 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr double TotalHours( ) const noexcept
         {
-            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerHour );
+            const long long wholeHours = ticks_ / TicksPerHour;
+            const long long remTicks = ticks_ % TicksPerHour; 
+            return static_cast< double >( wholeHours ) + static_cast< double >( remTicks ) * HoursPerTick;
         }
 
 
@@ -1093,7 +1283,9 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr double TotalMinutes( ) const noexcept
         {
-            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerMinute );
+            const long long wholeMinutes = ticks_ / TicksPerMinute;
+            const long long remTicks = ticks_ % TicksPerMinute;
+            return static_cast< double >( wholeMinutes ) + static_cast< double >( remTicks ) * MinutesPerTick;
         }
 
         /// <summary>
@@ -1125,7 +1317,9 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr double TotalSeconds( ) const noexcept
         {
-            return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerSecond );
+            const long long wholeSeconds = ticks_ / TicksPerSecond;
+            const long long remTicks = ticks_ % TicksPerSecond;
+            return static_cast< double >( wholeSeconds ) + static_cast< double >( remTicks ) * SecondsPerTick;
         }
 
         /// <summary>
@@ -1141,11 +1335,8 @@ namespace Harlinn::Common::Core
         /// - The function converts the internal tick count (<c>ticks_</c>; 1 tick = 100 ns) to milliseconds using
         ///   integer division: <c>result = ticks_ / TicksPerMillisecond</c>. Any fractional-millisecond component is
         ///   discarded (truncation toward zero).
-        /// - After computing the whole-millisecond result the function clamps the value to the library limits
-        ///   (<see cref="TimeBase::MaxMilliSeconds"/> / <see cref="TimeBase::MinMilliSeconds"/>) and returns the
-        ///   clamped value as a <c>double</c>.
-        /// - If callers require fractional-millisecond precision, compute it from ticks using floating-point arithmetic,
-        ///   for example: <c>static_cast<double>(ticks_) * MillisecondsPerTick</c>.
+        /// - This implementation is branchless: it uses bit masks derived from relational tests to select either the
+        ///   computed millisecond value or the appropriate saturated limit without explicit branching.
         /// - This method is <c>constexpr</c> and <c>noexcept</c>, has no side-effects and is safe to call concurrently.
         /// </remarks>
         /// <example>
@@ -1160,21 +1351,24 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr double TotalMilliseconds( ) const noexcept
         {
-            auto result = ticks_ / TicksPerMillisecond;
-            if ( result > MaxMilliSeconds )
-            {
-                return static_cast< double >( MaxMilliSeconds );
-            }
+            const long long ms = ticks_ / TicksPerMillisecond;
+            constexpr long long maxMs = MaxMilliSeconds;
+            constexpr long long minMs = MinMilliSeconds;
 
-            if ( result < MinMilliSeconds )
-            {
-                return static_cast< double >( MinMilliSeconds );
-            }
+            // masks: all-ones (-1) when condition true, 0 when false
+            const long long maskPos = -static_cast< long long >( ms > maxMs ); // overflow to +inf
+            const long long maskNeg = -static_cast< long long >( ms < minMs ); // overflow to -inf
 
-            return static_cast< double >( result );
+            // select: when ms > maxMs -> maxMs, when ms < minMs -> minMs, otherwise ms
+            const long long selected = ( ms & ~( maskPos | maskNeg ) )
+                | ( maxMs & maskPos )
+                | ( minMs & maskNeg );
+
+            return static_cast< double >( selected );
         }
 
 
+        /// <summary>
         /// <summary>
         /// Converts this TimeSpan to a Windows-style timeout value expressed in milliseconds.
         /// </summary>
@@ -1202,16 +1396,18 @@ namespace Harlinn::Common::Core
         /// </example>
         constexpr UInt32 ToWindowsAPITimeout( ) const noexcept
         {
-            auto millis = ticks_ / TicksPerMillisecond;
-            if ( millis > static_cast< long long >( INFINITE ) )
-            {
-                return INFINITE;
-            }
-            else if ( millis < 0 )
-            {
-                return 0;
-            }
-            return static_cast< UInt32 >( millis );
+            const long long millis = ticks_ / TicksPerMillisecond;
+            constexpr long long inf = static_cast< long long >( INFINITE );
+
+            // Branchless masks: -1 (all ones) when condition true, 0 when false
+            const long long maskPos = -static_cast< long long >( millis > inf ); // saturate to INFINITE
+            const long long maskNeg = -static_cast< long long >( millis < 0 );   // saturate to 0
+
+            // selected = millis when in-range, INFINITE when >inf, 0 when <0
+            const long long selected = ( millis & ~( maskPos | maskNeg ) )
+                | ( inf & maskPos );
+
+            return static_cast< UInt32 >( selected );
         }
 
         /// <summary>
@@ -2506,6 +2702,50 @@ namespace Harlinn::Common::Core
             return TicksToDuration<DurationT>( ticks_ );
         }
 
+        /// <summary>
+        /// Converts this <see cref="TimeSpan"/> to a `std::chrono` duration of the specified type.
+        /// </summary>
+        /// <typeparam name="DurationT">
+        /// Target `std::chrono::duration` type. Must satisfy the `IsStdChronoDuration` constraint.
+        /// Defaults to `std::chrono::system_clock::duration`.
+        /// </typeparam>
+        /// <returns>
+        /// A value of type <typeparamref name="DurationT"/> that represents the same interval as this <see cref="TimeSpan"/>.
+        /// Conversion is performed by `TicksToDuration`, which uses `std::chrono::duration_cast` from the library's
+        /// 100-nanosecond tick duration to the requested duration type.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Precision & rounding: `std::chrono::duration_cast` performs a narrowing conversion. When converting
+        ///   to a coarser-grained duration fractional sub-tick parts (fractions of 100 ns) are truncated toward zero
+        ///   (no rounding).
+        /// </para>
+        /// <para>
+        /// - Range & overflow: There is no built-in runtime check for overflow. If the resulting count does not fit
+        ///   in `DurationT::rep` the conversion may overflow or wrap depending on the implementation. Callers that
+        ///   require guaranteed range-safety should validate the tick value against the target representation before
+        ///   converting or use a checked helper.
+        /// </para>
+        /// <para>
+        /// - Thread-safety: the function is pure and has no side-effects; it is safe to call concurrently.
+        /// - The function is `constexpr` and `noexcept`.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.5); // 1.5s
+        /// milliseconds ms = ts.ToDuration<milliseconds>(); // ms == 1500ms
+        /// seconds s = ts.ToDuration<seconds>(); // s == 1s (fraction truncated)
+        /// </code>
+        /// </example>
+        template<typename DurationT = std::chrono::system_clock::duration>
+            requires IsStdChronoDuration<DurationT>
+        constexpr DurationT ToDuration( ) const noexcept
+        {
+            return TicksToDuration<DurationT>( ticks_ );
+        }
+
 
         /// <summary>
         /// Adds an integral tick count to this <see cref="TimeSpan"/> in-place.
@@ -2714,6 +2954,26 @@ namespace Harlinn::Common::Core
             return TimeSpan( static_cast<long long>( value ) - timeSpan.ticks_ );
         }
 
+        /// <summary>
+        /// Multiplies this <see cref="TimeSpan"/> by an integral factor in-place.
+        /// </summary>
+        /// <typeparam name="T">An integral type. The declaration requires <c>std::is_integral_v&lt;T&gt;</c>.</typeparam>
+        /// <param name="value">Factor to multiply this instance by. May be negative to produce a negative interval.</param>
+        /// <returns>Reference to this instance after multiplication (<c>*this</c>).</returns>
+        /// <remarks>
+        /// - The operation performs signed 64-bit multiplication of the internal tick count (<c>ticks_</c>).
+        /// - In debug builds an assertion verifies the multiplication is safe via <c>IsMultiplicationSafe(ticks_, static_cast<long long>(value))</c>.
+        /// - In release builds no overflow checks are performed; signed overflow of a 64-bit integer is undefined behavior in C++.
+        ///   Callers MUST ensure the result fits in the representable range (see <see cref="TimeBase::MinTicks"/> / <see cref="TimeBase::MaxTicks"/>)
+        ///   before calling this method if defined semantics are required.
+        /// - Complexity: O(1). The method is <c>constexpr</c> and <c>noexcept</c> and mutates the object; it is not thread-safe for concurrent mutation.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromSeconds(2.0); // 2s
+        /// ts *= 3;                                   // ts == 6s
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan& operator *= ( const T& value ) const noexcept
@@ -2728,63 +2988,274 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to this instance multiplied by an integral factor.
+        /// </summary>
+        /// <typeparam name="T">An integral type. The declaration requires <c>std::is_integral_v&lt;T&gt;</c>.</typeparam>
+        /// <param name="value">Factor to multiply this instance by. May be negative.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals <c>ticks_ * static_cast<long long>(value)</c>.
+        /// </returns>
+        /// <remarks>
+        /// - The operation computes the product using signed 64-bit arithmetic.
+        /// - In debug builds an assertion verifies safety via <c>IsMultiplicationSafe(ticks_, static_cast<long long>(value))</c>.
+        /// - In release builds no overflow checks are performed; signed overflow is undefined behavior. Validate operands beforehand
+        ///   when overflow must be avoided.
+        /// - Complexity: O(1). The method is <c>constexpr</c> and <c>noexcept</c>.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromMilliseconds(500); // 500 ms
+        /// TimeSpan doubled = ts * 2;                      // 1000 ms
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan operator * ( const T& value ) const noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsMultiplicationSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             return TimeSpan( ticks_ * static_cast<long long>( value ) );
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to an integral factor multiplied by a <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <typeparam name="T">An integral type. The declaration requires <c>std::is_integral_v&lt;T&gt;</c>.</typeparam>
+        /// <param name="value">Left-hand integral factor.</param>
+        /// <param name="timeSpan">Right-hand <see cref="TimeSpan"/> operand.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals <c>static_cast<long long>(value) * timeSpan.ticks_</c>.
+        /// </returns>
+        /// <remarks>
+        /// - This friend overload provides the commutative multiplication form (<c>T * TimeSpan</c>).
+        /// - In debug builds an assertion verifies safety via <c>IsMultiplicationSafe(static_cast<long long>(value), ticks_)</c>.
+        /// - In release builds no overflow checks are performed; signed overflow is undefined behavior. Callers must ensure the multiplication
+        ///   result fits in a signed 64-bit value when defined behavior is required.
+        /// - Complexity: O(1). The function is <c>constexpr</c> and <c>noexcept</c>.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.0); // 1s
+        /// TimeSpan tripled = 3 * ts;                // 3s
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         friend constexpr TimeSpan operator * ( const T& value, const TimeSpan& timeSpan ) noexcept
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsMultiplicationSafe( static_cast< long long >( value ), ticks_ ) );
+            }
+#endif
             return TimeSpan( static_cast<long long>( value ) * timeSpan.ticks_ );
         }
 
+        /// <summary>
+        /// Divides this <see cref="TimeSpan"/>'s tick count by an integral divisor in-place.
+        /// </summary>
+        /// <typeparam name="T">An integral type. The declaration requires <c>std::is_integral_v&lt;T&gt;</c>.</typeparam>
+        /// <param name="value">Divisor. Must not be zero. Integer division truncates toward zero.</param>
+        /// <returns>Reference to this instance after division (<c>*this</c>).</returns>
+        /// <remarks>
+        /// - Behavior: performs signed 64-bit division of the internal tick count (<c>ticks_</c>) by <paramref name="value"/>.
+        /// - Debug checks: in debug builds an assertion verifies safety via <c>IsDivisionSafe(ticks_, static_cast<long long>(value))</c>.
+        /// - Release builds: no runtime safety checks are performed; division by zero or division that triggers undefined behavior
+        ///   (for example <c>INT64_MIN / -1</c>) is undefined. Callers MUST ensure the divisor is valid before calling.
+        /// - The operation is <c>constexpr</c> and <c>noexcept</c> by declaration. It mutates the object and therefore is not
+        ///   thread-safe for concurrent modification of the same instance.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromSeconds(4.0); // 4s
+        /// ts /= 2; // ts now represents 2s
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan& operator /= ( const T& value ) const
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsDivisionSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             ticks_ /= static_cast<long long>( value );
             return *this;
         }
 
+        /// <summary>
+        /// Returns a new <see cref="TimeSpan"/> equal to this instance divided by an integral divisor.
+        /// </summary>
+        /// <typeparam name="T">An integral type. The declaration requires <c>std::is_integral_v&lt;T&gt;</c>.</typeparam>
+        /// <param name="value">Divisor. Must not be zero. Integer division truncates toward zero.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals <c>ticks_ / static_cast&lt;long long&gt;(value)</c>.
+        /// </returns>
+        /// <remarks>
+        /// - Behavior: computes the quotient using signed 64-bit division; fractional remainder is discarded.
+        /// - Debug checks: in debug builds an assertion verifies safety via <c>IsDivisionSafe(ticks_, static_cast<long long>(value))</c>.
+        /// - Release builds: no runtime checks are performed; division by zero or UB-causing divisons are the caller's responsibility to avoid.
+        /// - Complexity: O(1). The method is <c>constexpr</c> and <c>noexcept</c>.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan ts = TimeSpan::FromSeconds(5.0); // 5s
+        /// TimeSpan half = ts / 2; // half == 2.5s truncated to 2s (integer millisecond/tick semantics)
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         constexpr TimeSpan operator / ( const T& value ) const
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsDivisionSafe( ticks_, static_cast< long long >( value ) ) );
+            }
+#endif
             return TimeSpan( ticks_ / static_cast<long long>( value ) );
         }
 
+        /// <summary>
+        /// Returns a <see cref="TimeSpan"/> constructed from the quotient of an integral left-hand operand divided by a <see cref="TimeSpan"/>'s ticks.
+        /// </summary>
+        /// <typeparam name="T">An integral type. The declaration requires <c>std::is_integral_v&lt;T&gt;</c>.</typeparam>
+        /// <param name="value">Left-hand integral operand.</param>
+        /// <param name="timeSpan">Right-hand <see cref="TimeSpan"/> divisor. Its <c>ticks_</c> must not be zero.</param>
+        /// <returns>
+        /// A <see cref="TimeSpan"/> whose tick count equals <c>static_cast&lt;long long&gt;(value) / timeSpan.ticks_</c>.
+        /// </returns>
+        /// <remarks>
+        /// - Semantics: performs signed 64-bit division of the provided integral <paramref name="value"/> by the internal tick count
+        ///   of <paramref name="timeSpan"/>. The result is used directly as a tick count for the returned <see cref="TimeSpan"/>.
+        /// - Debug checks: in debug builds an assertion verifies safety via <c>IsDivisionSafe(static_cast<long long>(value), timeSpan.ticks_)</c>.
+        /// - Release builds: no runtime checks are performed; dividing by zero or other UB-causing divisons is undefined behavior.
+        /// - This overload is provided to allow the commutative-style expression <c>T / TimeSpan</c> and follows integer truncation semantics.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// TimeSpan divisor = TimeSpan::FromSeconds(2.0); // 2s -> ticks
+        /// TimeSpan result = 10 / divisor; // result ticks == 10 / divisor.Ticks()
+        /// </code>
+        /// </example>
         template<typename T>
             requires std::is_integral_v<T>
         friend constexpr TimeSpan operator / ( const T& value, const TimeSpan& timeSpan )
         {
+#ifdef _DEBUG
+            if !consteval
+            {
+                assert( IsDivisionSafe( static_cast< long long >( value ), ticks_ ) );
+            }
+#endif
             return TimeSpan( static_cast<long long>( value ) / timeSpan.ticks_ );
         }
 
-        explicit constexpr operator bool( ) const noexcept
+        /// <summary>
+        /// Converts this <see cref="TimeSpan"/> to a <c>bool</c> indicating whether the interval is non-zero.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> when this <see cref="TimeSpan"/> represents a non-zero interval (i.e. <c>ticks_ != 0</c>); otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// - This operator is declared <c>explicit</c> to avoid accidental implicit conversions to <c>bool</c>.
+        /// - The check is performed on the internal tick count (<c>ticks_</c>) and has no side-effects.
+        /// - The operator is <c>constexpr</c> and <c>noexcept</c>; it is safe to use in constant-evaluated contexts and from multiple threads.
+        /// </remarks>
+        constexpr explicit operator bool( ) const noexcept
         {
             return ticks_ != 0;
         }
 
+        /// <summary>
+        /// Three-way comparison (strong ordering) between this <see cref="TimeSpan"/> and another.
+        /// </summary>
+        /// <param name="other">The other <see cref="TimeSpan"/> to compare with.</param>
+        /// <returns>
+        /// A <see cref="std::strong_ordering"/> value describing the ordering:
+        /// - less when this &lt; other,
+        /// - equal when this == other,
+        /// - greater when this &gt; other.
+        /// </returns>
+        /// <remarks>
+        /// - Comparison is performed on the internal tick counts (<c>ticks_</c>) using the C++20 three-way operator.
+        /// - The operation is <c>constexpr</c> and <c>noexcept</c> and cannot overflow.
+        /// - Complexity: O(1). Thread-safe and has no side-effects.
+        /// </remarks>
         constexpr std::strong_ordering operator<=>( const TimeSpan& other ) const noexcept
         {
             return ticks_ <=> other.ticks_;
         }
 
+        /// <summary>
+        /// Equality comparison between this <see cref="TimeSpan"/> and another.
+        /// </summary>
+        /// <param name="other">The other <see cref="TimeSpan"/> to compare with.</param>
+        /// <returns><c>true</c> when the underlying tick counts are different; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// - Implemented as a simple comparison of the internal tick counts (<c>ticks_ != other.ticks_</c>).
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+        /// </remarks>
         constexpr bool operator !=( const TimeSpan& other ) const noexcept
         {
             return ticks_ != other.ticks_;
         }
 
+        /// <summary>
+        /// Equality comparison between this <see cref="TimeSpan"/> and another.
+        /// </summary>
+        /// <param name="other">The other <see cref="TimeSpan"/> to compare with.</param>
+        /// <returns><c>true</c> when the underlying tick counts are equal; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// - Implemented as a simple comparison of the internal tick counts (<c>ticks_ == other.ticks_</c>).
+        /// - The function is <c>constexpr</c> and <c>noexcept</c>.
+        /// </remarks>
         constexpr bool operator ==( const TimeSpan& other ) const noexcept
         {
             return ticks_ == other.ticks_;
         }
 
 
+        /// <summary>
+        /// Three-way comparison (strong ordering) between this <see cref="TimeSpan"/> and a <c>std::chrono</c> duration.
+        /// </summary>
+        /// <typeparam name="DurationT">Target <c>std::chrono::duration</c> type. Must satisfy <c>IsStdChronoDuration</c>.</typeparam>
+        /// <param name="other">The duration to compare with this <see cref="TimeSpan"/>.</param>
+        /// <returns>
+        /// A <see cref="std::strong_ordering"/> value describing the ordering:
+        /// - less when this &lt; other,
+        /// - equal when this == other,
+        /// - greater when this &gt; other.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - The supplied duration is converted to the library internal tick unit (100 ns) using <c>DurationToTicks</c>.
+        ///   That conversion uses <c>std::chrono::duration_cast</c> and therefore truncates fractional sub-tick parts toward zero.
+        /// </para>
+        /// <para>
+        /// - If the conversion of <paramref name="other"/> to ticks produces a value outside the range of <c>long long</c>,
+        ///   the converted value may overflow. Callers that require full range-safety should validate the duration before calling.
+        /// </para>
+        /// <para>
+        /// - The comparison is <c>constexpr</c> and <c>noexcept</c>. It is implemented via the three-way comparison of the internal
+        ///   tick count and the converted ticks: <c>ticks_ <=> DurationToTicks(other)</c>.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// using namespace std::chrono;
+        /// TimeSpan ts = TimeSpan::FromSeconds(1.5); // 1.5s
+        /// auto ordering = ts <=> milliseconds(1500); // ordering == std::strong_ordering::equal
+        /// </code>
+        /// </example>
         template<typename DurationT = std::chrono::system_clock::duration>
             requires IsStdChronoDuration<DurationT>
         constexpr std::strong_ordering operator<=>( const DurationT& other ) const noexcept
@@ -2793,14 +3264,9 @@ namespace Harlinn::Common::Core
         }
 
 
-        template<typename DurationT = std::chrono::system_clock::duration>
-            requires IsStdChronoDuration<DurationT>
-        constexpr DurationT ToDuration( ) const noexcept
-        {
-            return TicksToDuration<DurationT>( ticks_ );
-        }
+        
 
-
+        /*
         HCC_EXPORT AnsiString ToAnsiString( ) const;
         HCC_EXPORT AnsiString ToAnsiString( const AnsiString& format ) const;
 
@@ -2809,17 +3275,8 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT WideString ToString( ) const;
         HCC_EXPORT WideString ToString( const WideString& format ) const;
-        /*
-        HCC_EXPORT static bool TryParse( const wchar_t* text, TimeSpan& result );
-        HCC_EXPORT static bool TryParse( const char* text, TimeSpan& result );
-        HCC_EXPORT bool TryParse( const WideString& text, TimeSpan& result );
-        HCC_EXPORT bool TryParse( const AnsiString& text, TimeSpan& result );
-
-        HCC_EXPORT static TimeSpan Parse( const wchar_t* text );
-        HCC_EXPORT static TimeSpan Parse( const char* text );
-        HCC_EXPORT static TimeSpan Parse( const WideString& text );
-        HCC_EXPORT static TimeSpan Parse( const AnsiString& text );
         */
+
 
         HCC_EXPORT friend std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan );
 
@@ -3218,6 +3675,422 @@ namespace Harlinn::Common::Core
             }
             throw std::invalid_argument( "Invalid TimeSpan format" );
         }
+
+        /// <summary>
+        /// Converts this <see cref="TimeSpan"/> to a string using the specified format string.
+        /// </summary>
+        /// <typeparam name="T">String-like return type (for example <c>WideString</c>, <c>AnsiString</c>, <c>std::wstring</c>, <c>std::string</c>).
+        /// The character type of <typeparamref name="T"/> determines whether wide or narrow formatting is produced.</typeparam>
+        /// <param name="formatString">
+        /// Pointer to a format string. If <c>nullptr</c> or <c>formatStringLength == 0</c> the function formats the value
+        /// using the default .NET/C# TimeSpan semantics (the constant "c" format).
+        /// When non-empty the function implements a subset of .NET TimeSpan custom format patterns:
+        /// tokens supported: <c>d</c>, <c>dd</c> (days), <c>h</c>, <c>hh</c> (hours component), <c>m</c>, <c>mm</c> (minutes),
+        /// <c>s</c>, <c>ss</c> (seconds), <c>f</c>.. <c>fffffff</c> (fractional seconds digits), <c>F</c>.. <c>FFFFFFF</c> (fractional with trailing zero trim).
+        /// Escaping with backslash (<c>\</c>) and quoted literals (single or double quotes) is supported. Standard format specifiers
+        /// <c>'c'</c>, <c>'g'</c>, <c>'G'</c> are recognized when the format string length is one.
+        /// </param>
+        /// <param name="formatStringLength">Length of <paramref name="formatString"/>. When zero formatting falls back to the default.</param>
+        /// <returns>
+        /// A string of type <typeparamref name="T"/> containing the formatted TimeSpan.
+        /// </returns>
+        /// <remarks>
+        /// - Default (empty format) matches .NET's constant ("c") format: optional leading '-' for negative values,
+        ///   optional days followed by '.' when days != 0, then two-digit hours, minutes and seconds separated by ':',
+        ///   and an optional fractional seconds part prefixed by '.' with exactly 7 digits when fractional ticks != 0.
+        /// - The custom format implementation implements a commonly-used subset of .NET TimeSpan custom format patterns
+        ///   and mirrors .NET behavior for those tokens (padding, fractional digits, and <c>F</c> trimming). It attempts
+        ///   to be compatible with .NET for typical usages. Edge-case and culture-specific behaviors of .NET
+        ///   implementation are not implemented here.
+        /// </remarks>
+        template<StringLike T = WideString>
+        T ToString( const typename T::value_type* formatString, const typename T::size_type formatStringLength ) const
+        {
+            using CharT = typename T::value_type;
+            using StringT = std::basic_string<CharT>;
+
+            // Treat nullptr or zero length as empty format (use default "c" behavior)
+            bool formatIsEmpty = ( formatString == nullptr ) || ( formatStringLength == 0 );
+
+            // Build format pattern (as StringT) when provided
+            StringT fmt;
+            if ( !formatIsEmpty )
+            {
+                fmt.assign( formatString, formatStringLength );
+            }
+
+            // Compute sign and absolute ticks using unsigned arithmetic to avoid UB for INT64_MIN.
+            const long long ticks = ticks_;
+            const bool negative = ticks < 0;
+            UInt64 absTicks;
+            if ( !negative )
+            {
+                absTicks = static_cast< UInt64 >( ticks );
+            }
+            else
+            {
+                // compute absolute value in unsigned safely: -(ticks + 1) + 1
+                absTicks = static_cast< UInt64 >( -( ticks + 1 ) ) + 1ULL;
+            }
+
+            // Decompose into components
+            const UInt64 ticksPerDay = static_cast< UInt64 >( TicksPerDay );
+            const UInt64 ticksPerHour = static_cast< UInt64 >( TicksPerHour );
+            const UInt64 ticksPerMinute = static_cast< UInt64 >( TicksPerMinute );
+            const UInt64 ticksPerSecond = static_cast< UInt64 >( TicksPerSecond );
+
+            const UInt64 days = absTicks / ticksPerDay;
+            const UInt64 remAfterDays = absTicks % ticksPerDay;
+            const unsigned hours = static_cast< unsigned >( remAfterDays / ticksPerHour );
+            const UInt64 remAfterHours = remAfterDays % ticksPerHour;
+            const unsigned minutes = static_cast< unsigned >( remAfterHours / ticksPerMinute );
+            const UInt64 remAfterMinutes = remAfterHours % ticksPerMinute;
+            const unsigned seconds = static_cast< unsigned >( remAfterMinutes / ticksPerSecond );
+            const UInt64 fractionTicks = remAfterMinutes % ticksPerSecond; // ticks within current second (0..9,999,999)
+            // fractionTicks as 7-digit decimal (each tick is 100ns)
+            // create decimal representation zero-padded to 7 digits
+            auto makeFraction7 = [ & ]( ) -> StringT
+                {
+                    // narrow decimal
+                    char buf[ 16 ];
+                    auto n = std::sprintf( buf, "%07llu", static_cast< unsigned long long >( fractionTicks ) );
+                    ( void )n;
+                    if constexpr ( std::is_same_v<CharT, wchar_t> )
+                    {
+                        return StringT( std::begin( buf ), std::begin( buf ) + static_cast< size_t >( n ) );
+                    }
+                    else
+                    {
+                        return StringT( buf, buf + static_cast< size_t >( n ) );
+                    }
+                };
+
+            // Helper: append integer value with zero padding width (width==0 -> no padding)
+            auto appendPadded = [ & ]( StringT& out, unsigned long long value, int width )
+                {
+                    if ( width <= 0 )
+                    {
+                        // append as-is
+                        if constexpr ( std::is_same_v<CharT, wchar_t> )
+                        {
+                            out.append( std::to_wstring( value ) );
+                        }
+                        else
+                        {
+                            out.append( std::to_string( value ) );
+                        }
+                        return;
+                    }
+                    // convert narrow then widen if needed
+                    std::string s = std::to_string( value );
+                    if ( static_cast< int >( s.size( ) ) < width )
+                    {
+                        std::string pad( width - static_cast< int >( s.size( ) ), '0' );
+                        s = pad + s;
+                    }
+                    if constexpr ( std::is_same_v<CharT, wchar_t> )
+                    {
+                        out.append( StringT( s.begin( ), s.end( ) ) );
+                    }
+                    else
+                    {
+                        out.append( s );
+                    }
+                };
+
+            // Build constant ("c") format: [-][d.]hh:mm:ss[.fffffff]
+            auto formatConstant = [ & ]( ) -> StringT
+                {
+                    StringT out;
+                    if ( negative )
+                    {
+                        out.push_back( static_cast< CharT >( L'-' ) );
+                    }
+
+                    if ( days != 0 )
+                    {
+                        appendPadded( out, days, 0 );
+                        out.push_back( static_cast< CharT >( '.' ) );
+                    }
+
+                    appendPadded( out, hours, 2 );
+                    out.push_back( static_cast< CharT >( ':' ) );
+                    appendPadded( out, minutes, 2 );
+                    out.push_back( static_cast< CharT >( ':' ) );
+                    appendPadded( out, seconds, 2 );
+
+                    if ( fractionTicks != 0 )
+                    {
+                        out.push_back( static_cast< CharT >( '.' ) );
+                        out.append( makeFraction7( ) );
+                    }
+
+                    return out;
+                };
+
+            // General "g" format: like constant but fractional trimmed of trailing zeros; days separated with ':'
+            auto formatGeneral = [ & ]( ) -> StringT
+                {
+                    StringT out;
+                    if ( negative )
+                    {
+                        out.push_back( static_cast< CharT >( L'-' ) );
+                    }
+
+                    if ( days != 0 )
+                    {
+                        appendPadded( out, days, 0 );
+                        out.push_back( static_cast< CharT >( ':' ) );
+                    }
+
+                    appendPadded( out, hours, 2 );
+                    out.push_back( static_cast< CharT >( ':' ) );
+                    appendPadded( out, minutes, 2 );
+                    out.push_back( static_cast< CharT >( ':' ) );
+                    appendPadded( out, seconds, 2 );
+
+                    if ( fractionTicks != 0 )
+                    {
+                        StringT frac = makeFraction7( );
+                        // trim trailing zeros
+                        while ( !frac.empty( ) && frac.back( ) == static_cast< CharT >( '0' ) )
+                        {
+                            frac.pop_back( );
+                        }
+                        if ( !frac.empty( ) )
+                        {
+                            out.push_back( static_cast< CharT >( '.' ) );
+                            out.append( frac );
+                        }
+                    }
+
+                    return out;
+                };
+
+            // If format is empty -> default (use constant "c")
+            if ( formatIsEmpty )
+            {
+                return T( formatConstant( ) );
+            }
+
+            // If single-character standard format
+            if ( fmt.size( ) == 1 )
+            {
+                CharT f = fmt[ 0 ];
+                if ( f == static_cast< CharT >( 'c' ) || f == static_cast< CharT >( 'C' ) )
+                {
+                    return T( formatConstant( ) );
+                }
+                else if ( f == static_cast< CharT >( 'g' ) )
+                {
+                    return T( formatGeneral( ) );
+                }
+                else if ( f == static_cast< CharT >( 'G' ) )
+                {
+                    // "G" produce a constant-like result but always include fractional part with 7 digits (even if zero)
+                    StringT out = formatConstant( );
+                    if ( fractionTicks == 0 )
+                    {
+                        // append ".0000000" when no fraction and ensure not already present
+                        // If formatConstant omitted fraction, append it
+                        out.push_back( static_cast< CharT >( '.' ) );
+                        out.append( makeFraction7( ) );
+                    }
+                    return T( out );
+                }
+            }
+
+            // Otherwise treat as custom format string (subset) - parse tokens and produce output
+            // Supported tokens: d, dd, h, hh, m, mm, s, ss, f..fffffff, F..FFFFFFF
+            StringT result;
+            result.reserve( 64 );
+
+            auto appendDigits = [ & ]( unsigned long long value, int repeat )
+                {
+                    // repeat == 1 => no padding
+                    if ( repeat <= 1 )
+                    {
+                        appendPadded( result, value, 0 );
+                    }
+                    else
+                    {
+                        appendPadded( result, value, repeat );
+                    }
+                };
+
+            // Prepare fraction 7-digit string as narrow/wide for indexing
+            StringT fraction7 = makeFraction7( );
+
+            for ( size_t i = 0; i < fmt.size( ); )
+            {
+                CharT ch = fmt[ i ];
+
+                // Handle quoted literals
+                if ( ch == static_cast< CharT >( '\'' ) || ch == static_cast< CharT >( '\"' ) )
+                {
+                    CharT quote = ch;
+                    ++i;
+                    while ( i < fmt.size( ) && fmt[ i ] != quote )
+                    {
+                        result.push_back( fmt[ i++ ] );
+                    }
+                    if ( i < fmt.size( ) ) ++i; // skip closing quote
+                    continue;
+                }
+
+                // Escape with backslash
+                if ( ch == static_cast< CharT >( '\\' ) )
+                {
+                    ++i;
+                    if ( i < fmt.size( ) )
+                    {
+                        result.push_back( fmt[ i++ ] );
+                    }
+                    continue;
+                }
+
+                // Percent: next char is a single custom specifier
+                if ( ch == static_cast< CharT >( '%' ) )
+                {
+                    ++i;
+                    if ( i >= fmt.size( ) ) break;
+                    ch = fmt[ i++ ];
+                    // treat ch as single specifier below by using a small one-char pattern
+                    // we emulate by temporary parsing of single char
+                    // fallthrough to handler by creating a one-char view
+                    // but simpler: handle common percent cases here
+                    if ( ch == static_cast< CharT >( 'd' ) )
+                    {
+                        appendDigits( days, 1 );
+                    }
+                    else if ( ch == static_cast< CharT >( 'h' ) )
+                    {
+                        appendDigits( hours, 1 );
+                    }
+                    else if ( ch == static_cast< CharT >( 'm' ) )
+                    {
+                        appendDigits( minutes, 1 );
+                    }
+                    else if ( ch == static_cast< CharT >( 's' ) )
+                    {
+                        appendDigits( seconds, 1 );
+                    }
+                    else if ( ch == static_cast< CharT >( 'f' ) || ch == static_cast< CharT >( 'F' ) )
+                    {
+                        // percent + f -> single fractional digit
+                        if ( fractionTicks != 0 )
+                        {
+                            result.push_back( fraction7[ 0 ] );
+                        }
+                        else if ( ch == static_cast< CharT >( 'f' ) )
+                        {
+                            // f with zero -> output '0'
+                            result.push_back( static_cast< CharT >( '0' ) );
+                        }
+                        // F with zero -> omit
+                    }
+                    else
+                    {
+                        result.push_back( ch );
+                    }
+                    continue;
+                }
+
+                // Count repeats
+                size_t j = i;
+                while ( j < fmt.size( ) && fmt[ j ] == ch ) ++j;
+                int repeat = static_cast< int >( j - i );
+
+                // Handle tokens
+                if ( ch == static_cast< CharT >( 'd' ) )
+                {
+                    appendDigits( days, repeat );
+                }
+                else if ( ch == static_cast< CharT >( 'h' ) )
+                {
+                    appendDigits( hours, repeat );
+                }
+                else if ( ch == static_cast< CharT >( 'm' ) )
+                {
+                    appendDigits( minutes, repeat );
+                }
+                else if ( ch == static_cast< CharT >( 's' ) )
+                {
+                    appendDigits( seconds, repeat );
+                }
+                else if ( ch == static_cast< CharT >( 'f' ) )
+                {
+                    // take leftmost 'repeat' digits from fraction7; pad with zeros on right if needed
+                    if ( repeat > 7 ) repeat = 7;
+                    for ( int k = 0; k < repeat; ++k )
+                    {
+                        result.push_back( fraction7[ k ] );
+                    }
+                    // if fractionTicks == 0 and 'f' used, we must pad with zeros (already done)
+                }
+                else if ( ch == static_cast< CharT >( 'F' ) )
+                {
+                    // take leftmost 'repeat' digits and trim trailing zeros
+                    if ( repeat > 7 ) repeat = 7;
+                    int lastNonZero = -1;
+                    for ( int k = 0; k < repeat; ++k )
+                    {
+                        if ( fraction7[ k ] != static_cast< CharT >( '0' ) ) lastNonZero = k;
+                    }
+                    if ( lastNonZero >= 0 )
+                    {
+                        for ( int k = 0; k <= lastNonZero; ++k )
+                        {
+                            result.push_back( fraction7[ k ] );
+                        }
+                    }
+                    else
+                    {
+                        // all zeros -> omit output for 'F'
+                    }
+                }
+                else
+                {
+                    // literal characters
+                    result.append( fmt.begin( ) + static_cast< ptrdiff_t >( i ), fmt.begin( ) + static_cast< ptrdiff_t >( j ) );
+                }
+
+                i = j;
+            }
+
+            // Prepend sign if negative and not already included by pattern
+            if ( negative )
+            {
+                // If the format produced a leading '-' already (format may include it explicitly), do not double it.
+                if ( result.empty( ) || result.front( ) != static_cast< CharT >( '-' ) )
+                {
+                    result.insert( result.begin( ), static_cast< CharT >( '-' ) );
+                }
+            }
+
+            return T( result );
+        }
+
+        template<StringLike T = WideString>
+        T ToString( ) const
+        {
+            return ToString<T>( nullptr, 0 );
+        }
+
+        template<StringLike T = WideString>
+        T ToString( const typename T::value_type* formatString ) const
+        {
+            auto length = LengthOf( formatString );
+            return ToString<T>( formatString, length );
+        }
+
+        template<StringLike T = WideString, ContiguousContainerLike FormatT>
+            requires std::is_same_v<typename T::value_type, typename FormatT::value_type >
+        T ToString( const FormatT& formatString ) const
+        {
+            return ToString<T>( formatString.data(), formatString.size() );
+        }
+
 
     };
 

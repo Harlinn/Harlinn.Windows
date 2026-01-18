@@ -830,7 +830,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest13 )
 {
     using Type = TimeSpan;
     Type value = Type::FromDays( 1 );
-    AnsiString expectedResult = value.ToAnsiString( );
+    AnsiString expectedResult = value.ToString<AnsiString>( );
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
