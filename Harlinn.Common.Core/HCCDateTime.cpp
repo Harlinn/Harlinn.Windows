@@ -83,6 +83,10 @@ namespace Harlinn::Common::Core
         long long ticks = ( static_cast<long long>( days ) * 3600 * 24 +
             static_cast<long long>( hours ) * 3600 +
             static_cast< long long >( minutes ) * 60 + seconds ) * TicksPerSecond;
+        if ( std::isnan( fraction ) )
+        {
+            throw ArgumentException( );
+        }
         ticks += static_cast<long long>( fraction * TicksPerSecond );
 
         if ( ticks > MaxTicks || ticks < MinTicks )

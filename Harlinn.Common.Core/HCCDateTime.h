@@ -142,6 +142,9 @@ namespace Harlinn::Common::Core
     {
         friend class DateTime;
     public:
+        static constexpr long long MinTicks = MinInt64;
+
+        static constexpr long long MaxTicks = MaxInt64;
 
         static constexpr TimeSpan Zero( )
         {
@@ -257,6 +260,51 @@ namespace Harlinn::Common::Core
         /// </exception>
         HCC_EXPORT static long long TimeToTicks( int days, int hours, int minutes, int seconds = 0, int milliseconds = 0 );
 
+        /// <summary>
+        /// Converts separate time components (days, hours, minutes, seconds and fractional seconds)
+        /// into the library's internal tick count (1 tick == 100 nanoseconds).
+        /// </summary>
+        /// <param name="days">Whole days component. May be negative to represent a negative interval.</param>
+        /// <param name="hours">Hours component (typical range 0..23). Values outside the usual range are accepted and incorporated arithmetically.</param>
+        /// <param name="minutes">Minutes component (typical range 0..59). Values outside the usual range are accepted and incorporated arithmetically.</param>
+        /// <param name="seconds">Seconds component (typical range 0..59). Values outside the usual range are accepted and incorporated arithmetically.</param>
+        /// <param name="fraction">
+        /// Fractional seconds expressed in seconds (for example, 0.5 represents 500 ms).
+        /// The sign of <paramref name="fraction"/> contributes to the overall interval sign when combined with the other components.
+        /// Must not be NaN.
+        /// </param>
+        /// <returns>
+        /// The total interval expressed in ticks (100-nanosecond units) as a <c>long long</c>.
+        /// The result is suitable for storage in <see cref="TimeSpan"/> internal representation.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// - Computation:
+        ///   - The integer components are combined arithmetically (days -> hours -> minutes -> seconds) into whole seconds and scaled
+        ///     to ticks using the compile-time constants <c>TicksPerSecond</c>, <c>TicksPerMinute</c>, <c>TicksPerHour</c>, <c>TicksPerDay</c>.
+        ///   - The <paramref name="fraction"/> value is converted to ticks by multiplying with <c>TicksPerSecond</c> and truncating toward zero
+        ///     (no rounding). Sub-tick fractions are discarded.
+        /// - Precision & rounding: fractional seconds are converted to whole ticks by truncation. Callers that require a different rounding
+        ///   policy should perform rounding before calling this function.
+        /// - Range & overflow: the function performs range checks and will throw <see cref="ArgumentOutOfRangeException"/> when the computed
+        ///   tick count would fall outside the representable range of <c>long long</c> (or the library limits). All intermediate multiplications
+        ///   and additions are checked for overflow to avoid undefined behavior.
+        /// - Semantics for out-of-range component values: this routine does not normalize per-field ranges (for example hours &gt;= 24).
+        ///   Component values are combined arithmetically; normalizing/validating per-field limits is the caller's responsibility.
+        /// - Thread-safety: pure function with no side-effects; safe for concurrent use.
+        /// - Complexity: O(1).
+        /// </para>
+        /// </remarks>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="fraction"/> is NaN.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the computed tick count would overflow the representable range.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// // 1 day, 2 hours, 3 minutes, 4.5 seconds -> ticks
+        /// long long ticks = TimeSpan::TimeToTicks( 1, 2, 3, 4, 0.5 );
+        /// // Equivalent convenience usage:
+        /// TimeSpan ts = TimeSpan::FromDays( 1 ) + TimeSpan::FromHours( 2 ) + TimeSpan::FromMinutes( 3 ) + TimeSpan::FromSeconds( 4.5 );
+        /// </code>
+        /// </example>
         HCC_EXPORT static long long TimeToTicks( int days, int hours, int minutes, int seconds, double fraction );
 
         /// <summary>
