@@ -27,7 +27,8 @@
 
 namespace Harlinn::Common::Core
 {
-
+    class DateTime;
+    class TimeSpan;
 
     namespace Internal
     {

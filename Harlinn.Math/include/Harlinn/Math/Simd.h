@@ -4235,6 +4235,17 @@ namespace Harlinn::Math::SIMD
         /// </returns>
         static ArrayType ToArray( SIMDType src ) noexcept
         {
+            alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> tmp;
+            Store( tmp.data( ), src );
+            return[ &tmp ] <std::size_t... I>
+                ( std::index_sequence<I...> )
+            {
+                ArrayType result;
+                ( ( result[ I ] = tmp[ I ] ), ... );
+                return result;
+            }( std::make_index_sequence<N>( ) );
+
+            /*
             if constexpr ( N == 1 )
             {
                 ArrayType result;
@@ -4280,6 +4291,7 @@ namespace Harlinn::Math::SIMD
                     return result;
                 }( std::make_index_sequence<N>( ) );
             }
+            */
         }
 
         /// <summary>
@@ -7563,7 +7575,7 @@ namespace Harlinn::Math::SIMD
         /// <returns>True if all corresponding elements differ by at most epsilon; otherwise, false.</returns>
         static bool AllEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
-            auto v = Abs( Sub( v1, v2 ) );
+            auto v = Abs( Sub( Max( v1, v2), Min( v1, v2 ) ) );
             auto rmm1 = LessOrEqual( v, epsilon );
             return AllTrue( rmm1 );
         }
@@ -7577,7 +7589,7 @@ namespace Harlinn::Math::SIMD
         /// <returns>True if any pair of corresponding elements are equal within epsilon; false otherwise.</returns>
         static bool AnyEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
-            auto v = Abs( Sub( v1, v2 ) );
+            auto v = Abs( Sub( Max( v1, v2 ), Min( v1, v2 ) ) );
             auto rmm1 = LessOrEqual( v, epsilon );
             return AnyTrue( rmm1 );
         }

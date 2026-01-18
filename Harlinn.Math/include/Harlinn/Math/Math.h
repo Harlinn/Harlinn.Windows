@@ -1109,38 +1109,127 @@ namespace Harlinn::Math
 
 
     /// <summary>
-    /// <para>
-    /// Computes the absolute value of a signed integer number. The behavior 
-    /// is undefined if the result cannot be represented by the return type.
-    /// </para>
-    /// <para>
-    /// In 2's complement systems, the absolute value of the most-negative value 
-    /// is out of range, e.g. for 32-bit 2's complement type int, INT_MIN is -2147483648, 
-    /// but the would-be result 2147483648 is greater than INT_MAX, which is 2147483647.
-    /// </para>
+    /// Computes the absolute value of a signed integer in a branchless, UB-free manner.
     /// </summary>
     /// <typeparam name="T">
-    /// Any signed integer type.
+    /// Signed integer type (for example `int`, `long`, `long long`).
     /// </typeparam>
     /// <param name="val">
-    /// A signed integer value.
+    /// Input value. May be negative, zero or positive.
     /// </param>
     /// <returns>
-    /// The absolute value of val.
+    /// The absolute value of <c>val</c> when that magnitude is representable in <c>T</c>.
+    /// If <c>val == std::numeric_limits<T>::min()</c> (magnitude not representable) the function
+    /// returns <c>std::numeric_limits<T>::max()</c> (saturated) to avoid signed overflow undefined behaviour.
     /// </returns>
+    /// <remarks>
+    /// - Implementation uses unsigned arithmetic and bitwise operations to compute
+    ///   magnitude without performing signed negation (avoids UB).
+    /// - A mask is used to negate in the unsigned domain; and a final selection 
+    ///   saturates the single unrepresentable case.
+    /// - The function is marked <c>constexpr</c> and <c>noexcept</c>.
+    /// - Assumes two's-complement representation.
+    /// - Complexity: constant time O(1). Thread-safe and reentrant.
+    /// - If callers require the exact full magnitude of the most-negative value, prefer an API returning <c>std::make_unsigned_t<T></c>.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// int x = -42;
+    /// int ax = Harlinn::Math::Abs(x); // ax == 42
+    ///
+    /// int imin = std::numeric_limits<int>::min(); // -2147483648
+    /// int aimin = Harlinn::Math::Abs(imin); // aimin == std::numeric_limits<int>::max() (2147483647) - saturated
+    /// </code>
+    /// </example>
     template<SignedIntegerType T>
     constexpr inline T Abs( T val ) noexcept
     {
-        if consteval
-        {
-            return val >= 0 ? val : -val;
-        }
-        else
-        {
-            return std::abs( val );
-        }
+        using U = MakeUnsigned<T>;
+        constexpr U MaxT = static_cast< U >( std::numeric_limits<T>::max( ) );
+        const U u = static_cast< U >( val );
+        const U mask = static_cast< U >( 0 ) - static_cast< U >( val < 0 );
+        const U absU = ( u ^ mask ) - mask;
+        const U overflowMask = static_cast< U >( 0 ) - static_cast< U >( absU > MaxT );
+        const U resultU = ( absU & ~overflowMask ) | ( MaxT & overflowMask );
+        return static_cast< T >( resultU );
     }
     static_assert( Abs( -1 ) == 1 );
+    static_assert( Abs( -5 ) == 5 );
+    
+
+    /// <summary>
+    /// Computes the magnitude (absolute value) of a signed integer as an unsigned value
+    /// using a branchless, UB-free algorithm.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A signed integer type (for example `int`, `long`, `long long`).
+    /// </typeparam>
+    /// <param name="val">
+    /// Input value. May be negative, zero or positive.
+    /// </param>
+    /// <returns>
+    /// The magnitude of `val` returned as `MakeUnsigned<T>`. For the most-negative value
+    /// (e.g. `std::numeric_limits<T>::min()`), the full magnitude which does not fit in
+    /// `T` is returned as the corresponding unsigned value (e.g. `2147483648u` for `int`).
+    /// </returns>
+    /// <remarks>
+    /// - Implementation operates in the unsigned domain to avoid signed negation
+    ///   overflow (undefined behaviour). It uses the mask `0 - (val < 0)` to conditionally
+    ///   flip/negate bits in two's-complement representation.
+    /// - The function is `constexpr` and `noexcept`.
+    /// - Complexity: O(1). Thread-safe and side-effect free.
+    /// - Assumes two's-complement representation.
+    /// - Use this when you need the exact unsigned magnitude (including the case of the
+    ///   most-negative signed value). If you need a signed result that saturates instead,
+    ///   prefer `Abs<T>` which returns `T` and saturates `std::numeric_limits<T>::min()` to
+    ///   `std::numeric_limits<T>::max()`.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// int x = -42;
+    /// auto ux = Harlinn::Math::UnsignedAbs(x); // ux == 42u
+    ///
+    /// int imin = std::numeric_limits<int>::min(); // -2147483648
+    /// auto uimin = Harlinn::Math::UnsignedAbs(imin); // uimin == 2147483648u
+    /// </code>
+    /// </example>
+    template<SignedIntegerType T>
+    constexpr inline MakeUnsigned<T> UnsignedAbs( T val ) noexcept
+    {
+        using U = MakeUnsigned<T>;
+        const U u = static_cast<U>(val);
+        const U mask = static_cast<U>(0) - static_cast<U>(val < 0);
+        return (u ^ mask) - mask;
+    }
+    static_assert( UnsignedAbs( -2147483648 ) == 2147483648UL );
+
+    /// <summary>
+    /// Returns the magnitude of an unsigned integer value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An unsigned integer type, such as unsigned int, std::uint32_t or UInt32.
+    /// </typeparam>
+    /// <param name="val">
+    /// Input unsigned value. No preconditions.
+    /// </param>
+    /// <returns>
+    /// The same value passed in; absolute value for unsigned types is the identity function.
+    /// </returns>
+    /// <remarks>
+    /// - This overload exists to provide a uniform, generic interface for computing the unsigned magnitude of a value.
+    /// - Use this when writing generic code that calls UnsignedAbs for potentially mixed signed/unsigned types.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// unsigned int u = 42u;
+    /// auto mag = Harlinn::Math::UnsignedAbs(u); // mag == 42u
+    /// </code>
+    /// </example>
+    template<UnsignedIntegerType T>
+    constexpr inline T UnsignedAbs( T val ) noexcept
+    {
+        return val;
+    }
 
     /// <summary>
     /// The absolute value of any unsigned integer
@@ -1230,9 +1319,7 @@ namespace Harlinn::Math
     template<SignedIntegerType T>
     constexpr inline T FastAbs( T val ) noexcept
     {
-		constexpr int shift = sizeof( T ) * CHAR_BIT - 1;
-        T mask = val >> shift;
-        return ( ( val + mask ) ^ mask );
+        return Abs( val );
     }
 
     /// <summary>
@@ -1252,11 +1339,16 @@ namespace Harlinn::Math
     {
         if constexpr ( std::is_same_v<T, float> )
         {
-            return std::bit_cast< float >( std::bit_cast< UInt32 >( val ) & 0x7FFFFFFFUL );
+            constexpr UInt32 Mask = 0x7FFFFFFFu;
+            const UInt32 bits = std::bit_cast< UInt32 >( val ) & Mask;
+            return std::bit_cast< T >( bits );
         }
         else
         {
-            return std::bit_cast< double >( std::bit_cast< UInt64 >( val ) & 0x7FFFFFFFFFFFFFFFULL );
+            static_assert( sizeof( UInt64 ) == sizeof( T ) );
+            constexpr UInt64 Mask = 0x7FFFFFFFFFFFFFFFull;
+            const UInt64 bits = std::bit_cast< UInt64 >( val ) & Mask;
+            return std::bit_cast< T >( bits );
         }
     }
 

@@ -213,6 +213,11 @@ namespace Harlinn::Math
     constexpr inline T Abs( T val ) noexcept;
 
     template<SignedIntegerType T>
+    constexpr inline MakeUnsigned<T> UnsignedAbs( T val ) noexcept;
+    template<UnsignedIntegerType T>
+    constexpr inline T UnsignedAbs( T val ) noexcept;
+
+    template<SignedIntegerType T>
     constexpr inline T FastAbs( T val ) noexcept;
     template<UnsignedIntegerType T>
     constexpr inline T FastAbs( T val ) noexcept;

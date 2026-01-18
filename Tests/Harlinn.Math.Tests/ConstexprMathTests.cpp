@@ -1187,6 +1187,48 @@ BOOST_AUTO_TEST_CASE( IntegralAbsTest1 )
     constexpr auto expected4 = MaxInt64;
     constexpr auto success4 = result4 == expected4;
     BOOST_CHECK( success4 );
+
+    constexpr auto result5 = Abs( MinInt64 );
+    constexpr auto expected5 = MaxInt64;
+    constexpr auto success5 = result5 == expected5;
+    BOOST_CHECK( success5 );
+
+    constexpr auto result6 = Abs( MinInt32 );
+    constexpr auto expected6 = MaxInt32;
+    constexpr auto success6 = result6 == expected6;
+    BOOST_CHECK( success6 );
+
+    constexpr auto result7 = Abs( MinInt16 );
+    constexpr auto expected7 = MaxInt16;
+    constexpr auto success7 = result7 == expected7;
+    BOOST_CHECK( success7 );
+
+    constexpr auto result8 = Abs( MinInt8 );
+    constexpr auto expected8 = MaxInt8;
+    constexpr auto success8 = result8 == expected8;
+    BOOST_CHECK( success8 );
+
+    constexpr auto result9 = UnsignedAbs( MinInt64 );
+    constexpr auto expected9 = std::bit_cast< UInt64 >( MinInt64 );
+    constexpr auto success9 = result9 == expected9;
+    BOOST_CHECK( success9 );
+
+    constexpr auto result10 = UnsignedAbs( MinInt32 );
+    constexpr auto expected10 = std::bit_cast< UInt32 >( MinInt32 );
+    constexpr auto success10 = result10 == expected10;
+    BOOST_CHECK( success10 );
+
+    constexpr auto result11 = UnsignedAbs( MinInt16 );
+    constexpr auto expected11 = std::bit_cast< UInt16 >( MinInt16 );
+    constexpr auto success11 = result11 == expected11;
+    BOOST_CHECK( success11 );
+
+    constexpr auto result12 = UnsignedAbs( MinInt8 );
+    constexpr auto expected12 = std::bit_cast< Byte >( MinInt8 );
+    constexpr auto success12 = result12 == expected12;
+    BOOST_CHECK( success12 );
+
+
 }
 
 

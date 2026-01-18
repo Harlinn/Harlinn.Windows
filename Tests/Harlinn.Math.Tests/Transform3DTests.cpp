@@ -293,10 +293,24 @@ BOOST_AUTO_TEST_CASE( PointTransformationMatrixTest1 )
     const Math::Vector<float, 3> translation( 4.f, 4.f, 4.f );
 
     auto transformation = Math::TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+    PrintLn( L"Transformation: {}", transformation );
+
     Math::Point3f p1( 2.f, 2.f, 2.f );
     Math::Point3f expected( 7.23640394f, 8.98319530f, 7.33583355f );
-    Math::Point3f result = Math::Transform( p1, transformation );
-    auto equal = AllEqual( expected, result );
+    Math::Point3f::Simd result1 = Math::Transform( p1, transformation );
+    auto equal = AllEqual( expected, result1, 1.0e-7f );
+    if ( !equal )
+    {
+        PrintLn( L"Expected: {}", expected );
+        PrintLn( L"Result:   {}", result1 );
+    }
+    Math::Point3f result = result1;
+    equal = AllEqual( expected, result, 1.0e-7f );
+    if( !equal )
+    {
+        PrintLn(L"Expected: {}", expected );
+        PrintLn(L"Result:   {}", result );
+    }
     BOOST_CHECK( equal );
 }
 
@@ -348,7 +362,7 @@ BOOST_AUTO_TEST_CASE( VectorTransformationMatrixTest1 )
     Math::Vector3f v1( 2.f, 2.f, 2.f );
     Math::Vector3f expected( 7.23640394f, 8.98319530f, 7.33583355f );
     Math::Vector3f result = Math::Transform( v1, transformation );
-    auto equal = AllEqual( expected, result );
+    auto equal = AllEqual( expected, result, 1.0e-7f );
     BOOST_CHECK( equal );
 }
 
@@ -398,7 +412,7 @@ BOOST_AUTO_TEST_CASE( NormalTransformationMatrixTest1 )
     Math::Normal3f n1( 2.f, 2.f, 2.f );
     Math::Normal3f expected( 2.01553679f, 0.0192041993f, 1.90190506f );
     Math::Normal3f result = Math::Transform( n1, transformation );
-    auto equal = AllEqual( expected, result );
+    auto equal = AllEqual( expected, result, 1.0e-7f );
     BOOST_CHECK( equal );
 }
 
