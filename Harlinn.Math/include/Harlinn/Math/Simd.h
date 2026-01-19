@@ -3221,6 +3221,7 @@ namespace Harlinn::Math::SIMD
     /// </summary>
     /// <typeparam name="N"></typeparam>
     template<size_t N>
+        requires ( N > 0 )
     struct Traits<float, N> : public Internal::TraitsBase
     {
         using Type = float;
@@ -3918,10 +3919,6 @@ namespace Harlinn::Math::SIMD
                 }
                 else if constexpr ( N == 3 )
                 {
-                    //__m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
-                    //__m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
-                    //return _mm_insert_ps( low, high, 0x20 );
-                    
                     return Set( src[ 2 ], src[ 1 ], src[ 0 ] );
                 }
                 else
@@ -3956,136 +3953,6 @@ namespace Harlinn::Math::SIMD
                 }
             }
         }
-        /*
-        static SIMDType Load( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                if constexpr ( N == 1 )
-                {
-                    return _mm_load_ss( src );
-                }
-                else if constexpr ( N == 2 )
-                {
-                    return _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
-                }
-                else if constexpr ( N == 3 )
-                {
-                    
-                    //__m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
-                    //__m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
-                    //return _mm_insert_ps( low, high, 0x20 );
-                    
-                    return Set( src[ 2 ], src[ 1 ], src[0] );
-                }
-                else
-                {
-                    return _mm_load_ps( src );
-                }
-            }
-            else
-            {
-                if constexpr ( N == 5 )
-                {
-                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_load_ss( src + 4 ), 1 );
-                }
-                else if constexpr ( N == 6 )
-                {
-                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src + 4 ) ) ), 1 );
-                }
-                else if constexpr ( N == 7 )
-                {
-                    auto rmm1 = _mm_load_ps( src );
-                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src + 4 ) ) );
-                    __m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 6 ) );
-                    auto rmm2 = _mm_insert_ps( low, high, 0x20 );
-                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm2, 1 );
-                }
-                else
-                {
-                    return _mm256_load_ps( src );
-                }
-            }
-        }
-        */
-        /*
-        static SIMDType Load( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                if constexpr ( N == 1 )
-                {
-                    return _mm_load_ss( src );
-                }
-                else if constexpr ( N == 2 )
-                {
-                    return _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src ) ) );
-                }
-                else if constexpr ( N == 3 )
-                {
-                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src ) ) );
-                    __m128 high = _mm_load_ss( reinterpret_cast<const float*>( src + 2 ) );
-                    return _mm_insert_ps( low, high, 0x20 );
-                }
-                else
-                {
-                    return _mm_loadu_ps( src );
-                }
-            }
-            else
-            {
-                if constexpr ( N == 5 )
-                {
-                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_loadu_ps( src ) ), _mm_load_ss( src + 4 ), 1 );
-                }
-                else if constexpr ( N == 6 )
-                {
-                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_loadu_ps( src ) ), _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) ), 1 );
-                }
-                else if constexpr ( N == 7 )
-                {
-                    auto rmm1 = _mm_loadu_ps( src );
-                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast<const double*>( src + 4 ) ) );
-                    __m128 high = _mm_load_ss( reinterpret_cast<const float*>( src + 6 ) );
-                    auto rmm2 = _mm_insert_ps( low, high, 0x20 );
-                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm2, 1 );
-                }
-                else
-                {
-                    return _mm256_loadu_ps( src );
-                }
-            }
-        }
-        */
-
-        /*
-        struct alignas( AlignAs ) Loadable
-        {
-            std::array<Type, 4> data;
-
-            Loadable( const std::array<Type, 1>& d )
-                : data{ d[ 0 ],{},{},{} }
-            { }
-            Loadable( const std::array<Type, 2>& d )
-                : data{ d[ 0 ],d[ 1 ],{},{} }
-            {
-            }
-            Loadable( const std::array<Type, 3>& d )
-                : data{ d[ 0 ],d[ 1 ],d[ 2 ],{} }
-            { }
-            Loadable( const std::array<Type, 4>& d )
-                : data{ d[ 0 ],d[ 1 ],d[ 2 ],d[ 3 ] }
-            { }
-
-        };
-
-
-
-        static SIMDType Load( const Loadable src ) noexcept
-        {
-            return _mm_load_ps( src.data.data() );
-        }
-        */
 
         /// <summary>
         /// Loads SIMDType from a std::array of elements.
@@ -4157,6 +4024,34 @@ namespace Harlinn::Math::SIMD
                 }
             }
         }
+
+        template<bool Aligned>
+        static SIMDType Load( const Type* src ) noexcept
+        {
+            if constexpr ( Aligned )
+            {
+                return Load( src );
+            }
+            else
+            {
+                return UnalignedLoad( src );
+            }
+        }
+
+        template<bool Aligned,size_t NA>
+            requires ( NA >= N )
+        static SIMDType Load( const std::array<Type, NA>& src ) noexcept
+        {
+            if constexpr ( Aligned )
+            {
+                return Load( src.data( ) );
+            }
+            else
+            {
+                return UnalignedLoad( src.data( ) );
+            }
+        }
+
 
         /// <summary>
         /// Stores the contents of a SIMD register to a memory location.
@@ -7310,108 +7205,84 @@ namespace Harlinn::Math::SIMD
 
         /// <summary>
         /// Checks if all of the first <c>Size</c> number of elements 
-        /// are equal to 0xFFFFFFFF.
+        /// have the most significant bit set.
         /// </summary>
         /// <param name="v"></param>
         /// <returns>
         /// <c>true</c> if all of the first <c>Size</c> number of elements 
-        /// are equal to 0xFFFFFFFF, otherwise <c>false</c>.
+        /// have the most significant bit set, otherwise <c>false</c>.
         /// </returns>
         static bool AllTrue( SIMDType v ) noexcept
         {
+            constexpr unsigned capacity = ( N < SIMDTypeCapacity ) ? static_cast< unsigned >( N ) : static_cast< unsigned >( SIMDTypeCapacity );
+
+            constexpr unsigned umask = ( 1u << capacity ) - 1u;
+            constexpr int mask = static_cast< int >( umask );
+
             if constexpr ( UseShortSIMDType )
             {
-                if constexpr ( N == 1 )
+                if constexpr ( capacity == SIMDTypeCapacity )
                 {
-                    return ( _mm_movemask_ps( v ) & 1 ) == 1;
-                }
-                else if constexpr ( N == 2 )
-                {
-                    return ( _mm_movemask_ps( v ) & 3 ) == 3;
-                }
-                else if constexpr ( N == 3 )
-                {
-                    return ( _mm_movemask_ps( v ) & 7 ) == 7;
+                    return _mm_movemask_ps( v ) == mask;
                 }
                 else
                 {
-                    return ( _mm_movemask_ps( v ) & 15 ) == 15;
+                    return ( _mm_movemask_ps( v ) & mask ) == mask;
                 }
             }
             else
             {
-                if constexpr ( N == 5 )
+                if constexpr ( capacity == SIMDTypeCapacity )
                 {
-                    return ( _mm256_movemask_ps( v ) & 31 ) == 31;
-                }
-                else if constexpr ( N == 6 )
-                {
-                    return ( _mm256_movemask_ps( v ) & 63 ) == 63;
-                }
-                else if constexpr ( N == 7 )
-                {
-                    return ( _mm256_movemask_ps( v ) & 127 ) == 127;
+                    return _mm256_movemask_ps( v ) == mask;
                 }
                 else
                 {
-                    return ( _mm256_movemask_ps( v ) & 255 ) == 255;
+                    return ( _mm256_movemask_ps( v ) & mask ) == mask;
                 }
             }
         }
 
         /// <summary>
         /// Checks if any of the first <c>Size</c> number of elements 
-        /// are equal to 0xFFFFFFFF.
+        /// have the most significant bit set.
         /// </summary>
         /// <param name="v"></param>
         /// <returns>
         /// <c>true</c> if any of the first <c>Size</c> number of elements 
-        /// are equal to 0xFFFFFFFF, otherwise <c>false</c>.
+        /// have the most significant bit set, otherwise <c>false</c>.
         /// </returns>
         static bool AnyTrue( SIMDType v ) noexcept
         {
+            constexpr unsigned capacity = ( N < SIMDTypeCapacity ) ? static_cast< unsigned >( N ) : static_cast< unsigned >( SIMDTypeCapacity );
+
+            constexpr unsigned umask = ( 1u << capacity ) - 1u;
+            constexpr int mask = static_cast< int >( umask );
+
             if constexpr ( UseShortSIMDType )
             {
-                if constexpr ( N == 1 )
+                // when checking full capacity, skip the AND (faster, no extra op)
+                if constexpr ( capacity == SIMDTypeCapacity )
                 {
-                    return ( _mm_movemask_ps( v ) & 1 ) != 0;
-                }
-                else if constexpr ( N == 2 )
-                {
-                    return ( _mm_movemask_ps( v ) & 3 ) != 0;
-                }
-                else if constexpr ( N == 3 )
-                {
-                    return ( _mm_movemask_ps( v ) & 7 ) != 0;
+                    return _mm_movemask_ps( v ) != 0;
                 }
                 else
                 {
-                    return ( _mm_movemask_ps( v ) & 15 ) != 0;
+                    return ( _mm_movemask_ps( v ) & mask ) != 0;
                 }
             }
             else
             {
-                if constexpr ( N == 5 )
+                if constexpr ( capacity == SIMDTypeCapacity )
                 {
-                    return ( _mm256_movemask_ps( v ) & 31 ) != 0;
-                }
-                else if constexpr ( N == 6 )
-                {
-                    return ( _mm256_movemask_ps( v ) & 63 ) != 0;
-                }
-                else if constexpr ( N == 7 )
-                {
-                    return ( _mm256_movemask_ps( v ) & 127 ) != 0;
+                    return _mm256_movemask_ps( v ) != 0;
                 }
                 else
                 {
-                    return ( _mm256_movemask_ps( v ) & 255 ) != 0;
+                    return ( _mm256_movemask_ps( v ) & mask ) != 0;
                 }
             }
         }
-
-
-
 
 
         /// <summary>
@@ -7433,11 +7304,10 @@ namespace Harlinn::Math::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_cmplt_ps( v1, v2 );
+                return _mm_cmp_ps( v1, v2, _CMP_LT_OQ );
             }
             else
             {
-                // LT_OQ => 0x11
                 return _mm256_cmp_ps( v1, v2, _CMP_LT_OQ );
             }
         }
@@ -7445,9 +7315,15 @@ namespace Harlinn::Math::SIMD
         /// <summary>
         /// Checks if all elements in the first SIMD vector are less than the corresponding elements in the second SIMD vector.
         /// </summary>
-        /// <param name="v1">The first SIMD vector to compare.</param>
-        /// <param name="v2">The second SIMD vector to compare.</param>
-        /// <returns>True if all elements in v1 are less than the corresponding elements in v2; otherwise, false.</returns>
+        /// <param name="v1">
+        /// The first SIMD vector to compare.
+        /// </param>
+        /// <param name="v2">
+        /// The second SIMD vector to compare.
+        /// </param>
+        /// <returns>
+        /// True if all elements in v1 are less than the corresponding elements in v2; otherwise, false.
+        /// </returns>
         static bool AllLess( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Less( v1, v2 );
@@ -7457,9 +7333,15 @@ namespace Harlinn::Math::SIMD
         /// <summary>
         /// Determines if any element in the first SIMD vector is less than the corresponding element in the second SIMD vector.
         /// </summary>
-        /// <param name="v1">The first SIMD vector to compare.</param>
-        /// <param name="v2">The second SIMD vector to compare.</param>
-        /// <returns>True if any element in v1 is less than the corresponding element in v2; otherwise, false.</returns>
+        /// <param name="v1">
+        /// The first SIMD vector to compare.
+        /// </param>
+        /// <param name="v2">
+        /// The second SIMD vector to compare.
+        /// </param>
+        /// <returns>
+        /// True if any element in v1 is less than the corresponding element in v2; otherwise, false.
+        /// </returns>
         static bool AnyLess( SIMDType v1, SIMDType v2 ) noexcept
         {
             auto result = Less( v1, v2 );
@@ -7486,12 +7368,27 @@ namespace Harlinn::Math::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_cmple_ps( v1, v2 );
+                auto r = _mm_cmp_ps( v1, v2, _CMP_LE_OQ );
+                if constexpr ( Size == SIMDTypeCapacity )
+                {
+                    return r;
+                }
+                else
+                {
+                    return And( r, Mask( ) );
+                }
             }
             else
             {
-                // _CMP_LE_OQ => 18
-                return _mm256_cmp_ps( v1, v2, _CMP_LE_OQ );
+                auto r = _mm256_cmp_ps( v1, v2, _CMP_LE_OQ );
+                if constexpr ( Size == SIMDTypeCapacity )
+                {
+                    return r;
+                }
+                else
+                {
+                    return And( r, Mask( ) );
+                }
             }
         }
 
@@ -7538,11 +7435,27 @@ namespace Harlinn::Math::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_cmpeq_ps( v1, v2 );
+                auto r = _mm_cmp_ps( v1, v2, _CMP_EQ_OQ );
+                if constexpr ( Size == SIMDTypeCapacity )
+                {
+                    return r;
+                }
+                else
+                {
+                    return And( r, Mask( ) );
+                }
             }
             else
             {
-                return _mm256_cmp_ps( v1, v2, _CMP_EQ_OQ );
+                auto r = _mm256_cmp_ps( v1, v2, _CMP_EQ_OQ );
+                if constexpr ( Size == SIMDTypeCapacity )
+                {
+                    return r;
+                }
+                else
+                {
+                    return And( r, Mask( ) );
+                }
             }
         }
 
@@ -7575,7 +7488,7 @@ namespace Harlinn::Math::SIMD
         /// <returns>True if all corresponding elements differ by at most epsilon; otherwise, false.</returns>
         static bool AllEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
-            auto v = Abs( Sub( Max( v1, v2), Min( v1, v2 ) ) );
+            auto v = Abs( Sub( v1, v2 ) );
             auto rmm1 = LessOrEqual( v, epsilon );
             return AllTrue( rmm1 );
         }
@@ -7589,7 +7502,7 @@ namespace Harlinn::Math::SIMD
         /// <returns>True if any pair of corresponding elements are equal within epsilon; false otherwise.</returns>
         static bool AnyEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
         {
-            auto v = Abs( Sub( Max( v1, v2 ), Min( v1, v2 ) ) );
+            auto v = Abs( Sub( v1, v2 ) );
             auto rmm1 = LessOrEqual( v, epsilon );
             return AnyTrue( rmm1 );
         }
@@ -7625,11 +7538,27 @@ namespace Harlinn::Math::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_cmpneq_ps( v1, v2 );
+                auto r = _mm_cmp_ps( v1, v2, _CMP_NEQ_UQ );
+                if constexpr ( Size == SIMDTypeCapacity )
+                {
+                    return r;
+                }
+                else
+                {
+                    return And( r, Mask( ) );
+                }
             }
             else
             {
-                return _mm256_cmp_ps( v1, v2, _CMP_NEQ_UQ );
+                auto r = _mm256_cmp_ps( v1, v2, _CMP_NEQ_UQ );
+                if constexpr ( Size == SIMDTypeCapacity )
+                {
+                    return r;
+                }
+                else
+                {
+                    return And( r, Mask( ) );
+                }
             }
         }
 

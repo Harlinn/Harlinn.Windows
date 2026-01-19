@@ -85,6 +85,98 @@ static void BenchmarkPbrtFloatNextDown3( benchmark::State& state )
 BENCHMARK( BenchmarkPbrtFloatNextDown3 );
 
 
+static void BenchmarkFloatLoad3Aligned( benchmark::State& state )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    FloatGenerator.Reset( );
+    size_t SampleCount = 128;
+    std::vector<Math::Vector3f> points;
+    points.reserve( SampleCount );
+    for ( size_t i = 0; i < SampleCount; ++i )
+    {
+        points.emplace_back( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    }
+    Math::Vector3f::Simd p;
+    for ( auto _ : state )
+    {
+        for ( size_t i = 0; i < SampleCount; ++i )
+        {
+            p.simd = Traits::Load( points[i].data() );
+            benchmark::DoNotOptimize( p );
+        }
+    }
+}
+BENCHMARK( BenchmarkFloatLoad3Aligned );
+
+static void BenchmarkFloatLoad3Unaligned( benchmark::State& state )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    FloatGenerator.Reset( );
+    size_t SampleCount = 128;
+    std::vector<Math::Vector3f> points;
+    points.reserve( SampleCount );
+    for ( size_t i = 0; i < SampleCount; ++i )
+    {
+        points.emplace_back( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    }
+    Math::Vector3f::Simd p;
+    for ( auto _ : state )
+    {
+        for ( size_t i = 0; i < SampleCount; ++i )
+        {
+            p.simd = Traits::UnalignedLoad( points[ i ].data( ) );
+            benchmark::DoNotOptimize( p );
+        }
+    }
+}
+BENCHMARK( BenchmarkFloatLoad3Unaligned );
+
+static void BenchmarkFloatLoad4Aligned( benchmark::State& state )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    FloatGenerator.Reset( );
+    size_t SampleCount = 128;
+    std::vector<Math::Vector4f> points;
+    points.reserve( SampleCount );
+    for ( size_t i = 0; i < SampleCount; ++i )
+    {
+        points.emplace_back( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    }
+    Math::Vector4f::Simd p;
+    for ( auto _ : state )
+    {
+        for ( size_t i = 0; i < SampleCount; ++i )
+        {
+            p.simd = Traits::Load( points[ i ].data( ) );
+            benchmark::DoNotOptimize( p );
+        }
+    }
+}
+BENCHMARK( BenchmarkFloatLoad4Aligned );
+
+static void BenchmarkFloatLoad4Unaligned( benchmark::State& state )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    FloatGenerator.Reset( );
+    size_t SampleCount = 128;
+    std::vector<Math::Vector4f> points;
+    points.reserve( SampleCount );
+    for ( size_t i = 0; i < SampleCount; ++i )
+    {
+        points.emplace_back( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    }
+    Math::Vector4f::Simd p;
+    for ( auto _ : state )
+    {
+        for ( size_t i = 0; i < SampleCount; ++i )
+        {
+            p.simd = Traits::UnalignedLoad( points[ i ].data( ) );
+            benchmark::DoNotOptimize( p );
+        }
+    }
+}
+BENCHMARK( BenchmarkFloatLoad4Unaligned );
+
 
 #endif
 

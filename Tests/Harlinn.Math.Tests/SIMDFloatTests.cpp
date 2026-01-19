@@ -83,6 +83,8 @@ namespace
 }
 BOOST_FIXTURE_TEST_SUITE( SIMDFloatTests, LocalFixture )
 
+
+
 // --run_test=SIMDFloatTests/Set1Test1
 BOOST_AUTO_TEST_CASE( Set1Test1 )
 {
