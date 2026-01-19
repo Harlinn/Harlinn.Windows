@@ -192,9 +192,6 @@
     <ClInclude Include="HCCIOBufferStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCSIMD.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xxhash_cx.h">
       <Filter>Header Files</Filter>
     </ClInclude>

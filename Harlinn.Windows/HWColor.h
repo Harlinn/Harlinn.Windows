@@ -16,7 +16,7 @@
 */
 
 #include <HWDef.h>
-#include <HCCSIMD.h>
+#include <Harlinn/Math/Simd.h>
 
 namespace Harlinn::Windows::Graphics
 {
@@ -31,7 +31,7 @@ namespace Harlinn::Windows::Graphics
     class Color
     {
     public:
-        using Traits = SIMD::Traits<float, 4>;
+        using Traits = Harlinn::Math::SIMD::Traits<float, 4>;
         using SIMDType = typename Traits::SIMDType;
         using value_type = float;
         static constexpr size_t Size = 4;

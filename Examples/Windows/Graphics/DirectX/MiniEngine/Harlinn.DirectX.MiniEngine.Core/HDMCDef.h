@@ -22,7 +22,7 @@
 //#define HDMC_USES_HCC_MATH 1
 #ifdef HDMC_USES_HCC_MATH
 #define HDMC_USES_HCC_MATH_DEBUG 1
-#include <HCCVectorMath.h>
+#include <Harlinn/Math/VectorMath.h>
 #include <HWColor.h>
 #endif
 
@@ -67,7 +67,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
         namespace m
         {
-            using namespace ::Harlinn::Common::Core::Math;
+            using namespace ::Harlinn::Math;
 
             using Traits = SIMD::Traits<float, 4>;
             using SIMDType = typename Traits::SIMDType;

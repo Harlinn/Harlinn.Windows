@@ -286,7 +286,6 @@
     <ClInclude Include="HCCService.h" />
     <ClInclude Include="HCCServiceRunner.h" />
     <ClInclude Include="HCCShell.h" />
-    <ClInclude Include="HCCSIMD.h" />
     <ClInclude Include="HCCString.h" />
     <ClInclude Include="HCCStringBuilder.h" />
     <ClInclude Include="HCCSync.h" />
