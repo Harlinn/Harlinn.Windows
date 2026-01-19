@@ -162,7 +162,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 				 */
 				tmp = static_cast<float>( n );
 				v = two / x;
-				tmp = tmp * Log( Abs( v * tmp ) );
+				tmp = tmp * Log( FastAbs( v * tmp ) );
 				if ( tmp < ( float )8.8721679688e+01 )
 				{
 					for ( i = n - 1, di = ( float )( i + i ); i > 0; i-- )
@@ -194,7 +194,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 				}
 				z = J0( x );
 				w = J1( x );
-				if ( Abs( z ) >= Abs( w ) )
+				if ( FastAbs( z ) >= FastAbs( w ) )
 					b = ( t * z / b );
 				else
 					b = ( t * w / a );

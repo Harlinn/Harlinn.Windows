@@ -80,17 +80,17 @@ namespace Harlinn::Math::Internal::OpenLibM
 		{		/* |x|<22 */
 			if ( ix < 0x3e300000 ) 		/* |x|<2**-28 */
 				if ( shuge + x > one ) return x;/* sinh(tiny) = tiny with inexact */
-			t = ExpM1( Abs( x ) );
+			t = ExpM1( FastAbs( x ) );
 			if ( ix < 0x3ff00000 ) return h * ( 2.0 * t - t * t / ( t + one ) );
 			return h * ( t + t / ( t + one ) );
 		}
 
 		/* |x| in [22, log(maxdouble)] return 0.5*exp(|x|) */
-		if ( ix < 0x40862E42 )  return h * Exp( Abs( x ) );
+		if ( ix < 0x40862E42 )  return h * Exp( FastAbs( x ) );
 
 		/* |x| in [log(maxdouble), overflowthresold] */
 		if ( ix <= 0x408633CE )
-			return h * 2.0 * __ldexp_exp( Abs( x ), -1 );
+			return h * 2.0 * __ldexp_exp( FastAbs( x ), -1 );
 
 		/* |x| > overflowthresold, sinh(x) overflow */
 		return x * shuge;

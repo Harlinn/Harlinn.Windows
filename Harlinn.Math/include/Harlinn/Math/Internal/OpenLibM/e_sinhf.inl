@@ -62,17 +62,17 @@ namespace Harlinn::Math::Internal::OpenLibM
 		{		/* |x|<9 */
 			if ( ix < 0x39800000 ) 		/* |x|<2**-12 */
 				if ( shuge + x > one ) return x;/* sinh(tiny) = tiny with inexact */
-			t = ExpM1( Abs( x ) );
+			t = ExpM1( FastAbs( x ) );
 			if ( ix < 0x3f800000 ) return h * ( ( float )2.0 * t - t * t / ( t + one ) );
 			return h * ( t + t / ( t + one ) );
 		}
 
 		/* |x| in [9, logf(maxfloat)] return 0.5*exp(|x|) */
-		if ( ix < 0x42b17217 )  return h * Exp( Abs( x ) );
+		if ( ix < 0x42b17217 )  return h * Exp( FastAbs( x ) );
 
 		/* |x| in [logf(maxfloat), overflowthresold] */
 		if ( ix <= 0x42b2d4fc )
-			return h * 2.0F * __ldexp_expf( Abs( x ), -1 );
+			return h * 2.0F * __ldexp_expf( FastAbs( x ), -1 );
 
 		/* |x| > overflowthresold, sinh(x) overflow */
 		return x * shuge;

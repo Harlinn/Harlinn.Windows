@@ -236,7 +236,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 		}
 		if ( ix < 0x3ff40000 )
 		{		/* 0.84375 <= |x| < 1.25 */
-			s = Abs( x ) - one;
+			s = FastAbs( x ) - one;
 			P = pa0 + s * ( pa1 + s * ( pa2 + s * ( pa3 + s * ( pa4 + s * ( pa5 + s * pa6 ) ) ) ) );
 			Q = one + s * ( qa1 + s * ( qa2 + s * ( qa3 + s * ( qa4 + s * ( qa5 + s * qa6 ) ) ) ) );
 			if ( hx >= 0 ) return erx + P / Q; else return -erx - P / Q;
@@ -245,7 +245,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 		{		/* inf>|x|>=6 */
 			if ( hx >= 0 ) return one - tiny; else return tiny - one;
 		}
-		x = Abs( x );
+		x = FastAbs( x );
 		s = one / ( x * x );
 		if ( ix < 0x4006DB6E )
 		{	/* |x| < 1/0.35 */
@@ -302,7 +302,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 		}
 		if ( ix < 0x3ff40000 )
 		{		/* 0.84375 <= |x| < 1.25 */
-			s = Abs( x ) - one;
+			s = FastAbs( x ) - one;
 			P = pa0 + s * ( pa1 + s * ( pa2 + s * ( pa3 + s * ( pa4 + s * ( pa5 + s * pa6 ) ) ) ) );
 			Q = one + s * ( qa1 + s * ( qa2 + s * ( qa3 + s * ( qa4 + s * ( qa5 + s * qa6 ) ) ) ) );
 			if ( hx >= 0 )
@@ -316,7 +316,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 		}
 		if ( ix < 0x403c0000 )
 		{		/* |x|<28 */
-			x = Abs( x );
+			x = FastAbs( x );
 			s = one / ( x * x );
 			if ( ix < 0x4006DB6D )
 			{	/* |x| < 1/.35 ~ 2.857143*/

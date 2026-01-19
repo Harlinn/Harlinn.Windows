@@ -69,7 +69,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 		GET_FLOAT_WORD( hx, x );
 		ix = hx & 0x7fffffff;
 		if ( ix >= 0x7f800000 ) return one / x;
-		y = Abs( x );
+		y = FastAbs( x );
 		if ( ix >= 0x40000000 )
 		{	/* |x| >= 2.0 */
 			SinCos( y, &s, &c );

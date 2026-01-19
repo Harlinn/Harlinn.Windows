@@ -172,8 +172,8 @@ namespace Harlinn::Math::Internal::OpenLibM
 
 		if ( hb > ha ) { a = y; b = x; j = ha; ha = hb; hb = j; }
 		else { a = x; b = y; }
-		a = Abs( a );
-		b = Abs( b );
+		a = FastAbs( a );
+		b = FastAbs( b );
 		if ( ( ha - hb ) > 0x3c00000 ) { return a + b; } /* x/y > 2**60 */
 		k = 0;
 		if ( ha > 0x5f300000 )
@@ -182,7 +182,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 			{	/* Inf or NaN */
 				uint32_t low;
 				/* Use original arg order iff result is NaN; quieten sNaNs. */
-				w = Abs( x + 0.0 ) - Abs( y + 0.0 );
+				w = FastAbs( x + 0.0 ) - FastAbs( y + 0.0 );
 				GET_LOW_WORD( low, a );
 				if ( ( ( ha & 0xfffff ) | low ) == 0 ) w = a;
 				GET_LOW_WORD( low, b );

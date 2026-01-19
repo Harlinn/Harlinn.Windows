@@ -94,7 +94,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 		if ( n == 0 ) return( __ieee754_j0( x ) );
 		if ( n == 1 ) return( __ieee754_j1( x ) );
 		sgn = ( n & 1 ) & ( hx >> 31 );	/* even n -- 0, odd n -- sign(x) */
-		x = Abs( x );
+		x = FastAbs( x );
 		if ( ( ix | lx ) == 0 || ix >= 0x7ff00000 ) 	/* if x is 0 or inf */
 			b = zero;
 		else if ( ( double )n <= x )
@@ -215,7 +215,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 				 */
 				tmp = n;
 				v = two / x;
-				tmp = tmp * Log( Abs( v * tmp ) );
+				tmp = tmp * Log( FastAbs( v * tmp ) );
 				if ( tmp < 7.09782712893383973096e+02 )
 				{
 					for ( i = n - 1, di = ( double )( i + i ); i > 0; i-- )
@@ -247,7 +247,7 @@ namespace Harlinn::Math::Internal::OpenLibM
 				}
 				z = J0( x );
 				w = J1( x );
-				if ( Abs( z ) >= Abs( w ) )
+				if ( FastAbs( z ) >= FastAbs( w ) )
 					b = ( t * z / b );
 				else
 					b = ( t * w / a );
